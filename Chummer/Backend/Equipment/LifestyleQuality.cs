@@ -109,7 +109,7 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
-            _SourceGuid = Guid.Parse(objXmlLifestyleQuality["id"].InnerText);
+            Guid.TryParse(objXmlLifestyleQuality["id"].InnerText, out _SourceGuid);
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -167,8 +167,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("multiplier", _intMultiplier.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("lp", _intLP.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
@@ -235,7 +235,7 @@ namespace Chummer.Backend.Equipment
         private void LegacyShim()
         {
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
-            if (_objCharacter.LastSavedVersion <= Version.Parse("5.190.0"))
+            if (_objCharacter.LastSavedVersion <= new Version("5.190.0"))
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objLifestyleQualityNode = GetNode() ??

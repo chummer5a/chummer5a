@@ -380,6 +380,14 @@
       <text>semaines</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>mois</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>mois</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>heure</text>
     </string>
@@ -3112,8 +3120,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>mois (100 mois équivalent un achat permanent du Niveau de vie)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} pour achat permanent du Niveau de vie)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -3129,11 +3137,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>Ajouter un mois de loyer pré-payé de ce Niveau de vie.</text>
+      <text>Ajouter le nombre de {0} de loyer pré-payé de ce Niveau de vie.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>Supprimer un mois de loyer prépayé de ce Niveau de vie.</text>
+      <text>Supprimer le nombre de {0} de loyer prépayé de ce Niveau de vie.</text>
     </string>
     <string>
       <key>String_Roommates</key>

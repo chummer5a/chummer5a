@@ -53,7 +53,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Value.GetHashCode();
         }
 
         public override string ToString()
@@ -118,16 +118,18 @@ namespace Chummer
         /// </summary>
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
-            if (lx == null)
+            DateTime datY;
+            if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null)
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                     return 0;
                 else
                     return -1;
             }
-            else if (ly == null)
+            else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                 return 1;
-            return DateTime.Compare(DateTime.Parse(ly.Text, GlobalOptions.CultureInfo), DateTime.Parse(lx.Text, GlobalOptions.CultureInfo));
+
+            return DateTime.Compare(datY, datX);
         }
     }
 
@@ -162,12 +164,14 @@ namespace Chummer
             ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
-            string strX = listviewX.SubItems[_intColumnToSort].Text.FastEscape('¥');
-            string strY = listviewY.SubItems[_intColumnToSort].Text.FastEscape('¥');
             if (_intColumnToSort == 0)
-                intCompareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
+            {
+                intCompareResult = CompareListViewItems.CompareTextAsDates(listviewX, listviewY);
+            }
             else
             {
+                string strX = listviewX.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                string strY = listviewY.SubItems[_intColumnToSort].Text.FastEscape('¥');
                 if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
                     decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
                     intCompareResult = decimal.Compare(decX, decY);

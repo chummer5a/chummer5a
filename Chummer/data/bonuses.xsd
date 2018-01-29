@@ -440,13 +440,10 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="biofeedback" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="response" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="programlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1057,7 +1054,6 @@
       <xs:element name="toxininhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxininjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxininjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="transgenicsgenetechcost" minOccurs="0" maxOccurs="1" />
       <xs:element name="trustfund" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="unarmedap" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="unarmeddv" type="xs:string" minOccurs="0" maxOccurs="1" />

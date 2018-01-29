@@ -712,6 +712,10 @@
       <text>Metavariant:</text>
     </string>
     <string>
+      <key>Title_ChooseCharacterPriorities</key>
+      <text>Choose Character Priorities</text>
+    </string>
+    <string>
       <key>Label_PriorityHeritage</key>
       <text>Metatype:</text>
     </string>
@@ -784,16 +788,20 @@
       <text>weeks</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>month</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>months</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>hour</text>
     </string>
     <string>
       <key>String_Hours</key>
       <text>hours</text>
-    </string>
-    <string>
-      <key>String_Month</key>
-      <text>month</text>
     </string>
     <string>
       <key>String_ArmorEncumbrance</key>
@@ -1292,6 +1300,10 @@
       <text>Convert to Cyberzombie</text>
     </string>
     <string>
+      <key>String_MutantCritter</key>
+      <text>Mutant Critter</text>
+    </string>
+    <string>
       <key>Menu_SpecialReduceAttribute</key>
       <text>Reduce Attribute</text>
     </string>
@@ -1552,6 +1564,14 @@
       <text>Condition Monitor</text>
     </string>
     <string>
+      <key>Tab_PhysicalConditionMonitor</key>
+      <text>Physical Condition Monitor</text>
+    </string>
+    <string>
+      <key>Tab_MatrixConditionMonitor</key>
+      <text>Matrix Condition Monitor</text>
+    </string>
+    <string>
       <key>MessageTitle_DeleteGrade</key>
       <text>Cannot Delete</text>
     </string>
@@ -1590,6 +1610,10 @@
     <string>
       <key>MessageTitle_CyberzombieConfirm</key>
       <text>Convert to Cyberzombie</text>
+    </string>
+    <string>
+      <key>String_Cyberzombie</key>
+      <text>Cyberzombie</text>
     </string>
     <string>
       <key>String_CyberzombieWILText</key>
@@ -2504,6 +2528,10 @@
       <text>Cannot Regain Edge</text>
     </string>
     <string>
+      <key>String_EdgeUse</key>
+      <text>Edge Use</text>
+    </string>
+    <string>
       <key>Message_NotEnoughKarma</key>
       <text>You do not have enough Karma for this expense.</text>
     </string>
@@ -2518,6 +2546,18 @@
     <string>
       <key>MessageTitle_NotEnoughMagic</key>
       <text>Not Enough Magic</text>
+    </string>
+    <string>
+      <key>String_EssenceLoss</key>
+      <text>Essence Loss</text>
+    </string>
+    <string>
+      <key>String_EssenceLossChargen</key>
+      <text>Essence Loss (Character Generation)</text>
+    </string>
+    <string>
+      <key>String_SpiritFettering</key>
+      <text>Spirit Fettering</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpense</key>
@@ -2895,6 +2935,10 @@
     <string>
       <key>String_CyberzombieReduceAttribute</key>
       <text>Select an Attribute to reduce (both Value and Metatype Maximum).</text>
+    </string>
+    <string>
+      <key>String_AttributeLoss</key>
+      <text>Attribute Loss</text>
     </string>
     <string>
       <key>String_ExpenseDefault</key>
@@ -4352,8 +4396,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>Months (100 for Permanent)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} for Permanent)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -4369,11 +4413,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>Increase the number of pre-paid months for the Lifestyle.</text>
+      <text>Increase the number of pre-paid {0} for the Lifestyle.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>Decrease the number of pre-paid months for the Lifestyle.</text>
+      <text>Decrease the number of pre-paid {0} for the Lifestyle.</text>
     </string>
     <string>
       <key>String_Roommates</key>
@@ -7487,6 +7531,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Sum to Ten</text>
     </string>
     <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Nuyen Karma Max</text>
+    </string>
+    <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignore Character Creation Rules</text>
     </string>
@@ -7728,6 +7776,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_SelectLifestyle_CostPerWeek</key>
       <text>Cost/Week:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_CostPerDay</key>
+      <text>Cost/Day:</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_StartingNuyen</key>

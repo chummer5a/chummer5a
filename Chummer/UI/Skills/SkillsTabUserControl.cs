@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler ChildPropertyChanged; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
 
         private BindingListDisplay<Skill> _skills;
         private BindingListDisplay<SkillGroup> _groups;
@@ -152,9 +152,9 @@ namespace Chummer.UI.Skills
 
             parts.TaskEnd("_sort databind");
 
-            _skills.ChildPropertyChanged += ChildPropertyChanged;
-            _groups.ChildPropertyChanged += ChildPropertyChanged;
-            _knoSkills.ChildPropertyChanged += ChildPropertyChanged;
+            _skills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _groups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _knoSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;
             //this.ResumeLayout(false);
@@ -364,6 +364,17 @@ namespace Chummer.UI.Skills
                 Location = new Point(0, 15),
             };
             _groups.Filter(x => x.SkillList.Any(y => _character.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+            int name = 0;
+            int rating = 0;
+            foreach (SkillGroupControl sg in _groups.Controls[0].Controls)
+            {
+                name = Math.Max(sg.NameWidth, name);
+                rating = Math.Max(sg.RatingWidth, rating);
+            }
+            foreach (SkillGroupControl s in _groups.Controls[0].Controls)
+            {
+                s.MoveControls(name, rating);
+            }
 
             sw.TaskEnd("_groups");
 
@@ -375,6 +386,11 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
+            name = _controls.Max(skill => skill.NameWidth);
+            foreach (SkillControl2 s in _controls)
+            {
+                s.MoveControls(name);
+            }
 
             sw.TaskEnd("_skills");
 
@@ -387,6 +403,14 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(3, 50),
             };
+            if (_character.SkillsSection.KnowledgeSkills.Count > 0)
+            {
+                name = _character.SkillsSection.KnowledgeSkills.Max(skill => skill.DisplayName.Length);
+                foreach (KnowledgeSkillControl k in _knoSkills.Controls[0].Controls)
+                {
+                    k.MoveControls(name);
+                }
+            }
 
             splitSkills.Panel2.Controls.Add(_knoSkills);
 
@@ -420,18 +444,26 @@ namespace Chummer.UI.Skills
                 }
                 _groups.Size = new Size(intWidth, height - _groups.Top);
             }
-            if (_skills != null)
+            if (_skills == null) return;
+            _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth + 10), height - _skills.Top);
+            if (_character.SkillsSection.Skills.Count <= 0) return;
+            int i = _controls.Max(skill => skill.NameWidth);
+            foreach (SkillControl2 s in _controls)
             {
-                _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth + 10), height - _skills.Top);
+                s.MoveControls(i);
             }
         }
 
         private void Panel2_Resize(object sender, EventArgs e)
         {
-            if (_knoSkills != null)
+            if (_knoSkills == null) return;
+            _knoSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 53);
+            //_knoSkills.Height = splitSkills.Panel2.Height - 53;
+            if (_character.SkillsSection.KnowledgeSkills.Count <= 0) return;
+            int i = _character.SkillsSection.KnowledgeSkills.Max(skill => skill.DisplayName.Length);
+            foreach (KnowledgeSkillControl k in _knoSkills.Controls[0].Controls)
             {
-                _knoSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 53);
-                //_knoSkills.Height = splitSkills.Panel2.Height - 53;
+                k.MoveControls(i);
             }
         }
 

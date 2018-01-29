@@ -178,7 +178,6 @@ namespace Chummer
             this.cmsAmmoSuppressiveFire = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsDeleteGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.sellItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -187,7 +186,6 @@ namespace Chummer
             this.tsVehicleAddSensor = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddGear = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleSensorAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleAddNexus = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddWeaponWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
@@ -351,8 +349,6 @@ namespace Chummer
             this.tsArmorModNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQualityNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmsMartialArtManeuver = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMartialArtManeuverNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSpellNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCritterPowers = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1222,7 +1218,6 @@ namespace Chummer
             this.cmsArmorGear.SuspendLayout();
             this.cmsArmorMod.SuspendLayout();
             this.cmsQuality.SuspendLayout();
-            this.cmsMartialArtManeuver.SuspendLayout();
             this.cmsSpell.SuspendLayout();
             this.cmsCritterPowers.SuspendLayout();
             this.cmsMetamagic.SuspendLayout();
@@ -1562,7 +1557,6 @@ namespace Chummer
             this.lblRiggingINILabel.TabIndex = 87;
             this.lblRiggingINILabel.Tag = "Label_OtherRiggingInit";
             this.lblRiggingINILabel.Text = "Rigging Initiative (AR):";
-            this.tipTooltip.SetToolTip(this.lblRiggingINILabel, "Matrix Initiative is calculated as Commlink Response + INT.");
             // 
             // lblMatrixINIHotLabel
             // 
@@ -1573,7 +1567,6 @@ namespace Chummer
             this.lblMatrixINIHotLabel.TabIndex = 85;
             this.lblMatrixINIHotLabel.Tag = "Label_OtherMatrixInitVRHot";
             this.lblMatrixINIHotLabel.Text = "Matrix Initiative (Hot):";
-            this.tipTooltip.SetToolTip(this.lblMatrixINIHotLabel, "Matrix Initiative is calculated as Commlink Response + INT.");
             // 
             // lblMatrixINIColdLabel
             // 
@@ -1584,7 +1577,6 @@ namespace Chummer
             this.lblMatrixINIColdLabel.TabIndex = 83;
             this.lblMatrixINIColdLabel.Tag = "Label_OtherMatrixInitVRCold";
             this.lblMatrixINIColdLabel.Text = "Matrix Initiative (Cold):";
-            this.tipTooltip.SetToolTip(this.lblMatrixINIColdLabel, "Matrix Initiative is calculated as Commlink Response + INT.");
             // 
             // lblAstralINILabel
             // 
@@ -1606,7 +1598,6 @@ namespace Chummer
             this.lblMatrixINILabel.TabIndex = 78;
             this.lblMatrixINILabel.Tag = "Label_OtherMatrixInit";
             this.lblMatrixINILabel.Text = "Matrix Initiative (AR):";
-            this.tipTooltip.SetToolTip(this.lblMatrixINILabel, "Matrix Initiative is calculated as Commlink Response + INT.");
             // 
             // lblINILabel
             // 
@@ -2485,8 +2476,7 @@ namespace Chummer
             // cmsGearButton
             // 
             this.cmsGearButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsGearButtonAddAccessory,
-            this.tsGearAddNexus});
+            this.tsGearButtonAddAccessory});
             this.cmsGearButton.Name = "cmsGearButton";
             this.cmsGearButton.Size = new System.Drawing.Size(153, 48);
             // 
@@ -2498,16 +2488,6 @@ namespace Chummer
             this.tsGearButtonAddAccessory.Tag = "Menu_AddAccessory";
             this.tsGearButtonAddAccessory.Text = "&Add Accessory";
             this.tsGearButtonAddAccessory.Click += new System.EventHandler(this.tsGearButtonAddAccessory_Click);
-            // 
-            // tsGearAddNexus
-            // 
-            this.tsGearAddNexus.Image = global::Chummer.Properties.Resources.computer_add;
-            this.tsGearAddNexus.Name = "tsGearAddNexus";
-            this.tsGearAddNexus.Size = new System.Drawing.Size(152, 22);
-            this.tsGearAddNexus.Tag = "Menu_AddNexus";
-            this.tsGearAddNexus.Text = "A&dd Nexus";
-            this.tsGearAddNexus.Visible = false;
-            this.tsGearAddNexus.Click += new System.EventHandler(this.tsGearAddNexus_Click);
             // 
             // cmsDeleteGear
             // 
@@ -2560,8 +2540,7 @@ namespace Chummer
             // 
             this.tsVehicleAddSensor.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleAddGear,
-            this.tsVehicleSensorAddAsPlugin,
-            this.tsVehicleAddNexus});
+            this.tsVehicleSensorAddAsPlugin});
             this.tsVehicleAddSensor.Image = global::Chummer.Properties.Resources.camera_add;
             this.tsVehicleAddSensor.Name = "tsVehicleAddSensor";
             this.tsVehicleAddSensor.Size = new System.Drawing.Size(192, 22);
@@ -2585,16 +2564,6 @@ namespace Chummer
             this.tsVehicleSensorAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsVehicleSensorAddAsPlugin.Text = "&Add as Plugin";
             this.tsVehicleSensorAddAsPlugin.Click += new System.EventHandler(this.tsVehicleSensorAddAsPlugin_Click);
-            // 
-            // tsVehicleAddNexus
-            // 
-            this.tsVehicleAddNexus.Image = global::Chummer.Properties.Resources.computer_add;
-            this.tsVehicleAddNexus.Name = "tsVehicleAddNexus";
-            this.tsVehicleAddNexus.Size = new System.Drawing.Size(147, 22);
-            this.tsVehicleAddNexus.Tag = "Menu_AddNexus";
-            this.tsVehicleAddNexus.Text = "A&dd Nexus";
-            this.tsVehicleAddNexus.Visible = false;
-            this.tsVehicleAddNexus.Click += new System.EventHandler(this.tsVehicleAddNexus_Click);
             // 
             // tsVehicleAddWeapon
             // 
@@ -4351,22 +4320,6 @@ namespace Chummer
             this.tsQualityNotes.Text = "&Notes";
             this.tsQualityNotes.Click += new System.EventHandler(this.tsQualityNotes_Click);
             // 
-            // cmsMartialArtManeuver
-            // 
-            this.cmsMartialArtManeuver.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMartialArtManeuverNotes});
-            this.cmsMartialArtManeuver.Name = "cmsMartialArtManeuver";
-            this.cmsMartialArtManeuver.Size = new System.Drawing.Size(106, 26);
-            // 
-            // tsMartialArtManeuverNotes
-            // 
-            this.tsMartialArtManeuverNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsMartialArtManeuverNotes.Name = "tsMartialArtManeuverNotes";
-            this.tsMartialArtManeuverNotes.Size = new System.Drawing.Size(105, 22);
-            this.tsMartialArtManeuverNotes.Tag = "Menu_Notes";
-            this.tsMartialArtManeuverNotes.Text = "&Notes";
-            this.tsMartialArtManeuverNotes.Click += new System.EventHandler(this.tsMartialArtManeuverNotes_Click);
-            // 
             // cmsSpell
             // 
             this.cmsSpell.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -4938,6 +4891,7 @@ namespace Chummer
             this.tabLimits.Size = new System.Drawing.Size(861, 669);
             this.tabLimits.TabIndex = 16;
             this.tabLimits.Text = "Limits";
+            this.tabLimits.Tag = "Tab_Limits";
             // 
             // lblAstralLabel
             // 
@@ -6841,6 +6795,7 @@ namespace Chummer
             this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(352, 87);
             this.tabCyberwareMatrixCM.TabIndex = 1;
             this.tabCyberwareMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabCyberwareMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabCyberwareMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkCyberwareMatrixCM1
@@ -7844,6 +7799,7 @@ namespace Chummer
             this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
             this.tabMatrixCM.TabIndex = 1;
             this.tabMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkGearMatrixCM1
@@ -9069,6 +9025,7 @@ namespace Chummer
             this.tabWeaponMatrixCMPage.Size = new System.Drawing.Size(205, 87);
             this.tabWeaponMatrixCMPage.TabIndex = 1;
             this.tabWeaponMatrixCMPage.Text = "Matrix Condition Monitor";
+            this.tabWeaponMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabWeaponMatrixCMPage.UseVisualStyleBackColor = true;
             // 
             // chkWeaponMatrixCM1
@@ -10211,7 +10168,7 @@ namespace Chummer
             this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
             this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
             this.lblLifestyleMonthsLabel.TabIndex = 83;
-            this.lblLifestyleMonthsLabel.Tag = "Label_LifestyleMonths";
+            this.lblLifestyleMonthsLabel.Tag = "Label_LifestylePermanent";
             this.lblLifestyleMonthsLabel.Text = "Months (100 for Permanent)";
             // 
             // tabVehicles
@@ -10714,6 +10671,7 @@ namespace Chummer
             this.tabVehiclePhysicalCM.Size = new System.Drawing.Size(352, 87);
             this.tabVehiclePhysicalCM.TabIndex = 0;
             this.tabVehiclePhysicalCM.Text = "Physical Condition Monitor";
+            this.tabVehiclePhysicalCM.Tag = "Tab_PhysicalConditionMonitor";
             this.tabVehiclePhysicalCM.UseVisualStyleBackColor = true;
             // 
             // chkVehiclePhysicalCM40
@@ -11244,6 +11202,7 @@ namespace Chummer
             this.tabVehicleMatrixCM.Size = new System.Drawing.Size(352, 87);
             this.tabVehicleMatrixCM.TabIndex = 1;
             this.tabVehicleMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabVehicleMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabVehicleMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkVehicleMatrixCM1
@@ -13539,7 +13498,7 @@ namespace Chummer
             this.cmdAddContact.Tag = "Button_AddContact";
             this.cmdAddContact.Text = "&Add Contact";
             this.cmdAddContact.UseVisualStyleBackColor = true;
-            this.cmdAddContact.Click += new System.EventHandler(this.cmdAddContact_Click);
+            this.cmdAddContact.Click += new System.EventHandler(this.AddContact);
             // 
             // lblContactArchtypeLabel
             // 
@@ -13639,7 +13598,7 @@ namespace Chummer
             this.cmdAddEnemy.Tag = "Button_AddEnemy";
             this.cmdAddEnemy.Text = "A&dd Enemy";
             this.cmdAddEnemy.UseVisualStyleBackColor = true;
-            this.cmdAddEnemy.Click += new System.EventHandler(this.cmdAddEnemy_Click);
+            this.cmdAddEnemy.Click += new System.EventHandler(this.AddEnemy);
             // 
             // tabPets
             // 
@@ -13676,7 +13635,7 @@ namespace Chummer
             this.cmdAddPet.Tag = "Button_AddPet";
             this.cmdAddPet.Text = "&Add Pet";
             this.cmdAddPet.UseVisualStyleBackColor = true;
-            this.cmdAddPet.Click += new System.EventHandler(this.cmdAddPet_Click);
+            this.cmdAddPet.Click += new System.EventHandler(this.AddPet);
             // 
             // panAttributes
             // 
@@ -14112,7 +14071,7 @@ namespace Chummer
             this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
             this.tsAddFromFile.Text = "&Add From File";
-            this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
+            this.tsAddFromFile.Click += new System.EventHandler(this.AddContactsFromFile);
             // 
             // frmCareer
             // 
@@ -14175,7 +14134,6 @@ namespace Chummer
             this.cmsArmorGear.ResumeLayout(false);
             this.cmsArmorMod.ResumeLayout(false);
             this.cmsQuality.ResumeLayout(false);
-            this.cmsMartialArtManeuver.ResumeLayout(false);
             this.cmsSpell.ResumeLayout(false);
             this.cmsCritterPowers.ResumeLayout(false);
             this.cmsMetamagic.ResumeLayout(false);
@@ -14413,8 +14371,6 @@ namespace Chummer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip cmsGearButton;
         private System.Windows.Forms.ToolStripMenuItem tsGearButtonAddAccessory;
-        private System.Windows.Forms.ToolStripMenuItem tsGearAddNexus;
-        private System.Windows.Forms.ToolStripMenuItem tsVehicleAddNexus;
         private System.Windows.Forms.Label lblCareerKarma;
         private System.Windows.Forms.Label lblCareerKarmaLabel;
         private System.Windows.Forms.Label lblMovement;
@@ -14452,8 +14408,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
         private System.Windows.Forms.ToolStripMenuItem tsQualityNotes;
         private System.Windows.Forms.ToolStripMenuItem tsMartialArtsNotes;
-        private System.Windows.Forms.ContextMenuStrip cmsMartialArtManeuver;
-        private System.Windows.Forms.ToolStripMenuItem tsMartialArtManeuverNotes;
         private System.Windows.Forms.ContextMenuStrip cmsSpell;
         private System.Windows.Forms.ToolStripMenuItem tsSpellNotes;
         private System.Windows.Forms.ToolStripMenuItem tsComplexFormNotes;

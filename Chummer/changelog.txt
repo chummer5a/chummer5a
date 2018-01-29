@@ -95,6 +95,26 @@ Application Changes:
 - Fixed an issue where weapon mounts could not get properly installed or uninstalled from their vehicle.
 - Fixed an issue that prevented Chummer5a from opening PDFs for sourcebooks with translated codes.
 - Fixed an issue where the expense log entry for upgrading an attribute would be incorrect if the character has any bonuses that increase the base value of their attribute.
+- Added proper support for tracking of lifestyles where payments happen in increments of weeks or days.
+- Fixed an issue where names for improvements granted by initiation, submersion, a condition monitor effect, a character's priorities, armor encumbrance, Essence loss, Edge use, spirit fettering, general attribute loss, being a mutant critter, or being a cyberzombie were not translated properly in tooltips.
+- Fixed a bug where non-English character sheets would not print a tradition's spirits in the appropriate language.
+- Unhardcoded the spirits of Draconic tradition so they can be changed by custom/house rules to not include every spirit.
+- Fixed a bug where Path of the Pariah would not print "None" under their spirit categories.
+- Fixed an issue where powers, optional powers, and weaknesses printed with spirits would not display any extras if a translation was loaded, and would not follow the same printing format as those of critter powers printed with a character.
+- Fixed an issue where the stun condition monitor section for spirits in the Fancy Blocks character sheet set would print the spirit's charisma instead.
+- Fixed an issue where changing metatypes (or critter types) while using a karma-based character generation method would not remove some critter powers, complex forms, advanced programs, skill levels, and gear granted by the old metatype (or critter type).
+- Fixed some rare issues where characters would not have their old priority selection entries loaded when they wished to change priorities.
+- Fixed a bug where bonus-granted echoes and metamagics would not get properly removed when the underlying bonus' source was removed.
+- Fixed an issue where changing the notes of a pet or a contact would not mark the underlying character as "dirty". Fixes #2407.
+- Fixed an issue with cost calculations related to armor mods whose costs contained the FixedValue phrase.
+- Fixed issues where plugins that would increase the availability of the parent item sometimes would not do so.
+- Fixed an issue where plugins that would increase the availability of the parent item would not get their availability types translated properly.
+- Fixed a bug where arts, enhancements, and spells attached to initiation grades could not be deleted in career mode.
+- Fixed a crash that occured where attempting to delete something in the metamagic tree in create mode while nothing was selected.
+- If a language other than en-US fails to load, Chummer5a will now default to the en-US strings when translating forms (after the appropriate error message is shown).
+- Fixed an issue where multiple sources of the Prototype Transhuman bonus would override and get in the way of each other.
+- Removed <transgenicsgenetechcost> from the improvement system and all code related to processing transgenics, as it is a holdover from the 4e days, and unlike something like <genetechcostmultiplier>, there is no way to translate it to 5e's mechanics.
+- Fixed an issue where adding contacts from a file would not register and save those contacts with the underlying character.
 
 Data Changes:
 
@@ -124,6 +144,21 @@ New Strings:
 - Button_DeleteMod
 - Node_AdditionalMods
 - Title_CreateWeaponMount
+- String_Month
+- String_Months
+- Label_LifestylePermanent
+- Label_SelectLifestyle_CostPerDay
+- Title_ChooseCharacterPriorities
+- Tab_PhysicalConditionMonitor
+- Tab_MatrixConditionMonitor
+- Label_SelectBP_MaxNuyen
+- String_MutantCritter
+- String_Cyberzombie
+- String_EdgeUse
+- String_EssenceLoss
+- String_EssenceLossChargen
+- String_SpiritFettering
+- String_AttributeLoss
 
 Changed Strings:
 
@@ -140,6 +175,8 @@ Changed Strings:
 - Node_CritterWeaknesses
 - Node_SelectedCyberware
 - Node_SelectedBioware
+- Tab_IncreaseLifestyleMonths
+- Tab_DecreaseLifestyleMonths
 
 Removed Strings:
 
@@ -154,6 +191,7 @@ Removed Strings:
 - Message_SelectMartialArtAdvantage
 - MessageTitle_SelectMartialArtAdvantage
 - Title_SelectMartialArtAdvantage
+- Label_LifestyleMonths
 
 Build 197
 

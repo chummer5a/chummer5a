@@ -83,11 +83,6 @@ namespace Chummer
 
         private void frmSelectGear_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -715,7 +710,7 @@ namespace Chummer
             decimal decItemCost = 0.0m;
             if (chkFreeItem.Checked)
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {

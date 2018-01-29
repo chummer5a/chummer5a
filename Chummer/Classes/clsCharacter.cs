@@ -126,9 +126,9 @@ namespace Chummer
         private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
         // Metatype Information.
-        private string _strMetatype = string.Empty;
+        private string _strMetatype = "Human";
         private string _strMetavariant = string.Empty;
-        private string _strMetatypeCategory = string.Empty;
+        private string _strMetatypeCategory = "Metahuman";
         private string _strMovement = string.Empty;
         private string _strWalk = string.Empty;
         private string _strRun = string.Empty;
@@ -192,11 +192,11 @@ namespace Chummer
 
         // Priority Selections.
         private string _strGameplayOption = "Standard";
-        private string _strPriorityMetatype = string.Empty;
-        private string _strPriorityAttributes = string.Empty;
-        private string _strPrioritySpecial = string.Empty;
-        private string _strPrioritySkills = string.Empty;
-        private string _strPriorityResources = string.Empty;
+        private string _strPriorityMetatype = "A,4";
+        private string _strPriorityAttributes = "B,3";
+        private string _strPrioritySpecial = "C,2";
+        private string _strPrioritySkills = "D,1";
+        private string _strPriorityResources = "E,0";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>();
         private decimal _decMaxNuyen = 0;
@@ -206,9 +206,9 @@ namespace Chummer
         // Lists.
         private readonly List<string> _lstSources = new List<string>();
         private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
-        private List<Improvement> _lstImprovements = new List<Improvement>();
+        private ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
-        private List<Contact> _lstContacts = new List<Contact>();
+        private ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
@@ -217,7 +217,9 @@ namespace Chummer
         private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
+        #if LEGACY
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
+        #endif
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private List<Armor> _lstArmor = new List<Armor>();
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
@@ -239,7 +241,7 @@ namespace Chummer
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
-        private List<CalendarWeek> _lstCalendar = new List<CalendarWeek>();
+        private BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
         private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
@@ -268,9 +270,7 @@ namespace Chummer
         public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
         public Action<object> CyberwareTabDisabledChanged { get; set; }
 
-        private frmViewer _frmPrintView;
-
-        #region Initialization, Save, Load, Print, and Reset Methods
+#region Initialization, Save, Load, Print, and Reset Methods
         /// <summary>
         /// Character.
         /// </summary>
@@ -682,6 +682,7 @@ namespace Chummer
             // </martialarts>
             objWriter.WriteEndElement();
 
+            #if LEGACY
             // <martialartmaneuvers>
             objWriter.WriteStartElement("martialartmaneuvers");
             foreach (MartialArtManeuver objManeuver in _lstMartialArtManeuvers)
@@ -690,6 +691,7 @@ namespace Chummer
             }
             // </martialartmaneuvers>
             objWriter.WriteEndElement();
+            #endif
 
             // <limitmodifiers>
             objWriter.WriteStartElement("limitmodifiers");
@@ -1304,7 +1306,7 @@ namespace Chummer
                         if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
-                        if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
+                        if (LastSavedVersion <= new Version("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
                             objQuality.Name == "The Artist's Way" ||
                             objQuality.Name == "The Athlete's Way" ||
                             objQuality.Name == "The Burnout's Way" ||
@@ -1467,7 +1469,7 @@ namespace Chummer
                 // Legacy shim
                 if (objCyberware.Name == "Myostatin Inhibitor")
                 {
-                    if (LastSavedVersion <= Version.Parse("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                    if (LastSavedVersion <= new Version("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                     {
                         XmlNode objNode = objCyberware.GetNode();
                         if (objNode != null)
@@ -1579,18 +1581,26 @@ namespace Chummer
             List<ListItem> lstPowerOrder = new List<ListItem>();
             objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
             // Sort the Powers in alphabetical order.
-            foreach (XmlNode objXmlPower in objXmlNodeList)
+            foreach (XmlNode xmlPower in objXmlNodeList)
             {
-                lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
+                string strGuid = xmlPower["guid"]?.InnerText;
+                if (!string.IsNullOrEmpty(strGuid))
+                    lstPowerOrder.Add(new ListItem(strGuid, (xmlPower["name"]?.InnerText ?? string.Empty) + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                else
+                {
+                    Power objPower = new Power(this);
+                    objPower.Load(xmlPower);
+                    _lstPowers.Add(objPower);
+                }
             }
             lstPowerOrder.Sort(CompareListItems.CompareNames);
 
             foreach (ListItem objItem in lstPowerOrder)
             {
-                Power objPower = new Power(this);
-                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value.ToString()) + "]");
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
                 if (objNode != null)
                 {
+                    Power objPower = new Power(this);
                     objPower.Load(objNode);
                     _lstPowers.Add(objPower);
                 }
@@ -1645,6 +1655,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_marts");
+            #if LEGACY
             Timekeeper.Start("load_char_mam");
 
             // Martial Art Maneuvers.
@@ -1657,6 +1668,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_mam");
+            #endif
             Timekeeper.Start("load_char_mod");
 
             // Limit Modifiers.
@@ -1692,7 +1704,7 @@ namespace Chummer
                 _lstGear.Add(objGear);
             }
             // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
-            if (objLivingPersonaQuality != null && LastSavedVersion <= Version.Parse("5.195.1"))
+            if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
 
@@ -2252,7 +2264,18 @@ namespace Chummer
             objWriter.WriteElementString("cyberwaredisabled", CyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", CritterEnabled.ToString());
-            objWriter.WriteElementString("totaless", Essence.ToString(objCulture));
+
+            int intESSDecimals = _objOptions.EssenceDecimals;
+            string strESSFormat = "#,0";
+            if (intESSDecimals > 0)
+            {
+                StringBuilder objESSFormat = new StringBuilder(".");
+                for (int i = 0; i < intESSDecimals; ++i)
+                    objESSFormat.Append('0');
+                strESSFormat += objESSFormat.ToString();
+            }
+
+            objWriter.WriteElementString("totaless", Essence.ToString(strESSFormat, objCulture));
             // <tradition />
             string strTraditionName = MagicTradition;
             if (strTraditionName == "Custom")
@@ -2261,14 +2284,16 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strTraditionName))
             {
+                XmlDocument xmlTraditions = XmlManager.Load("traditions.xml", strLanguageToPrint);
                 string strDrainAtt = TraditionDrain;
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint).SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
+                XmlNode objXmlTradition = xmlTraditions.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
                 if (objXmlTradition != null)
                 {
-                    if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText != "Custom")
+                    string strName = objXmlTradition["name"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strName) && strName != "Custom")
                     {
-                        strTraditionName = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
+                        strTraditionName = objXmlTradition["translate"]?.InnerText ?? strName;
                     }
                 }
                 
@@ -2294,35 +2319,50 @@ namespace Chummer
                     objWriter.WriteElementString("attr",drainAttribute);
                 }
                 objWriter.WriteEndElement();
-                if (MagicTradition == "Draconic")
+
+                string strSpiritCombat = SpiritCombat;
+                string strSpiritDetection = SpiritDetection;
+                string strSpiritHealth = SpiritHealth;
+                string strSpiritIllusion = SpiritIllusion;
+                string strSpiritManipulation = SpiritManipulation;
+                string strNone = LanguageManager.GetString("String_None", strLanguageToPrint);
+                if (MagicTradition != "Custom")
                 {
-                    objWriter.WriteElementString("spiritcombat", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritdetection", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spirithealth", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritillusion", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.GetString("String_All", strLanguageToPrint));
-                }
-                else if (MagicTradition != "Custom")
-                {
-                    objWriter.WriteElementString("spiritcombat",
-                        objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
-                    objWriter.WriteElementString("spiritdetection",
-                        objXmlTradition.SelectSingleNode("spirits/spiritdetection").InnerText);
-                    objWriter.WriteElementString("spirithealth",
-                        objXmlTradition.SelectSingleNode("spirits/spirithealth").InnerText);
-                    objWriter.WriteElementString("spiritillusion",
-                        objXmlTradition.SelectSingleNode("spirits/spiritillusion").InnerText);
-                    objWriter.WriteElementString("spiritmanipulation",
-                        objXmlTradition.SelectSingleNode("spirits/spiritmanipulation").InnerText);
+                    strSpiritCombat = objXmlTradition.SelectSingleNode("spirits/spiritcombat")?.InnerText ?? strNone;
+                    if (strSpiritCombat == "All")
+                        strSpiritCombat = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritDetection = objXmlTradition.SelectSingleNode("spirits/spiritdetection")?.InnerText ?? strNone;
+                    if (strSpiritDetection == "All")
+                        strSpiritDetection = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritHealth = objXmlTradition.SelectSingleNode("spirits/spirithealth")?.InnerText ?? strNone;
+                    if (strSpiritHealth == "All")
+                        strSpiritHealth = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritIllusion = objXmlTradition.SelectSingleNode("spirits/spiritillusion")?.InnerText ?? strNone;
+                    if (strSpiritIllusion == "All")
+                        strSpiritIllusion = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritManipulation = objXmlTradition.SelectSingleNode("spirits/spiritmanipulation")?.InnerText ?? strNone;
+                    if (strSpiritManipulation == "All")
+                        strSpiritManipulation = LanguageManager.GetString("String_All", strLanguageToPrint);
                 }
                 else
                 {
-                    objWriter.WriteElementString("spiritcombat", SpiritCombat);
-                    objWriter.WriteElementString("spiritdetection", SpiritDetection);
-                    objWriter.WriteElementString("spirithealth", SpiritHealth);
-                    objWriter.WriteElementString("spiritillusion", SpiritIllusion);
-                    objWriter.WriteElementString("spiritmanipulation", SpiritManipulation);
+                    if (string.IsNullOrEmpty(strSpiritCombat))
+                        strSpiritCombat = strNone;
+                    if (string.IsNullOrEmpty(strSpiritDetection))
+                        strSpiritDetection = strNone;
+                    if (string.IsNullOrEmpty(strSpiritHealth))
+                        strSpiritHealth = strNone;
+                    if (string.IsNullOrEmpty(strSpiritIllusion))
+                        strSpiritIllusion = strNone;
+                    if (string.IsNullOrEmpty(strSpiritManipulation))
+                        strSpiritManipulation = strNone;
                 }
+
+                objWriter.WriteElementString("spiritcombat", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]/translate")?.InnerText ?? strSpiritCombat);
+                objWriter.WriteElementString("spiritdetection", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]/translate")?.InnerText ?? strSpiritDetection);
+                objWriter.WriteElementString("spirithealth", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]/translate")?.InnerText ?? strSpiritHealth);
+                objWriter.WriteElementString("spiritillusion", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]/translate")?.InnerText ?? strSpiritIllusion);
+                objWriter.WriteElementString("spiritmanipulation", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]/translate")?.InnerText ?? strSpiritManipulation);
 
                 //Spirit form, default to materialization unless field with other data persists
                 string strSpiritForm = "Materialization";
@@ -2715,6 +2755,7 @@ namespace Chummer
             // </martialarts>
             objWriter.WriteEndElement();
 
+            #if LEGACY
             // <martialartmaneuvers>
             objWriter.WriteStartElement("martialartmaneuvers");
             foreach (MartialArtManeuver objManeuver in MartialArtManeuvers)
@@ -2723,6 +2764,7 @@ namespace Chummer
             }
             // </martialartmaneuvers>
             objWriter.WriteEndElement();
+            #endif
 
             // <armors>
             objWriter.WriteStartElement("armors");
@@ -2868,38 +2910,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Print this character and open the View Character window.
-        /// </summary>
-        /// <param name="blnDialog">Whether or not the window should be shown as a dialogue window.</param>
-        public void Print(bool blnDialog = true)
-        {
-            // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
-            // If a Viewer window already exists for this character, use it instead.
-            if (_frmPrintView == null)
-            {
-                List<Character> lstCharacters = new List<Character>
-                {
-                    this
-                };
-                _frmPrintView = new frmViewer
-                {
-                    Characters = lstCharacters
-                };
-                if (blnDialog)
-                    _frmPrintView.ShowDialog();
-                else
-                    _frmPrintView.Show();
-            }
-            else
-            {
-                _frmPrintView.Activate();
-            }
-            _frmPrintView.RefreshCharacters();
-            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
-                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
-        }
-
-        /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
         private void ResetCharacter()
@@ -2966,7 +2976,9 @@ namespace Chummer
             _lstComplexForms.Clear();
             _lstAIPrograms.Clear();
             _lstMartialArts.Clear();
+#if LEGACY
             _lstMartialArtManeuvers.Clear();
+#endif
             _lstLimitModifiers.Clear();
             _lstArmor.Clear();
             _lstCyberware.Clear();
@@ -2989,7 +3001,7 @@ namespace Chummer
         }
 #endregion
 
-        #region Helper Methods
+#region Helper Methods
         /// <summary>
         /// Collate and save the character's used sourcebooks. This list is cleared after loading a character to ensure that only the current items are stored.
         /// </summary>
@@ -3006,7 +3018,6 @@ namespace Chummer
         /// <param name="objImprovement">Improvement to check.</param>
         public string GetObjectName(Improvement objImprovement, string strLanguage)
         {
-            string strReturn = string.Empty;
             switch (objImprovement.ImproveSource)
             {
                 case Improvement.ImprovementSource.Bioware:
@@ -3245,9 +3256,13 @@ namespace Chummer
                     break;
                 case Improvement.ImprovementSource.Quality:
                     if (objImprovement.SourceName == "SEEKER_WIL")
-                        return "Cyber-Singularty Seeker";
+                    {
+                        return XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")?.InnerText ?? "Cyber-Singularity Seeker";
+                    }
                     else if (objImprovement.SourceName.StartsWith("SEEKER"))
-                        return "Redliner";
+                    {
+                        return XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")?.InnerText ?? "Redliner";
+                    }
                     foreach (Quality objQuality in Qualities)
                     {
                         if (objQuality.InternalId == objImprovement.SourceName)
@@ -3277,50 +3292,30 @@ namespace Chummer
                         }
                     }
                     break;
+                case Improvement.ImprovementSource.ConditionMonitor:
+                    return LanguageManager.GetString("Label_ConditionMonitor", strLanguage);
+                case Improvement.ImprovementSource.Heritage:
+                    return LanguageManager.GetString("String_Priority", strLanguage);
+                case Improvement.ImprovementSource.Initiation:
+                    return LanguageManager.GetString("Tab_Initiation", strLanguage);
+                case Improvement.ImprovementSource.Submersion:
+                    return LanguageManager.GetString("Tab_Submersion", strLanguage);
                 default:
-                    if (objImprovement.SourceName == "Armor Encumbrance")
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
                     // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                     if (!string.IsNullOrEmpty(objImprovement.CustomName))
                         return objImprovement.CustomName;
-                    return objImprovement.SourceName;
+                    string strReturn = objImprovement.SourceName;
+                    if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
+                    {
+                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveType.ToString(), strLanguage, false);
+                        if (!string.IsNullOrEmpty(strTemp))
+                            strReturn = strTemp;
+                    }
+                    return strReturn;
             }
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Clean an XPath string.
-        /// </summary>
-        /// <param name="strSearch">String to clean.</param>
-        private static string CleanXPath(string strSearch)
-        {
-            char[] chrQuotes = { '\'', '"' };
-
-            int intQuotePos = strSearch.IndexOfAny(chrQuotes);
-            if (intQuotePos == -1)
-            {
-                return '\'' + strSearch + '\'';
-            }
-
-            StringBuilder objReturn = new StringBuilder("concat(");
-            while (intQuotePos != -1)
-            {
-                string strSubstring = strSearch.Substring(0, intQuotePos);
-                objReturn.Append('\'' + strSubstring + "', ");
-                if (strSearch[intQuotePos] == '\'')
-                {
-                    objReturn.Append("\"'\", ");
-                }
-                else
-                {
-                    //must be a double quote
-                    objReturn.Append("'\"', ");
-                }
-                strSearch = strSearch.Substring(intQuotePos + 1, strSearch.Length - intQuotePos - 1);
-                intQuotePos = strSearch.IndexOfAny(chrQuotes);
-            }
-            objReturn.Append('\'' + strSearch + "')");
-            return objReturn.ToString();
         }
 
         /// <summary>
@@ -3674,9 +3669,9 @@ namespace Chummer
             }
             return setBlackMarketMaps;
         }
-        #endregion
+#endregion
 
-        #region UI Methods
+#region UI Methods
 
         /// <summary>
         /// Verify that the user wants to delete an item.
@@ -3700,7 +3695,7 @@ namespace Chummer
                 return true;
         }
 
-        #region Tab clearing
+#region Tab clearing
         /// <summary>
         /// Clear all Spell tab elements from the character.
         /// </summary>
@@ -3793,15 +3788,20 @@ namespace Chummer
         /// <summary>
         /// Clear all Cyberware tab elements from the character.
         /// </summary>
-        public void ClearCyberwareTab(TreeView treCyberware, TreeView treWeapons, TreeView treVehicles)
+        public void ClearCyberwareTab(TreeView treWeapons, TreeView treVehicles)
         {
-            foreach (Cyberware objCyberware in Cyberware)
+            for (int i = Cyberware.Count - 1; i >= 0; i--)
             {
-                objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                if (i < Cyberware.Count)
+                {
+                    Cyberware objToRemove = Cyberware[i];
+                    if (string.IsNullOrEmpty(objToRemove.ParentID))
+                    {
+                        objToRemove.DeleteCyberware(treWeapons, treVehicles);
+                        Cyberware.RemoveAt(i);
+                    }
+                }
             }
-            Cyberware.Clear();
-            
-            treCyberware.Nodes.Clear();
         }
 
         /// <summary>
@@ -3847,11 +3847,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Basic Properties
+#region Basic Properties
         /// <summary>
         /// Character Options object.
         /// </summary>
@@ -5020,9 +5020,9 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Attributes
+#region Attributes
         /// <summary>
         /// Get an CharacterAttribute by its name.
         /// </summary>
@@ -5666,8 +5666,8 @@ namespace Chummer
             }
         }
 
-        #region Initiative
-        #region Physical
+#region Initiative
+#region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -6206,9 +6206,9 @@ namespace Chummer
                 return intReturn;
             }
         }
-        #endregion
+#endregion
 
-        #region Reputation
+#region Reputation
         /// <summary>
         /// Amount of Street Cred the character has earned through standard means.
         /// </summary>
@@ -6260,7 +6260,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);// + _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);// + Contacts.Count(x => x.EntityType == ContactType.Enemy);
 
                 return intReturn;
             }
@@ -6292,7 +6292,7 @@ namespace Chummer
                         objReturn.Append(" + " + GetObjectName(objImprovement, GlobalOptions.Language) + " (" + objImprovement.Value.ToString() + ')');
                 }
 
-                int intEnemies = _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intEnemies = Contacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
                     objReturn.Append(" + " + LanguageManager.GetString("Label_SummaryEnemies", GlobalOptions.Language) + " (" + intEnemies.ToString() + ')');
 
@@ -6361,7 +6361,7 @@ namespace Chummer
         /// <summary>
         /// Improvements.
         /// </summary>
-        public IList<Improvement> Improvements
+        public ObservableCollection<Improvement> Improvements
         {
             get
             {
@@ -6383,7 +6383,7 @@ namespace Chummer
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
-        public IList<Contact> Contacts
+        public ObservableCollection<Contact> Contacts
         {
             get
             {
@@ -6479,6 +6479,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         /// <summary>
         /// Martial Arts Maneuvers.
         /// </summary>
@@ -6489,6 +6490,7 @@ namespace Chummer
                 return _lstMartialArtManeuvers;
             }
         }
+#endif
 
         /// <summary>
         /// Limit Modifiers.
@@ -6720,7 +6722,7 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public IList<CalendarWeek> Calendar
+        public BindingList<CalendarWeek> Calendar
         {
             get
             {
@@ -6738,9 +6740,9 @@ namespace Chummer
                 return _lstInternalIdsNeedingReapplyImprovements;
             }
         }
-        #endregion
+#endregion
 
-        #region Armor Properties
+#region Armor Properties
         /// <summary>
         /// The Character's highest Armor Rating.
         /// </summary>
@@ -8093,36 +8095,63 @@ namespace Chummer
         /// <param name="strAvail">Item's Availability.</param>
         public string AvailTest(decimal decCost, string strAvail)
         {
-            string strReturn;
-            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).TrimEnd(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language)), out int intAvail);
-
-            if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language))))
+            bool blnShowTest = false;
+            string strTestSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
+            if (strAvail.EndsWith(strTestSuffix))
             {
-                string strInterval;
-                int intTest = 0;
-                // Determine the interval based on the item's price.
-                if (decCost <= 100.0m)
-                    strInterval = "6 " + LanguageManager.GetString("String_Hours", GlobalOptions.Language);
-                else if (decCost <= 1000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Day", GlobalOptions.Language);
-                else if (decCost <= 10000.0m)
-                    strInterval = "2 " + LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                else if (decCost <= 100000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Week", GlobalOptions.Language);
-                else
-                    strInterval = "1 " + LanguageManager.GetString("String_Month", GlobalOptions.Language);
-
-                // Find the character's Negotiation total.
-                Skill objSkill = SkillsSection.GetActiveSkill("Negotiation");
-                if (objSkill != null)
-                    intTest = objSkill.Pool;
-
-                strReturn = intTest.ToString() + " (" + intAvail.ToString() + ", " + strInterval + ')';
+                blnShowTest = true;
+                strAvail = strAvail.TrimEnd(strTestSuffix, true);
             }
             else
-                strReturn = LanguageManager.GetString("String_None", GlobalOptions.Language);
+            {
+                strTestSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                if (strAvail.EndsWith(strTestSuffix))
+                {
+                    blnShowTest = true;
+                    strAvail = strAvail.TrimEnd(strTestSuffix, true);
+                }
+            }
+            if (int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
+            {
+                return GetAvailTestString(decCost, intAvail);
+            }
 
-            return strReturn;
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
+        }
+
+        /// <summary>
+        /// Extended Availability Test information for an item based on the character's Negotiate Skill.
+        /// </summary>
+        /// <param name="intCost">Item's cost.</param>
+        /// <param name="strAvail">Item's Availability.</param>
+        public string AvailTest(decimal decCost, AvailabilityValue objAvailability)
+        {
+            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            {
+                return GetAvailTestString(decCost, objAvailability.Value);
+            }
+
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
+        }
+
+        private string GetAvailTestString(decimal decCost, int intAvailValue)
+        {
+            string strInterval;
+            // Find the character's Negotiation total.
+            int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
+            // Determine the interval based on the item's price.
+            if (decCost <= 100.0m)
+                strInterval = "6 " + LanguageManager.GetString("String_Hours", GlobalOptions.Language);
+            else if (decCost <= 1000.0m)
+                strInterval = "1 " + LanguageManager.GetString("String_Day", GlobalOptions.Language);
+            else if (decCost <= 10000.0m)
+                strInterval = "2 " + LanguageManager.GetString("String_Days", GlobalOptions.Language);
+            else if (decCost <= 100000.0m)
+                strInterval = "1 " + LanguageManager.GetString("String_Week", GlobalOptions.Language);
+            else
+                strInterval = "1 " + LanguageManager.GetString("String_Month", GlobalOptions.Language);
+
+            return intPool.ToString(GlobalOptions.CultureInfo) + " (" + intAvailValue.ToString(GlobalOptions.CultureInfo) + ", " + strInterval + ')';
         }
 
         /// <summary>
@@ -8160,21 +8189,6 @@ namespace Chummer
 #endregion
 
 #region Application Properties
-        /// <summary>
-        /// The frmViewer window being used by the character.
-        /// </summary>
-        public frmViewer PrintWindow
-        {
-            get
-            {
-                return _frmPrintView;
-            }
-            set
-            {
-                _frmPrintView = value;
-            }
-        }
-
         private readonly List<Character> _lstLinkedCharacters = new List<Character>();
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
@@ -9058,7 +9072,7 @@ namespace Chummer
         {
             get
             {
-                return Options.MysaddPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
+                return Options.MysAdeptAllowPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
             }
         }
 
@@ -9180,7 +9194,7 @@ namespace Chummer
             }
         }
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -9189,7 +9203,6 @@ namespace Chummer
             {
                 if (disposing)
                 {
-                    _frmPrintView?.Dispose();
                     _objOptions?.Dispose();
                 }
                 disposedValue = true;
@@ -9201,7 +9214,7 @@ namespace Chummer
         {
             Dispose(true);
         }
-        #endregion
+#endregion
 
     }
 }

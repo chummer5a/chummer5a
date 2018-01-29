@@ -145,7 +145,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
-			objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
@@ -263,7 +263,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
 			objWriter.WriteElementString("limit", Limit);
 			objWriter.WriteElementString("slots", Slots.ToString());
-			objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
+			objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
 			objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
@@ -598,87 +598,71 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(string strLanguage)
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            Tuple<int, string> objAvailPair = TotalAvailPair;
-            string strAvail = objAvailPair.Item2;
-            // Translate the Avail string.
-            if (strAvail == "F")
-                strAvail = LanguageManager.GetString("String_AvailForbidden", strLanguage);
-            else if (strAvail == "R")
-                strAvail = LanguageManager.GetString("String_AvailRestricted", strLanguage);
-
-            return objAvailPair.Item1.ToString() + strAvail;
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
         }
 
         /// <summary>
-        /// Total Availability as a pair: first item is availability magnitude, second is untranslated Restricted/Forbidden state (empty of neither).
+        /// Total Availability as a triple.
         /// </summary>
-        public Tuple<int, string> TotalAvailPair
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
         {
-            get
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
             {
-                if (_strAvail.Length == 0)
-                    return new Tuple<int, string>(0, string.Empty);
-                string strAvail = string.Empty;
-                string strAvailExpr = _strAvail;
-                int intAvail = 0;
-
-                if (strAvailExpr.Substring(_strAvail.Length - 1, 1) == "F" || strAvailExpr.Substring(_strAvail.Length - 1, 1) == "R")
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
                 {
-                    strAvail = strAvailExpr.Substring(_strAvail.Length - 1, 1);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, _strAvail.Length - 1);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
-                /*if (strAvailExpr.Contains("{Children Avail}"))
-                {
-                    int intMaxChildAvail = 0;
-                    foreach (Weapon w in Weapons)
-                    {
-                        Tuple<int, string> objLoopAvail = w.TotalAvailPair;
-                        if (objLoopAvail.Item1 > intMaxChildAvail)
-                            intMaxChildAvail = objLoopAvail.Item1;
-                        if (objLoopAvail.Item2.EndsWith('F'))
-                            strAvail = "F";
-                        else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
-                            strAvail = "R";
-                    }
-                    strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
-                }*/
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                strAvail = strAvail.TrimStart('+');
+
                 try
                 {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr));
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
                 }
                 catch (XPathException)
                 {
                 }
+            }
 
-                // Run through the Accessories and add in their availability.
-                foreach (WeaponMountOption wm in WeaponMountOptions)
+            // Run through the Accessories and add in their availability.
+            foreach (WeaponMountOption objWeaponMountOption in WeaponMountOptions)
+            {
+                AvailabilityValue objLoopAvailTuple = objWeaponMountOption.TotalAvailTuple();
+                //if (objLoopAvailTuple.Item3)
+                    intAvail += objLoopAvailTuple.Value;
+                if (objLoopAvailTuple.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                    chrLastAvailChar = 'R';
+            }
+
+            if (blnCheckChildren)
+            {
+                // Run through the Vehicle Mods and add in their availability.
+                foreach (VehicleMod objVehicleMod in Mods)
                 {
-                    string strAccAvail = wm.Avail;
-                    int intAccAvail = 0;
-
-                    if (strAccAvail.StartsWith('+', '-'))
+                    if (!objVehicleMod.IncludedInVehicle)
                     {
-                        strAccAvail += wm.TotalAvail(GlobalOptions.DefaultLanguage);
-                        if (strAccAvail.EndsWith('F'))
-                        {
-                            strAvail = "F";
-                            strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
-                        }
-                        else if (strAccAvail.EndsWith('R'))
-                        {
-                            if (strAvail != "F")
-                                strAvail = "R";
-                            strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
-                        }
-                        intAccAvail = Convert.ToInt32(strAccAvail);
-                        intAvail += intAccAvail;
+                        AvailabilityValue objLoopAvailTuple = objVehicleMod.TotalAvailTuple();
+                        //if (objLoopAvailTuple.Item3)
+                            intAvail += objLoopAvailTuple.Value;
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
                     }
                 }
-                return new Tuple<int, string>(intAvail, strAvail);
             }
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         /// <summary>
@@ -704,7 +688,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                decimal decReturn = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(Cost, GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -745,16 +729,18 @@ namespace Chummer.Backend.Equipment
             if (WeaponMountOptions.Count > 0)
             {
                 strReturn.Append(" (");
+                bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
                     if (objOption.Name != "None")
                     {
+                        blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
                         strReturn.Append(", ");
                     }
                 }
                 strReturn.Length -= 2;
-                if (strReturn.Length > 0)
+                if (blnCloseParantheses)
                     strReturn.Append(')');
             }
 
@@ -991,39 +977,35 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(string strLanguage)
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
+        }
 
-            string strCalculated = string.Empty;
-            string strReturn = string.Empty;
-
-            // Just a straight cost, so return the value.
-            if (_strAvail.Contains("F") || _strAvail.Contains("R"))
-            {
-                strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
-            }
-            else
-                strCalculated = Convert.ToInt32(_strAvail).ToString();
-
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
             int intAvail = 0;
-            string strAvailText = string.Empty;
-            if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+            if (strAvail.Length > 0)
             {
-                strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                strAvail = strAvail.TrimStart('+');
+
+                intAvail += Convert.ToInt32(strAvail);
             }
-            else
-                intAvail = Convert.ToInt32(strCalculated);
 
-            // Translate the Avail string.
-            if (strAvailText == "R")
-                strAvailText = LanguageManager.GetString("String_AvailRestricted", strLanguage);
-            else if (strAvailText == "F")
-                strAvailText = LanguageManager.GetString("String_AvailForbidden", strLanguage);
-            strReturn = intAvail.ToString() + strAvailText;
-
-            return strReturn;
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         private XmlNode _objCachedMyXmlNode = null;

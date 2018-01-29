@@ -57,12 +57,6 @@ namespace Chummer
 
         private void frmSelectQuality_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             // Populate the Quality Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
@@ -152,7 +146,7 @@ namespace Chummer
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality["doublecareer"]?.InnerText;
-                            if (string.IsNullOrEmpty(strDoubleCostCareer) || bool.Parse(strDoubleCostCareer))
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer == bool.TrueString)
                             {
                                 intBP *= 2;
                             }

@@ -62,11 +62,6 @@ namespace Chummer
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -292,18 +287,18 @@ namespace Chummer
         /// <summary>
         /// Rating of the Accessory.
         /// </summary>
-        public string SelectedRating
+        public decimal SelectedRating
         {
             get
             {
                 if (nudRating.Enabled)
                 {
-                    return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+                    return nudRating.Value;
                 }
                 else
                 {
                     // Display Rating for items without one as 0
-                    return 0.ToString(GlobalOptions.CultureInfo);
+                    return 0;
                 }
             }
         }
@@ -525,28 +520,28 @@ namespace Chummer
                 cboExtraMount.SelectedIndex += 1;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = string.Empty;
-            string strAvailExpr = xmlAccessory["avail"]?.InnerText;
-            if (!string.IsNullOrWhiteSpace(strAvailExpr))
+            string strSuffix = string.Empty;
+            string strAvail = xmlAccessory["avail"]?.InnerText;
+            if (!string.IsNullOrWhiteSpace(strAvail))
             {
-                lblAvail.Text = strAvailExpr;
-                if (strAvailExpr.EndsWith('F', 'R'))
+                char chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F')
                 {
-                    strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                    if (strAvail == "R")
-                        strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    else if (strAvail == "F")
-                        strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+                else if (chrLastAvailChar == 'R')
+                {
+                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
                 try
                 {
-                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))).ToString() + strAvail;
+                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))).ToString() + strSuffix;
                 }
                 catch (XPathException)
                 {
-                    lblAvail.Text = strAvailExpr + strAvail;
+                    lblAvail.Text = strAvail + strSuffix;
                 }
             }
             else

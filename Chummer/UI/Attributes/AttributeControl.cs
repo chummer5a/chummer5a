@@ -94,16 +94,16 @@ namespace Chummer.UI.Attributes
 
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = _objAttribute.UpgradeKarmaCost();
+            int intUpgradeKarmaCost = _objAttribute.UpgradeKarmaCost;
 
-            if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-            if (upgradeKarmaCost > _objCharacter.Karma)
+            if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
+            if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), _objAttribute.DisplayNameFormatted, _objAttribute.Value + 1, upgradeKarmaCost);
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), _objAttribute.DisplayNameFormatted, _objAttribute.Value + 1, intUpgradeKarmaCost);
             if (!_objAttribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 

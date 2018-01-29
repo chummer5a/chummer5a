@@ -61,8 +61,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("suid", SkillId.ToString("D"));
             objWriter.WriteElementString("isknowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("skillcategory", SkillCategory);
-            objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("base", _intBase.ToString(CultureInfo.InvariantCulture)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
             objWriter.WriteElementString("notes", _strNotes);
             if (!CharacterObject.Created)
             {
@@ -212,8 +212,9 @@ namespace Chummer.Backend.Skills
                     skill = knoSkill;
                 }
             }
-            XmlElement element = xmlSkillNode["guid"];
-            if (element != null) skill.Id = Guid.Parse(element.InnerText);
+            XmlElement xmlGuidElement = xmlSkillNode["guid"];
+            if (xmlGuidElement != null && Guid.TryParse(xmlGuidElement.InnerText, out Guid guiTemp))
+                skill.Id = guiTemp;
 
             xmlSkillNode.TryGetInt32FieldQuickly("karma", ref skill._intKarma);
             xmlSkillNode.TryGetInt32FieldQuickly("base", ref skill._intBase);
@@ -364,27 +365,27 @@ namespace Chummer.Backend.Skills
 
 
         //load from data
-        protected Skill(Character character, XmlNode n) : this(character)
+        protected Skill(Character character, XmlNode xmlNode) : this(character)
         //Ugly hack, needs by then
         {
-            if (n == null)
+            if (xmlNode == null)
                 return;
-            _strName = n["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            AttributeObject = CharacterObject.GetAttribute(n["attribute"]?.InnerText);
-            _strCategory = n["category"]?.InnerText ?? string.Empty;
-            Default = n["default"]?.InnerText == bool.TrueString;
-            Source = n["source"]?.InnerText;
-            Page = n["page"]?.InnerText;
-            if (n["id"] != null)
-                SkillId = Guid.Parse(n["id"].InnerText);
-            else if (n["suid"] != null)
-                SkillId = Guid.Parse(n["suid"].InnerText);
-            if (n["guid"] != null)
-                Id = Guid.Parse(n["guid"].InnerText);
+            _strName = xmlNode["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
+            AttributeObject = CharacterObject.GetAttribute(xmlNode["attribute"]?.InnerText);
+            _strCategory = xmlNode["category"]?.InnerText ?? string.Empty;
+            Default = xmlNode["default"]?.InnerText == bool.TrueString;
+            Source = xmlNode["source"]?.InnerText;
+            Page = xmlNode["page"]?.InnerText;
+            if (xmlNode["id"] != null && Guid.TryParse(xmlNode["id"].InnerText, out Guid guiTemp))
+                SkillId = guiTemp;
+            else if (xmlNode["suid"] != null && Guid.TryParse(xmlNode["suid"].InnerText, out guiTemp))
+                SkillId = guiTemp;
+            if (xmlNode["guid"] != null && Guid.TryParse(xmlNode["guid"].InnerText, out guiTemp))
+                Id = guiTemp;
 
             AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
             
-            XmlNodeList lstSuggestedSpecializationsXml = n["specs"]?.ChildNodes;
+            XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
             if (lstSuggestedSpecializationsXml != null)
             {
                 SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
@@ -395,7 +396,7 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            string strGroup = n["skillgroup"]?.InnerText;
+            string strGroup = xmlNode["skillgroup"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strGroup))
             {
@@ -1010,7 +1011,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

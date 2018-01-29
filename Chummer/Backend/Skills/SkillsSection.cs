@@ -389,8 +389,8 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("newskills");
 
-            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteStartElement("skills");
             foreach (Skill objSkill in Skills)
@@ -627,19 +627,19 @@ namespace Chummer.Backend.Skills
             XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             // Populate the Skills list.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ')' + SkillFilter(filter,strName) + "]");
+            XmlNodeList xmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ')' + SkillFilter(filter,strName) + "]");
 
             // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
-            Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(objXmlSkillList.Count);
+            Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(xmlSkillList.Count);
             List<ListItem> lstSkillOrder = new List<ListItem>();
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
+            foreach (XmlNode xmlSkill in xmlSkillList)
             {
-                string strSkillName = objXmlSkill["name"]?.InnerText ?? string.Empty;
-                lstSkillOrder.Add(new ListItem(strSkillName, objXmlSkill["translate"]?.InnerText ?? strSkillName));
+                string strSkillName = xmlSkill["name"]?.InnerText ?? string.Empty;
+                lstSkillOrder.Add(new ListItem(strSkillName, xmlSkill["translate"]?.InnerText ?? strSkillName));
                 //TODO: read from backup
-                if (s_LstSkillBackups.Count > 0)
+                if (s_LstSkillBackups.Count > 0 && Guid.TryParse(xmlSkill["id"].InnerText, out Guid guiSkillId))
                 {
-                    Skill objSkill = s_LstSkillBackups.FirstOrDefault(s => s.SkillId == Guid.Parse(objXmlSkill["id"].InnerText));
+                    Skill objSkill = s_LstSkillBackups.FirstOrDefault(s => s.SkillId == guiSkillId);
                     if (objSkill != null)
                     {
                         dicSkills.Add(objSkill.Name,objSkill);
@@ -648,7 +648,7 @@ namespace Chummer.Backend.Skills
                 }
                 else
                 {
-                    Skill objSkill = Skill.FromData(objXmlSkill, c);
+                    Skill objSkill = Skill.FromData(xmlSkill, c);
                     dicSkills.Add(strSkillName, objSkill);
                 }
             }

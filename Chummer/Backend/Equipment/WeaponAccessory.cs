@@ -221,8 +221,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
             objWriter.WriteElementString("conceal", _strConceal);
             if (!string.IsNullOrEmpty(_strDicePool))
@@ -235,7 +235,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -272,13 +272,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether another node is being copied.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy)
+            if (blnCopy || !Guid.TryParse(objNode["guid"].InnerText, out _guiID))
             {
                 _guiID = Guid.NewGuid();
-            }
-            else
-            {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -343,8 +339,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", Mount);
             objWriter.WriteElementString("extramount", ExtraMount);
             objWriter.WriteElementString("rc", RC);
-            objWriter.WriteElementString("conceal", Concealability.ToString());
-            objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
+            objWriter.WriteElementString("conceal", TotalConcealability.ToString());
+            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", IncludedInWeapon.ToString());
@@ -624,19 +620,29 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Concealability.
         /// </summary>
-        public int Concealability
+        public string Concealability
+        {
+            get
+            {
+                return _strConceal;
+            }
+            set
+            {
+                _strConceal = value;
+            }
+        }
+
+        public int TotalConcealability
         {
             get
             {
                 int intReturn = 0;
 
-                if (_strConceal.Contains("Rating"))
+                string strConceal = Concealability;
+                if (strConceal.Contains("Rating"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
-                    string strConceal = string.Empty;
-                    string strCostExpression = _strConceal;
-
-                    strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
+                    strConceal = strConceal.Replace("Rating", Rating.ToString());
                     try
                     {
                         intReturn = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strConceal)));
@@ -645,20 +651,16 @@ namespace Chummer.Backend.Equipment
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }
                 }
-                else if (!string.IsNullOrEmpty(_strConceal))
+                else if (!string.IsNullOrEmpty(strConceal))
                 {
-                    int.TryParse(_strConceal, out intReturn);
+                    int.TryParse(strConceal, out intReturn);
                 }
                 return intReturn;
-            }
-            set
-            {
-                _strConceal = value.ToString();
             }
         }
 
         /// <summary>
-        /// Concealability.
+        /// Rating.
         /// </summary>
         public int Rating
         {
@@ -780,56 +782,71 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(string strLanguage)
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
+        }
 
-            string strCalculated = string.Empty;
-            string strReturn = string.Empty;
-
-            if (_strAvail.Contains("Rating"))
-            {
-                // If the availability is determined by the Rating, evaluate the expression.
-                string strAvail = string.Empty;
-                string strAvailExpr = _strAvail;
-
-                if (strAvailExpr.EndsWith('F', 'R'))
-                {
-                    strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))).ToString() + strAvail;
-            }
-            else
-            {
-                // Just a straight cost, so return the value.
-                if (_strAvail.EndsWith('F', 'R'))
-                {
-                    strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
-                }
-                else
-                    strCalculated = Convert.ToInt32(_strAvail).ToString();
-            }
-
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
             int intAvail = 0;
-            string strAvailText = string.Empty;
-            if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+            if (strAvail.Length > 0)
             {
-                strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
+                if (strAvail.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                strAvail = strAvail.TrimStart('+');
+
+                strAvail = strAvail.Replace("Rating", Rating.ToString());
+
+                try
+                {
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                }
+                catch (XPathException)
+                {
+                }
             }
-            else
-                intAvail = Convert.ToInt32(strCalculated);
 
-            // Translate the Avail string.
-            if (strAvailText == "R")
-                strAvailText = LanguageManager.GetString("String_AvailRestricted", strLanguage);
-            else if (strAvailText == "F")
-                strAvailText = LanguageManager.GetString("String_AvailForbidden", strLanguage);
-            strReturn = intAvail.ToString() + strAvailText;
+            if (blnCheckChildren)
+            {
+                // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
+                foreach (Gear objChild in Gear)
+                {
+                    if (objChild.ParentID != InternalId)
+                    {
+                        AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
+                        if (objLoopAvailTuple.AddToParent)
+                            intAvail += objLoopAvailTuple.Value;
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                }
+            }
 
-            return strReturn;
+            // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         /// <summary>
@@ -898,7 +915,7 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                     decReturn += objGear.TotalCost;
 
                 return decReturn;
@@ -912,13 +929,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReturn = 0;
-                string strCost = string.Empty;
-                string strCostExpression = _strCost;
-
-                strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Rating", _intRating.ToString());
-                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
+                string strCost = Cost
+                    .CheapReplace("Weapon Cost", () => _objParent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
+                    .Replace("Rating", Rating.ToString());
+                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -934,8 +948,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrEmpty(_strDicePool))
-                    return Convert.ToInt32(_strDicePool);
+                if (!string.IsNullOrEmpty(DicePoolString))
+                    return Convert.ToInt32(DicePoolString);
 
                 return 0;
             }

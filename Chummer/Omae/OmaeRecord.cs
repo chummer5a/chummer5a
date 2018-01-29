@@ -45,8 +45,10 @@ namespace Chummer
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
             lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Language);
-            DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo);
-            lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + ' ' + datDate.ToShortDateString();
+            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + ' ' + datDate.ToShortDateString();
+            else
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_None", GlobalOptions.Language);
             lblCount.Text = LanguageManager.GetString("Omae_DownloadCount", GlobalOptions.Language).Replace("{0}", objNode["count"].InnerText);
 
             if (objMode == OmaeMode.Character)

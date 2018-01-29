@@ -85,7 +85,7 @@ namespace Chummer
                     }
                 }
                 achrNewChars[intCurrent++] = chrLoop;
-                SkipChar:;
+            SkipChar:;
             }
             // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
             return new string(achrNewChars, 0, intCurrent);
@@ -181,6 +181,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStart(this string strInput, params string[] astrStringToTrim)
         {
+            // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
+            int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
             {
                 int intLength = astrStringToTrim.Length;
@@ -188,14 +190,13 @@ namespace Chummer
                 {
                     string strStringToTrim = astrStringToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strInput.StartsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim))
                     {
-                        int intTrimLength = strStringToTrim.Length;
-                        return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                        intHowMuchToTrim = strStringToTrim.Length;
                     }
                 }
             }
-            return strInput;
+            return strInput.Substring(intHowMuchToTrim);
         }
 
         /// <summary>
@@ -207,6 +208,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEnd(this string strInput, params string[] astrStringToTrim)
         {
+            // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
+            int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
             {
                 int intLength = astrStringToTrim.Length;
@@ -214,13 +217,13 @@ namespace Chummer
                 {
                     string strStringToTrim = astrStringToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strInput.EndsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim))
                     {
-                        return strInput.Substring(0, strInput.Length - strStringToTrim.Length);
+                        intHowMuchToTrim = strStringToTrim.Length;
                     }
                 }
             }
-            return strInput;
+            return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
         }
 
         /// <summary>
@@ -394,28 +397,28 @@ namespace Chummer
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
         /// </summary>
-        /// <param name="text">Text to be word wrapped</param>
-        /// <param name="width">Width, in characters, to which the text
+        /// <param name="strText">Text to be word wrapped</param>
+        /// <param name="intWidth">Width, in characters, to which the text
         /// should be word wrapped</param>
         /// <returns>The modified text</returns>
-        public static string WordWrap(this string text, int width)
+        public static string WordWrap(this string strText, int intWidth)
         {
             // Lucidity checks
-            if (width < 1)
-                return text;
-            if (string.IsNullOrEmpty(text))
-                return text;
+            if (intWidth < 1)
+                return strText;
+            if (string.IsNullOrEmpty(strText))
+                return strText;
 
             int next = 0;
-            StringBuilder sb = new StringBuilder(text.Length);
+            StringBuilder sb = new StringBuilder(strText.Length);
 
             // Parse each line of text
-            for (int pos = 0; pos < text.Length; pos = next)
+            for (int pos = 0; pos < strText.Length; pos = next)
             {
                 // Find end of line
-                int eol = text.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
+                int eol = strText.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
                 if (eol == -1)
-                    next = eol = text.Length;
+                    next = eol = strText.Length;
                 else
                     next = eol + Environment.NewLine.Length;
 
@@ -425,14 +428,14 @@ namespace Chummer
                     do
                     {
                         int len = eol - pos;
-                        if (len > width)
-                            len = text.BreakLine(pos, width);
-                        sb.Append(text, pos, len);
+                        if (len > intWidth)
+                            len = strText.BreakLine(pos, intWidth);
+                        sb.Append(strText, pos, len);
                         sb.Append(Environment.NewLine);
 
                         // Trim whitespace following break
                         pos += len;
-                        while (pos < eol && char.IsWhiteSpace(text[pos]))
+                        while (pos < eol && char.IsWhiteSpace(strText[pos]))
                             pos += 1;
                     }
                     while (eol > pos);
@@ -446,18 +449,18 @@ namespace Chummer
         /// Locates position to break the given line so as to avoid
         /// breaking words.
         /// </summary>
-        /// <param name="text">String that contains line of text</param>
-        /// <param name="pos">Index where line of text starts</param>
-        /// <param name="max">Maximum line length</param>
+        /// <param name="strText">String that contains line of text</param>
+        /// <param name="intPosition">Index where line of text starts</param>
+        /// <param name="intMax">Maximum line length</param>
         /// <returns>The modified line length</returns>
-        private static int BreakLine(this string text, int pos, int max)
+        private static int BreakLine(this string strText, int intPosition, int intMax)
         {
-            if (max + pos >= text?.Length)
-                return max;
+            if (intMax + intPosition >= strText?.Length)
+                return intMax;
             // Find last whitespace in line
-            for (int i = max; i >= 0; --i)
+            for (int i = intMax; i >= 0; --i)
             {
-                char chrLoop = text[pos + i];
+                char chrLoop = strText[intPosition + i];
                 if (char.IsWhiteSpace(chrLoop))
                 {
                     // Return length of text before whitespace
@@ -466,7 +469,32 @@ namespace Chummer
             }
 
             // If no whitespace found, break at maximum length
-            return max;
+            return intMax;
+        }
+
+        /// <summary>
+        /// Clean an XPath string.
+        /// </summary>
+        /// <param name="strSearch">String to clean.</param>
+        private static string CleanXPath(this string strSearch)
+        {
+            int intQuotePos = strSearch.IndexOf('"');
+            if (intQuotePos == -1)
+            {
+                return '\"' + strSearch + '\"';
+            }
+
+            StringBuilder objReturn = new StringBuilder("concat(\"");
+            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
+            {
+                string strSubstring = strSearch.Substring(0, intQuotePos);
+                objReturn.Append(strSubstring);
+                objReturn.Append("\", '\"', \"");
+                strSearch = strSearch.Substring(intQuotePos + 1);
+            }
+            objReturn.Append(strSearch);
+            objReturn.Append("\")");
+            return objReturn.ToString();
         }
     }
 }

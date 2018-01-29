@@ -73,11 +73,7 @@ namespace Chummer
             };
             dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewNuyenCellStyle;
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-
-            foreach (Label objLabel in Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith('[')))
-            {
-                objLabel.Text = string.Empty;
-            }
+            
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -191,9 +187,9 @@ namespace Chummer
                     lblWeaponCost.Text = _objSelectedWeapon.DisplayCost(out decItemCost, nudMarkup.Value / 100.0m);
                 }
 
-                string strTotalAvail = _objSelectedWeapon.TotalAvail(GlobalOptions.Language);
-                lblWeaponAvail.Text = strTotalAvail;
-                lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
+                AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
+                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
 
                 string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + strPage;
@@ -252,7 +248,7 @@ namespace Chummer
                 tabWeapons.Columns.Add("Reach");
                 tabWeapons.Columns.Add("Accessories");
                 tabWeapons.Columns.Add("Avail");
-                tabWeapons.Columns["Avail"].DataType = typeof(AvailabilityString);
+                tabWeapons.Columns["Avail"].DataType = typeof(AvailabilityValue);
                 tabWeapons.Columns.Add("Source");
                 tabWeapons.Columns["Source"].DataType = typeof(SourceString);
                 tabWeapons.Columns.Add("Cost");
@@ -294,11 +290,11 @@ namespace Chummer
                     }
                     if (strAccessories.Length > 0)
                         strAccessories.Length -= 1;
-                    AvailabilityString strAvail = new AvailabilityString(objWeapon.TotalAvail(GlobalOptions.Language));
+                    AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
                     SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language));
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal decDummy));
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), strAvail, strSource, strCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), objAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");

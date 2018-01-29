@@ -529,7 +529,7 @@ namespace Chummer.Backend
                                        LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
                                            .Replace("{0}", strNodeInnerText)
                                            .Replace("{1}", objEssNodeGradeAttributeText)
-                                           .Replace("{2}", decGrade.ToString(CultureInfo.InvariantCulture));
+                                           .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
                             // Essence must be equal to or greater than the value.
@@ -538,7 +538,7 @@ namespace Chummer.Backend
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
                                        .Replace("{1}", objEssNodeGradeAttributeText)
-                                       .Replace("{2}", decGrade.ToString(CultureInfo.InvariantCulture));
+                                       .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
                         // Check Essence requirement.
@@ -549,7 +549,7 @@ namespace Chummer.Backend
                                 strName = "\n\t" +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence.ToString(CultureInfo.InvariantCulture));
+                                       .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
                             return objCharacter.Essence < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
@@ -557,7 +557,7 @@ namespace Chummer.Backend
                             strName = "\n\t" +
                                LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence.ToString(CultureInfo.InvariantCulture));
+                                   .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
                         return objCharacter.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
@@ -1026,8 +1026,7 @@ namespace Chummer.Backend
             }
             return intAvail <= objCharacter.MaximumAvailability;
         }
-
-        private static readonly char[] lstBracketChars = { '[', ']' };
+        
         public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
         {
             // Cost.
@@ -1067,7 +1066,7 @@ namespace Chummer.Backend
                 if (objCostNode.InnerText.StartsWith("FixedValues("))
                 {
                     string[] strValues = objCostNode.InnerText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    decCost = Convert.ToDecimal(strValues[0].Trim(lstBracketChars), GlobalOptions.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal(strValues[0].Trim('[', ']'), GlobalOptions.InvariantCultureInfo);
                 }
                 else if (objCostNode.InnerText.StartsWith("Variable"))
                 {

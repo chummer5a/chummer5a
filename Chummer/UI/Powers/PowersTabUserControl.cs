@@ -34,7 +34,7 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler ChildPropertyChanged; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
 
         private BindingListDisplay<Power> _powers;
         public PowersTabUserControl()
@@ -115,7 +115,8 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("_sort databind");
 
-            _powers.ChildPropertyChanged += ChildPropertyChanged;
+            _powers.ChildPropertyChanged += RefreshPowerInfo;
+            _powers.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;
             //this.ResumeLayout(false);
@@ -225,7 +226,7 @@ namespace Chummer.UI.Powers
         {
             if (_searchMode)
             {
-                _powers.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _powers.Filter(skill => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
             }
         }
 
@@ -259,6 +260,11 @@ namespace Chummer.UI.Powers
                 }
             }
             while (blnAddAgain);
+        }
+
+        public void RefreshPowerInfo(object sender, EventArgs e)
+        {
+            CalculatePowerPoints();
         }
 
         /// <summary>

@@ -753,6 +753,14 @@
       <text>semanas</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>mês</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>meses</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>hora</text>
     </string>
@@ -4167,8 +4175,8 @@
     <!-- End Region-->
     <!-- Region Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>Meses (100 para Permanente)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} para Permanente)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -4184,11 +4192,11 @@
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>Aumentar número de meses pré-pagos para o Estilo de Vida.</text>
+      <text>Aumentar número de {0} pré-pagos para o Estilo de Vida.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>Diminuir número de meses pré-pagos para o Estilo de Vida.</text>
+      <text>Diminuir número de {0} pré-pagos para o Estilo de Vida.</text>
     </string>
     <string>
       <key>String_Roommates</key>

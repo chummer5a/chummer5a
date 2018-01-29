@@ -214,5 +214,10 @@ namespace Chummer.UI.Skills
                 chkKarma.Checked = true;
             }
         }
+
+        public void MoveControls(int i)
+        {
+            lblName.Width = i;
+        }
     }
 }

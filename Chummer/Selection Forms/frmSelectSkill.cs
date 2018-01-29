@@ -50,10 +50,10 @@ namespace Chummer
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 

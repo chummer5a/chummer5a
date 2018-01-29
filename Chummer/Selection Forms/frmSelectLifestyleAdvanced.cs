@@ -36,7 +36,7 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument = null;
 
-        private bool _blnSkipRefresh = false;
+        private bool _blnSkipRefresh = true;
         private int _intTravelerRdmLP = 0;
 
         #region Control Events
@@ -53,19 +53,6 @@ namespace Chummer
 
         private void frmSelectAdvancedLifestyle_Load(object sender, EventArgs e)
         {
-            _blnSkipRefresh = true;
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes)
-            {
-                if (objNode.Tag != null)
-                    objNode.Text = LanguageManager.GetString(objNode.Tag.ToString(), GlobalOptions.Language);
-            }
-
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();

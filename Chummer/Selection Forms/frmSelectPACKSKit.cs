@@ -50,12 +50,6 @@ namespace Chummer
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             // Populate the PACKS Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[not(hide)]");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
@@ -494,9 +488,33 @@ namespace Chummer
                         {
                             if (objXmlLifestyle["hide"] != null)
                                 continue;
+
+                            string strIncrement = objXmlLifestyle["increment"]?.InnerText;
+                            if (objXmlLifestyle["type"]?.InnerText.ToLower() == "safehouse")
+                                strIncrement = "week";
+                            string strIncrementString;
+                            int intPermanentAmount;
+                            switch (strIncrement)
+                            {
+                                case "day":
+                                case "Day":
+                                    strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
+                                    intPermanentAmount = 3044;
+                                    break;
+                                case "week":
+                                case "Week":
+                                    strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
+                                    intPermanentAmount = 435;
+                                    break;
+                                default:
+                                    strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
+                                    intPermanentAmount = 100;
+                                    break;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
-                                Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.GetString("Label_LifestyleMonths", GlobalOptions.Language))
+                                Text = string.Format("{0} {1} {2}", (objXmlLifestyle["translate"] ?? objXmlLifestyle["name"]).InnerText, objXmlLifestyle["months"].InnerText, strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo)))
                             };
 
                             // Check for Qualities.

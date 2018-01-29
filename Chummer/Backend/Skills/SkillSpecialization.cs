@@ -61,9 +61,12 @@ namespace Chummer.Backend.Skills
         /// <param name = "objNode" > XmlNode to load.</param>
         public static SkillSpecialization Load(XmlNode objNode, Skill objParent)
         {
+            if (!Guid.TryParse(objNode["guid"].InnerText, out Guid guiTemp))
+                guiTemp = Guid.NewGuid();
+
             return new SkillSpecialization(objNode["name"]?.InnerText, objNode["free"]?.InnerText == bool.TrueString, objParent)
             {
-                _guiID = Guid.Parse(objNode["guid"].InnerText)
+                _guiID = guiTemp
             };
         }
 

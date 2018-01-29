@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
+using System.Drawing;
 
 namespace Chummer
 {
@@ -85,7 +86,6 @@ namespace Chummer
             BiowareTotalEssMultiplierNonRetroactive,
             GenetechCostMultiplier,
             BasicBiowareEssCost,
-            TransgenicsBiowareCost,
             SoftWeave,
             DisableBioware,
             DisableCyberware,
@@ -712,6 +712,32 @@ namespace Chummer
         }
 
         #endregion
+
+        #region UI Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
+        {
+            TreeNode nodImprovement = new TreeNode
+            {
+                Tag = SourceName,
+                Text = CustomName,
+                ToolTipText = Notes.WordWrap(100),
+                ContextMenuStrip = cmsImprovement
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                if (Enabled)
+                    nodImprovement.ForeColor = Color.SaddleBrown;
+                else
+                    nodImprovement.ForeColor = Color.SandyBrown;
+            }
+            else if (Enabled)
+                nodImprovement.ForeColor = SystemColors.WindowText;
+            else
+                nodImprovement.ForeColor = SystemColors.GrayText;
+
+            return nodImprovement;
+        }
+        #endregion
     }
 
     public static class ImprovementManager
@@ -1318,8 +1344,13 @@ namespace Chummer
                             objCharacter.ExCon = false;
                         break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
-                        if (!blnHasDuplicate)
-                            objCharacter.PrototypeTranshuman = 0;
+                        string strImprovedName = objImprovement.ImprovedName;
+                        // Legacy compatibility
+                        if (string.IsNullOrEmpty(strImprovedName))
+                            if (!blnHasDuplicate)
+                                objCharacter.PrototypeTranshuman = 0;
+                        else
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
                         break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
@@ -1382,7 +1413,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
-                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMetamagic != null)
                         {
                             RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
@@ -1390,7 +1421,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.CritterPower:
-                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);
+                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || ( x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
                         if (objCritterPower != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);

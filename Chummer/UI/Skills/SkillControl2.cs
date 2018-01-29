@@ -317,6 +317,8 @@ namespace Chummer.UI.Skills
 
         public bool CustomAttributeSet => _attributeActive != _skill.AttributeObject;
 
+        public int NameWidth => lblName.PreferredWidth;
+
         public void ResetSelectAttribute()
         {
             if (CustomAttributeSet)
@@ -375,5 +377,22 @@ namespace Chummer.UI.Skills
             cboSpec_TextChanged(sender, e);
         }
         */
+        public void MoveControls(int i)
+        {
+            lblName.Width = i;
+            if (_skill.CharacterObject.Created)
+            {
+                btnAttribute.Left = lblName.Right + 2;
+                cboSelectAttribute.Left = lblName.Right + 2;
+                lblCareerRating.Left = cboSelectAttribute.Right + 2;
+                lblCareerSpec.Left = lblCareerRating.Right + 2;
+            }
+            else
+            {
+                nudSkill.Left = lblName.Right + 2;
+                nudKarma.Left = nudSkill.Right + 2;
+                lblAttribute.Left = nudKarma.Right + 2;
+            }
+        }
     }
 }

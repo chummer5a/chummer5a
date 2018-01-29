@@ -193,7 +193,7 @@ namespace Translator
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // frmMain
+            // frmTranslatorMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -202,10 +202,11 @@ namespace Translator
             this.Controls.Add(this.pbProcessProgress);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxCreate);
-            this.Name = "frmMain";
+            this.Name = "frmTranslatorMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer Translator";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmTranslatorMain_FormClosing);
+            this.Load += new System.EventHandler(this.frmTranslatorMain_Load);
             this.gbxCreate.ResumeLayout(false);
             this.gbxCreate.PerformLayout();
             this.groupBox1.ResumeLayout(false);

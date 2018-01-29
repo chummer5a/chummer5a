@@ -40,8 +40,10 @@ namespace Chummer
         private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
         private string _strPrintLanguage = GlobalOptions.Language;
         private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
+        private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
-        private readonly string strName = Guid.NewGuid() + ".htm";
+        private bool _blnQueueOutputGeneratorRun;
+        private readonly string strName = Guid.NewGuid().ToString() + ".htm";
         #region Control Events
         public frmViewer()
         {
@@ -133,6 +135,22 @@ namespace Chummer
             }
             _blnLoading = false;
             SetDocumentText(LanguageManager.GetString("String_Loading_Characters", GlobalOptions.Language));
+
+            Application.Idle += RunQueuedWorkers;
+        }
+
+        private void RunQueuedWorkers(object sender, EventArgs e)
+        {
+            if (_blnQueueRefresherRun)
+            {
+                if (!_workerRefresher.IsBusy)
+                    _workerRefresher.RunWorkerAsync();
+            }
+            else if (_blnQueueOutputGeneratorRun)
+            {
+                if (!_workerOutputGenerator.IsBusy)
+                    _workerOutputGenerator.RunWorkerAsync();
+            }
         }
 
         private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
@@ -198,6 +216,13 @@ namespace Chummer
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Application.Idle -= RunQueuedWorkers;
+            
+            if (_workerRefresher.IsBusy)
+                _workerRefresher.CancelAsync();
+            if (_workerOutputGenerator.IsBusy)
+                _workerOutputGenerator.CancelAsync();
+
             // Remove the mugshots directory when the form closes.
             string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
             if (Directory.Exists(mugshotsDirectoryPath))
@@ -212,11 +237,9 @@ namespace Chummer
             }
 
             // Clear the reference to the character's Print window.
-            if (_lstCharacters.Count > 0)
-            {
-                foreach (Character objCharacter in _lstCharacters)
-                    objCharacter.PrintWindow = null;
-            }
+            foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
+                if (objCharacterShared.PrintWindow == this)
+                    objCharacterShared.PrintWindow = null;
         }
         #endregion
 
@@ -243,12 +266,12 @@ namespace Chummer
         /// </summary>
         public void RefreshCharacters()
         {
-            if (_workerRefresher.IsBusy)
-                _workerRefresher.CancelAsync();
+            Cursor = Cursors.AppStarting;
             if (_workerOutputGenerator.IsBusy)
                 _workerOutputGenerator.CancelAsync();
-            Cursor = Cursors.AppStarting;
-            _workerRefresher.RunWorkerAsync();
+            if (_workerRefresher.IsBusy)
+                _workerRefresher.CancelAsync();
+            _blnQueueRefresherRun = true;
         }
 
         /// <summary>
@@ -260,7 +283,7 @@ namespace Chummer
             SetDocumentText(LanguageManager.GetString("String_Generating_Sheet", GlobalOptions.Language));
             if (_workerOutputGenerator.IsBusy)
                 _workerOutputGenerator.CancelAsync();
-            _workerOutputGenerator.RunWorkerAsync();
+            _blnQueueOutputGeneratorRun = true;
         }
 
         /// <summary>
@@ -268,6 +291,7 @@ namespace Chummer
         /// </summary>
         private void AsyncRefresh(object sender, DoWorkEventArgs e)
         {
+            _blnQueueRefresherRun = false;
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
@@ -340,6 +364,7 @@ namespace Chummer
         /// </summary>
         private void AsyncGenerateOutput(object sender, DoWorkEventArgs e)
         {
+            _blnQueueOutputGeneratorRun = false;
             string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {

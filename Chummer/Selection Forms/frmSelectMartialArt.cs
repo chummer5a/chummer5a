@@ -28,8 +28,7 @@ namespace Chummer
     public partial class frmSelectMartialArt : Form
     {
         private string _strSelectedMartialArt = string.Empty;
-
-        private bool _blnLoading = true;
+        
         private bool _blnAddAgain = false;
         private string _strForcedValue = string.Empty;
         private bool _blnShowQualities = false;
@@ -50,12 +49,6 @@ namespace Chummer
 
         private void frmSelectMartialArt_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             XmlNodeList objArtList = null;
             // Populate the Martial Arts list.
             if (!string.IsNullOrEmpty(_strForcedValue))
@@ -85,8 +78,6 @@ namespace Chummer
                 AcceptForm();
             }
             lstMartialArts.EndUpdate();
-
-            _blnLoading = false;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -106,9 +97,6 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
-                return;
-
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {

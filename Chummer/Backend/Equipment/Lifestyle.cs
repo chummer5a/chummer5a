@@ -28,6 +28,16 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     /// <summary>
+    /// Type of Lifestyle.
+    /// </summary>
+    public enum LifestyleIncrement
+    {
+        Month = 0,
+        Week = 1,
+        Day = 2,
+    }
+    
+    /// <summary>
     /// Lifestyle.
     /// </summary>
     public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode
@@ -40,7 +50,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intDice;
         private decimal _decMultiplier;
-        private int _intMonths = 1;
+        private int _intIncrements = 1;
         private int _intRoommates;
         private decimal _decPercentage = 100.0m;
         private bool _blnPurchased;
@@ -51,15 +61,16 @@ namespace Chummer.Backend.Equipment
         private int _intBaseComforts;
         private int _intBaseArea;
         private int _intBaseSecurity;
-        private bool _primaryTenant;
-        private int _costForSecurity;
-        private int _costForArea;
-        private int _costForComforts;
+        private bool _blnIsPrimaryTenant;
+        private decimal _decCostForSecurity;
+        private decimal _decCostForArea;
+        private decimal _decCostForComforts;
         private string _strBaseLifestyle = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnTrustFund;
-        private LifestyleType _objType = LifestyleType.Standard;
+        private LifestyleType _eType = LifestyleType.Standard;
+        private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
@@ -69,7 +80,7 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a LifestyleType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public static LifestyleType ConverToLifestyleType(string strValue)
+        public static LifestyleType ConvertToLifestyleType(string strValue)
         {
             switch (strValue)
             {
@@ -81,6 +92,25 @@ namespace Chummer.Backend.Equipment
                     return LifestyleType.Advanced;
                 default:
                     return LifestyleType.Standard;
+            }
+        }
+
+        /// <summary>
+        /// Convert a string to a LifestyleType.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static LifestyleIncrement ConvertToLifestyleIncrement(string strValue)
+        {
+            switch (strValue)
+            {
+                case "day":
+                case "Day":
+                    return LifestyleIncrement.Day;
+                case "week":
+                case "Week":
+                    return LifestyleIncrement.Week;
+                default:
+                    return LifestyleIncrement.Month;
             }
         }
         #endregion
@@ -104,6 +134,9 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyle.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
             objXmlLifestyle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyle.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlLifestyle.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
+            objXmlLifestyle.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
+            objXmlLifestyle.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
             if (!objXmlLifestyle.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyle.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (!objXmlLifestyle.TryGetField("id", Guid.TryParse, out _sourceID))
@@ -114,6 +147,9 @@ namespace Chummer.Backend.Equipment
             }
             else
                 _objCachedMyXmlNode = null;
+            string strTemp = string.Empty;
+            if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
+                _eIncrement = ConvertToLifestyleIncrement(strTemp);
         }
 
         /// <summary>
@@ -125,29 +161,30 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("lifestyle");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("cost", _decCost.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("dice", _intDice.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("dice", _intDice.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
-            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("months", _intMonths.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("roommates", _intRoommates.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("percentage", _decPercentage.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("months", _intIncrements.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("roommates", _intRoommates.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("percentage", _decPercentage.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
-            objWriter.WriteElementString("area", _intArea.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("comforts", _intComforts.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("security", _intSecurity.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("basearea", _intBaseArea.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("entertainment", _intEntertainment.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("costforearea", _costForArea.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("costforcomforts", _costForComforts.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("costforsecurity", _costForSecurity.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("area", _intArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("comforts", _intComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("security", _intSecurity.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basearea", _intBaseArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("entertainment", _intEntertainment.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
-            objWriter.WriteElementString("primarytenant", _primaryTenant.ToString());
-            objWriter.WriteElementString("type", _objType.ToString());
+            objWriter.WriteElementString("primarytenant", _blnIsPrimaryTenant.ToString());
+            objWriter.WriteElementString("type", _eType.ToString());
+            objWriter.WriteElementString("increment", _eIncrement.ToString());
             objWriter.WriteElementString("sourceid", SourceID.ToString("D"));
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
@@ -182,11 +219,11 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _intMonths = 0;
+                _intIncrements = 0;
             }
             else
             {
-                objNode.TryGetInt32FieldQuickly("months", ref _intMonths);
+                objNode.TryGetInt32FieldQuickly("months", ref _intIncrements);
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             }
 
@@ -201,9 +238,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("basearea", ref _intBaseArea);
             objNode.TryGetInt32FieldQuickly("basecomforts", ref _intBaseComforts);
             objNode.TryGetInt32FieldQuickly("basesecurity", ref _intBaseSecurity);
-            objNode.TryGetInt32FieldQuickly("costforarea", ref _costForArea);
-            objNode.TryGetInt32FieldQuickly("costforcomforts", ref _costForComforts);
-            objNode.TryGetInt32FieldQuickly("costforsecurity", ref _costForSecurity);
+            objNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
+            objNode.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
+            objNode.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetBoolFieldQuickly("purchased", ref _blnPurchased);
@@ -237,11 +274,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
             if (objNode["primarytenant"] == null)
             {
-                _primaryTenant = _intRoommates == 0;
+                _blnIsPrimaryTenant = _intRoommates == 0;
             }
             else
             {
-                objNode.TryGetBoolFieldQuickly("primarytenant", ref _primaryTenant);
+                objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnIsPrimaryTenant);
             }
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -266,7 +303,21 @@ namespace Chummer.Backend.Equipment
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
             {
-                _objType = ConverToLifestyleType(strTemp);
+                _eType = ConvertToLifestyleType(strTemp);
+            }
+            if (objNode.TryGetStringFieldQuickly("increment", ref strTemp))
+            {
+                _eIncrement = ConvertToLifestyleIncrement(strTemp);
+            }
+            else if (_eType == LifestyleType.Safehouse)
+                _eIncrement = LifestyleIncrement.Week;
+            else
+            {
+                XmlNode xmlLifestyleNode = GetNode();
+                if (xmlLifestyleNode != null && xmlLifestyleNode.TryGetStringFieldQuickly("increment", ref strTemp))
+                {
+                    _eIncrement = ConvertToLifestyleIncrement(strTemp);
+                }
             }
             LegacyShim(objNode);
         }
@@ -274,19 +325,24 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Converts old lifestyle structures to new standards. 
         /// </summary>
-        private void LegacyShim(XmlNode n)
+        private void LegacyShim(XmlNode xmlLifestyleNode)
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property. 
-            if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && n["costforarea"] == null)
+            if (_objCharacter.LastSavedVersion <= new Version("5.197.0") && xmlLifestyleNode["costforarea"] == null)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
-                if (objLifestyleQualityNode?["costforarea"] != null)
+                if (objLifestyleQualityNode != null)
                 {
-                    Cost = Convert.ToInt32(objLifestyleQualityNode["cost"]?.InnerText);
-                    CostForArea = Convert.ToInt32(objLifestyleQualityNode["costforarea"]?.InnerText);
-                    CostForComforts = Convert.ToInt32(objLifestyleQualityNode["costforcomforts"]?.InnerText);
-                    CostForSecurity = Convert.ToInt32(objLifestyleQualityNode["costforsecurity"]?.InnerText);
+                    decimal decTemp = 0.0m;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("cost", ref decTemp))
+                        Cost = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforarea", ref decTemp))
+                        CostForArea = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforcomforts", ref decTemp))
+                        CostForComforts = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforsecurity", ref decTemp))
+                        CostForSecurity = decTemp;
                 }
 
                 int intMinArea = 0;
@@ -307,9 +363,9 @@ namespace Chummer.Backend.Equipment
                 objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
                 BaseSecurity = intMinSec;
 
-                n.TryGetInt32FieldQuickly("area", ref intMinArea);
-                n.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
-                n.TryGetInt32FieldQuickly("security", ref intMinSec);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("area", ref intMinArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
 
                 // Calculate the cost of Positive Qualities.
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
@@ -338,9 +394,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("dice", Dice.ToString(objCulture));
             objWriter.WriteElementString("multiplier", Multiplier.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("months", Months.ToString(objCulture));
+            objWriter.WriteElementString("months", Increments.ToString(objCulture));
             objWriter.WriteElementString("purchased", Purchased.ToString());
             objWriter.WriteElementString("type", StyleType.ToString());
+            objWriter.WriteElementString("increment", IncrementType.ToString());
             objWriter.WriteElementString("sourceid", SourceID.ToString("D"));
             string strBaseLifestyle = string.Empty;
 
@@ -491,12 +548,12 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Months purchased.
+        /// Months/Weeks/Days purchased.
         /// </summary>
-        public int Months
+        public int Increments
         {
-            get => _intMonths;
-            set => _intMonths = value;
+            get => _intIncrements;
+            set => _intIncrements = value;
         }
 
         /// <summary>
@@ -595,8 +652,17 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public LifestyleType StyleType
         {
-            get => _objType;
-            set => _objType = value;
+            get => _eType;
+            set => _eType = value;
+        }
+
+        /// <summary>
+        /// Interval of payments required for the Lifestyle.
+        /// </summary>
+        public LifestyleIncrement IncrementType
+        {
+            get => _eIncrement;
+            set => _eIncrement = value;
         }
 
         /// <summary>
@@ -647,35 +713,35 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrimaryTenant
         {
-            get => _primaryTenant;
-            set => _primaryTenant = value;
+            get => _blnIsPrimaryTenant;
+            set => _blnIsPrimaryTenant = value;
         }
 
         /// <summary>
         /// Nuyen cost for each point of upgraded Security. Expected to be zero for lifestyles other than Street.
         /// </summary>
-        public int CostForArea
+        public decimal CostForArea
         {
-            get => _costForArea;
-            set => _costForArea = value;
+            get => _decCostForArea;
+            set => _decCostForArea = value;
         }
 
         /// <summary>
         /// Nuyen cost for each point of upgraded Security. Expected to be zero for lifestyles other than Street.
         /// </summary>
-        public int CostForComforts
+        public decimal CostForComforts
         {
-            get => _costForComforts;
-            set => _costForComforts = value;
+            get => _decCostForComforts;
+            set => _decCostForComforts = value;
         }
 
         /// <summary>
         /// Nuyen cost for each point of upgraded Security. Expected to be zero for lifestyles other than Street.
         /// </summary>
-        public int CostForSecurity
+        public decimal CostForSecurity
         {
-            get => _costForSecurity;
-            set => _costForSecurity = value;
+            get => _decCostForSecurity;
+            set => _decCostForSecurity = value;
         }
 
         private XmlNode _objCachedMyXmlNode = null;
@@ -701,7 +767,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
-        public decimal TotalCost => TotalMonthlyCost * _intMonths;
+        public decimal TotalCost => TotalMonthlyCost * Increments;
 
         public decimal CostMultiplier
         {
@@ -709,7 +775,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
                 d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
-                if (_objType == LifestyleType.Standard)
+                if (_eType == LifestyleType.Standard)
                    d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
                 d += _lstLifestyleQualities.Sum(lq => lq.Multiplier);
                 return d / 100;
@@ -775,7 +841,19 @@ namespace Chummer.Backend.Equipment
                     decReturn /= _intRoommates + 1.0m;
                 }
                 decReturn *= Percentage /100;
+
+                switch (IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        decContractCost /= (4.34812m * 7);
+                        break;
+                    case LifestyleIncrement.Week:
+                        decContractCost /= (4.34812m);
+                        break;
+                }
+
                 decReturn += decContractCost;
+
                 return decReturn;
             }
         }
@@ -802,7 +880,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="strInternalId">InternalId to set.</param>
         public void SetInternalId(string strInternalId)
         {
-            _guiID = Guid.Parse(strInternalId);
+            if (Guid.TryParse(strInternalId, out Guid guiTemp))
+                _guiID = guiTemp;
         }
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)

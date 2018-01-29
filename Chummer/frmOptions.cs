@@ -31,7 +31,7 @@ namespace Chummer
     public partial class frmOptions : Form
     {
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
-        private bool _skipRefresh;
+        private bool _blnSkipRefresh;
         private bool blnDirty = false;
         private bool blnLoading = true;
         private bool blnSourcebookToggle = true;
@@ -95,10 +95,7 @@ namespace Chummer
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
-            _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
             _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
-            _characterOptions.CapSkillRating = chkCapSkillRating.Checked;
             _characterOptions.ConfirmDelete = chkConfirmDelete.Checked;
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
@@ -108,8 +105,6 @@ namespace Chummer
             _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
             _characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
             _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
-            _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
             _characterOptions.DontRoundEssenceInternally = chkDontRoundEssenceInternally.Checked;
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
@@ -151,7 +146,7 @@ namespace Chummer
             _characterOptions.AllowPointBuySpecializationsOnKarmaSkills = chkAllowPointBuySpecializationsOnKarmaSkills.Checked;
             _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
             _characterOptions.CompensateSkillGroupKarmaDifference = chkCompensateSkillGroupKarmaDifference.Checked;
-            _characterOptions.MysaddPPCareer = chkMysAdPp.Checked;
+            _characterOptions.MysAdeptAllowPPCareer = chkMysAdPp.Checked;
             _characterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
@@ -441,10 +436,10 @@ namespace Chummer
             nudPDFOffset.Enabled = true;
             cmdPDFTest.Enabled = true;
 
-            _skipRefresh = true;
+            _blnSkipRefresh = true;
             txtPDFLocation.Text = string.Empty;
             nudPDFOffset.Value = 0;
-            _skipRefresh = false;
+            _blnSkipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
             SourcebookInfo objSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == treSourcebook.SelectedNode.Tag.ToString());
@@ -458,26 +453,26 @@ namespace Chummer
 
         private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
-            if (_skipRefresh)
+            if (_blnSkipRefresh)
                 return;
 
-            int offset = decimal.ToInt32(nudPDFOffset.Value);
-            string tag = treSourcebook.SelectedNode.Tag.ToString();
-            SourcebookInfo foundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == tag);
+            int intOffset = decimal.ToInt32(nudPDFOffset.Value);
+            string strTag = treSourcebook.SelectedNode.Tag.ToString();
+            SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
 
-            if (foundSource != null)
+            if (objFoundSource != null)
             {
-                foundSource.Offset = offset;
+                objFoundSource.Offset = intOffset;
             }
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                SourcebookInfo newSource = new SourcebookInfo
+                SourcebookInfo objNewSource = new SourcebookInfo
                 {
-                    Code = tag,
-                    Offset = offset
+                    Code = strTag,
+                    Offset = intOffset
                 };
-                GlobalOptions.SourcebookInfo.Add(newSource);
+                GlobalOptions.SourcebookInfo.Add(objNewSource);
             }
         }
 
@@ -732,12 +727,13 @@ namespace Chummer
             {
                 if (objXmlBook["hide"] != null)
                     continue;
-                bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
+                string strCode = objXmlBook["code"].InnerText;
+                bool blnChecked = _characterOptions.Books.Contains(strCode);
                 TreeNode objNode = new TreeNode
                 {
                     Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText,
 
-                    Tag = objXmlBook["code"].InnerText,
+                    Tag = strCode,
                     Checked = blnChecked
                 };
                 treSourcebook.Nodes.Add(objNode);
@@ -792,10 +788,7 @@ namespace Chummer
             chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
             chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
             chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
-            chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
-            chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
             chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
-            chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
             chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
             chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
             chkUseTotalValueForFreeContacts.Checked = _characterOptions.UseTotalValueForFreeContacts;
@@ -804,7 +797,7 @@ namespace Chummer
             chkDroneArmorMultiplier.Checked = _characterOptions.DroneArmorMultiplierEnabled;
             chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
             chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
-            chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+            chkMysAdPp.Checked = _characterOptions.MysAdeptAllowPPCareer;
             chkMysAdeptSecondMAGAttribute.Checked = _characterOptions.MysAdeptSecondMAGAttribute;
             chkHideItemsOverAvail.Checked = _characterOptions.HideItemsOverAvailLimit;
             chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
@@ -812,8 +805,6 @@ namespace Chummer
             chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
             chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
             chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
-            chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
-            chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
             chkESSLossReducesMaximumOnly.Checked = _characterOptions.ESSLossReducesMaximumOnly;
             chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
             chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;

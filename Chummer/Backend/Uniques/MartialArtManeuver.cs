@@ -1,0 +1,203 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+
+namespace Chummer
+{
+    /// <summary>
+    /// A Martial Art Maneuver.
+    /// </summary>
+    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode
+    {
+        private Guid _guiID;
+        private string _strName = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
+        private string _strNotes = string.Empty;
+        private readonly Character _objCharacter;
+
+        #region Constructor, Create, Save, Load, and Print Methods
+        public MartialArtManeuver(Character objCharacter)
+        {
+            // Create the GUID for the new Martial Art Maneuver.
+            _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
+        }
+
+        /// Create a Martial Art Maneuver from an XmlNode.
+        /// <param name="objXmlManeuverNode">XmlNode to create the object from.</param>
+        public void Create(XmlNode objXmlManeuverNode)
+        {
+            if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("martialartmaneuver");
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteEndElement();
+            _objCharacter.SourceProcess(_strSource);
+        }
+
+        /// <summary>
+        /// Load the Martial Art Maneuver from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public void Load(XmlNode objNode)
+        {
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        {
+            objWriter.WriteStartElement("martialartmaneuver");
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            if (_objCharacter.Options.PrintNotes)
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteEndElement();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Internal identifier which will be used to identify this Martial Art Maneuver in the Improvement system.
+        /// </summary>
+        public string InternalId => _guiID.ToString("D");
+
+        /// <summary>
+        /// Name.
+        /// </summary>
+        public string Name
+        {
+            get => _strName;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public string DisplayNameShort(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public string DisplayName(string strLanguage)
+        {
+            string strReturn = DisplayNameShort(strLanguage);
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
+
+        /// <summary>
+        /// Page.
+        /// </summary>
+        public string Page(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        }
+
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set => _strNotes = value;
+        }
+
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
+        public XmlNode GetNode()
+        {
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("martialarts.xml", strLanguage).SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
+            return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsMartialArtTechnique
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
+    }
+}

@@ -130,9 +130,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
-    <Compile Include="Backend\Datastructures\AvailabilityString.cs" />
+    <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
+    <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
@@ -174,6 +175,25 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\Uniques\AIProgram.cs" />
+    <Compile Include="Backend\Uniques\Art.cs" />
+    <Compile Include="Backend\Uniques\CalendarWeek.cs" />
+    <Compile Include="Backend\Uniques\ComplexForm.cs" />
+    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Uniques\CritterPower.cs" />
+    <Compile Include="Backend\Uniques\Enhancement.cs" />
+    <Compile Include="Backend\Uniques\Focus.cs" />
+    <Compile Include="Backend\Uniques\InitiationGrade.cs" />
+    <Compile Include="Backend\Uniques\LimitModifier.cs" />
+    <Compile Include="Backend\Uniques\MartialArt.cs" />
+    <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
+    <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
+    <Compile Include="Backend\Uniques\MentorSpirit.cs" />
+    <Compile Include="Backend\Uniques\Metamagic.cs" />
+    <Compile Include="Backend\Uniques\Quality.cs" />
+    <Compile Include="Backend\Uniques\Spell.cs" />
+    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Uniques\StackedFocus.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,7 +219,6 @@
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
-    <Compile Include="Classes\clsUnique.cs" />
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
@@ -601,12 +620,12 @@
     <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -619,12 +638,12 @@
     <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.cs">
+    <None Include="Selection Forms\frmSelectNexus.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectNexus.Designer.cs">
       <DependentUpon>frmSelectNexus.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -2743,31 +2762,25 @@
     <Content Include="sheets\de-de\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped by Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 set CSS.xslt">
@@ -2835,31 +2848,25 @@
     <Content Include="sheets\fr-fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 set CSS.xslt">
@@ -2910,31 +2917,25 @@
     <Content Include="sheets\ja-jp\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\ja-jp\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\ja-jp\Shadowrun 5 set CSS.xslt">
@@ -2985,31 +2986,25 @@
     <Content Include="sheets\pt-br\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\pt-br\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\pt-br\Shadowrun 5 set CSS.xslt">
@@ -3027,31 +3022,25 @@
     <Content Include="sheets\pt-br\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 set.xslt">
@@ -3079,7 +3068,7 @@
     <Content Include="sheets\xs.SkillsGroupedAssorted.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\xs.SkillsGroupedByName.xslt">
+    <Content Include="sheets\xs.SkillsGroupedByPool.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xs.SkillsGroupedByRating.xslt">
@@ -3131,6 +3120,9 @@
     <Content Include="sheets\xt.RuleLine.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.SkillCategory.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.SkillGroups.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3149,22 +3141,31 @@
     <Content Include="sheets\zh-cn\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\xz.language.xslt">
@@ -3186,21 +3187,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Calendar.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Formatted Text-Only.xsl">

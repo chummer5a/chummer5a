@@ -95,10 +95,10 @@ namespace Chummer.Classes
             //List of qualities to work with
             Guid[] all =
             {
-                Guid.Parse("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
-                Guid.Parse("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
-                Guid.Parse("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
-                Guid.Parse("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
+                new Guid("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
+                new Guid("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
+                new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
+                new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
             };
 
             //Add to list
@@ -2753,17 +2753,7 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
                 _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
-
-        // Check for Genetech: Transgenics Cost modifiers.
-        public void transgenicsgenetechcost(XmlNode bonusNode)
-        {
-            Log.Info("transgenicsgenetechcost");
-            Log.Info("transgenicsgenetechcost = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TransgenicsBiowareCost,
-                _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-        }
-
+        
         // Check for Basic Bioware Essence Cost modifiers.
         public void basicbiowareessmultiplier(XmlNode bonusNode)
         {
@@ -2862,8 +2852,8 @@ namespace Chummer.Classes
             Log.Info("prototypetranshuman = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
 
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
-            _objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
+            _objCharacter.PrototypeTranshuman += Convert.ToDecimal(bonusNode.InnerText);
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
         }
 
         // Check for Friends In High Places modifiers.
@@ -3195,9 +3185,9 @@ namespace Chummer.Classes
         {
             Log.Info("selectparagon");
             Log.Info("selectparagon = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter, "paragons.xml")
             {
-                XmlFile = "paragons.xml"
+                ForcedMentor = ForcedValue
             };
             frmPickMentorSpirit.ShowDialog();
 
@@ -4779,7 +4769,7 @@ namespace Chummer.Classes
 
             objPower.Grade = -1;
             _objCharacter.CritterPowers.Add(objPower);
-            CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
+            CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
         }
 
         public void critterpowers(XmlNode bonusNode)
@@ -4800,7 +4790,7 @@ namespace Chummer.Classes
                 objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                 objPower.Grade = -1;
                 _objCharacter.CritterPowers.Add(objPower);
-                CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
             }
         }
 

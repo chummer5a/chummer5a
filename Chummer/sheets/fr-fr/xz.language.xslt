@@ -62,6 +62,8 @@
   <xsl:variable name="lang.Damage"    select="'Dégât'"/>
   <xsl:variable name="lang.Data"      select="'Donnée'"/>
   <xsl:variable name="lang.Date"      select="'Date'"/>
+  <xsl:variable name="lang.Day"      select="'Jour'"/>
+  <xsl:variable name="lang.Days"      select="'Jours'"/>
   <xsl:variable name="lang.Dead"      select="'Mort'"/>
   <xsl:variable name="lang.Defense"      select="'Défense'"/>
   <xsl:variable name="lang.DEP"  select="'DEP'"/>
@@ -237,9 +239,11 @@
   <xsl:variable name="lang.VR"      select="'RV'"/>
   <xsl:variable name="lang.W"        select="'V'"/>
   <xsl:variable name="lang.Walk"      select="'Marche'"/>
+  <xsl:variable name="lang.Weaknesses"    select="'Weaknesses'"/>
   <xsl:variable name="lang.Weapon"    select="'Arme'"/>
   <xsl:variable name="lang.Weapons"    select="'Armes'"/>
   <xsl:variable name="lang.Week"      select="'Semaine'"/>
+  <xsl:variable name="lang.Weeks"      select="'Semaines'"/>
   <xsl:variable name="lang.Weight"    select="'Poids'"/>
   <xsl:variable name="lang.WIL"      select="'VOL'"/>
   <xsl:variable name="lang.Willpower"    select="'Volonté'"/>
@@ -285,6 +289,7 @@
   <xsl:variable name="lang.Nothing2Show4Devices"    select="'Aucun appareil à répertorier'"/>
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'Pas de notes à la liste'"/>
   <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'Aucun véhicule à la liste'"/>
+  <xsl:variable name="lang.OptionalPowers"    select="'Optional Powers'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Autres portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Saut de page: '"/>
   <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxines et Pathogènes'"/>

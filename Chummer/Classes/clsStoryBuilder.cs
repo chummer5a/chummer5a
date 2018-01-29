@@ -63,11 +63,11 @@ namespace Chummer
                     String stageName = string.Empty;
                     if (i <= 4)
                     {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]").InnerText;
                     }
                     else
                     {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + 5 + "\"]").InnerText;
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"5\"]").InnerText;
                     }
                     int j;
                     for (j = i; j < modules.Count; j++)
@@ -100,8 +100,7 @@ namespace Chummer
 
             return string.Empty;
         }
-
-        private static readonly char[] lstLineEndChars = " \n\r\t".ToCharArray();
+        
         private void Write(StringBuilder story, string innerText, int levels, XmlDocument xmlDoc)
         {
             if (levels <= 0) return;
@@ -111,11 +110,11 @@ namespace Chummer
             String[] words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText, xmlDoc).Split(lstLineEndChars);
+                words = Macro(innerText, xmlDoc).Split(' ', '\n', '\r', '\t');
             }
             else
             {
-                words = innerText.Split(lstLineEndChars);
+                words = innerText.Split(' ', '\n', '\r', '\t');
             }
 
             bool mfix = false;

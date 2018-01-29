@@ -72,6 +72,7 @@ namespace Chummer.UI.Skills
             sw.TaskEnd("Create skillgroup");
         }
 
+        #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
@@ -104,5 +105,33 @@ namespace Chummer.UI.Skills
                     break;
             }
         }
+        #endregion
+
+        #region Properties
+        public int NameWidth => lblName.PreferredWidth;
+        public int RatingWidth => lblGroupRating.PreferredWidth;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Update the position of controls.
+        /// </summary>
+        /// <param name="nameWidth">Width of the Name label</param>
+        /// <param name="ratingWidth">Width of the Rating label. Expected to be the width of the localised Label_SkillGroup_Broken string.</param>
+        public void MoveControls(int nameWidth, int ratingWidth)
+        {
+            lblName.Width = nameWidth;
+            lblGroupRating.Left = lblName.Right + 2;
+            if (_skillGroup.Character.Created)
+            {
+                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 4;
+            }
+            else
+            {
+                nudSkill.Left = lblGroupRating.Right + 2;
+                nudKarma.Left = nudSkill.Right + 2;
+            }
+        }
+        #endregion
     }
 }

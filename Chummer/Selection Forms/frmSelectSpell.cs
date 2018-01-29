@@ -65,13 +65,7 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
+            
             //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
             //in Career Mode. Create mode manages itself.
             int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
