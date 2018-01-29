@@ -101,7 +101,8 @@ namespace Chummer
                     Uri uriPath = new Uri(Path);
                     if (File.Exists(uriPath.LocalPath))
                     {
-                        _objPdfReader = new PdfReader(uriPath.LocalPath);
+                        // using the "partial" param it runs much faster and I couldnt find any downsides to it
+                        _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
                     }
                 }
                 return _objPdfReader;
