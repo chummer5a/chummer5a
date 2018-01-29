@@ -35,6 +35,8 @@ using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using System.Text;
 using System.ComponentModel;
+using Chummer.UI.Attributes;
+using System.Collections.ObjectModel;
 
 namespace Chummer
 {
@@ -45,6 +47,8 @@ namespace Chummer
     public class CharacterShared : Form, IDisposable
     {
         private readonly Character _objCharacter;
+        private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
+        private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty = false;
         private bool _blnRequestCharacterUpdate = false;
@@ -55,6 +59,37 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
             _objCharacter.CharacterNameChanged += ForceUpdateWindowTitle;
+
+            _lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>
+            {
+                CharacterObject.BOD,
+                CharacterObject.AGI,
+                CharacterObject.REA,
+                CharacterObject.STR,
+                CharacterObject.CHA,
+                CharacterObject.INT,
+                CharacterObject.LOG,
+                CharacterObject.WIL
+            };
+
+            _lstSpecialAttributes = new ObservableCollection<CharacterAttrib>
+            {
+                CharacterObject.EDG
+            };
+            if (CharacterObject.MAGEnabled)
+            {
+                _lstSpecialAttributes.Add(CharacterObject.MAG);
+                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                    _lstSpecialAttributes.Add(CharacterObject.MAGAdept);
+            }
+            if (CharacterObject.RESEnabled)
+            {
+                _lstSpecialAttributes.Add(CharacterObject.RES);
+            }
+            if (CharacterObject.DEPEnabled)
+            {
+                _lstSpecialAttributes.Add(CharacterObject.DEP);
+            }
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -307,6 +342,90 @@ namespace Chummer
                 //Add the new treeview node for the LimitModifier.
                 objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
                 objSelectedNode.Remove();
+            }
+        }
+
+        protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                pnlAttributes.Controls.Clear();
+
+                foreach (CharacterAttrib objAttrib in _lstPrimaryAttributes.Concat(_lstSpecialAttributes))
+                {
+                    AttributeControl objControl = new AttributeControl(objAttrib);
+                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                    pnlAttributes.Controls.Add(objControl);
+                }
+            }
+            else
+            {
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AttributeControl objControl = new AttributeControl(objAttrib);
+                                objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                pnlAttributes.Controls.Add(objControl);
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                {
+                                    if (objControl.AttributeName == objAttrib.Abbrev)
+                                    {
+                                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                                        pnlAttributes.Controls.Remove(objControl);
+                                        objControl.Dispose();
+                                    }
+                                }
+                                if (!_objCharacter.Created)
+                                {
+                                    objAttrib.Base = 0;
+                                    objAttrib.Karma = 0;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                {
+                                    if (objControl.AttributeName == objAttrib.Abbrev)
+                                    {
+                                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                                        pnlAttributes.Controls.Remove(objControl);
+                                        objControl.Dispose();
+                                    }
+                                }
+                                if (!_objCharacter.Created)
+                                {
+                                    objAttrib.Base = 0;
+                                    objAttrib.Karma = 0;
+                                }
+                            }
+                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AttributeControl objControl = new AttributeControl(objAttrib);
+                                objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                pnlAttributes.Controls.Add(objControl);
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshAttributes(pnlAttributes);
+                        }
+                        break;
+                }
             }
         }
 
@@ -2075,6 +2194,504 @@ namespace Chummer
             }
         }
 
+        public void RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                panContacts.Controls.Clear();
+                panEnemies.Controls.Clear();
+                panPets.Controls.Clear();
+                int intContacts = -1;
+                int intEnemies = -1;
+                foreach (Contact objContact in CharacterObject.Contacts)
+                {
+                    switch (objContact.EntityType)
+                    {
+                        case ContactType.Contact:
+                            {
+                                intContacts += 1;
+                                ContactControl objContactControl = new ContactControl(objContact);
+                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objContactControl.DeleteContact += DeleteContact;
+                                objContactControl.MouseDown += DragContactControl;
+
+                                objContactControl.Top = intContacts * objContactControl.Height;
+
+                                panContacts.Controls.Add(objContactControl);
+                            }
+                            break;
+                        case ContactType.Enemy:
+                            {
+                                intEnemies += 1;
+                                ContactControl objContactControl = new ContactControl(objContact);
+                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                if (_objCharacter.Created)
+                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                else
+                                    objContactControl.ContactDetailChanged += EnemyChanged;
+                                objContactControl.DeleteContact += DeleteEnemy;
+                                objContactControl.MouseDown += DragContactControl;
+
+                                objContactControl.Top = intEnemies * objContactControl.Height;
+
+                                panContacts.Controls.Add(objContactControl);
+                            }
+                            break;
+                        case ContactType.Pet:
+                            {
+                                PetControl objContactControl = new PetControl(objContact);
+                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objContactControl.DeleteContact += DeletePet;
+                                objContactControl.MouseDown += DragContactControl;
+
+                                panContacts.Controls.Add(objContactControl);
+                            }
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intContacts = panContacts.Controls.Count;
+                            int intEnemies = panEnemies.Controls.Count;
+                            foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                switch (objLoopContact.EntityType)
+                                {
+                                    case ContactType.Contact:
+                                        {
+                                            intContacts += 1;
+                                            ContactControl objContactControl = new ContactControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteContact;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Top = intContacts * objContactControl.Height;
+
+                                            panContacts.Controls.Add(objContactControl);
+                                        }
+                                        break;
+                                    case ContactType.Enemy:
+                                        {
+                                            intEnemies += 1;
+                                            ContactControl objContactControl = new ContactControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            if (_objCharacter.Created)
+                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            else
+                                                objContactControl.ContactDetailChanged += EnemyChanged;
+                                            objContactControl.DeleteContact += DeleteEnemy;
+                                            //objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Top = intEnemies * objContactControl.Height;
+
+                                            panContacts.Controls.Add(objContactControl);
+                                        }
+                                        break;
+                                    case ContactType.Pet:
+                                        {
+                                            PetControl objPetControl = new PetControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objPetControl.DeleteContact += DeletePet;
+                                            //objPetControl.MouseDown += DragContactControl;
+
+                                            panContacts.Controls.Add(objPetControl);
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                switch (objLoopContact.EntityType)
+                                {
+                                    case ContactType.Contact:
+                                        {
+                                            for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panContacts.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
+                                                {
+                                                    panContacts.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteContact;
+                                                    objContactControl.MouseDown -= DragContactControl;
+                                                    objContactControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case ContactType.Enemy:
+                                        {
+                                            for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
+                                                {
+                                                    panEnemies.Controls.RemoveAt(i);
+                                                    if (_objCharacter.Created)
+                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    else
+                                                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    objContactControl.DeleteContact -= DeleteEnemy;
+                                                    objContactControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case ContactType.Pet:
+                                        {
+                                            for (int i = panPets.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panPets.Controls[i] is PetControl objPetControl && objPetControl.ContactObject == objLoopContact)
+                                                {
+                                                    panPets.Controls.RemoveAt(i);
+                                                    objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objPetControl.DeleteContact -= DeletePet;
+                                                    objPetControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                switch (objLoopContact.EntityType)
+                                {
+                                    case ContactType.Contact:
+                                        {
+                                            for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panContacts.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
+                                                {
+                                                    panContacts.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteContact;
+                                                    objContactControl.MouseDown -= DragContactControl;
+                                                    objContactControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case ContactType.Enemy:
+                                        {
+                                            for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
+                                                {
+                                                    panEnemies.Controls.RemoveAt(i);
+                                                    if (_objCharacter.Created)
+                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    else
+                                                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    objContactControl.DeleteContact -= DeleteEnemy;
+                                                    objContactControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case ContactType.Pet:
+                                        {
+                                            for (int i = panPets.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (panPets.Controls[i] is PetControl objPetControl && objPetControl.ContactObject == objLoopContact)
+                                                {
+                                                    panPets.Controls.RemoveAt(i);
+                                                    objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objPetControl.DeleteContact -= DeletePet;
+                                                    objPetControl.Dispose();
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                            int intContacts = panContacts.Controls.Count;
+                            int intEnemies = panEnemies.Controls.Count;
+                            foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                switch (objLoopContact.EntityType)
+                                {
+                                    case ContactType.Contact:
+                                        {
+                                            intContacts += 1;
+                                            ContactControl objContactControl = new ContactControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteContact;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Top = intContacts * objContactControl.Height;
+
+                                            panContacts.Controls.Add(objContactControl);
+                                        }
+                                        break;
+                                    case ContactType.Enemy:
+                                        {
+                                            intEnemies += 1;
+                                            ContactControl objContactControl = new ContactControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            if (_objCharacter.Created)
+                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            else
+                                                objContactControl.ContactDetailChanged += EnemyChanged;
+                                            objContactControl.DeleteContact += DeleteEnemy;
+                                            //objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Top = intEnemies * objContactControl.Height;
+
+                                            panContacts.Controls.Add(objContactControl);
+                                        }
+                                        break;
+                                    case ContactType.Pet:
+                                        {
+                                            PetControl objPetControl = new PetControl(objLoopContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objPetControl.DeleteContact += DeletePet;
+                                            //objPetControl.MouseDown += DragContactControl;
+
+                                            panContacts.Controls.Add(objPetControl);
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshContacts(panContacts, panEnemies, panPets);
+                        }
+                        break;
+                }
+            }
+        }
+
+        #region ContactControl Events
+        protected void DragContactControl(object sender, MouseEventArgs e)
+        {
+            Control source = (Control)sender;
+            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+        }
+
+        protected void AddContact(object sender, EventArgs e)
+        {
+            Contact objContact = new Contact(CharacterObject)
+            {
+                EntityType = ContactType.Contact
+            };
+            CharacterObject.Contacts.Add(objContact);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void DeleteContact(object sender, EventArgs e)
+        {
+            if (sender is ContactControl objSender)
+            {
+                if (CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                    return;
+
+                CharacterObject.Contacts.Remove(objSender.ContactObject);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+        }
+        #endregion
+
+        #region PetControl Events
+        protected void AddPet(object sender, EventArgs e)
+        {
+            Contact objContact = new Contact(CharacterObject)
+            {
+                EntityType = ContactType.Pet
+            };
+
+            CharacterObject.Contacts.Add(objContact);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void DeletePet(object sender, EventArgs e)
+        {
+            if (sender is PetControl objSender)
+            {
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                    return;
+
+                CharacterObject.Contacts.Remove(objSender.ContactObject);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+        }
+        #endregion
+
+        #region EnemyControl Events
+        protected void AddEnemy(object sender, EventArgs e)
+        {
+            // Handle the ConnectionRatingChanged Event for the ContactControl object.
+            Contact objContact = new Contact(CharacterObject)
+            {
+                EntityType = ContactType.Enemy
+            };
+
+            CharacterObject.Contacts.Add(objContact);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void EnemyChanged(object sender, EventArgs e)
+        {
+            // Handle the ConnectionRatingChanged Event for the ContactControl object.
+            int intNegativeQualityBP = 0;
+            // Calculate the BP used for Negative Qualities.
+            foreach (Quality objQuality in CharacterObject.Qualities)
+            {
+                if (objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
+                    intNegativeQualityBP += objQuality.BP;
+            }
+            // Include the amount of free Negative Qualities from Improvements.
+            intNegativeQualityBP -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
+
+            // Adjust for Karma cost multiplier.
+            intNegativeQualityBP *= CharacterObjectOptions.KarmaQuality;
+
+            // Find current enemy BP total
+            int intBPUsed = 0;
+            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
+            {
+                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
+                {
+                    intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
+                }
+            }
+
+            int intEnemyMax = 0;
+            int intQualityMax = 0;
+            string strQualityPoints = string.Empty;
+            string strEnemyPoints = string.Empty;
+            intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
+            intQualityMax = CharacterObject.GameplayOptionQualityLimit;
+            strEnemyPoints = intEnemyMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            strQualityPoints = intQualityMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+
+            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Contact objSenderContact = ((ContactControl)sender).ContactObject;
+                int intTotal = (intEnemyMax * -1) - intBPUsed;
+                if (e is TextEventArgs objTextArgument)
+                {
+                    switch (objTextArgument.Text)
+                    {
+                        case "Connection":
+                            objSenderContact.Connection -= intTotal;
+                            break;
+                        case "Loyalty":
+                            objSenderContact.Loyalty -= intTotal;
+                            break;
+                    }
+                }
+                return;
+            }
+
+            if (!CharacterObjectOptions.ExceedNegativeQualities)
+            {
+                if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Contact objSenderContact = ((ContactControl)sender).ContactObject;
+                    if (e is TextEventArgs objTextArgument)
+                    {
+                        switch (objTextArgument.Text)
+                        {
+                            case "Connection":
+                                objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                                                               CharacterObjectOptions.KarmaQuality);
+                                break;
+                            case "Loyalty":
+                                objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                                                            CharacterObjectOptions.KarmaQuality);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void DeleteEnemy(object sender, EventArgs e)
+        {
+            if (sender is ContactControl objSender)
+            {
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
+                    return;
+
+                CharacterObject.Contacts.Remove(objSender.ContactObject);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+        }
+        #endregion
+
+        #region Additional Relationships Tab Control Events
+        protected void AddContactsFromFile(object sender, EventArgs e)
+        {
+            // Displays an OpenFileDialog so the user can select the XML to read.  
+            OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml"
+            };
+
+            // Show the Dialog.  
+            // If the user cancels out, return early.
+            if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(dlgOpenFileDialog.FileName);
+
+            XmlNodeList xmlContactList = xmlDoc.SelectNodes("/chummer/contacts/contact");
+            if (xmlContactList != null)
+            {
+                foreach (XmlNode xmlContact in xmlContactList)
+                {
+                    Contact objContact = new Contact(CharacterObject);
+                    objContact.Load(xmlContact);
+                    CharacterObject.Contacts.Add(objContact);
+                }
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
@@ -2213,6 +2830,22 @@ namespace Chummer
             get
             {
                 return _objOptions;
+            }
+        }
+
+        public ObservableCollection<CharacterAttrib> PrimaryAttributes
+        {
+            get
+            {
+                return _lstPrimaryAttributes;
+            }
+        }
+
+        public ObservableCollection<CharacterAttrib> SpecialAttributes
+        {
+            get
+            {
+                return _lstSpecialAttributes;
             }
         }
 

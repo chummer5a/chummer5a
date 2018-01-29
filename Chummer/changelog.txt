@@ -114,6 +114,7 @@ Application Changes:
 - If a language other than en-US fails to load, Chummer5a will now default to the en-US strings when translating forms (after the appropriate error message is shown).
 - Fixed an issue where multiple sources of the Prototype Transhuman bonus would override and get in the way of each other.
 - Removed <transgenicsgenetechcost> from the improvement system and all code related to processing transgenics, as it is a holdover from the 4e days, and unlike something like <genetechcostmultiplier>, there is no way to translate it to 5e's mechanics.
+- Fixed an issue where adding contacts from a file would not register and save those contacts with the underlying character.
 
 Data Changes:
 

@@ -51,8 +51,6 @@ namespace Chummer
         private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear = false;
         private StoryBuilder _objStoryBuilder;
-        private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
-        private readonly ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
         private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
         private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
@@ -455,47 +453,7 @@ namespace Chummer
 
             // Load the Skills information.
             objXmlDocument = XmlManager.Load("skills.xml");
-
-            // Populate Contacts and Enemies.
-            int intContact = -1;
-            int intEnemy = -1;
-            foreach (Contact objContact in CharacterObject.Contacts)
-            {
-                if (objContact.EntityType == ContactType.Contact)
-                {
-                    intContact++;
-                    ContactControl objContactControl = new ContactControl(objContact);
-                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                    objContactControl.DeleteContact += DeleteContact;
-                    objContactControl.MouseDown += panContactControl_MouseDown;
-
-                    objContactControl.Top = intContact * objContactControl.Height;
-
-                    panContacts.Controls.Add(objContactControl);
-                }
-                if (objContact.EntityType == ContactType.Enemy)
-                {
-                    intEnemy++;
-                    ContactControl objContactControl = new ContactControl(objContact);
-                    // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
-                    objContactControl.ContactDetailChanged += EnemyChanged;
-                    objContactControl.DeleteContact += DeleteEnemy;
-
-                    objContactControl.Top = intEnemy * objContactControl.Height;
-                    panEnemies.Controls.Add(objContactControl);
-                }
-                if (objContact.EntityType == ContactType.Pet)
-                {
-                    PetControl objPetControl = new PetControl(objContact);
-                    // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
-                    objPetControl.DeleteContact += DeletePet;
-                    objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-
-                    panPets.Controls.Add(objPetControl);
-                }
-            }
-
+            
             // Populate Magician Spirits and Technomancer Sprites.
             for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
             {
@@ -522,6 +480,7 @@ namespace Chummer
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+            RefreshContacts(panContacts, panEnemies, panPets);
 
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -591,16 +550,18 @@ namespace Chummer
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
 
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
+            RefreshAttributes(pnlAttributes);
 
+            PrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            SpecialAttributes.CollectionChanged += AttributeCollectionChanged;
             CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
             CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
             CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
             CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+            CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
+
             // Hacky, but necessary
             // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
             // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
@@ -670,14 +631,15 @@ namespace Chummer
                     ToolStripManager.RevertMerge("toolStrip");
 
                 // Unsubscribe from events.
-                lstPrimaryAttributes.CollectionChanged -= AttributeCollectionChanged;
-                lstSpecialAttributes.CollectionChanged -= AttributeCollectionChanged;
+                PrimaryAttributes.CollectionChanged -= AttributeCollectionChanged;
+                SpecialAttributes.CollectionChanged -= AttributeCollectionChanged;
                 CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
                 CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
                 CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -722,6 +684,7 @@ namespace Chummer
                 {
                     objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objContactControl.DeleteContact -= DeleteContact;
+                    objContactControl.MouseDown -= DragContactControl;
                 }
 
                 foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
@@ -821,26 +784,26 @@ namespace Chummer
                     cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
                 }
 
-                if (!lstSpecialAttributes.Contains(CharacterObject.MAG))
+                if (!SpecialAttributes.Contains(CharacterObject.MAG))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.MAG);
+                    SpecialAttributes.Add(CharacterObject.MAG);
                 }
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.MAGAdept);
+                    SpecialAttributes.Add(CharacterObject.MAGAdept);
                 }
             }
             else
             {
                 ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
-                if (lstSpecialAttributes.Contains(CharacterObject.MAG))
+                if (SpecialAttributes.Contains(CharacterObject.MAG))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.MAG);
+                    SpecialAttributes.Remove(CharacterObject.MAG);
                 }
-                if (lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.MAGAdept);
+                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
             }
         }
@@ -872,18 +835,18 @@ namespace Chummer
                     chkInitiationSchooling.Visible = false;
                     cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
                 }
-                if (!lstSpecialAttributes.Contains(CharacterObject.RES))
+                if (!SpecialAttributes.Contains(CharacterObject.RES))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.RES);
+                    SpecialAttributes.Add(CharacterObject.RES);
                 }
             }
             else
             {
                 ClearInitiationTab();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
-                if (lstSpecialAttributes.Contains(CharacterObject.RES))
+                if (SpecialAttributes.Contains(CharacterObject.RES))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.RES);
+                    SpecialAttributes.Remove(CharacterObject.RES);
                 }
             }
         }
@@ -894,16 +857,16 @@ namespace Chummer
                 return;
             if (CharacterObject.DEPEnabled)
             {
-                if (!lstSpecialAttributes.Contains(CharacterObject.DEP))
+                if (!SpecialAttributes.Contains(CharacterObject.DEP))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.DEP);
+                    SpecialAttributes.Add(CharacterObject.DEP);
                 }
             }
             else
             {
-                if (lstSpecialAttributes.Contains(CharacterObject.DEP))
+                if (SpecialAttributes.Contains(CharacterObject.DEP))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.DEP);
+                    SpecialAttributes.Remove(CharacterObject.DEP);
                 }
             }
         }
@@ -918,18 +881,18 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabAdept))
                     tabCharacterTabs.TabPages.Insert(3, tabAdept);
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.MAGAdept);
+                    SpecialAttributes.Add(CharacterObject.MAGAdept);
                 }
             }
             else
             {
                 ClearAdeptTab();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
-                if (lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.MAGAdept);
+                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
             }
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
@@ -981,18 +944,18 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                     tabCharacterTabs.TabPages.Insert(3, tabMagician);
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Add(CharacterObject.MAGAdept);
+                    SpecialAttributes.Add(CharacterObject.MAGAdept);
                 }
             }
             else
             {
                 ClearSpellTab();
                 tabCharacterTabs.TabPages.Remove(tabMagician);
-                if (lstSpecialAttributes.Contains(CharacterObject.MAGAdept))
+                if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
-                    lstSpecialAttributes.Remove(CharacterObject.MAGAdept);
+                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
             }
 
@@ -1954,7 +1917,6 @@ namespace Chummer
 
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            RefreshContacts();
 
             IsCharacterUpdateRequested = true;
             // Immediately call character update because it re-applies essence loss improvements
@@ -2819,186 +2781,7 @@ namespace Chummer
             IsDirty = true;
         }
         #endregion
-
-        #region ContactControl Events
-        private void DeleteContact(object sender, EventArgs e)
-        {
-            DeleteContact(sender, false);
-        }
-
-        private void DeleteContact(object sender, bool force)
-        {
-            if (!force && !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
-                return;
-
-            // Handle the DeleteContact Event for the ContactControl object.
-            ContactControl objSender = (ContactControl)sender;
-            bool blnFound = false;
-            foreach (ContactControl objContactControl in panContacts.Controls)
-            {
-                // Set the flag to show that we have found the Contact.
-                if (objContactControl == objSender)
-                {
-                    blnFound = true;
-                    CharacterObject.Contacts.Remove(objContactControl.ContactObject);
-                }
-
-                // Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (blnFound)
-                {
-
-                    objContactControl.Top -= 25;
-                }
-            }
-            // Remove the ContactControl that raised the Event.
-            panContacts.Controls.Remove(objSender);
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-        #endregion
-
-        #region EnemyControl Events
-        private void EnemyChanged(object sender, EventArgs e)
-        {
-            // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            int intNegativeQualityBP = 0;
-            // Calculate the BP used for Negative Qualities.
-            foreach (Quality objQuality in CharacterObject.Qualities)
-            {
-                if (objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
-                    intNegativeQualityBP += objQuality.BP;
-            }
-            // Include the amount of free Negative Qualities from Improvements.
-            intNegativeQualityBP -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
-            // Adjust for Karma cost multiplier.
-            intNegativeQualityBP *= CharacterObjectOptions.KarmaQuality;
-
-            // Find current enemy BP total
-            int intBPUsed = 0;
-            foreach (ContactControl objContactControl in panEnemies.Controls)
-            {
-                Contact objLoopEnemy = objContactControl.ContactObject;
-                if (!objLoopEnemy.Free)
-                {
-                    intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-
-            int intEnemyMax = 0;
-            int intQualityMax = 0;
-            string strQualityPoints = string.Empty;
-            string strEnemyPoints = string.Empty;
-            intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
-            intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            strEnemyPoints = intEnemyMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            strQualityPoints = intQualityMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-
-            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Contact objSenderContact = ((ContactControl)sender).ContactObject;
-                int intTotal = (intEnemyMax * -1) - intBPUsed;
-                if (e is TextEventArgs objTextArgument)
-                {
-                    switch (objTextArgument.Text)
-                    {
-                        case "Connection":
-                            objSenderContact.Connection -= intTotal;
-                            break;
-                        case "Loyalty":
-                            objSenderContact.Loyalty -= intTotal;
-                            break;
-                    }
-                }
-                return;
-            }
-
-            if (!CharacterObjectOptions.ExceedNegativeQualities)
-            {
-                if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Contact objSenderContact = ((ContactControl)sender).ContactObject;
-                    if (e is TextEventArgs objTextArgument)
-                    {
-                        switch (objTextArgument.Text)
-                        {
-                            case "Connection":
-                                objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                               CharacterObjectOptions.KarmaQuality);
-                                break;
-                            case "Loyalty":
-                                objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                            CharacterObjectOptions.KarmaQuality);
-                                break;
-                        }
-                    }
-                }
-            }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void DeleteEnemy(object sender, EventArgs e)
-        {
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
-                return;
-
-            // Handle the DeleteCOntact Event for the ContactControl object.
-            ContactControl objSender = (ContactControl)sender;
-            bool blnFound = false;
-            foreach (ContactControl objContactControl in panEnemies.Controls)
-            {
-                // Set the flag to show that we have found the contact.
-                if (objContactControl == objSender)
-                    blnFound = true;
-
-                // Once the Enemy has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (blnFound)
-                {
-                    CharacterObject.Contacts.Remove(objContactControl.ContactObject);
-                    objContactControl.Top -= 25;
-                }
-            }
-            // Remove the ContactControl that raised the Event.
-            panEnemies.Controls.Remove(objSender);
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-        #endregion
-
-        #region PetControl Events
-        private void DeletePet(object sender, EventArgs e)
-        {
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
-                return;
-
-            // Handle the DeleteContact Event for the ContactControl object.
-            PetControl objSender = (PetControl)sender;
-            bool blnFound = false;
-            foreach (PetControl objContactControl in panPets.Controls)
-            {
-                // Set the flag to show that we have found the Contact.
-                if (objContactControl == objSender)
-                    blnFound = true;
-
-                // Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (blnFound)
-                    CharacterObject.Contacts.Remove(objContactControl.ContactObject);
-            }
-            // Remove the ContactControl that raised the Event.
-            panPets.Controls.Remove(objSender);
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-        #endregion
-
+        
         #region SpiritControl Events
         private void DeleteSpirit(object sender, EventArgs e)
         {
@@ -3099,99 +2882,6 @@ namespace Chummer
             {
                 cmdDeleteLimitModifier_Click(sender, e);
             }
-        }
-
-        private void cmdAddContact_Click(object sender, EventArgs e)
-        {
-            Contact objContact = new Contact(CharacterObject)
-            {
-                EntityType = ContactType.Contact
-            };
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panContacts.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact);
-
-            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
-            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-            objContactControl.DeleteContact += DeleteContact;
-            objContactControl.MouseDown += panContactControl_MouseDown;
-
-            panContacts.Controls.Add(objContactControl);
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cmdAddEnemy_Click(object sender, EventArgs e)
-        {
-            // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            int intNegativeQualityBP = 0;
-            // Calculate the BP used for Negative Qualities.
-            foreach (Quality objQuality in CharacterObject.Qualities)
-            {
-                if (objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
-                    intNegativeQualityBP += objQuality.BP;
-            }
-            // Include the amount of free Negative Qualities from Improvements.
-            intNegativeQualityBP -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
-            // Adjust for Karma build method.
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
-                intNegativeQualityBP *= CharacterObjectOptions.KarmaQuality;
-
-            int intBPUsed = 0;
-            int intEnemyMax = 0;
-            int intQualityMax = 0;
-            string strEnemyPoints = string.Empty;
-            string strQualityPoints = string.Empty;
-            intBPUsed = -2 * CharacterObjectOptions.KarmaQuality;
-            intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
-            intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            strEnemyPoints = CharacterObject.GameplayOptionQualityLimit + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            strQualityPoints = CharacterObject.GameplayOptionQualityLimit + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-
-            foreach (ContactControl objEnemyControl in panEnemies.Controls)
-            {
-                Contact objLoopEnemy = objEnemyControl.ContactObject;
-                intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-            }
-
-            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (!CharacterObjectOptions.ExceedNegativeQualities)
-            {
-                if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
-            Contact objContact = new Contact(CharacterObject)
-            {
-                EntityType = ContactType.Enemy
-            };
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panEnemies.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact);
-
-            // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged and OtherCostChanged(hackish) Events
-            objContactControl.ContactDetailChanged += EnemyChanged;
-            objContactControl.DeleteContact += DeleteEnemy;
-
-            // Set the ContactControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-            objContactControl.Location = new Point(0, objContactControl.Height * i + panEnemies.AutoScrollPosition.Y);
-            panEnemies.Controls.Add(objContactControl);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdAddSpell_Click(object sender, EventArgs e)
@@ -4953,11 +4643,6 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
-
-            if (IsCharacterUpdateRequested)
-            {
-                RefreshContacts();
-            }
         }
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
@@ -5109,7 +4794,6 @@ namespace Chummer
             if (IsCharacterUpdateRequested)
             {
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshContacts();
                 PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             }
@@ -5294,7 +4978,6 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                    RefreshContacts();
                     IsDirty = true;
                 }
             }
@@ -5706,27 +5389,6 @@ namespace Chummer
                 ContextMenuStrip = cmsVehicleLocation
             };
             treVehicles.SelectedNode.Nodes.Add(objLocation);
-
-            IsDirty = true;
-        }
-
-        private void cmdAddPet_Click(object sender, EventArgs e)
-        {
-            Contact objContact = new Contact(CharacterObject)
-            {
-                EntityType = ContactType.Pet
-            };
-            CharacterObject.Contacts.Add(objContact);
-
-            PetControl objPetControl = new PetControl(objContact);
-
-            // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
-            objPetControl.DeleteContact += DeletePet;
-            objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-
-            // Add the control to the Panel.
-            panPets.Controls.Add(objPetControl);
-            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
         }
@@ -9108,7 +8770,6 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                    RefreshContacts();
                     IsDirty = true;
                 }
             }
@@ -11083,58 +10744,7 @@ namespace Chummer
             }
         }
 #endregion
-#region Additional Relationships Tab Control Events
-        private void tsAddFromFile_Click(object sender, EventArgs e)
-        {
-            // Displays an OpenFileDialog so the user can select the XML to read.  
-            OpenFileDialog openFileDialog1 = new OpenFileDialog
-            {
-                Filter = "XML Files|*.xml"
-            };
 
-            // Show the Dialog.  
-            // If the user cancels out, return early.
-            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
-                return;
-            XmlDocument doc = new XmlDocument();
-            doc.Load(openFileDialog1.FileName);
-            XmlNodeList contactXmlList = doc.SelectNodes("/chummer/contacts/contact");
-            // Couldn't find any valid contacts, so return early. 
-            if (contactXmlList == null) return;
-            foreach (XmlNode n in contactXmlList)
-            {
-                Contact c = new Contact(CharacterObject);
-                c.Load(n);
-                if (c.EntityType == ContactType.Contact)
-                {
-                    ContactControl cc = new ContactControl(c);
-                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                    cc.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                    cc.DeleteContact += DeleteContact;
-                    cc.MouseDown += panContactControl_MouseDown;
-
-                    panContacts.Controls.Add(cc);
-                }
-                if (c.EntityType == ContactType.Enemy)
-                {
-                    ContactControl cc = new ContactControl(c);
-                    // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
-                    cc.ContactDetailChanged += EnemyChanged;
-                    cc.DeleteContact += DeleteEnemy;
-                    panEnemies.Controls.Add(cc);
-                }
-                if (c.EntityType == ContactType.Pet)
-                {
-                    PetControl cc = new PetControl(c);
-                    // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
-                    cc.DeleteContact += DeletePet;
-                    cc.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-
-                    panPets.Controls.Add(cc);
-                }
-            }
-        }
-#endregion
 #region Character Info Tab Event
         private void txtSex_TextChanged(object sender, EventArgs e)
         {
@@ -11584,18 +11194,19 @@ namespace Chummer
             int intContactPointsLeft = intContactPoints;
             int intGroupContacts = 0;
             int intHighPlacesFriends = 0;
-            foreach (ContactControl objContactControl in panContacts.Controls)
+            foreach (Contact objContact in CharacterObject.Contacts)
             {
-                //Don't care about free contacts
-                if (objContactControl.ContactObject.Free) continue;
+                // Don't care about free contacts
+                if (objContact.EntityType != ContactType.Contact || objContact.Free)
+                    continue;
 
-                if (objContactControl.ContactObject.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
+                if (objContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
                 {
-                    intHighPlacesFriends += (objContactControl.ContactObject.Connection + objContactControl.ContactObject.Loyalty);
+                    intHighPlacesFriends += (objContact.Connection + objContact.Loyalty);
                 }
-                else if (objContactControl.ContactObject.IsGroup == false)
+                else if (objContact.IsGroup == false)
                 {
-                    int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
+                    int over = intContactPointsLeft - objContact.ContactPoints;
 
                     //Prefers to eat 0, we went over
                     if (over < 0)
@@ -11614,7 +11225,7 @@ namespace Chummer
                 else
                 {
                     //save this for later, as a group contract is counted as a positive quality
-                    if (objContactControl.ContactObject.MadeMan)
+                    if (objContact.MadeMan)
                     {
                         //Made man is free, contact (No i don't see any reason for not to have con4)
                         //per RAW. We keep it that way, can always create a house rule for it later
@@ -11622,7 +11233,7 @@ namespace Chummer
                     }
                     else
                     {
-                        intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                        intGroupContacts += objContact.ContactPoints;
                     }
                 }
             }
@@ -11640,10 +11251,9 @@ namespace Chummer
             // Calculate the BP used by Enemies. These are added to the BP since they are technically
             // a Negative Quality.
             int intEnemyPoints = 0;
-            foreach (ContactControl objContactControl in panEnemies.Controls)
+            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
             {
-                Contact objLoopEnemy = objContactControl.ContactObject;
-                if (!objLoopEnemy.Free)
+                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
                 {
                     // The Enemy's Karma cost = their (Connection + Loyalty Rating) x Karma multiplier.
                     intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
@@ -12278,7 +11888,6 @@ namespace Chummer
 
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshContacts();
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
@@ -12656,6 +12265,11 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 
+            foreach (Contact objContact in CharacterObject.Contacts)
+            {
+                objContact.RefreshForControl(); //Force refresh
+            }
+
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
             txtAge.Text = CharacterObject.Age;
@@ -12968,39 +12582,7 @@ namespace Chummer
             }
             _blnSkipRefresh = false;
         }
-
-        public void RefreshContacts()
-        {
-            HashSet<Contact> existing = new HashSet<Contact>();
-
-            for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
-            {
-                if (panContacts.Controls[i] is ContactControl contactControl)
-                {
-                    Contact objLoopContact = contactControl.ContactObject;
-                    if (CharacterObject.Contacts.Contains(objLoopContact))
-                    {
-                        objLoopContact.RefreshForControl(); //Force refresh
-                        existing.Add(contactControl.ContactObject);
-                    }
-                    else
-                    {
-                        DeleteContact(contactControl, true);
-                    }
-                }
-            }
-
-            foreach (Contact contact in CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && !existing.Contains(x)))
-            {
-                ContactControl ctrl = new ContactControl(contact);
-
-                ctrl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                ctrl.DeleteContact += DeleteContact;
-
-                panContacts.Controls.Add(ctrl);
-            }
-        }
-
+        
         /// <summary>
         /// Refresh the information for the currently displayed Weapon.
         /// </summary>
@@ -15205,10 +14787,9 @@ namespace Chummer
             int intContactPointsUsed = 0;
             int intGroupContacts = 0;
             int intHighPlaces = 0;
-            foreach (ContactControl objContactControl in panContacts.Controls)
+            foreach (Contact objLoopContact in CharacterObject.Contacts)
             {
-                Contact objLoopContact = objContactControl.ContactObject;
-                if (!objLoopContact.Free)
+                if (objLoopContact.EntityType == ContactType.Contact && !objLoopContact.Free)
                 {
                     if (objLoopContact.IsGroup)
                     {
@@ -15222,7 +14803,6 @@ namespace Chummer
                     {
                         intContactPointsUsed += objLoopContact.Connection + objLoopContact.Loyalty;
                     }
-
                 }
             }
 
@@ -15248,10 +14828,9 @@ namespace Chummer
             int intPointsUsed = 0;
             int intNegativePoints = 0;
             int intEnemyPoints = 0;
-            foreach (ContactControl objContactControl in panEnemies.Controls)
+            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
             {
-                Contact objLoopEnemy = objContactControl.ContactObject;
-                if (!objLoopEnemy.Free)
+                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
                 {
                     intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
@@ -18485,13 +18064,7 @@ namespace Chummer
         {
             e.Effect = DragDropEffects.Move;
         }
-
-        private void panContactControl_MouseDown(object sender, MouseEventArgs e)
-        {
-            Control source = (Control)sender;
-            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
-        }
-
+        
         private void panEnemies_Click(object sender, EventArgs e)
         {
             panEnemies.Focus();
@@ -18591,72 +18164,10 @@ namespace Chummer
                 return;
             CharacterObject.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
         }
-        private void BuildAttributePanel()
-        {
-            pnlAttributes.Controls.Clear();
-            lstPrimaryAttributes.Clear();
-            lstSpecialAttributes.Clear();
-            lstPrimaryAttributes.Add(CharacterObject.BOD);
-            lstPrimaryAttributes.Add(CharacterObject.AGI);
-            lstPrimaryAttributes.Add(CharacterObject.REA);
-            lstPrimaryAttributes.Add(CharacterObject.STR);
-            lstPrimaryAttributes.Add(CharacterObject.CHA);
-            lstPrimaryAttributes.Add(CharacterObject.INT);
-            lstPrimaryAttributes.Add(CharacterObject.LOG);
-            lstPrimaryAttributes.Add(CharacterObject.WIL);
 
-            lstSpecialAttributes.Add(CharacterObject.EDG);
-            if (CharacterObject.MAGEnabled)
-            {
-                lstSpecialAttributes.Add(CharacterObject.MAG);
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                    lstSpecialAttributes.Add(CharacterObject.MAGAdept);
-            }
-            if (CharacterObject.RESEnabled)
-            {
-                lstSpecialAttributes.Add(CharacterObject.RES);
-            }
-            if (CharacterObject.DEPEnabled)
-            {
-                lstSpecialAttributes.Add(CharacterObject.DEP);
-            }
-        }
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            switch (notifyCollectionChangedEventArgs.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
-                    {
-                        AttributeControl objControl = new AttributeControl(objAttrib);
-                        objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                        pnlAttributes.Controls.Add(objControl);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
-                    {
-                        foreach (AttributeControl objControl in pnlAttributes.Controls)
-                        {
-                            if (objControl.AttributeName == objAttrib.Abbrev)
-                            {
-                                objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                pnlAttributes.Controls.Remove(objControl);
-                                objControl.Dispose();
-                            }
-                        }
-                        objAttrib.Base = 0;
-                        objAttrib.Karma = 0;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    foreach (AttributeControl objControl in pnlAttributes.Controls)
-                    {
-                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                    }
-                    pnlAttributes.Controls.Clear();
-                    break;
-            }
+            RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs);
         }
 
         private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -18687,6 +18198,11 @@ namespace Chummer
         private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
+        }
+
+        private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshContacts(panContacts, panEnemies, panPets, notifyCollectionChangedEventArgs);
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)

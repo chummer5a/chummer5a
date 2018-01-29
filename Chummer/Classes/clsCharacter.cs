@@ -208,7 +208,7 @@ namespace Chummer
         private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
         private ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
-        private List<Contact> _lstContacts = new List<Contact>();
+        private ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
@@ -6260,7 +6260,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);// + _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);// + Contacts.Count(x => x.EntityType == ContactType.Enemy);
 
                 return intReturn;
             }
@@ -6292,7 +6292,7 @@ namespace Chummer
                         objReturn.Append(" + " + GetObjectName(objImprovement, GlobalOptions.Language) + " (" + objImprovement.Value.ToString() + ')');
                 }
 
-                int intEnemies = _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intEnemies = Contacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
                     objReturn.Append(" + " + LanguageManager.GetString("Label_SummaryEnemies", GlobalOptions.Language) + " (" + intEnemies.ToString() + ')');
 
@@ -6383,7 +6383,7 @@ namespace Chummer
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
-        public IList<Contact> Contacts
+        public ObservableCollection<Contact> Contacts
         {
             get
             {
