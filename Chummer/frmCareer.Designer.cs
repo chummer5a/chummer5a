@@ -5655,7 +5655,7 @@ namespace Chummer
             this.cmdAddSpirit.Tag = "Button_AddSpirit";
             this.cmdAddSpirit.Text = "A&dd Spirit";
             this.cmdAddSpirit.UseVisualStyleBackColor = true;
-            this.cmdAddSpirit.Click += new System.EventHandler(this.cmdAddSpirit_Click);
+            this.cmdAddSpirit.Click += new System.EventHandler(this.AddSpirit);
             // 
             // lblSpirits
             // 
@@ -5959,7 +5959,7 @@ namespace Chummer
             this.cmdAddSprite.Tag = "Button_AddSprite";
             this.cmdAddSprite.Text = "&Add Sprite";
             this.cmdAddSprite.UseVisualStyleBackColor = true;
-            this.cmdAddSprite.Click += new System.EventHandler(this.cmdAddSprite_Click);
+            this.cmdAddSprite.Click += new System.EventHandler(this.AddSprite);
             // 
             // lblSprites
             // 

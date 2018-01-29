@@ -209,7 +209,7 @@ namespace Chummer
         private ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
         private ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
-        private List<Spirit> _lstSpirits = new List<Spirit>();
+        private ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
@@ -3716,8 +3716,17 @@ namespace Chummer
                     }
                 }
             }
-
-            ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
+            for (int i = Spirits.Count - 1; i >= 0; --i)
+            {
+                if (i < Spirits.Count)
+                {
+                    Spirit objToRemove = Spirits[i];
+                    if (objToRemove.EntityType == SpiritType.Spirit)
+                    {
+                        Spirits.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -3761,7 +3770,17 @@ namespace Chummer
                 }
             }
 
-            ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
+            for (int i = Spirits.Count - 1; i >= 0; --i)
+            {
+                if (i < Spirits.Count)
+                {
+                    Spirit objToRemove = Spirits[i];
+                    if (objToRemove.EntityType == SpiritType.Sprite)
+                    {
+                        Spirits.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -6394,7 +6413,7 @@ namespace Chummer
         /// <summary>
         /// Spirits and Sprites.
         /// </summary>
-        public IList<Spirit> Spirits
+        public ObservableCollection<Spirit> Spirits
         {
             get
             {

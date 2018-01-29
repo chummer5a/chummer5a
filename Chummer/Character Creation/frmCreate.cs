@@ -218,8 +218,7 @@ namespace Chummer
                 {
                     CharacterObject.GameplayOption = "Standard";
                 }
-                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
+                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
                 string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
                 if (!CharacterObjectOptions.FreeContactsMultiplierEnabled)
@@ -339,9 +338,9 @@ namespace Chummer
             RefreshQualities(treQualities, cmsQuality);
 
             // Populate the Magician Traditions list.
-            XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");
+            XmlDocument xmlTraditionsDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstTraditions = new List<ListItem>();
-            foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
             {
                 string strName = objXmlTradition["name"].InnerText;
                 lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
@@ -355,12 +354,11 @@ namespace Chummer
             cboTradition.EndUpdate();
 
             // Populate the Magician Custom Drain Options list.
-            objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstDrainAttributes = new List<ListItem>
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlDrain in objXmlDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
+            foreach (XmlNode objXmlDrain in xmlTraditionsDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
             {
                 string strName = objXmlDrain["name"].InnerText;
                 lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
@@ -379,12 +377,11 @@ namespace Chummer
             }
 
             // Populate the Magician Custom Spirits lists - Combat.
-            objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstSpirit = new List<ListItem>
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+            foreach (XmlNode objXmlSpirit in xmlTraditionsDocument.SelectNodes("/chummer/spirits/spirit"))
             {
                 string strSpiritName = objXmlSpirit["name"].InnerText;
                 if (limit.Count == 0 || limit.Contains(strSpiritName))
@@ -429,6 +426,26 @@ namespace Chummer
             cboSpiritManipulation.DataSource = lstManip;
             cboSpiritManipulation.EndUpdate();
 
+            /*
+            // Populate the Technomancer Streams list.
+            xmlTraditionsDocument = XmlManager.Load("streams.xml");
+            List<ListItem> lstStreams = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            {
+                string strName = objXmlTradition["name"].InnerText;
+                lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
+            }
+            lstStreams.Sort(CompareListItems.CompareNames);
+            cboStream.BeginUpdate();
+            cboStream.ValueMember = "Value";
+            cboStream.DisplayMember = "Name";
+            cboStream.DataSource = lstStreams;
+            cboStream.EndUpdate();
+            */
+
             // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
             if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
             {
@@ -451,29 +468,7 @@ namespace Chummer
             if (CharacterObject.BornRich) nudNuyen.Maximum += 30;
             nudNuyen.Value = CharacterObject.NuyenBP;
 
-            // Load the Skills information.
-            objXmlDocument = XmlManager.Load("skills.xml");
-            
-            // Populate Magician Spirits and Technomancer Sprites.
-            for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
-            {
-                Spirit objSpirit = CharacterObject.Spirits[i];
-                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                SpiritControl objSpiritControl = new SpiritControl(objSpirit);
-
-                // Attach an EventHandler for the ServicesOwedChanged Event.
-                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
-
-                objSpiritControl.Top = i * objSpiritControl.Height;
-                if (blnIsSpirit)
-                    panSpirits.Controls.Add(objSpiritControl);
-                else
-                    panSprites.Controls.Add(objSpiritControl);
-            }
-
+            RefreshSpirits(panSpirits, panSprites);
             RefreshSpells(treSpells, cmsSpell);
             RefreshComplexForms(treComplexForms, cmsComplexForm);
             RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
@@ -562,6 +557,7 @@ namespace Chummer
             CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
             CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
+            CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
 
             // Hacky, but necessary
             // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
@@ -642,6 +638,7 @@ namespace Chummer
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
+                CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -2787,40 +2784,6 @@ namespace Chummer
             IsDirty = true;
         }
         #endregion
-        
-        #region SpiritControl Events
-        private void DeleteSpirit(object sender, EventArgs e)
-        {
-            SpiritControl objSender = (SpiritControl)sender;
-            Spirit objSpirit = objSender.SpiritObject;
-            bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
-                return;
-
-            Panel panControlContainer = blnIsSpirit ? panSpirits : panSprites;
-            int intRemovedControlHeight = 0;
-            foreach (SpiritControl objSpiritControl in panControlContainer.Controls)
-            {
-                // Set the flag to show that we have found the Spirit.
-                if (objSpiritControl == objSender)
-                {
-                    CharacterObject.Spirits.Remove(objSpiritControl.SpiritObject);
-                    intRemovedControlHeight = objSpiritControl.Height;
-                }
-
-                // Once the Spirit has been found, all of the other SpiritControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (intRemovedControlHeight != 0)
-                {
-                    objSpiritControl.Top -= intRemovedControlHeight;
-                }
-            }
-            // Remove the SpiritControl that raised the Event.
-            panControlContainer.Controls.Remove(objSender);
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-        #endregion
 
         #region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
@@ -2954,70 +2917,7 @@ namespace Chummer
                 IsDirty = true;
             }
         }
-
-        private void cmdAddSpirit_Click(object sender, EventArgs e)
-        {
-            int i = panSpirits.Controls.Count;
-
-            // The number of bound Spirits cannot exeed the character's CHA.
-            if (i >= CharacterObject.CHA.Value && !CharacterObject.IgnoreRules)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            Spirit objSpirit = new Spirit(CharacterObject)
-            {
-                EntityType = SpiritType.Spirit,
-                Force = CharacterObject.MaxSpiritForce
-            };
-            CharacterObject.Spirits.Add(objSpirit);
-
-            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
-
-            // Attach an EventHandler for the ServicesOwedChanged Event.
-            objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-            objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-            objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
-
-            objSpiritControl.Top = i * objSpiritControl.Height;
-            panSpirits.Controls.Add(objSpiritControl);
-
-            IsDirty = true;
-        }
-
-        private void cmdAddSprite_Click(object sender, EventArgs e)
-        {
-            int i = panSprites.Controls.Count;
-
-            // The number of registered Sprites cannot exceed the character's LOG.
-            if (i >= CharacterObject.LOG.Value && !CharacterObject.IgnoreRules)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            Spirit objSprite = new Spirit(CharacterObject)
-            {
-                EntityType = SpiritType.Sprite,
-                Force = CharacterObject.MaxSpriteLevel
-            };
-            CharacterObject.Spirits.Add(objSprite);
-
-            SpiritControl objSpriteControl = new SpiritControl(objSprite);
-
-            // Attach an EventHandler for the ServicesOwedChanged Event.
-            objSpriteControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-            objSpriteControl.DeleteSpirit += DeleteSpirit;
-
-            objSpriteControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
-
-            objSpriteControl.Top = i * objSpriteControl.Height;
-            panSprites.Controls.Add(objSpriteControl);
-
-            IsDirty = true;
-        }
+        
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             bool blnAddAgain = false;
@@ -10470,10 +10370,8 @@ namespace Chummer
         {
             if (cboTradition.IsInitalized(_blnLoading))
                 return;
-
-            XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");
-
-            XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboTradition.SelectedValue + "\"]");
+            
+            XmlNode objXmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboTradition.SelectedValue + "\"]");
 
             if (objXmlTradition == null)
             {
@@ -10550,9 +10448,6 @@ namespace Chummer
                 CharacterObject.TraditionDrain = objXmlTradition["drain"].InnerText;
 
                 CalculateTraditionDrain(CharacterObject.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
-                foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                    objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
-
             }
             IsCharacterUpdateRequested = true;
 
@@ -10587,10 +10482,9 @@ namespace Chummer
                 return;
 
             CharacterObject.SpiritCombat = cboSpiritCombat.SelectedValue.ToString();
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 
@@ -10602,10 +10496,9 @@ namespace Chummer
                 return;
 
             CharacterObject.SpiritDetection = cboSpiritDetection.SelectedValue.ToString();
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 
@@ -10617,10 +10510,9 @@ namespace Chummer
                 return;
 
             CharacterObject.SpiritHealth = cboSpiritHealth.SelectedValue.ToString();
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 
@@ -10631,10 +10523,9 @@ namespace Chummer
             if (cboSpiritIllusion.SelectedValue == null)
                 return;
             CharacterObject.SpiritIllusion = cboSpiritIllusion.SelectedValue.ToString();
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 
@@ -10646,10 +10537,9 @@ namespace Chummer
                 return;
 
             CharacterObject.SpiritManipulation = cboSpiritManipulation.SelectedValue.ToString();
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-                objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
 
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 #endregion
@@ -11071,11 +10961,9 @@ namespace Chummer
         {
             CharacterObject.ClearMagic();
 
-            // Remove the Spirits.
-            panSpirits.Controls.Clear();
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         /// <summary>
@@ -11087,9 +10975,9 @@ namespace Chummer
 
             // Remove all of the Adept Powers from the panel.
             // TODO: Remove adept powers.
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         /// <summary>
@@ -11099,11 +10987,9 @@ namespace Chummer
         {
             CharacterObject.ClearResonance();
 
-            // Remove the Sprites.
-            panSprites.Controls.Clear();
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         /// <summary>
@@ -11729,36 +11615,31 @@ namespace Chummer
             intFreestyleBP += intFociPointsUsed;
 
             // ------------------------------------------------------------------------------
-            // Calculate the BP used by Spirits.
+            // Calculate the BP used by Spirits and Sprites.
             int intSpiritPointsUsed = 0;
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
+            int intSpritePointsUsed = 0;
+            foreach (Spirit objSpirit in CharacterObject.Spirits)
             {
-                Spirit objLoopSpirit = objSpiritControl.SpiritObject;
-                // Each Spirit costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= objLoopSpirit.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-                intSpiritPointsUsed += objLoopSpirit.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-
-                // Each Fettered Spirit costs 3 x Force.
-                //TODO: Bind the 3 to an option.
-                if (objLoopSpirit.Fettered)
+                int intLoopKarma = objSpirit.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
+                // Each Sprite costs KarmaSpirit x Services Owed.
+                intKarmaPointsRemain -= intLoopKarma;
+                if (objSpirit.EntityType == SpiritType.Spirit)
                 {
-                    intKarmaPointsRemain -= objLoopSpirit.Force * 3;
-                    intSpiritPointsUsed += objLoopSpirit.Force * 3;
+                    intSpiritPointsUsed += intLoopKarma;
+                    // Each Fettered Spirit costs 3 x Force.
+                    //TODO: Bind the 3 to an option.
+                    if (objSpirit.Fettered)
+                    {
+                        intKarmaPointsRemain -= objSpirit.Force * 3;
+                        intSpiritPointsUsed += objSpirit.Force * 3;
+                    }
+                }
+                else
+                {
+                    intSpritePointsUsed += intLoopKarma;
                 }
             }
-            intFreestyleBP += intSpiritPointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Sprites.
-            int intSpritePointsUsed = 0;
-            foreach (SpiritControl objSpriteControl in panSprites.Controls)
-            {
-                Spirit objLoopSprite = objSpriteControl.SpiritObject;
-                // Each Sprite costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= objLoopSprite.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-                intSpritePointsUsed += objLoopSprite.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-            }
-            intFreestyleBP += intSpritePointsUsed;
+            intFreestyleBP += intSpiritPointsUsed + intSpritePointsUsed;
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Complex Forms.
@@ -12243,16 +12124,14 @@ namespace Chummer
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
             {
                 Spirit objLoopSpirit = objSpiritControl.SpiritObject;
-                if (objLoopSpirit.EntityType == SpiritType.Spirit)
-                {
-                    objLoopSpirit.Force = CharacterObject.MaxSpiritForce;
-                    objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
-                }
-                else
-                {
-                    objLoopSpirit.Force = CharacterObject.MaxSpriteLevel;
-                    objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
-                }
+                objLoopSpirit.Force = CharacterObject.MaxSpiritForce;
+                objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+            }
+            foreach (SpiritControl objSpiritControl in panSprites.Controls)
+            {
+                Spirit objLoopSpirit = objSpiritControl.SpiritObject;
+                objLoopSpirit.Force = CharacterObject.MaxSpriteLevel;
+                objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
             }
 
             // Update the Drain CharacterAttribute Value.
@@ -16061,8 +15940,6 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSpirit in xmlSpirits.SelectNodes("spirit"))
                 {
-                    int i = panSpirits.Controls.Count;
-
                     Spirit objSpirit = new Spirit(CharacterObject)
                     {
                         EntityType = SpiritType.Spirit,
@@ -16071,15 +15948,6 @@ namespace Chummer
                         ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText)
                     };
                     CharacterObject.Spirits.Add(objSpirit);
-
-                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
-
-                    // Attach an EventHandler for the ServicesOwedChanged Event.
-                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                    objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                    objSpiritControl.Top = i * objSpiritControl.Height;
-                    panSpirits.Controls.Add(objSpiritControl);
                 }
             }
 
@@ -18237,6 +18105,11 @@ namespace Chummer
         private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshContacts(panContacts, panEnemies, panPets, notifyCollectionChangedEventArgs);
+        }
+
+        private void SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshSpirits(panSpirits, panSprites, notifyCollectionChangedEventArgs);
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)

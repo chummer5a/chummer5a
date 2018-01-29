@@ -2861,6 +2861,235 @@ namespace Chummer
         }
         #endregion
 
+        public void RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                panSpirits.Controls.Clear();
+                panSprites.Controls.Clear();
+                int intSpirits = -1;
+                int intSprites = -1;
+                foreach (Spirit objSpirit in CharacterObject.Spirits)
+                {
+                    bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+
+                    // Attach an EventHandler for the ServicesOwedChanged Event.
+                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                    objSpiritControl.DeleteSpirit += DeleteSpirit;
+
+                    objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+                    
+                    if (blnIsSpirit)
+                    {
+                        intSpirits += 1;
+                        objSpiritControl.Top = intSpirits * objSpiritControl.Height;
+                        panSpirits.Controls.Add(objSpiritControl);
+                    }
+                    else
+                    {
+                        intSprites += 1;
+                        objSpiritControl.Top = intSprites * objSpiritControl.Height;
+                        panSprites.Controls.Add(objSpiritControl);
+                    }
+                }
+            }
+            else
+            {
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intSpirits = panSpirits.Controls.Count;
+                            int intSprites = panSprites.Controls.Count;
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+
+                                // Attach an EventHandler for the ServicesOwedChanged Event.
+                                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit += DeleteSpirit;
+
+                                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+
+                                if (blnIsSpirit)
+                                {
+                                    objSpiritControl.Top = intSpirits * objSpiritControl.Height;
+                                    panSpirits.Controls.Add(objSpiritControl);
+                                    intSpirits += 1;
+                                }
+                                else
+                                {
+                                    objSpiritControl.Top = intSprites * objSpiritControl.Height;
+                                    panSprites.Controls.Add(objSpiritControl);
+                                    intSprites += 1;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objSpirit.EntityType == SpiritType.Spirit)
+                                {
+                                    for (int i = panSpirits.Controls.Count - 1; i >= 0; i--)
+                                    {
+                                        if (panSpirits.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        {
+                                            panSpirits.Controls.RemoveAt(i);
+                                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                            objSpiritControl.Dispose();
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = panSprites.Controls.Count - 1; i >= 0; i--)
+                                    {
+                                        if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        {
+                                            panSpirits.Controls.RemoveAt(i);
+                                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                            objSpiritControl.Dispose();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objSpirit.EntityType == SpiritType.Spirit)
+                                {
+                                    for (int i = panSpirits.Controls.Count - 1; i >= 0; i--)
+                                    {
+                                        if (panSpirits.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        {
+                                            panSpirits.Controls.RemoveAt(i);
+                                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                            objSpiritControl.Dispose();
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = panSprites.Controls.Count - 1; i >= 0; i--)
+                                    {
+                                        if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        {
+                                            panSpirits.Controls.RemoveAt(i);
+                                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                            objSpiritControl.Dispose();
+                                        }
+                                    }
+                                }
+                            }
+                            int intSpirits = panSpirits.Controls.Count;
+                            int intSprites = panSprites.Controls.Count;
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+
+                                // Attach an EventHandler for the ServicesOwedChanged Event.
+                                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit += DeleteSpirit;
+
+                                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+
+                                if (blnIsSpirit)
+                                {
+                                    objSpiritControl.Top = intSpirits * objSpiritControl.Height;
+                                    panSpirits.Controls.Add(objSpiritControl);
+                                    intSpirits += 1;
+                                }
+                                else
+                                {
+                                    objSpiritControl.Top = intSprites * objSpiritControl.Height;
+                                    panSprites.Controls.Add(objSpiritControl);
+                                    intSprites += 1;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshSpirits(panSpirits, panSprites);
+                        }
+                        break;
+                }
+            }
+        }
+
+        #region SpiritControl Events
+        protected void AddSpirit(object sender, EventArgs e)
+        {
+            // The number of bound Spirits cannot exeed the character's CHA.
+            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Spirit objSpirit = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Spirit,
+                Force = CharacterObject.MaxSpiritForce
+            };
+            CharacterObject.Spirits.Add(objSpirit);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void AddSprite(object sender, EventArgs e)
+        {
+            // The number of registered Sprites cannot exceed the character's LOG.
+            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite) >= CharacterObject.LOG.Value)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Spirit objSprite = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Sprite,
+                Force = CharacterObject.MaxSpriteLevel
+            };
+            CharacterObject.Spirits.Add(objSprite);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        protected void DeleteSpirit(object sender, EventArgs e)
+        {
+            if (sender is SpiritControl objSender)
+            {
+                Spirit objSpirit = objSender.SpiritObject;
+                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
+                    return;
+
+                CharacterObject.Spirits.Remove(objSpirit);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
