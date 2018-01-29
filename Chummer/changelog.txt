@@ -113,6 +113,7 @@ Application Changes:
 - Fixed a crash that occured where attempting to delete something in the metamagic tree in create mode while nothing was selected.
 - If a language other than en-US fails to load, Chummer5a will now default to the en-US strings when translating forms (after the appropriate error message is shown).
 - Fixed an issue where multiple sources of the Prototype Transhuman bonus would override and get in the way of each other.
+- Removed <transgenicsgenetechcost> from the improvement system and all code related to processing transgenics, as it is a holdover from the 4e days, and unlike something like <genetechcostmultiplier>, there is no way to translate it to 5e's mechanics.
 
 Data Changes:
 

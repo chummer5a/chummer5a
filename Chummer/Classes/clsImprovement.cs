@@ -86,7 +86,6 @@ namespace Chummer
             BiowareTotalEssMultiplierNonRetroactive,
             GenetechCostMultiplier,
             BasicBiowareEssCost,
-            TransgenicsBiowareCost,
             SoftWeave,
             DisableBioware,
             DisableCyberware,

@@ -2753,17 +2753,7 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
                 _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
-
-        // Check for Genetech: Transgenics Cost modifiers.
-        public void transgenicsgenetechcost(XmlNode bonusNode)
-        {
-            Log.Info("transgenicsgenetechcost");
-            Log.Info("transgenicsgenetechcost = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TransgenicsBiowareCost,
-                _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-        }
-
+        
         // Check for Basic Bioware Essence Cost modifiers.
         public void basicbiowareessmultiplier(XmlNode bonusNode)
         {

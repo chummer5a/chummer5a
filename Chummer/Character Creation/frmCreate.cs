@@ -13988,19 +13988,7 @@ namespace Chummer
                 }
                 frmPickCyberware.GenetechCostMultiplier = decMultiplier;
             }
-
-            // Transgenics Cost multiplier.
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-            {
-                decMultiplier = 1.0m;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
-                }
-                frmPickCyberware.TransgenicsBiowareCostMultiplier = decMultiplier;
-            }
-
+            
             if (objSelectedCyberware != null)
             {
                 frmPickCyberware.SetGrade = objSelectedCyberware.Grade;
@@ -14071,9 +14059,6 @@ namespace Chummer
                 return false;
             objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
             objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
-            // Force the item to be Transgenic if selected.
-            if (frmPickCyberware.ForceTransgenic)
-                objCyberware.Category = "Genetech: Transgenics";
 
             // Apply the ESS discount if applicable.
             if (CharacterObjectOptions.AllowCyberwareESSDiscounts)

@@ -40,7 +40,6 @@ namespace Chummer
         private bool _blnAllow2ndMaxAttribute;
         private bool _blnAllowAttributePointsOnExceptional;
         private bool _blnAllowBiowareSuites;
-        private bool _blnAllowCustomTransgenics;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
         private bool _blnAllowExceedAttributeBP;
@@ -405,8 +404,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatematrixattribute", _blnAlternateMatrixAttribute.ToString());
             // <alloweditpartofbaseweapon />
             objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString());
-            // <allowcustomtransgenics />
-            objWriter.WriteElementString("allowcustomtransgenics", _blnAllowCustomTransgenics.ToString());
             // <maybuyqualities />
             objWriter.WriteElementString("maybuyqualities", _blnMayBuyQualities.ToString());
             // <usecontactpoints />
@@ -796,8 +793,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("alternatematrixattribute", ref _blnAlternateMatrixAttribute);
             // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
             objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-            // Whether or not the user can mark any piece of Bioware as being Transgenic.
-            objXmlNode.TryGetBoolFieldQuickly("allowcustomtransgenics", ref _blnAllowCustomTransgenics);
             // Whether or not the user may buy qualities.
             objXmlNode.TryGetBoolFieldQuickly("maybuyqualities", ref _blnMayBuyQualities);
             // Whether or not contact points are used instead of fixed contacts.
@@ -2119,21 +2114,6 @@ namespace Chummer
             set
             {
                 _blnAllowEditPartOfBaseWeapon = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the user can mark any piece of Bioware as being Transgenic.
-        /// </summary>
-        public bool AllowCustomTransgenics
-        {
-            get
-            {
-                return _blnAllowCustomTransgenics;
-            }
-            set
-            {
-                _blnAllowCustomTransgenics = value;
             }
         }
 

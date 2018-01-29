@@ -429,16 +429,6 @@
       <page>Adjusts the Nuyen cost of Bioware in the Genetech categories by the percent value entered. All Genetech Nuyen costs will now be X% of their original value. Numbers lower than 100 reduce the Nuyen cost. Numbers higher than 100 increase the Nuyen cost.</page>
     </improvement>
     <improvement>
-      <name>Transgenics Cost</name>
-      <id>transgenicsgenetechcost</id>
-      <internal>transgenicsgenetechcost</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts the Nuyen cost of Bioware in the Genetech: Transgenics category by the percent value entered. All Transgenics Nuyen costs will now be X% of their original value. Numbers lower than 100 reduce the Nuyen cost. Numbers higher than 100 increase the Nuyen cost.</page>
-    </improvement>
-    <improvement>
       <name>Basic Bioware Essence Cost</name>
       <id>basicbiowareessmultiplier</id>
       <internal>basicbiowareessmultiplier</internal>

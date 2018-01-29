@@ -193,8 +193,6 @@ namespace Chummer
                     return objImprovementAdder.basiclifestylecost;
                 case "GENETECHCOSTMULTIPLIER":
                     return objImprovementAdder.genetechcostmultiplier;
-                case "TRANSGENICSGENETECHCOST":
-                    return objImprovementAdder.transgenicsgenetechcost;
                 case "BASICBIOWAREESSMULTIPLIER":
                     return objImprovementAdder.basicbiowareessmultiplier;
                 case "BIOWAREESSMULTIPLIER":

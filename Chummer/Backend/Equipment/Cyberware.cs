@@ -2417,36 +2417,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = TotalCostWithoutModifiers;
-
-                // Retrieve the Genetech Cost Multiplier if available.
-                decimal decMultiplier = 1.0m;
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
-                {
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
-                    }
-                }
-
-                // Retrieve the Transgenics Cost Multiplier if available.
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
-                {
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
-                    }
-                }
-
-                if (decMultiplier == 0)
-                    decMultiplier = 1;
-
-                decimal decSuiteMultiplier = 1.0m;
+                
                 if (_blnSuite)
-                    decSuiteMultiplier = 0.9m;
+                    decReturn *= 0.9m;
 
-                return decReturn * decMultiplier * decSuiteMultiplier;
+                return decReturn;
             }
         }
 
@@ -2506,44 +2481,18 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = OwnCostPreMultipliers;
-                decimal decReturn = decCost;
+                decimal decReturn = OwnCostPreMultipliers;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
                 decReturn *= Grade.Cost;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
-
-                // Retrieve the Genetech Cost Multiplier if available.
-                decimal decMultiplier = 1.0m;
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
-                {
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
-                    }
-                }
-
-                // Retrieve the Transgenics Cost Multiplier if available.
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
-                {
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
-                    }
-                }
-
-                if (decMultiplier == 0)
-                    decMultiplier = 1;
-
-                decimal decSuiteMultiplier = 1.0m;
+                
                 if (_blnSuite)
-                    decSuiteMultiplier = 0.9m;
+                    decReturn *= 0.9m;
 
-                return decReturn * decMultiplier * decSuiteMultiplier;
+                return decReturn;
             }
         }
 
