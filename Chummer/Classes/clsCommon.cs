@@ -1363,7 +1363,7 @@ namespace Chummer
                 string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPDF.AddRange(strPageText.Split('\n').Select(s => s.Trim()).Where(s=>!string.IsNullOrEmpty(s)));
+                lstStringFromPDF.AddRange(strPageText.Split('\n').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
 
                 for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {
@@ -1509,7 +1509,8 @@ namespace Chummer
                             break;
                     }
                 }
-                return strResultContent.NormalizeWhiteSpace();
+                // In tooltips linebreaks should follow windows style \r\n
+                return strResultContent.Replace("\n", Environment.NewLine);
             }
             return string.Empty;
         }
