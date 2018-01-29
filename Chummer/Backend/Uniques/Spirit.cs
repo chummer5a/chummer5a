@@ -133,7 +133,7 @@ namespace Chummer
             XmlNode objXmlCritterNode = GetNode(strLanguageToPrint);
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                strName = objXmlCritterNode?["translate"]?.InnerText;
+                strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
 
             objWriter.WriteStartElement("spirit");
