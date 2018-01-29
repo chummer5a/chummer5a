@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <!--Region Shadowrun Core Positive Qualities -->
+  <priorities>
+    <priority>
+      <id>ee17af88-5564-4009-b0a1-12345678900a</id>
+      <name>A - 450,000¥</name>
+      <value>A,4</value>
+      <gameplayoption>SRH</gameplayoption>
+      <category>Resources</category>
+      <resources>450000</resources>
+    </priority>
+    <priority>
+      <id>ddb56487-f6ef-480d-9812-12345678900b</id>
+      <name>B - 275,000¥</name>
+      <value>B,3</value>
+      <gameplayoption>SRH</gameplayoption>
+      <category>Resources</category>
+      <resources>275000</resources>
+    </priority>
+    <priority>
+      <id>be69802a-5379-457b-8084-12345678900c</id>
+      <name>C - 140,000¥</name>
+      <value>C,2</value>
+      <gameplayoption>SRH</gameplayoption>
+      <category>Resources</category>
+      <resources>140000</resources>
+    </priority>
+    <priority>
+      <id>b977475b-9728-45a0-9873-12345678900d</id>
+      <name>D - 50,000¥</name>
+      <value>D,1</value>
+      <gameplayoption>SRH</gameplayoption>
+      <category>Resources</category>
+      <resources>50000</resources>
+    </priority>
+    <priority>
+      <id>dd4eb137-e218-4d92-9ac2-12345678900e</id>
+      <name>E - 6,000¥</name>
+      <value>E,0</value>
+      <gameplayoption>SRH</gameplayoption>
+      <category>Resources</category>
+      <resources>6000</resources>
+    </priority>
+  </priorities>
+</chummer>

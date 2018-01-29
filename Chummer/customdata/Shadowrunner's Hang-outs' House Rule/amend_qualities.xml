@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <!--Region Shadowrun Core Positive Qualities -->
+  <qualities>
+    <quality>
+      <name>Incompetent</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Brand Loyalty (Manufacturer)</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Combat Junkie</name>
+      <hide />
+    </quality>
+    <!--Region Run Faster -->
+    <!--Region Run Faster Positive Qualities -->
+    <quality>
+      <name>Fame: Local</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Fame: National</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Fame: Megacorporate</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Fame: Global</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Trust Fund I</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Trust Fund II</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Trust Fund III</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Trust Fund IV</name>
+      <hide />
+    </quality>
+    <!-- End Region-->
+    <!--Region Run Faster Negative Qualities -->
+    <quality>
+      <name>Amnesia (Surface Loss)</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Amnesia (Neural Deletion)</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Ex-Con</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Hung Out to Dry</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Records on File</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Vendetta</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Wanted</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region Data Trails-->
+    <quality>
+      <name>Prank Warrior</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region Chrome Flesh -->
+	<quality>
+      <name>Better to be Feared Than Loved</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Prototype Transhuman</name>
+      <karma>20</karma>
+    </quality>
+    <quality>
+      <name>Blank Slate</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Cyber-snob</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Tough and Targeted</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <quality>
+      <name>Code of Honor: Avenging Angel</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region Cutting Aces -->
+    <!-- Region Negative Qualities -->
+    <quality>
+      <name>Alpha Junkie</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region SRH -->
+    <quality>
+      <id>12345678-123a-456b-789c-1234abcd0002</id>
+      <name>Aspected Study</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer>
+      <required>
+        <allof>
+          <quality>Aspected Magician</quality>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Alchemy</name>
+            <val>3</val>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
+            <val>3</val>
+          </skill>
+          <skill>
+            <name>Ritual Spellcasting</name>
+            <val>3</val>
+          </skill>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>SRH</page>
+    </quality>
+    <quality>
+      <id>12345678-123a-456b-789c-1234abcd0001</id>
+      <name>Alchemic Mastery</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer>
+      <bonus>
+        <selecttext/>
+      </bonus>
+      <required>
+        <allof>
+          <skill>
+            <name>Alchemy</name>
+            <val>3</val>
+          </skill>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>SRH</page>
+    </quality>
+    <!-- End Region -->
+  </qualities>
+</chummer>
