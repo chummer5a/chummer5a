@@ -18790,9 +18790,7 @@ namespace Chummer
                 objSelectedGear = new Gear(CharacterObject);
                 blnNullParent = true;
             }
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-
+            
             // Open the Gear XML file and locate the selected Gear.
             XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.GetNode();
 
@@ -18863,7 +18861,7 @@ namespace Chummer
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue, true, true, frmPickGear.Aerodynamic);
 
             if (objGear.InternalId.IsEmptyGuid())
-                return false;
+                return frmPickGear.AddAgain;
 
             objGear.Quantity = frmPickGear.SelectedQty;
 
@@ -18905,6 +18903,8 @@ namespace Chummer
             
             if (objStackWith != null)
             {
+                if (objStackWith.InternalId.IsEmptyGuid())
+                    return frmPickGear.AddAgain;
                 // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
                 foreach (Gear objPlugin in objStackWith.Children)
                     decCost += (objPlugin.TotalCost * frmPickGear.SelectedQty);
@@ -18936,11 +18936,12 @@ namespace Chummer
                         MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language),
                             LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
-                        return false;
+                        return frmPickGear.AddAgain;
                     }
                 }
             }
 
+            ExpenseUndo objUndo = new ExpenseUndo();
             // Check the item's Cost and make sure the character can afford it.
             if (!frmPickGear.FreeCost)
             {
@@ -18963,9 +18964,6 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
-
-            if (objGear.InternalId.IsEmptyGuid())
-                return false;
             
             if (objStackWith != null)
             {
@@ -19095,7 +19093,7 @@ namespace Chummer
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
             if (objGear.InternalId.IsEmptyGuid())
-                return false;
+                return frmPickGear.AddAgain;
 
             objGear.Quantity = frmPickGear.SelectedQty;
 
@@ -19171,10 +19169,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
-
-            if (objGear.InternalId.IsEmptyGuid())
-                return false;
-
+            
             // Create any Weapons that came with this Gear.
             foreach (Weapon objWeapon in lstWeapons)
             {

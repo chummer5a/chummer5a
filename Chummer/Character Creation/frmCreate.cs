@@ -13428,6 +13428,8 @@ namespace Chummer
 
             Gear objGear = new Gear(CharacterObject);
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+            if (objGear.InternalId.IsEmptyGuid())
+                return frmPickGear.AddAgain;
             objGear.Quantity = frmPickGear.SelectedQty;
 
             // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
@@ -13437,10 +13439,7 @@ namespace Chummer
             }
 
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-            if (objGear.InternalId.IsEmptyGuid())
-                return false;
-
+            
             // reduce the cost for Black Market Pipeline
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
@@ -13554,7 +13553,7 @@ namespace Chummer
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
             if (objGear.InternalId.IsEmptyGuid())
-                return false;
+                return frmPickGear.AddAgain;
 
             objGear.Quantity = frmPickGear.SelectedQty;
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
