@@ -382,7 +382,7 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString());
+                frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities);
                 frmSelectLifestyleQuality.ShowDialog(this);
 
                 // Don't do anything else if the form was canceled.

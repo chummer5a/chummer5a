@@ -37,6 +37,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
         private string _strSelectedLifestyle = string.Empty;
+        private readonly IList<LifestyleQuality> _lstExistingQualities;
 
         private readonly XmlDocument _objXmlDocument = null;
 
@@ -50,12 +51,13 @@ namespace Chummer
         private readonly XmlDocument _objCritterDocument = null;
 
         #region Control Events
-        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle)
+        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IList<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
+            _lstExistingQualities = lstExistingQualities;
 
             MoveControls();
             // Load the Quality information.
@@ -443,7 +445,7 @@ namespace Chummer
             if (objXmlQuality["limit"]?.InnerText != bool.FalseString)
             {
                 // Multiples aren't allowed, so make sure the character does not already have it.
-                foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+                foreach (LifestyleQuality objQuality in _lstExistingQualities)
                 {
                     if (objQuality.Name == objXmlQuality["name"].InnerText)
                     {
@@ -472,7 +474,7 @@ namespace Chummer
                             case "quality":
                                 // Run through all of the Qualities the character has and see if the current forbidden item exists.
                                 // If so, turn on the RequirementForbidden flag so it cannot be selected.
-                                foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+                                foreach (LifestyleQuality objQuality in _lstExistingQualities)
                                 {
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
@@ -569,7 +571,7 @@ namespace Chummer
                             case "quality":
                                 // Run through all of the Qualities the character has and see if the current required item exists.
                                 // If so, turn on the RequirementMet flag so it can be selected.
-                                foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+                                foreach (LifestyleQuality objQuality in _lstExistingQualities)
                                 {
                                     if (objQuality.Name == objXmlRequired.InnerText)
                                         blnOneOfMet = true;
@@ -847,7 +849,7 @@ namespace Chummer
 
                                 // Run through all of the Qualities the character has and see if the current required item exists.
                                 // If so, turn on the RequirementMet flag so it can be selected.
-                                foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+                                foreach (LifestyleQuality objQuality in _lstExistingQualities)
                                 {
                                     if (objQuality.Name == objXmlRequired.InnerText)
                                         blnFound = true;

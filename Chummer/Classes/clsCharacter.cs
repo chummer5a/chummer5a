@@ -225,7 +225,6 @@ namespace Chummer
         private ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
         private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
-        private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -6656,16 +6655,6 @@ namespace Chummer
             get
             {
                 return _lstQualities;
-            }
-        }
-        /// <summary>
-        /// Qualities (Positive and Negative).
-        /// </summary>
-        public IList<LifestyleQuality> LifestyleQualities
-        {
-            get
-            {
-                return _lstLifestyleQualities;
             }
         }
 
