@@ -116,6 +116,7 @@ Application Changes:
 - Removed <transgenicsgenetechcost> from the improvement system and all code related to processing transgenics, as it is a holdover from the 4e days, and unlike something like <genetechcostmultiplier>, there is no way to translate it to 5e's mechanics.
 - Fixed an issue where adding contacts from a file would not register and save those contacts with the underlying character.
 - Fixed a bug where spirit names would get printed as blank if using a non-default localization that does not have a translated entry for the particular spirit. Fixes #2416.
+- Cyberware grades are no longer hidden if the character is ignoring creation rules.
 
 Data Changes:
 

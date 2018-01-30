@@ -116,7 +116,7 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideBannedGrades.Visible = true;
+                chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
                 chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
@@ -1222,10 +1222,9 @@ namespace Chummer
                     }
                     else if (objWareGrade.Burnout)
                         continue;
-                    if (blnHideBannedGrades && !_objCharacter.Created && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
-                    if (!blnHideBannedGrades && !_objCharacter.Created &&
-                        _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
                         lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
                     }
