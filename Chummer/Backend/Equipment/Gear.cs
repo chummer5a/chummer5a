@@ -108,7 +108,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
         /// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
-        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> lstWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
+        public void Create(XmlNode objXmlGear, int intRating, IList<Weapon> lstWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
         {
             if (objXmlGear == null)
                 return;
@@ -2591,14 +2591,13 @@ namespace Chummer.Backend.Equipment
         /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
         /// <param name="objGear">Gear to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public decimal DeleteGear(TreeView treWeapons, TreeView treVehicles)
+        public decimal DeleteGear(TreeView treVehicles)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in Children)
-                decReturn += objChild.DeleteGear(treWeapons, treVehicles);
+                decReturn += objChild.DeleteGear(treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
@@ -2640,7 +2639,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treVehicles);
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -2655,8 +2654,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
-                    objLoopNode?.Remove();
+                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 

@@ -3045,14 +3045,13 @@ namespace Chummer.Backend.Equipment
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
         /// <param name="objGear">Gear to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public decimal DeleteCyberware(TreeView treWeapons, TreeView treVehicles)
+        public decimal DeleteCyberware(TreeView treVehicles)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Cyberware objChild in Children)
-                decReturn += objChild.DeleteCyberware(treWeapons, treVehicles);
+                decReturn += objChild.DeleteCyberware(treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
@@ -3094,7 +3093,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treVehicles);
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -3109,8 +3108,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
-                    objLoopNode?.Remove();
+                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 
@@ -3133,28 +3131,28 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.Vehicles.Remove(objLoopVehicle);
                     foreach (Gear objLoopGear in objLoopVehicle.Gear)
                     {
-                        decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
+                        decReturn += objLoopGear.DeleteGear(treVehicles);
                     }
                     foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
                     {
-                        decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                        decReturn += objLoopWeapon.DeleteWeapon(treVehicles);
                     }
                     foreach (VehicleMod objLoopMod in objLoopVehicle.Mods)
                     {
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
-                            decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            decReturn += objLoopWeapon.DeleteWeapon(treVehicles);
                         }
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
-                            decReturn += objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            decReturn += objLoopCyberware.DeleteCyberware(treVehicles);
                         }
                     }
                     foreach (WeaponMount objLoopWeaponMount in objLoopVehicle.WeaponMounts)
                     {
                         foreach (Weapon objLoopWeapon in objLoopWeaponMount.Weapons)
                         {
-                            decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            decReturn += objLoopWeapon.DeleteWeapon(treVehicles);
                         }
                     }
                 }
@@ -3191,7 +3189,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (Gear objLoopGear in Gear)
             {
-                decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
+                decReturn += objLoopGear.DeleteGear(treVehicles);
             }
 
             // Fix for legacy characters with old addqualities improvements.

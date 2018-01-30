@@ -1350,15 +1350,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="objArmor">Armor to delete</param>
         /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
-        public decimal DeleteArmor(TreeView treWeapons, TreeView treVehicles)
+        public decimal DeleteArmor(TreeView treVehicles)
         {
             decimal decReturn = 0.0m;
             // Remove any Improvements created by the Armor and its children.
             foreach (ArmorMod objMod in ArmorMods)
-                decReturn += objMod.DeleteArmorMod(treWeapons, treVehicles);
+                decReturn += objMod.DeleteArmorMod(treVehicles);
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in Gear)
-                decReturn += objGear.DeleteGear(treWeapons, treVehicles);
+                decReturn += objGear.DeleteGear(treVehicles);
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
 
@@ -1401,7 +1401,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objDeleteWeapon = objLoopTuple.Item1;
-                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treVehicles);
                     if (objDeleteWeapon.Parent != null)
                         objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -1416,8 +1416,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
-                    objLoopNode?.Remove();
+                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 

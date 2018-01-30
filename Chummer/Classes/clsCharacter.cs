@@ -220,10 +220,10 @@ namespace Chummer
         #if LEGACY
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         #endif
-        private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
+        private ObservableCollection<LimitModifier> _lstLimitModifiers = new ObservableCollection<LimitModifier>();
         private ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
         private ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
-        private List<Weapon> _lstWeapons = new List<Weapon>();
+        private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
@@ -3801,7 +3801,7 @@ namespace Chummer
         /// <summary>
         /// Clear all Cyberware tab elements from the character.
         /// </summary>
-        public void ClearCyberwareTab(TreeView treWeapons, TreeView treVehicles)
+        public void ClearCyberwareTab(TreeView treVehicles)
         {
             for (int i = Cyberware.Count - 1; i >= 0; i--)
             {
@@ -3810,7 +3810,7 @@ namespace Chummer
                     Cyberware objToRemove = Cyberware[i];
                     if (string.IsNullOrEmpty(objToRemove.ParentID))
                     {
-                        objToRemove.DeleteCyberware(treWeapons, treVehicles);
+                        objToRemove.DeleteCyberware(treVehicles);
                         Cyberware.RemoveAt(i);
                     }
                 }
@@ -6508,7 +6508,7 @@ namespace Chummer
         /// <summary>
         /// Limit Modifiers.
         /// </summary>
-        public IList<LimitModifier> LimitModifiers
+        public ObservableCollection<LimitModifier> LimitModifiers
         {
             get
             {
@@ -6541,7 +6541,7 @@ namespace Chummer
         /// <summary>
         /// Weapons.
         /// </summary>
-        public IList<Weapon> Weapons
+        public ObservableCollection<Weapon> Weapons
         {
             get
             {

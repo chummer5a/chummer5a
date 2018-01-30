@@ -830,30 +830,25 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveWeaponNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treWeapons)
+        public static void MoveWeaponNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
         {
-            TreeNode objClone = treWeapons.SelectedNode;
-            string strSelectedId = objClone.Tag.ToString();
-            Weapon objWeapon = objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelectedId);
-            objCharacter.Weapons.Remove(objWeapon);
-            if (intNewIndex > objCharacter.Weapons.Count)
-                objCharacter.Weapons.Add(objWeapon);
-            else
-                objCharacter.Weapons.Insert(intNewIndex, objWeapon);
+            string strSelectedId = nodWeaponNode?.Tag.ToString();
+            // Locate the currently selected Armor.
+            Weapon objWeapon = objCharacter.Weapons.FindById(strSelectedId);
+            if (objWeapon != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
 
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
+                // Change the Location on the Armor item.
+                if (objNewParent.Tag.ToString() == "Node_SelectedWeapons")
+                    objWeapon.Location = string.Empty;
+                else
+                    objWeapon.Location = objNewParent.Text;
 
-            // Change the Location of the Weapon.
-            if (objNewParent.Tag.ToString() == "Node_SelectedWeapons")
-                objWeapon.Location = string.Empty;
-            else
-                objWeapon.Location = objNewParent.Text;
-
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
+                objCharacter.Weapons.Move(objCharacter.Weapons.IndexOf(objWeapon), intNewIndex);
+            }
         }
 
         /// <summary>
@@ -861,7 +856,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveWeaponRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treWeapons)
+        public static void MoveWeaponRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
             if (objDestination != null)
             {
@@ -873,18 +868,9 @@ namespace Chummer
 
             if (intNewIndex == 0)
                 return;
-
-            TreeNode nodOldNode = treWeapons.SelectedNode;
+            
             string strLocation = nodOldNode.Tag.ToString();
-            objCharacter.GearLocations.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.WeaponLocations.Count)
-                objCharacter.WeaponLocations.Add(strLocation);
-            else
-                objCharacter.WeaponLocations.Insert(intNewIndex - 1, strLocation);
-
-            treWeapons.Nodes.Remove(nodOldNode);
-            treWeapons.Nodes.Insert(intNewIndex, nodOldNode);
+            objCharacter.WeaponLocations.Move(objCharacter.WeaponLocations.IndexOf(strLocation), intNewIndex);
         }
         
         /// <summary>

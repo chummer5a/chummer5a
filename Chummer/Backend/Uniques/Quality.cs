@@ -152,7 +152,7 @@ namespace Chummer
         /// <param name="objQualitySource">Source of the Quality.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);

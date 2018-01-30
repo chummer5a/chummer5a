@@ -962,9 +962,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objCharacter">Parent character.</param>
         /// <param name="objArmorMod">Armor Mod to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
-        public decimal DeleteArmorMod(TreeView treWeapons, TreeView treVehicles)
+        public decimal DeleteArmorMod(TreeView treVehicles)
         {
             decimal decReturn = 0.0m;
             // Remove the Cyberweapon created by the Mod if applicable.
@@ -1006,7 +1005,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objDeleteWeapon = objLoopTuple.Item1;
-                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treVehicles);
                     if (objDeleteWeapon.Parent != null)
                         objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -1021,15 +1020,14 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
-                    objLoopNode?.Remove();
+                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId);
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in Gear)
-                decReturn += objGear.DeleteGear(treWeapons, treVehicles);
+                decReturn += objGear.DeleteGear(treVehicles);
 
             return decReturn;
         }

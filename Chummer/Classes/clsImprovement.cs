@@ -1385,13 +1385,15 @@ namespace Chummer
                             objCharacter.TrustFund = 0;
                         break;
                     case Improvement.ImprovementType.Adapsin:
-                        if (!objCharacter.AdapsinEnabled)
                         {
-                            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
+                            if (!objCharacter.AdapsinEnabled)
                             {
-                                string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
-                                // Determine which GradeList to use for the Cyberware.
-                                objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType).FirstOrDefault(x => x.Name == strNewName);
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
+                                {
+                                    string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
+                                    // Determine which GradeList to use for the Cyberware.
+                                    objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType).FirstOrDefault(x => x.Name == strNewName);
+                                }
                             }
                         }
                         break;
@@ -1442,7 +1444,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            objGear.DeleteGear(null, null);
+                            objGear.DeleteGear(null);
                             objCharacter.Gear.Remove(objGear);
                         }
                         break;
@@ -1524,14 +1526,13 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:
-                        Cyberware cy = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
-                        if (cy != null)
                         {
-                            RemoveImprovements(objCharacter,cy.SourceType == Improvement.ImprovementSource.Cyberware
-                                    ? Improvement.ImprovementSource.Cyberware
-                                    : Improvement.ImprovementSource.Bioware,
-                                cy.InternalId);
-                            objCharacter.Cyberware.Remove(cy);
+                            Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            if (objCyberware != null)
+                            {
+                                objCyberware.DeleteCyberware(null);
+                                objCharacter.Cyberware.Remove(objCyberware);
+                            }
                         }
                         break;
                 }

@@ -128,7 +128,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlWeapon, List<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false)
+        public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false)
         {
             if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
                 _objCachedMyXmlNode = null;
@@ -4344,20 +4344,19 @@ namespace Chummer.Backend.Equipment
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
         /// <param name="objWeapon">Weapon to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
-        public decimal DeleteWeapon(TreeView treWeapons, TreeView treVehicles)
+        public decimal DeleteWeapon(TreeView treVehicles)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Weapon objChild in Children)
-                decReturn += objChild.DeleteWeapon(treWeapons, treVehicles);
+                decReturn += objChild.DeleteWeapon(treVehicles);
 
             foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
             {
                 foreach (Gear objLoopGear in objLoopAccessory.Gear)
                 {
-                    decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
+                    decReturn += objLoopGear.DeleteGear(treVehicles);
                 }
             }
 
@@ -4398,7 +4397,7 @@ namespace Chummer.Backend.Equipment
             foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
             {
                 Weapon objDeleteWeapon = objLoopTuple.Item1;
-                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treWeapons, treVehicles);
+                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treVehicles);
                 if (objDeleteWeapon.Parent != null)
                     objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                 else if (objLoopTuple.Item4 != null)
@@ -4413,8 +4412,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strNodeId in lstNodesToRemoveIds)
             {
                 // Remove the Weapons from the TreeView.
-                TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
-                objLoopNode?.Remove();
+                treVehicles?.FindNode(strNodeId)?.Remove();
             }
 
             return decReturn;
