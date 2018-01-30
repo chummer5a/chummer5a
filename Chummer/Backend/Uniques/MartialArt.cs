@@ -237,7 +237,7 @@ namespace Chummer
         /// Selected Martial Arts Advantages.
         /// </summary>
         public ObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
-        public IList<MartialArtTechnique> Children => Techniques;
+        public ObservableCollection<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
         /// Notes.

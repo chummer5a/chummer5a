@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -60,8 +61,8 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
-        private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
-        private readonly List<Gear> _lstGear = new List<Gear>();
+        private ObservableCollection<Cyberware> _lstChildren = new ObservableCollection<Cyberware>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
@@ -331,7 +332,7 @@ namespace Chummer.Backend.Equipment
                     // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
                     if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
-                        IList<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                        ObservableCollection<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
                         if (!objXmlCyberware.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, "Left") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
@@ -470,7 +471,7 @@ namespace Chummer.Backend.Equipment
                         // If the <subsystem> tag itself contains extra children, add those, too
                         objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
 
-                        _objChildren.Add(objSubsystem);
+                        _lstChildren.Add(objSubsystem);
                     }
                 }
 
@@ -492,7 +493,7 @@ namespace Chummer.Backend.Equipment
                         // If the <subsystem> tag itself contains extra children, add those, too
                         objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
 
-                        _objChildren.Add(objSubsystem);
+                        _lstChildren.Add(objSubsystem);
                     }
                 }
             }
@@ -610,7 +611,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", strName);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("children");
-            foreach (Cyberware objChild in _objChildren)
+            foreach (Cyberware objChild in _lstChildren)
             {
                 objChild.Save(objWriter);
             }
@@ -762,7 +763,7 @@ namespace Chummer.Backend.Equipment
                     Cyberware objChild = new Cyberware(_objCharacter);
                     objChild.Load(nodChild, blnCopy);
                     objChild.Parent = this;
-                    _objChildren.Add(objChild);
+                    _lstChildren.Add(objChild);
                 }
             }
 
@@ -876,7 +877,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", Location);
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
-            if (_lstGear.Count > 0)
+            if (Gear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in Gear)
@@ -1727,18 +1728,18 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Cyberware.
         /// </summary>
-        public IList<Cyberware> Children
+        public ObservableCollection<Cyberware> Children
         {
             get
             {
-                return _objChildren;
+                return _lstChildren;
             }
         }
 
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public IList<Gear> Gear
+        public ObservableCollection<Gear> Gear
         {
             get
             {
@@ -2219,7 +2220,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null && !_objCharacter.Options.DontRoundEssenceInternally)
                 decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-            decReturn += _objChildren.Where(objChild => objChild.AddToParentESS).AsParallel().Sum(objChild => objChild.CalculatedESS());
+            decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel().Sum(objChild => objChild.CalculatedESS());
             return decReturn;
         }
 
@@ -2367,9 +2368,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decimal decTotalChildrenCost = 0;
-                if (_objChildren.Count > 0 && strCostExpression.Contains("Children Cost"))
+                if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
-                    foreach (Cyberware loopWare in _objChildren)
+                    foreach (Cyberware loopWare in Children)
                     {
                         decTotalChildrenCost += loopWare.TotalCost;
                     }
@@ -2442,7 +2443,7 @@ namespace Chummer.Backend.Equipment
                     decReturn *= 0.9m;
 
                 // Add in the cost of all child components.
-                foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in Children)
                 {
                     if (objChild.Capacity != "[*]")
                     {
@@ -2465,7 +2466,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Add in the cost of all Gear plugins.
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                 {
                     decReturn += objGear.TotalCost;
                 }
@@ -2617,7 +2618,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in _objChildren)
+                    foreach (Cyberware objChild in Children)
                     {
                         if (objChild.TotalStrength <= 0) continue;
                         intCyberlimbChildrenNumber += 1;
@@ -2637,7 +2638,7 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseStrength;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Strength, this is its new base value.
                     if (objChild.Name == "Customized Strength")
@@ -2668,7 +2669,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in _objChildren)
+                    foreach (Cyberware objChild in Children)
                     {
                         if (objChild.TotalBody <= 0) continue;
                         intCyberlimbChildrenNumber += 1;
@@ -2689,7 +2690,7 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = 3;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Body, this is its new base value.
                     if (objChild.Name == "Customized Body")
@@ -2730,7 +2731,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in _objChildren)
+                    foreach (Cyberware objChild in Children)
                     {
                         if (objChild.TotalAgility <= 0) continue;
                         intCyberlimbChildrenNumber += 1;
@@ -2750,7 +2751,7 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseAgility;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Agility, this is its new base value.
                     if (objChild.Name == "Customized Agility")
@@ -2778,7 +2779,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                foreach (Cyberware objChild in _objChildren)
+                foreach (Cyberware objChild in Children)
                 {
                     if (objChild.AllowedSubsystems.Contains("Modular Plug-In"))
                     {
@@ -3223,7 +3224,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId
+                Tag = SourceID == EssenceHoleGUID ? EssenceHoleGUID.ToString("D") : InternalId
             };
             if (!string.IsNullOrEmpty(Notes))
                 objNode.ForeColor = Color.SaddleBrown;

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -51,10 +52,10 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludeInVehicle;
         private bool _blnInstalled = true;
         private int _intConditionMonitor;
-        private readonly List<Weapon> _lstVehicleWeapons = new List<Weapon>();
+        private readonly ObservableCollection<Weapon> _lstVehicleWeapons = new ObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
         private string _strSubsystems = string.Empty;
-        private readonly List<Cyberware> _lstCyberware = new List<Cyberware>();
+        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
         private string _strExtra = string.Empty;
         private string _strWeaponMountCategories = string.Empty;
         private bool _blnDiscountCost;
@@ -347,9 +348,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public IList<Weapon> Weapons => _lstVehicleWeapons;
+        public ObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
 
-        public IList<Cyberware> Cyberware => _lstCyberware;
+        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         public WeaponMount WeaponMountParent
         {
@@ -847,7 +848,7 @@ namespace Chummer.Backend.Equipment
                     decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
-                    foreach (Cyberware objChildCyberware in _lstCyberware)
+                    foreach (Cyberware objChildCyberware in Cyberware)
                     {
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
@@ -865,7 +866,7 @@ namespace Chummer.Backend.Equipment
                     decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
-                    foreach (Cyberware objChildCyberware in _lstCyberware)
+                    foreach (Cyberware objChildCyberware in Cyberware)
                     {
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
@@ -917,7 +918,7 @@ namespace Chummer.Backend.Equipment
                 decReturn *= 1 + (_decMarkup / 100.0m);
             }
 
-            return decReturn + _lstVehicleWeapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+            return decReturn + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
         }
 
         /// <summary>
@@ -927,7 +928,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return OwnCost + _lstVehicleWeapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+                return OwnCost + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
             }
         }
 
@@ -1099,7 +1100,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _lstCyberware.Any(objChild => objChild.AllowedSubsystems.Contains("Modular Plug-In"));
+                return Cyberware.Any(objChild => objChild.AllowedSubsystems.Contains("Modular Plug-In"));
             }
         }
 

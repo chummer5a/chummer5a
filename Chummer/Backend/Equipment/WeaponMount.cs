@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
 		private bool _blnInstalled = true;
-		private IList<Weapon> _lstWeapons = new List<Weapon>();
+		private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
 		private string _strWeaponMountCategories = string.Empty;
@@ -55,7 +56,7 @@ namespace Chummer.Backend.Equipment
 
         private XmlNode _objCachedMyXmlNode = null;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private IList<VehicleMod> _lstMods = new List<VehicleMod>();
+        private ObservableCollection<VehicleMod> _lstMods = new ObservableCollection<VehicleMod>();
 
         private readonly Vehicle _vehicle;
 	    private readonly Character _objCharacter;
@@ -315,7 +316,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public IList<Weapon> Weapons
+        public ObservableCollection<Weapon> Weapons
 		{
 			get
 			{
@@ -703,7 +704,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public IList<VehicleMod> Mods
+        public ObservableCollection<VehicleMod> Mods
         {
             get => _lstMods;
         }

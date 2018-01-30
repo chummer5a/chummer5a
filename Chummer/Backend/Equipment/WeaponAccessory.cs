@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
-        private List<Gear> _lstGear = new List<Gear>();
+        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private Weapon _objParent;
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
@@ -867,7 +868,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public IList<Gear> Gear
+        public ObservableCollection<Gear> Gear
         {
             get
             {

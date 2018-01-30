@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,6 @@ namespace Chummer
 {
     public interface IHasChildren<T>
     {
-        IList<T> Children { get; }
+        ObservableCollection<T> Children { get; }
     }
 }

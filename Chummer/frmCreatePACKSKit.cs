@@ -738,8 +738,8 @@ namespace Chummer
                         objWriter.WriteElementString("rating", objGear.Rating.ToString());
                     if (objGear.Quantity != 1)
                         objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
-                    if (objGear.GearChildren.Count > 0)
-                        WriteGear(objWriter, objGear.GearChildren);
+                    if (objGear.Children.Count > 0)
+                        WriteGear(objWriter, objGear.Children);
                     // </gear>
                     objWriter.WriteEndElement();
                 }

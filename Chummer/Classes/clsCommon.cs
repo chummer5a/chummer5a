@@ -682,7 +682,7 @@ namespace Chummer
                 objCharacter.Gear.Remove(objGear);
             else
             {
-                objGear.Parent.GearChildren.Remove(objGear);
+                objGear.Parent.Children.Remove(objGear);
                 objGear.Parent.RefreshMatrixAttributeArray();
             }
 
@@ -701,7 +701,7 @@ namespace Chummer
                 // Add the Gear as a child of the destination Node and clear its location.
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
-                objParent.GearChildren.Add(objGear);
+                objParent.Children.Add(objGear);
                 objParent.RefreshMatrixAttributeArray();
             }
         }
@@ -713,12 +713,10 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveGearNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
         {
-            string strSelectedId = objGearNode.Tag.ToString();
+            string strSelectedId = objGearNode?.Tag.ToString();
             Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
             if (objGear != null)
             {
-                objCharacter.Gear.Remove(objGear);
-
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
@@ -729,10 +727,7 @@ namespace Chummer
                 else
                     objGear.Location = objNewParent.Text;
 
-                if (intNewIndex > objCharacter.Gear.Count)
-                    objCharacter.Gear.Add(objGear);
-                else
-                    objCharacter.Gear.Insert(intNewIndex, objGear);
+                objCharacter.Gear.Move(objCharacter.Gear.IndexOf(objGear), intNewIndex);
             }
         }
 
@@ -763,65 +758,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveLifestyleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treLifestyles)
-        {
-            TreeNode objClone = treLifestyles.SelectedNode;
-            string strSelectedId = objClone.Tag.ToString();
-            Lifestyle objLifestyle = objCharacter.Lifestyles.FirstOrDefault(x => x.Name == strSelectedId);
-            objCharacter.Lifestyles.Remove(objLifestyle);
-            if (intNewIndex > objCharacter.Lifestyles.Count)
-                objCharacter.Lifestyles.Add(objLifestyle);
-            else
-                objCharacter.Lifestyles.Insert(intNewIndex, objLifestyle);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move an Armor TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveArmorNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treArmor)
-        {
-            TreeNode objClone = treArmor.SelectedNode;
-            string strSelectedId = objClone.Tag.ToString();
-            // Locate the currently selected Armor.
-            Armor objArmor = objCharacter.Armor.FindById(strSelectedId);
-
-            objCharacter.Armor.Remove(objArmor);
-            if (intNewIndex > objCharacter.Armor.Count)
-                objCharacter.Armor.Add(objArmor);
-            else
-                objCharacter.Armor.Insert(intNewIndex, objArmor);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            // Change the Location on the Armor item.
-            if (objNewParent.Tag.ToString() == "Node_SelectedArmor")
-                objArmor.Location = string.Empty;
-            else
-                objArmor.Location = objNewParent.Text;
-
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move an Armor Location TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveArmorRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treArmor)
+        public static void MoveLifestyleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodLifestyleNode)
         {
             if (objDestination != null)
             {
@@ -834,17 +771,58 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            TreeNode nodOldNode = treArmor.SelectedNode;
+            string strSelectedId = nodLifestyleNode.Tag.ToString();
+            Lifestyle objLifestyle = objCharacter.Lifestyles.FirstOrDefault(x => x.InternalId == strSelectedId);
+            if (objLifestyle != null)
+                objCharacter.Lifestyles.Move(objCharacter.Lifestyles.IndexOf(objLifestyle), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move an Armor TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        public static void MoveArmorNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
+        {
+            string strSelectedId = nodArmorNode?.Tag.ToString();
+            // Locate the currently selected Armor.
+            Armor objArmor = objCharacter.Armor.FindById(strSelectedId);
+            if (objArmor != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                // Change the Location on the Armor item.
+                if (objNewParent.Tag.ToString() == "Node_SelectedArmor")
+                    objArmor.Location = string.Empty;
+                else
+                    objArmor.Location = objNewParent.Text;
+
+                objCharacter.Armor.Move(objCharacter.Armor.IndexOf(objArmor), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move an Armor Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        public static void MoveArmorRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
             string strLocation = nodOldNode.Tag.ToString();
-            objCharacter.ArmorLocations.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.ArmorLocations.Count)
-                objCharacter.ArmorLocations.Add(strLocation);
-            else
-                objCharacter.ArmorLocations.Insert(intNewIndex - 1, strLocation);
-
-            treArmor.Nodes.Remove(nodOldNode);
-            treArmor.Nodes.Insert(intNewIndex, nodOldNode);
+            objCharacter.ArmorLocations.Move(objCharacter.ArmorLocations.IndexOf(strLocation), intNewIndex);
         }
 
         /// <summary>
@@ -908,44 +886,7 @@ namespace Chummer
             treWeapons.Nodes.Remove(nodOldNode);
             treWeapons.Nodes.Insert(intNewIndex, nodOldNode);
         }
-
-        /// <summary>
-        /// Move a Cyberware TreeNode after Drag and Drop or changing mount.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="lstNewList">New list to which the Cyberware is being moved.</param>
-        /// <param name="objDestination">New parent node.</param>
-        /// <param name="treOldTreeView">Old tree view from which we are moving the Cyberware.</param>
-        public static void MoveCyberwareNode(Character objCharacter, int intNewIndex, IList<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
-        {
-            TreeNode objCyberwareNode = treOldTreeView.SelectedNode;
-            string strSelectedId = objCyberwareNode.Tag.ToString();
-            Cyberware objCyberware = objCharacter.Cyberware.DeepFindById(strSelectedId);
-            VehicleMod objOldParentVehicleMod = null;
-            if (objCyberware == null)
-            {
-                objCyberware = objCharacter.Vehicles.FindVehicleCyberware(strSelectedId, out objOldParentVehicleMod);
-            }
-            Cyberware objOldParentCyberware = objCyberware.Parent;
-            if (objOldParentCyberware != null)
-                objOldParentCyberware.Children.Remove(objCyberware);
-            else if (objOldParentVehicleMod != null)
-                objOldParentVehicleMod.Cyberware.Remove(objCyberware);
-            else
-                objCharacter.Cyberware.Remove(objCyberware);
-
-            if (intNewIndex > lstNewList.Count)
-                lstNewList.Add(objCyberware);
-            else
-                lstNewList.Insert(intNewIndex, objCyberware);
-
-            TreeNode objNewParent = objDestination;
-
-            objCyberwareNode.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objCyberwareNode);
-            objNewParent.Expand();
-        }
-
+        
         /// <summary>
         /// Move a Vehicle TreeNode after Drag and Drop.
         /// </summary>
@@ -1033,7 +974,7 @@ namespace Chummer
             // Remove the Gear from the Vehicle.
             if (objGear.Parent != null)
             {
-                objGear.Parent.GearChildren.Remove(objGear);
+                objGear.Parent.Children.Remove(objGear);
                 objGear.Parent.RefreshMatrixAttributeArray();
             }
             else if (objCyberware != null)
@@ -1059,7 +1000,7 @@ namespace Chummer
             else
             {
                 // Add the Gear to its new parent.
-                objDestinationGear.GearChildren.Add(objGear);
+                objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
                 objDestinationGear.RefreshMatrixAttributeArray();
@@ -1078,34 +1019,29 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveImprovementNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treImprovements)
+        public static void MoveImprovementNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
-            TreeNode objClone = treImprovements.SelectedNode;
-            string strSelectedId = objClone?.Tag.ToString();
-            Improvement objImprovement = objCharacter.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            // Change the Group on the Custom Improvement.
-            objImprovement.CustomGroup = objNewParent.Text;
-
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-
-            // Change the sort order for all of the Improvements in the TreeView.
-            foreach (TreeNode objNode in treImprovements.Nodes[0].Nodes)
+            string strSelectedId = nodOldNode?.Tag.ToString();
+            int intOldIndex = -1;
+            for (int i = 0; i < objCharacter.Improvements.Count; ++i)
             {
-                foreach (Improvement objCharacterImprovement in objCharacter.Improvements)
+                if (objCharacter.Improvements[i].SourceName == strSelectedId)
                 {
-                    if (objCharacterImprovement.SourceName == objNode.Tag.ToString())
-                    {
-                        objCharacterImprovement.SortOrder = objNode.Index;
-                        break;
-                    }
+                    intOldIndex = i;
+                    break;
                 }
+            }
+
+            if (intOldIndex != -1)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                Improvement objImprovement = objCharacter.Improvements[intOldIndex];
+                // Change the Group on the Custom Improvement.
+                objImprovement.CustomGroup = objNewParent.Text;
+                objCharacter.Improvements[intOldIndex] = objImprovement;
             }
         }
 
@@ -1114,7 +1050,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveImprovementRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treImprovements)
+        public static void MoveImprovementRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
             if (objDestination != null)
             {
@@ -1126,19 +1062,9 @@ namespace Chummer
 
             if (intNewIndex == 0)
                 return;
-
-            TreeNode nodOldNode = treImprovements.SelectedNode;
+            
             string strLocation = nodOldNode.Tag.ToString();
-            // Locate the currently selected Group.
-            objCharacter.ImprovementGroups.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.ImprovementGroups.Count)
-                objCharacter.ImprovementGroups.Add(strLocation);
-            else
-                objCharacter.ImprovementGroups.Insert(intNewIndex - 1, strLocation);
-
-            nodOldNode.Remove();
-            treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
+            objCharacter.ImprovementGroups.Move(objCharacter.ImprovementGroups.IndexOf(strLocation), intNewIndex);
         }
         #endregion
 

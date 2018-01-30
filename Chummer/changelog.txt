@@ -117,6 +117,7 @@ Application Changes:
 - Fixed an issue where adding contacts from a file would not register and save those contacts with the underlying character.
 - Fixed a bug where spirit names would get printed as blank if using a non-default localization that does not have a translated entry for the particular spirit. Fixes #2416.
 - Cyberware grades are no longer hidden if the character is ignoring creation rules.
+- Fixed an issue where unequipping modular cyberware that was equipped to a vehicle in career mode would keep the old cyberware node on the vehicle tree view.
 
 Data Changes:
 

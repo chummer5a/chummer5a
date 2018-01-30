@@ -27,6 +27,7 @@ using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Chummer.Backend.Equipment
 {
@@ -68,8 +69,8 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponName = string.Empty;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
-        private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
-        private List<Weapon> _lstUnderbarrel = new List<Weapon>();
+        private ObservableCollection<WeaponAccessory> _lstAccessories = new ObservableCollection<WeaponAccessory>();
+        private ObservableCollection<Weapon> _lstUnderbarrel = new ObservableCollection<Weapon>();
         private Vehicle _objMountedVehicle = null;
         private WeaponMount _objWeaponMount = null;
         private string _strNotes = string.Empty;
@@ -870,17 +871,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
-        public IList<WeaponAccessory> WeaponAccessories => _lstAccessories;
+        public ObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
 
         /// <summary>
         /// Underbarrel Weapon.
         /// </summary>
-        public IList<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
+        public ObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
 
         /// <summary>
         /// Children as Underbarrel Weapon.
         /// </summary>
-        public IList<Weapon> Children => UnderbarrelWeapons;
+        public ObservableCollection<Weapon> Children => UnderbarrelWeapons;
         /// <summary>
         /// Whether or not this Weapon is an Underbarrel Weapon.
         /// </summary>
@@ -1823,7 +1824,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.GearChildren)
+                    foreach (Gear objChild in objGear.Children)
                     {
                         if (objChild.WeaponBonus != null)
                         {
@@ -2099,7 +2100,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.GearChildren.GetAllDescendants(x => x.GearChildren))
+                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
                     {
                         if (objChild.WeaponBonus != null)
                         {
@@ -3406,7 +3407,7 @@ namespace Chummer.Backend.Equipment
                 //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                 case FiringMode.DogBrain:
                     {
-                        Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
+                        Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
 
                         if (objAutosoft != null)
                         {

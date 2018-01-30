@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -60,13 +61,13 @@ namespace Chummer.Backend.Equipment
         private int _intAddBodyModSlots = 0;
         private int _intAddElectromagneticModSlots = 0;
         private int _intAddCosmeticModSlots = 0;
-        private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
-        private List<Gear> _lstGear = new List<Gear>();
-        private List<Weapon> _lstWeapons = new List<Weapon>();
-        private List<WeaponMount> _lstWeaponMounts = new List<WeaponMount>();
+        private ObservableCollection<VehicleMod> _lstVehicleMods = new ObservableCollection<VehicleMod>();
+        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+        private ObservableCollection<WeaponMount> _lstWeaponMounts = new ObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
-        private List<string> _lstLocations = new List<string>();
+        private ObservableCollection<string> _lstLocations = new ObservableCollection<string>();
         private bool _blnBlackMarketDiscount = false;
         private string _strParentID = string.Empty;
 
@@ -367,7 +368,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Gear objGearChild in lstChildGears)
                             {
                                 objGearChild.ParentID = objGear.InternalId;
-                                objGear.GearChildren.Add(objGearChild);
+                                objGear.Children.Add(objGearChild);
                             }
                             
                             _lstGear.Add(objGear);
@@ -398,7 +399,8 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrWhiteSpace(objWeaponMount.WeaponMountCategories) && objWeaponMount.WeaponMountCategories.Contains(objWeapon.Category) && objWeaponMount.Weapons.Count == 0)
                             {
                                 objWeaponMount.Weapons.Add(objWeapon);
-                                ((List<Weapon>)objWeaponMount.Weapons).AddRange(objSubWeapons);
+                                foreach (Weapon objSubWeapon in objSubWeapons)
+                                    objWeaponMount.Weapons.Add(objSubWeapon);
                                 break;
                             }
                         }
@@ -411,7 +413,8 @@ namespace Chummer.Backend.Equipment
                                 if ((objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
-                                    ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
+                                    foreach (Weapon objSubWeapon in objSubWeapons)
+                                        objMod.Weapons.Add(objSubWeapon);
                                     break;
                                 }
                             }
@@ -422,7 +425,8 @@ namespace Chummer.Backend.Equipment
                                     if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                     {
                                         objMod.Weapons.Add(objWeapon);
-                                        ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
+                                        foreach (Weapon objSubWeapon in objSubWeapons)
+                                            objMod.Weapons.Add(objSubWeapon);
                                         break;
                                     }
                                 }
@@ -1260,7 +1264,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public IList<VehicleMod> Mods
+        public ObservableCollection<VehicleMod> Mods
         {
             get
             {
@@ -1271,7 +1275,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public IList<Gear> Gear
+        public ObservableCollection<Gear> Gear
         {
             get
             {
@@ -1282,9 +1286,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public IList<Weapon> Weapons => _lstWeapons;
+        public ObservableCollection<Weapon> Weapons => _lstWeapons;
 
-        public IList<WeaponMount> WeaponMounts
+        public ObservableCollection<WeaponMount> WeaponMounts
         {
             get
             {
@@ -1500,7 +1504,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public IList<string> Locations
+        public ObservableCollection<string> Locations
         {
             get
             {
@@ -2631,7 +2635,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                Gear objGear = Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
+                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
                 if (objGear != null)
                 {
                     return objGear.Rating;

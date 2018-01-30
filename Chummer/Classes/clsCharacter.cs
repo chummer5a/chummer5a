@@ -222,7 +222,7 @@ namespace Chummer
         #endif
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
-        private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
+        private ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
@@ -238,9 +238,9 @@ namespace Chummer
         private List<string> _lstOldQualities = new List<string>();
         private ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
         private ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
-        private List<string> _lstVehicleLocations = new List<string>();
-        private List<string> _lstWeaponLocations = new List<string>();
-        private List<string> _lstImprovementGroups = new List<string>();
+        private ObservableCollection<string> _lstVehicleLocations = new ObservableCollection<string>();
+        private ObservableCollection<string> _lstWeaponLocations = new ObservableCollection<string>();
+        private ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
         private BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
         private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
@@ -277,7 +277,6 @@ namespace Chummer
 			AttributeSection.Reset();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 
 	    public AttributeSection AttributeSection { get; set; }
@@ -2993,7 +2992,6 @@ namespace Chummer
             _lstCalendar.Clear();
 
             SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 #endregion
 
@@ -3044,7 +3042,7 @@ namespace Chummer
                     }
                     break;
                 case Improvement.ImprovementSource.Gear:
-                    Gear objReturnGear = Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                    Gear objReturnGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnGear != null)
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3056,7 +3054,7 @@ namespace Chummer
                     {
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3070,7 +3068,7 @@ namespace Chummer
                     }
                     foreach (Armor objArmor in Armor)
                     {
-                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3083,7 +3081,7 @@ namespace Chummer
                     }
                     foreach (Cyberware objCyberware in Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                     {
-                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3096,7 +3094,7 @@ namespace Chummer
                     }
                     foreach (Vehicle objVehicle in Vehicles)
                     {
-                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3110,7 +3108,7 @@ namespace Chummer
                         {
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3128,7 +3126,7 @@ namespace Chummer
                             {
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3142,7 +3140,7 @@ namespace Chummer
                             }
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                             {
-                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
+                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -5584,7 +5582,7 @@ namespace Chummer
                 decimal decCyberware = 0m;
                 decimal decBioware = 0m;
                 decimal decHole = 0m;
-                foreach (Cyberware objCyberware in _lstCyberware)
+                foreach (Cyberware objCyberware in Cyberware)
                 {
                     if (objCyberware.Name == "Essence Hole")
                         decHole += objCyberware.CalculatedESS();
@@ -5618,7 +5616,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
+                return Cyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -5630,7 +5628,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
+                return Cyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -5642,7 +5640,7 @@ namespace Chummer
             get
             {
                 // Find the total Essence Cost of all Essence Hole objects.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
+                return Cyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -6532,7 +6530,7 @@ namespace Chummer
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
-        public BindingList<Cyberware> Cyberware
+        public ObservableCollection<Cyberware> Cyberware
         {
             get
             {
@@ -6704,7 +6702,7 @@ namespace Chummer
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public IList<string> VehicleLocations
+        public ObservableCollection<string> VehicleLocations
         {
             get
             {
@@ -6715,7 +6713,7 @@ namespace Chummer
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public IList<string> WeaponLocations
+        public ObservableCollection<string> WeaponLocations
         {
             get
             {
@@ -6726,7 +6724,7 @@ namespace Chummer
         /// <summary>
         /// Improvement Groups.
         /// </summary>
-        public IList<string> ImprovementGroups
+        public ObservableCollection<string> ImprovementGroups
         {
             get
             {
@@ -7611,12 +7609,12 @@ namespace Chummer
 
             int intAGI = AGI.CalculatedTotalValue(false);
             int intSTR = STR.CalculatedTotalValue(false);
-            if (_objOptions.CyberlegMovement && blnUseCyberlegs && _lstCyberware.Any(objCyber => objCyber.LimbSlot == "leg"))
+            if (_objOptions.CyberlegMovement && blnUseCyberlegs && Cyberware.Any(objCyber => objCyber.LimbSlot == "leg"))
             {
                 int intTempAGI = int.MaxValue;
                 int intTempSTR = int.MaxValue;
                 int intLegs = 0;
-                foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
+                foreach (Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
                 {
                     intLegs += objCyber.LimbSlotCount;
                     intTempAGI = Math.Min(intTempAGI, objCyber.TotalAgility);
