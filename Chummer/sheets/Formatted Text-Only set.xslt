@@ -773,7 +773,39 @@
             <xsl:sort select="name"/>
             <br/><xsl:value-of select="name"/>
             (<xsl:value-of select="baselifestyle"/>)
-            <xsl:value-of select="months"/>&#160;<xsl:value-of select="$lang.Months"/>
+            <xsl:value-of select="months"/>&#160;
+          <xsl:choose>
+            <xsl:when test="increment = 'Day'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Day"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Days"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:when test="increment = 'Week'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Week"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Weeks"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Month"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Months"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
       <xsl:for-each select="qualities/quality">
         <br/>&#160;&#160;&#160;+ <xsl:value-of select="formattedname"/>
       </xsl:for-each>
@@ -1254,7 +1286,7 @@
             <xsl:sort select="name"/>
             <br/>
             <xsl:value-of select="name"/>
-            <xsl:for-each select="martialartadvantages/martialartadvantage">
+            <xsl:for-each select="martialarttechniques/martialarttechnique">
                 <xsl:sort select="."/>
                 <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
             </xsl:for-each>

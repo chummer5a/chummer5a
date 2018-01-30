@@ -24,12 +24,12 @@
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: tahoma, 'trebuchet ms', arial;
-            font-size: 8pt;
-            margin: 0;
+          font-family: tahoma, 'trebuchet ms', arial;
+          font-size: 8pt;
+          margin: 0;
           }
           .indent {
-            padding-left: 20px;
+          padding-left: 0.5em;
           }
         </style>
         <style media="print">
@@ -410,9 +410,9 @@
                 <xsl:for-each select="martialarts/martialart">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="martialartadvantages/martialartadvantage">
+                  <xsl:if test="martialarttechniques/martialarttechnique">
                   (
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
                   </xsl:for-each>
                   )

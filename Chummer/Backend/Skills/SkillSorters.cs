@@ -1,20 +1,36 @@
-﻿using System;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer.Backend.Skills
 {
-    class SkillSorter : IComparer<Skill>
+    public sealed class SkillSorter : IComparer<Skill>
     {
         private readonly Comparison<Skill> _comparison;
 
         public SkillSorter(Comparison<Skill> comparison)
         {
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-
-            _comparison = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <summary>
@@ -30,15 +46,13 @@ namespace Chummer.Backend.Skills
         }
     }
 
-    class KnowledgeSkillSorter : IComparer<KnowledgeSkill>
+    public sealed class KnowledgeSkillSorter : IComparer<KnowledgeSkill>
     {
         private readonly Comparison<KnowledgeSkill> _comparison;
 
         public KnowledgeSkillSorter(Comparison<KnowledgeSkill> comparison)
         {
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-
-            _comparison = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <summary>
@@ -54,7 +68,7 @@ namespace Chummer.Backend.Skills
         }
     }
 
-    class SkillSortBySkillGroup : IComparer<Skill>
+    public sealed class SkillSortBySkillGroup : IComparer<Skill>
     {
         /// <summary>
         /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.

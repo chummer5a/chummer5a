@@ -50,176 +50,133 @@ namespace Chummer
         }
         #endregion
 
+        #region TreeNode Extensions
+        public static TreeNode GetTopParent(this TreeNode objThis)
+        {
+            TreeNode objReturn = objThis;
+            while (objReturn.Parent != null)
+                objReturn = objReturn.Parent;
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeNode based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="objNode">TreeNode to search.</param>
+        public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
+        {
+            if (objNode != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                TreeNode objFound;
+                foreach (TreeNode objChild in objNode.Nodes)
+                {
+                    if (objChild.Tag.ToString() == strGuid)
+                        return objChild;
+
+                    if (blnDeep)
+                    {
+                        objFound = objChild.FindNode(strGuid);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeNode based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="objNode">TreeNode to search.</param>
+        public static TreeNode FindNodeByTag(this TreeNode objNode, object objTag, bool blnDeep = true)
+        {
+            if (objNode != null && objTag != null)
+            {
+                TreeNode objFound;
+                foreach (TreeNode objChild in objNode.Nodes)
+                {
+                    if (objChild.Tag == objTag)
+                        return objChild;
+
+                    if (blnDeep)
+                    {
+                        objFound = objChild.FindNodeByTag(objTag);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
+        }
+        #endregion
+
         #region TreeView Extensions
-        public static void Add(this TreeView treView, LimitModifier input, ContextMenuStrip strip)
+        /// <summary>
+        /// Sort the contents of a TreeView alphabetically within each group Node.
+        /// </summary>
+        /// <param name="treView">TreeView to sort.</param>
+        public static void SortCustom(this TreeView treView, string strSelectedNodeTag = "")
         {
-            if (treView == null)
+            TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
+            if (lstTreeViewNodes == null)
                 return;
-            TreeNode nodeToAddTo = treView.Nodes[(int)Enum.Parse(typeof(LimitType), input.Limit)];
-            if (!nodeToAddTo.Nodes.ContainsKey(input.DisplayName))
+            if (string.IsNullOrEmpty(strSelectedNodeTag))
+                strSelectedNodeTag = treView.SelectedNode?.Tag.ToString();
+            for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = newNode.Name = input.DisplayName;
-                newNode.Tag = input.InternalId;
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
-                newNode.ContextMenuStrip = strip;
-
-                nodeToAddTo.Nodes.Add(newNode);
-                nodeToAddTo.Expand();
-            }
-        }
-        public static void Add(this TreeView treView, Improvement input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode nodeToAddTo = treView.Nodes[(int)Enum.Parse(typeof(LimitType), input.ImprovedName)];
-            string strName = input.UniqueName + ": ";
-            if (input.Value > 0)
-                strName += "+";
-            strName += input.Value.ToString();
-            if (!string.IsNullOrEmpty(input.Condition))
-                strName += ", " + input.Condition;
-            if (!nodeToAddTo.Nodes.ContainsKey(strName))
-            {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = newNode.Name = strName;
-                newNode.Tag = input.SourceName;
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
-                newNode.ContextMenuStrip = strip;
-                if (string.IsNullOrEmpty(input.ImprovedName))
+                TreeNode objLoopNode = lstTreeViewNodes[i];
+                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
+                int intChildrenCount = objLoopNodeChildren.Count;
+                if (intChildrenCount > 0)
                 {
-                    if (input.ImproveType == Improvement.ImprovementType.SocialLimit)
-                        input.ImprovedName = "Social";
-                    else if (input.ImproveType == Improvement.ImprovementType.MentalLimit)
-                        input.ImprovedName = "Mental";
-                    else
-                        input.ImprovedName = "Physical";
+                    TreeNode[] lstNodes = new TreeNode[intChildrenCount];
+                    objLoopNodeChildren.CopyTo(lstNodes, 0);
+                    objLoopNodeChildren.Clear();
+                    Array.Sort(lstNodes, CompareTreeNodes.CompareText);
+                    objLoopNodeChildren.AddRange(lstNodes);
+
+                    objLoopNode.Expand();
                 }
-
-                nodeToAddTo.Nodes.Add(newNode);
-                nodeToAddTo.Expand();
             }
-        }
-        public static void Add(this TreeView treView, MartialArt input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode objTargetNode = treView.Nodes[input.IsQuality ? 1 : 0];
-            if (objTargetNode != null)
-            {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = input.DisplayName;
-                newNode.Tag = input.InternalId;
-                newNode.ContextMenuStrip = strip;
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
-                foreach (MartialArtAdvantage objAdvantage in input.Advantages)
-                {
-                    TreeNode objAdvantageNode = new TreeNode();
-                    objAdvantageNode.Text = objAdvantage.DisplayName;
-                    objAdvantageNode.Tag = objAdvantage.InternalId;
-                    newNode.Nodes.Add(objAdvantageNode);
-                    newNode.Expand();
-                }
-
-                objTargetNode.Nodes.Add(newNode);
-                objTargetNode.Expand();
-            }
-        }
-        public static void Add(this TreeView treView, Quality input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode nodeToAddTo = treView.Nodes[(int)input.Type];
-            string strName = input.DisplayName;
-            if (!nodeToAddTo.Nodes.ContainsKey(strName))
-            {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = strName;
-                newNode.Tag = input.InternalId;
-                newNode.ContextMenuStrip = strip;
-
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable || input.OriginSource == QualitySource.Improvement)
-                    newNode.ForeColor = SystemColors.GrayText;
-                if (!input.Implemented)
-                    newNode.ForeColor = Color.Red;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
-
-                nodeToAddTo.Nodes.Add(newNode);
-                nodeToAddTo.Expand();
-            }
-        }
-        public static void Add(this TreeView treView, Spell input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode objNode = new TreeNode();
-            objNode.Text = input.DisplayName;
-            objNode.Tag = input.InternalId;
-            objNode.ContextMenuStrip = strip;
-            if (!string.IsNullOrEmpty(input.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
-
-            TreeNode objSpellTypeNode = null;
-            switch (input.Category)
-            {
-                case "Combat":
-                    objSpellTypeNode = treView.Nodes[0];
-                    break;
-                case "Detection":
-                    objSpellTypeNode = treView.Nodes[1];
-                    break;
-                case "Health":
-                    objSpellTypeNode = treView.Nodes[2];
-                    break;
-                case "Illusion":
-                    objSpellTypeNode = treView.Nodes[3];
-                    break;
-                case "Manipulation":
-                    objSpellTypeNode = treView.Nodes[4];
-                    break;
-                case "Rituals":
-                    objSpellTypeNode = treView.Nodes[5];
-                    break;
-                case "Enchantments":
-                    objSpellTypeNode = treView.Nodes[6];
-                    break;
-            }
-            objSpellTypeNode.Nodes.Add(objNode);
-            objSpellTypeNode.Expand();
+            TreeNode objSelectedNode = treView.FindNode(strSelectedNodeTag);
+            if (objSelectedNode != null)
+                treView.SelectedNode = objSelectedNode;
         }
 
         /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
-        public static void SortCustom(this TreeView treView)
+        public static void SortCustom(this TreeView treView, object objSelectedNodeTag = null)
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
                 return;
-            SortByName objSort = new SortByName();
+            if (objSelectedNodeTag == null)
+                objSelectedNodeTag = treView.SelectedNode?.Tag;
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
                 TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
-                TreeNode[] lstNodes = new TreeNode[objLoopNodeChildren.Count];
-                objLoopNodeChildren.CopyTo(lstNodes, 0);
-                objLoopNodeChildren.Clear();
-                Array.Sort(lstNodes, objSort.Compare);
-                objLoopNodeChildren.AddRange(lstNodes);
+                int intChildrenCount = objLoopNodeChildren.Count;
+                if (intChildrenCount > 0)
+                {
+                    TreeNode[] lstNodes = new TreeNode[intChildrenCount];
+                    objLoopNodeChildren.CopyTo(lstNodes, 0);
+                    objLoopNodeChildren.Clear();
+                    Array.Sort(lstNodes, CompareTreeNodes.CompareText);
+                    objLoopNodeChildren.AddRange(lstNodes);
 
-                objLoopNode.Expand();
+                    objLoopNode.Expand();
+                }
             }
+
+            TreeNode objSelectedNode = treView.FindNodeByTag(objSelectedNodeTag);
+            if (objSelectedNode != null)
+                treView.SelectedNode = objSelectedNode;
         }
 
         /// <summary>
@@ -230,6 +187,58 @@ namespace Chummer
         public static void ClearNodeBackground(this TreeView treView, TreeNode objHighlighted)
         {
             treView?.Nodes.ClearNodeBackground(objHighlighted);
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeView based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="treTree">TreeView to search.</param>
+        public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
+        {
+            if (treTree != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                TreeNode objFound;
+                foreach (TreeNode objNode in treTree.Nodes)
+                {
+                    if (objNode.Tag.ToString() == strGuid)
+                        return objNode;
+
+                    if (blnDeep)
+                    {
+                        objFound = objNode.FindNode(strGuid);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeView based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="treTree">TreeView to search.</param>
+        public static TreeNode FindNodeByTag(this TreeView treTree, object objTag, bool blnDeep = true)
+        {
+            if (treTree != null && objTag != null)
+            {
+                TreeNode objFound;
+                foreach (TreeNode objNode in treTree.Nodes)
+                {
+                    if (objNode.Tag == objTag)
+                        return objNode;
+
+                    if (blnDeep)
+                    {
+                        objFound = objNode.FindNodeByTag(objTag);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
         }
         #endregion
 

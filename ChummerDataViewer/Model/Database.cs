@@ -5,10 +5,10 @@ using System.IO;
 
 namespace ChummerDataViewer.Model
 {
-	internal class Database : IDisposable
+    public class Database : IDisposable
 	{
 		private readonly object _syncRoot = new object();
-		private DatabasePrivateApi innerApi;
+		private readonly DatabasePrivateApi innerApi;
 
 		private readonly SQLiteConnection _dbConnection;
 		private readonly SQLiteCommand _setKey;
@@ -153,7 +153,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_insertCrash.Reset(true, false);
-				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@timestamp", timestamp));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@buildtype", buildType));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@errorfriendly", errorFriendly));
@@ -236,7 +236,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_getSingleCrash.Reset(true, false);
-				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 
 				using (SQLiteDataReader reader = _getSingleCrash.ExecuteReader())
 				{
@@ -255,7 +255,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setZipFile.Reset(true, false);
-				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setZipFile.Parameters.Add(new SQLiteParameter("@ziplocation", filePath));
 
 				_setZipFile.ExecuteNonQuery();
@@ -267,7 +267,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setUserStory.Reset(true, false);
-				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setUserStory.Parameters.Add(new SQLiteParameter("@userstory", userstory));
 
 				_setUserStory.ExecuteNonQuery();
@@ -279,27 +279,27 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setStackTrace.Reset(true, false);
-				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setStackTrace.Parameters.Add(new SQLiteParameter("@stacktrace", exception));
 
 				_setStackTrace.ExecuteNonQuery();
 			}
 		}
 
-		public class DatabasePrivateApi
+		public sealed class DatabasePrivateApi
 		{
-			private Database _db;
+            private readonly Database _db;
 
-			internal DatabasePrivateApi(Database db)
+            public DatabasePrivateApi(Database db)
 			{
 				_db = db;
 			}
 
-			internal void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
+            public void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
 
-			public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
+            public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
 
-			public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
+            public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
 		}
 
 		

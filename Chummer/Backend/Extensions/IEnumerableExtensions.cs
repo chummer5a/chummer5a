@@ -18,23 +18,40 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace Chummer.Backend
+namespace Chummer
 {
     static class IEnumerableExtensions
     {
-        // Made into a not extension method as Collection.Append is confusing and no clear name could be devised
-        public static IEnumerable<T> Both<T>(IEnumerable<T> first, IEnumerable<T> second)
+        /// <summary>
+        /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasChildren<T>, IHasInternalId
         {
-            foreach (T t in first)
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                yield return t;
+                return default(T);
             }
 
-            foreach (T t in second)
+            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
+        }
+
+        /// <summary>
+        /// Locate an object (Needle) within a list (Haystack) based on GUID match.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        public static T FindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasInternalId
+        {
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                yield return t;
+                return default(T);
             }
+
+            return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
         }
     }
 }

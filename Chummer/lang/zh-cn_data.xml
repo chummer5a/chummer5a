@@ -20,9 +20,6 @@
 <!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360 
      translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0 
 -->
-<!-- 本版本供发布使用，清理了大量未翻译内容，可能需要从以前版本的文件中补充；
-     大量删除内容：martialarts.xml
--->
 
 <chummer>
 	<version>-350</version>
@@ -30,8 +27,8 @@
 		<categories>
 			<category translate="护甲">Armor</category>
 			<category translate="衣服">Clothing</category>
-			<category translate="High-Fashion Armor Clothing">High-Fashion Armor Clothing</category>
-			<category translate="Specialty Armor">Specialty Armor</category>
+			<category translate="时髦护甲服">High-Fashion Armor Clothing</category>
+			<category translate="专业护甲">Specialty Armor</category>
 		</categories>
 		<armors>
 			<armor>
@@ -104,11 +101,430 @@
 				<name>Urban Explorer Jumpsuit: Helmet</name>
 				<translate>城市探险者紧身衣：头盔</translate>
 			</armor>
-			<armor>
-				<id>ef42a5ce-3423-4018-b84f-5cc84238ccaf</id>
-				<name>Armanté Suit</name>
-				<translate>Armanté Suit</translate>
-			</armor>
+    <!-- Region Run & Gun -->
+    <armor>
+      <id>ef42a5ce-3423-4018-b84f-5cc84238ccaf</id>
+      <name>Armanté Suit</name>
+      <translate>阿玛特套装</translate>
+    </armor>
+    <armor>
+      <id>d2d13b9e-dcc9-4427-96e5-65348f4f2766</id>
+      <name>Armanté Dress</name>
+     <translate>阿玛特礼服裙</translate>
+    </armor>
+    <armor>
+      <id>e95b254f-c95d-41c4-b618-7c68c3456112</id>
+      <name>Mortimer of London: Berwick Suit</name>
+      <translate>伦敦莫蒂默：贝里克套装</translate>
+    </armor>
+    <armor>
+      <id>998a55b0-2307-45db-99fc-ae2d1501f6dc</id>
+      <name>Mortimer of London: Berwick Dress</name>
+     <translate>伦敦莫蒂默：贝里克礼服裙</translate>
+    </armor>
+    <armor>
+      <id>39a446e4-694a-44e2-bc47-bbfe722c7c68</id>
+      <name>Mortimer of London: Crimson Sky Suit</name>
+      <translate>伦敦莫蒂默：绯红天套装</translate>
+    </armor>
+    <armor>
+      <id>328fb32e-9c69-49ea-a15d-aa50dd169209</id>
+      <name>Mortimer of London: Summit Suit</name>
+      <translate>伦敦莫蒂默：顶峰套装</translate>
+    </armor>
+    <armor>
+      <id>de7aa792-a274-46dc-a89a-970d08afa814</id>
+      <name>Mortimer of London: Summit Dress</name>
+      <translate>伦敦莫蒂默：顶峰礼服裙</translate>
+    </armor>
+    <armor>
+      <id>446ec9ad-9a52-46fe-8f27-873a51ef6291</id>
+      <name>Mortimer of London: Greatcoat Coat</name>
+      <translate>伦敦莫蒂默：厚风衣外套</translate>
+    </armor>
+    <armor>
+      <id>994c7cfb-54a1-4a47-8ca5-9d5381ba2994</id>
+      <name>Mortimer of London: Ulysses Coat</name>
+      <translate>伦敦莫蒂默：尤利西斯式风衣</translate>
+    </armor>
+    <armor>
+      <id>dceda713-a138-4161-8bd2-b909ffed7f85</id>
+      <name>Mortimer of London: Argentum Coat</name>
+      <translate>伦敦莫蒂默：闪银风衣</translate>
+    </armor>
+    <armor>
+      <id>bedcc69e-1b7b-44bf-b916-22821696c3b0</id>
+      <name>Vashon Island: Ace of Cups</name>
+      <translate>梵尚岛：圣杯一</translate>
+    </armor>
+    <armor>
+      <id>4b2502ef-03e4-4cf5-b8f5-375b7aa4ddb9</id>
+      <name>Vashon Island: Ace of Swords</name>
+      <translate>梵尚岛：宝剑一</translate>
+    </armor>
+    <armor>
+      <id>87f81743-37ca-4030-a588-07d109a31f75</id>
+      <name>Vashon Island: Ace of Wands</name>
+     <translate>梵尚岛：权杖一</translate>
+    </armor>
+    <armor>
+      <id>cf582ec4-0e5d-4ddb-a38e-4c6be954c514</id>
+      <name>Vashon Island: Ace of Coins</name>
+      <translate>梵尚岛：星币一</translate>
+    </armor>
+    <armor>
+      <id>00ca9c50-383c-47ed-9347-b7733d62c3bd</id>
+      <name>Vashon Island: Ace of Spades</name>
+      <translate>梵尚岛：黑桃A</translate>
+    </armor>
+    <armor>
+      <id>f12794c9-3600-4fc6-aeae-748eb3b324a0</id>
+      <name>Vashon Island: Ace of Clubs</name>
+      <translate>梵尚岛：梅花A</translate>
+    </armor>
+    <armor>
+      <id>7d046fdf-5c71-462d-bd51-e6ed718dd4fb</id>
+      <name>Vashon Island: Ace of Hearts</name>
+      <translate>梵尚岛：红桃A</translate>
+    </armor>
+    <armor>
+      <id>f90b52b6-1a4e-400f-b32f-9af5d7d932cd</id>
+      <name>Vashon Island: Ace of Diamonds</name>
+      <translate>梵尚岛：方块A</translate>
+    </armor>
+    <armor>
+      <id>164ad072-4e3a-4398-9d43-b47d9ee9083b</id>
+      <name>Vashon Island: Steampunk</name>
+      <translate>梵尚岛：蒸汽朋克</translate>
+    </armor>
+    <armor>
+      <id>6db86bf0-0d3f-4e51-88cb-867b7247dbfb</id>
+      <name>Vashon Island: Synergist Business Line</name>
+      <translate>梵尚岛：协作商务内衬服</translate>
+    </armor>
+    <armor>
+      <id>cb1e1f7e-a711-44a7-8ed7-a8fc50802c62</id>
+      <name>Vashon Island: Synergist Business Line Longcoat</name>
+      <translate>梵尚岛：协作商务内衬长风衣</translate>
+    </armor>
+    <armor>
+      <id>fc8fd2e8-4856-4830-b241-a5128a08f902</id>
+      <name>Vashon Island: Sleeping Tiger</name>
+      <translate>梵尚岛：睡虎</translate>
+    </armor>
+    <armor>
+      <id>5341cfd0-5cd7-49d5-8a95-0266355f391a</id>
+      <name>Zoé: Executive Suite</name>
+      <translate>佐伊：执行官套装</translate>
+    </armor>
+    <armor>
+      <id>30d98329-8e2b-46f4-bf2d-d36a2b5fa702</id>
+      <name>Zoé: Heritage 4</name>
+      <translate>佐伊：遗产（4）</translate>
+    </armor>
+    <armor>
+      <id>7863f434-df16-46ab-9aeb-eba1d4e9f036</id>
+      <name>Zoé: Heritage 6</name>
+      <translate>佐伊：遗产（6）</translate>
+    </armor>
+    <armor>
+      <id>cd5144e6-cad3-45ba-85c1-fb5edf2a8074</id>
+      <name>Zoé: Heritage 8</name>
+      <translate>佐伊：遗产（8）</translate>
+    </armor>
+    <armor>
+      <id>35598cd3-17cb-4d9e-b02f-3f5b00f1f140</id>
+      <name>Zoé: Heritage 10</name>
+     <translate>佐伊：遗产（10）</translate>
+    </armor>
+    <armor>
+      <id>d4804f1b-4443-4e97-a7d2-9c1659732c6b</id>
+      <name>Zoé: Heritage 12</name>
+      <translate>佐伊：遗产（12）</translate>
+    </armor>
+    <armor>
+      <id>1bb248fd-7a8f-4e5c-8aea-222546e70282</id>
+      <name>Zoé: Nightshade/Moonsilver</name>
+      <translate>佐伊：夜影/月银</translate>
+    </armor>
+    <armor>
+      <id>739b029d-b2a0-48cb-ac2e-51636fc495c2</id>
+      <name>Zoé: Second Skin</name>
+      <translate>佐伊：第二皮肤</translate>
+    </armor>
+    <armor>
+      <id>90b0ab96-661b-417c-9933-8113ab6d52d2</id>
+      <name>Ares Victory: Globetrotter Jacket</name>
+     <translate>阿瑞斯·胜利：环球旅行外套</translate>
+    </armor>
+    <armor>
+      <id>21c8ae9d-3d08-4908-814f-ae195e4ea03d</id>
+      <name>Ares Victory: Globetrotter Vest</name>
+     <translate>阿瑞斯·胜利：环球旅行背心</translate>
+    </armor>
+    <armor>
+      <id>2de9a781-0b44-43a4-bfdf-2ca3c1e90bc0</id>
+      <name>Ares Victory: Globetrotter Clothing</name>
+      <translate>阿瑞斯·胜利：环球旅行服</translate>
+    </armor>
+    <armor>
+      <id>401891e4-293c-4308-bd95-bdfb1eb08a72</id>
+      <name>Ares Victory: Wild Hunt</name>
+      <translate>阿瑞斯·胜利：荒野猎人</translate>
+    </armor>
+    <armor>
+      <id>3d0f09b9-2e73-4c10-9d44-184395be7aa2</id>
+      <name>Ares Victory: Industrious</name>
+      <translate>阿瑞斯·胜利：勤勉</translate>
+    </armor>
+    <armor>
+      <id>a71e62ca-bf6f-43d0-bacf-454908d92fbb</id>
+      <name>Ares Victory: Big Game Hunter</name>
+      <translate>阿瑞斯·胜利：王牌猎人</translate>
+    </armor>
+    <armor>
+      <id>e6c9f9cb-fa30-445f-b6c7-b2017f63cbdd</id>
+      <name>Ares Victory: Rapid Transit</name>
+     <translate>阿瑞斯·胜利：高速交通</translate>
+    </armor>
+     <!-- Region Hard Targets -->
+    <armor>
+      <id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
+      <name>Cloak</name>
+      <translate>斗篷</translate>
+    </armor>
+    <armor>
+      <id>fc4074b5-b48a-43d4-8d9c-25a11da2a6a8</id>
+      <name>Designer Cloak</name>
+      <translate>精致斗篷</translate>
+    </armor>
+    <armor>
+      <id>678353a1-b697-442a-aa3a-6e34b9178c4b</id>
+      <name>Ruthenium Polymer Cloak</name>
+      <translate>钌聚合物斗篷</translate>
+    </armor>
+    <!-- End Region -->
+    <!-- Region Run Faster -->
+    <armor>
+      <id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
+      <name>One-Use Shoes</name>
+      <translate>一次性鞋</translate>
+    </armor>
+    <armor>
+      <id>7fdd5a97-2608-4f5e-b377-744b8001942e</id>
+      <name>One-Use Pants</name>
+      <translate>一次性裤</translate>
+    </armor>
+    <armor>
+      <id>cd46bf71-1cc1-4a0c-af75-60f1c91d7daf</id>
+      <name>One-Use Shirt</name>
+      <translate>一次性衫</translate>
+    </armor>
+    <armor>
+      <id>d34a47eb-6f2d-449a-ac81-5a450c776c4a</id>
+      <name>One-Use Skirt</name>
+      <translate>一次性裙</translate>
+    </armor>
+    <armor>
+      <id>dc78601d-7171-470e-8d7d-2e772cbcbfb2</id>
+      <name>Cheap Shoes</name>
+     <translate>廉价鞋</translate>
+    </armor>
+    <armor>
+      <id>024cca53-0d3a-4c89-bb73-a885b7d6111e</id>
+      <name>Cheap Pants</name>
+     <translate>廉价裤</translate>
+    </armor>
+    <armor>
+      <id>fe363b10-a801-4049-9d5b-1908c6a6b9fc</id>
+      <name>Cheap Shirt</name>
+      <translate>廉价衫</translate>
+    </armor>
+    <armor>
+      <id>9a680b0f-adcc-42a1-9ab5-417f51cf6b2f</id>
+      <name>Cheap Skirt</name>
+      <translate>廉价裙</translate>
+    </armor>
+    <armor>
+      <id>99912fac-51df-4afb-88d1-1ff1a2c6fd2a</id>
+      <name>Good Shoes</name>
+      <translate>优良鞋</translate>
+    </armor>
+    <armor>
+      <id>da996700-0e80-48a0-88fa-407828efc902</id>
+      <name>Good Pants</name>
+      <translate>优良裤</translate>
+    </armor>
+    <armor>
+      <id>f07da344-b605-4756-9a2e-ec6a40520d09</id>
+      <name>Good Shirt</name>
+     <translate>优良衫</translate>
+    </armor>
+    <armor>
+      <id>f354f55c-17c2-480b-88d2-f2b84ddd5b6f</id>
+      <name>Good Skirt</name>
+      <translate>优良裙</translate>
+    </armor>
+    <armor>
+      <id>b7d83159-2840-4a10-985f-4ef346715c80</id>
+      <name>Nice Shoes</name>
+      <translate>上等鞋</translate>
+    </armor>
+    <armor>
+      <id>4f17f85d-1dbb-446c-b531-56b2b12997f4</id>
+      <name>Nice Pants</name>
+      <translate>上等裤</translate>
+    </armor>
+    <armor>
+      <id>473a06bb-e675-439b-bf60-51849402662d</id>
+      <name>Nice Shirt</name>
+      <translate>上等衫</translate>
+    </armor>
+    <armor>
+      <id>2665c5dd-cb7b-40f6-afc3-ea820136948b</id>
+      <name>Nice Skirt</name>
+      <translate>上等裙</translate>
+    </armor>
+    <armor>
+      <id>d0ff6dbc-e089-4ad0-88e3-79db8ff9f5b1</id>
+      <name>Cheap Dress</name>
+      <translate>廉价连衣裙</translate>
+    </armor>
+    <armor>
+      <id>a2deaf94-855d-4d90-a711-07d590e22618</id>
+      <name>Cheap Suit</name>
+     <translate>廉价套装</translate>
+    </armor>
+    <armor>
+      <id>fdcdc666-a830-4b5c-8215-c61aae183d95</id>
+      <name>Good Dress</name>
+      <translate>优良连衣裙</translate>
+    </armor>
+    <armor>
+      <id>3a2a9343-7c56-480a-90c8-e510be2ea80f</id>
+      <name>Good Suit</name>
+      <translate>优良套装</translate>
+    </armor>
+    <armor>
+      <id>0f452a31-054c-48f2-9021-9b430c07301e</id>
+      <name>Nice Dress</name>
+      <translate>精美连衣裙</translate>
+    </armor>
+    <armor>
+      <id>9414386d-cc22-4dd9-9a0a-ce94c79d4f09</id>
+      <name>Nice Suit</name>
+      <translate>精美套装</translate>
+    </armor>
+    <armor>
+      <id>7c2bb0b3-ae60-4c27-a720-561ad6953e83</id>
+      <name>Tuxedo Rental</name>
+      <translate>租用礼服</translate>
+    </armor>
+    <armor>
+      <id>2b09566c-ece5-497d-bafd-600f9cec9763</id>
+      <name>Hat</name>
+      <translate>帽子</translate>
+    </armor>
+    <armor>
+      <id>ec3b8987-f7d2-470d-ab08-72325b2c6a12</id>
+      <name>Ski Mask</name>
+      <translate>滑雪面罩</translate>
+    </armor>
+    <armor>
+      <id>040b3f4b-014c-46fa-bdf8-1a96334ecc27</id>
+      <name>Coveralls</name>
+     <translate>连身衣</translate>
+    </armor>
+    <armor>
+      <id>1e440489-b800-4e5f-904b-98ef1591402b</id>
+      <name>Cheap Socks</name>
+      <translate>廉价袜子</translate>
+    </armor>
+    <armor>
+      <id>7e13ee6d-5698-4b1e-bf93-7735bec4c0bc</id>
+      <name>Cheap Undergarments</name>
+      <translate>廉价内衣</translate>
+    </armor>
+    <armor>
+      <id>079d6bd6-d778-4bff-a2fb-23e849e74ec4</id>
+      <name>Good Socks</name>
+      <translate>优良袜子</translate>
+    </armor>
+    <armor>
+      <id>68eabf76-7e06-41a7-8717-2fdce3be8082</id>
+      <name>Good Undergarments</name>
+      <translate>优良内衣</translate>
+    </armor>
+    <armor>
+      <id>5293b8a8-32fd-4df4-ae86-6b909b952432</id>
+      <name>Nice Socks</name>
+      <translate>上等袜子</translate>
+    </armor>
+    <armor>
+      <id>675b4735-227e-4395-8f62-bd9a62670474</id>
+      <name>Nice Undergarments</name>
+      <translate>上等内衣</translate>
+    </armor>
+    <armor>
+      <id>bc259ccc-e96b-48b4-a3ac-0ff67b35b24f</id>
+      <name>One-Use Gloves</name>
+      <translate>一次性手套</translate>
+    </armor>
+    <armor>
+      <id>d8016291-050d-413d-8896-0ee1bc1063a6</id>
+      <name>Cheap Gloves</name>
+      <translate>廉价手套</translate>
+    </armor>
+    <armor>
+      <id>f93ceb9d-1736-4e51-b550-0275822c4d3e</id>
+      <name>Cheap Watch</name>
+      <translate>廉价手表</translate>
+    </armor>
+    <armor>
+      <id>fd904a19-c1d3-4926-90a8-697dc77ea42b</id>
+      <name>Cheap Jewelry</name>
+      <translate>廉价首饰</translate>
+    </armor>
+    <armor>
+      <id>feff1c2b-deab-4280-bc98-55e9b856bb42</id>
+      <name>Good Gloves</name>
+     <translate>优良手套</translate>
+    </armor>
+    <armor>
+      <id>86a9692a-ad7c-4c37-bd52-aac1680c91a0</id>
+      <name>Good Watch</name>
+      <translate>优良手表</translate>
+    </armor>
+    <armor>
+      <id>4a2e90f7-487a-4fa2-a51d-1d9695e0f66f</id>
+      <name>Good Jewelry</name>
+      <translate>优良首饰</translate>
+    </armor>
+    <armor>
+      <id>e98c2113-306a-4596-abcb-46607c432cfb</id>
+      <name>Nice Gloves</name>
+      <translate>上等手套</translate>
+    </armor>
+    <armor>
+      <id>7e081824-e64e-4d7a-8621-eba30197362a</id>
+      <name>Nice Watch</name>
+      <translate>上等手表</translate>
+    </armor>
+    <armor>
+      <id>9fc5642a-1670-4907-82cb-179a441d11f0</id>
+      <name>Nice Jewelry</name>
+     <translate>上等首饰</translate>
+    </armor>
+    <armor>
+      <id>f3cc02db-5049-462c-957b-75859e852408</id>
+      <name>Decent Diamond Ring</name>
+      <translate>优质钻戒</translate>
+    </armor>
+    <armor>
+      <id>5bdb85d7-41b9-4885-a37c-fc27f6b2c2e0</id>
+      <name>Large Diamond Ring</name>
+      <translate>大型钻戒</translate>
+    </armor>
 		</armors>
 		<mods>
 			<mod>
@@ -216,6 +632,148 @@
 				<name>Full Body Armor: Environment Adaptation</name>
 				<translate>全身甲：环境适应</translate>
 			</mod>
+    <!-- Region Run & Gun -->
+    <mod>
+      <id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
+      <name>Custom Fit</name>
+      <translate>定制</translate>
+    </mod>
+    <mod>
+      <id>0d74f2f6-74bf-4c7e-afdf-d44f24c3ac12</id>
+      <name>Custom Fit (Stack)</name>
+      <translate>定制（叠加）</translate>
+    </mod>
+    <mod>
+      <id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
+      <name>Gear Access</name>
+      <translate>容易取用</translate>
+    </mod>
+    <mod>
+      <id>13835ff2-7b9e-47c3-9d8b-7b9a2dbe499d</id>
+      <name>Newest Model</name>
+       <translate>最新款</translate>
+    </mod>
+    <mod>
+      <id>a164ac4e-4225-4d82-9785-02ffd39f6566</id>
+      <name>Illuminating</name>
+      <translate>发光</translate>
+    </mod>
+    <mod>
+      <id>8be2bd6a-5fe5-4931-8d6e-9cb95a0b959f</id>
+      <name>Restrictive</name>
+      <translate>限制行动</translate>
+    </mod>
+    <mod>
+      <id>ebabbd5f-6fd9-4b9a-9350-a251e8652b4b</id>
+      <name>Padded</name>
+      <translate>衬垫</translate>
+    </mod>
+    <mod>
+      <id>6226742c-d950-46af-af1a-fc483e14be5c</id>
+      <name>Concealability</name>
+      <translate>隐匿性</translate>
+    </mod>
+    <mod>
+      <id>53a61bf1-65c3-4c28-b47f-026de40973a4</id>
+      <name>Rapid Transit: Elite</name>
+      <translate>高速交通（精英）</translate>
+    </mod>
+    <mod>
+      <id>a071b454-8a50-4c76-a162-8e086b0ec001</id>
+      <name>Rapid Transit: Platinum</name>
+      <translate>高速交通（铂金）</translate>
+    </mod>
+    <mod>
+      <id>9a1a569f-4c0c-4291-af5b-89e1334e95b4</id>
+      <name>Rapid Transit: Diamond</name>
+      <translate>高速交通（钻石）</translate>
+    </mod>
+    <mod>
+      <id>a7d97d66-1f6e-4521-a283-907ca1cd7436</id>
+      <name>Nightshade IR and Contacts</name>
+      <translate>夜影红外光源和隐形眼镜</translate>
+    </mod>
+    <mod>
+      <id>8b1bc34c-4de9-4111-a5f6-bae7fa35b8af</id>
+      <name>Ballistic Mask</name>
+     <translate>防弹面具</translate>
+    </mod>
+    <mod>
+      <id>5a0965bd-759c-4e41-8c47-2b87c9de06d6</id>
+      <name>Auto-Injector</name>
+      <translate>自动注射器</translate>
+    </mod>
+    <mod>
+      <id>1a76f859-9511-42cc-85a7-560b813f6a92</id>
+      <name>Fresnel Fabric</name>
+      <translate>菲涅尔布料</translate>
+    </mod>
+    <mod>
+      <id>6c18ff9b-7b46-4311-ac4b-a57733d01df7</id>
+      <name>Pulse Weave</name>
+     <translate>脉冲织物</translate>
+    </mod>
+    <mod>
+      <id>13047906-3ea3-425c-a3ff-4666cb1a05f5</id>
+      <name>Shock Weave</name>
+      <translate>电击织物</translate>
+    </mod>
+    <mod>
+      <id>c5a66977-3a0b-489f-b7e5-e30965171f8b</id>
+      <name>Universal Mirror Material</name>
+      <translate>通用反射材料</translate>
+    </mod>
+    <mod>
+      <id>cf8accf5-4117-4419-ab73-957489038ab9</id>
+      <name>YNT Softweave Armor</name>
+      <translate>YNY轻织物装甲</translate>
+    </mod>
+    <mod>
+      <id>63f94362-9778-47a6-8317-f306b199277e</id>
+      <name>Ruthenium Polymer Coating</name>
+      <translate>钌聚合物涂层</translate>
+    </mod>
+    <mod>
+      <id>b5283cb0-3676-44d3-a7e9-dee099416295</id>
+      <name>Radiation Shielding</name>
+      <translate>辐射屏蔽</translate>
+    </mod>
+    <mod>
+      <id>ed43ded4-1b2f-410a-9322-166c39306d03</id>
+      <name>Gel Packs</name>
+      <translate>凝胶包</translate>
+    </mod>
+    <mod>
+      <id>a523fbcf-58d5-4727-9dd5-6fbe6b4acbdf</id>
+      <name>Responsive Interface Gear: Armor</name>
+      <translate>响应式交互界面工具：护甲</translate>
+    </mod>
+    <mod>
+      <id>a9c0aeb2-e7c5-4cc3-819e-f865545c7b66</id>
+      <name>Responsive Interface Gear: Helmet</name>
+      <translate>响应式交互界面工具：头盔</translate>
+    </mod>
+    <!-- Region Hard Targets -->
+    <mod>
+      <id>4e673143-6a61-4075-95c6-1950b9eda8e0</id>
+      <name>Concealed Pocket</name>
+      <translate>隐蔽口袋</translate>
+    </mod>
+    <mod>
+      <id>49addc2c-ee9b-4f97-9c4b-4d49259734bc</id>
+      <name>Attachable Gear Access</name>
+      <translate>可附装备存取带</translate>
+    </mod>
+    <mod>
+      <id>c3ea670b-45e7-4b75-a85d-1801c91d1c8c</id>
+      <name>Faraday Pocket</name>
+      <translate>法拉第口袋</translate>
+    </mod>
+    <mod>
+      <id>ff4c87d4-da62-4b85-b1a3-8de9a0d2838a</id>
+      <name>Biofiber Pocket</name>
+      <translate>生物纤维口袋</translate>
+    </mod>
 		</mods>
 	</chummer>
 	<chummer file="bioware.xml">
@@ -253,7 +811,14 @@
 		</grades>
 		<categories>
 			<category translate="基础生体改造">Basic</category>
-			<category translate="特制生体改造">Cultured</category>
+      <category translate="Biosculpting">Biosculpting</category>
+      <category translate="生体武器">Bio-Weapons</category>
+      <category translate="Chemical Gland Modifications">Chemical Gland Modifications</category>
+      <category translate="生体改造整容">Cosmetic Bioware</category>
+      <category translate="特制生体改造">Cultured</category>
+        <category translate="基因改造">Genemods</category>
+        <category translate="Orthoskin Upgrades">Orthoskin Upgrades</category>
+    <category translate="共生体">Symbionts</category>
 		</categories>
 		<biowares>
 			<bioware>
@@ -371,6 +936,146 @@
 				<name>Tracheal Filter</name>
 				<translate>气管过滤器</translate>
 			</bioware>
+    <bioware>
+      <id>6bd96ba6-1e0c-4de1-89e7-01b6973e1115</id>
+      <name>Elastic Stomach</name>
+      <translate>弹性胃袋</translate>
+    </bioware>
+    <bioware>
+      <id>4a529d50-45cd-4f2d-8766-4ecd7c15f292</id>
+      <name>Hyperthymesia</name>
+      <translate>超忆症</translate>
+    </bioware>
+    <bioware>
+      <id>f3e1922e-cd73-4567-983c-7409e755f30a</id>
+      <name>Lung Expansion</name>
+      <translate>肺扩张</translate>
+    </bioware>
+    <bioware>
+      <id>b111b7c3-d44f-40b5-bba2-7d805cf9fd4c</id>
+      <name>Increased Myelination</name>
+      <translate>增加髓鞘</translate>
+    </bioware>
+    <bioware>
+      <id>1b6713f7-f5b6-49fb-a89a-68322c06f38d</id>
+      <name>Myostatin Inhibitor</name>
+      <translate>肌肉生长抑制素抑制素</translate>
+    </bioware>
+    <bioware>
+      <id>92a00ca4-7e2b-47ca-ac02-1d58e4932d0a</id>
+      <name>Narco</name>
+      <translate>毒虫</translate>
+    </bioware>
+    <bioware>
+      <id>8d57009b-86c8-4fde-b8b5-1cf64942f517</id>
+      <name>Selective Hearing</name>
+      <translate>选择性听觉</translate>
+    </bioware>
+    <bioware>
+      <id>a2acbc5a-187c-4e6f-95e5-c015f1aab56b</id>
+      <name>Thickened Digestive Tract Lining</name>
+      <translate>消化道内层加厚</translate>
+    </bioware>
+    <bioware>
+      <id>3f8b9030-662e-4212-8f30-5aa394a41568</id>
+      <name>Adapsin</name>
+      <translate>调试朊</translate>
+    </bioware>
+    <bioware>
+      <id>6a62e21f-f291-4e93-b109-df9c56c938f9</id>
+      <name>Dareadrenaline</name>
+      <translate>战勇腺体</translate>
+    </bioware>
+    <bioware>
+      <id>04bea47c-85f3-4efa-b058-72def7d0d73b</id>
+      <name>Double Elastin</name>
+      <translate>加倍弹性蛋白</translate>
+    </bioware>
+    <bioware>
+      <id>cd0d68d6-34e5-440e-9d78-5400008a5f71</id>
+      <name>Hyper Glucagon</name>
+      <translate>超级升糖素</translate>
+    </bioware>
+    <bioware>
+      <id>ef4a3bfe-5698-43ae-a4ff-8056aec4095d</id>
+      <name>Magnesense</name>
+      <translate>磁感知</translate>
+    </bioware>
+    <bioware>
+      <id>bd4aade6-a0f2-40af-8073-f1e62ae4b3f9</id>
+      <name>Neo-EPO</name>
+     <translate>新-红血球生成素</translate>
+    </bioware>
+    <bioware>
+      <id>2c988cbe-e6e6-4c22-ae3c-14ad6e1fff1f</id>
+      <name>PuSHed</name>
+      <translate>突触推进</translate>
+    </bioware>
+    <bioware>
+      <id>b110516e-36e8-4c69-a682-066e91c02351</id>
+      <name>Qualia</name>
+      <translate>感质</translate>
+    </bioware>
+    <bioware>
+      <id>eb25dd41-2649-4e75-b0fb-dc47df3a7daa</id>
+      <name>Reakt</name>
+      <translate>感知反应</translate>
+    </bioware>
+    <bioware>
+      <id>afea1a35-d8ca-4cab-9555-7a7d5df1390d</id>
+      <name>Skeletal Pneumaticity</name>
+      <translate>气腔骨骼</translate>
+    </bioware>
+    <bioware>
+      <id>e1cf23c7-9c79-4007-a2e8-ff872ee212e2</id>
+      <name>Solus</name>
+      <translate>光合皮肤</translate>
+    </bioware>
+    <bioware>
+      <id>92b4c2a4-10a3-486a-8ab6-1e00d40dd69a</id>
+      <name>Synaptic Acceleration</name>
+      <translate>突触加速</translate>
+    </bioware>
+    <bioware>
+      <id>89d6f0e2-f618-4a5f-b24f-e42603100fc3</id>
+      <name>Synch</name>
+      <translate>感知同调</translate>
+    </bioware>
+    <bioware>
+      <id>6aa86a49-d947-47ac-bf04-e1578c029333</id>
+      <name>Tetrachromatic Vision</name>
+      <translate>四色视觉</translate>
+    </bioware>
+    <bioware>
+      <id>ae1d7612-7805-4962-8f9a-beb17619762d</id>
+      <name>Vasocon</name>
+      <translate>血管紧缩</translate>
+    </bioware>
+    <bioware>
+      <id>6289a426-e381-4ed6-a69d-3b94430efb2c</id>
+      <name>Bilateral Coordination Co-processor</name>
+      <translate>双手协调处理器</translate>
+    </bioware>
+    <bioware>
+      <id>5b2c4c5d-a037-4970-8fcb-b6d47b9e819a</id>
+      <name>Bone Spike (No Bone Density)</name>
+      <translate>骨刺（无骨密度增强）</translate>
+    </bioware>
+    <bioware>
+      <id>53d0d6b1-f5cd-4816-b772-7f50af81356a</id>
+      <name>Bone Spike (Bone Density 2-3)</name>
+      <translate>骨刺（骨密度增强2~3级）</translate>
+    </bioware>
+    <bioware>
+      <id>f994b8ac-0314-43ad-969a-f07d2d3fc0d8</id>
+      <name>Bone Spike (Bone Density 4)</name>
+      <translate>骨刺（骨密度增强4级）</translate>
+    </bioware>
+    <bioware>
+      <id>0f5b811f-a761-410a-b675-fca5c5821b31</id>
+      <name>Spur Pocket</name>
+      <translate>骨刺通道</translate>
+    </bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -403,7 +1108,7 @@
 			<book>
 				<id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
 				<name>Bullets &amp; Bandages</name>
-				<translate>Bullets &amp; Bandages</translate>
+				<translate>子弹与绷带（BB）</translate>
 			</book>
 			<book>
 				<id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
@@ -415,6 +1120,11 @@
 				<name>Stolen Souls</name>
 				<translate>灵魂遭窃（SS）</translate>
 			</book>
+      <book>
+      <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
+      <name>Shadow Spells</name>
+      <translate>暗影法术（SSP）</translate>
+    </book>
 			<book>
 				<id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
 				<name>Shadowrun Forum Post 1</name>
@@ -1235,9 +1945,9 @@
 		</grades>
 		<categories>
 			<category translate="身体改造">Bodyware</category>
-			<category translate="美容强化">Cosmetic Enhancement</category>
+			<category translate="赛博改造整容">Cosmetic Enhancement</category>
 			<category translate="赛博义肢">Cyberlimb</category>
-			<category translate="赛博义肢强化">Cyberlimb Enhancement</category>
+			<category translate="赛博义肢增强">Cyberlimb Enhancement</category>
 			<category translate="赛博义肢配件">Cyberlimb Accessory</category>
 			<category translate="赛博植入武装">Cyber Implant Weapon</category>
 			<category translate="耳部改造">Earware</category>
@@ -1588,7 +2298,7 @@
 			<cyberware>
 				<id>2c50d5c1-f2ff-4c7b-bf5e-46925e808648</id>
 				<name>Enhanced Agility</name>
-				<translate>强化力量</translate>
+				<translate>强化敏捷</translate>
 			</cyberware>
 			<cyberware>
 				<id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
@@ -1691,6 +2401,412 @@
 				<translate>钢刺爪(可伸缩)</translate>
 			</cyberware>
 		</cyberwares>
+  <!-- Region Chrome Flesh -->
+    <cyberware>
+      <id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
+      <name>Casemod</name>
+      <translate>定制外观</translate>
+    </cyberware>
+    <cyberware>
+      <id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
+      <name>Fiberoptic Hair</name>
+     <translate>光纤毛发</translate>
+    </cyberware>
+    <cyberware>
+      <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
+      <name>Breast Implant (One Breast)</name>
+      <translate>隆胸（单个）</translate>
+    </cyberware>
+    <cyberware>
+      <id>21953b9b-43e8-41a9-af03-5af71797585b</id>
+      <name>Breast Implant 2.0 (One Breast)</name>
+     <translate>隆胸2.0（单个）</translate>
+    </cyberware>
+    <cyberware>
+      <id>b969bb55-23ab-48a0-b92f-645185853d53</id>
+      <name>Cyber Genitalia</name>
+      <translate>赛博生殖器</translate>
+    </cyberware>
+    <cyberware>
+      <id>1c89a29c-ce58-483f-8777-b5b1f6a733c1</id>
+      <name>Small LED Tattoo</name>
+      <translate>小型LED纹身</translate>
+    </cyberware>
+    <cyberware>
+      <id>a5eac202-c61b-4757-826b-f4ae00c8b87f</id>
+      <name>Medium LED Tattoo</name>
+     <translate>中型LED纹身</translate>
+    </cyberware>
+    <cyberware>
+      <id>5578f51e-fb72-4247-9126-a4b626a12308</id>
+      <name>Large LED Tattoo</name>
+      <translate>大型LED纹身</translate>
+    </cyberware>
+    <cyberware>
+      <id>0F1F1D88-523B-4A0B-AF89-C6A1F8ABCF8E</id>
+      <name>Metatype Reduction (Ork)</name>
+      <translate>泛形态修正（兽人）</translate>
+    </cyberware>
+    <cyberware>
+      <id>11973d09-1457-4b3d-8460-42822df721b9</id>
+      <name>Metatype Reduction (Troll)</name>
+      <translate>泛形态修正（巨魔）</translate>
+    </cyberware>
+    <cyberware>
+      <id>3779c8ac-6a6a-4d1f-8b9b-92202a451dd7</id>
+      <name>Skin Toner</name>
+      <translate>肤色调节器</translate>
+    </cyberware>
+    <cyberware>
+      <id>cb0b533f-6157-4d64-86be-ad9a389a336b</id>
+      <name>Chameleon Processor</name>
+      <translate>变色控制器</translate>
+    </cyberware>
+    <cyberware>
+      <id>e01ae784-7f20-499c-919b-181a483d4dc4</id>
+      <name>Steamers</name>
+      <translate>蒸汽喷口</translate>
+    </cyberware>
+    <cyberware>
+      <id>17cc08c7-be7e-445a-9619-7492aea3433a</id>
+      <name>Cosmetic Surgery</name>
+     <translate>整容手术</translate>
+    </cyberware>
+    <cyberware>
+      <id>100d47b3-a07c-4321-ae68-92fcfd90878b</id>
+      <name>Primitive Prosthetic Full Arm</name>
+      <translate>原始假肢，整臂</translate>
+    </cyberware>
+    <cyberware>
+      <id>a504a785-4ae8-4a47-9845-e55c9a6e52c9</id>
+      <name>Primitive Prosthetic Lower Arm</name>
+      <translate>原始假肢，前臂</translate>
+    </cyberware>
+    <cyberware>
+      <id>a169d4c6-71c2-4fa9-8857-e69158216e32</id>
+      <name>Primitive Prosthetic Hand</name>
+      <translate>原始假肢，手</translate>
+    </cyberware>
+    <cyberware>
+      <id>d99e66fe-85b9-47ac-8ef6-8a27211175b5</id>
+      <name>Primitive Prosthetic Full Leg</name>
+      <translate>原始假肢，整腿</translate>
+    </cyberware>
+    <cyberware>
+      <id>bd5d3479-7482-422d-a0dc-16357cf43275</id>
+      <name>Primitive Prosthetic Lower Leg</name>
+      <translate>原始假肢，小腿</translate>
+    </cyberware>
+    <cyberware>
+      <id>d7c9f80e-247a-44f3-ad1d-96851a4d6c25</id>
+      <name>Primitive Prosthetic Foot</name>
+     <translate>原始假肢，足</translate>
+    </cyberware>
+    <cyberware>
+      <id>196c7cc2-a39a-4750-a3bc-3c1be77900a1</id>
+      <name>Built-in Medkit</name>
+      <translate>内置医疗箱</translate>
+    </cyberware>
+    <cyberware>
+      <id>3e90ac38-367e-48fe-a3d1-633570d061ab</id>
+      <name>Built-in Toolkit</name>
+      <translate>内置工具箱</translate>
+    </cyberware>
+    <cyberware>
+      <id>e9a0b651-fb8a-4fc3-81a5-b3eab900c1f8</id>
+      <name>Cyberfinger (Custom)</name>
+      <translate>赛博手指（定制）</translate>
+    </cyberware>
+    <cyberware>
+      <id>1b2c94f9-86a6-4d84-8f58-1c16569213fa</id>
+      <name>Cyberfinger (Fingerlight)</name>
+      <translate>赛博手指（手指电筒）</translate>
+    </cyberware>
+    <cyberware>
+      <id>caa21274-3a2f-416e-9589-dfeffc11b1a7</id>
+      <name>Cyberfinger (Fingerlighter)</name>
+      <translate>赛博手指（手指打火机）</translate>
+    </cyberware>
+    <cyberware>
+      <id>2badbf90-bf03-432c-95a6-495359039ba8</id>
+      <name>Cyberfinger (Grenade)</name>
+      <translate>赛博手指（手指榴弹）</translate>
+    </cyberware>
+    <cyberware>
+      <id>e6f65d1d-0a49-4256-aca9-2007404013a2</id>
+      <name>Cyberfinger (Pistol)</name>
+      <translate>赛博手指（手指手枪）</translate>
+    </cyberware>
+    <cyberware>
+      <id>87475df7-b371-4a89-8623-2582137b5906</id>
+      <name>Digigrade Legs</name>
+      <translate>趾行脚</translate>
+    </cyberware>
+    <cyberware>
+      <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
+      <name>Grapple Hand</name>
+      <translate>射钩手</translate>
+    </cyberware>
+    <cyberware>
+      <id>215e0563-b23c-42c0-9d11-aa4ccc8acf6d</id>
+      <name>Remote Cyberhand</name>
+      <!-- 待补 -->
+    </cyberware>
+    <cyberware>
+      <id>f8baf2a8-2941-4eec-9bac-430e30b8f40c</id>
+      <name>Monkey Foot</name>
+      <translate>猴脚</translate>
+    </cyberware>
+    <cyberware>
+      <id>71323559-408e-441f-b53b-d9ffaa49e4c6</id>
+      <name>Raptor Foot</name>
+      <translate>猛禽脚</translate>
+    </cyberware>
+    <cyberware>
+      <id>f7ff7a58-ac0e-49a9-8cbe-741df59a33e5</id>
+      <name>Skates</name>
+      <translate>滑行装置</translate>
+    </cyberware>
+    <cyberware>
+      <id>fe394e6c-c9b4-492e-91a3-65b5e63692ed</id>
+      <name>Skimmers</name>
+      <translate>喷气悬浮装置</translate>
+    </cyberware>
+    <cyberware>
+      <id>edb2fd85-6bd8-4c34-be9a-eb9f21a0b8df</id>
+      <name>Snake Fingers</name>
+      <translate>蛇指</translate>
+    </cyberware>
+    <cyberware>
+      <id>b2217ffc-3d2f-41ae-8cd1-640c3e7f4a58</id>
+      <name>Obvious Foot, Modular</name>
+      <translate>机械义肢，足（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>f34449f5-e7e4-4c73-ac0a-52629b25066e</id>
+      <name>Obvious Hand, Modular</name>
+      <translate>机械义肢，手（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>41e8fa49-c2e7-46d5-bc75-50024b937483</id>
+      <name>Synthetic Foot, Modular</name>
+     <translate>合成义肢，足（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>caab6000-8907-417d-acdb-8ba6cc2f6492</id>
+      <name>Synthetic Hand, Modular</name>
+      <translate>合成义肢，手（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>26170cc6-e538-4c2a-b508-72448431b55d</id>
+      <name>Obvious Lower Arm, Modular</name>
+      <translate>机械义肢，足（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>78da1ab2-4af1-48f9-ac14-42ef49bb768d</id>
+      <name>Obvious Lower Leg, Modular</name>
+      <translate>机械义肢，小腿（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>fe8d9997-f263-4f8d-9b0f-afb8d08b8408</id>
+      <name>Synthetic Lower Arm, Modular</name>
+      <translate>合成义肢，前臂（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>1edf519a-74ee-42ee-8441-6f7e5c7a8f64</id>
+      <name>Synthetic Lower Leg, Modular</name>
+      <translate>合成义肢，小腿（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>edc913d5-ff6e-469b-9bcc-dada26dccc10</id>
+      <name>Obvious Full Arm, Modular</name>
+      <translate>机械义肢，整臂（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>72ff69ed-a434-43de-ac0e-52665b1da3d6</id>
+      <name>Obvious Full Leg, Modular</name>
+      <translate>机械义肢，整腿（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>c0f408f6-31b2-4070-b972-832a5520d489</id>
+      <name>Synthetic Full Arm, Modular</name>
+     <translate>合成义肢，整臂（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>cbdbdef3-cddb-4aec-87af-fdd4f0860708</id>
+      <name>Synthetic Full Leg, Modular</name>
+      <translate>合成义肢，整腿（模块化）</translate>
+    </cyberware>
+    <cyberware>
+      <id>4adbacec-a982-4b52-9d57-793c4e6bf99b</id>
+      <name>Modular Gear (Hand)</name>
+      <translate>模组化装备（手）</translate>
+    </cyberware>
+    <cyberware>
+      <id>1021054b-f63e-4de4-b2bc-f6f6ff1a7078</id>
+      <name>Modular Gear (Foot)</name>
+      <translate>模组化装备（手）</translate>
+    </cyberware>
+    <cyberware>
+      <id>1fb46995-1f74-4c6f-88b7-3acf8bb8a0b4</id>
+      <name>Modular Gear (Lower Arm)</name>
+      <translate>模组化装备（前臂）</translate>
+    </cyberware>
+    <cyberware>
+      <id>059265d7-9f5b-4287-975d-2d3fcbf27339</id>
+      <name>Modular Gear (Lower Leg)</name>
+      <translate>模组化装备（小腿）</translate>
+    </cyberware>
+    <cyberware>
+      <id>c0b6dae8-4d39-4dda-ada5-419809e239a8</id>
+      <name>Modular Gear (Full Arm)</name>
+      <translate>模组化装备（整臂）</translate>
+    </cyberware>
+    <cyberware>
+      <id>54db7bcc-d1d6-45f2-b6ac-96e935b64870</id>
+      <name>Modular Gear (Full Leg)</name>
+      <translate>模组化装备（整腿）</translate>
+    </cyberware>
+    <cyberware>
+      <id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
+      <name>Telescoping Limb</name>
+      <translate>伸缩赛博义肢</translate>
+    </cyberware>
+    <cyberware>
+      <id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
+      <name>Water Jet</name>
+      <translate>喷水推进器</translate>
+    </cyberware>
+    <cyberware>
+      <id>4f7794ce-fd49-48f2-bde7-3501b1799814</id>
+      <name>Modular Connector, Wrist</name>
+      <translate>模块接头，手腕</translate>
+    </cyberware>
+    <cyberware>
+      <id>d76785fe-6a14-47ab-b51b-b95e10d142be</id>
+      <name>Modular Connector, Ankle</name>
+      <translate>模块接头，脚踝</translate>
+    </cyberware>
+    <cyberware>
+      <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
+      <name>Modular Connector, Elbow</name>
+     <translate>模块接头，手肘</translate>
+    </cyberware>
+    <cyberware>
+      <id>4b5659ba-cc39-4b27-9d1e-230e0cea20e7</id>
+      <name>Modular Connector, Knee</name>
+      <translate>模块接头，膝盖</translate>
+    </cyberware>
+    <cyberware>
+      <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
+      <name>Modular Connector, Shoulder</name>
+      <translate>模块接头，肩膀</translate>
+    </cyberware>
+    <cyberware>
+      <id>c2ccc647-c18b-469b-a3a3-7037dd3a48d4</id>
+      <name>Modular Connector, Hip</name>
+      <translate>模块接头，髋关节</translate>
+    </cyberware>
+    <cyberware>
+      <id>4630313c-aca9-4aa3-8fce-ba064423b1c7</id>
+      <name>Partial Cyberskull</name>
+      <translate>部分赛博头骨</translate>
+      </cyberware>
+    <cyberware>
+      <id>7232f861-ccba-4ebf-95ef-c5baa76afb1b</id>
+      <name>Improved Synthskin</name>
+      <translate>高级合成皮肤</translate>
+    </cyberware>
+    <cyberware>
+      <id>b4394ee8-0490-4a56-8b30-8503351a3c58</id>
+      <name>Liminal Body, Centaur</name>
+      <translate>特殊身体，半人马</translate>
+    </cyberware>
+    <cyberware>
+      <id>8af5027d-a504-484e-8089-c542a95d4831</id>
+      <name>Centaur Front Leg</name>
+     <translate>半人马前腿</translate>
+    </cyberware>
+    <cyberware>
+      <id>fb43afdc-7176-4640-baba-6087b15acca3</id>
+      <name>Centaur Rear Leg</name>
+      <translate>半人马后腿</translate>
+    </cyberware>
+    <cyberware>
+      <id>6ea02e91-9787-4a9d-ad6f-5e1af6b54bdb</id>
+      <name>Liminal Body, Wheeled (Full)</name>
+      <translate>特殊身体，轮子战士（全）</translate>
+    </cyberware>
+    <cyberware>
+      <id>e2aedbc2-188e-4efb-9616-bd271d9a9122</id>
+      <name>Liminal Body, Tank (Full)</name>
+      <translate>特殊身体，坦克！（全）</translate>
+    </cyberware>
+    <cyberware>
+      <id>2a6ab1b1-f008-4c92-83d9-a298a5dad855</id>
+      <name>Cyberlimb Optimization</name>
+      <translate>赛博义肢最佳化</translate>
+    </cyberware>
+    <cyberware>
+      <id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
+      <name>Bulk Modification (Hand/Foot/Half-Skull)</name>
+      <translate>大型化改良（手/足/部分头骨）</translate>
+    </cyberware>
+    <cyberware>
+      <id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
+      <name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
+      <translate>大型化改良（前臂/小腿/头骨）</translate>
+    </cyberware>
+    <cyberware>
+      <id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
+      <name>Bulk Modification (Full Arm/Full Leg)</name>
+      <translate>大型化改良（整臂/整腿）</translate>
+    </cyberware>
+    <cyberware>
+      <id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
+      <name>Bulk Modification (Torso/Liminal Chassis)</name>
+     <translate>大型化改良（躯干/特殊身体）</translate>
+    </cyberware>
+  <cyberware>
+      <id>2e533c08-7403-42de-a9cc-97ded71fe142</id>
+      <name>Cybergland</name>
+      <translate>赛博分泌腺</translate>
+    </cyberware>
+    <cyberware>
+      <id>fc8df59c-c48f-4035-b99c-0a5550f4534c</id>
+      <name>Infrasonic Generator</name>
+      <translate>次声发生器</translate>
+    </cyberware>
+    <cyberware>
+      <id>b5eef094-72b7-48f5-99fa-73d4680f71cb</id>
+      <name>Cyberarm Reloading Slide</name>
+      <translate>赛博手臂装弹导槽</translate>
+    </cyberware>
+    <cyberware>
+      <id>4dcc6d9d-824e-4e4a-a0cb-86810838f587</id>
+      <name>Cybertorso Reloading Rail</name>
+      <translate>赛博躯体装弹轨道</translate>
+    </cyberware>
+    <cyberware>
+      <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
+      <name>Cyberfinger (Credstick)</name>
+      <translate>赛博手指（信用棒）</translate>
+    </cyberware>
+    <cyberware>
+      <id>f8c23c23-ce74-4942-968d-85896f8f17f2</id>
+      <name>Cyberfinger (Glass Cutter)</name>
+     <translate>赛博手指（玻璃切割器）</translate>
+    </cyberware>
+    <cyberware>
+      <id>7ff8850b-d343-42fc-8bef-10acbe46daaa</id>
+      <name>Cyberfinger (Injector)</name>
+      <translate>赛博手指（注射器）</translate>
+    </cyberware>
+    <cyberware>
+      <id>75d4bef0-b29c-4c77-a2f1-e5955b67fd31</id>
+      <name>Cyberfinger (Lockpick)</name>
+      <translate>赛博手指（开锁工具）</translate>
+    </cyberware>
 	</chummer>
 	<chummer file="echoes.xml">
 		<echoes>
@@ -1829,7 +2945,7 @@
 			<category translate="伪装">Disguises</category>
 			<category translate="摄入物">Drugs</category>
 			<category translate="电子配件">Electronics Accessories</category>
-			<category translate="电子改造">Electronic Modification</category>
+			<category translate="电子改良">Electronic Modification</category>
 			<category translate="电子零部件">Electronic Parts</category>
 			<category translate="娱乐">Entertainment</category>
 			<category translate="炸药">Explosives</category>
@@ -1975,6 +3091,11 @@
         <name>Nixdorf Sekretar w/ Liebesekretar</name>
         <translate>利多富·秘书（包括约会管家软件）</translate>
       </gear>
+      <gear>
+      <id>4f58eaea-24e3-4fc2-ab2b-4d521fbcbbe6</id>
+      <name>Voice Warper</name>
+      <translate>声音调整器</translate>
+    </gear>
 			<gear>
 				<id>2e409fba-8b1a-42c4-8fa5-4d256ccd540d</id>
 				<name>AR Gloves</name>
@@ -2055,6 +3176,11 @@
 				<name>White Noise Generator</name>
 				<translate>白噪音发生器</translate>
 			</gear>
+      <gear>
+      <id>78571d90-7dd9-46b8-ba56-ef0a5b2a7edd</id>
+      <name>Ultrasonic Noise Generator</name>
+        <translate>超声波噪音发生器</translate>
+    </gear>
 			<gear>
 				<id>b3c0a6bd-e086-4971-be77-dc9a9cb2e174</id>
 				<name>Browse</name>
@@ -2570,6 +3696,26 @@
 				<name>Seven-7</name>
 				<translate>七-7毒剂</translate>
 			</gear>
+      <gear>
+      <id>af0ca7ad-a17e-418f-b7ef-baa9c54a9b8d</id>
+      <name>Quickdraw Quiver</name>
+      <translate>快抽箭筒</translate>
+    </gear>
+    <gear>
+      <id>a6c84397-4ee6-4f04-a18f-5506b38725f2</id>
+      <name>Reactive Myomer Pack</name>
+      <translate>活性腱索背包</translate>
+    </gear>
+    <gear>
+      <id>15a5f4fe-2b4c-4114-bf58-485318045163</id>
+      <name>Reloading Rail</name>
+      <translate>装弹轨道</translate>
+    </gear>
+    <gear>
+      <id>9484faea-6aa4-4866-b4a2-cb240e595b0a</id>
+      <name>Reloading Slide</name>
+      <translate>装弹导槽</translate>
+    </gear>
 			<gear>
 				<id>4a925049-5390-4394-8842-6cb46423cf00</id>
 				<name>Chemsuit</name>
@@ -2635,6 +3781,26 @@
 				<name>Survival Kit</name>
 				<translate>求生工具包</translate>
 			</gear>
+      <gear>
+      <id>822d7e5c-e9d8-4021-a797-3f19e4d8c9a5</id>
+      <name>Articulated Grapnel</name>
+      <translate>关节式抓钩</translate>
+    </gear>
+    <gear>
+      <id>58fb014c-b0bd-4c39-8b5b-8cfd609bde8d</id>
+      <name>Sticky Grapnel</name>
+      <translate>粘性抓钩</translate>
+    </gear>
+    <gear>
+      <id>08fc49a1-ee1f-4b12-a718-bd7e140f0489</id>
+      <name>Grenade Reel</name>
+      <translate>榴弹卷盘</translate>
+    </gear>
+    <gear>
+      <id>4faf0e27-38d5-428b-b4ae-2185e194cfc2</id>
+      <name>Harpoon Head</name>
+      <translate>鱼叉头</translate>
+    </gear>
 			<gear>
 				<id>59561c08-3269-470d-9d8b-3cde8a8ccbf8</id>
 				<name>Grapple Gun</name>
@@ -2700,6 +3866,11 @@
 				<name>Masking Focus</name>
 				<translate>伪装法器</translate>
 			</gear>
+      <gear>
+      <id>e402753f-e7ef-4659-b30e-f5a09b1d9dea</id>
+      <name>Enchanting Gloves</name>
+      <translate>附魔手套</translate>
+    </gear>
 			<gear>
 				<id>f8151303-b838-4af1-ba9d-d43ff0892b40</id>
 				<name>Magical Lodge Materials</name>
@@ -2835,6 +4006,11 @@
 				<name>Minigrenade: Thermal Smoke</name>
 				<translate>迷你榴弹：热烟雾弹</translate>
 			</gear>
+      <gear>
+      <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
+      <name>Smokebomb</name>
+      <translate>烟雾炸弹</translate>
+    </gear>
 			<gear>
 				<id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
 				<name>Rocket: Anti-Vehicle</name>
@@ -2960,6 +4136,11 @@
 				<name>Arrow: Injection</name>
 				<translate>箭：注射箭头</translate>
 			</gear>
+      <gear>
+      <id>39042c0a-4b22-4762-8d56-623033860178</id>
+      <name>Arrow: Monotip Head</name>
+      <translate>箭：单分子镞箭</translate>
+    </gear>
 			<gear>
 				<id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
 				<name>Bolt: Standard</name>
@@ -3535,6 +4716,12 @@
 				<name>Sequencer</name>
 				<translate>序列器</translate>
 			</gear>
+      <gear>
+      <id>f27ca349-5003-42de-97a9-3ae4f69d1aa7</id>
+      <name>C-Squared</name>
+      <category>Chemicals</category>
+      <translate>C次方</translate>
+    </gear>
 			<gear>
 				<id>9d775d72-29ca-4784-b617-a667469fe192</id>
 				<name>Glue Solvent</name>
@@ -3950,6 +5137,46 @@
 				<name>Tripchip</name>
 				<translate>漫游芯片</translate>
 			</gear>
+      <gear>
+      <id>08712808-0ef9-405f-a515-a84c27b7c4d4</id>
+      <name>Downer BTL</name>
+      <translate>镇定BTL</translate>
+    </gear>
+    <gear>
+      <id>1db59c8c-5939-4782-982e-26602e3cd749</id>
+      <name>Upper BTL</name>
+      <translate>兴奋BTL</translate>
+    </gear>
+    <gear>
+      <id>27681339-dc48-4d84-9341-80d962996214</id>
+      <name>Hyper BTL</name>
+      <translate>亢进BTL</translate>
+    </gear>
+    <gear>
+      <id>2e55385c-c30b-4d0a-87de-cdd73f0fe9a6</id>
+      <name>Chill BTL</name>
+      <translate>冷漠BTL</translate>
+    </gear>
+    <gear>
+      <id>6f0212e2-e656-4e97-ab10-f2521c38189c</id>
+      <name>Berserkr BTL</name>
+      <translate>狂暴BTL</translate>
+    </gear>
+    <gear>
+      <id>7cb80189-5893-4852-9d33-dbeea004b0a7</id>
+      <name>Bodyguard BTL</name>
+     <translate>保镖BTL</translate>
+    </gear>
+    <gear>
+      <id>c153d7ec-af89-4c6f-a31d-fc3a6a490de4</id>
+      <name>Infiltrator</name>
+      <translate>渗透者BTL</translate>
+    </gear>
+    <gear>
+      <id>e24e181a-e43c-4e01-a1df-f907dc532db0</id>
+      <name>Pacifier</name>
+      <translate>和平者BTL</translate>
+    </gear>
 			<gear>
 				<id>5977fb0b-b74e-4eb9-b433-9b7c9877b14f</id>
 				<name>Holster</name>
@@ -5077,6 +6304,31 @@
         <name>Electronic Parts, Five-Pack</name>
         <translate>电子零件，五包</translate>
       </gear>
+    <gear>
+      <id>badca1de-593e-4bae-9a0b-e40528c0774e</id>
+      <name>Polychromic Lens</name>
+      <translate>多态镜片</translate>
+    </gear>
+    <gear>
+      <id>60d3be91-13ed-46a4-85ad-4e0fcde8c3ed</id>
+      <name>Smart Wig</name>
+      <translate>智能假发</translate>
+    </gear>
+    <gear>
+      <id>176c8189-e839-4860-82e9-adafaddc5577</id>
+      <name>Smart Wig w/ Trode Net</name>
+      <translate>智能假发（带贴片）</translate>
+    </gear>
+    <gear>
+      <id>5700f1e7-3949-4be8-8968-476d13108b09</id>
+      <name>Theatrical Cosmetics Kit</name>
+      <translate>表演化妆工具包</translate>
+    </gear>
+    <gear>
+      <id>5677ae6d-1168-43fa-85f6-b380138bb5b1</id>
+      <name>Synthskin Face Mask</name>
+      <translate>合成皮肤面膜</translate>
+    </gear>
 		</gears>
 	</chummer>
 	<chummer file="improvements.xml">
@@ -5502,7 +6754,7 @@
 			<license translate="步枪执照">Rifle License</license>
 			<license translate="霰弹枪执照">Shotgun License</license>
 			<license translate="小型刀具执照">Small Blades License</license>
-			<license translate="召唤者执照">Summoner License</license>
+			<license translate="咒术师执照">Summoner License</license>
 			<license translate="奇物贩子执照">Talismonger License</license>
 			<license translate="武器执照">Weapon License</license>
 		</licenses>
@@ -6846,36 +8098,143 @@
 	<chummer file="metatypes.xml">
 		<categories>
 			<category translate="泛人类">Metahuman</category>
+    <category translate="泛变种">Metavariant</category>
+    <category translate="泛智慧种族">Metasapient</category>
+    <category translate="变形者">Shapeshifter</category>
 		</categories>
 		<metatypes>
 			<metatype>
 				<id>a53d885d-a4a4-443d-b6a6-b0a55b0a96c7</id>
 				<name>Human</name>
 				<translate>人类</translate>
+        <metavariants>
+          <metavariant>
+            <name>Nartaki</name>
+            <translate>拿塔奇舞人</translate>
+          </metavariant>
+        </metavariants>
 			</metatype>
 			<metatype>
 				<id>8ed6892f-88e6-42d0-a704-b805778ec13e</id>
 				<name>Ork</name>
 				<translate>兽人</translate>
+      <metavariants>
+          <metavariant>
+            <name>Hobgoblin</name>
+            <translate>大地精</translate>
+          </metavariant>
+      <metavariant>
+            <name>Ogre</name>
+            <translate>食人魔</translate>
+          </metavariant>
+              <metavariant>
+            <name>Oni</name>
+            <translate>大鬼</translate>
+          </metavariant>
+      <metavariant>
+            <name>Satyr</name>
+            <translate>半羊人</translate>
+          </metavariant>
+        </metavariants>
 			</metatype>
 			<metatype>
 				<id>08f2c9cc-f9f8-4f1a-9efb-63555af71788</id>
 				<name>Dwarf</name>
 				<translate>矮人</translate>
+      <metavariants>
+          <metavariant>
+            <name>Gnome</name>
+            <translate>侏儒</translate>
+          </metavariant>
+      <metavariant>
+            <name>Hanuman</name>
+            <translate>哈奴曼</translate>
+          </metavariant>
+              <metavariant>
+            <name>Koborokuru</name>
+            <translate>蜂斗矮人</translate>
+          </metavariant>
+      <metavariant>
+            <name>Menehune</name>
+            <translate>海岛矮人</translate>
+          </metavariant>
+        </metavariants>
 			</metatype>
 			<metatype>
 				<id>b3259991-b315-4dbe-ae3c-51f71a1116e2</id>
 				<name>Elf</name>
 				<translate>精灵</translate>
+      <metavariants>
+          <metavariant>
+            <name>Dryad</name>
+            <translate>森林精灵</translate>
+          </metavariant>
+      <metavariant>
+            <name>Nocturna</name>
+            <translate>暗夜精灵</translate>
+          </metavariant>
+              <metavariant>
+            <name>Wakyambi</name>
+            <translate>黑精灵</translate>
+          </metavariant>
+      <metavariant>
+            <name>Xapiri thëpë</name>
+            <translate>自然精灵</translate>
+          </metavariant>
+        </metavariants>
 			</metatype>
 			<metatype>
 				<id>77fa1ed8-f4e6-4763-9f0b-f125318b9782</id>
 				<name>Troll</name>
 				<translate>巨魔</translate>
+      <metavariants>
+          <metavariant>
+            <name>Cyclops</name>
+            <translate>独眼巨人</translate>
+          </metavariant>
+      <metavariant>
+            <name>Fomorian</name>
+            <translate>矮巨人</translate>
+          </metavariant>
+              <metavariant>
+            <name>Giant</name>
+            <translate>巨人</translate>
+          </metavariant>
+      <metavariant>
+            <name>Minotaur</name>
+            <translate>牛头人</translate>
+          </metavariant>
+        </metavariants>
 			</metatype>
 		</metatypes>
 	</chummer>
-	<chummer file="powers.xml">
+	<chummer file="options.xml">
+		<limbcounts>
+			<limb>
+				<name>4 (2 arms, 2 legs)</name>
+				<translate>4（2臂、2腿）</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, skull)</name>
+				<translate>5（2臂、2腿、头盖骨）</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, torso)</name>
+				<translate>5（2臂、2腿、躯干）</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>6 (2 arms, 2 legs, torso, skull)</name>
+				<translate>6（2臂、2腿、躯干、头盖骨）</translate>
+			</limb>
+    </limbcounts>
+	</chummer>
+  <chummer file="powers.xml">
 		<powers>
 			<power>
 				<id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
@@ -7012,6 +8371,356 @@
 				<name>Light Body</name>
 				<translate>梯云纵</translate>
 			</power>
+    <!-- Region Street Grimoire -->
+    <power>
+      <id>0099ad65-bcc1-47a5-a241-02f621e7c33a</id>
+      <name>Analytics</name>
+      <translate>解析</translate>
+    </power>
+    <power>
+      <id>870edcf8-cb19-4e15-948c-1b3bf80ac651</id>
+      <name>Animal Empathy</name>
+      <translate>动物共情</translate>
+    </power>
+    <power>
+      <id>80577dac-7697-4da9-87fd-d4442dc34560</id>
+      <name>Berserk</name>
+      <translate>狂怒</translate>
+    </power>
+    <power>
+      <id>59455eae-beb5-45fc-b19d-dc3aff65335d</id>
+      <name>Berserker's Rage</name>
+      <translate>狂战士之暴怒</translate>
+    </power>
+    <power>
+      <id>f3df89bb-71f6-41d8-a86d-4bde1ab74352</id>
+      <name>Blind Fighting</name>
+      <translate>盲斗</translate>
+    </power>
+    <power>
+      <id>42baa818-50ca-4c6b-b316-780a51df9c97</id>
+      <name>Cloak</name>
+     <translate>斗篷</translate>
+    </power>
+    <power>
+      <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
+      <name>Cool Resolve</name>
+      <translate>冷酷决意</translate>
+    </power>
+    <power>
+      <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
+      <name>Authoritative Tone</name>
+      <translate></translate>
+    <!-- 待补 -->
+    </power>
+    <power>
+      <id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
+      <name>Counterstrike</name>
+      <translate>反击</translate>
+    </power>
+    <power>
+      <id>1eb8d3fa-2a67-4b71-a9de-dfbf5236eeda</id>
+      <name>Elemental Body</name>
+     <translate>元素之躯</translate>
+    </power>
+    <power>
+      <id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
+      <name>Elemental Strike</name>
+      <translate>元素打击</translate>
+    </power>
+    <power>
+      <id>eb323003-4112-42ad-955a-00211e43e6d1</id>
+      <name>Elemental Weapon</name>
+      <translate>元素武器</translate>
+    </power>
+    <power>
+      <id>6680b68d-77df-4fe4-a722-30464dd3c646</id>
+      <name>Empathic Healing</name>
+      <translate>共情疗法</translate>
+    </power>
+    <power>
+      <id>fbd06bae-b3ba-4514-8d90-870eff1c336b</id>
+      <name>Facial Sculpt</name>
+      <translate>面部塑形</translate>
+    </power>
+    <power>
+      <id>438fb5de-9c09-4421-a6a8-c3d68ba8aada</id>
+      <name>Flexibility</name>
+      <translate>缩骨</translate>
+    </power>
+    <power>
+      <id>88bf5626-6cf8-4dcc-bfc0-8abc889cdf4e</id>
+      <name>Freefall</name>
+      <translate>自由落体</translate>
+    </power>
+    <power>
+      <id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
+      <name>Hang Time</name>
+      <translate>滞空时间</translate>
+    </power>
+    <power>
+      <id>da59618c-059d-4cc5-adb5-c61e6049378c</id>
+      <name>Inertia Strike</name>
+      <translate>惯性冲击</translate>
+    </power>
+    <power>
+      <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
+      <name>Keratin Control</name>
+      <translate>角质控制</translate>
+    </power>
+    <power>
+      <id>e1e242c3-cb63-476f-9868-90c311b36383</id>
+      <name>Kinesics Mastery</name>
+      <translate>体语学精通</translate>
+    </power>
+    <power>
+      <id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
+      <name>Linguistics</name>
+      <translate>语言学</translate>
+    </power>
+    <power>
+      <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
+      <name>Living Focus</name>
+      <translate>活体法器</translate>
+    </power>
+    <power>
+      <id>d20f0441-a290-4732-829f-3138d446aad4</id>
+      <name>Magic Sense</name>
+      <translate>魔法感知</translate>
+    </power>
+    <power>
+      <id>2149818a-22b0-4267-83d6-7b3c27d4ee69</id>
+      <name>Melanin Control</name>
+      <translate>黑素控制</translate>
+    </power>
+    <power>
+      <id>ecd611b4-dda6-4683-b7a9-850a469a3274</id>
+      <name>Metabolic Control</name>
+       <translate>代谢控制</translate>
+    </power>
+    <power>
+      <id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
+      <name>Missile Mastery</name>
+       <translate>投掷精通</translate>
+    </power>
+    <power>
+      <id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
+      <name>Motion Sense</name>
+      <translate>动态感知</translate>
+    </power>
+    <power>
+      <id>d1279546-69a6-4c35-9b3d-0211138050e8</id>
+      <name>Nerve Strike</name>
+      <translate>穴位打击</translate>
+    </power>
+    <power>
+      <id>1ec402f1-6139-4f94-8e86-92aa463bf536</id>
+      <name>Nimble Fingers</name>
+       <translate>灵巧手指</translate>
+    </power>
+    <power>
+      <id>adda6c9c-703b-4361-a4dd-d7ebfd3c138d</id>
+      <name>Pain Relief</name>
+      <translate>运气缓伤</translate>
+    </power>
+    <power>
+      <id>70311f5c-a019-47b9-be21-e9a8d270e32e</id>
+      <name>Penetrating Strike</name>
+       <translate>穿透打击</translate>
+    </power>
+    <power>
+      <id>941225f2-148b-484e-a2b2-0a32cc7debe1</id>
+      <name>Plague Cloud</name>
+      <translate>瘟疫之云</translate>
+    </power>
+    <power>
+      <id>832a418d-4d55-433c-8230-4b04f05ba6d9</id>
+      <name>Rapid Draw</name>
+       <translate>速拔</translate>
+    </power>
+    <power>
+      <id>11f3fa59-e06d-4816-87a9-b74664d1ae9a</id>
+      <name>Riposte</name>
+       <translate>格挡反击</translate>
+    </power>
+    <power>
+      <id>c0d647dd-4f66-42a6-9040-202b1bba4b71</id>
+      <name>Skate</name>
+       <translate>滑行</translate>
+    </power>
+    <power>
+      <id>1dc0b5c6-94a8-4598-a017-f6399d9175da</id>
+      <name>Smashing Blow</name>
+      <translate>粉碎打击</translate>
+    </power>
+    <power>
+      <id>24bc482d-9ce3-4d0a-bd43-31311b6716d6</id>
+      <name>Spirit Claw</name>
+       <translate>灵爪</translate>
+    </power>
+    <power>
+      <id>6145977c-5825-4358-b0db-1d189cd9d402</id>
+      <name>Spirit Ram</name>
+       <translate>灵槌</translate>
+    </power>
+    <power>
+      <id>02eb1616-9361-47a8-acc8-030566d9a0ea</id>
+      <name>Stillness</name>
+       <translate>寂静</translate>
+    </power>
+    <power>
+      <id>772e0298-8abf-42b7-9734-359cadcb8d1e</id>
+      <name>Sustenance</name>
+       <translate>辟谷</translate>
+    </power>
+    <power>
+      <id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
+      <name>Temperature Tolerance</name>
+       <translate>耐温性</translate>
+    </power>
+    <power>
+      <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
+      <name>Three-Dimensional Memory</name>
+       <translate>三维记忆</translate>
+    </power>
+    <power>
+      <id>6ed1a784-1097-4db8-b179-e4198493c2f0</id>
+      <name>Toxic Strike</name>
+      <translate>毒素打击</translate>
+    </power>
+    <!-- Region Shadow Spells -->
+    <power>
+      <id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
+      <name>Demara</name>
+       <translate>戴马拉</translate>
+    </power>
+    <power>
+      <id>57e7de72-6155-486b-9269-caebedfb34fe</id>
+      <name>Eidetic Sense Memory</name>
+      <translate>超感官记忆</translate>
+    </power>
+    <power>
+      <id>51755f26-c5d4-461d-bd59-496a45b03e6b</id>
+      <name>Enthralling Performance</name>
+       <translate>绝佳演出</translate>
+    </power>
+    <power>
+      <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
+      <name>Heightened Concentration</name>
+       <translate>高度专注</translate>
+    </power>
+    <power>
+      <id>d75638f3-be99-4f65-b61f-ea8b4b249f92</id>
+      <name>Indomitable Will</name>
+      <translate>不屈意志</translate>
+    </power>
+    <power>
+      <id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
+      <name>Iron Gut</name>
+       <translate>钢肠铁胃</translate>
+    </power>
+    <power>
+      <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
+      <name>Iron Lungs</name>
+       <translate>铁肺</translate>
+    </power>
+    <power>
+      <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
+      <name>Iron Will</name>
+       <translate>钢铁意志</translate>
+    </power>
+    <power>
+      <id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
+      <name>Keratin Control</name>
+       <translate>角质控制</translate>
+    </power>
+    <power>
+      <id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
+      <name>Living Focus</name>
+       <translate>活体法器</translate>
+    </power>
+    <power>
+      <id>29761d0e-072e-48a9-afc6-6154af8b2262</id>
+      <name>Maintain Warmth</name>
+       <translate>维持温度</translate>
+    </power>
+    <power>
+      <id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
+      <name>Memory Displacement</name>
+       <translate>记忆置换</translate>
+    </power>
+    <power>
+      <id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
+      <name>Piercing Senses</name>
+       <translate>锋锐感知</translate>
+    </power>
+    <power>
+      <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
+      <name>Power Swimming</name>
+       <translate>超力泳姿</translate>
+    </power>
+    <power>
+      <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
+      <name>Power Swimming (Elf or Troll)</name>
+       <translate>超力泳姿（精灵或巨魔）</translate>
+    </power>
+    <power>
+      <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
+      <name>Rooting</name>
+       <translate>盘根</translate>
+    </power>
+    <power>
+      <id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
+      <name>Supernatural Toughness</name>
+       <translate>超然韧性</translate>
+    </power>
+    <!-- Region Hard Targets -->
+    <power>
+      <id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
+      <name>Adept Spell</name>
+       <translate>修士法术</translate>
+    </power>
+    <power>
+      <id>9646a0b8-ab39-4499-85cf-1ffd9983d0a5</id>
+      <name>Adept Accident</name>
+      <translate>修士降祸</translate>
+    </power>
+    <power>
+      <id>c2ea9046-647d-4104-871a-24b3ee1fecfa</id>
+      <name>Focused Archery</name>
+       <translate>超力开弓</translate>
+    </power>
+    <power>
+      <id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
+      <name>Kiai</name>
+       <translate>气合</translate>
+    </power>
+    <power>
+      <id>3c0862c4-1070-44dd-8866-0ba89276246b</id>
+      <name>Master Archer</name>
+       <translate>弓术大师</translate>
+    </power>
+    <power>
+      <id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
+      <name>Precision Throwing</name>
+       <translate>精准投掷</translate>
+    </power>
+    <!-- Region Cutting Aces -->
+    <power>
+      <id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
+      <name>Lie Detector</name>
+       <translate>测谎者</translate>
+    </power>
+    <power>
+      <id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
+      <name>Osmosis</name>
+       <translate>内在摹拟</translate>
+    </power>
+    <power>
+      <id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
+      <name>Ventriloquism</name>
+       <translate>腹语术</translate>
+    </power>
 		</powers>
 	</chummer>
   <chummer file="priorities.xml">
@@ -8307,7 +10016,7 @@
       </quality>
       <quality>
         <id>604aea10-3f13-4f28-a87b-25b8bf677276</id>
-        <name>College Education.RF</name>
+        <name>College Education</name>
         <translate>学院教育</translate>
       </quality>
       <quality>
@@ -8367,7 +10076,7 @@
       </quality>
       <quality>
         <id>f8f216b5-1c29-467d-9fb5-c9812408203d</id>
-        <name>Inspired.RF</name>
+        <name>Inspired</name>
         <translate>启发</translate>
       </quality>
       <quality>
@@ -9269,6 +10978,27 @@
       <name>Combat Junkie</name>
       <translate>战斗狂热者</translate>
     </quality>
+     <!--Region Bullets and Bandages Positive Qualities -->
+    <quality>
+      <id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
+      <name>Gifted Healer</name>
+      <translate>天赋医者</translate>
+    </quality>
+    <quality>
+      <id>97e9b186-8924-4885-a948-3c781244a5cb</id>
+      <name>Aged</name>
+      <translate>长者</translate>
+    </quality>
+    <quality>
+      <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
+      <name>Illness</name>
+      <translate>染疾</translate>
+    </quality>
+    <quality>
+      <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
+      <name>Pregnant</name>
+      <translate>怀孕</translate>
+    </quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -9379,11 +11109,11 @@
 				<name>Astral Combat</name>
 				<translate>星界战斗</translate>
 				<specs>
-					<spec translate="对魔法师特化">Magicians</spec>
-					<spec translate="对法力屏障特化">Mana Barriers</spec>
-					<spec translate="对精魂特化">Spirits</spec>
+					<spec translate="对魔法师">Magicians</spec>
+					<spec translate="对法力屏障">Mana Barriers</spec>
+					<spec translate="对精魂">Spirits</spec>
 					<spec translate="[法器武器类型]">[Weapon Focus Type]</spec>
-					<spec translate="对[其他对手类型]特化">[Other Opponent Type]</spec>
+					<spec translate="对[其他对手类型]">[Other Opponent Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -9793,7 +11523,7 @@
 				<name>Medicine</name>
 				<translate>医学</translate>
 				<specs>
-					<spec translate="美容外科">Cosmetic Surgery</spec>
+					<spec translate="整容手术">Cosmetic Surgery</spec>
 					<spec translate="长期护理">Extended Care</spec>
 					<spec translate="移植外科">Implant Surgery</spec>
 					<spec translate="魔法健康">Magical Health</spec>
@@ -9907,6 +11637,11 @@
 					<spec translate="水翼艇（水上飞机）">Hydrofoil</spec>
 				</specs>
 			</skill>
+      <skill>
+      <id>b5f95b50-e630-4162-a6a4-7dd6ab8d0256</id>
+      <name>Pilot Exotic Vehicle</name>
+      <translate>异种载具驾驶</translate>
+    </skill>
 			<skill>
 				<id>adf31a50-b228-4e09-a09c-46ab9f5e59a1</id>
 				<name>Pistols</name>
@@ -10052,26 +11787,20 @@
 				<id>88ee65ba-c797-4f9c-91fe-39bc43b0f9c8</id>
 				<name>Exotic Ranged Weapon</name>
 				<translate>异种远程武器</translate>
-				<specs>
-					<spec translate="Blowguns">Blowguns</spec>
-					<spec translate="Gyrojet Pistols">Gyrojet Pistols</spec>
-					<spec translate="Flamethrowers">Flamethrowers</spec>
-					<spec translate="Lasers">Lasers</spec>
-				</specs>
 			</skill>
 			<skill>
 				<id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
 				<name>Alchemy</name>
 				<translate>炼金</translate>
 				<specs>
-					<spec translate="Combat">Combat</spec>
-					<spec translate="Command">Command</spec>
-					<spec translate="Contact">Contact</spec>
-					<spec translate="Detection">Detection</spec>
-					<spec translate="Health">Health</spec>
-					<spec translate="Illusion">Illusion</spec>
-					<spec translate="Manipulation">Manipulation</spec>
-					<spec translate="Time">Time</spec>
+					<spec translate="战斗法术">Combat</spec>
+					<spec translate="命令触发">Command</spec>
+					<spec translate="接触触发">Contact</spec>
+					<spec translate="侦测法术">Detection</spec>
+					<spec translate="生命法术">Health</spec>
+					<spec translate="幻象法术">Illusion</spec>
+					<spec translate="操纵法术">Manipulation</spec>
+					<spec translate="定时触发">Time</spec>
 					<spec translate="[触发方式]">[Trigger]</spec>
 				</specs>
 			</skill>
@@ -10100,7 +11829,7 @@
 				<name>Biotechnology</name>
 				<translate>生物工艺学</translate>
 				<specs>
-					<spec translate="Bioinf生物信息学ormatics">Bioinformatics</spec>
+					<spec translate="生物信息学">Bioinformatics</spec>
 					<spec translate="生体改造">Bioware</spec>
 					<spec translate="克隆">Cloning</spec>
 					<spec translate="基因疗法">Gene Therapy</spec>
@@ -10148,10 +11877,10 @@
 				<name>Performance</name>
 				<translate>表演</translate>
 				<specs>
-					<spec translate="Acting">Acting</spec>
-					<spec translate="Comedy">Comedy</spec>
-					<spec translate="Presentation">Presentation</spec>
-					<spec translate="[Musical Instrument]">[Musical Instrument]</spec>
+					<spec translate="演戏">Acting</spec>
+					<spec translate="喜剧">Comedy</spec>
+					<spec translate="报告">Presentation</spec>
+					<spec translate="[乐器]">[Musical Instrument]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -10681,7 +12410,7 @@
 			<skill>
 				<id>f8a3a8da-e177-49c7-9b3d-2749fd3704cd</id>
 				<name>Magic Traditions</name>
-				<translate>魔法传统</translate>
+				<translate>魔法流派</translate>
 			</skill>
 			<skill>
 				<id>0bbb3078-a940-4003-b4f3-fa23937cf227</id>
@@ -10795,7 +12524,7 @@
 			<category translate="战斗法术">Combat</category>
 			<category translate="侦测法术">Detection</category>
 			<category translate="生命法术">Health</category>
-			<category translate="幻想法术">Illusion</category>
+			<category translate="幻象法术">Illusion</category>
 			<category translate="操纵法术">Manipulation</category>
 			<category translate="附魔">Enchantments</category>
 			<category translate="仪式">Rituals</category>
@@ -10806,30 +12535,170 @@
 				<name>Acid Stream</name>
 				<translate>腐蚀流</translate>
 			</spell>
+      <spell>
+				<id>87cb3685-22e8-46fa-890f-f3cfef10a71f</id>
+				<name>Toxic Wave</name>
+				<translate>剧毒波</translate>
+			</spell>
+      <spell>
+				<id>10dd2924-36c6-42a3-8715-694c29c1fd48</id>
+				<name>Punch</name>
+				<translate>打击术</translate>
+			</spell>
+      <spell>
+				<id>241b9811-e7d8-41d5-b4cc-444e599599fc</id>
+				<name>Clout</name>
+				<translate>敲击术</translate>
+			</spell>
+      <spell>
+				<id>9baed162-5e84-4f19-9b94-d543a560c067</id>
+				<name>Death Touch</name>
+				<translate>死亡之触</translate>
+			</spell>
 			<spell>
+				<id>85c12bae-3954-483c-a211-d8ee43a1c65e</id>
+				<name>Manabolt</name>
+				<translate>法力箭</translate>
+			</spell>
+        <spell>
+				<id>d866f612-7160-41d2-8ce9-b64262327559</id>
+				<name>Manaball</name>
+				<translate>法力球</translate>
+			</spell>
+        <spell>
+				<id>187b1ffe-470c-4672-ba9d-376ee1856a1c</id>
+				<name>Blast</name>
+				<translate>轰击术</translate>
+			</spell>
+      <spell>
+				<id>02de7f2a-3c8e-48a5-b7d1-0bf9854271aa</id>
+				<name>Flamethrower</name>
+				<translate>火焰喷射</translate>
+			</spell>
+      <spell>
+				<id>9ce1e699-3c30-4184-858b-d5539935ef96</id>
+				<name>Fireball</name>
+				<translate>火球术</translate>
+			</spell>
+			<spell>
+				<id>b39ec682-8409-4546-be00-7615583e6541</id>
+				<name>Lightning Bolt</name>
+				<translate>闪电箭</translate>
+			</spell>
+        <spell>
 				<id>9b5c1538-d66b-4b71-9953-78817aaef6e4</id>
 				<name>Ball Lightning</name>
 				<translate>闪电球</translate>
 			</spell>
 			<spell>
-				<id>187b1ffe-470c-4672-ba9d-376ee1856a1c</id>
-				<name>Blast</name>
-				<translate>轰击术</translate>
+				<id>92467147-ce2c-480e-b4e0-f4a269c2ad86</id>
+				<name>Shatter</name>
+				<translate>粉碎术</translate>
+			</spell>
+      <spell>
+				<id>a7f17805-3e3e-4a12-8580-b9de0d7499ef</id>
+				<name>Powerbolt</name>
+				<translate>热能箭</translate>
 			</spell>
 			<spell>
-				<id>241b9811-e7d8-41d5-b4cc-444e599599fc</id>
-				<name>Clout</name>
-				<translate>敲击术</translate>
+				<id>1e25e684-9eec-4d1a-acac-488c8c00c24f</id>
+				<name>Powerball</name>
+				<translate>热能球</translate>
+			</spell>
+      <spell>
+				<id>6cbe13c4-ef28-43b7-9715-bccb7c153999</id>
+				<name>Knockout</name>
+				<translate>击晕术</translate>
+			</spell>
+      <spell>
+				<id>47423962-6b73-4cc3-ad4e-e8d037cf9507</id>
+				<name>Stunbolt</name>
+				<translate>晕眩箭</translate>
+			</spell>
+      <spell>
+				<id>e9f1e14b-1f59-46d6-9e9f-e808d7316d76</id>
+				<name>Stunball</name>
+				<translate>晕眩球</translate>
 			</spell>
 			<spell>
 				<id>45d775c9-d12f-4416-a45a-88922ec3c2fd</id>
 				<name>Corrode [Object]</name>
-				<translate>腐蚀[物品]</translate>
+				<translate>腐蚀术[物品]</translate>
 			</spell>
 			<spell>
-				<id>9baed162-5e84-4f19-9b94-d543a560c067</id>
-				<name>Death Touch</name>
-				<translate>死亡之触</translate>
+				<id>7a2101ff-6606-4b3e-b1c1-2f7ea74679dd</id>
+				<name>Melt [Object]</name>
+				<translate>溶解术[物品]</translate>
+			</spell>
+      <spell>
+				<id>6b12c245-ab52-49df-93fe-670841cb9e3d</id>
+				<name>Sludge [Object]</name>
+				<translate>泥蚀术[物品]</translate>
+			</spell>
+			<spell>
+				<id>5c9218f6-bdb4-46a5-89ce-00b4adfe0429</id>
+				<name>Disrupt [Object]</name>
+				<translate>断连术[法器]</translate>
+			</spell>
+      <spell>
+				<id>d3bf1bfc-e104-4b22-a1fe-0aae0ef0b35b</id>
+				<name>Firewater</name>
+				<translate>沸火术</translate>
+			</spell>
+			<spell>
+				<id>577871f2-f294-4db9-94f0-5790d0576a4b</id>
+				<name>Napalm</name>
+				<translate>烧夷术</translate>
+			</spell>
+        <spell>
+				<id>bba17f26-7b83-4904-a5fa-a21ef7cacaa7</id>
+				<name>Ice Spear</name>
+				<translate>冰矛术</translate>
+			</spell>
+			<spell>
+				<id>2c2ad94e-3dd5-40e3-a4e0-74668dae1b48</id>
+				<name>Ice Storm</name>
+				<translate>冰风暴</translate>
+			</spell>
+      <spell>
+				<id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
+				<name>One Less [Metatype/Species]</name>
+				<translate>触杀术[泛人类/种族]</translate>
+			</spell>
+			<spell>
+				<id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
+				<name>Slay [Metatype/Species]</name>
+				<translate>屠戮术[泛人类/种族]</translate>
+			</spell>
+			<spell>
+				<id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
+				<name>Slaughter [Metatype/Species]</name>
+				<translate>诛灭术[泛人类/种族]</translate>
+			</spell>
+			<spell>
+				<id>a6f43dcf-c0cc-4da9-af25-1516f2564200</id>
+				<name>Destroy [Free Spirit]</name>
+				<translate>毁灭术[自由精魂]</translate>
+			</spell>
+			<spell>
+				<id>51f04999-1173-43da-94b6-af3749cb3156</id>
+				<name>Destroy [Vehicle]</name>
+				<translate>毁灭术[载具]</translate>
+			</spell>
+			<spell>
+				<id>ea47eaaf-80e4-4c89-a108-6d2fb3e376dd</id>
+				<name>Insecticide [Insect Spirit]</name>
+				<translate>灭虫术[虫精魂]</translate>
+			</spell>
+			<spell>
+				<id>f883ce3d-a3a9-4021-b4f3-7812d6a5f7f1</id>
+				<name>Ram [Object]</name>
+				<translate>猛击[物品]</translate>
+			</spell>
+      <spell>
+				<id>f7494736-bf1f-4d2f-a137-6f43a0248d36</id>
+				<name>Wreck [Object]</name>
+				<translate>毁坏[物品]</translate>
 			</spell>
 			<spell>
 				<id>da0462d4-f068-449d-a3c3-4678dc0adade</id>
@@ -10837,119 +12706,29 @@
 				<translate>摧毁[物品]</translate>
 			</spell>
 			<spell>
-				<id>9ce1e699-3c30-4184-858b-d5539935ef96</id>
-				<name>Fireball</name>
-				<translate>火球术</translate>
+				<id>f20e3789-0333-4243-b31c-0dc07f1d8736</id>
+				<name>Radiation Beam</name>
+				<translate>辐射束</translate>
 			</spell>
 			<spell>
-				<id>d3bf1bfc-e104-4b22-a1fe-0aae0ef0b35b</id>
-				<name>Firewater</name>
-				<translate>沸火术</translate>
+				<id>793736ac-c4a4-408c-824e-6cc5689622a3</id>
+				<name>Radiation Burst</name>
+				<translate>辐射爆裂</translate>
 			</spell>
 			<spell>
-				<id>02de7f2a-3c8e-48a5-b7d1-0bf9854271aa</id>
-				<name>Flamethrower</name>
-				<translate>火焰喷射</translate>
+				<id>e0b3608a-cf54-4a1d-a99a-a4cd513c5e8a</id>
+				<name>Pollutant Stream</name>
+				<translate>污染流</translate>
 			</spell>
 			<spell>
-				<id>6cbe13c4-ef28-43b7-9715-bccb7c153999</id>
-				<name>Knockout</name>
-				<translate>击晕术</translate>
-			</spell>
-			<spell>
-				<id>b39ec682-8409-4546-be00-7615583e6541</id>
-				<name>Lightning Bolt</name>
-				<translate>闪电箭</translate>
-			</spell>
-			<spell>
-				<id>d866f612-7160-41d2-8ce9-b64262327559</id>
-				<name>Manaball</name>
-				<translate>法力球</translate>
-			</spell>
-			<spell>
-				<id>85c12bae-3954-483c-a211-d8ee43a1c65e</id>
-				<name>Manabolt</name>
-				<translate>法力箭</translate>
-			</spell>
-			<spell>
-				<id>7a2101ff-6606-4b3e-b1c1-2f7ea74679dd</id>
-				<name>Melt [Object]</name>
-				<translate>溶解[物品]</translate>
-			</spell>
-			<spell>
-				<id>577871f2-f294-4db9-94f0-5790d0576a4b</id>
-				<name>Napalm</name>
-				<translate>烧夷术</translate>
-			</spell>
-			<spell>
-				<id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
-				<name>One Less [Metatype/Species]</name>
-				<translate>触杀术[某一物种或泛形态]</translate>
-			</spell>
-			<spell>
-				<id>1e25e684-9eec-4d1a-acac-488c8c00c24f</id>
-				<name>Powerball</name>
-				<translate>热能球</translate>
-			</spell>
-			<spell>
-				<id>a7f17805-3e3e-4a12-8580-b9de0d7499ef</id>
-				<name>Powerbolt</name>
-				<translate>热能箭</translate>
-			</spell>
-			<spell>
-				<id>10dd2924-36c6-42a3-8715-694c29c1fd48</id>
-				<name>Punch</name>
-				<translate>打击术</translate>
-			</spell>
-			<spell>
-				<id>f883ce3d-a3a9-4021-b4f3-7812d6a5f7f1</id>
-				<name>Ram [Object]</name>
-				<translate>冲撞[物品]</translate>
-			</spell>
-			<spell>
-				<id>92467147-ce2c-480e-b4e0-f4a269c2ad86</id>
-				<name>Shatter</name>
-				<translate>粉碎术</translate>
+				<id>7a6579fa-4eda-47e4-96d2-59f4e1f9f567</id>
+				<name>Pollutant Wave</name>
+				<translate>污染潮</translate>
 			</spell>
 			<spell>
 				<id>0c0c34cb-5df3-4928-8e81-b794ee2fb47c</id>
 				<name>Shattershield</name>
-				<translate>破甲</translate>
-			</spell>
-			<spell>
-				<id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
-				<name>Slaughter [Metatype/Species]</name>
-				<translate>诛灭术[某一物种或泛形态]</translate>
-			</spell>
-			<spell>
-				<id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
-				<name>Slay [Metatype/Species]</name>
-				<translate>屠戮术[某一物种或泛形态]</translate>
-			</spell>
-			<spell>
-				<id>6b12c245-ab52-49df-93fe-670841cb9e3d</id>
-				<name>Sludge [Object]</name>
-				<translate>泥蚀[物品]</translate>
-			</spell>
-			<spell>
-				<id>e9f1e14b-1f59-46d6-9e9f-e808d7316d76</id>
-				<name>Stunball</name>
-				<translate>晕眩球</translate>
-			</spell>
-			<spell>
-				<id>47423962-6b73-4cc3-ad4e-e8d037cf9507</id>
-				<name>Stunbolt</name>
-				<translate>晕眩箭</translate>
-			</spell>
-			<spell>
-				<id>87cb3685-22e8-46fa-890f-f3cfef10a71f</id>
-				<name>Toxic Wave</name>
-				<translate>剧毒波</translate>
-			</spell>
-			<spell>
-				<id>f7494736-bf1f-4d2f-a137-6f43a0248d36</id>
-				<name>Wreck [Object]</name>
-				<translate>毁坏[物品]</translate>
+				<translate>破魔术</translate>
 			</spell>
 			<spell>
 				<id>e81dda32-1c97-482b-a6a5-ddd12eded03a</id>
@@ -10965,36 +12744,6 @@
 				<id>933a534c-ad50-4c87-be65-2230d56f5fcd</id>
 				<name>Analyze Truth</name>
 				<translate>分析真相</translate>
-			</spell>
-			<spell>
-				<id>2e4c9b88-2203-4ab9-842b-e3c373db6982</id>
-				<name>Animal Sense</name>
-				<translate>动物感知</translate>
-			</spell>
-			<spell>
-				<id>575e98fc-a165-403c-aef0-4877fb75845a</id>
-				<name>Area Thought Recognition</name>
-				<translate>范围思想认知</translate>
-			</spell>
-			<spell>
-				<id>c68f9aeb-e7b2-4b2a-9ce4-1ee306412ef7</id>
-				<name>Astral Clairvoyance</name>
-				<translate>星界千里眼</translate>
-			</spell>
-			<spell>
-				<id>237ee405-062f-4e11-96a8-78336e1d6a0a</id>
-				<name>Astral Window</name>
-				<translate>星界窥口</translate>
-			</spell>
-			<spell>
-				<id>3e350a47-4b06-48b1-94ef-fe00c3b86757</id>
-				<name>Borrow Sense</name>
-				<translate>借用感知</translate>
-			</spell>
-			<spell>
-				<id>d6157db4-8957-4160-ab47-3ded6c4be07c</id>
-				<name>Catalog</name>
-				<translate>汇整</translate>
 			</spell>
 			<spell>
 				<id>fb44d690-17c0-4d22-819e-8b7b463b2599</id>
@@ -11051,100 +12800,140 @@
 				<name>Detect Magic</name>
 				<translate>侦测魔法</translate>
 			</spell>
+      <spell>
+				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
+				<name>Detect Magic, Extended</name>
+				<translate>大范围侦测魔法</translate>
+			</spell>
 			<spell>
 				<id>5574e0a7-d089-4c6d-a033-a157fbe681c0</id>
 				<name>Detect [Object]</name>
 				<translate>侦测[物品]</translate>
 			</spell>
 			<spell>
-				<id>fdbb2c8e-453b-46cf-8dcd-522c6d3aa3e0</id>
-				<name>Diagnose</name>
-				<translate>诊断</translate>
+				<id>7c4a2ba3-3ee3-4f34-bb16-17645ef90932</id>
+				<name>Mindlink</name>
+				<translate>心灵链接</translate>
 			</spell>
+        <spell>
+				<id>fc5bf8bd-1c7e-4093-bd86-4d9943aafbd4</id>
+				<name>Mind Probe</name>
+				<translate>心灵探针</translate>
 			<spell>
-				<id>96859e68-4051-4805-8de6-4f15ea4dee66</id>
-				<name>Enhance Aim</name>
-				<translate>瞄准强化</translate>
+				<id>87c6046a-1f20-4b64-9e89-aec583254a3e</id>
+				<name>Astral Message</name>
+				<translate>星界信息</translate>
 			</spell>
-			<spell>
+        <spell>
+				<id>c68f9aeb-e7b2-4b2a-9ce4-1ee306412ef7</id>
+				<name>Astral Clairvoyance</name>
+				<translate>星界千里眼</translate>
+			</spell>
+      <spell>
+				<id>3e350a47-4b06-48b1-94ef-fe00c3b86757</id>
+				<name>Borrow Sense</name>
+				<translate>感知借用</translate>
+			</spell>
+      </spell>
+        <spell>
+				<id>2e4c9b88-2203-4ab9-842b-e3c373db6982</id>
+				<name>Animal Sense</name>
+				<translate>动物感知</translate>
+			</spell>
+      <spell>
 				<id>2f4d4afa-f94a-4659-be2a-9ffbd3589e44</id>
 				<name>Eyes of the Pack</name>
 				<translate>共享之眼</translate>
 			</spell>
 			<spell>
-				<id>ba3a8f58-8eeb-49de-97ac-b68ec67b85f5</id>
-				<name>Hawkeye</name>
-				<translate>鹰眼</translate>
+				<id>d6157db4-8957-4160-ab47-3ded6c4be07c</id>
+				<name>Catalog</name>
+				<translate>汇整</translate>
+			</spell>
+      <spell>
+				<id>fdbb2c8e-453b-46cf-8dcd-522c6d3aa3e0</id>
+				<name>Diagnose</name>
+				<translate>诊断</translate>
 			</spell>
 			<spell>
+				<id>0b2bd31a-09b2-40b8-a4ab-7c776ef33268</id>
+				<name>Dragon Astral Signature</name>
+				<translate>龙星印记</translate>
+			</spell>
+      <spell>
+				<id>96859e68-4051-4805-8de6-4f15ea4dee66</id>
+				<name>Enhance Aim</name>
+				<translate>瞄准强化</translate>
+			</spell>
+			<spell>
+				<id>ba3a8f58-8eeb-49de-97ac-b68ec67b85f5</id>
+				<name>Hawkeye</name>
+				<translate>隼眼</translate>
+			</spell>
+      <spell>
 				<id>35d509e2-f0c7-432f-919a-34e526079097</id>
 				<name>Mana Window</name>
 				<translate>法力窥口</translate>
-			</spell>
-			<spell>
-				<id>fc5bf8bd-1c7e-4093-bd86-4d9943aafbd4</id>
-				<name>Mind Probe</name>
-				<translate>心灵探针</translate>
-			</spell>
-			<spell>
-				<id>7c4a2ba3-3ee3-4f34-bb16-17645ef90932</id>
-				<name>Mindlink</name>
-				<translate>心灵链接</translate>
+			</spell>  
+      <spell>
+				<id>237ee405-062f-4e11-96a8-78336e1d6a0a</id>
+				<name>Astral Window</name>
+				<translate>星界窥口</translate>
 			</spell>
 			<spell>
 				<id>1a3b7121-ab36-4796-9ac8-2bae53491c5e</id>
 				<name>Mindnet</name>
-				<translate>心灵连线</translate>
+				<translate>心灵网络</translate>
+			</spell>
+        <spell>
+				<id>4af09e0f-93a5-43f5-badb-9f070d574417</id>
+				<name>Mindnet Extended</name>
+				<translate>大范围心灵网络</translate>
 			</spell>
 			<spell>
 				<id>06a54506-0b09-4e5a-91f3-e29b20c8c224</id>
 				<name>Night Vision</name>
-				<translate>夜视力</translate>
+				<translate>夜视术</translate>
 			</spell>
 			<spell>
 				<id>b2851e5f-76b8-42a7-8e74-11c0b4b7b67f</id>
 				<name>[Sense] Cryptesthesia</name>
-				<translate>[感知]假象强化</translate>
+				<translate>[感知]潜觉</translate>
 			</spell>
-			<spell>
+      <spell>
 				<id>31a6e1bf-403d-47e4-a6dc-fe113fd875f1</id>
 				<name>Spatial Sense</name>
-				<translate>空间洞察</translate>
+				<translate>空间感知</translate>
 			</spell>
 			<spell>
 				<id>5b72a202-0dcc-44e8-b7ae-f508b7f5319f</id>
 				<name>Spatial Sense, Extended</name>
-				<translate>大范围空间洞察</translate>
+				<translate>大范围空间感知</translate>
 			</spell>
-			<spell>
+        <spell>
 				<id>ab70d6c1-60e8-4475-87ee-16790cb9ff68</id>
 				<name>Thought Recognition</name>
 				<translate>思想认知</translate>
 			</spell>
+			 <spell>
+				<id>575e98fc-a165-403c-aef0-4877fb75845a</id>
+				<name>Area Thought Recognition</name>
+				<translate>范围思想认知</translate>
+			</spell>
 			<spell>
 				<id>aaebe992-95e0-4607-a3b4-256455e67791</id>
 				<name>Translate</name>
-				<translate>翻译</translate>
+				<translate>翻译术</translate>
 			</spell>
-			<spell>
-				<id>ff90355c-5eba-4a35-8bf9-66afff9075ad</id>
-				<name>Alleviate Addiction</name>
-				<translate>缓解成瘾</translate>
-			</spell>
+      <spell>
+      <id>08863013-48b9-4c7f-9bb1-25951b984dc1</id>
+      <name>Consistency</name>
+      <translate>言行一致</translate>
+    </spell>
 			<spell>
 				<id>92fe97e1-2f16-4398-b12b-b29bfa23c75d</id>
 				<name>Antidote</name>
 				<translate>解毒术</translate>
-			</spell>
-			<spell>
-				<id>a5096a06-4dee-40f6-879b-b88616cdb728</id>
-				<name>Awaken</name>
-				<translate>唤醒</translate>
-			</spell>
-			<spell>
-				<id>e0ea86bc-06df-4edc-bee1-03b6a2733675</id>
-				<name>Crank</name>
-				<translate>亢化</translate>
 			</spell>
 			<spell>
 				<id>13999091-25c8-4b72-add4-bff3b97eb0a6</id>
@@ -11156,25 +12945,11 @@
 				<name>Decrease [Attribute]</name>
 				<translate>降低[属性]</translate>
 			</spell>
-			<spell>
-				<id>3c2d97b8-4761-4e5a-ba61-ff4b7a403ead</id>
-				<name>Decrease Reflexes</name>
-				<translate>降低反射</translate>
-			</spell>
+			
 			<spell>
 				<id>3d019dea-b5ae-4f9c-ab14-eb8a329ed9ba</id>
 				<name>Detox</name>
 				<translate>中和毒性</translate>
-			</spell>
-			<spell>
-				<id>a547f08e-0822-4a1c-968a-a2d6c249572c</id>
-				<name>Enabler</name>
-				<translate>活化剂</translate>
-			</spell>
-			<spell>
-				<id>8c6ce834-d47a-40a6-9e4c-57a1030ce57e</id>
-				<name>Fast</name>
-				<translate>空气餐</translate>
 			</spell>
 			<spell>
 				<id>c09e8bb5-4bed-44f9-a41c-bed6a4deb871</id>
@@ -11211,17 +12986,92 @@
 				<name>Stabilize</name>
 				<translate>伤势稳定</translate>
 			</spell>
+      <spell>
+				<id>f7ad9877-1f67-40a0-9813-ba53db664833</id>
+				<name>Ambidexterity</name>
+				<translate>双巧手</translate>
+			</spell>
+        <spell>
+				<id>ff90355c-5eba-4a35-8bf9-66afff9075ad</id>
+				<name>Alleviate Addiction</name>
+				<translate>成瘾缓解</translate>
+			</spell>
+			<spell>
+				<id>fd407eeb-103e-4bef-a719-1098d8387536</id>
+				<name>Alleviate [Allergy]</name>
+				<translate>缓解[过敏]</translate>
+			</spell>
+			<spell>
+				<id>a5096a06-4dee-40f6-879b-b88616cdb728</id>
+				<name>Awaken</name>
+				<translate>唤醒</translate>
+			</spell>
+			<spell>
+				<id>e0ea86bc-06df-4edc-bee1-03b6a2733675</id>
+				<name>Crank</name>
+				<translate>精神亢化</translate>
+			</spell>
+        <spell>
+				<id>3c2d97b8-4761-4e5a-ba61-ff4b7a403ead</id>
+				<name>Decrease Reflexes</name>
+				<translate>降低反射</translate>
+			</spell>
+        <spell>
+				<id>a547f08e-0822-4a1c-968a-a2d6c249572c</id>
+				<name>Enabler</name>
+				<translate>促成术</translate>
+			</spell>
+			<spell>
+				<id>8c6ce834-d47a-40a6-9e4c-57a1030ce57e</id>
+				<name>Fast</name>
+				<translate>空气餐</translate>
+			</spell>
+        <spell>
+				<id>b1347682-58ad-4684-a93a-3f7703f1b4bf</id>
+				<name>Forced Defense</name>
+				<translate>强制防御</translate>
+			</spell>
+			<spell>
+				<id>80704822-953b-45c5-aa8e-77ca26e6cef7</id>
+				<name>Increase Inherent Limits</name>
+				<translate>提高天生界限</translate>
+			</spell>
+			<spell>
+				<id>4fbbaf9c-15fb-46ec-b899-5fc48829e52a</id>
+				<name>Decrease Inherent Limits</name>
+				<translate>降低天生界限</translate>
+			</spell>
 			<spell>
 				<id>46b12a6a-9d9d-4176-bfd6-80e8e21cb0e4</id>
 				<name>Agony</name>
 				<translate>痛苦术</translate>
+			</spell>
+      <spell>
+				<id>b11af57e-bacc-4f13-8d75-d1201ec6f4f5</id>
+				<name>Mass Agony</name>
+				<translate>群体痛苦术</translate>
 			</spell>
 			<spell>
 				<id>5ab4bf6b-9c90-4fbb-9005-b9545a51bec1</id>
 				<name>Bugs</name>
 				<translate>臭虫术</translate>
 			</spell>
+      <spell>
+				<id>d6725f7f-8084-4f36-8b46-e37e1c329af6</id>
+				<name>Swarm</name>
+				<translate>蝗群术</translate>
+			</spell>
 			<spell>
+				<id>5636bbee-fadd-4f5c-bf77-c15b05e8d265</id>
+				<name>Confusion</name>
+				<translate>困惑术</translate>
+			</spell>
+      <spell>
+				<id>1041d1cb-bbc2-4718-ae56-3d8c4276b77b</id>
+				<name>Mass Confusion</name>
+				<translate>群体困惑术</translate>
+			</spell>
+      <spell>
 				<id>4268d83b-c208-4aa3-8924-5620516f8434</id>
 				<name>Chaos</name>
 				<translate>混乱术</translate>
@@ -11232,29 +13082,24 @@
 				<translate>混乱世界</translate>
 			</spell>
 			<spell>
-				<id>5636bbee-fadd-4f5c-bf77-c15b05e8d265</id>
-				<name>Confusion</name>
-				<translate>困惑术</translate>
-			</spell>
-			<spell>
 				<id>d4e9d465-160f-4148-a755-27b50616f240</id>
 				<name>Entertainment</name>
 				<translate>娱乐</translate>
 			</spell>
-			<spell>
-				<id>4ba6626f-4109-4451-ab0a-e659752ab15e</id>
-				<name>Hush</name>
-				<translate>缄口术</translate>
+      <spell>
+				<id>56be1e57-eca7-4253-970a-b561e23b1e8d</id>
+				<name>Trid Entertainment</name>
+				<translate>全息娱乐</translate>
 			</spell>
-			<spell>
-				<id>1d9430e9-3ae9-4c0a-ba60-ee92c245ee08</id>
-				<name>Improved Invisibility</name>
-				<translate>进阶隐形术</translate>
-			</spell>
-			<spell>
+      <spell>
 				<id>4b929a2d-908e-40ab-babc-e262b7f69a28</id>
 				<name>Invisibility</name>
 				<translate>隐形术</translate>
+			</spell>
+        <spell>
+				<id>1d9430e9-3ae9-4c0a-ba60-ee92c245ee08</id>
+				<name>Improved Invisibility</name>
+				<translate>进阶隐形术</translate>
 			</spell>
 			<spell>
 				<id>435ba03c-2b21-4bcb-858a-cc175f7b41d7</id>
@@ -11262,24 +13107,24 @@
 				<translate>假面术</translate>
 			</spell>
 			<spell>
-				<id>b11af57e-bacc-4f13-8d75-d1201ec6f4f5</id>
-				<name>Mass Agony</name>
-				<translate>群体痛苦术</translate>
+				<id>af339680-1d73-44b8-a2aa-7d9b7630a647</id>
+				<name>Physical Mask</name>
+				<translate>物理假面</translate>
 			</spell>
-			<spell>
-				<id>1041d1cb-bbc2-4718-ae56-3d8c4276b77b</id>
-				<name>Mass Confusion</name>
-				<translate>群体困惑术</translate>
-			</spell>
-			<spell>
+      <spell>
 				<id>52acdeb6-3ec4-417c-a768-e6a445117f69</id>
 				<name>Phantasm</name>
 				<translate>幻影术</translate>
 			</spell>
 			<spell>
-				<id>af339680-1d73-44b8-a2aa-7d9b7630a647</id>
-				<name>Physical Mask</name>
-				<translate>物理假面</translate>
+				<id>444adc27-26c7-4ff1-894f-a55fea22e24a</id>
+				<name>Trid Phantasm</name>
+				<translate>三维幻影术</translate>
+			</spell>
+      <spell>
+				<id>4ba6626f-4109-4451-ab0a-e659752ab15e</id>
+				<name>Hush</name>
+				<translate>缄口术</translate>
 			</spell>
 			<spell>
 				<id>c307d243-669b-47d0-9642-aee7f9207e63</id>
@@ -11291,21 +13136,101 @@
 				<name>Stealth</name>
 				<translate>潜行术</translate>
 			</spell>
-			<spell>
-				<id>d6725f7f-8084-4f36-8b46-e37e1c329af6</id>
-				<name>Swarm</name>
-				<translate>蝗群术</translate>
-			</spell>
-			<spell>
-				<id>56be1e57-eca7-4253-970a-b561e23b1e8d</id>
-				<name>Trid Entertainment</name>
-				<translate>全息娱乐</translate>
-			</spell>
-			<spell>
-				<id>444adc27-26c7-4ff1-894f-a55fea22e24a</id>
-				<name>Trid Phantasm</name>
-				<translate>三维幻影术</translate>
-			</spell>
+			 <spell>
+      <id>f7fb9b03-d7ee-4695-8e38-443a7d2b13e4</id>
+      <name>Camouflage</name>
+      <translate>伪装术</translate>
+    </spell>
+    <spell>
+      <id>03bcc045-08db-4967-80e3-09640859aa69</id>
+      <name>Physical Camouflage</name>
+      <translate>物理伪装</translate>
+    </spell>
+    <spell>
+      <id>55c77b11-0647-4ece-9164-27caeadcf764</id>
+      <name>Decoy</name>
+      <translate>诱饵术</translate>
+    </spell>
+    <spell>
+      <id>4c01416b-ff1c-4e55-a2eb-b8048b8709e4</id>
+      <name>Chaff</name>
+     <translate>迷惑术</translate>
+    </spell>
+    <spell>
+      <id>b3179247-4b02-47ea-abb0-0934b673cff2</id>
+      <name>Double Image</name>
+      <translate>镜像</translate>
+    </spell>
+    <spell>
+      <id>8d724d8c-e6a0-41d7-8799-4fbb02de62a0</id>
+      <name>Dream</name>
+     <translate>梦境</translate>
+    </spell>
+    <spell>
+      <id>86dfd77f-afcb-4533-951c-7b2ea8d462c5</id>
+      <name>Euphoria</name>
+      <translate>极乐术</translate>
+    </spell>
+    <spell>
+      <id>883457da-6b0f-49d8-b40e-fcdf7486737e</id>
+      <name>Opium Den</name>
+     <translate>鸦片窟</translate>
+    </spell>
+    <spell>
+      <id>e02e6362-5b3c-410c-818b-890c8d008321</id>
+      <name>Foreboding</name>
+     <translate>恐慌预兆</translate>
+    </spell>
+    <spell>
+      <id>b60ef1c2-565a-4b96-9ca2-270905d977ea</id>
+      <name>Hot Potato</name>
+      <translate>烙铁术</translate>
+    </spell>
+    <spell>
+      <id>945fc713-6e3d-4b1e-b1aa-a1dbd2a9d429</id>
+      <name>[Sense] Removal</name>
+      <translate>[感官]剥夺</translate>
+    </spell>
+    <spell>
+      <id>4dad17ac-f04c-49ce-a719-e475620028d3</id>
+      <name>Mass [Sense] Removal</name>
+      <translate>群体[感官]剥夺</translate>
+    </spell>
+    <spell>
+      <id>0a2e9859-b489-43f7-8e8a-d29cb4c8b682</id>
+      <name>Stink</name>
+      <translate>腥臭术</translate>
+    </spell>
+    <spell>
+      <id>ecd4d99e-7e5c-43be-bfb7-7af989879236</id>
+      <name>Stench</name>
+      <translate>恶臭术</translate>
+    </spell>
+    <spell>
+      <id>466e45ee-755d-4fd6-ba23-298afa5849ef</id>
+      <name>Sound Barrier</name>
+      <translate>阻音屏障</translate>
+    </spell>
+    <spell>
+      <id>0e6abd64-04bf-44ca-9358-4f12c9673209</id>
+      <name>Switch Vehicle Signature</name>
+      <translate>车辆讯号转换</translate>
+    </spell>
+    <spell>
+      <id>7eec4aa0-806c-4b4d-b809-5c37c4c06ae5</id>
+      <name>Vehicle Mask</name>
+      <translate>车辆假象</translate>
+    </spell>
+       <spell>
+      <id>d0f89025-7573-47d2-accf-48f2a7d7a03d</id>
+      <name>Incubus</name>
+      <translate>梦魔</translate>
+    </spell>
+    <spell>
+      <id>a2f9abc1-f4f0-4247-a9eb-5f0916212b91</id>
+      <name>Incubus Shroud</name>
+     <translate>梦魔裹布</translate>
+    </spell>
 			<spell>
 				<id>b447e60d-88b6-48e4-a595-6dae86581867</id>
 				<name>Animate</name>
@@ -11314,7 +13239,7 @@
 			<spell>
 				<id>794f21eb-dc8d-45e8-b9b0-b85b810437f3</id>
 				<name>Armor</name>
-				<translate>护甲</translate>
+				<translate>护甲术</translate>
 			</spell>
 			<spell>
 				<id>32a6a213-8c89-4efe-b56d-042814a13b9f</id>
@@ -11396,11 +13321,221 @@
 				<name>Shadow</name>
 				<translate>暗影术</translate>
 			</spell>
-			<spell>
-				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
-				<name>Detect Magic, Extended</name>
-				<translate>大范围侦测魔法</translate>
-			</spell>
+      <spell>
+      <id>f7984928-b770-4c96-8454-e8708b820dd0</id>
+      <name>Bind</name>
+      <translate>束缚术</translate>
+    </spell>
+    <spell>
+      <id>e59a2be4-41b5-4b3e-aa5b-c4881a021cae</id>
+      <name>Net Bind</name>
+      <translate>网缚术</translate>
+    </spell>
+    <spell>
+      <id>30292b3d-d81d-433f-a211-af1939e158db</id>
+      <name>Mana Bind</name>
+      <translate>魔缚术</translate>
+    </spell>
+    <spell>
+      <id>37e33acf-31ab-429e-b470-d4a4c2e27559</id>
+      <name>Mana Net</name>
+      <translate>魔网术</translate>
+    </spell>
+    <spell>
+      <id>75411316-c3b0-43cb-bbb8-24bde461ea58</id>
+      <name>Bug Zapper</name>
+      <translate>防虫屏障</translate>
+    </spell>
+    <spell>
+      <id>f075819d-4924-4140-a5b4-fe8fdc069485</id>
+      <name>Calm Animal</name>
+      <translate>安抚动物</translate>
+    </spell>
+    <spell>
+      <id>b0a9f3b0-d153-4ff3-9193-666f89aaf0c3</id>
+      <name>Calm Pack</name>
+      <translate>安抚群体动物</translate>
+    </spell>
+    <spell>
+      <id>faf0247b-bd15-4287-aa08-99f704de2abb</id>
+      <name>Catfall</name>
+      <translate>猫落术</translate>
+    </spell>
+    <spell>
+      <id>05088798-a160-4080-90bb-fed9880435ba</id>
+      <name>Clean [Element]</name>
+      <translate>清洁术[元素]</translate>
+    </spell>
+    <spell>
+      <id>b0d02e0b-6c8f-4fef-8ca3-fe8f509218f0</id>
+      <name>Compel Truth</name>
+      <translate>吐真术</translate>
+    </spell>
+    <spell>
+      <id>e0578a09-8fba-424f-9288-b5e1ef810c2c</id>
+      <name>Control Animal</name>
+      <translate>控制动物</translate>
+    </spell>
+    <spell>
+      <id>7d37e3fa-d16b-4d4f-8285-629f511df0e6</id>
+      <name>Control Pack</name>
+      <translate>控制群体动物</translate>
+    </spell>
+    <spell>
+      <id>1b311db9-d5cc-4b4c-857a-3208caa1bf0a</id>
+      <name>Deflection</name>
+      <translate>偏斜术</translate>
+    </spell>
+    <spell>
+      <id>90b5f888-bc04-45c2-9b5e-11d95b787c6e</id>
+      <name>[Element] Aura</name>
+      <translate>[元素]光环</translate>
+    </spell>
+    <spell>
+      <id>ac8c938d-3aa1-4911-a812-c770e858de92</id>
+      <name>[Element] Wall</name>
+      <translate>[元素]墙</translate>
+    </spell>
+    <spell>
+      <id>0a52251a-8b85-4814-8645-b929182274db</id>
+      <name>Fashion</name>
+      <translate>时尚术</translate>
+    </spell>
+    <spell>
+      <id>33d35d53-5f71-435d-9bbd-913a5ffc35e1</id>
+      <name>Fix</name>
+      <translate>修理术</translate>
+    </spell>
+    <spell>
+      <id>d9b045d9-1320-4ae9-98d4-c67b1d681719</id>
+      <name>Gecko Crawl</name>
+      <translate>壁虎爬行术</translate>
+    </spell>
+    <spell>
+      <id>9b996aac-6bc6-4781-9a57-61ce33a4cd20</id>
+      <name>Glue</name>
+      <translate>黏着术</translate>
+    </spell>
+    <spell>
+      <id>0f725e2e-2389-4aa4-99f9-da26275080bf</id>
+      <name>Glue Strip</name>
+      <translate>黏合术</translate>
+    </spell>
+    <spell>
+      <id>785b5b5e-500f-40a2-9b25-b90f3dde7c26</id>
+      <name>Increase Noise</name>
+      <translate>增噪术</translate>
+    </spell>
+    <spell>
+      <id>243c19b9-3555-4257-bca0-a7e7f0fff6bf</id>
+      <name>Decrease Noise</name>
+      <translate>降噪术</translate>
+    </spell>
+    <spell>
+      <id>93237162-228a-4073-b798-f1b0605388a9</id>
+      <name>Increase Gear Limits</name>
+      <translate>提高装备界限</translate>
+    </spell>
+    <spell>
+      <id>35ba4222-4e7b-4862-a767-42c5d3dfe2cb</id>
+      <name>Decrease Gear Limits</name>
+      <translate>降低装备界限</translate>
+    </spell>
+    <spell>
+      <id>3f40c2bb-e66f-44dc-b801-d459a8d3a2b4</id>
+      <name>Interference</name>
+      <translate>杂讯术</translate>
+    </spell>
+    <spell>
+      <id>403e9895-9772-4d2d-9cec-aee93a65794f</id>
+      <name>Lock</name>
+     <translate>闭锁术</translate>
+    </spell>
+    <spell>
+      <id>37ac2ee9-24ed-4d06-8c99-6295e5438ecb</id>
+      <name>Mana Static</name>
+      <translate>法力干扰</translate>
+    </spell>
+    <spell>
+      <id>7152a1f0-6b8f-4ca8-8885-2f5eb5853d73</id>
+      <name>Makeover</name>
+      <translate>妆扮术</translate>
+    </spell>
+    <spell>
+      <id>091a0669-f0d2-4633-8cfa-06c25986da7c</id>
+      <name>Mist</name>
+      <translate>迷雾术</translate>
+    </spell>
+    <spell>
+      <id>ccc4fc17-0c10-4ac5-8a60-d31b0f330b8b</id>
+      <name>Offensive Mana Barrier</name>
+      <translate>攻击性法力屏障</translate>
+    </spell>
+    <spell>
+      <id>bed82cc3-80f9-48e5-b7a3-63e176eb6a71</id>
+      <name>Preserve</name>
+      <translate>防腐术</translate>
+    </spell>
+    <spell>
+      <id>e748de46-a314-4fc5-a7b1-4cdb16c59637</id>
+      <name>Protect Vehicle</name>
+      <translate>保护载具</translate>
+    </spell>
+    <spell>
+      <id>02b38262-db06-4698-b4b2-7a9e7f2452a9</id>
+      <name>Pulse</name>
+      <translate>脉冲术</translate>
+    </spell>
+    <spell>
+      <id>e520af8e-e06d-494e-ab4c-f89e9f9df192</id>
+      <name>Reinforce</name>
+     <translate>加固术</translate>
+    </spell>
+    <spell>
+      <id>603e63a2-1caa-4860-9344-88cbb2df10a2</id>
+      <name>Slow Vehicle</name>
+      <translate>拖延载具</translate>
+    </spell>
+    <spell>
+      <id>54e25153-07a4-4f52-8cb6-de8e00e4ac91</id>
+      <name>Shape [Material]</name>
+      <translate>塑性术[物质]</translate>
+    </spell>
+    <spell>
+      <id>d4bac5a3-8793-43be-a831-da7e299acd3c</id>
+      <name>Shapechange</name>
+      <translate>变形术</translate>
+    </spell>
+    <spell>
+      <id>03b3daef-040d-4377-baf6-9b1919f48050</id>
+      <name>[Critter] Form</name>
+     <translate>突变术</translate>
+    </spell>
+    <spell>
+      <id>8e341753-a4e1-41af-ba05-66daa90194a6</id>
+      <name>Spirit Barrier</name>
+      <translate>防精魂屏障</translate>
+    </spell>
+    <spell>
+      <id>5b3c8f11-37a8-4090-a332-969d6ea1adb6</id>
+      <name>Spirit Zapper</name>
+      <translate>锢魂术</translate>
+    </spell>
+    <spell>
+      <id>f1ed2b18-e50c-4c00-8fb5-ebf9bff9828a</id>
+      <name>Sterilize</name>
+      <translate>灭菌术</translate>
+    </spell>
+    <spell>
+      <id>621b881e-5486-4dcb-a26e-2ad66bba09e8</id>
+      <name>Turn To Goo</name>
+      <translate>胶化术</translate>
+    </spell>
+      <spell>
+      <id>750efc53-02df-4d67-b5df-0abf2ab7e70d</id>
+      <name>Rewind</name>
+      <translate>断片</translate>
+    </spell>
 			<spell>
 				<id>0d15391d-b247-439c-aac6-c671c4f60204</id>
 				<name>Curse</name>
@@ -11445,121 +13580,6 @@
 				<id>f99ab85f-2cc7-4c09-8ea4-581f75e40487</id>
 				<name>Homunculus</name>
 				<translate>荷蒙库鲁斯</translate>
-			</spell>
-			<spell>
-				<id>5c9218f6-bdb4-46a5-89ce-00b4adfe0429</id>
-				<name>Disrupt [Object]</name>
-				<translate>断连术[法器]</translate>
-			</spell>
-			<spell>
-				<id>a6f43dcf-c0cc-4da9-af25-1516f2564200</id>
-				<name>Destroy [Free Spirit]</name>
-				<translate>毁灭术[某种自由精魂]</translate>
-			</spell>
-			<spell>
-				<id>51f04999-1173-43da-94b6-af3749cb3156</id>
-				<name>Destroy [Vehicle]</name>
-				<translate>毁灭术[某种载具]</translate>
-			</spell>
-			<spell>
-				<id>ea47eaaf-80e4-4c89-a108-6d2fb3e376dd</id>
-				<name>Insecticide [Insect Spirit]</name>
-				<translate>灭虫术[虫精魂]</translate>
-			</spell>
-			<spell>
-				<id>bba17f26-7b83-4904-a5fa-a21ef7cacaa7</id>
-				<name>Ice Spear</name>
-				<translate>冰矛术</translate>
-			</spell>
-			<spell>
-				<id>2c2ad94e-3dd5-40e3-a4e0-74668dae1b48</id>
-				<name>Ice Storm</name>
-				<translate>冰风暴</translate>
-			</spell>
-			<spell>
-				<id>f20e3789-0333-4243-b31c-0dc07f1d8736</id>
-				<name>Radiation Beam</name>
-				<translate>辐射束</translate>
-			</spell>
-			<spell>
-				<id>793736ac-c4a4-408c-824e-6cc5689622a3</id>
-				<name>Radiation Burst</name>
-				<translate>辐射爆裂</translate>
-			</spell>
-			<spell>
-				<id>e0b3608a-cf54-4a1d-a99a-a4cd513c5e8a</id>
-				<name>Pollutant Stream</name>
-				<translate>污染流</translate>
-			</spell>
-			<spell>
-				<id>7a6579fa-4eda-47e4-96d2-59f4e1f9f567</id>
-				<name>Pollutant Wave</name>
-				<translate>污染潮</translate>
-			</spell>
-			<spell>
-				<id>87c6046a-1f20-4b64-9e89-aec583254a3e</id>
-				<name>Astral Message</name>
-				<translate>星界信息</translate>
-			</spell>
-			<spell>
-				<id>0b2bd31a-09b2-40b8-a4ab-7c776ef33268</id>
-				<name>Dragon Astral Signature</name>
-				<translate>龙星记号</translate>
-			</spell>
-			<spell>
-				<id>4af09e0f-93a5-43f5-badb-9f070d574417</id>
-				<name>Mindnet Extended</name>
-				<translate>大范围心灵网络</translate>
-			</spell>
-			<spell>
-				<id>f7ad9877-1f67-40a0-9813-ba53db664833</id>
-				<name>Ambidexterity</name>
-				<translate>双巧手</translate>
-			</spell>
-			<spell>
-				<id>fd407eeb-103e-4bef-a719-1098d8387536</id>
-				<name>Alleviate [Allergy]</name>
-				<translate>缓解过敏</translate>
-			</spell>
-			<spell>
-				<id>b1347682-58ad-4684-a93a-3f7703f1b4bf</id>
-				<name>Forced Defense</name>
-				<translate>强制防御</translate>
-			</spell>
-			<spell>
-				<id>80704822-953b-45c5-aa8e-77ca26e6cef7</id>
-				<name>Increase Inherent Limits</name>
-				<translate>提高天生界限</translate>
-			</spell>
-			<spell>
-				<id>4fbbaf9c-15fb-46ec-b899-5fc48829e52a</id>
-				<name>Decrease Inherent Limits</name>
-				<translate>降低天生界限</translate>
-			</spell>
-			<spell>
-				<id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
-				<name>Aspect Mana Line</name>
-				<translate>Aspect Mana Line</translate>
-			</spell>
-			<spell>
-				<id>1dfd942b-ce62-44bd-a74c-8d8254e6d24b</id>
-				<name>Alarm Ward</name>
-				<translate>Alarm Ward</translate>
-			</spell>
-			<spell>
-				<id>cbab5603-5140-40ec-85a2-4c0706ad440b</id>
-				<name>Ally Conjuration</name>
-				<translate>Ally Conjuration</translate>
-			</spell>
-			<spell>
-				<id>89e47041-6072-42f5-b693-d1b91cadca6e</id>
-				<name>Astral Doppelganger</name>
-				<translate>Astral Doppelganger</translate>
-			</spell>
-			<spell>
-				<id>317d1173-5c00-4eac-89ff-282b3123cfbb</id>
-				<name>Atonement</name>
-				<translate>Atonement</translate>
 			</spell>
 		</spells>
 	</chummer>
@@ -11800,12 +13820,12 @@
 			<tradition>
 				<id>20b8e39f-a956-49bd-b417-6e1bd4a14604</id>
 				<name>Chaos Magic</name>
-				<translate>混乱</translate>
+				<translate>混沌</translate>
 			</tradition>
 			<tradition>
 				<id>5d98ea69-29b1-4fb4-b9f3-56396d1dce16</id>
 				<name>Christian Theurgy</name>
-				<translate>基督教神通术</translate>
+				<translate>基督教神通</translate>
 			</tradition>
 			<tradition>
 				<id>19320625-bc1a-492f-8904-da6a847e5700</id>
@@ -11860,7 +13880,7 @@
 			<tradition>
 				<id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
 				<name>Qabbalism</name>
-				<translate>卡巴拉</translate>
+				<translate>卡巴拉密教</translate>
 			</tradition>
 			<tradition>
 				<id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
@@ -11870,17 +13890,17 @@
 			<tradition>
 				<id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
 				<name>Vodou</name>
-				<translate>伏都教</translate>
+				<translate>巫毒</translate>
 			</tradition>
 			<tradition>
 				<id>24601762-ef67-44d8-b974-03f626db848a</id>
 				<name>Wicca, Gardnerian</name>
-				<translate>加德纳式威卡（Wicca, Gardnerian）</translate>
+				<translate>加德纳威卡</translate>
 			</tradition>
 			<tradition>
 				<id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
 				<name>Wicca, Goddess</name>
-				<translate>女神式威卡（Wicca, Goddess）</translate>
+				<translate>女神威卡</translate>
 			</tradition>
 			<tradition>
 				<id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
@@ -11890,7 +13910,7 @@
 			<tradition>
 				<id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
 				<name>Insect Shaman</name>
-				<translate>昆虫萨满</translate>
+				<translate>虫萨满</translate>
 			</tradition>
 		</traditions>
 		<spirits>
@@ -12017,6 +14037,61 @@
 				<name>Suzuki Mirage (Racing Bike)</name>
 				<translate>铃木·幻影(竞速机车)</translate>
 			</vehicle>
+      <vehicle>
+      <id>d43b2b6a-d6e6-460a-ab75-ca445db06dde</id>
+      <name>Daihatsu-Caterpillar Horseman</name>
+      <translate>大发-卡特彼勒·骑师</translate>
+    </vehicle>
+    <vehicle>
+      <id>be4aa3ae-6725-4082-a5d2-8fa8d1e91640</id>
+      <name>Ares-Segway Terrier</name>
+      <translate>阿瑞斯-赛格威·㹴犬</translate>
+    </vehicle>
+    <vehicle>
+      <id>ce6e90f6-2be6-42f4-a1e7-b633b40604c2</id>
+      <name>Horizon-Doble Revolution</name>
+     <translate>地平线-道波·革命</translate>
+    </vehicle>
+    <vehicle>
+      <id>cfafdbac-509e-49f3-a62a-5cfa8e987e0f</id>
+      <name>Evo Falcon-EX</name>
+      <translate>天演·猎鹰-EX</translate>
+    </vehicle>
+    <vehicle>
+      <id>e812194e-9e7b-4769-bf77-8034a3b306de</id>
+      <name>Entertainment Systems Cyclops</name>
+      <translate>娱乐系统·独眼巨人</translate>
+    </vehicle>
+    <vehicle>
+      <id>87435f01-f4e3-424f-a252-2415b9b988cd</id>
+      <name>Echo Motors Zip</name>
+      <translate>回音摩托·尖啸</translate>
+    </vehicle>
+    <vehicle>
+      <id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
+      <name>Yamaha Kaburaya</name>
+      <translate>雅马哈·镝矢</translate>
+    </vehicle>
+    <vehicle>
+      <id>16c2885f-ef4a-4f06-92c8-754694790ccb</id>
+      <name>Buell Spartan</name>
+      <translate>布尔·斯巴达</translate>
+    </vehicle>
+    <vehicle>
+      <id>f0b4963e-d709-47a2-a290-5528c79d2cd8</id>
+      <name>Harley-Davidson Nightmare</name>
+     <translate>哈雷-戴维森·梦魇</translate>
+    </vehicle>
+    <vehicle>
+      <id>801800de-858c-4e98-949d-0b429884e755</id>
+      <name>Yamaha Nodachi</name>
+     <translate>雅马哈·野太刀</translate>
+    </vehicle>
+    <vehicle>
+      <id>e61ac395-78d2-44d8-a3bd-6ac74b1d76f5</id>
+      <name>Thundercloud Mustang</name>
+      <translate>雷云·野马</translate>
+    </vehicle>
 			<vehicle>
 				<id>79046746-a3fb-4eb2-a78a-82ebdeecdacc</id>
 				<name>Honda Spirit (Subcompact)</name>
@@ -12047,6 +14122,46 @@
 				<name>Vulkan Electronaut (Mini-sub)</name>
 				<translate>福尔康·电航(迷你潜艇)</translate>
 			</vehicle>
+      <vehicle>
+      <id>3a01a97e-9df8-4516-9f41-4ff92b465d3b</id>
+      <name>Evo Water Strider</name>
+      <translate>天演·水王</translate>
+    </vehicle>
+      <vehicle>
+      <id>193a6429-b4ba-4e68-a89e-5cd9a7965e50</id>
+      <name>Sea Ray Cottonmouth</name>
+      <translate>希瑞·食鱼蝮</translate>
+    </vehicle>
+    <vehicle>
+      <id>8a3971d6-25d4-4797-add2-fad2f6a7ef09</id>
+      <name>Kawasaki Stingray</name>
+      <translate>川崎·刺魟/蝠鲼</translate>
+    </vehicle>
+    <vehicle>
+      <id>399b9c5f-31c0-475e-a987-caa3e60ea0eb</id>
+      <name>Aztechnology Nightrunner</name>
+      <translate>阿兹特·暗夜狂奔者</translate>
+    </vehicle>
+    <vehicle>
+      <id>199f5570-e313-4f2a-9762-63e73f230732</id>
+      <name>Zodiac Scorpio</name>
+      <translate>黄道十二宫·天蝎座</translate>
+    </vehicle>
+    <vehicle>
+      <id>4fda117c-38a0-440f-899e-27b39735747b</id>
+      <name>Mitsubishi Waterbug</name>
+      <translate>三菱·水虫</translate>
+    </vehicle>
+    <vehicle>
+      <id>d7a2bfe7-f43d-420d-9ef0-164e644529be</id>
+      <name>Mitsubishi Waveskipper</name>
+      <translate>天演·水王</translate>
+    </vehicle>
+    <vehicle>
+      <id>3a01a97e-9df8-4516-9f41-4ff92b465d3b</id>
+      <name>Evo Water Strider</name>
+      <translate>天演·水黾</translate>
+    </vehicle>
 			<vehicle>
 				<id>a383fc02-599b-4bd6-b699-bbac28162ef2</id>
 				<name>Cessna C750 (Twin-Prop Airplane)</name>
@@ -12067,6 +14182,61 @@
 				<name>GMC Banshee (Thunderbird)</name>
 				<translate>GMC女妖(极速飞行器)</translate>
 			</vehicle>
+          <vehicle>
+      <id>13441e68-867a-42cd-88a6-f28e4fade20a</id>
+      <name>Hughes Stallion WK-4</name>
+      <translate>休斯·公马WK-4</translate>
+    </vehicle>
+    <vehicle>
+      <id>9911d59b-8db1-4517-b554-49ab5d3f478d</id>
+      <name>Aztechnology Agular GX-2</name>
+      <translate>阿兹特科技·安格勒GX-2</translate>
+    </vehicle>
+    <vehicle>
+      <id>319d9e3b-a0c4-4a8b-87c9-ff50eb4c3f85</id>
+      <name>Aztechnology Agular GX-3AT</name>
+      <translate>阿兹特科技·安格勒GX-3AT</translate>
+    </vehicle>
+    <vehicle>
+      <id>cfb98885-315b-4f6f-8291-470ce43c8df1</id>
+      <name>S-K Aerospace SKA-008</name>
+      <translate>S-K宇宙空间·SKA-008</translate>
+    </vehicle>
+    <vehicle>
+      <id>d3184353-13b2-4f02-b74e-55ac1e0246de</id>
+      <name>Dassault Sea Sprite</name>
+     <translate>达索·海妖</translate>
+    </vehicle>
+    <vehicle>
+      <id>6f75f984-b5bd-4fd7-b4a2-c59a9c4f9ce6</id>
+      <name>Federated-Boeing PBY-70 Catalina II</name>
+      <translate>联邦波音·PBY-70“卡特琳娜二世”</translate>
+    </vehicle>
+    <vehicle>
+      <id>b4e88420-eae5-4c35-8ef2-a067012b2bf2</id>
+      <name>Airbus Lift Ticket ALS-699</name>
+      <translate>空中客车·“缆车票”ALS-699</translate>
+    </vehicle>
+    <vehicle>
+      <id>4bb96843-2759-4263-b5cd-56b7f5f0178f</id>
+      <name>GMC Gryphon</name>
+      <translate>GMC狮鹫</translate>
+    </vehicle>
+    <vehicle>
+      <id>e7891e8c-3c27-4fd1-97cf-cf1384ecb829</id>
+      <name>Evo-Krime Krime Wing</name>
+      <translate>天演-克莱姆·“克莱姆之翼”</translate>
+    </vehicle>
+    <vehicle>
+      <id>9486c47c-7093-4897-bde9-14a522cd8394</id>
+      <name>Luftshiffbau Personal Zeppelin LZP-2070</name>
+      <translate>飞艇建造·个人飞艇LZP-2070</translate>
+    </vehicle>
+    <vehicle>
+      <id>464ef537-768b-447b-9c30-39239234b2a3</id>
+      <name>Renegade Works Mothership LAVH</name>
+      <translate>叛逆之作·“航母”LAVH</translate>
+    </vehicle>
 			<vehicle>
 				<id>1f3308cb-837a-45c5-b581-9fef48cd4d8c</id>
 				<name>Shiawase Kanmushi (Microdrone)</name>
@@ -12098,11 +14268,6 @@
 				<translate>克劳斯勒-尼桑·杰克兔(微型汽车)</translate>
 			</vehicle>
 			<vehicle>
-				<id>8a898851-6409-48f0-95f9-62e831835890</id>
-				<name>Conestoga Vista (Bus)</name>
-				<translate>Conestoga Vista (Bus)</translate>
-			</vehicle>
-			<vehicle>
 				<id>fb002667-22de-4156-ad17-def60a1795c0</id>
 				<name>Proteus Lamprey (Sea Sled)</name>
 				<translate>普罗透斯·八目鳗(水下海橇)</translate>
@@ -12113,44 +14278,14 @@
 				<translate>联络-菲亚特·福克冻土-9(水陆两栖飞机)</translate>
 			</vehicle>
 			<vehicle>
-				<id>1f011f9a-42bb-401d-938d-592a4759a502</id>
-				<name>Chrysler-Nissan Journey (Car)</name>
-				<translate>Chrysler-Nissan Journey (Car)</translate>
-			</vehicle>
-			<vehicle>
 				<id>d7695e8c-1eab-4fe3-8b37-406cc73ca1d6</id>
 				<name>Eurocar Westwind 3000 (Luxury Sports Car)</name>
 				<translate>欧罗车·西风3000(豪华运动轿车)</translate>
 			</vehicle>
 			<vehicle>
-				<id>7eb50773-4291-42af-af27-1ac469f8470c</id>
-				<name>Honda Artemis (Car)</name>
-				<translate>Honda Artemis (Car)</translate>
-			</vehicle>
-			<vehicle>
-				<id>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</id>
-				<name>Saeder-Krupp LT-21 (Delivery Van)</name>
-				<translate>Saeder-Krupp LT-21 (Delivery Van)</translate>
-			</vehicle>
-			<vehicle>
 				<id>72a204fc-e4f7-4e00-9d14-7f338fb86817</id>
 				<name>Hyundai Shin-Hyung (Sport Sedan)</name>
 				<translate>现代·申光(运动轿车)</translate>
-			</vehicle>
-			<vehicle>
-				<id>9f6115e6-b52b-40d8-94d5-c4874de4858b</id>
-				<name>Dodge Ram Industrial (Large) (Garbage Truck)</name>
-				<translate>Dodge Ram Industrial (Large) (Garbage Truck)</translate>
-			</vehicle>
-			<vehicle>
-				<id>53afa8ff-2903-4167-8ed4-ae6d833d1547</id>
-				<name>Dodge Ram Industrial (Narrow) (Garbage Truck)</name>
-				<translate>Dodge Ram Industrial (Narrow) (Garbage Truck)</translate>
-			</vehicle>
-			<vehicle>
-				<id>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</id>
-				<name>Esprit Industries Watcher (SUV)</name>
-				<translate>Esprit Industries Watcher (SUV)</translate>
 			</vehicle>
 			<vehicle>
 				<id>898906ec-f2b9-43a4-98ad-6f79230b9a0c</id>
@@ -12168,29 +14303,9 @@
 				<translate>罗孚2072型(SUV)</translate>
 			</vehicle>
 			<vehicle>
-				<id>f73f5dbf-f812-4a04-a441-98a3cc37d23a</id>
-				<name>GMC Endurance (Van)</name>
-				<translate>GMC Endurance (Van)</translate>
-			</vehicle>
-			<vehicle>
-				<id>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</id>
-				<name>GMC Sidewinder (SUV)</name>
-				<translate>GMC Sidewinder (SUV)</translate>
-			</vehicle>
-			<vehicle>
 				<id>0ed17686-7ac3-48de-88d2-bc8738a00afa</id>
 				<name>Ares Roadmaster (Armored Transport)</name>
 				<translate>阿瑞斯·路王(装甲押送车)</translate>
-			</vehicle>
-			<vehicle>
-				<id>81505035-7043-4841-a952-3763e9e7ddc5</id>
-				<name>Conestoga Trailblazer (Moving Truck)</name>
-				<translate>Conestoga Trailblazer (Moving Truck)</translate>
-			</vehicle>
-			<vehicle>
-				<id>f4b1800d-7542-477c-b007-094e6a989ece</id>
-				<name>Conestoga Trailblazer w/Trailer (Moving Truck)</name>
-				<translate>Conestoga Trailblazer w/Trailer (Moving Truck)</translate>
 			</vehicle>
 			<vehicle>
 				<id>7e5d30f4-ef09-4a95-8bb5-a9128557e1b0</id>
@@ -12233,24 +14348,9 @@
 				<translate>洛克希德·鹰眼-X2(小型)</translate>
 			</vehicle>
 			<vehicle>
-				<id>10a55a19-7f86-4942-830f-212b9975280e</id>
-				<name>Cyberspace Designs Dragonfly (Small)</name>
-				<translate>Cyberspace Designs Dragonfly (Small)</translate>
-			</vehicle>
-			<vehicle>
 				<id>c8f7e6c0-85e6-4feb-9ef0-0aeca5fba76b</id>
 				<name>Ares Duelist (Medium)</name>
 				<translate>阿瑞斯·决斗者(中型)</translate>
-			</vehicle>
-			<vehicle>
-				<id>3fc823bd-bff7-4838-8f94-11c1e55c380a</id>
-				<name>Bust-A-Move (2nd Generation) (Medium)</name>
-				<translate>Bust-A-Move (2nd Generation) (Medium)</translate>
-			</vehicle>
-			<vehicle>
-				<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
-				<name>Transys Office Maid (Medium)</name>
-				<translate>Transys Office Maid (Medium)</translate>
 			</vehicle>
 			<vehicle>
 				<id>6c6893fd-a69f-4346-885b-c6ae85679d35</id>
@@ -12258,35 +14358,80 @@
 				<translate>C-D·斑点狗(大型)</translate>
 			</vehicle>
 			<vehicle>
-				<id>b627c28f-e67e-4a34-9808-af81fad2acf9</id>
-				<name>GMC Snatch'n'Grab (Large)</name>
-				<translate>GMC Snatch'n'Grab (Large)</translate>
-			</vehicle>
-			<vehicle>
-				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-				<name>Modified Dassault Janatorial Drone (Large)</name>
-				<translate>Modified Dassault Janatorial Drone (Large)</translate>
-			</vehicle>
-			<vehicle>
-				<id>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</id>
-				<name>Modified Renraku Manservant-3 (Large)</name>
-				<translate>Modified Renraku Manservant-3 (Large)</translate>
-			</vehicle>
-			<vehicle>
 				<id>a8c39fd9-d219-4772-9f8e-49b1d0975733</id>
 				<name>Steel Lynx Combat Drone (Large)</name>
 				<translate>钢铁山猫·战斗无人机(大型)</translate>
 			</vehicle>
-			<vehicle>
-				<id>8ac6c14d-22c2-4f5f-be53-774af78179ad</id>
-				<name>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</name>
-				<translate>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</translate>
-			</vehicle>
-			<vehicle>
-				<id>d186dbc2-52e6-4804-94ca-7db96c2afdde</id>
-				<name>Shiawase Caduceus 'CAD' 7 (Medium)</name>
-				<translate>Shiawase Caduceus 'CAD' 7 (Medium)</translate>
-			</vehicle>
+      <vehicle>
+      <id>9bb6d665-a59c-4146-ad2f-2ce4ef2e52c9</id>
+      <name>Ares Matilda (Large)</name>
+      <translate>阿瑞斯·行囊(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>4ea566f2-a5c0-4021-80b1-60d85dab1b27</id>
+      <name>Ares Mule (Large)</name>
+      <translate>阿瑞斯·骡子(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>a5700d79-5748-4c6d-a28b-8c282827a05a</id>
+      <name>Ares Paladin (Large)</name>
+      <translate>阿瑞斯·圣骑士(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>18dbdb52-cb84-43d5-8d0e-15eb5a036556</id>
+      <name>CrashCart Medicart (Large)</name>
+      <translate>救护车·“医疗载车”(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>4037bd7f-917a-4478-a52a-e4b73635a5c1</id>
+      <name>GTS Tower (Large)</name>
+      <translate>GTS塔楼(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>e0343c07-3a15-4596-bcc0-5a2d6d160a6b</id>
+      <name>Saeder-Krupp MK-170 Neptune (Large)</name>
+     <translate>赛达尔-克虏伯·MK-17D海王星(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>bc21264d-527c-4066-b8c6-0aa24cff61cb</id>
+      <name>Mitsuhama Malakim (Large)</name>
+      <translate>三津滨·美德(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>70916e91-a7ee-477f-a4b0-14bc125c1034</id>
+      <name>Ares KN-Y2: Deimos (Huge)</name>
+      <translate>阿瑞斯·KN-Y2（得摩斯）(巨型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>e4f82e1e-1bcb-4857-a693-80cea860150e</id>
+      <name>Ares KN-Y1: Phobos (Huge)</name>
+      <translate>阿瑞斯·KN-Y1（福波斯）(巨型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>83dae489-5d31-4d39-b6fa-aefc83b3ff20</id>
+      <name>Ares KN-Y4: Eris (Huge)</name>
+     <translate>阿瑞斯·KN-Y4（厄里斯）(巨型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>0f1b635b-59d8-4b43-b809-76eae7f0048c</id>
+      <name>Mesametric Kodiak (Huge)</name>
+      <translate>方山度量·科迪亚克(巨型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
+      <name>NeoNet Avenging Angel (Huge)</name>
+     <translate>新网·复仇天使(巨型)</translate>
+    </vehicle>
+      <vehicle>
+      <id>8ac6c14d-22c2-4f5f-be53-774af78179ad</id>
+      <name>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</name>
+     <translate>爱罗奎普M.E.D.-1“救援直升机”医疗撤离无人机(大型)</translate>
+    </vehicle>
+    <vehicle>
+      <id>d186dbc2-52e6-4804-94ca-7db96c2afdde</id>
+      <name>Shiawase Caduceus 'CAD' 7 (Medium)</name>
+      <translate>幸福·双蛇杖“CAD”7(中型)</translate>
+    </vehicle>
 			<vehicle>
 				<id>4261d97f-2a4f-4ed3-91a4-64a69a549e37</id>
 				<name>Horizon Flying Eye (Minidrone)</name>
@@ -12297,6 +14442,41 @@
 				<name>Horizon Flying Eye w/Flash-Pak and Grenade (Minidrone)</name>
 				<translate>地平线·飞眼，带闪光弹与手榴弹(迷你无人机)</translate>
 			</vehicle>
+    <vehicle>
+      <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
+      <name>Criado Juan</name>
+      <translate>克里亚多“胡安”</translate>
+    </vehicle>
+    <vehicle>
+      <id>ad77dfa1-36ae-4e66-a319-24de903652aa</id>
+      <name>Horizon Little Buddy</name>
+      <translate>地平线·小伙伴</translate>
+    </vehicle>
+    <vehicle>
+      <id>54f7d700-d407-49bf-a231-83777419cbe3</id>
+      <name>MCT Kenchiku-Kikai</name>
+      <translate>三津滨·机械造物</translate>
+    </vehicle>
+    <vehicle>
+      <id>b448855b-57e7-435a-b523-174adb276674</id>
+      <name>NeoNet Juggernaut</name>
+      <translate>新网·重装机甲</translate>
+    </vehicle>
+    <vehicle>
+      <id>ca18775c-3535-40e1-be69-a07905add421</id>
+      <name>Saeder-Krupp Direktionssekretar</name>
+      <translate>赛达尔-克虏伯·执行秘书</translate>
+    </vehicle>
+    <vehicle>
+      <id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
+      <name>Shiawase I-Doll</name>
+      <translate>幸福·个人玩偶</translate>
+    </vehicle>
+     <vehicle>
+      <id>53079aac-250a-4ec5-9f0d-b8fbc6368e46</id>
+      <name>Ares Garuda</name>
+      <translate>阿瑞斯·金翅鸟</translate>
+    </vehicle>
 		</vehicles>
 		<mods>
       <!-- Region SR5 Core Rulebook -->
@@ -12445,32 +14625,32 @@
       <mod>
         <id>fb73c19c-c194-45fe-8235-0ac2369dabd6</id>
         <name>Special Armor Modification (Chemical)</name>
-        <translate>特殊装甲改装（化学防护）</translate>
+        <translate>特殊装甲改良（化学防护）</translate>
       </mod>
       <mod>
         <id>031312f4-3ab0-4e5e-96e4-69e035a444c1</id>
         <name>Special Armor Modification (Fire)</name>
-        <translate>特殊装甲改装（防火）</translate>
+        <translate>特殊装甲改良（防火）</translate>
       </mod>
       <mod>
         <id>620c48d2-060b-4fdb-a886-611312204892</id>
         <name>Special Armor Modification (Insulation)</name>
-        <translate>特殊装甲改装（隔热）</translate>
+        <translate>特殊装甲改良（隔热）</translate>
       </mod>
       <mod>
         <id>958920e2-828c-4024-a700-25e5023dbdac</id>
         <name>Special Armor Modification (Nonconductivity)</name>
-        <translate>特殊装甲改装（绝缘）</translate>
+        <translate>特殊装甲改良（绝缘）</translate>
       </mod>
       <mod>
         <id>242a415b-024a-4589-91ce-978a12ff04ad</id>
         <name>Special Armor Modification (Radiation)</name>
-        <translate>特殊装甲改装（防辐射）</translate>
+        <translate>特殊装甲改良（辐射屏蔽）</translate>
       </mod>
       <mod>
         <id>df87cb45-8df9-4d6b-8c78-b2e2ed8efa81</id>
         <name>Special Armor Modification (Universal Mirror Material)</name>
-        <translate>特殊装甲改装（通用镜面材料）</translate>
+        <translate>特殊装甲改良（通用反射材料）</translate>
       </mod>
       <!-- Region Weapons -->
       <mod>
@@ -12642,7 +14822,7 @@
       <mod>
         <id>dffbc67e-c9b9-4876-bebc-ebf424590b71</id>
         <name>Extreme Environment Modification</name>
-        <translate>极端环境改装</translate>
+        <translate>极端环境改良</translate>
       </mod>
       <mod>
         <id>0e2a84e1-dac3-4c4c-8826-cc3cc533394e</id>
@@ -14515,6 +16695,56 @@
       <name>Underbarrel Laser</name>
       <translate>下挂激光枪</translate>
     </weapon>
+    <weapon>
+      <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
+      <name>Mortimer of London ‘Belgrave’ Sword Cane</name>
+      <translate>伦敦莫蒂默·“贝尔格雷夫”剑杖 </translate>
+    </weapon>
+    <weapon>
+      <id>79cbec3d-d832-4b57-83e0-e2ffecbcdb0a</id>
+      <name>Hammerli 620S</name>
+      <translate>哈默利620S</translate>
+    </weapon>
+    <weapon>
+      <id>e46fce7e-a1bf-416e-86ea-2608368b44fe</id>
+      <name>Yamaha Sakura Fubuki SX</name>
+      <translate>雅马哈·“桜吹雪SX”</translate>
+    </weapon>
+    <weapon>
+      <id>daa06575-86d4-449a-ba6f-85ad736c622e</id>
+      <name>Nemesis Arms Praetorian</name>
+      <translate>复仇女神武器·禁卫军</translate>
+    </weapon>
+    <weapon>
+      <id>44802a19-05ea-4293-b234-a9d24155ce01</id>
+      <name>Stinger Pen Gun</name>
+     <translate>“毒刺”钢笔枪</translate>
+    </weapon>
+    <weapon>
+      <id>a5bedab8-5421-4e70-9b9c-180ad91d0c0c</id>
+      <name>Injector Pen</name>
+      <translate>注射钢笔</translate>
+    </weapon>
+    <weapon>
+      <id>97037590-5324-4ab1-acdb-b2d204cb937a</id>
+      <name>Pepper Punch Pen</name>
+      <translate>胡椒喷雾笔</translate>
+    </weapon>
+    <weapon>
+      <id>06cc6008-2aa1-4d39-8a5c-884136d82fee</id>
+      <name>Modified Spray Pen</name>
+      <translate>改装喷雾笔</translate>
+    </weapon>
+    <weapon>
+      <id>bd9515ad-9d40-486e-974a-00babc4c24f9</id>
+      <name>Sap Cap</name>
+      <translate>闷棍帽</translate>
+    </weapon>
+    <weapon>
+      <id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
+      <name>Lapel Dagger</name>
+      <translate>翻领匕首</translate>
+    </weapon>
 		</weapons>
 		<accessories>
 			<!-- Region Shadowrun 5 -->
@@ -14697,7 +16927,7 @@
 			<accessory>
 				<id>381dd922-19af-46fd-9999-0202c85574de</id>
 				<name>Extreme Environment Modification</name>
-				<translate>极端环境改造</translate>
+				<translate>极端环境改良</translate>
 			</accessory>
 			<accessory>
 				<id>fa873465-a678-4077-888f-f7a1fb792d47</id>

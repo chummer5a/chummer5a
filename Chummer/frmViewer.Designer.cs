@@ -95,7 +95,6 @@ namespace Chummer
             this.tsPrintPreview});
             this.cmsPrintButton.Name = "cmsPrintButton";
             this.cmsPrintButton.Size = new System.Drawing.Size(144, 26);
-            this.cmsPrintButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsPrintPreview
             // 

@@ -23,19 +23,19 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
     public partial class frmCreatePACKSKit : Form
     {
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Control Events
         public frmCreatePACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
         }
@@ -45,20 +45,20 @@ namespace Chummer
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_KitName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_packs.xml"))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace Chummer
                 XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + txtName.Text + "\" and category = \"Custom\"]");
                 if (objXmlPACKSList.Count > 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName").Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -85,10 +85,12 @@ namespace Chummer
                 objXmlCurrentDocument.Load(strPath);
 
             FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
             objWriter.WriteStartDocument();
 
             // <chummer>
@@ -299,11 +301,11 @@ namespace Chummer
                     objWriter.WriteStartElement("martialart");
                     objWriter.WriteElementString("name", objArt.Name);
                     objWriter.WriteElementString("rating", objArt.Rating.ToString());
-                    if (objArt.Advantages.Count > 0)
+                    if (objArt.Techniques.Count > 0)
                     {
                         // <advantages>
                         objWriter.WriteStartElement("advantages");
-                        foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objArt.Techniques)
                             objWriter.WriteElementString("advantage", objAdvantage.Name);
                         // </advantages>
                         objWriter.WriteEndElement();
@@ -311,8 +313,10 @@ namespace Chummer
                     // </martialart>
                     objWriter.WriteEndElement();
                 }
+                #if LEGACY
                 foreach (MartialArtManeuver objManeuver in _objCharacter.MartialArtManeuvers)
                     objWriter.WriteElementString("maneuver", objManeuver.Name);
+                #endif
                 // </martialarts>
                 objWriter.WriteEndElement();
             }
@@ -339,12 +343,12 @@ namespace Chummer
             {
                 // <programs>
                 objWriter.WriteStartElement("complexforms");
-                foreach (ComplexForm objProgram in _objCharacter.ComplexForms)
+                foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
                 {
                     // <program>
                     objWriter.WriteStartElement("complexform");
                     objWriter.WriteStartElement("name");
-                    objWriter.WriteValue(objProgram.Name);
+                    objWriter.WriteValue(objComplexForm.Name);
                     objWriter.WriteEndElement();
                     // </program>
                     objWriter.WriteEndElement();
@@ -453,13 +457,13 @@ namespace Chummer
                     // <lifestyle>
                     objWriter.WriteStartElement("lifestyle");
                     objWriter.WriteElementString("name", objLifestyle.Name);
-                    objWriter.WriteElementString("months", objLifestyle.Months.ToString());
+                    objWriter.WriteElementString("months", objLifestyle.Increments.ToString());
                     if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                     {
                         // This is an Advanced Lifestyle, so write out its properties.
-                        objWriter.WriteElementString("cost", objLifestyle.Cost.ToString());
+                        objWriter.WriteElementString("cost", objLifestyle.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo));
                         objWriter.WriteElementString("dice", objLifestyle.Dice.ToString());
-                        objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString());
+                        objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo));
                         objWriter.WriteElementString("baselifestyle", objLifestyle.BaseLifestyle);
                         if (objLifestyle.LifestyleQualities.Count > 0)
                         {
@@ -697,7 +701,7 @@ namespace Chummer
             objWriter.WriteEndDocument();
             objWriter.Close();
 
-            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated", GlobalOptions.Language).Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 
@@ -705,9 +709,9 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
@@ -733,9 +737,9 @@ namespace Chummer
                     if (objGear.Rating > 0)
                         objWriter.WriteElementString("rating", objGear.Rating.ToString());
                     if (objGear.Quantity != 1)
-                        objWriter.WriteElementString("qty", objGear.Quantity.ToString());
-                    if (objGear.Children.Count > 0)
-                        WriteGear(objWriter, objGear.Children);
+                        objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                    if (objGear.GearChildren.Count > 0)
+                        WriteGear(objWriter, objGear.GearChildren);
                     // </gear>
                     objWriter.WriteEndElement();
                 }
@@ -752,6 +756,6 @@ namespace Chummer
             txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
             txtFileName.Width = Width - txtFileName.Left - 19;
         }
-        #endregion
+#endregion
     }
 }

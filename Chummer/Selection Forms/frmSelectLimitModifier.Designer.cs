@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmSelectLimitModifier
+    public sealed partial class frmSelectLimitModifier
     {
         /// <summary>
         /// Required designer variable.

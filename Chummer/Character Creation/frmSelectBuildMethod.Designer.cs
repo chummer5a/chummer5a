@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmSelectBuildMethod
+    public sealed partial class frmSelectBuildMethod
     {
         /// <summary>
         /// Required designer variable.
@@ -225,6 +225,7 @@
             this.lblMaxNuyen.Size = new System.Drawing.Size(70, 29);
             this.lblMaxNuyen.TabIndex = 15;
             this.lblMaxNuyen.Text = "Nuyen Karma Max";
+            this.lblMaxNuyen.Tag = "Label_SelectBP_MaxNuyen";
             this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // frmSelectBuildMethod

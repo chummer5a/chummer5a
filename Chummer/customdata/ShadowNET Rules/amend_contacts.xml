@@ -18,8 +18,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <contacts remove="yes" />
-  <contacts>
+  <contacts amendoperation="replace">
     <contact>Alchemist</contact>
     <contact>Fixer</contact>
     <contact>Gear: Armor/Clothing</contact>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,42 +16,38 @@ namespace ChummerDataViewer.Model
 	{
 		public event StatusChangedEvent StatusChanged;
 		public string Name => "DownloaderWorker";
-		private Thread _thread;
-		private AutoResetEvent resetEvent = new AutoResetEvent(false);
-		private ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
 
 		public DownloaderWorker()
 		{
-			_thread = new Thread(WorkerEntryPoint)
-			{
-				IsBackground = true,
-				Name = "DownloaderWorker"
-			};
-			_thread.Start();
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPoint;
+			_worker.RunWorkerAsync();
 		}
 
-		private void WorkerEntryPoint()
+		private void WorkerEntryPoint(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
 				WebClient client = new WebClient();
 				while (true)
 				{
-					DownloadTask task;
-					if (_queue.TryTake(out task))
-					{
-						OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
-						byte[] encrypted = client.DownloadData(task.Url);
-					    byte[] buffer;
-					    buffer = Decrypt(task.Key, encrypted);
-					    WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
-					}
+                    if (_queue.TryTake(out DownloadTask task))
+                    {
+                        OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
+                        byte[] encrypted = client.DownloadData(task.Url);
+                        byte[] buffer;
+                        buffer = Decrypt(task.Key, encrypted);
+                        WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
+                    }
 
-					if (_queue.IsEmpty)
+                    if (_queue.IsEmpty)
 					{
 						OnStatusChanged(new StatusChangedEventArgs("Idle"));
 						resetEvent.WaitOne(15000);  //in case i fuck something up
-
 					}
 				}
 			}
@@ -71,11 +68,12 @@ namespace ChummerDataViewer.Model
             AesManaged managed = null;
             try
 	        {
-                managed = new AesManaged();
-
-                managed.IV = GetIv(key);
-	            managed.Key = GetKey(key);
-	            ICryptoTransform encryptor = managed.CreateDecryptor();
+                managed = new AesManaged
+                {
+                    IV = GetIv(key),
+                    Key = GetKey(key)
+                };
+                ICryptoTransform encryptor = managed.CreateDecryptor();
 
                 MemoryStream msEncrypt = new MemoryStream();
                 // csEncrypt.Dispose() should call msEncrypt.Dispose()
@@ -129,7 +127,7 @@ namespace ChummerDataViewer.Model
 			StatusChanged?.Invoke(this, args);
 		}
 
-		public void Enqueue(Guid guid, string url, string key, string destinationPath)
+		public void Enqueue(Guid guid, Uri url, string key, string destinationPath)
 		{
 			_queue.Add(new DownloadTask(guid, url, key, destinationPath));
 			resetEvent.Set();
@@ -137,12 +135,12 @@ namespace ChummerDataViewer.Model
 
 		private struct DownloadTask
 		{
-			public Guid ReportGuid;
-			public string Url;
-			public string Key;
-			public string DestinationPath;
+			public Guid ReportGuid { get; }
+			public Uri Url { get; }
+            public string Key { get; }
+            public string DestinationPath { get; }
 
-			public DownloadTask(Guid reportGuid, string url, string key, string destinationPath)
+            public DownloadTask(Guid reportGuid, Uri url, string key, string destinationPath)
 			{
 				Url = url;
 				Key = key;
@@ -151,7 +149,7 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
+		private string Queue() => _queue.Count > 0 ? _queue.Count.ToString() + " in queue" : string.Empty;
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

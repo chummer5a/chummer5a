@@ -32,59 +32,61 @@ namespace Chummer
     public enum KarmaExpenseType
     {
         ImproveAttribute = 0,
-        AddQuality = 1,
-        ImproveSkillGroup = 2,
-        AddSkill = 3,
-        ImproveSkill = 4,
-        SkillSpec = 5,
-        AddMartialArt = 6,
-        ImproveMartialArt = 7,
-        AddMartialArtManeuver = 8,
-        AddSpell = 9,
-        AddComplexForm = 10,
-        ImproveComplexForm = 11,
-        AddComplexFormOption = 12,
-        ImproveComplexFormOption = 13,
-        AddMetamagic = 14,
-        ImproveInitiateGrade = 15,
-        RemoveQuality = 16,
-        ManualAdd = 17,
-        ManualSubtract = 18,
-        BindFocus = 19,
-        JoinGroup = 20,
-        LeaveGroup = 21,
-        QuickeningMetamagic = 22,
-        AddPowerPoint = 23,
-        AddSpecialization = 24,
-        AddAIProgram = 25,
-        AddAIAdvancedProgram = 26,
-        AddCritterPower = 27,
-        SpiritFettering = 28
+        AddQuality,
+        ImproveSkillGroup,
+        AddSkill,
+        ImproveSkill,
+        SkillSpec,
+        AddMartialArt,
+        ImproveMartialArt,
+        AddMartialArtManeuver,
+        AddSpell,
+        AddComplexForm,
+        ImproveComplexForm,
+        AddComplexFormOption,
+        ImproveComplexFormOption,
+        AddMetamagic,
+        ImproveInitiateGrade,
+        RemoveQuality,
+        ManualAdd,
+        ManualSubtract,
+        BindFocus,
+        JoinGroup,
+        LeaveGroup,
+        QuickeningMetamagic,
+        AddPowerPoint,
+        AddSpecialization,
+        AddAIProgram,
+        AddAIAdvancedProgram,
+        AddCritterPower,
+        SpiritFettering,
     }
 
     public enum NuyenExpenseType
     {
         AddCyberware = 0,
-        IncreaseLifestyle = 1,
-        AddArmor = 2,
-        AddArmorMod = 3,
-        AddWeapon = 4,
-        AddWeaponMod = 5,
-        AddWeaponAccessory = 6,
-        AddGear = 7,
-        AddVehicle = 8,
-        AddVehicleMod = 9,
-        AddVehicleGear = 10,
-        AddVehicleWeapon = 11,
-        AddVehicleWeaponMod = 12,
-        AddVehicleWeaponAccessory = 13,
-        ManualAdd = 14,
-        ManualSubtract = 15,
-        AddArmorGear = 16,
-        AddVehicleModCyberware = 17,
-        AddCyberwareGear = 18,
-        AddWeaponGear = 19,
-        ImproveInitiateGrade = 20,
+        IncreaseLifestyle,
+        AddArmor,
+        AddArmorMod,
+        AddWeapon,
+        AddWeaponMod,
+        AddWeaponAccessory,
+        AddGear,
+        AddVehicle,
+        AddVehicleMod,
+        AddVehicleGear,
+        AddVehicleWeapon,
+        AddVehicleWeaponMod,
+        AddVehicleWeaponAccessory,
+        AddVehicleWeaponMount,
+        ManualAdd,
+        ManualSubtract,
+        AddArmorGear,
+        AddVehicleModCyberware,
+        AddCyberwareGear,
+        AddWeaponGear,
+        ImproveInitiateGrade,
+        AddVehicleWeaponMountMod,
     }
 
     /// <summary>
@@ -103,20 +105,18 @@ namespace Chummer
         /// Convert a string to a KarmaExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
+        public static KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
         {
-            KarmaExpenseType result;
-            return Enum.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
+            return Enum.TryParse(strValue, out KarmaExpenseType result) ? result : KarmaExpenseType.ManualAdd;
         }
 
         /// <summary>
         /// Convert a string to a NuyenExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
+        public static NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
         {
-            NuyenExpenseType result;
-            return Enum.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
+            return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
         }
         #endregion
 
@@ -304,7 +304,7 @@ namespace Chummer
         /// Convert a string to an ExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ExpenseType ConvertToExpenseType(string strValue)
+        public static ExpenseType ConvertToExpenseType(string strValue)
         {
             switch (strValue)
             {
@@ -321,7 +321,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
-            LanguageManager.Load(GlobalOptions.Language, null);
         }
 
         /// <summary>
@@ -334,8 +333,6 @@ namespace Chummer
         /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
         public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
-            if (blnRefund)
-                strReason += " (" + LanguageManager.GetString("String_Expense_Refund") + ")";
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
@@ -352,8 +349,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("date", _datDate.ToString("s"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
@@ -369,10 +366,11 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
+            DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
-            objNode.TryGetStringFieldQuickly("reason", ref _strReason);
+            if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
+                _strReason.TrimEnd(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')');
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
@@ -388,14 +386,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
                 objWriter.WriteElementString("date", Date.ToString(objCulture));
                 objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
-                objWriter.WriteElementString("reason", Reason);
+                objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
                 objWriter.WriteElementString("type", Type.ToString());
                 objWriter.WriteElementString("refund", Refund.ToString());
                 objWriter.WriteEndElement();
@@ -407,17 +405,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Expense Log Entry.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-            set
-            {
-                _guiID = Guid.Parse(value);
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Date the Exense Log Entry was made.
@@ -462,6 +450,17 @@ namespace Chummer
             {
                 _strReason = value;
             }
+        }
+
+        /// <summary>
+        /// The Reason for the Entry expense.
+        /// </summary>
+        public string DisplayReason(string strLanguage)
+        {
+            string strReturn = _strReason;
+            if (_blnRefund)
+                strReturn += " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+            return strReturn;
         }
 
         /// <summary>

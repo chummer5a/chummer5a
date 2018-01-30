@@ -1,10 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -12,7 +30,7 @@ namespace Chummer
     {
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
-        private string _strForceItem = string.Empty;
+        private readonly string _strForceItem = string.Empty;
         private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
@@ -21,55 +39,48 @@ namespace Chummer
             _objSkill = skill;
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>
+            {
+                new ListItem("Custom", string.Empty)
+            };
 
-            if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
+            if (_objCharacter.Created || _objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;
             }
-            XmlNode objXmlSkill = null;
+            XmlNode xmlParentSkill = null;
             if (Mode == "Knowledge")
-            {
-                objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]");
-                if (objXmlSkill == null)
-                {
-                    objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
-                }
-            }
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]") ??
+                    _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
             else
-                objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
-            ListItem objItem = new ListItem();
-            objItem.Value = "Custom";
-            objItem.Name = string.Empty;
-            lstItems.Add(objItem);
-            foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
+            if (xmlParentSkill != null)
             {
-                objItem = new ListItem();
-                objItem.Value = objXmlSpecialization.InnerText;
-                objItem.Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText;
-                lstItems.Add(objItem);
-
-                if (_objSkill.SkillCategory == "Combat Active")
+                foreach (XmlNode objXmlSpecialization in xmlParentSkill.SelectNodes("specs/spec"))
                 {
-                    // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-                    //Might need to include skill name or might miss some values?
-                    XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                    foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                    string strInnerText = objXmlSpecialization.InnerText;
+                    lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes["translate"]?.InnerText ?? strInnerText));
+
+                    if (_objSkill.SkillCategory == "Combat Active")
                     {
-                        objItem = new ListItem();
-                        objItem.Value = objXmlWeapon["name"].InnerText;
-                        objItem.Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText;
-                        lstItems.Add(objItem);
+                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                        //Might need to include skill name or might miss some values?
+                        XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
+                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                        {
+                            string strName = objXmlWeapon["name"].InnerText;
+                            lstItems.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
+                        }
                     }
                 }
             }
@@ -80,7 +91,7 @@ namespace Chummer
             cboSpec.DataSource = lstItems;
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-            if (cboSpec.Items.Count == 1 && AllowAutoSelect)
+            if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
                 AcceptForm();
 
             if (!string.IsNullOrEmpty(_strForceItem))
@@ -91,11 +102,10 @@ namespace Chummer
                 else
                 {
                     cboSpec.DataSource = null;
-                    List<ListItem> lstSingle = new List<ListItem>();
-                    objItem = new ListItem();
-                    objItem.Value = _strForceItem;
-                    objItem.Name = _strForceItem;
-                    lstSingle.Add(objItem);
+                    List<ListItem> lstSingle = new List<ListItem>
+                    {
+                        new ListItem(_strForceItem, _strForceItem)
+                    };
                     cboSpec.ValueMember = "Value";
                     cboSpec.DisplayMember = "Name";
                     cboSpec.DataSource = lstSingle;
@@ -115,29 +125,10 @@ namespace Chummer
         {
             AcceptForm();
         }
-
-        private void cboSpec_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (ListItem objItem in ((ComboBox)sender).Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
-                {
-                    intWidth = intNewWidth;
-                }
-            }
-            objSender.DropDownWidth = intWidth;
-        }
+        
         private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSpec.SelectedValue.ToString() == "Custom")
+            if (cboSpec.SelectedValue?.ToString() == "Custom")
             {
                 cboSpec.DropDownStyle = ComboBoxStyle.DropDown;
             }
@@ -201,7 +192,8 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            DialogResult = DialogResult.OK;
+            if (!string.IsNullOrEmpty(SelectedItem))
+                DialogResult = DialogResult.OK;
         }
 
         private void MoveControls()

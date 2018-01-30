@@ -17,49 +17,64 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Chummer
 {
     public partial class PetControl : UserControl
     {
         private readonly Contact _objContact;
+        private bool _blnLoading = true;
 
         // Events.
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
+        public EventHandler ContactDetailChanged { get; set; }
+        public EventHandler DeleteContact { get; set; }
 
         #region Control Events
         public PetControl(Contact objContact)
         {
             _objContact = objContact;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            foreach (ToolStripItem objItem in cmsContact.Items)
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+            }
             MoveControls();
         }
 
         private void PetControl_Load(object sender, EventArgs e)
         {
             Width = cmdDelete.Left + cmdDelete.Width;
-            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.Metatype), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+
+            LoadContactList();
+
+            DoDataBindings();
+
+            _blnLoading = false;
+        }
+
+        private void txtContactName_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+        }
+
+        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact(this);
+            DeleteContact?.Invoke(this, e);
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -84,12 +99,12 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objContact.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }
@@ -111,7 +126,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -123,8 +138,10 @@ namespace Chummer
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Chummer Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
             if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
             {
                 openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
@@ -134,7 +151,7 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile"));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(@Application.StartupPath);
@@ -142,7 +159,7 @@ namespace Chummer
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 Cursor = Cursors.Default;
             }
         }
@@ -150,39 +167,32 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile"));
-                lblMetatype.Text = string.Empty;
-                FileNameChanged(this);
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmContactNotes = new frmNotes();
-            frmContactNotes.Notes = _objContact.Notes;
+            frmNotes frmContactNotes = new frmNotes
+            {
+                Notes = _objContact.Notes
+            };
             frmContactNotes.ShowDialog(this);
 
-            if (frmContactNotes.DialogResult == DialogResult.OK)
+            if (frmContactNotes.DialogResult == DialogResult.OK && _objContact.Notes != frmContactNotes.Notes)
+            {
                 _objContact.Notes = frmContactNotes.Notes;
 
-            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
-            if (!string.IsNullOrEmpty(_objContact.Notes))
-                strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-        }
-
-        private void cmsContact_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-            {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
         }
         #endregion
@@ -192,34 +202,64 @@ namespace Chummer
         {
             txtContactName.Left = lblName.Left + lblName.Width + 6;
             lblMetatypeLabel.Left = txtContactName.Left + txtContactName.Width + 16;
-            lblMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
+            cboMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
+            cboMetatype.Width = imgLink.Left - 6 - cboMetatype.Left;
+        }
+
+        private void LoadContactList()
+        {
+            List<ListItem> lstMetatypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
+            {
+                string strName = xmlMetatypeNode["name"].InnerText;
+                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
+                {
+                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
+                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                }
+            }
+
+            lstMetatypes.Sort(CompareListItems.CompareNames);
+
+            cboMetatype.BeginUpdate();
+            cboMetatype.ValueMember = "Value";
+            cboMetatype.DisplayMember = "Name";
+            cboMetatype.DataSource = lstMetatypes;
+            cboMetatype.EndUpdate();
+        }
+
+        private void DoDataBindings()
+        {
+            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+
+            // Properties controllable by the character themselves
+            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboMetatype.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
         }
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// Contact object this is linked to.
-        /// </summary>
+            #region Properties
+            /// <summary>
+            /// Contact object this is linked to.
+            /// </summary>
         public Contact ContactObject
         {
             get
             {
                 return _objContact;
-            }
-        }
-
-        /// <summary>
-        /// Contact name.
-        /// </summary>
-        public string ContactName
-        {
-            get
-            {
-                return _objContact.Name;
-            }
-            set
-            {
-                _objContact.Name = value;
             }
         }
         #endregion

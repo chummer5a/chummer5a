@@ -69,7 +69,7 @@ namespace Chummer
         {
             if (objParentList.Count != objTargetList.Count)
                 return false;
-            List<T> lstExclude = new List<T>(objTargetList.Count);
+            HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
                 foreach (T objTargetChild in objTargetList)
@@ -232,14 +232,14 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> DeepWhere<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            List<T> objReturn = new List<T>();
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
-                    objReturn.Add(objLoopChild);
-                objReturn.AddRange(funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate));
+                    yield return objLoopChild;
+
+                foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate))
+                    yield return objLoopSubchild;
             }
-            return objReturn;
         }
 
         /// <summary>
@@ -247,13 +247,13 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            List<T> objReturn = new List<T>();
             foreach (T objLoopChild in objParentList)
             {
-                objReturn.Add(objLoopChild);
-                objReturn.AddRange(funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod));
+                yield return objLoopChild;
+
+                foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod))
+                    yield return objLoopSubchild;
             }
-            return objReturn;
         }
     }
 }

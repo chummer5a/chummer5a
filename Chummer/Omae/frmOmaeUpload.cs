@@ -25,36 +25,35 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUpload : Form
+    public sealed partial class frmOmaeUpload : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
         private readonly Character _objCharacter = new Character();
-        private List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
+        private readonly string _strUserName;
         private string _strCharacterName = string.Empty;
         private string _strMetatype = string.Empty;
         private string _strMetavariant = string.Empty;
         private string _strQualities = string.Empty;
-        private int _intCharacterID = 0;
-        private int _intCharacterType = 0;
+        private readonly int _intCharacterID = 0;
+        private readonly int _intCharacterType = 0;
         private int _intCreated = 0;
 
         #region Control Events
         public frmOmaeUpload(string strUserName, List<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _strUserName = strUserName;
 
             // Remove the items that cannot actually be uploaded through this window.
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "4")
+                if (objItem.Value.ToString() == "4")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -62,7 +61,7 @@ namespace Chummer
             }
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "data")
+                if (objItem.Value.ToString() == "data")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -70,7 +69,7 @@ namespace Chummer
             }
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "sheets")
+                if (objItem.Value.ToString() == "sheets")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -82,8 +81,8 @@ namespace Chummer
             txtDescription.Text = strDescription;
             _intCharacterType = intCharacterType;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection");
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
 
             MoveControls();
         }
@@ -98,9 +97,9 @@ namespace Chummer
             string strName = string.Empty;
             foreach (ListItem objItem in _lstCharacterTypes)
             {
-                if (objItem.Value == _intCharacterType.ToString())
+                if (objItem.Value.ToString() == _intCharacterType.ToString())
                 {
-                    strName = objItem.Value;
+                    strName = objItem.Value.ToString();
                     break;
                 }
             }
@@ -109,9 +108,11 @@ namespace Chummer
 
         private void cmdBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-            openFileDialog.Multiselect = false;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
+                Multiselect = false
+            };
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
             {
@@ -124,7 +125,7 @@ namespace Chummer
             // Make sure a .chum5 file was selected.
             if (!openFileDialog.FileName.EndsWith(".chum5"))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -139,15 +140,15 @@ namespace Chummer
             catch
             {
                 Cursor = Cursors.Default;
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the character is named.
             _strCharacterName = _objCharacter.CharacterName;
-            if (string.IsNullOrWhiteSpace(_strCharacterName) || _strCharacterName == LanguageManager.GetString("String_UnnamedCharacter"))
+            if (string.IsNullOrWhiteSpace(_strCharacterName) || _strCharacterName == LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UnnamedCharacter"), LanguageManager.GetString("MessageTitle_OmaeUpload_UnnamedCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UnnamedCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UnnamedCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -185,28 +186,28 @@ namespace Chummer
             // Make sure a file has been selected.
             if (string.IsNullOrWhiteSpace(txtFilePath.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SelectFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SelectFile", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
             if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CharacterDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_CharacterDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CharacterDescription", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_CharacterDescription", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Read the contents of the file into a byte array, the compress it.
-            byte[] bytFile = _objOmaeHelper.Compress(File.ReadAllBytes(txtFilePath.Text));
+            byte[] bytFile = OmaeHelper.Compress(File.ReadAllBytes(txtFilePath.Text));
 
             // Make sure the file doesn't exceed 500K in size (512,000 bytes).
             if (bytFile.Length > 512000)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
                 cmdUpload.Enabled = false;
@@ -217,11 +218,11 @@ namespace Chummer
                 if (objService.UploadCharacter153(_strUserName, _intCharacterID, strCharacterName, txtDescription.Text, _strMetatype, _strMetavariant, _strQualities, Convert.ToInt32(cboCharacterTypes.SelectedValue), _intCreated, bytFile))
                 {
                     blnSuccess = true;
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (EndpointNotFoundException)

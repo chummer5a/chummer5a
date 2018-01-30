@@ -1,7 +1,25 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.ComponentModel;
 
 namespace Chummer.UI.Skills
@@ -54,17 +72,14 @@ namespace Chummer.UI.Skills
             sw.TaskEnd("Create skillgroup");
         }
 
+        #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer objParent = ParentForm as frmCareer;
-            if (objParent != null)
-            {
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
 
-                if (!objParent.ConfirmKarmaExpense(confirmstring))
-                    return;
-            }
+            if (!_skillGroup.Character.ConfirmKarmaExpense(confirmstring))
+                return;
 
             _skillGroup.Upgrade();
         }
@@ -90,5 +105,33 @@ namespace Chummer.UI.Skills
                     break;
             }
         }
+        #endregion
+
+        #region Properties
+        public int NameWidth => lblName.PreferredWidth;
+        public int RatingWidth => lblGroupRating.PreferredWidth;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Update the position of controls.
+        /// </summary>
+        /// <param name="nameWidth">Width of the Name label</param>
+        /// <param name="ratingWidth">Width of the Rating label. Expected to be the width of the localised Label_SkillGroup_Broken string.</param>
+        public void MoveControls(int nameWidth, int ratingWidth)
+        {
+            lblName.Width = nameWidth;
+            lblGroupRating.Left = lblName.Right + 2;
+            if (_skillGroup.Character.Created)
+            {
+                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 4;
+            }
+            else
+            {
+                nudSkill.Left = lblGroupRating.Right + 2;
+                nudKarma.Left = nudSkill.Right + 2;
+            }
+        }
+        #endregion
     }
 }

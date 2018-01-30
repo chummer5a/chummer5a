@@ -16,12 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.ComponentModel;
- using System.IO;
+using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
- using System.Xml;
+using System.Xml;
 using System.Linq;
 
 namespace Chummer
@@ -29,21 +28,13 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private readonly Contact _objContact;
-        private string _strContactRole;
-        private bool _blnEnemy = false;
-        private bool _loading = true;
-        private int _intLowHeight = 25;
-        private int _intFullHeight = 156;
+        private bool _blnLoading = true;
+        //private readonly int _intLowHeight = 25;
+        //private readonly int _intFullHeight = 156;
 
         // Events.
-        public Action<object> ConnectionRatingChanged;
-        public Action<object> GroupStatusChanged;
-        public Action<object> LoyaltyRatingChanged;
-        public Action<object> FreeRatingChanged;
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
-        public Action<object> BlackmailChanged;
-        public Action<object> FamilyChanged;
+        public EventHandler ContactDetailChanged { get; set; }
+        public EventHandler DeleteContact { get; set; }
 
         #region Control Events
         public ContactControl(Contact objContact)
@@ -56,12 +47,15 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             _objContact = objContact;
-            _strContactRole = _objContact.Role;
-            EntityType = _objContact.EntityType;
+
+            foreach (ToolStripItem objItem in cmsContact.Items)
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+            }
         }
 
         private void ContactControl_Load(object sender, EventArgs e)
@@ -73,99 +67,126 @@ namespace Chummer
 
             DoDataBindings();
 
-            _loading = false;
+            if (_objContact.EntityType == ContactType.Enemy)
+            {
+                tipTooltip.SetToolTip(imgLink,
+                    !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
+            else
+            {
+                tipTooltip.SetToolTip(imgLink,
+                    !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
+
+            _blnLoading = false;
         }
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
-            // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
-            ConnectionRatingChanged(this);
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
         private void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
-            // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            LoyaltyRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact(this);
+            DeleteContact?.Invoke(this, e);
         }
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
-            chkGroup.Enabled = !_objContact.MadeMan;
-
-            GroupStatusChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
-        
+
         private void cmdExpand_Click(object sender, EventArgs e)
         {
-            ExpansionToggle(!Expanded);
+            Expanded = !Expanded;
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cboSex_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Sex"));
         }
 
         private void cboAge_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
         private void cboPersonalLife_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
         }
 
         private void cboType_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
         private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
         private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -190,12 +211,12 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objContact.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }
@@ -217,7 +238,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -229,8 +250,10 @@ namespace Chummer
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
             if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
             {
                 openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
@@ -241,8 +264,8 @@ namespace Chummer
             _objContact.FileName = openFileDialog.FileName;
             tipTooltip.SetToolTip(imgLink,
                 _objContact.EntityType == ContactType.Enemy
-                    ? LanguageManager.GetString("Tip_Enemy_OpenFile")
-                    : LanguageManager.GetString("Tip_Contact_OpenFile"));
+                    ? LanguageManager.GetString("Tip_Enemy_OpenFile", GlobalOptions.Language)
+                    : LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
             // Set the relative path.
             Uri uriApplication = new Uri(@Application.StartupPath);
@@ -250,65 +273,60 @@ namespace Chummer
             Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
             _objContact.RelativeFileName = "../" + uriRelative;
 
-            FileNameChanged(this);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
         }
 
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
                 tipTooltip.SetToolTip(imgLink,
                     _objContact.EntityType == ContactType.Enemy
-                        ? LanguageManager.GetString("Tip_Enemy_LinkFile")
-                        : LanguageManager.GetString("Tip_Contact_LinkFile"));
-                FileNameChanged(this);
+                        ? LanguageManager.GetString("Tip_Enemy_LinkFile", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmContactNotes = new frmNotes();
-            frmContactNotes.Notes = _objContact.Notes;
+            frmNotes frmContactNotes = new frmNotes
+            {
+                Notes = _objContact.Notes
+            };
             frmContactNotes.ShowDialog(this);
 
-            if (frmContactNotes.DialogResult == DialogResult.OK)
+            if (frmContactNotes.DialogResult == DialogResult.OK && _objContact.Notes != frmContactNotes.Notes)
+            {
                 _objContact.Notes = frmContactNotes.Notes;
 
-            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
-            if (!string.IsNullOrEmpty(_objContact.Notes))
-                strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-        }
-        private void cmsContact_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-            {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
+                string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Free = chkFree.Checked;
-            FreeRatingChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
         }
 
         private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Blackmail = chkBlackmail.Checked;
-            BlackmailChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
         }
 
         private void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Family = chkFamily.Checked;
-            FamilyChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
         #endregion
 
@@ -324,258 +342,25 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Contact name.
-        /// </summary>
-        public string ContactName
+        public bool Expanded
         {
-            get
-            {
-                return _objContact.Name;
-            }
-        }
-
-        /// <summary>
-        /// Contact role.
-        /// </summary>
-        public string ContactRole
-        {
-            get
-            {
-                return _objContact.Role;
-            }
+            get => tlpStatBlock.Visible;
             set
             {
-                cboContactRole.Text = value;
-                _strContactRole = value;
-                _objContact.Role = value;
+                tlpStatHeader.Visible = tlpStatBlock.Visible = value;
+                cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
             }
         }
-
-        /// <summary>
-        /// Contact location.
-        /// </summary>
-        public string ContactLocation
-        {
-            get
-            {
-                return _objContact.Location;
-            }
-        }
-
-        /// <summary>
-        /// Indicates if this is a Contact or Enemy.
-        /// </summary>
-        public ContactType EntityType
-        {
-            get
-            {
-                return _objContact.EntityType;
-            }
-            set
-            {
-                _objContact.EntityType = value;
-                if (value == ContactType.Enemy)
-                {
-                    tipTooltip.SetToolTip(imgLink,
-                        !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
-
-                    string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-                    chkFamily.Visible = false;
-                    chkBlackmail.Visible = false;
-                    nudConnection.Minimum = 1;
-                }
-                else
-                {
-                    tipTooltip.SetToolTip(imgLink,
-                        !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                            : LanguageManager.GetString("Tip_Contact_LinkContact"));
-
-                    string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-
-                    nudConnection.Minimum = 1;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Connection Rating.
-        /// </summary>
-        public int ConnectionRating
-        {
-            get
-            {
-                return _objContact.Connection;
-            }
-            set
-            {
-                _objContact.Connection = value;
-            }
-        }
-
-        /// <summary>
-        /// Loyalty Rating.
-        /// </summary>
-        public int LoyaltyRating
-        {
-            get
-            {
-                return _objContact.Loyalty;
-            }
-            set
-            {
-                _objContact.Loyalty = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact Metatype.
-        /// </summary>
-        public string ContactMetatype
-        {
-            get
-            {
-                return _objContact.Metatype;
-            }
-        }
-
-        /// <summary>
-        /// Contact Gender.
-        /// </summary>
-        public string ContactSex
-        {
-            get
-            {
-                return _objContact.Sex;
-            }
-        }
-
-        /// <summary>
-        /// Contact Age.
-        /// </summary>
-        public string ContactAge
-        {
-            get
-            {
-                return _objContact.Age;
-            }
-        }
-
-        /// <summary>
-        /// Contact Personal Life.
-        /// </summary>
-        public string ContactPersonalLife
-        {
-            get
-            {
-                return _objContact.PersonalLife;
-            }
-            set
-            {
-                cboPersonalLife.Text = value;
-                _objContact.PersonalLife = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact Type.
-        /// </summary>
-        public string ContactServiceType
-        {
-            get
-            {
-                return _objContact.Type;
-            }
-        }
-
-        /// <summary>
-        /// Contact Preferred Payment Method.
-        /// </summary>
-        public string ContactPreferredPayment
-        {
-            get
-            {
-                return _objContact.PreferredPayment;
-            }
-        }
-
-        /// <summary>
-        /// Contact Hobbies/Vice.
-        /// </summary>
-        public string ContactHobbiesVice
-        {
-            get
-            {
-                return _objContact.HobbiesVice;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not this contact is a Family member.
-        /// </summary>
-        public bool Family
-        {
-            get { return _objContact.Family; }
-            set { _objContact.Family = value; }
-        }
-
-        /// <summary>
-        /// Whether or not this contact is being blackmailed. 
-        /// </summary>
-        public bool Blackmail
-        {
-            get { return _objContact.Blackmail; }
-            set { _objContact.Blackmail = value; }
-        }
-
-        /// <summary>
-        /// Whether or not this is a free Contact.
-        /// </summary>
-        public bool Free
-        {
-            get
-            {
-                return _objContact.Free;
-            }
-            set
-            {
-                _objContact.Free = value;
-            }
-        }
-        /// <summary>
-        /// Is the contract a group contract
-        /// </summary>
-        public bool IsGroup
-        {
-            get
-            {
-                return _objContact.IsGroup;
-            }
-            set
-            {
-                _objContact.IsGroup = value;
-            }
-        }
-
-        public bool Expanded => Height > _intLowHeight;
         #endregion
 
         #region Methods
         private void LoadContactList()
         {
-            if (_blnEnemy)
+            if (_objContact.EntityType == ContactType.Enemy)
             {
-                if (!string.IsNullOrEmpty(_strContactRole))
-                    cboContactRole.Text = _strContactRole;
+                string strContactRole = _objContact.DisplayRole;
+                if (!string.IsNullOrEmpty(strContactRole))
+                    cboContactRole.Text = strContactRole;
                 return;
             }
 
@@ -589,110 +374,96 @@ namespace Chummer
 
 
             // Read the list of Categories from the XML file.
-            List<ListItem> lstCategories = new List<ListItem>();
-            List<ListItem> lstMetatypes = new List<ListItem>();
-            List<ListItem> lstSexes = new List<ListItem>();
-            List<ListItem> lstAges = new List<ListItem>();
-            List<ListItem> lstPersonalLives = new List<ListItem>();
-            List<ListItem> lstTypes = new List<ListItem>();
-            List<ListItem> lstPreferredPayments = new List<ListItem>();
-            List<ListItem> lstHobbiesVices = new List<ListItem>();
-
-            ListItem objBlank = new ListItem();
-            objBlank.Value = string.Empty;
-            objBlank.Name = string.Empty;
-            lstCategories.Add(objBlank);
-            lstMetatypes.Add(objBlank);
-            lstSexes.Add(objBlank);
-            lstAges.Add(objBlank);
-            lstPersonalLives.Add(objBlank);
-            lstTypes.Add(objBlank);
-            lstPreferredPayments.Add(objBlank);
-            lstHobbiesVices.Add(objBlank);
+            List<ListItem> lstCategories = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstMetatypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstSexes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstAges = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPersonalLives = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstTypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPreferredPayments = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstHobbiesVices = new List<ListItem>
+            {
+                ListItem.Blank
+            };
 
             XmlDocument objXmlDocument = XmlManager.Load("contacts.xml");
-            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/contacts/contact");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/contacts/contact"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstCategories.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/sexes/sex"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstSexes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/ages/age"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstAges.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/personallives/personallife"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstPersonalLives.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/types/type"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstTypes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/preferredpayments/preferredpayment"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstPreferredPayments.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/hobbiesvices/hobbyvice"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstHobbiesVices.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+            {
+                string strName = xmlMetatypeNode["name"].InnerText;
+                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstCategories.Add(objItem);
+                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
+                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                 }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/sexes/sex");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstSexes.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/ages/age");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstAges.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/personallives/personallife");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstPersonalLives.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/types/type");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstTypes.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/preferredpayments/preferredpayment");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstPreferredPayments.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/hobbiesvices/hobbyvice");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode.InnerText;
-                    objItem.Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText;
-                    lstHobbiesVices.Add(objItem);
-                }
-            objXmlNodeList = XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlNode["name"].InnerText;
-                    objItem.Name = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText;
-                    lstMetatypes.Add(objItem);
-                }
+            }
 
-            SortListItem objContactSort = new SortListItem();
-            lstCategories.Sort(objContactSort.Compare);
-            lstMetatypes.Sort(objContactSort.Compare);
-            lstSexes.Sort(objContactSort.Compare);
-            lstAges.Sort(objContactSort.Compare);
-            lstPersonalLives.Sort(objContactSort.Compare);
-            lstTypes.Sort(objContactSort.Compare);
-            lstHobbiesVices.Sort(objContactSort.Compare);
-            lstPreferredPayments.Sort(objContactSort.Compare);
+            lstCategories.Sort(CompareListItems.CompareNames);
+            lstMetatypes.Sort(CompareListItems.CompareNames);
+            lstSexes.Sort(CompareListItems.CompareNames);
+            lstAges.Sort(CompareListItems.CompareNames);
+            lstPersonalLives.Sort(CompareListItems.CompareNames);
+            lstTypes.Sort(CompareListItems.CompareNames);
+            lstHobbiesVices.Sort(CompareListItems.CompareNames);
+            lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
@@ -747,11 +518,17 @@ namespace Chummer
         {
             chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroupOrMadeMan), false,
                 DataSourceUpdateMode.OnPropertyChanged);
+            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotMadeMan), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
                 DataSourceUpdateMode.OnPropertyChanged);
+            chkFamily.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             chkBlackmail.DataBindings.Add("Checked", _objContact, nameof(_objContact.Blackmail), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkBlackmail.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             lblQuickStats.DataBindings.Add("Text", _objContact, nameof(_objContact.QuickText), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -767,21 +544,21 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactLocation.DataBindings.Add("Text", _objContact, nameof(_objContact.Location), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.Role), false,
+            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayRole), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.Metatype), false,
+            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.Sex), false,
+            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplaySex), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.Age), false,
+            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayAge), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.PersonalLife), false,
+            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPersonalLife), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.Type), false,
+            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayType), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.PreferredPayment), false,
+            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPreferredPayment), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.HobbiesVice), false,
+            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -799,39 +576,28 @@ namespace Chummer
 
         private void MoveControls()
         {
-            lblConnection.Left = txtContactName.Left;
-            nudConnection.Left = lblConnection.Right + 2;
-            lblLoyalty.Left = nudConnection.Right + 2;
-            nudLoyalty.Left = lblLoyalty.Right + 2;
-            imgLink.Left = nudLoyalty.Right + 4; 
-            imgNotes.Left = imgLink.Right + 4;
-            chkGroup.Left = imgNotes.Right + 4;
-            chkFree.Left = chkGroup.Right + 2;
-            chkBlackmail.Left = chkFree.Right + 2;
-            chkFamily.Left = chkBlackmail.Right + 2;
+            // no need to do anything here using TableLayoutPanels
+            //lblConnection.Left = txtContactName.Left;
+            //nudConnection.Left = lblConnection.Right + 2;
+            //lblLoyalty.Left = nudConnection.Right + 2;
+            //nudLoyalty.Left = lblLoyalty.Right + 2;
+            //imgLink.Left = nudLoyalty.Right + 4;
+            //imgNotes.Left = imgLink.Right + 4;
+            //chkGroup.Left = imgNotes.Right + 4;
+            //chkFree.Left = chkGroup.Right + 2;
+            //chkBlackmail.Left = chkFree.Right + 2;
+            //chkFamily.Left = chkBlackmail.Right + 2;
 
-            lblMetatype.Left = cboMetatype.Left - 7 - lblMetatype.Width;
-            lblAge.Left = cboAge.Left - 7 - lblAge.Width;
-            lblSex.Left = cboSex.Left - 7 - lblSex.Width;
-            lblPersonalLife.Left = cboPersonalLife.Left - 7 - lblPersonalLife.Width;
-            lblType.Left = cboType.Left - 7 - lblType.Width;
-            lblPreferredPayment.Left = cboPreferredPayment.Left - 7 - lblPreferredPayment.Width;
-            lblHobbiesVice.Left = cboHobbiesVice.Left - 7 - lblHobbiesVice.Width;
-        }
+            //lblmetatype.left = cbometatype.left - 7 - lblmetatype.width;
+            //lblage.left = cboage.left - 7 - lblage.width;
+            //lblsex.left = cbosex.left - 7 - lblsex.width;
+            //lbltype.left = cbotype.left - 7 - lbltype.width;
 
-        public void ExpansionToggle(bool expand = false)
-        {
-            if (expand)
-            {
-                Height = _intFullHeight;
-                cmdExpand.Image = Properties.Resources.Expand;
-            }
-            else
-            {
-                Height = _intLowHeight;
-                cmdExpand.Image = Properties.Resources.Collapse;
-            }
+            //lblpersonallife.left = cbopersonallife.left - 7 - lblpersonallife.width;
+            //lblpreferredpayment.left = cbopreferredpayment.left - 7 - lblpreferredpayment.width;
+            //lblhobbiesvice.left = cbohobbiesvice.left - 7 - lblhobbiesvice.width;
         }
         #endregion
+
     }
 }

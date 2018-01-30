@@ -137,6 +137,7 @@ namespace Chummer
             // 
             // cboSpiritName
             // 
+            this.cboSpiritName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritName.FormattingEnabled = true;
             this.cboSpiritName.Location = new System.Drawing.Point(0, 0);
             this.cboSpiritName.Name = "cboSpiritName";
@@ -163,7 +164,6 @@ namespace Chummer
             this.tsCreateCharacter});
             this.cmsSpirit.Name = "cmsContact";
             this.cmsSpirit.Size = new System.Drawing.Size(172, 92);
-            this.cmsSpirit.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsContactOpen
             // 

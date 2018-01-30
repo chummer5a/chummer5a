@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -29,14 +30,14 @@ namespace Chummer
 {
     public partial class frmPrintMultiple : Form
     {
-        BackgroundWorker _workerPrinter = new BackgroundWorker();
+        private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
         List<Character> _lstCharacters = null;
 
         #region Control Events
         public frmPrintMultiple()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             _workerPrinter.WorkerReportsProgress = true;
@@ -59,10 +60,16 @@ namespace Chummer
             {
                 foreach (string strFileName in dlgOpenFile.FileNames)
                 {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = Path.GetFileName(strFileName);
-                    objNode.Tag = strFileName;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = Path.GetFileName(strFileName),
+                        Tag = strFileName
+                    };
                     treCharacters.Nodes.Add(objNode);
+                }
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
                 }
             }
         }
@@ -78,6 +85,10 @@ namespace Chummer
                     prgProgress.Value = 0;
                 }
                 treCharacters.SelectedNode.Remove();
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
+                }
             }
         }
 
@@ -85,30 +96,45 @@ namespace Chummer
         {
             cmdPrint.Enabled = false;
             if (!_workerPrinter.IsBusy)
+            {
+                prgProgress.Value = 0;
+                prgProgress.Maximum = treCharacters.Nodes.Count;
                 _workerPrinter.RunWorkerAsync();
+            }
         }
 
-        private void DoPrint(object sender, EventArgs e)
+        private void DoPrint(object sender, DoWorkEventArgs e)
         {
-            prgProgress.Value = 0;
-            prgProgress.Maximum = treCharacters.Nodes.Count;
             Action funcIncreaseProgress = new Action(() => prgProgress.Value += 1);
 
             Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
             for (int i = 0; i < lstCharacters.Length; ++i)
             {
+                if (_workerPrinter.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
                 Character objCharacter = lstCharacters[i];
-                objCharacter = new Character();
-                objCharacter.FileName = treCharacters.Nodes[i].Tag.ToString();
+                objCharacter = new Character
+                {
+                    FileName = treCharacters.Nodes[i].Tag.ToString()
+                };
             }
+
             // Parallelized load because this is one major bottleneck.
             Parallel.ForEach(lstCharacters, objCharacter =>
             {
+                if (_workerPrinter.CancellationPending)
+                    throw new OperationCanceledException();
                 objCharacter.Load();
                 prgProgress.Invoke(funcIncreaseProgress);
             });
 
-            _lstCharacters = new List<Character>(lstCharacters);
+            if (_workerPrinter.CancellationPending)
+                e.Cancel = true;
+            else
+                _lstCharacters = new List<Character>(lstCharacters);
         }
 
         private frmViewer _frmPrintView;
@@ -121,7 +147,7 @@ namespace Chummer
             }
         }
 
-        public List<Character> CharacterList
+        public IList<Character> CharacterList
         {
             get
             {
@@ -129,24 +155,29 @@ namespace Chummer
             }
         }
 
-        private void FinishPrint(object sender, EventArgs e)
+        private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
         {
             cmdPrint.Enabled = true;
             // Set the ProgressBar back to 0.
             prgProgress.Value = 0;
 
-            if (_frmPrintView == null)
+            if (!e.Cancelled)
             {
-                frmViewer _frmPrintView = new frmViewer();
-                _frmPrintView.Characters = _lstCharacters;
-                _frmPrintView.SelectedSheet = "Game Master Summary";
-                _frmPrintView.Show();
+                if (_frmPrintView == null)
+                {
+                    _frmPrintView = new frmViewer
+                    {
+                        Characters = _lstCharacters,
+                        SelectedSheet = "Game Master Summary"
+                    };
+                    _frmPrintView.Show();
+                }
+                else
+                {
+                    _frmPrintView.Activate();
+                }
+                _frmPrintView.RefreshCharacters();
             }
-            else
-            {
-                _frmPrintView.Activate();
-            }
-            _frmPrintView.RefreshCharacters();
         }
         #endregion
 

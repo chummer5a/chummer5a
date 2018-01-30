@@ -121,7 +121,7 @@ namespace Chummer
             this.lblLimit.Name = "lblLimit";
             this.lblLimit.Size = new System.Drawing.Size(32, 25);
             this.lblLimit.TabIndex = 51;
-            this.lblLimit.Tag = "";
+            this.lblLimit.Tag = "String_Limit";
             this.lblLimit.Text = "Limit:";
             this.lblLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 

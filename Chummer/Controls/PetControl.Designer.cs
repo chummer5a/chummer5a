@@ -33,14 +33,14 @@ namespace Chummer
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.imgLink = new System.Windows.Forms.PictureBox();
             this.imgNotes = new System.Windows.Forms.PictureBox();
-            this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
-            this.lblMetatype = new System.Windows.Forms.Label();
+            this.cboMetatype = new System.Windows.Forms.ComboBox();
             this.cmsContact.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
@@ -48,10 +48,15 @@ namespace Chummer
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
@@ -63,6 +68,7 @@ namespace Chummer
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(172, 20);
             this.txtContactName.TabIndex = 11;
+            this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // cmdDelete
             // 
@@ -83,7 +89,33 @@ namespace Chummer
             this.tsAttachCharacter});
             this.cmsContact.Name = "cmsContact";
             this.cmsContact.Size = new System.Drawing.Size(172, 70);
-            this.cmsContact.Opening += new System.ComponentModel.CancelEventHandler(this.cmsContact_Opening);
+            // 
+            // tsContactOpen
+            // 
+            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.Name = "tsContactOpen";
+            this.tsContactOpen.Size = new System.Drawing.Size(171, 22);
+            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
+            this.tsContactOpen.Text = "Open Character";
+            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
+            // 
+            // tsRemoveCharacter
+            // 
+            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
+            this.tsRemoveCharacter.Size = new System.Drawing.Size(171, 22);
+            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
+            this.tsRemoveCharacter.Text = "Remove Character";
+            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
+            // 
+            // tsAttachCharacter
+            // 
+            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.Name = "tsAttachCharacter";
+            this.tsAttachCharacter.Size = new System.Drawing.Size(171, 22);
+            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
+            this.tsAttachCharacter.Text = "Attach Character";
+            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
             // 
             // imgLink
             // 
@@ -105,33 +137,6 @@ namespace Chummer
             this.imgNotes.TabStop = false;
             this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
             // 
-            // tsAttachCharacter
-            // 
-            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
-            this.tsAttachCharacter.Name = "tsAttachCharacter";
-            this.tsAttachCharacter.Size = new System.Drawing.Size(171, 22);
-            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
-            this.tsAttachCharacter.Text = "Attach Character";
-            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
-            // 
-            // tsRemoveCharacter
-            // 
-            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
-            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
-            this.tsRemoveCharacter.Size = new System.Drawing.Size(171, 22);
-            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
-            this.tsRemoveCharacter.Text = "Remove Character";
-            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
-            // 
-            // tsContactOpen
-            // 
-            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
-            this.tsContactOpen.Name = "tsContactOpen";
-            this.tsContactOpen.Size = new System.Drawing.Size(171, 22);
-            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
-            this.tsContactOpen.Text = "Open Character";
-            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
-            // 
             // lblName
             // 
             this.lblName.AutoSize = true;
@@ -152,20 +157,21 @@ namespace Chummer
             this.lblMetatypeLabel.Tag = "Label_Metatype";
             this.lblMetatypeLabel.Text = "Metatype:";
             // 
-            // lblMetatype
+            // cboMetatype
             // 
-            this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(285, 5);
-            this.lblMetatype.Name = "lblMetatype";
-            this.lblMetatype.Size = new System.Drawing.Size(57, 13);
-            this.lblMetatype.TabIndex = 24;
-            this.lblMetatype.Text = "[Metatype]";
+            this.cboMetatype.FormattingEnabled = true;
+            this.cboMetatype.Location = new System.Drawing.Point(285, 1);
+            this.cboMetatype.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboMetatype.Name = "cboMetatype";
+            this.cboMetatype.Size = new System.Drawing.Size(350, 21);
+            this.cboMetatype.TabIndex = 24;
+            this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // PetControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lblMetatype);
+            this.Controls.Add(this.cboMetatype);
             this.Controls.Add(this.lblMetatypeLabel);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.imgLink);
@@ -196,6 +202,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsContact;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMetatypeLabel;
-        private System.Windows.Forms.Label lblMetatype;
+        private System.Windows.Forms.ComboBox cboMetatype;
     }
 }

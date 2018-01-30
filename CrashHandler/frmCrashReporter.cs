@@ -14,12 +14,11 @@ using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public partial class frmCrashReporter : Form
+	public sealed partial class frmCrashReporter : Form
 	{
-
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
-		private string _strDefaultUserStory = string.Empty;
+		private readonly string _strDefaultUserStory = string.Empty;
 
 		public frmCrashReporter(CrashDumper dumper)
 		{
@@ -114,18 +113,19 @@ namespace CrashHandler
 
 		private void cmdSubmitIssue_Click(object sender, EventArgs e)
 		{
-			string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={0}&body={1}";
+            string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={0}&body={1}";
 			strSend = strSend.Replace("{0}",$" Issue: - PLEASE ENTER DESCRIPTION HERE");
 			string strBody = "### Environment\n";
 			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
 			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
 			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
 			strBody += $"Runtime: {Environment.Version}\n";
-			strBody += txtUserStory.Text;
+            strBody += txtUserStory.Text;
 			strBody = System.Net.WebUtility.HtmlEncode(strBody);
 			strBody = strBody.Replace(" ", "%20");
 			strBody = strBody.Replace("#", "%23");
-			strBody = strBody.Replace("\n", "%0D%0A");
+		    strBody = strBody.Replace("\r\n", "%0D%0A");
+            strBody = strBody.Replace("\n", "%0D%0A");
 			strSend = strSend.Replace("{1}", strBody);
 
 			Process.Start(strSend);

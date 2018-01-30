@@ -34,7 +34,7 @@ namespace Chummer
     /// <para>CalendarItem provides a graphical representation of tasks within a date range.</para>
     /// </remarks>
     public class CalendarItem
-        : CalendarSelectableElement, IItemWithGuid
+        : CalendarSelectableElement, IHasInternalId
     {
         #region Static
 
@@ -1028,6 +1028,11 @@ namespace Chummer
         internal void SetMinuteEndTop(int top)
         {
             _minuteEndTop = top;
+        }
+
+        internal string DisplayName(string language)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

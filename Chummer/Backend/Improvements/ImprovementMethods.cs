@@ -22,7 +22,7 @@ using Chummer.Classes;
 
 namespace Chummer
 {
-    public class ImprovementMethods
+    public static class ImprovementMethods
     {
         /// <summary>
         /// Gets an AddImprovementCollection function based on its name.
@@ -83,6 +83,10 @@ namespace Chummer
                     return objImprovementAdder.selectspell;
                 case "ADDSPELL":
                     return objImprovementAdder.addspell;
+                case "SELECTCOMPLEXFORM":
+                    return objImprovementAdder.selectcomplexform;
+                case "ADDCOMPLEXFORM":
+                    return objImprovementAdder.addcomplexform;
                 case "ADDGEAR":
                     return objImprovementAdder.addgear;
                 case "SELECTAIPROGRAM":
@@ -189,8 +193,6 @@ namespace Chummer
                     return objImprovementAdder.basiclifestylecost;
                 case "GENETECHCOSTMULTIPLIER":
                     return objImprovementAdder.genetechcostmultiplier;
-                case "TRANSGENICSGENETECHCOST":
-                    return objImprovementAdder.transgenicsgenetechcost;
                 case "BASICBIOWAREESSMULTIPLIER":
                     return objImprovementAdder.basicbiowareessmultiplier;
                 case "BIOWAREESSMULTIPLIER":
@@ -219,8 +221,6 @@ namespace Chummer
                     return objImprovementAdder.trustfund;
                 case "MADEMAN":
                     return objImprovementAdder.mademan;
-                case "LIGHTNINGREFLEXES":
-                    return objImprovementAdder.lightningreflexes;
                 case "FAME":
                     return objImprovementAdder.fame;
                 case "BORNRICH":
@@ -369,6 +369,8 @@ namespace Chummer
                     return objImprovementAdder.concealability;
                 case "DRAINRESIST":
                     return objImprovementAdder.drainresist;
+                case "DRAINVALUE":
+                    return objImprovementAdder.drainvalue;
                 case "FADINGRESIST":
                     return objImprovementAdder.fadingresist;
                 case "NOTORIETY":
@@ -385,10 +387,10 @@ namespace Chummer
                     return objImprovementAdder.freespells;
                 case "SPELLCATEGORY":
                     return objImprovementAdder.spellcategory;
-                case "SPELLCATEGORYDAMAGE":
-                    return objImprovementAdder.spellcategorydamage;
                 case "SPELLCATEGORYDRAIN":
                     return objImprovementAdder.spellcategorydrain;
+                case "SPELLCATEGORYDAMAGE":
+                    return objImprovementAdder.spellcategorydamage;
                 case "THROWRANGE":
                     return objImprovementAdder.throwrange;
                 case "THROWSTR":
@@ -443,6 +445,8 @@ namespace Chummer
                     return objImprovementAdder.addskillspecializationoption;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
+                case "LIMITSPELLDESCRIPTOR":
+                    return objImprovementAdder.limitspelldescriptor;
                 case "LIMITSPIRITCATEGORY":
                     return objImprovementAdder.limitspiritcategory;
                 case "MOVEMENTREPLACE":

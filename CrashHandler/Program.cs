@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,17 +10,21 @@ namespace CrashHandler
 {
 	static class Program
 	{
-		static Dictionary<string, Action<string[]>> _functions = new Dictionary<string, Action<string[]>>()
+		static Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
 		{
 			{"crash", ShowCrashReport }
 		};
 
-		private static void ShowCrashReport(string[] obj)
+		private static void ShowCrashReport(string[] args)
 		{
+            if (args.Contains("--debug") && Debugger.IsAttached == false)
+		    {
+		        Debugger.Launch();
+		    }
 			CrashDumper dmper = null;
 			try
 			{
-				dmper = new CrashDumper(obj[0]);
+				dmper = new CrashDumper(args[0]);
 				frmCrashReporter reporter = new frmCrashReporter(dmper);
 
 				Application.Run(reporter);
@@ -45,17 +50,18 @@ namespace CrashHandler
 		[STAThread]
 		static void Main(string[] args)
 		{ 
-			if (args.Length == 0) return;
+            for (int i = 0; i < args.Length - 1; ++i)
+            {
+                if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))
+                {
+                    actCachedAction(args.Skip(i + 1).ToArray());
+                    break;
+                }
+            }
 
-		    Action<string[]> actCachedAction;
-			if (_functions.TryGetValue(args[0], out actCachedAction))
-			{
-                actCachedAction(args.Skip(1).ToArray());
-			}
-
-			//Application.EnableVisualStyles();
-			//Application.SetCompatibleTextRenderingDefault(false);
-			//Application.Run(new frmCrashReporter());
-		}
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new frmCrashReporter());
+        }
 	}
 }

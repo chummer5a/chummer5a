@@ -25,13 +25,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
     public partial class frmGMDashboard : Form
     {
-        private frmInitiative frmInitative;
+        private readonly frmInitiative frmInitative;
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
 
         #region Singleton
@@ -54,7 +54,7 @@ namespace Chummer
         {
             InitializeComponent();
             UpdateTabs();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             frmInitative = new frmInitiative();
             frmInitative.Hide();
             VisibleChanged += frmGMDashboard_VisibleChanged;

@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class InitiativeUserControl
+    public sealed partial class InitiativeUserControl
     {
         /// <summary> 
         /// Required designer variable.

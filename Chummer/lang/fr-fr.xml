@@ -380,6 +380,14 @@
       <text>semaines</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>mois</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>mois</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>heure</text>
     </string>
@@ -1193,14 +1201,6 @@
       <text>Niveau de pouvoir</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>Un seul avantage est autorisé par indice de {0}.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>Nombre d'avantages</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>Seules deux manoeuvres sont autorisées par indice d'art martial.</text>
     </string>
@@ -1209,11 +1209,11 @@
       <text>Nombre de manoeuvres</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>Vous devez d'abord sélectionner un art martial pour pouvoir lui ajouter un avantage.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Sélectionnez un art martial</text>
     </string>
     <string>
@@ -1842,7 +1842,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>Êtes-vous sûr de vouloir réduire cette quantité de 1 ?</text>
+      <text>Êtes-vous sûr de vouloir réduire cette quantité de {0}?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>
@@ -3120,8 +3120,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>mois (100 mois équivalent un achat permanent du Niveau de vie)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} pour achat permanent du Niveau de vie)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -3137,11 +3137,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>Ajouter un mois de loyer pré-payé de ce Niveau de vie.</text>
+      <text>Ajouter le nombre de {0} de loyer pré-payé de ce Niveau de vie.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>Supprimer un mois de loyer prépayé de ce Niveau de vie.</text>
+      <text>Supprimer le nombre de {0} de loyer prépayé de ce Niveau de vie.</text>
     </string>
     <string>
       <key>String_Roommates</key>
@@ -4980,18 +4980,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Nb de membres standard :</text>
     </string>
     <string>
-      <key>String_LimbCount6</key>
-      <text>6 (2 bras, 2 jambes, torse, tête)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Torso</key>
-      <text>5 (2 bras, 2 jambes, torse)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Skull</key>
-      <text>5 (2 bras, 2 jambes, tête)</text>
-    </string>
-    <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>Nuyen par PC :</text>
     </string>
@@ -5817,7 +5805,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>Sélection d'un Avantage</text>
     </string>
     <!-- Select Martial Art Maneuver Window -->
@@ -7150,14 +7138,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Label_Echo</key>
       <text>Echo:</text>
-    </string>
-    <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>Cet element ne peut pas être supprimé car elle a été acquise comme un bonus d'initiation.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Impossible de supprimer ce sort</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaandNuyenExpense</key>

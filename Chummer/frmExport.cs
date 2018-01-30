@@ -40,7 +40,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -71,10 +71,11 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(cboXSLT.Text))
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
                 return;
 
-            if (cboXSLT.Text == "Export JSON")
+            if (strXSLT == "Export JSON")
             {
                 ExportJson();
             }
@@ -86,16 +87,16 @@ namespace Chummer
 
         private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboXSLT.Text == string.Empty)
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
                 return;
 
-            string strBoxText;
-            if (_dictCache.TryGetValue(cboXSLT.Text, out strBoxText))
+            if (_dictCache.TryGetValue(strXSLT, out string strBoxText))
             {
                 rtbText.Text = strBoxText;
             }
 
-            if (cboXSLT.Text == "Export JSON")
+            if (strXSLT == "Export JSON")
             {
                 GenerateJson();
             }
@@ -140,7 +141,7 @@ namespace Chummer
             objFile.Close();
 
             SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 

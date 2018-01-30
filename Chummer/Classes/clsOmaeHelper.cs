@@ -29,29 +29,31 @@ using System.IO.Packaging;
 
 namespace Chummer
 {
-    class OmaeHelper
+    public static class OmaeHelper
     {
         /// <summary>
         /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shippped with the application.
         /// </summary>
-        public omaeSoapClient GetOmaeService()
+        public static omaeSoapClient GetOmaeService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "omaeSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "omaeSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = System.Text.Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true
+            };
 
             objBinding.ReaderQuotas.MaxDepth = 32;
             objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
@@ -77,24 +79,26 @@ namespace Chummer
         /// <summary>
         /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shippped with the application.
         /// </summary>
-        public translationSoapClient GetTranslationService()
+        public static translationSoapClient GetTranslationService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "translationSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "translationSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = System.Text.Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true
+            };
 
             objBinding.ReaderQuotas.MaxDepth = 32;
             objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
@@ -121,7 +125,7 @@ namespace Chummer
         /// Write the contents of a MemoryStream to an XmlDocument.
         /// </summary>
         /// <param name="objStream">MemoryStream to read.</param>
-        public XmlDocument XmlDocumentFromStream(MemoryStream objStream)
+        public static XmlDocument XmlDocumentFromStream(MemoryStream objStream)
         {
             string strXml = string.Empty;
             objStream.Position = 0;
@@ -138,7 +142,7 @@ namespace Chummer
         /// <summary>
         /// Base64 encode a string.
         /// </summary>
-        public string Base64Encode(string data)
+        public static string Base64Encode(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
@@ -153,7 +157,7 @@ namespace Chummer
         /// <summary>
         /// Decode a Base64 encoded string.
         /// </summary>
-        public string Base64Decode(string data)
+        public static string Base64Decode(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
@@ -175,7 +179,7 @@ namespace Chummer
         /// <summary>
         /// Compresses byte array to new byte array.
         /// </summary>
-        public byte[] Compress(byte[] raw)
+        public static byte[] Compress(byte[] raw)
         {
             byte[] arrReturn = null;
             MemoryStream memory = new MemoryStream();
@@ -191,7 +195,7 @@ namespace Chummer
         /// <summary>
         /// Decompress byte array to a new byte array.
         /// </summary>
-        public byte[] Decompress(byte[] gzip)
+        public static byte[] Decompress(byte[] gzip)
         {
             // Create a GZIP stream with decompression mode.
             // ... Then create a buffer and write into while reading from the GZIP stream.
@@ -220,7 +224,7 @@ namespace Chummer
         /// Compress multiple files to a byte array.
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
-        public byte[] CompressMutiple(List<string> lstFiles)
+        public static byte[] CompressMutiple(IEnumerable<string> lstFiles)
         {
             MemoryStream objStream = new MemoryStream();
             Package objPackage = Package.Open(objStream, FileMode.Create, FileAccess.ReadWrite);
@@ -242,7 +246,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
         /// <param name="strDestination">File to compress to.</param>
-        public void CompressMutipleToFile(List<string> lstFiles, string strDestination)
+        public static void CompressMutipleToFile(IEnumerable<string> lstFiles, string strDestination)
         {
             Package objPackage = Package.Open(strDestination, FileMode.Create, FileAccess.ReadWrite);
 
@@ -265,7 +269,7 @@ namespace Chummer
         /// </summary>
         /// <param name="bytBuffer">Byte array that contains the zip file.</param>
         /// <param name="strPrefix">Prefix to attach to the decompressed files.</param>
-        public void DecompressDataFile(byte[] bytBuffer, string strPrefix)
+        public static void DecompressDataFile(byte[] bytBuffer, string strPrefix)
         {
             string strFilePath = Path.Combine(Application.StartupPath, "data");
             MemoryStream objStream = new MemoryStream();
@@ -297,7 +301,7 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// /// <param name="bytBuffer">Byte array that contains the zip file.</param>
-        public void DecompressCharacterSheet(byte[] bytBuffer)
+        public static void DecompressCharacterSheet(byte[] bytBuffer)
         {
             string strFilePath = Path.Combine(Application.StartupPath, "sheets", "omae");
             MemoryStream objStream = new MemoryStream();
@@ -327,7 +331,7 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// <param name="bytBuffer">Byte array that contains the zip file.</param>
-        public void DecompressNPCs(byte[] bytBuffer)
+        public static void DecompressNPCs(byte[] bytBuffer)
         {
             string strFilePath = Path.Combine(Application.StartupPath, "saves");
 
@@ -375,7 +379,7 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// <param name="strExtract">Zip file to extract from.</param>
-        public void DecompressNPCs(string strExtract)
+        public static void DecompressNPCs(string strExtract)
         {
             string strFilePath = Path.Combine(Application.StartupPath, "saves");
 

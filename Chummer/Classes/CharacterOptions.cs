@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +40,6 @@ namespace Chummer
         private bool _blnAllow2ndMaxAttribute;
         private bool _blnAllowAttributePointsOnExceptional;
         private bool _blnAllowBiowareSuites;
-        private bool _blnAllowCustomTransgenics;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
         private bool _blnAllowExceedAttributeBP;
@@ -38,12 +55,9 @@ namespace Chummer
         private bool _blnAlternateMetatypeAttributeKarma;
         private bool _blnArmorDegradation;
         private bool _blnArmorSuitCapacity;
-        private bool _blnAutomaticCopyProtection = true;
-        private bool _blnAutomaticRegistration = true;
         private bool _blnStrictSkillGroupsInCreateMode;
         private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
         private bool _blnCalculateCommlinkResponse = true;
-        private bool _blnCapSkillRating;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
         private bool _blnCreateBackupOnCareer;
@@ -51,8 +65,6 @@ namespace Chummer
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
         private bool _blnEnforceCapacity = true;
-        private bool _blnEnforceSkillMaximumModifiedRating;
-        private bool _blnErgonomicProgramsLimit = true;
         private bool _blnESSLossReducesMaximumOnly;
         private bool _blnExceedNegativeQualities;
         private bool _blnExceedNegativeQualitiesLimit;
@@ -74,10 +86,8 @@ namespace Chummer
         private bool _blnMultiplyForbiddenCost;
         private bool _blnMultiplyRestrictedCost;
         private bool _blnNoSingleArmorEncumbrance;
-        private bool _blnPrintArcanaAlternates;
         private bool _blnPrintExpenses;
         private bool _blnPrintFreeExpenses = true;
-        private bool _blnPrintLeadershipAlternates;
         private bool _blnPrintNotes;
         private bool _blnPrintSkillsWithZeroRating = true;
         private bool _blnRestrictRecoil = true;
@@ -86,7 +96,6 @@ namespace Chummer
         private bool _blnSpecialKarmaCostBasedOnShownValue;
         private bool _blnSpiritForceBasedOnTotalMAG;
         private bool _blnStrengthAffectsRecoil;
-        private bool _blnTechnomancerAllowAutosoft;
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
         private bool _blnUseContactPoints;
@@ -94,6 +103,7 @@ namespace Chummer
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
         private bool _blnDoNotRoundEssenceInternally;
+        private bool _blnEnemyKarmaQualityLimit = true;
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
@@ -104,19 +114,18 @@ namespace Chummer
         private int _intMetatypeCostMultiplier = 1;
         private decimal _decNuyenPerBP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
-        private bool _automaticBackstory = true;
+        private bool _blnAutomaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
-        private bool _mysaddPpCareer;
+        private bool _blnMysAdeptAllowPPCareer;
         private bool _blnMysAdeptSecondMAGAttribute = false;
         private bool _blnReverseAttributePriorityOrder;
-        private bool _blnHhideItemsOverAvailLimit = true;
+        private bool _blnHideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
-        private string _strNuyenFormat = "#,0.00";
+        private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference = false;
-
-        private readonly XmlDocument _objBookDoc = null;
+        
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
 
@@ -168,21 +177,28 @@ namespace Chummer
         private int _intKarmaNewAIAdvancedProgram = 8;
 
         // Karma Foci variables.
+        // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
-        private int _intKarmaBanishingFocus = 2;
-        private int _intKarmaBindingFocus = 2;
-        private int _intKarmaCenteringFocus = 3;
-        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaDisenchantingFocus = 3;
+        // Metamagic
+        private int _intKarmaCenteringFocus = 3;
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
+        private int _intKarmaSpellShapingFocus = 3;
+        // Power
         private int _intKarmaPowerFocus = 6;
+        // Qi
         private int _intKarmaQiFocus = 2;
+        // Spell
+        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
-        private int _intKarmaSpellShapingFocus = 3;
-        private int _intKarmaSummoningFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+        // Spirit
+        private int _intKarmaBanishingFocus = 2;
+        private int _intKarmaBindingFocus = 2;
+        private int _intKarmaSummoningFocus = 2;
+        // Weapon
         private int _intKarmaWeaponFocus = 3;
 
         // Default build settings.
@@ -211,7 +227,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 }
             }
 
@@ -225,11 +241,6 @@ namespace Chummer
             }
             else
                 Load("default.xml");
-            // Load the language file.
-            LanguageManager.Load(GlobalOptions.Language, this);
-
-            // Load the book information.
-            _objBookDoc = XmlManager.Load("books.xml");
         }
 
         /// <summary>
@@ -239,10 +250,12 @@ namespace Chummer
         {
             string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
             objWriter.WriteStartDocument();
 
             // <settings>
@@ -251,7 +264,7 @@ namespace Chummer
             // <name />
             objWriter.WriteElementString("name", _strName);
             // <recentimagefolder />
-            if (!String.IsNullOrEmpty(_strImageFolder))
+            if (!string.IsNullOrEmpty(_strImageFolder))
             {
                 objWriter.WriteElementString("recentimagefolder", _strImageFolder);
             }
@@ -269,10 +282,6 @@ namespace Chummer
             objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString());
             // <skilldefaultingincludesmodifiers />
             objWriter.WriteElementString("skilldefaultingincludesmodifiers", _blnSkillDefaultingIncludesModifiers.ToString());
-            // <enforceskillmaximummodifiedrating />
-            objWriter.WriteElementString("enforceskillmaximummodifiedrating", _blnEnforceSkillMaximumModifiedRating.ToString());
-            // <capskillrating />
-            objWriter.WriteElementString("capskillrating", _blnCapSkillRating.ToString());
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
             // <printfreeexpenses />
@@ -280,7 +289,7 @@ namespace Chummer
             // <nuyenperbp />
             objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <hideitemsoveravaillimit />
-            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
+            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHideItemsOverAvailLimit.ToString());
             // <UnarmedImprovementsApplyToWeapons />
             objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
             // <allowinitiationincreatemode />
@@ -345,12 +354,6 @@ namespace Chummer
             objWriter.WriteElementString("armorsuitcapacity", _blnArmorSuitCapacity.ToString());
             // <armordegredation />
             objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString());
-            // <automaticcopyprotection />
-            objWriter.WriteElementString("automaticcopyprotection", _blnAutomaticCopyProtection.ToString());
-            // <automaticregistration />
-            objWriter.WriteElementString("automaticregistration", _blnAutomaticRegistration.ToString());
-            // <ergonomicprogramlimit />
-            objWriter.WriteElementString("ergonomicprogramlimit", _blnErgonomicProgramsLimit.ToString());
             // <specialkarmacostbasedonshownvalue />
             objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString());
             // <exceedpositivequalities />
@@ -358,7 +361,7 @@ namespace Chummer
             // <exceedpositivequalitiescostdoubled />
             objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString());
 
-            objWriter.WriteElementString("mysaddppcareer", MysaddPPCareer.ToString());
+            objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString());
 
             // <mysadeptsecondmagattribute />
             objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString());
@@ -377,6 +380,8 @@ namespace Chummer
             objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString());
             // <donotroundessenceinternally />
             objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString());
+            // <donotroundessenceinternally />
+            objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString());
             // <nuyenformat />
             objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
             // <essencedecimals />
@@ -399,8 +404,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatematrixattribute", _blnAlternateMatrixAttribute.ToString());
             // <alloweditpartofbaseweapon />
             objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString());
-            // <allowcustomtransgenics />
-            objWriter.WriteElementString("allowcustomtransgenics", _blnAllowCustomTransgenics.ToString());
             // <maybuyqualities />
             objWriter.WriteElementString("maybuyqualities", _blnMayBuyQualities.ToString());
             // <usecontactpoints />
@@ -421,10 +424,6 @@ namespace Chummer
             objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
             // <createbackuponcareer />
             objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
-            // <printleadershipalternates />
-            objWriter.WriteElementString("printleadershipalternates", _blnPrintLeadershipAlternates.ToString());
-            // <printarcanaalternates />
-            objWriter.WriteElementString("printarcanaalternates", _blnPrintArcanaAlternates.ToString());
             // <printnotes />
             objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
             // <allowobsolescentupgrade />
@@ -435,8 +434,6 @@ namespace Chummer
             objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString());
             // <specialattributekarmalimit />
             objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
-            // <technomancerallowautosoft />
-            objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
             // <allowhoverincrement />
             objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
             // <searchincategoryonly />
@@ -444,7 +441,7 @@ namespace Chummer
             // <compensateskillgroupkarmadifference />
             objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString());
             // <autobackstory />
-            objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
+            objWriter.WriteElementString("autobackstory", _blnAutomaticBackstory.ToString());
             // <freemartialartspecialization />
             objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
             // <priorityspellsasadeptpowers />
@@ -631,20 +628,21 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
                 {
                     _strFileName = "default.xml";
+                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
                     objXmlDocument.Load(strFilePath);
                 }
             }
@@ -668,10 +666,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
             // Skill Defaulting Includes Modifers.
             objXmlNode.TryGetBoolFieldQuickly("skilldefaultingincludesmodifiers", ref _blnSkillDefaultingIncludesModifiers);
-            // Enforce Skill Maximum Modified Rating.
-            objXmlNode.TryGetBoolFieldQuickly("enforceskillmaximummodifiedrating", ref _blnEnforceSkillMaximumModifiedRating);
-            // Cap Skill Rating.
-            objXmlNode.TryGetBoolFieldQuickly("capskillrating", ref _blnCapSkillRating);
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
             // Print Free Expenses.
@@ -679,7 +673,7 @@ namespace Chummer
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
-            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
+            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHideItemsOverAvailLimit);
             // Knucks use Unarmed
             objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
             // Allow Initiation in Create Mode
@@ -745,12 +739,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("armorsuitcapacity", ref _blnArmorSuitCapacity);
             // Allow Armor Degredation.
             objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-            // Automatically add Copy Protection Program Option.
-            objXmlNode.TryGetBoolFieldQuickly("automaticcopyprotection", ref _blnAutomaticCopyProtection);
-            // Automatically add Registration Program Option.
-            objXmlNode.TryGetBoolFieldQuickly("automaticregistration", ref _blnAutomaticRegistration);
-            // Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-            objXmlNode.TryGetBoolFieldQuickly("ergonomicprogramlimit", ref _blnErgonomicProgramsLimit);
             // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
             objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue", ref _blnSpecialKarmaCostBasedOnShownValue);
             // Allow more than 35 BP in Positive Qualities.
@@ -758,7 +746,7 @@ namespace Chummer
             // Double all positive qualities in excess of the limit
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
 
-            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _mysaddPpCareer);
+            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPPCareer);
 
             // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
             objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
@@ -781,6 +769,8 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
             // Only round essence when its value is displayed
             objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
             // Number of decimal places to round to when calculating Essence.
@@ -803,8 +793,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("alternatematrixattribute", ref _blnAlternateMatrixAttribute);
             // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
             objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-            // Whether or not the user can mark any piece of Bioware as being Transgenic.
-            objXmlNode.TryGetBoolFieldQuickly("allowcustomtransgenics", ref _blnAllowCustomTransgenics);
             // Whether or not the user may buy qualities.
             objXmlNode.TryGetBoolFieldQuickly("maybuyqualities", ref _blnMayBuyQualities);
             // Whether or not contact points are used instead of fixed contacts.
@@ -823,10 +811,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
             // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
             objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
-            // Whether or not the alternate uses for the Leadership Skill should be printed.
-            objXmlNode.TryGetBoolFieldQuickly("printleadershipalternates", ref _blnPrintLeadershipAlternates);
-            // Whether or not the alternate uses for the Arcana Skill should be printed.
-            objXmlNode.TryGetBoolFieldQuickly("printarcanaalternates", ref _blnPrintArcanaAlternates);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -838,15 +822,13 @@ namespace Chummer
             // House rule: Whether or not Special Attributes count towards the maximum 50% Karma allowed for Attributes during karma gen.
             objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
             // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
-            objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
-            // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
             objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
             // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
             objXmlNode.TryGetBoolFieldQuickly("searchincategoryonly", ref _blnSearchInCategoryOnly);
             // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
             objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference", ref _blnCompensateSkillGroupKarmaDifference);
             // Optional Rule: Whether Life Modules should automatically create a character back story.
-            objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
+            objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
 
@@ -956,8 +938,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
-                bool blnTemp;
-                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                     blnStorage = blnTemp;
                 _objBaseChummerKey.DeleteValue(strBoolName);
             }
@@ -971,8 +952,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
             if (objRegistryResult != null)
             {
-                int intTemp;
-                if (int.TryParse(objRegistryResult.ToString(), out intTemp))
+                if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
                     intStorage = intTemp;
                 _objBaseChummerKey.DeleteValue(strIntName);
             }
@@ -986,8 +966,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
             if (objRegistryResult != null)
             {
-                decimal decTemp;
-                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
+                if (decimal.TryParse(objRegistryResult.ToString(), System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                     decStorage = decTemp;
                 _objBaseChummerKey.DeleteValue(strDecName);
             }
@@ -1017,12 +996,6 @@ namespace Chummer
 
             // Skill Defaulting Includes Modifers.
             LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers");
-
-            // Enforce Skill Maximum Modified Rating.
-            LoadBoolFromRegistry(ref _blnEnforceSkillMaximumModifiedRating, "enforceskillmaximummodifiedrating");
-
-            // Cap Skill Rating.
-            LoadBoolFromRegistry(ref _blnCapSkillRating, "capskillrating");
 
             // Print Expenses.
             LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
@@ -1102,12 +1075,12 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
-            foreach (string strBookCode in strBooks)
+            foreach (string strBookName in strBooks)
             {
-                XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookName + "\" and not(hide)]/code")?.InnerText;
+                if (!string.IsNullOrEmpty(strCode))
                 {
-                    _lstBooks.Add(objXmlBook["code"].InnerText);
+                    _lstBooks.Add(strCode);
                 }
             }
             RecalculateBookXPath();
@@ -1117,91 +1090,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Convert a book code into the full name.
-        /// </summary>
-        /// <param name="strCode">Book code to convert.</param>
-        public string BookFromCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["name"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book code (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookShort(string strCode = "")
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["altcode"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Determine the book's original code by using the alternate code.
-        /// </summary>
-        /// <param name="strCode">Alternate code to look for.</param>
-        public string BookFromAltCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["code"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book name (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookLong(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                if (objXmlBook != null)
-                {
-                    string strReturn = objXmlBook["translate"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                    strReturn = objXmlBook["name"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                }
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
         /// Determine whether or not a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            foreach (string strBook in _lstBooks)
-            {
-                if (strBook == strCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _lstBooks.Contains(strCode);
         }
 
         /// <summary>
@@ -1214,11 +1108,6 @@ namespace Chummer
             {
                 strPath += " and " + _strBookXPath;
             }
-            if (GlobalOptions.MissionsOnly)
-            {
-                strPath += " and not(nomission)";
-            }
-
             if (!GlobalOptions.Dronemods)
             {
                 strPath += " and not(optionaldrone)";
@@ -1231,15 +1120,24 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath()
         {
-            _strBookXPath = "(";
+            StringBuilder strBookXPath = new StringBuilder("(");
+            _strBookXPath = string.Empty;
 
             foreach (string strBook in _lstBooks)
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
-                    _strBookXPath += "source = \"" + strBook + "\" or ";
+                {
+                    strBookXPath.Append("source = \"");
+                    strBookXPath.Append(strBook);
+                    strBookXPath.Append("\" or ");
+                }
             }
-            if (_strBookXPath.Length >= 4)
-                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+            if (strBookXPath.Length >= 4)
+            {
+                strBookXPath.Length -= 4;
+                strBookXPath.Append(')');
+                _strBookXPath = strBookXPath.ToString();
+            }
             else
                 _strBookXPath = string.Empty;
         }
@@ -1316,36 +1214,6 @@ namespace Chummer
             set
             {
                 _blnSkillDefaultingIncludesModifiers = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the maximum Skill rating modifiers are set.
-        /// </summary>
-        public bool EnforceMaximumSkillRatingModifier
-        {
-            get
-            {
-                return _blnEnforceSkillMaximumModifiedRating;
-            }
-            set
-            {
-                _blnEnforceSkillMaximumModifiedRating = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
-        /// </summary>
-        public bool CapSkillRating
-        {
-            get
-            {
-                return _blnCapSkillRating;
-            }
-            set
-            {
-                _blnCapSkillRating = value;
             }
         }
 
@@ -1502,10 +1370,10 @@ namespace Chummer
         /// <summary>
         /// Allow Mystic Adepts to increase their power points during career mode
         /// </summary>
-        public bool MysaddPPCareer
+        public bool MysAdeptAllowPPCareer
         {
-            get { return _mysaddPpCareer; }
-            set { _mysaddPpCareer = value; }
+            get { return _blnMysAdeptAllowPPCareer; }
+            set { _blnMysAdeptAllowPPCareer = value; }
         }
 
         /// <summary>
@@ -1568,8 +1436,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
+                    Utils.BreakIfDebug();
                 }
             }
         }
@@ -1757,7 +1624,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books
+        public ICollection<string> Books
         {
             get
             {
@@ -1768,7 +1635,7 @@ namespace Chummer
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public List<string> CustomDataDirectoryNames
+        public IList<string> CustomDataDirectoryNames
         {
             get
             {
@@ -1925,52 +1792,7 @@ namespace Chummer
                 _blnArmorDegradation = value;
             }
         }
-
-        /// <summary>
-        /// Whether or not the Copy Protection Program Option should automatically be added.
-        /// </summary>
-        public bool AutomaticCopyProtection
-        {
-            get
-            {
-                return _blnAutomaticCopyProtection;
-            }
-            set
-            {
-                _blnAutomaticCopyProtection = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Registration Program Option should automatically be added.
-        /// </summary>
-        public bool AutomaticRegistration
-        {
-            get
-            {
-                return _blnAutomaticRegistration;
-            }
-            set
-            {
-                _blnAutomaticRegistration = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-        /// </summary>
-        public bool ErgonomicProgramLimit
-        {
-            get
-            {
-                return _blnErgonomicProgramsLimit;
-            }
-            set
-            {
-                _blnErgonomicProgramsLimit = value;
-            }
-        }
-
+        
         /// <summary>
         /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
@@ -2152,6 +1974,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit
+        {
+            get => _blnEnemyKarmaQualityLimit;
+            set => _blnEnemyKarmaQualityLimit = value;
+        }
+
+        /// <summary>
         /// Whether or not Capacity limits should be enforced.
         /// </summary>
         public bool EnforceCapacity
@@ -2283,21 +2114,6 @@ namespace Chummer
             set
             {
                 _blnAllowEditPartOfBaseWeapon = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the user can mark any piece of Bioware as being Transgenic.
-        /// </summary>
-        public bool AllowCustomTransgenics
-        {
-            get
-            {
-                return _blnAllowCustomTransgenics;
-            }
-            set
-            {
-                _blnAllowCustomTransgenics = value;
             }
         }
 
@@ -2452,36 +2268,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the alternate uses for the Leadership Skill should be printed.
-        /// </summary>
-        public bool PrintLeadershipAlternates
-        {
-            get
-            {
-                return _blnPrintLeadershipAlternates;
-            }
-            set
-            {
-                _blnPrintLeadershipAlternates = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool PrintArcanaAlternates
-        {
-            get
-            {
-                return _blnPrintArcanaAlternates;
-            }
-            set
-            {
-                _blnPrintArcanaAlternates = value;
-            }
-        }
-
-        /// <summary>
         /// Whether or not Notes should be printed.
         /// </summary>
         public bool PrintNotes
@@ -2553,21 +2339,6 @@ namespace Chummer
             set
             {
                 _blnSpecialAttributeKarmaLimit = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Technomancers can select Autosofts as Complex Forms.
-        /// </summary>
-        public bool TechnomancerAllowAutosoft
-        {
-            get
-            {
-                return _blnTechnomancerAllowAutosoft;
-            }
-            set
-            {
-                _blnTechnomancerAllowAutosoft = value;
             }
         }
         #endregion
@@ -3512,8 +3283,8 @@ namespace Chummer
         /// </summary>
         public bool AutomaticBackstory
         {
-            get { return _automaticBackstory; }
-            internal set { _automaticBackstory = value; }
+            get { return _blnAutomaticBackstory; }
+            set { _blnAutomaticBackstory = value; }
         }
 
         /// <summary>
@@ -3620,8 +3391,8 @@ namespace Chummer
         /// </summary>
         public bool HideItemsOverAvailLimit
         {
-            get { return _blnHhideItemsOverAvailLimit; }
-            set { _blnHhideItemsOverAvailLimit = value; }
+            get { return _blnHideItemsOverAvailLimit; }
+            set { _blnHideItemsOverAvailLimit = value; }
         }
 
         /// <summary>

@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,13 +34,13 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler ChildPropertyChanged; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
 
         private BindingListDisplay<Power> _powers;
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()
@@ -72,11 +90,11 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            _dropDownList = GenerateDropdownFilter();
+            _dropDownList = (List<Tuple<string, Predicate<Power>>>)GenerateDropdownFilter();
 
             parts.TaskEnd("GenerateDropDown()");
 
-            _sortList = GenerateSortList();
+            _sortList = (List<Tuple<string, IComparer<Power>>>)GenerateSortList();
 
             parts.TaskEnd("GenerateSortList()");
 
@@ -97,7 +115,8 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("_sort databind");
 
-            _powers.ChildPropertyChanged += ChildPropertyChanged;
+            _powers.ChildPropertyChanged += RefreshPowerInfo;
+            _powers.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;
             //this.ResumeLayout(false);
@@ -112,15 +131,15 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
-        private List<Tuple<string, IComparer<Power>>> GenerateSortList()
+        private static IList<Tuple<string, IComparer<Power>>> GenerateSortList()
         {
             List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
             {
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical", GlobalOptions.Language),
                     new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating", GlobalOptions.Language),
                     new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction", GlobalOptions.Language),
                     new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
                 //new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortCategory"),
                 //    new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
@@ -129,15 +148,15 @@ namespace Chummer.UI.Powers
             return ret;
         }
         
-        private List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language),
                     power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language),
                     power => power.Rating == 0)
             };
             //TODO: TRANSLATIONS
@@ -147,7 +166,7 @@ namespace Chummer.UI.Powers
                 in XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category")
                 let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<Power>>(
-                    $"{LanguageManager.GetString("Label_Category")} {displayName}", 
+                    $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {displayName}", 
                     power => power.Category == objNode.InnerText));
 
             return ret;
@@ -207,32 +226,45 @@ namespace Chummer.UI.Powers
         {
             if (_searchMode)
             {
-                _powers.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _powers.Filter(skill => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
             }
         }
 
         private void cmdAddPower_Click(object sender, EventArgs e)
         {
-            frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
-            frmPickPower.ShowDialog(this);
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickPower.DialogResult == DialogResult.Cancel)
-                return;
-
-            Power objPower = new Power(ObjCharacter);
-
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+            bool blnAddAgain = false;
 
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            if (objPower.Create(objXmlPower))
+            do
             {
-                ObjCharacter.Powers.Add(objPower);
-                MissingDatabindingsWorkaround();
-                if (frmPickPower.AddAgain)
-                    cmdAddPower_Click(sender, e);
+                frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
+                frmPickPower.ShowDialog(this);
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickPower.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickPower.AddAgain;
+
+                Power objPower = new Power(ObjCharacter);
+
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                frmPickPower.Dispose();
+                if (objPower.Create(objXmlPower))
+                {
+                    ObjCharacter.Powers.Add(objPower);
+                    MissingDatabindingsWorkaround();
+                }
             }
+            while (blnAddAgain);
+        }
+
+        public void RefreshPowerInfo(object sender, EventArgs e)
+        {
+            CalculatePowerPoints();
         }
 
         /// <summary>
@@ -240,7 +272,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 
@@ -266,7 +298,7 @@ namespace Chummer.UI.Powers
                 // Add any Power Point Improvements to MAG.
                 intMAG += ImprovementManager.ValueOf(ObjCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return intMAG;
+                return Math.Max(intMAG, 0);
             }
         }
 

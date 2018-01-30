@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
   <version>0</version>
   <categories>
     <category>Combat</category>
@@ -29,6 +31,7 @@
     <category>Rituals</category>
   </categories>
   <spells>
+    <!-- Region SR5 -->
     <spell>
       <id>c78d91cc-fa02-48c3-a243-28823a2038ef</id>
       <name>Acid Stream</name>
@@ -1278,6 +1281,8 @@
       <range>Special</range>
       <type>M</type>
     </spell>
+    <!-- End Region -->
+    <!-- Region Street Grimoire -->
     <spell>
       <id>45d775c9-d12f-4416-a45a-88922ec3c2fd</id>
       <name>Corrode [Object]</name>
@@ -3631,6 +3636,8 @@
         </allof>
       </required>
     </spell>
+    <!-- End Region -->
+    <!-- Region Stolen Souls -->
     <spell>
       <id>b683e8f4-ca91-4c64-932d-757754069a1f</id>
       <name>Convince</name>
@@ -3683,6 +3690,8 @@
       <range>T</range>
       <type>P</type>
     </spell>
+    <!-- End Region -->
+    <!-- Region Shadow Spells -->
     <spell>
       <id>3374e604-a947-43fa-a493-ea7c244e5559</id>
       <name>Chill</name>
@@ -4039,7 +4048,7 @@
       <dv>F-3</dv>
       <range>S</range>
       <type>M</type>
-    </spell>    
+    </spell>
     <spell>
       <id>df65b87a-e386-46f5-b8ad-21ce4b08dc09</id>
       <name>Air Filter</name>
@@ -4261,6 +4270,7 @@
       <range>Special</range>
       <type>M</type>
     </spell>
+    <!-- End Region -->
     <!-- Region Hard Targets -->
     <spell>
       <id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
@@ -4308,7 +4318,7 @@
       <source>HT</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F+1</dv>
       <range>T</range>
@@ -4321,7 +4331,7 @@
       <source>HT</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
@@ -4334,7 +4344,7 @@
       <source>HT</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
@@ -4483,7 +4493,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>Special</dv>
+      <dv>F+3</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
@@ -4518,7 +4528,7 @@
       <name>Claw</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect</descriptor>
       <duration>I</duration>
@@ -4531,7 +4541,7 @@
       <name>Barrage</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area</descriptor>
       <duration>I</duration>
@@ -4560,8 +4570,8 @@
       <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area, Elemental</descriptor>
-      <duration>S</duration>
-      <dv>Special</dv>
+      <duration>I</duration>
+      <dv>F</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>

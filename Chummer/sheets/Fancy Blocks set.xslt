@@ -670,7 +670,7 @@
             <span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
               <xsl:variable name="SpecializationBonus" select="specbonus"/>
-              <p style="text-indent: 10%">
+              <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
@@ -716,7 +716,7 @@
             </xsl:if>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
               <xsl:variable name="SpecializationBonus" select="specbonus"/>
-              <p style="text-indent: 10%">
+              <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
@@ -1193,7 +1193,7 @@
                 <xsl:call-template name="print_source_page" />
                 <xsl:call-template name="print_notes" />
                 <ul>
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:sort select="name" />
                     <li>
                       <xsl:value-of select="name" />
@@ -1795,7 +1795,7 @@
                 <tr><td><xsl:value-of select="$lang.Agility"/></td><td><xsl:value-of select="spiritattributes/agi" /></td><td><xsl:value-of select="$lang.Logic"/></td><td><xsl:value-of select="spiritattributes/log" /></td></tr>
                 <tr><td><xsl:value-of select="$lang.Reaction"/></td><td><xsl:value-of select="spiritattributes/rea" /></td><td><xsl:value-of select="$lang.Intuition"/></td><td><xsl:value-of select="spiritattributes/int" /></td></tr>
                 <tr><td><xsl:value-of select="$lang.Strength"/></td><td><xsl:value-of select="spiritattributes/str" /></td><td><xsl:value-of select="$lang.Charisma"/></td><td><xsl:value-of select="spiritattributes/cha" /></td></tr>
-                <tr><td><xsl:value-of select="$lang.PhysicalTrack"/></td><td><xsl:value-of select="ceiling(spiritattributes/bod div 2) + 8" /></td><td><xsl:value-of select="$lang.StunTrack"/></td><td><xsl:value-of select="spiritattributes/cha" /></td></tr>
+                <tr><td><xsl:value-of select="$lang.PhysicalTrack"/></td><td><xsl:value-of select="ceiling(spiritattributes/bod div 2) + 8" /></td><td><xsl:value-of select="$lang.StunTrack"/></td><td><xsl:value-of select="ceiling(spiritattributes/wil div 2) + 8" /></td></tr>
                 <tr><td><xsl:value-of select="$lang.Initiative"/></td><td><xsl:value-of select="spiritattributes/ini" /><xsl:text> + 2d6</xsl:text></td></tr>
               </table>
             </td>
@@ -1803,11 +1803,14 @@
           <tr>
             <td>
               <ul style="margin-left:5px;">
-                <xsl:if test="count(powers/power) &gt; 0">
+                <xsl:if test="count(powers/critterpower) &gt; 0">
                   <li><strong><xsl:value-of select="$lang.Powers"/></strong></li>
-                  <xsl:for-each select="powers/power">
+                  <xsl:for-each select="powers/critterpower">
                     <li>
                       <xsl:value-of select="name" />
+                      <xsl:if test="extra!=''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
                       <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
@@ -1816,20 +1819,27 @@
             </td>
             <td>
               <ul style="margin-left:5px;">
-                <xsl:if test="count(optionalpowers/power) &gt; 0">
-                  <li><strong>Optional Powers</strong></li>
-                  <xsl:for-each select="optionalpowers/power">
+                <xsl:if test="count(optionalpowers/critterpower) &gt; 0">
+                  <li><strong><xsl:value-of select="$lang.OptionalPowers"/></strong></li>
+                  <xsl:for-each select="optionalpowers/critterpower">
                     <li>
                       <xsl:value-of select="name" />
+                      <xsl:if test="extra!=''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
                       <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
                 </xsl:if>
-                <xsl:if test="count(weaknesses/weakness) &gt; 0">
-                  <li><strong>Weaknesses</strong></li>
-                  <xsl:for-each select="weaknesses/weakness">
+                <xsl:if test="count(weaknesses/critterpower) &gt; 0">
+                  <li><strong><xsl:value-of select="$lang.Weaknesses"/></strong></li>
+                  <xsl:for-each select="weaknesses/critterpower">
                     <li>
-                      <xsl:value-of select="." />
+                      <xsl:value-of select="name" />
+                      <xsl:if test="extra!=''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
+                      <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
                 </xsl:if>
@@ -2052,7 +2062,7 @@
       <br />
     </xsl:if>
 
-    <xsl:if test="hasothermugshots = 'yes'">
+    <xsl:if test="hasothermugshots = 'True'">
       <table class="stats description">
         <tr><td>
           <div class="bigheader">[<xsl:value-of select="$lang.OtherMugshots"/>]</div>

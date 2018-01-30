@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,43 +30,44 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Security;
 
-namespace Chummer.Backend.Debugging
+namespace Chummer.Backend
 {
-
-
-    internal class CrashHandler
+    public static class CrashHandler
     {
-        [SuppressUnmanagedCodeSecurity]
-        internal static class SafeNativeMethods
+        private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
             internal static extern uint GetCurrentThreadId();
         }
 
-        private class DumpData
+        private sealed class DumpData
         {
             public DumpData()
             {
                 AddDefaultInfo();
             }
 
+            // JavaScriptSerializer requires that all properties it accesses be public.
+            // ReSharper disable once MemberCanBePrivate.Local 
             public List<string> capturefiles = new List<string>();
+            // ReSharper disable once MemberCanBePrivate.Local 
             public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            // ReSharper disable once MemberCanBePrivate.Local 
             public Dictionary<string, string> attributes = new Dictionary<string, string>();
             public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = SafeNativeMethods.GetCurrentThreadId();
+            public uint threadId = NativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {
                 //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
-                attributes.Add("visible-crash-id", Guid.NewGuid().ToString());
+                attributes.Add("visible-crash-id", Guid.NewGuid().ToString("D"));
 
                 attributes.Add("visible-build-type",
                     #if DEBUG
                     "DEBUG"
-#else
+                    #else
                     "RELEASE"
-#endif
+                    #endif
                     );
                 attributes.Add("commandline", Environment.CommandLine);
                 attributes.Add("visible-version", Application.ProductVersion);
@@ -95,7 +114,8 @@ namespace Chummer.Backend.Debugging
             public string SerializeBase64()
             {
                 string altson = new JavaScriptSerializer().Serialize(this);
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                string sReturn = Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                return sReturn;
             }
 
             public void AddFile(string file)
@@ -109,7 +129,7 @@ namespace Chummer.Backend.Debugging
             }
         }
 
-        internal static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex)
         {
             try
             {
@@ -119,7 +139,11 @@ namespace Chummer.Backend.Debugging
                 dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
                 dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
-                Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+                Byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                File.WriteAllBytes(Path.Combine(Application.StartupPath, "json.txt"), info);
+
+                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt") + " --debug");
+                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt"));
 
                 crashHandler.WaitForExit();
             }
