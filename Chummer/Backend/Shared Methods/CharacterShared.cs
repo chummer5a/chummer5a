@@ -1400,64 +1400,7 @@ namespace Chummer
                 }
             }
         }
-
-        /// <summary>
-        /// Populate the TreeView that contains all of the character's Gear.
-        /// </summary>
-        protected void PopulateGearList(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly)
-        {
-            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
-
-            // Populate Gear.
-            // Create the root node.
-            treGear.Nodes.Clear();
-            TreeNode objRoot = new TreeNode
-            {
-                Tag = "Node_SelectedGear",
-                Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
-            };
-            treGear.Nodes.Add(objRoot);
-
-            // Start by populating Locations.
-            foreach (string strLocation in CharacterObject.GearLocations)
-            {
-                TreeNode objLocation = new TreeNode
-                {
-                    Tag = strLocation,
-                    Text = strLocation,
-                    ContextMenuStrip = cmsGearLocation
-                };
-                treGear.Nodes.Add(objLocation);
-            }
-
-            foreach (Gear objGear in CharacterObject.Gear)
-            {
-                if (!blnCommlinksOnly || objGear.IsCommlink)
-                {
-                    TreeNode objParent = objRoot;
-                    if (!string.IsNullOrEmpty(objGear.Location))
-                    {
-                        foreach (TreeNode objFind in treGear.Nodes)
-                        {
-                            if (objFind.Text == objGear.Location)
-                            {
-                                objParent = objFind;
-                                break;
-                            }
-                        }
-                    }
-                    objParent.Nodes.Add(objGear.CreateTreeNode(cmsGear));
-                }
-            }
-            foreach (TreeNode objNode in treGear.Nodes)
-                if (objNode.Nodes.Count > 0)
-                    objNode.Expand();
-
-            TreeNode objSelectedNode = treGear.FindNode(strSelectedId);
-            if (objSelectedNode != null)
-                treGear.SelectedNode = objSelectedNode;
-        }
-
+        
         /// <summary>
         /// Populate the TreeView that contains all of the character's Weapons.
         /// </summary>
@@ -1783,6 +1726,8 @@ namespace Chummer
                 if (blnSingleAdd)
                     treArmor.SelectedNode = objNode;
             }
+
+            treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
         }
 
         protected void RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -1866,7 +1811,135 @@ namespace Chummer
             }
         }
 
-        protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected void RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+
+            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+
+            TreeNode nodRoot = treGear.FindNode("Node_SelectedGear", false);
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            TreeNode objLocation = new TreeNode
+                            {
+                                Tag = strLocation,
+                                Text = strLocation,
+                                ContextMenuStrip = cmsGearLocation
+                            };
+                            treGear.Nodes.Insert(intNewIndex, objLocation);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treGear.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                foreach (TreeNode nodGear in objLocation.Nodes)
+                                {
+                                    if (nodRoot == null)
+                                    {
+                                        nodRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectedGear",
+                                            Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                                        };
+                                        treGear.Nodes.Insert(0, nodRoot);
+                                    }
+                                    nodGear.Remove();
+                                    nodRoot.Nodes.Add(nodGear);
+                                }
+                                objLocation.Remove();
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewItemsIndex = 0;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treGear.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string strNewLocation)
+                                {
+                                    objLocation.Tag = strNewLocation;
+                                    objLocation.Text = strNewLocation;
+                                }
+                                intNewItemsIndex += 1;
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treGear.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
+                                objLocation.Remove();
+                            }
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            Tuple<string, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == strLocation);
+                            if (objLocationTuple != null)
+                            {
+                                treGear.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
+                                intNewIndex += 1;
+                                lstMoveNodes.Remove(objLocationTuple);
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (string strLocation in _objCharacter.GearLocations)
+                        {
+                            TreeNode objLocation = treGear.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                foreach (TreeNode nodGear in objLocation.Nodes)
+                                {
+                                    if (nodRoot == null)
+                                    {
+                                        nodRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectedGear",
+                                            Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                                        };
+                                        treGear.Nodes.Insert(0, nodRoot);
+                                    }
+                                    nodGear.Remove();
+                                    nodRoot.Nodes.Add(nodGear);
+                                }
+                                objLocation.Remove();
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            treGear.SelectedNode = treGear.FindNode(strSelectedId);
+        }
+
+        protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treGear.SelectedNode?.Tag.ToString();
 
@@ -1957,7 +2030,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshGears(treGear, cmsGearLocation, cmsGear);
+                            RefreshGears(treGear, cmsGearLocation, cmsGear, blnCommlinksOnly);
                         }
                         break;
                 }
@@ -1965,6 +2038,9 @@ namespace Chummer
 
             void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
+                if (blnCommlinksOnly && !objGear.IsCommlink)
+                    return;
+
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
 
                 TreeNode nodParent = null;

@@ -227,7 +227,7 @@ namespace Chummer
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
-        private List<Gear> _lstGear = new List<Gear>();
+        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private List<Vehicle> _lstVehicles = new List<Vehicle>();
         private List<Metamagic> _lstMetamagics = new List<Metamagic>();
         private List<Art> _lstArts = new List<Art>();
@@ -236,7 +236,7 @@ namespace Chummer
         private ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
         private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
         private List<string> _lstOldQualities = new List<string>();
-        private List<string> _lstGearLocations = new List<string>();
+        private ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
         private ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
@@ -6565,7 +6565,7 @@ namespace Chummer
         /// <summary>
         /// Gear.
         /// </summary>
-        public IList<Gear> Gear
+        public ObservableCollection<Gear> Gear
         {
             get
             {
@@ -6682,7 +6682,7 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public IList<string> GearLocations
+        public ObservableCollection<string> GearLocations
         {
             get
             {

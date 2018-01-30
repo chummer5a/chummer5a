@@ -647,15 +647,14 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new idnex.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearParent(Character objCharacter, TreeNode objDestination, TreeView treGear)
+        public static void MoveGearParent(Character objCharacter, TreeNode objDestination, TreeNode objGearNode)
         {
-            TreeNode objClone = treGear.SelectedNode;
             // The item cannot be dropped onto itself or onto one of its children.
             for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
-                if (objCheckNode == objClone)
+                if (objCheckNode == objGearNode)
                     return;
 
-            string strSelectedId = objClone.Tag.ToString();
+            string strSelectedId = objGearNode.Tag.ToString();
             // Locate the currently selected piece of Gear.
             Gear objGear = objCharacter.Gear.DeepFindById(strSelectedId);
 
@@ -690,9 +689,9 @@ namespace Chummer
             if (objDestination.Level == 0)
             {
                 // The Gear was moved to a location, so add it to the character instead.
-                objCharacter.Gear.Add(objGear);
                 objGear.Location = objDestination.Text;
                 objGear.Parent = null;
+                objCharacter.Gear.Add(objGear);
             }
             else
             {
@@ -700,18 +699,11 @@ namespace Chummer
                 Gear objParent = objCharacter.Gear.DeepFindById(objDestination.Tag.ToString());
 
                 // Add the Gear as a child of the destination Node and clear its location.
-                objParent.GearChildren.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
+                objParent.GearChildren.Add(objGear);
                 objParent.RefreshMatrixAttributeArray();
             }
-
-            // Remove the current Node.
-            objClone.Remove();
-
-            // Add the new Node to the new parent.
-            objDestination.Nodes.Add(objClone);
-            objDestination.Expand();
         }
 
         /// <summary>
@@ -719,30 +711,29 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treGear)
+        public static void MoveGearNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
         {
-            TreeNode objClone = treGear.SelectedNode;
-            string strSelectedId = objClone.Tag.ToString();
+            string strSelectedId = objGearNode.Tag.ToString();
             Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
-            objCharacter.Gear.Remove(objGear);
-            if (intNewIndex > objCharacter.Gear.Count)
-                objCharacter.Gear.Add(objGear);
-            else
-                objCharacter.Gear.Insert(intNewIndex, objGear);
+            if (objGear != null)
+            {
+                objCharacter.Gear.Remove(objGear);
 
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
 
-            // Change the Location on the Gear item.
-            if (objNewParent.Tag.ToString() == "Node_SelectedGear")
-                objGear.Location = string.Empty;
-            else
-                objGear.Location = objNewParent.Text;
+                // Change the Location on the Gear item.
+                if (objNewParent.Tag.ToString() == "Node_SelectedGear")
+                    objGear.Location = string.Empty;
+                else
+                    objGear.Location = objNewParent.Text;
 
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
+                if (intNewIndex > objCharacter.Gear.Count)
+                    objCharacter.Gear.Add(objGear);
+                else
+                    objCharacter.Gear.Insert(intNewIndex, objGear);
+            }
         }
 
         /// <summary>
@@ -750,7 +741,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treGear)
+        public static void MoveGearRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
             if (objDestination != null)
             {
@@ -762,18 +753,9 @@ namespace Chummer
 
             if (intNewIndex == 0)
                 return;
-
-            TreeNode nodOldNode = treGear.SelectedNode;
+            
             string strLocation = nodOldNode.Tag.ToString();
-            objCharacter.GearLocations.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.GearLocations.Count)
-                objCharacter.GearLocations.Add(strLocation);
-            else
-                objCharacter.GearLocations.Insert(intNewIndex - 1, strLocation);
-
-            nodOldNode.Remove();
-            treGear.Nodes.Insert(intNewIndex, nodOldNode);
+            objCharacter.GearLocations.Move(objCharacter.GearLocations.IndexOf(strLocation), intNewIndex);
         }
 
         /// <summary>
