@@ -1511,57 +1511,577 @@ namespace Chummer
                 treWeapons.SelectedNode = objSelectedNode;
         }
 
-        /// <summary>
-        /// Populate the TreeView that contains all of the character's Armor.
-        /// </summary>
-        protected void PopulateArmorList(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
+        protected void RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+
+            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+
+            TreeNode nodRoot = treArmor.FindNode("Node_SelectedArmor", false);
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            TreeNode objLocation = new TreeNode
+                            {
+                                Tag = strLocation,
+                                Text = strLocation,
+                                ContextMenuStrip = cmsArmorLocation
+                            };
+                            treArmor.Nodes.Insert(intNewIndex, objLocation);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treArmor.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                foreach (TreeNode nodArmor in objLocation.Nodes)
+                                {
+                                    if (nodRoot == null)
+                                    {
+                                        nodRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectedArmor",
+                                            Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
+                                        };
+                                        treArmor.Nodes.Insert(0, nodRoot);
+                                    }
+                                    nodArmor.Remove();
+                                    nodRoot.Nodes.Add(nodArmor);
+                                }
+                                objLocation.Remove();
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        int intNewItemsIndex = 0;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treArmor.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string strNewLocation)
+                                {
+                                    objLocation.Tag = strNewLocation;
+                                    objLocation.Text = strNewLocation;
+                                }
+                                intNewItemsIndex += 1;
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objLocation = treArmor.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
+                                objLocation.Remove();
+                            }
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            Tuple<string, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == strLocation);
+                            if (objLocationTuple != null)
+                            {
+                                treArmor.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
+                                intNewIndex += 1;
+                                lstMoveNodes.Remove(objLocationTuple);
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (string strLocation in _objCharacter.ArmorLocations)
+                        {
+                            TreeNode objLocation = treArmor.FindNode(strLocation, false);
+                            if (objLocation != null)
+                            {
+                                foreach (TreeNode nodArmor in objLocation.Nodes)
+                                {
+                                    if (nodRoot == null)
+                                    {
+                                        nodRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectedArmor",
+                                            Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
+                                        };
+                                        treArmor.Nodes.Insert(0, nodRoot);
+                                    }
+                                    nodArmor.Remove();
+                                    nodRoot.Nodes.Add(nodArmor);
+                                }
+                                objLocation.Remove();
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        protected void RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
 
-            // Populate Armor.
-            // Create the root node.
-            treArmor.Nodes.Clear();
-            TreeNode objRoot = new TreeNode
-            {
-                Tag = "Node_SelectedArmor",
-                Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
-            };
-            treArmor.Nodes.Add(objRoot);
+            TreeNode nodRoot = null;
 
-            // Start by populating Locations.
-            foreach (string strLocation in CharacterObject.ArmorLocations)
+            if (notifyCollectionChangedEventArgs == null)
             {
-                TreeNode objLocation = new TreeNode
+                // Populate Armor.
+                // Create the root node.
+                treArmor.Nodes.Clear();
+                
+                // Start by populating Locations.
+                foreach (string strLocation in CharacterObject.ArmorLocations)
                 {
-                    Tag = strLocation,
-                    Text = strLocation,
-                    ContextMenuStrip = cmsArmorLocation
-                };
-                treArmor.Nodes.Add(objLocation);
+                    TreeNode objLocation = new TreeNode
+                    {
+                        Tag = strLocation,
+                        Text = strLocation,
+                        ContextMenuStrip = cmsArmorLocation
+                    };
+                    treArmor.Nodes.Add(objLocation);
+                }
+                foreach (Armor objArmor in CharacterObject.Armor)
+                {
+                    AddToTree(objArmor, -1, false);
+                    objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                    objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                }
+
+                treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
             }
-            foreach (Armor objArmor in CharacterObject.Armor)
+            else
             {
-                TreeNode objParent = objRoot;
+                nodRoot = treArmor.FindNode("Node_SelectedArmor", false);
+
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objArmor, intNewIndex);
+                                intNewIndex += 1;
+                                objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                                objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                objArmor.ArmorMods.CollectionChanged -= (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                                objArmor.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                treArmor.FindNode(objArmor.InternalId)?.Remove();
+                            }
+                            if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                            {
+                                nodRoot.Remove();
+                                nodRoot = null;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                objArmor.ArmorMods.CollectionChanged -= (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                                objArmor.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                treArmor.FindNode(objArmor.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objArmor, intNewIndex);
+                                intNewIndex += 1;
+                                objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                                objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                            }
+                            if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                            {
+                                nodRoot.Remove();
+                                nodRoot = null;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treArmor.FindNode(objArmor.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objArmor, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                            if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                            {
+                                nodRoot.Remove();
+                                nodRoot = null;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                        }
+                        break;
+                }
+            }
+
+            void AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
+
+                TreeNode nodParent = null;
                 if (!string.IsNullOrEmpty(objArmor.Location))
                 {
-                    foreach (TreeNode objFind in treArmor.Nodes)
+                    nodParent = treArmor.FindNode(objArmor.Location, false);
+                }
+                if (nodParent == null)
+                {
+                    if (nodRoot == null)
                     {
-                        if (objFind.Text == objArmor.Location)
+                        nodRoot = new TreeNode
                         {
-                            objParent = objFind;
-                            break;
+                            Tag = "Node_SelectedArmor",
+                            Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
+                        };
+                        treArmor.Nodes.Insert(0, nodRoot);
+                    }
+                    nodParent = nodRoot;
+                }
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treArmor.SelectedNode = objNode;
+            }
+        }
+
+        protected void RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+            TreeNode nodArmor = treArmor.FindNode(objArmor.InternalId);
+            if (nodArmor == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objArmorMod, intNewIndex);
+                            objArmorMod.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            intNewIndex += 1;
                         }
                     }
-                }
-                objParent.Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objArmorMod.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objArmorMod.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objArmorMod, intNewIndex);
+                            objArmorMod.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objArmorMod, intNewIndex);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        nodArmor.Nodes.Clear();
+                    }
+                    break;
             }
-            foreach (TreeNode objNode in treArmor.Nodes)
-                if (objNode.Nodes.Count > 0)
-                    objNode.Expand();
 
-            TreeNode objSelectedNode = treArmor.FindNode(strSelectedId);
-            if (objSelectedNode != null)
-                treArmor.SelectedNode = objSelectedNode;
+            void AddToTree(ArmorMod objArmorMod, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objArmorMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
+
+                if (intIndex >= 0)
+                    nodArmor.Nodes.Insert(intIndex, objNode);
+                else
+                    nodArmor.Nodes.Add(objNode);
+                nodArmor.Expand();
+                if (blnSingleAdd)
+                    treArmor.SelectedNode = objNode;
+            }
+        }
+
+        protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+
+            // Populate Gear.
+            // Create the root node.
+
+            TreeNode nodRoot = null;
+            
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                treGear.Nodes.Clear();
+
+                // Start by populating Locations.
+                foreach (string strLocation in CharacterObject.GearLocations)
+                {
+                    TreeNode objLocation = new TreeNode
+                    {
+                        Tag = strLocation,
+                        Text = strLocation,
+                        ContextMenuStrip = cmsGearLocation
+                    };
+                    treGear.Nodes.Add(objLocation);
+                }
+
+                foreach (Gear objGear in CharacterObject.Gear)
+                {
+                    AddToTree(objGear, -1, false);
+                    objGear.GearChildren.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                }
+
+                treGear.SelectedNode = treGear.FindNode(strSelectedId);
+            }
+            else
+            {
+                nodRoot = treGear.FindNode("Node_SelectedGear", false);
+
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objGear, intNewIndex);
+                                objGear.GearChildren.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                objGear.GearChildren.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                treGear.FindNode(objGear.InternalId)?.Remove();
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                objGear.GearChildren.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                treGear.FindNode(objGear.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objGear, intNewIndex);
+                                objGear.GearChildren.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treGear.FindNode(objGear.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objGear, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshGears(treGear, cmsGearLocation, cmsGear);
+                        }
+                        break;
+                }
+            }
+
+            void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+
+                TreeNode nodParent = null;
+                if (!string.IsNullOrEmpty(objGear.Location))
+                {
+                    nodParent = treGear.FindNode(objGear.Location, false);
+                }
+                if (nodParent == null)
+                {
+                    if (nodRoot == null)
+                    {
+                        nodRoot = new TreeNode
+                        {
+                            Tag = "Node_SelectedGear",
+                            Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                        };
+                        treGear.Nodes.Insert(0, nodRoot);
+                    }
+                    nodParent = nodRoot;
+                }
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treGear.SelectedNode = objNode;
+            }
+        }
+
+        protected void RefreshChildrenGears(TreeView treGear, IHasInternalId objParent, ContextMenuStrip cmsGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+            
+            TreeNode nodParent = treGear.FindNode(objParent.InternalId);
+            if (nodParent == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objGear, intNewIndex);
+                            objGear.GearChildren.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objGear.GearChildren.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objGear.GearChildren.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objGear, intNewIndex);
+                            objGear.GearChildren.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objGear, intNewIndex);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        nodParent.Nodes.Clear();
+                    }
+                    break;
+            }
+
+            void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treGear.SelectedNode = objNode;
+            }
         }
         
         /// <summary>
@@ -1792,6 +2312,7 @@ namespace Chummer
                 foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                 {
                     AddToTree(objMartialArt, false);
+                    objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                 }
 
                 treMartialArts.SortCustom(strSelectedId);
@@ -1805,6 +2326,7 @@ namespace Chummer
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objMartialArt);
+                                objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                             }
                         }
                         break;
@@ -1840,6 +2362,7 @@ namespace Chummer
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objMartialArt);
+                                objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                             }
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
@@ -1909,7 +2432,6 @@ namespace Chummer
                     objParentNode.Nodes.Add(objNode);
 
                 objParentNode.Expand();
-                objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
             }
         }
         

@@ -58,10 +58,10 @@ namespace Chummer
                 else if (!string.IsNullOrEmpty(objGear.Location))
                     strName += " (" + objGear.Location + ')';
                 // Retrieve the plugin information if it has any.
-                if (objGear.Children.Count > 0)
+                if (objGear.GearChildren.Count > 0)
                 {
                     string strPlugins = string.Empty;
-                    foreach (Gear objChild in objGear.Children)
+                    foreach (Gear objChild in objGear.GearChildren)
                     {
                         strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
                     }

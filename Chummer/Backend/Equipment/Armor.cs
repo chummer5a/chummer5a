@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -51,8 +52,8 @@ namespace Chummer.Backend.Equipment
         private int _intDamage = 0;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
-        private List<ArmorMod> _lstArmorMods = new List<ArmorMod>();
-        private List<Gear> _lstGear = new List<Gear>();
+        private ObservableCollection<ArmorMod> _lstArmorMods = new ObservableCollection<ArmorMod>();
+        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private XmlNode _nodBonus;
@@ -966,7 +967,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public IList<ArmorMod> ArmorMods
+        public ObservableCollection<ArmorMod> ArmorMods
         {
             get
             {
@@ -977,7 +978,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public IList<Gear> Gear
+        public ObservableCollection<Gear> Gear
         {
             get
             {

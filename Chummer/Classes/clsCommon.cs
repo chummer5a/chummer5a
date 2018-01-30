@@ -683,7 +683,7 @@ namespace Chummer
                 objCharacter.Gear.Remove(objGear);
             else
             {
-                objGear.Parent.Children.Remove(objGear);
+                objGear.Parent.GearChildren.Remove(objGear);
                 objGear.Parent.RefreshMatrixAttributeArray();
             }
 
@@ -700,7 +700,7 @@ namespace Chummer
                 Gear objParent = objCharacter.Gear.DeepFindById(objDestination.Tag.ToString());
 
                 // Add the Gear as a child of the destination Node and clear its location.
-                objParent.Children.Add(objGear);
+                objParent.GearChildren.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
                 objParent.RefreshMatrixAttributeArray();
@@ -1051,7 +1051,7 @@ namespace Chummer
             // Remove the Gear from the Vehicle.
             if (objGear.Parent != null)
             {
-                objGear.Parent.Children.Remove(objGear);
+                objGear.Parent.GearChildren.Remove(objGear);
                 objGear.Parent.RefreshMatrixAttributeArray();
             }
             else if (objCyberware != null)
@@ -1077,7 +1077,7 @@ namespace Chummer
             else
             {
                 // Add the Gear to its new parent.
-                objDestinationGear.Children.Add(objGear);
+                objDestinationGear.GearChildren.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
                 objDestinationGear.RefreshMatrixAttributeArray();

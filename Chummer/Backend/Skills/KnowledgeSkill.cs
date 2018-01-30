@@ -224,7 +224,7 @@ namespace Chummer.Backend.Skills
                 {
                     int intMax = 0;
                     //TODO this works with translate?
-                    foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && (x.Extra == Name || x.Extra == DisplayNameMethod(GlobalOptions.Language))))
+                    foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.GearChildren, x => x.Equipped && x.Category == "Skillsofts" && (x.Extra == Name || x.Extra == DisplayNameMethod(GlobalOptions.Language))))
                     {
                         if (objSkillsoft.Rating > intMax)
                             intMax = objSkillsoft.Rating;

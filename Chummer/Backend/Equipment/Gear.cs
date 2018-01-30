@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -60,7 +61,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
-        private List<Gear> _objChildren = new List<Gear>();
+        private ObservableCollection<Gear> _objChildren = new ObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private Character _objCharacter;
@@ -490,7 +491,7 @@ namespace Chummer.Backend.Equipment
                 objChild.Source = strChildForceSource;
             if (!string.IsNullOrEmpty(strChildForcePage))
                 objChild.Page = strChildForcePage;
-            objParent.Children.Add(objChild);
+            objParent.GearChildren.Add(objChild);
             this.RefreshMatrixAttributeArray();
 
             // Change the Capacity of the child if necessary.
@@ -540,7 +541,7 @@ namespace Chummer.Backend.Equipment
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
 
-            foreach (Gear objGearChild in objGear.Children)
+            foreach (Gear objGearChild in objGear.GearChildren)
             {
                 Gear objChild = new Gear(_objCharacter);
                 objChild.Copy(objGearChild, lstWeapons);
@@ -849,11 +850,11 @@ namespace Chummer.Backend.Equipment
                 // This is Commlink Functionality, which originally had Persona Firmware that would now make the Commlink Functionality item count as a commlink
                 if (blnIsCommlinkLegacy != IsCommlink)
                 {
-                    for (int i = Children.Count - 1; i >= 0; --i)
+                    for (int i = GearChildren.Count - 1; i >= 0; --i)
                     {
-                        Gear objLoopChild = Children[i];
+                        Gear objLoopChild = GearChildren[i];
                         if (objLoopChild.ParentID == InternalId && objLoopChild.CanFormPersona == "Parent")
-                            Children.RemoveAt(i);
+                            GearChildren.RemoveAt(i);
                     }
                 }
             }
@@ -910,7 +911,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("children");
-            foreach (Gear objGear in Children)
+            foreach (Gear objGear in GearChildren)
             {
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
@@ -1333,7 +1334,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
+                return _strCanFormPersona.Contains("Self") || GearChildren.Any(x => x.CanFormPersona.Contains("Parent"));
             }
         }
 
@@ -1341,6 +1342,17 @@ namespace Chummer.Backend.Equipment
         /// A List of child pieces of Gear.
         /// </summary>
         public IList<Gear> Children
+        {
+            get
+            {
+                return _objChildren;
+            }
+        }
+
+        /// <summary>
+        /// A List of child pieces of Gear.
+        /// </summary>
+        public ObservableCollection<Gear> GearChildren
         {
             get
             {
@@ -1467,10 +1479,10 @@ namespace Chummer.Backend.Equipment
                 {
                     objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
                     objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
-                    if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                    if (GearChildren.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                     {
                         int intTotalChildrenValue = 0;
-                        foreach (Gear loopGear in Children)
+                        foreach (Gear loopGear in GearChildren)
                         {
                             if (loopGear.Equipped)
                             {
@@ -1507,7 +1519,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod "))
                 strAttributeName = "Mod " + strAttributeName;
 
-            foreach (Gear loopGear in Children)
+            foreach (Gear loopGear in GearChildren)
             {
                 if (loopGear.Equipped)
                 {
@@ -1781,7 +1793,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return Children.Cast<IHasMatrixAttributes>().ToList();
+                return GearChildren.Cast<IHasMatrixAttributes>().ToList();
             }
         }
 
@@ -1939,7 +1951,7 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
-                foreach (Gear objChild in Children)
+                foreach (Gear objChild in GearChildren)
                 {
                     if (objChild.ParentID != InternalId)
                     {
@@ -2103,10 +2115,10 @@ namespace Chummer.Backend.Equipment
                         decParentCost = Parent.OwnCostPreMultipliers;
                 }
                 decimal decTotalChildrenCost = 0;
-                if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
+                if (GearChildren.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
                     object decTotalChildrenCostLock = new object();
-                    Parallel.ForEach(Children, loopGear =>
+                    Parallel.ForEach(GearChildren, loopGear =>
                     {
                         decimal decLoop = loopGear.CalculatedCost;
                         lock (decTotalChildrenCostLock)
@@ -2155,11 +2167,11 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCostPreMultipliers;
 
                 decimal decPlugin = 0;
-                if (Children.Count > 0)
+                if (GearChildren.Count > 0)
                 {
                     // Add in the cost of all child components.
                     object decPluginLock = new object();
-                    Parallel.ForEach(Children, objChild =>
+                    Parallel.ForEach(GearChildren, objChild =>
                     {
                         decimal decLoop = objChild.TotalCost;
                         lock (decPluginLock)
@@ -2260,11 +2272,11 @@ namespace Chummer.Backend.Equipment
                     else
                         decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
 
-                    if (Children.Count > 0)
+                    if (GearChildren.Count > 0)
                     {
                         object decCapacityLock = new object();
                         // Run through its Children and deduct the Capacity costs.
-                        Parallel.ForEach(Children, objChildGear =>
+                        Parallel.ForEach(GearChildren, objChildGear =>
                         {
                             string strCapacity = objChildGear.CalculatedCapacity;
                             // If this is a multiple-capacity item, use only the second half.
@@ -2428,7 +2440,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = BonusMatrixBoxes;
-                foreach (Gear objGear in Children)
+                foreach (Gear objGear in GearChildren)
                 {
                     if (objGear.Equipped)
                     {
@@ -2471,7 +2483,7 @@ namespace Chummer.Backend.Equipment
         {
             if (Name == objOtherGear.Name && Category == objOtherGear.Category && Rating == objOtherGear.Rating && Extra == objOtherGear.Extra && GearName == objOtherGear.GearName && Notes == objOtherGear.Notes)
             {
-                if (Children.DeepMatch(objOtherGear.Children, x => x.Children, (x, y) => x.IsIdenticalToOtherGear(y)))
+                if (GearChildren.DeepMatch(objOtherGear.GearChildren, x => x.GearChildren, (x, y) => x.IsIdenticalToOtherGear(y)))
                 {
                     return true;
                 }
@@ -2581,8 +2593,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (Children.Count > 0)
-                foreach (Gear objGear in Children)
+            if (GearChildren.Count > 0)
+                foreach (Gear objGear in GearChildren)
                     objGear.ChangeEquippedStatus(blnEquipped);
         }
 
@@ -2596,7 +2608,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
-            foreach (Gear objChild in Children)
+            foreach (Gear objChild in GearChildren)
                 decReturn += objChild.DeleteGear(treWeapons, treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
@@ -2754,7 +2766,7 @@ namespace Chummer.Backend.Equipment
                     strOutdatedItems += DisplayName(GlobalOptions.Language) + "\n";
                 }
             }
-            foreach (Gear objChild in Children)
+            foreach (Gear objChild in GearChildren)
                 objChild.ReaddImprovements(treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
@@ -2790,7 +2802,7 @@ namespace Chummer.Backend.Equipment
         public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
         {
             bool blnExpandNode = false;
-            foreach (Gear objChild in Children)
+            foreach (Gear objChild in GearChildren)
             {
                 TreeNode objChildNode = objChild.CreateTreeNode(cmsGear);
                 objParentNode.Nodes.Add(objChildNode);

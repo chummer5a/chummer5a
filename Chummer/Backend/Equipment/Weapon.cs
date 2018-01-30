@@ -1823,7 +1823,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children)
+                    foreach (Gear objChild in objGear.GearChildren)
                     {
                         if (objChild.WeaponBonus != null)
                         {
@@ -2099,7 +2099,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    foreach (Gear objChild in objGear.GearChildren.GetAllDescendants(x => x.GearChildren))
                     {
                         if (objChild.WeaponBonus != null)
                         {
@@ -3406,7 +3406,7 @@ namespace Chummer.Backend.Equipment
                 //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                 case FiringMode.DogBrain:
                     {
-                        Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
+                        Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
 
                         if (objAutosoft != null)
                         {

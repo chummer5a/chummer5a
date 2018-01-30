@@ -221,7 +221,7 @@ namespace Chummer
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         #endif
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
-        private List<Armor> _lstArmor = new List<Armor>();
+        private ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
@@ -237,7 +237,7 @@ namespace Chummer
         private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
         private List<string> _lstOldQualities = new List<string>();
         private List<string> _lstGearLocations = new List<string>();
-        private List<string> _lstArmorLocations = new List<string>();
+        private ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
@@ -3044,7 +3044,7 @@ namespace Chummer
                     }
                     break;
                 case Improvement.ImprovementSource.Gear:
-                    Gear objReturnGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                    Gear objReturnGear = Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnGear != null)
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3056,7 +3056,7 @@ namespace Chummer
                     {
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3070,7 +3070,7 @@ namespace Chummer
                     }
                     foreach (Armor objArmor in Armor)
                     {
-                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3083,7 +3083,7 @@ namespace Chummer
                     }
                     foreach (Cyberware objCyberware in Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                     {
-                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3096,7 +3096,7 @@ namespace Chummer
                     }
                     foreach (Vehicle objVehicle in Vehicles)
                     {
-                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3110,7 +3110,7 @@ namespace Chummer
                         {
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3128,7 +3128,7 @@ namespace Chummer
                             {
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -3142,7 +3142,7 @@ namespace Chummer
                             }
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                             {
-                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -6521,7 +6521,7 @@ namespace Chummer
         /// <summary>
         /// Armor.
         /// </summary>
-        public IList<Armor> Armor
+        public ObservableCollection<Armor> Armor
         {
             get
             {
@@ -6693,7 +6693,7 @@ namespace Chummer
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public IList<string> ArmorLocations
+        public ObservableCollection<string> ArmorLocations
         {
             get
             {
@@ -6770,14 +6770,14 @@ namespace Chummer
                 string strHighest = string.Empty;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped))
                 {
                     int intArmorValue = objArmor.TotalArmor;
                     int intCustomStackBonus = 0;
                     string strArmorName = objArmor.Name;
                     if (objArmor.Category == "High-Fashion Armor Clothing")
                     {
-                        foreach (Armor a in _lstArmor.Where(a => (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) && a.Equipped))
+                        foreach (Armor a in Armor.Where(a => (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) && a.Equipped))
                         {
                             if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
                                 intCustomStackBonus += Convert.ToInt32(a.ArmorOverrideValue);
@@ -6795,7 +6795,7 @@ namespace Chummer
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
                 int intClothing = 0;
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
                 {
                     if (objArmor.ArmorValue.StartsWith('+'))
                         intClothing += objArmor.TotalArmor;
@@ -6811,7 +6811,7 @@ namespace Chummer
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
                 int intStacking = 0;
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
                 {
                     bool blnDoAdd = true;
                     if (objArmor.Category == "High-Fashion Armor Clothing")
@@ -6931,13 +6931,13 @@ namespace Chummer
                 int intTotalA = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
+                foreach (Armor objArmor in Armor.Where(objArmor => objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
                 {
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
                     if (objArmor.Category == "High-Fashion Armor Clothing")
                     {
-                        foreach (Armor a in _lstArmor.Where(a => (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) && a.Equipped))
+                        foreach (Armor a in Armor.Where(a => (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) && a.Equipped))
                         {
                             if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
                                 intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue);
@@ -6952,7 +6952,7 @@ namespace Chummer
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
                 int intClothing = 0;
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
                 {
                     if (objArmor.ArmorValue.StartsWith('+'))
                         intClothing += objArmor.TotalArmor;
@@ -6965,7 +6965,7 @@ namespace Chummer
                     strHighest = string.Empty;
                 }
 
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
                 {
                     bool blnDoAdd = true;
                     if (objArmor.Category == "High-Fashion Armor Clothing")

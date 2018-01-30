@@ -367,7 +367,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Gear objGearChild in lstChildGears)
                             {
                                 objGearChild.ParentID = objGear.InternalId;
-                                objGear.Children.Add(objGearChild);
+                                objGear.GearChildren.Add(objGearChild);
                             }
                             
                             _lstGear.Add(objGear);
@@ -2631,7 +2631,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
+                Gear objGear = Gear.DeepFirstOrDefault(x => x.GearChildren, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
                 if (objGear != null)
                 {
                     return objGear.Rating;
