@@ -194,7 +194,7 @@ namespace Chummer
 
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
-        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
+        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating > 0)";
 
         private static bool _blnAutomaticUpdate = false;
         private static bool _blnLiveCustomData = false;
