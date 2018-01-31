@@ -2592,28 +2592,25 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objGear">Gear to delete.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public decimal DeleteGear(TreeView treVehicles)
+        public decimal DeleteGear()
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in Children)
-                decReturn += objChild.DeleteGear(treVehicles);
+                decReturn += objChild.DeleteGear();
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<string> lstNodesToRemoveIds = new List<string>();
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                 {
-                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
                     lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
                 }
                 foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
                     foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                     {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
                         lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, null));
                     }
 
@@ -2621,7 +2618,6 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                         {
-                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
                             lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, objMod, null));
                         }
                     }
@@ -2630,7 +2626,6 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                         {
-                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
                             lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, objMount));
                         }
                     }
@@ -2639,7 +2634,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treVehicles);
+                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon();
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -2650,11 +2645,6 @@ namespace Chummer.Backend.Equipment
                         objLoopTuple.Item2.Weapons.Remove(objWeapon);
                     else
                         _objCharacter.Weapons.Remove(objWeapon);
-                }
-                foreach (string strNodeId in lstNodesToRemoveIds)
-                {
-                    // Remove the Weapons from the TreeView.
-                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 

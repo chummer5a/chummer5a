@@ -1444,7 +1444,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            objGear.DeleteGear(null);
+                            objGear.DeleteGear();
                             objCharacter.Gear.Remove(objGear);
                         }
                         break;
@@ -1530,7 +1530,7 @@ namespace Chummer
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
                             if (objCyberware != null)
                             {
-                                objCyberware.DeleteCyberware(null);
+                                objCyberware.DeleteCyberware();
                                 objCharacter.Cyberware.Remove(objCyberware);
                             }
                         }

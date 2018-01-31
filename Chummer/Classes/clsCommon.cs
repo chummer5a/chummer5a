@@ -833,7 +833,7 @@ namespace Chummer
         public static void MoveWeaponNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
         {
             string strSelectedId = nodWeaponNode?.Tag.ToString();
-            // Locate the currently selected Armor.
+            // Locate the currently selected Weapon.
             Weapon objWeapon = objCharacter.Weapons.FindById(strSelectedId);
             if (objWeapon != null)
             {
@@ -878,126 +878,118 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public static void MoveVehicleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treVehicles)
+        public static void MoveVehicleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
         {
-            TreeNode objClone = treVehicles.SelectedNode;
-            string strSelectedId = objClone.Tag.ToString();
-            Vehicle objVehicle = objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            objCharacter.Vehicles.Remove(objVehicle);
-            if (intNewIndex > objCharacter.Vehicles.Count)
-                objCharacter.Vehicles.Add(objVehicle);
-            else
-                objCharacter.Vehicles.Insert(intNewIndex, objVehicle);
+            string strSelectedId = nodVehicleNode?.Tag.ToString();
+            // Locate the currently selected Vehicle.
+            Vehicle objVehicle = objCharacter.Vehicles.FindById(strSelectedId);
+            if (objVehicle != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
 
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
+                // Change the Location on the Armor item.
+                if (objNewParent.Tag.ToString() == "Node_SelectedVehicles")
+                    objVehicle.Location = string.Empty;
+                else
+                    objVehicle.Location = objNewParent.Text;
 
-            // Change the Location on the Gear item.
-            if (objNewParent.Tag.ToString() == "Node_SelectedVehicles")
-                objVehicle.Location = string.Empty;
-            else
-                objVehicle.Location = objNewParent.Text;
-
-            objClone.Remove();
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
+                objCharacter.Vehicles.Move(objCharacter.Vehicles.IndexOf(objVehicle), intNewIndex);
+            }
         }
 
         /// <summary>
         /// Move a Vehicle Gear TreeNode after Drag and Drop.
         /// </summary>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveVehicleGearParent(Character objCharacter, TreeNode objDestination, TreeView treVehicles)
+        /// <param name="nodDestination">Destination Node.</param>
+        public static void MoveVehicleGearParent(Character objCharacter, TreeNode nodDestination, TreeNode nodGearNode)
         {
-            TreeNode objClone = treVehicles.SelectedNode;
             // The item cannot be dropped onto itself or onto one of its children.
-            for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
-                if (objCheckNode == objClone)
+            for (TreeNode objCheckNode = nodDestination; objCheckNode != null && objCheckNode.Level >= nodDestination.Level; objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == nodGearNode)
                     return;
 
-            // Determine if this is a Location.
-            TreeNode objVehicleNode = objDestination;
-            do
-            {
-                objVehicleNode = objVehicleNode.Parent;
-            } while (objVehicleNode.Level > 1);
-
-            // Get a reference to the destination Vehicle.
-            Vehicle objDestinationVehicle = objCharacter.Vehicles.FindById(objVehicleNode.Tag.ToString());
-
-            // Make sure the destination is another piece of Gear or a Location.
-            Gear objDestinationGear = objCharacter.Vehicles.FindVehicleGear(objDestination.Tag.ToString());
-
-            // Determine if this is a Location in the destination Vehicle.
-            string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == objDestination.Tag.ToString());
-
-            if (string.IsNullOrEmpty(strDestinationLocation) && objDestinationGear == null)
-                return;
-
             // Locate the currently selected piece of Gear.
-            Gear objGear = objCharacter.Vehicles.FindVehicleGear(objClone.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+            Gear objGear = objCharacter.Vehicles.FindVehicleGear(nodGearNode.Tag.ToString(), out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
 
-            // Gear cannot be moved to one of its children.
-            bool blnAllowMove = true;
-            TreeNode objFindNode = objDestination;
-            if (objDestination.Level > 0)
-            {
-                do
-                {
-                    objFindNode = objFindNode.Parent;
-                    if (objFindNode.Tag.ToString() == objGear.InternalId)
-                    {
-                        blnAllowMove = false;
-                        break;
-                    }
-                } while (objFindNode.Level > 0);
-            }
-
-            if (!blnAllowMove)
+            if (objGear == null)
                 return;
 
-            // Remove the Gear from the Vehicle.
-            if (objGear.Parent != null)
+            Gear objOldParent = objGear.Parent;
+            string strDestinationId = nodDestination.Tag.ToString();
+            // Make sure the destination is another piece of Gear or a Location.
+            Gear objDestinationGear = objCharacter.Vehicles.FindVehicleGear(strDestinationId);
+            if (objDestinationGear != null)
             {
-                objGear.Parent.Children.Remove(objGear);
-                objGear.Parent.RefreshMatrixAttributeArray();
-            }
-            else if (objCyberware != null)
-            {
-                objCyberware.Gear.Remove(objGear);
-                objCyberware.RefreshMatrixAttributeArray();
-            }
-            else if (objWeaponAccessory != null)
-                objWeaponAccessory.Gear.Remove(objGear);
-            else
-            {
-                objVehicle.Gear.Remove(objGear);
-                objVehicle.RefreshMatrixAttributeArray();
-            }
+                // Remove the Gear from the Vehicle.
+                if (objOldParent != null)
+                {
+                    objOldParent.Children.Remove(objGear);
+                    objOldParent.RefreshMatrixAttributeArray();
+                }
+                else if (objOldCyberware != null)
+                {
+                    objOldCyberware.Gear.Remove(objGear);
+                    objOldCyberware.RefreshMatrixAttributeArray();
+                }
+                else if (objOldWeaponAccessory != null)
+                    objOldWeaponAccessory.Gear.Remove(objGear);
+                else
+                {
+                    objOldVehicle.Gear.Remove(objGear);
+                    objOldVehicle.RefreshMatrixAttributeArray();
+                }
 
-            if (!string.IsNullOrEmpty(strDestinationLocation))
-            {
-                // Add the Gear to the Vehicle and set its Location.
-                objDestinationVehicle.Gear.Add(objGear);
-                objGear.Location = strDestinationLocation;
-                objGear.Parent = null;
-            }
-            else
-            {
                 // Add the Gear to its new parent.
-                objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
+                objDestinationGear.Children.Add(objGear);
                 objDestinationGear.RefreshMatrixAttributeArray();
             }
+            else
+            {
+                // Determine if this is a Location.
+                TreeNode nodVehicleNode = nodDestination;
+                do
+                {
+                    nodVehicleNode = nodVehicleNode.Parent;
+                }
+                while (nodVehicleNode.Level > 1);
 
-            // Remove the current Node.
-            objClone.Remove();
+                // Get a reference to the destination Vehicle.
+                Vehicle objDestinationVehicle = objCharacter.Vehicles.FindById(nodVehicleNode.Tag.ToString());
 
-            // Add the new Node to its parent.
-            objDestination.Nodes.Add(objClone);
-            objDestination.Expand();
+                // Determine if this is a Location in the destination Vehicle.
+                string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == strDestinationId);
+
+                if (!string.IsNullOrEmpty(strDestinationLocation))
+                {
+                    // Remove the Gear from the Vehicle.
+                    if (objOldParent != null)
+                    {
+                        objOldParent.Children.Remove(objGear);
+                        objOldParent.RefreshMatrixAttributeArray();
+                    }
+                    else if (objOldCyberware != null)
+                    {
+                        objOldCyberware.Gear.Remove(objGear);
+                        objOldCyberware.RefreshMatrixAttributeArray();
+                    }
+                    else if (objOldWeaponAccessory != null)
+                        objOldWeaponAccessory.Gear.Remove(objGear);
+                    else
+                    {
+                        objOldVehicle.Gear.Remove(objGear);
+                        objOldVehicle.RefreshMatrixAttributeArray();
+                    }
+
+                    // Add the Gear to the Vehicle and set its Location.
+                    objGear.Location = strDestinationLocation;
+                    objGear.Parent = null;
+                    objDestinationVehicle.Gear.Add(objGear);
+                }
+            }
         }
 
         /// <summary>

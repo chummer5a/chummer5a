@@ -529,11 +529,11 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void RemoveSelected(TreeNode sender)
+        private void RemoveSelected(TreeNode objSender)
         {
-            if (sender != null)
+            if (objSender != null)
             {
-                int intIndex = Convert.ToInt32(sender.Tag);
+                int intIndex = Convert.ToInt32(objSender.Tag);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                 {
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
@@ -543,7 +543,7 @@ namespace Chummer
                         GlobalOptions.RemoveFromMRUList(strFile, "stickymru");
                     }
                 }
-                sender.Remove();
+                objSender.Remove();
             }
         }
 

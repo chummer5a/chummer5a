@@ -4345,33 +4345,30 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objWeapon">Weapon to delete.</param>
         /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
-        public decimal DeleteWeapon(TreeView treVehicles)
+        public decimal DeleteWeapon()
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Weapon objChild in Children)
-                decReturn += objChild.DeleteWeapon(treVehicles);
+                decReturn += objChild.DeleteWeapon();
 
             foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
             {
                 foreach (Gear objLoopGear in objLoopAccessory.Gear)
                 {
-                    decReturn += objLoopGear.DeleteGear(treVehicles);
+                    decReturn += objLoopGear.DeleteGear();
                 }
             }
-
-            List<string> lstNodesToRemoveIds = new List<string>();
+            
             List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
             foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
             {
-                lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
                 lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, null, null, null));
             }
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
                 foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                 {
-                    lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
                     lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, null));
                 }
 
@@ -4379,7 +4376,6 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                     {
-                        lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
                         lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, objMod, null));
                     }
                 }
@@ -4388,7 +4384,6 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                     {
-                        lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
                         lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, objMount));
                     }
                 }
@@ -4397,7 +4392,7 @@ namespace Chummer.Backend.Equipment
             foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
             {
                 Weapon objDeleteWeapon = objLoopTuple.Item1;
-                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treVehicles);
+                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                 if (objDeleteWeapon.Parent != null)
                     objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                 else if (objLoopTuple.Item4 != null)
@@ -4408,11 +4403,6 @@ namespace Chummer.Backend.Equipment
                     objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
                 else
                     _objCharacter.Weapons.Remove(objDeleteWeapon);
-            }
-            foreach (string strNodeId in lstNodesToRemoveIds)
-            {
-                // Remove the Weapons from the TreeView.
-                treVehicles?.FindNode(strNodeId)?.Remove();
             }
 
             return decReturn;

@@ -658,11 +658,11 @@ namespace Chummer
                         _lstMods.Remove(objMod);
                         foreach (Weapon objLoopWeapon in objMod.Weapons)
                         {
-                            objLoopWeapon.DeleteWeapon(null);
+                            objLoopWeapon.DeleteWeapon();
                         }
                         foreach (Cyberware objLoopCyberware in objMod.Cyberware)
                         {
-                            objLoopCyberware.DeleteCyberware(null);
+                            objLoopCyberware.DeleteCyberware();
                         }
                         TreeNode objParentNode = objSelectedNode.Parent;
                         objSelectedNode.Remove();

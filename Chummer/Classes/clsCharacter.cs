@@ -227,7 +227,7 @@ namespace Chummer
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private List<Vehicle> _lstVehicles = new List<Vehicle>();
+        private ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
         private List<Metamagic> _lstMetamagics = new List<Metamagic>();
         private List<Art> _lstArts = new List<Art>();
         private List<Enhancement> _lstEnhancements = new List<Enhancement>();
@@ -3800,7 +3800,7 @@ namespace Chummer
         /// <summary>
         /// Clear all Cyberware tab elements from the character.
         /// </summary>
-        public void ClearCyberwareTab(TreeView treVehicles)
+        public void ClearCyberwareTab()
         {
             for (int i = Cyberware.Count - 1; i >= 0; i--)
             {
@@ -3809,7 +3809,7 @@ namespace Chummer
                     Cyberware objToRemove = Cyberware[i];
                     if (string.IsNullOrEmpty(objToRemove.ParentID))
                     {
-                        objToRemove.DeleteCyberware(treVehicles);
+                        objToRemove.DeleteCyberware();
                         Cyberware.RemoveAt(i);
                     }
                 }
@@ -6573,7 +6573,7 @@ namespace Chummer
         /// <summary>
         /// Vehicles.
         /// </summary>
-        public IList<Vehicle> Vehicles
+        public ObservableCollection<Vehicle> Vehicles
         {
             get
             {
