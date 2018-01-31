@@ -1129,7 +1129,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
         /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
         /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
             TreeNode objNode = new TreeNode
             {
@@ -1154,7 +1154,7 @@ namespace Chummer.Backend.Equipment
             // VehicleWeapons.
             foreach (Weapon objWeapon in Weapons)
             {
-                objNode.Nodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                objNode.Nodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
                 objNode.Expand();
             }
 

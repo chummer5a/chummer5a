@@ -1286,7 +1286,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons => _lstWeapons;
+        public ObservableCollection<Weapon> Weapons
+        {
+            get
+            {
+                return _lstWeapons;
+            }
+        }
 
         public ObservableCollection<WeaponMount> WeaponMounts
         {
