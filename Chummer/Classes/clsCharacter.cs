@@ -213,7 +213,7 @@ namespace Chummer
         private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private BindingList<Power> _lstPowers = new BindingList<Power>();
+        private CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
         private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
@@ -228,12 +228,12 @@ namespace Chummer
         private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
-        private List<Metamagic> _lstMetamagics = new List<Metamagic>();
-        private List<Art> _lstArts = new List<Art>();
-        private List<Enhancement> _lstEnhancements = new List<Enhancement>();
-        private List<ExpenseLogEntry> _lstExpenseLog = new List<ExpenseLogEntry>();
+        private ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
+        private ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
+        private ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
+        private ObservableCollection<ExpenseLogEntry> _lstExpenseLog = new ObservableCollection<ExpenseLogEntry>();
         private ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
-        private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
+        private ObservableCollection<InitiationGrade> _lstInitiationGrades = new ObservableCollection<InitiationGrade>();
         private List<string> _lstOldQualities = new List<string>();
         private ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
         private ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
@@ -2892,7 +2892,7 @@ namespace Chummer
             {
                 // <expenses>
                 objWriter.WriteStartElement("expenses");
-                ((List<ExpenseLogEntry>)ExpenseEntries).Sort(ExpenseLogEntry.CompareDate);
+                ExpenseEntries.Sort(ExpenseLogEntry.CompareDate);
                 foreach (ExpenseLogEntry objExpense in ExpenseEntries)
                     objExpense.Print(objWriter, objCulture, strLanguageToPrint);
                 // </expenses>
@@ -3318,13 +3318,31 @@ namespace Chummer
         public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             List<Grade> lstGrades = new List<Grade>();
-            string strXPath = Options != null ? "/chummer/grades/grade[(" + Options.BookXPath() + ")]" : "/chummer/grades/grade";
+            StringBuilder strFilter = new StringBuilder();
+            if (Options != null)
+            {
+                strFilter.Append('(' + Options.BookXPath() + ") and ");
+            }
+            if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
+            {
+                foreach (string strBannedGrade in BannedWareGrades)
+                {
+                    strFilter.Append("not(contains(name, \"" + strBannedGrade + "\")) and ");
+                }
+            }
+            string strXPath;
+            if (strFilter.Length != 0)
+            {
+                strFilter.Length -= 5;
+                strXPath = "/chummer/grades/grade[(" + strFilter.ToString() + ")]";
+            }
+            else
+                strXPath = "/chummer/grades/grade";
             foreach (XmlNode objNode in XmlManager.Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml").SelectNodes(strXPath))
             {
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
-                if (IgnoreRules || Created || blnIgnoreBannedGrades || !BannedWareGrades.Any(s => objGrade.Name.Contains(s)))
-                    lstGrades.Add(objGrade);
+                lstGrades.Add(objGrade);
             }
 
             return lstGrades;
@@ -3447,12 +3465,30 @@ namespace Chummer
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
                             if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
                             {
-                                string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + ' ';
-                                if (objLoopCyberware.Parent != null)
-                                    strName += objLoopCyberware.Parent.DisplayName(GlobalOptions.Language);
-                                else
-                                    strName += objLoopVehicleMod.DisplayName(GlobalOptions.Language);
+                                string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + ' ' +
+                                    (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ?? objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                            }
+                        }
+                    }
+                }
+                foreach (WeaponMount objLoopWeaponMount in objLoopVehicle.WeaponMounts)
+                {
+                    foreach (VehicleMod objLoopVehicleMod in objLoopWeaponMount.Mods)
+                    {
+                        foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
+                        {
+                            // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
+                                objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
+                            {
+                                // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                                {
+                                    string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + ' ' +
+                                        (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ?? objLoopVehicleMod.DisplayName(GlobalOptions.Language));
+                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                }
                             }
                         }
                     }
@@ -6450,7 +6486,7 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public BindingList<Power> Powers
+        public CachedBindingList<Power> Powers
         {
             get
             {
@@ -6584,7 +6620,7 @@ namespace Chummer
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
-        public IList<Metamagic> Metamagics
+        public ObservableCollection<Metamagic> Metamagics
         {
             get
             {
@@ -6595,7 +6631,7 @@ namespace Chummer
         /// <summary>
         /// Enhancements.
         /// </summary>
-        public IList<Enhancement> Enhancements
+        public ObservableCollection<Enhancement> Enhancements
         {
             get
             {
@@ -6606,7 +6642,7 @@ namespace Chummer
         /// <summary>
         /// Arts.
         /// </summary>
-        public IList<Art> Arts
+        public ObservableCollection<Art> Arts
         {
             get
             {
@@ -6628,7 +6664,7 @@ namespace Chummer
         /// <summary>
         /// Initiation and Submersion Grades.
         /// </summary>
-        public IList<InitiationGrade> InitiationGrades
+        public ObservableCollection<InitiationGrade> InitiationGrades
         {
             get
             {
@@ -6639,7 +6675,7 @@ namespace Chummer
         /// <summary>
         /// Expenses (Karma and Nuyen).
         /// </summary>
-        public IList<ExpenseLogEntry> ExpenseEntries
+        public ObservableCollection<ExpenseLogEntry> ExpenseEntries
         {
             get
             {
@@ -9069,7 +9105,7 @@ namespace Chummer
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode. 
         /// </summary>
-        public IList<string> BannedWareGrades { get; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
+        public HashSet<string> BannedWareGrades { get; } = new HashSet<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 

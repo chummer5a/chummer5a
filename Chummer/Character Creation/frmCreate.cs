@@ -317,7 +317,7 @@ namespace Chummer
             }
             lblNumMugshots.Text = "/ " + CharacterObject.Mugshots.Count.ToString();
 
-            // Populate character information fields.
+            // Refresh character information fields.
             RefreshMetatypeFields();
 
             objCharacter_AmbidextrousChanged(null);
@@ -332,9 +332,51 @@ namespace Chummer
                 cmdLifeModule.Visible = true;
                 btnCreateBackstory.Visible = CharacterObjectOptions.AutomaticBackstory;
             }
-
-            // Populate the Qualities list.
+            
             RefreshQualities(treQualities, cmsQuality);
+            RefreshSpirits(panSpirits, panSprites);
+            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+            RefreshContacts(panContacts, panEnemies, panPets);
+
+            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            RefreshFociFromGear(treFoci, cmsGear);
+            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+
+            // Set up events that would change various lists
+            CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
+            CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
+            CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
+            CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
+            CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
+            CharacterObject.InitiationGrades.CollectionChanged += InitiationGradeCollectionChanged;
+            CharacterObject.Powers.ListChanged += PowersListChanged;
+            CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
+            CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
+            CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
+            CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+            CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
+            CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+            CharacterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
+            CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
+            CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
+            CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
+            CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
+            CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
+            CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
+            CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
+            CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
+            CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
+            CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
+            CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
 
             // Populate the Magician Traditions list.
             XmlDocument xmlTraditionsDocument = XmlManager.Load("traditions.xml");
@@ -468,25 +510,6 @@ namespace Chummer
                 nudNuyen.Maximum += 30;
             nudNuyen.Value = CharacterObject.NuyenBP;
 
-            RefreshSpirits(panSpirits, panSprites);
-            RefreshSpells(treSpells, cmsSpell);
-            RefreshComplexForms(treComplexForms, cmsComplexForm);
-            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-            RefreshContacts(panContacts, panEnemies, panPets);
-
-            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            RefreshFociFromGear(treFoci, cmsGear);
-            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
-
-            // Populate the Grade list.
-            PopulateCyberwareGradeList();
-
             _blnLoading = false;
 
             // Select the Magician's Tradition.
@@ -549,25 +572,6 @@ namespace Chummer
 
             PrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
             SpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
-            CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
-            CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
-            CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
-            CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
-            CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-            CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-            CharacterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
-            CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
-            CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
-            CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
-            CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-            CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
-            CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
-            CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
-            CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-            CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
-            CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
-            CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
 
             // Hacky, but necessary
             // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
@@ -642,6 +646,12 @@ namespace Chummer
                 SpecialAttributes.CollectionChanged -= AttributeCollectionChanged;
                 CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
                 CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
+                CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
+                CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
+                CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
+                CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
+                CharacterObject.Powers.ListChanged -= PowersListChanged;
+                CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
                 CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
@@ -3987,7 +3997,7 @@ namespace Chummer
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                 objGrade.Create(CharacterObject.InitiateGrade + 1, CharacterObject.MAGEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                CharacterObject.InitiationGrades.Add(objGrade);
+                CharacterObject.InitiationGrades.AddWithSort(objGrade);
 
                 // Set the character's Initiate Grade.
                 CharacterObject.InitiateGrade += 1;
@@ -4032,7 +4042,7 @@ namespace Chummer
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                 objGrade.Create(CharacterObject.SubmersionGrade + 1, CharacterObject.RESEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                CharacterObject.InitiationGrades.Add(objGrade);
+                CharacterObject.InitiationGrades.AddWithSort(objGrade);
 
                 // Set the character's Submersion Grade.
                 CharacterObject.SubmersionGrade += 1;
@@ -11401,9 +11411,6 @@ namespace Chummer
 
             // Update character information fields.
             RefreshMetatypeFields();
-            
-            // Populate the Grade list.
-            PopulateCyberwareGradeList();
 
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
@@ -11713,7 +11720,7 @@ namespace Chummer
                 lblCritterPowerPoints.Visible = true;
                 lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
             }
-            if (CharacterObject.IsFreeSprite)
+            else if (CharacterObject.IsFreeSprite)
             {
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
@@ -11763,7 +11770,6 @@ namespace Chummer
             cmdAddBioware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             UpdateReputation();
-            RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             UpdateInitiationCost();
             UpdateMentorSpirits();
             UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
@@ -11879,7 +11885,8 @@ namespace Chummer
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
                 nudCyberwareRating.Enabled = false;
-                cboCyberwareGrade.Enabled = false;
+                lblCyberwareGradeLabel.Visible = false;
+                cboCyberwareGrade.Visible = false;
                 lblCyberwareName.Text = string.Empty;
                 lblCyberwareCategory.Text = string.Empty;
                 lblCyberwareAvail.Text = string.Empty;
@@ -11944,6 +11951,8 @@ namespace Chummer
                     cboCyberwareGrade.Enabled = false;
 
                 PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
+                lblCyberwareGradeLabel.Visible = true;
+                cboCyberwareGrade.Visible = true;
 
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
                 if (cboCyberwareGrade.SelectedIndex == -1 && cboCyberwareGrade.Items.Count > 0)
@@ -12028,7 +12037,8 @@ namespace Chummer
                                                     GlobalOptions.CultureInfo) + ' ' +
                                                 LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
-                    cboCyberwareGrade.Enabled = false;
+                    lblCyberwareGradeLabel.Visible = false;
+                    cboCyberwareGrade.Visible = false;
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
                     lblCyberwareSource.Text = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language) + ' ' + strPage;
                     tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
@@ -17548,14 +17558,44 @@ namespace Chummer
             RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs);
         }
 
+        private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            RefreshPowerCollectionBeforeRemove(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+        }
+
+        private void PowersListChanged(object sender, ListChangedEventArgs e)
+        {
+            RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+        }
+
         private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshSpells(treSpells, cmsSpell, notifyCollectionChangedEventArgs);
+            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, notifyCollectionChangedEventArgs);
         }
 
         private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshComplexForms(treComplexForms, cmsComplexForm, notifyCollectionChangedEventArgs);
+            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+        }
+
+        private void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+        }
+
+        private void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+        }
+
+        private void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+        }
+
+        private void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
         }
 
         private void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

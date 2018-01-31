@@ -34,7 +34,7 @@ namespace Chummer
     public partial class frmSelectCyberware : Form
     {
         private readonly Character _objCharacter;
-        private List<Grade> _lstGrades;
+        private IList<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -95,7 +95,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
-            _lstGrades = (List<Grade>)_objCharacter.GetGradeList(objWareSource);
+            _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None").SourceId.ToString("D");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
@@ -389,7 +389,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            _lstGrades = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked);
+            _lstGrades = _objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked);
             PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 

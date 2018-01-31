@@ -131,12 +131,14 @@
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
+    <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">

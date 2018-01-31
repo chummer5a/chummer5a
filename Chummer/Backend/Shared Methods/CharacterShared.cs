@@ -439,7 +439,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treSpells">Treenode that will be cleared and populated.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
-        protected void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected void RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objCombatNode = null;
             TreeNode objDetectionNode = null;
@@ -451,6 +451,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedId = treSpells.SelectedNode?.Tag.ToString();
+                string strSelectedMetamagicId = treMetamagic.SelectedNode?.Tag.ToString();
 
                 // Clear the default nodes of entries.
                 treSpells.Nodes.Clear();
@@ -458,9 +459,14 @@ namespace Chummer
                 // Add the Spells that exist.
                 foreach (Spell objSpell in _objCharacter.Spells)
                 {
+                    if (objSpell.Grade > 0)
+                    {
+                        treMetamagic.FindNode(objSpell.InternalId)?.Remove();
+                    }
                     AddToTree(objSpell, false);
                 }
                 treSpells.SortCustom(strSelectedId);
+                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
             {
@@ -493,12 +499,16 @@ namespace Chummer
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                         objParent.Remove();
                                 }
+                                if (objSpell.Grade > 0)
+                                {
+                                    treMetamagic.FindNode(objSpell.InternalId)?.Remove();
+                                }
                             }
                             break;
                         }
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshSpells(treSpells, cmsSpell);
+                            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
                             break;
                         }
                     case NotifyCollectionChangedAction.Replace:
@@ -511,6 +521,10 @@ namespace Chummer
                                 {
                                     lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
+                                }
+                                if (objSpell.Grade > 0)
+                                {
+                                    treMetamagic.FindNode(objSpell.InternalId)?.Remove();
                                 }
                             }
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
@@ -633,6 +647,31 @@ namespace Chummer
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
+                }
+                if (objSpell.Grade > 0)
+                {
+                    InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
+                    if (objGrade != null)
+                    {
+                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        if (nodMetamagicParent != null)
+                        {
+                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                            TreeNode objMetamagicNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
+                            int intNodesCount = nodMetamagicParentChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objMetamagicNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+                            nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
+                            if (blnSingleAdd)
+                                treMetamagic.SelectedNode = objMetamagicNode;
+                        }
+                    }
                 }
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (blnSingleAdd)
@@ -764,22 +803,28 @@ namespace Chummer
             }
         }
 
-        protected void RefreshComplexForms(TreeView treComplexForms, ContextMenuStrip cmsComplexForm, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected void RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objParentNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
-
+                string strSelectedMetamagicId = treMetamagic.SelectedNode?.Tag.ToString();
+                
                 treComplexForms.Nodes.Clear();
 
                 // Add Complex Forms.
                 foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
                 {
+                    if (objComplexForm.Grade > 0)
+                    {
+                        treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                    }
                     AddToTree(objComplexForm, false);
                 }
 
                 treComplexForms.SortCustom(strSelectedId);
+                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
             {
@@ -806,12 +851,11 @@ namespace Chummer
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                         objParent.Remove();
                                 }
+                                if (objComplexForm.Grade > 0)
+                                {
+                                    treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                                }
                             }
-                            break;
-                        }
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshComplexForms(treComplexForms, cmsComplexForm);
                             break;
                         }
                     case NotifyCollectionChangedAction.Replace:
@@ -825,6 +869,10 @@ namespace Chummer
                                     lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                                if (objComplexForm.Grade > 0)
+                                {
+                                    treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                                }
                             }
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -835,6 +883,11 @@ namespace Chummer
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                             break;
                         }
                 }
@@ -851,6 +904,31 @@ namespace Chummer
                     };
                     treComplexForms.Nodes.Add(objParentNode);
                     objParentNode.Expand();
+                }
+                if (objComplexForm.Grade > 0)
+                {
+                    InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
+                    if (objGrade != null)
+                    {
+                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        if (nodMetamagicParent != null)
+                        {
+                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                            TreeNode objMetamagicNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                            int intNodesCount = nodMetamagicParentChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objMetamagicNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+                            nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
+                            if (blnSingleAdd)
+                                treMetamagic.SelectedNode = objMetamagicNode;
+                        }
+                    }
                 }
                 TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (blnSingleAdd)
@@ -1096,61 +1174,474 @@ namespace Chummer
             }
         }
 
-        protected void RefreshInitiationGradesTree(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes)
+        protected void RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            treMetamagic.Nodes.Clear();
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+            if (notifyCollectionChangedEventArgs == null)
             {
-                TreeNode nodGrade = objGrade.CreateTreeNode(cmsMetamagic);
+                string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
+                TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
+                lstRootNodes.Clear();
+                
+                foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+                {
+                    AddToTree(objGrade);
+                }
 
+                int intOffset = lstRootNodes.Count;
+                foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                {
+                    if (objMetamagic.Grade < 0)
+                    {
+                        TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = lstRootNodes.Count;
+                        int intTargetIndex = intOffset;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstRootNodes.Insert(intTargetIndex, objNode);
+                        objNode.Expand();
+                    }
+                }
+
+                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedId);
+            }
+            else
+            {
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objGrade, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treMetamagic.FindNode(objGrade.InternalId)?.Remove();
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treMetamagic.FindNode(objGrade.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objGrade, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode nodGrade = treMetamagic.FindNode(objGrade.InternalId);
+                                if (nodGrade != null)
+                                {
+                                    nodGrade.Remove();
+                                    treMetamagic.Nodes.Insert(intNewIndex, nodGrade);
+                                    intNewIndex += 1;
+                                }
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                        }
+                        break;
+                }
+            }
+
+            void AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
+            {
+                TreeNode nodGrade = objInitiationGrade.CreateTreeNode(cmsMetamagic);
+                TreeNodeCollection lstParentNodeChildren = nodGrade.Nodes;
                 foreach (Art objArt in _objCharacter.Arts)
                 {
-                    if (objArt.Grade == objGrade.Grade)
+                    if (objArt.Grade == objInitiationGrade.Grade)
                     {
-                        nodGrade.Nodes.Add(objArt.CreateTreeNode(cmsInitiationNotes, true));
+                        TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
                 foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
                 {
-                    if (objMetamagic.Grade == objGrade.Grade)
+                    if (objMetamagic.Grade == objInitiationGrade.Grade)
                     {
-                        nodGrade.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
+                        TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
                 foreach (Spell objSpell in _objCharacter.Spells)
                 {
-                    if (objSpell.Grade == objGrade.Grade)
+                    if (objSpell.Grade == objInitiationGrade.Grade)
                     {
-                        nodGrade.Nodes.Add(objSpell.CreateTreeNode(cmsInitiationNotes, true));
+                        TreeNode objNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    }
+                }
+                foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
+                {
+                    if (objComplexForm.Grade == objInitiationGrade.Grade)
+                    {
+                        TreeNode objNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
                 foreach (Enhancement objEnhancement in _objCharacter.Enhancements)
                 {
-                    if (objEnhancement.Grade == objGrade.Grade)
+                    if (objEnhancement.Grade == objInitiationGrade.Grade)
                     {
-                        nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
+                        TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
                 foreach (Power objPower in _objCharacter.Powers)
                 {
                     foreach (Enhancement objEnhancement in objPower.Enhancements)
                     {
-                        if (objEnhancement.Grade == objGrade.Grade)
+                        if (objEnhancement.Grade == objInitiationGrade.Grade)
                         {
-                            nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
+                            TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
                         }
                     }
                 }
-                treMetamagic.Nodes.Add(nodGrade);
+                nodGrade.Expand();
+                if (intIndex < 0)
+                    treMetamagic.Nodes.Add(nodGrade);
+                else
+                    treMetamagic.Nodes.Insert(intIndex, nodGrade);
             }
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+        }
+
+        protected void RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objArt);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objArt.InternalId)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objArt.InternalId)?.Remove();
+                        }
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objArt);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
+                    break;
+            }
+
+            void AddToTree(Art objArt, bool blnSingleAdd = true)
+            {
+                InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objArt.Grade);
+
+                if (objGrade != null)
+                {
+                    TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                    if (nodMetamagicParent != null)
+                    {
+                        TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                        TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = nodMetamagicParentChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                        nodMetamagicParent.Expand();
+                        if (blnSingleAdd)
+                            treMetamagic.SelectedNode = objNode;
+                    }
+                }
+            }
+        }
+
+        protected void RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objEnhancement);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objEnhancement.InternalId)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objEnhancement.InternalId)?.Remove();
+                        }
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objEnhancement);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
+                    break;
+            }
+
+            void AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
+            {
+                InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objEnhancement.Grade);
+
+                if (objGrade != null)
+                {
+                    TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                    if (nodMetamagicParent != null)
+                    {
+                        TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                        TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                        int intNodesCount = nodMetamagicParentChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                        nodMetamagicParent.Expand();
+                        if (blnSingleAdd)
+                            treMetamagic.SelectedNode = objNode;
+                    }
+                }
+            }
+        }
+
+        protected void RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs listChangedEventArgs)
+        {
+            switch (listChangedEventArgs?.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    {
+                        CharacterObject.Powers[listChangedEventArgs.NewIndex].Enhancements.CollectionChanged += (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y);
+                    }
+                    break;
+                case ListChangedType.Reset:
+                    {
+                        RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
+                    break;
+            }
+        }
+
+        protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, RemovingOldEventArgs removingOldEventArgs)
+        {
+            if (removingOldEventArgs.OldObject is Power objPower)
+            {
+                objPower.Enhancements.CollectionChanged -= (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y);
+            }
+        }
+
+        protected void RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objMetamagic);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objMetamagic.InternalId)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            treMetamagic.FindNode(objMetamagic.InternalId)?.Remove();
+                        }
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objMetamagic);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
+                    break;
+            }
+
+            void AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
             {
                 if (objMetamagic.Grade < 0)
                 {
-                    treMetamagic.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
+                    TreeNodeCollection nodMetamagicParentChildren = treMetamagic.Nodes;
+                    TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                    int intNodesCount = nodMetamagicParentChildren.Count;
+                    int intTargetIndex = CharacterObject.InitiationGrades.Count;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                    objNode.Expand();
+                    if (blnSingleAdd)
+                        treMetamagic.SelectedNode = objNode;
+                }
+                else
+                {
+                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objMetamagic.Grade);
+
+                    if (objGrade != null)
+                    {
+                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        if (nodMetamagicParent != null)
+                        {
+                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                            TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                            int intNodesCount = nodMetamagicParentChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+                            nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                            objNode.Expand();
+                            if (blnSingleAdd)
+                                treMetamagic.SelectedNode = objNode;
+                        }
+                    }
                 }
             }
-            treMetamagic.ExpandAll();
         }
 
         /// <summary>

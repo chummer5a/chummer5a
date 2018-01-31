@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -132,17 +133,16 @@ namespace Chummer
             if (objBonusNodeOverride != null)
                 Bonus = objBonusNodeOverride;
             _nodAdeptWayRequirements = objNode["adeptwayrequires"];
-            if (objNode.InnerXml.Contains("enhancements"))
+            XmlNode nodEnhancements = objNode["enhancements"];
+            if (nodEnhancements != null)
             {
-                XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
-                if (nodEnhancements != null)
-                    foreach (XmlNode nodEnhancement in nodEnhancements)
-                    {
-                        Enhancement objEnhancement = new Enhancement(CharacterObject);
-                        objEnhancement.Load(nodEnhancement);
-                        objEnhancement.Parent = this;
-                        Enhancements.Add(objEnhancement);
-                    }
+                foreach (XmlNode nodEnhancement in nodEnhancements.SelectNodes("enhancement"))
+                {
+                    Enhancement objEnhancement = new Enhancement(CharacterObject);
+                    objEnhancement.Load(nodEnhancement);
+                    objEnhancement.Parent = this;
+                    Enhancements.Add(objEnhancement);
+                }
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
@@ -303,7 +303,7 @@ namespace Chummer
         /// <summary>
         /// The Enhancements currently applied to the Power.
         /// </summary>
-        public IList<Enhancement> Enhancements { get; } = new List<Enhancement>();
+        public ObservableCollection<Enhancement> Enhancements { get; } = new ObservableCollection<Enhancement>();
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

@@ -5421,7 +5421,7 @@ namespace Chummer
             // cboCyberwareGrade
             // 
             this.cboCyberwareGrade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGrade.Enabled = false;
+            this.cboCyberwareGrade.Visible = false;
             this.cboCyberwareGrade.FormattingEnabled = true;
             this.cboCyberwareGrade.Location = new System.Drawing.Point(435, 79);
             this.cboCyberwareGrade.Name = "cboCyberwareGrade";

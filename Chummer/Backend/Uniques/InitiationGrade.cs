@@ -12,7 +12,7 @@ namespace Chummer
     /// <summary>
     /// An Initiation Grade.
     /// </summary>
-    public class InitiationGrade : IHasInternalId
+    public class InitiationGrade : IHasInternalId, IComparable
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -225,6 +225,16 @@ namespace Chummer
             }
             objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Grade.CompareTo(obj);
+        }
+
+        public int CompareTo(InitiationGrade obj)
+        {
+            return Grade.CompareTo(obj.Grade);
         }
         #endregion
     }
