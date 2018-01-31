@@ -7536,11 +7536,10 @@ namespace Chummer
 
             do
             {
-                frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(CharacterObject)
+                frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(CharacterObject, objVehicle.Mods)
                 {
                     // Pass the selected vehicle on to the form.
-                    SelectedVehicle = objVehicle,
-                    InstalledMods = objVehicle.Mods
+                    SelectedVehicle = objVehicle
                 };
 
                 frmPickVehicleMod.ShowDialog(this);

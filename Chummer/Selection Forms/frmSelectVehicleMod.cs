@@ -50,10 +50,10 @@ namespace Chummer
         private string _strLimitToCategories = string.Empty;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly HashSet<string> _setBlackMarketMaps;
-        private List<VehicleMod> _lstMods;
+        private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
-        public frmSelectVehicleMod(Character objCharacter)
+        public frmSelectVehicleMod(Character objCharacter, IEnumerable<VehicleMod> lstExistingMods)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
@@ -62,6 +62,8 @@ namespace Chummer
             // Load the Vehicle information.
             _objXmlDocument = XmlManager.Load("vehicles.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
+            if (lstExistingMods != null)
+                _lstMods.AddRange(lstExistingMods);
         }
 
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
@@ -346,17 +348,7 @@ namespace Chummer
                 return _intMarkup;
             }
         }
-
-        /// <summary>
-        /// Currently Installed Accessories
-        /// </summary>
-        public IList<VehicleMod> InstalledMods
-        {
-            set
-            {
-                _lstMods = (List<VehicleMod>)value;
-            }
-        }
+        
         /// <summary>
         /// Is the mod being added to a vehicle weapon mount?
         /// </summary>

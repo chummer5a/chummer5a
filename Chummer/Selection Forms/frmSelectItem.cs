@@ -28,10 +28,10 @@ namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private List<Gear> _lstGear = new List<Gear>();
-        private List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
-        private List<ListItem> _lstGeneralItems = new List<ListItem>();
+        private IList<Gear> _lstGear = new List<Gear>();
+        private IList<Vehicle> _lstVehicles = new List<Vehicle>();
+        private IList<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
+        private IList<ListItem> _lstGeneralItems = new List<ListItem>();
         private string _strMode = "Gear";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -47,7 +47,7 @@ namespace Chummer
 
         private void frmSelectItem_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            IList<ListItem> lstItems = new List<ListItem>();
 
             if (_strMode == "Gear")
             {
@@ -302,7 +302,7 @@ namespace Chummer
         {
             set
             {
-                _lstGear = (List<Gear>)value;
+                _lstGear = value;
                 _strMode = "Gear";
             }
         }
@@ -314,7 +314,7 @@ namespace Chummer
         {
             set
             {
-                _lstVehicles = (List<Vehicle>)value;
+                _lstVehicles = value;
                 _strMode = "Vehicles";
             }
         }
@@ -326,7 +326,7 @@ namespace Chummer
         {
             set
             {
-                _lstVehicleMods = (List<VehicleMod>)value;
+                _lstVehicleMods = value;
                 _strMode = "VehicleMods";
             }
         }
@@ -338,7 +338,7 @@ namespace Chummer
         {
             set
             {
-                _lstGeneralItems = (List<ListItem>)value;
+                _lstGeneralItems = value;
                 _strMode = "General";
             }
         }
@@ -350,7 +350,7 @@ namespace Chummer
         {
             set
             {
-                _lstGeneralItems = (List<ListItem>)value;
+                _lstGeneralItems = value;
                 _strMode = "Dropdown";
             }
         }

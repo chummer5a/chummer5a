@@ -581,10 +581,11 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
-                lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+                foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
+                    lstFiles.Add(objFile);
             }
 
             cboXSLT.BeginUpdate();

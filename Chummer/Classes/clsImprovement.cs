@@ -1269,8 +1269,15 @@ namespace Chummer
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
                         break;
                     case Improvement.ImprovementType.SkillKnowledgeForced:
-                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
-                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                        {
+                            objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                            for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count; i >= 0; --i)
+                            {
+                                KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                if (objSkill.InternalId == objImprovement.ImprovedName)
+                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                            }
+                        }
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1490,12 +1497,14 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
-                        Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
-                        if (objSkill != null)
                         {
-                            SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
+                            if (objSkill != null)
+                            {
+                                SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
                                 if (objSkillSpec != null)
-                            objSkill.Specializations.Remove(objSkillSpec);
+                                    objSkill.Specializations.Remove(objSkillSpec);
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.AIProgram:

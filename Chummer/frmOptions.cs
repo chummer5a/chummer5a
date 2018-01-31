@@ -1402,10 +1402,11 @@ namespace Chummer
         private void PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
-            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
+            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
-                lstFiles.AddRange(GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage));
+                foreach (ListItem objFile in GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage))
+                    lstFiles.Add(objFile);
             }
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;

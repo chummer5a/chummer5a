@@ -51,8 +51,8 @@ namespace Chummer.UI.Powers
 
         private bool _initialized;
         private Character _character;
-        private List<Tuple<string, Predicate<Power>>> _dropDownList;
-        private List<Tuple<string, IComparer<Power>>>  _sortList;
+        private IList<Tuple<string, Predicate<Power>>> _dropDownList;
+        private IList<Tuple<string, IComparer<Power>>>  _sortList;
         private bool _searchMode;
 
         public Character ObjCharacter
@@ -90,11 +90,11 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            _dropDownList = (List<Tuple<string, Predicate<Power>>>)GenerateDropdownFilter();
+            _dropDownList = GenerateDropdownFilter();
 
             parts.TaskEnd("GenerateDropDown()");
 
-            _sortList = (List<Tuple<string, IComparer<Power>>>)GenerateSortList();
+            _sortList = GenerateSortList();
 
             parts.TaskEnd("GenerateSortList()");
 

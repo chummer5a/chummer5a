@@ -53,12 +53,12 @@ namespace Chummer.UI.Skills
 
         private bool _initialized = false;
         private Character _character = null;
-        private List<Tuple<string, Predicate<Skill>>> _dropDownList;
-        private List<Tuple<string, IComparer<Skill>>>  _sortList;
+        private IList<Tuple<string, Predicate<Skill>>> _dropDownList;
+        private IList<Tuple<string, IComparer<Skill>>>  _sortList;
         private readonly List<SkillControl2> _controls = new List<SkillControl2>();
         private bool _searchMode = false;
-        private List<Tuple<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
-        private List<Tuple<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
+        private IList<Tuple<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
+        private IList<Tuple<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
 
         public Character ObjCharacter
         {
@@ -105,13 +105,13 @@ namespace Chummer.UI.Skills
                 UpdateKnoSkillRemaining();
             }
 
-            _dropDownList = (List<Tuple<string, Predicate<Skill>>>)GenerateDropdownFilter();
-            _dropDownKnowledgeList = (List<Tuple<string, Predicate<KnowledgeSkill>>>)GenerateKnowledgeDropdownFilter();
+            _dropDownList = GenerateDropdownFilter();
+            _dropDownKnowledgeList = GenerateKnowledgeDropdownFilter();
 
             parts.TaskEnd("GenerateDropDown()");
 
-            _sortList = (List<Tuple<string, IComparer<Skill>>>)GenerateSortList();
-            _sortKnowledgeList = (List<Tuple<string, IComparer<KnowledgeSkill>>>)GenerateKnowledgeSortList();
+            _sortList = GenerateSortList();
+            _sortKnowledgeList = GenerateKnowledgeSortList();
 
             parts.TaskEnd("GenerateSortList()");
 
