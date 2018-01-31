@@ -119,6 +119,7 @@ Application Changes:
 - Cyberware grades are no longer hidden if the character is ignoring creation rules.
 - Fixed an issue where unequipping modular cyberware that was equipped to a vehicle in career mode would keep the old cyberware node on the vehicle tree view.
 - Fixed a bug where lifestyle qualities with restrictions based on existing lifestyle qualities would not function properly.
+- Fixed an issue where editing spirit or sprite notes would not mark the underlying character as "dirty". Fixes #2420.
 
 Data Changes:
 

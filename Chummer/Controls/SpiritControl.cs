@@ -286,17 +286,18 @@ namespace Chummer
             };
             frmSpritNotes.ShowDialog(this);
 
-            if (frmSpritNotes.DialogResult == DialogResult.OK)
+            if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
+            {
                 _objSpirit.Notes = frmSpritNotes.Notes;
 
-            string strTooltip = string.Empty;
-            if (_objSpirit.EntityType == SpiritType.Spirit)
-                strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
-            else
-                strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
-            if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                strTooltip += "\n\n" + _objSpirit.Notes;
-            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
+
+                if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                    strTooltip += "\n\n" + _objSpirit.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+
+                ContactDetailChanged?.Invoke(this, e);
+            }
         }
         #endregion
 
