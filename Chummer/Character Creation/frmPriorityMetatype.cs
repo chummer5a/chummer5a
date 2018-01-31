@@ -703,12 +703,9 @@ namespace Chummer
             {
                 SumtoTen();
             }
-            string strMetatype = lstMetatypes.SelectedValue?.ToString();
             LoadMetatypes();
-            if (string.IsNullOrEmpty(strMetatype))
-                lstMetatypes.SelectedIndex = -1;
-            else
-                lstMetatypes.SelectedValue = strMetatype;
+            PopulateMetatypes();
+            PopulateMetavariants();
         }
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
