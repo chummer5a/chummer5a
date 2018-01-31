@@ -266,6 +266,7 @@ namespace Chummer
             lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
             lblMental.Text = _objCharacter.LimitMental.ToString();
             lblSocial.Text = _objCharacter.LimitSocial.ToString();
+            lblAstral.Text = _objCharacter.LimitAstral.ToString();
 
             if (tipTooltip != null)
             {
@@ -298,9 +299,10 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblPhysical, objPhysical.ToString());
                 tipTooltip.SetToolTip(lblMental, objMental.ToString());
                 tipTooltip.SetToolTip(lblSocial, objSocial.ToString());
+                tipTooltip.SetToolTip(lblAstral, LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + " (" +
+                    LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) + ", " +
+                    LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Language) + ')');
             }
-
-            lblAstral.Text = _objCharacter.LimitAstral.ToString();
         }
 
         /// <summary>
