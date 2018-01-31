@@ -2920,7 +2920,37 @@ namespace Chummer
                 IsDirty = true;
             }
         }
-        
+
+        private void cmdAddSpirit_Click(object sender, EventArgs e)
+        {
+            AddSpirit();
+        }
+
+        private void cmdAddSprite_Click(object sender, EventArgs e)
+        {
+            AddSprite();
+        }
+
+        private void cmdAddContact_Click(object sender, EventArgs e)
+        {
+            AddContact();
+        }
+
+        private void cmdAddEnemy_Click(object sender, EventArgs e)
+        {
+            AddEnemy();
+        }
+
+        private void cmdAddPet_Click(object sender, EventArgs e)
+        {
+            AddPet();
+        }
+
+        private void tsAddFromFile_Click(object sender, EventArgs e)
+        {
+            AddContactsFromFile();
+        }
+
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             bool blnAddAgain = false;

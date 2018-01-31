@@ -5624,7 +5624,7 @@ namespace Chummer
             source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
-        protected void AddContact(object sender, EventArgs e)
+        protected void AddContact()
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -5654,7 +5654,7 @@ namespace Chummer
         #endregion
 
         #region PetControl Events
-        protected void AddPet(object sender, EventArgs e)
+        protected void AddPet()
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -5685,7 +5685,7 @@ namespace Chummer
         #endregion
 
         #region EnemyControl Events
-        protected void AddEnemy(object sender, EventArgs e)
+        protected void AddEnemy()
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             Contact objContact = new Contact(CharacterObject)
@@ -5800,7 +5800,7 @@ namespace Chummer
         #endregion
 
         #region Additional Relationships Tab Control Events
-        protected void AddContactsFromFile(object sender, EventArgs e)
+        protected void AddContactsFromFile()
         {
             // Displays an OpenFileDialog so the user can select the XML to read.  
             OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
@@ -5997,7 +5997,7 @@ namespace Chummer
         }
 
         #region SpiritControl Events
-        protected void AddSpirit(object sender, EventArgs e)
+        protected void AddSpirit()
         {
             // The number of bound Spirits cannot exeed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
@@ -6018,7 +6018,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        protected void AddSprite(object sender, EventArgs e)
+        protected void AddSprite()
         {
             // The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite) >= CharacterObject.LOG.Value)

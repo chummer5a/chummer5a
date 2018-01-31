@@ -4310,7 +4310,7 @@ namespace Chummer
             this.cmdAddSpirit.Tag = "Button_AddSpirit";
             this.cmdAddSpirit.Text = "A&dd Spirit";
             this.cmdAddSpirit.UseVisualStyleBackColor = true;
-            this.cmdAddSpirit.Click += new System.EventHandler(this.AddSpirit);
+            this.cmdAddSpirit.Click += new System.EventHandler(this.cmdAddSpirit_Click);
             // 
             // panSpirits
             // 
@@ -4525,7 +4525,7 @@ namespace Chummer
             this.cmdAddSprite.Tag = "Button_AddSprite";
             this.cmdAddSprite.Text = "&Add Sprite";
             this.cmdAddSprite.UseVisualStyleBackColor = true;
-            this.cmdAddSprite.Click += new System.EventHandler(this.AddSprite);
+            this.cmdAddSprite.Click += new System.EventHandler(this.cmdAddSprite_Click);
             // 
             // panSprites
             // 
@@ -9075,7 +9075,7 @@ namespace Chummer
             this.cmdAddContact.Tag = "Button_AddContact";
             this.cmdAddContact.Text = "&Add Contact";
             this.cmdAddContact.UseVisualStyleBackColor = true;
-            this.cmdAddContact.Click += new System.EventHandler(this.AddContact);
+            this.cmdAddContact.Click += new System.EventHandler(this.cmdAddContact_Click);
             // 
             // cmsAddContact
             // 
@@ -9090,7 +9090,7 @@ namespace Chummer
             this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
             this.tsAddFromFile.Text = "&Add From File";
-            this.tsAddFromFile.Click += new System.EventHandler(this.AddContactsFromFile);
+            this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
             // 
             // panContacts
             // 
@@ -9178,7 +9178,7 @@ namespace Chummer
             this.cmdAddEnemy.Tag = "Button_AddEnemy";
             this.cmdAddEnemy.Text = "A&dd Enemy";
             this.cmdAddEnemy.UseVisualStyleBackColor = true;
-            this.cmdAddEnemy.Click += new System.EventHandler(this.AddEnemy);
+            this.cmdAddEnemy.Click += new System.EventHandler(this.cmdAddEnemy_Click);
             // 
             // tabPets
             // 
@@ -9217,7 +9217,7 @@ namespace Chummer
             this.cmdAddPet.Tag = "Button_AddPet";
             this.cmdAddPet.Text = "&Add Pet";
             this.cmdAddPet.UseVisualStyleBackColor = true;
-            this.cmdAddPet.Click += new System.EventHandler(this.AddPet);
+            this.cmdAddPet.Click += new System.EventHandler(this.cmdAddPet_Click);
             // 
             // tabInfo
             // 

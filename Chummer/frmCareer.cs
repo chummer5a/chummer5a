@@ -3397,6 +3397,36 @@ namespace Chummer
             }
         }
 
+        private void cmdAddSpirit_Click(object sender, EventArgs e)
+        {
+            AddSpirit();
+        }
+
+        private void cmdAddSprite_Click(object sender, EventArgs e)
+        {
+            AddSprite();
+        }
+
+        private void cmdAddContact_Click(object sender, EventArgs e)
+        {
+            AddContact();
+        }
+
+        private void cmdAddEnemy_Click(object sender, EventArgs e)
+        {
+            AddEnemy();
+        }
+
+        private void cmdAddPet_Click(object sender, EventArgs e)
+        {
+            AddPet();
+        }
+
+        private void tsAddFromFile_Click(object sender, EventArgs e)
+        {
+            AddContactsFromFile();
+        }
+
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             bool blnAddAgain = false;
@@ -19135,6 +19165,7 @@ namespace Chummer
             lblVehicleWeaponAmmoLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeLabel.Visible = blnDisplay;
             lblVehicleWeaponDicePoolLabel.Visible = blnDisplay;
+            lblVehicleWeaponAmmoTypeLabel.Visible = blnDisplay;
 
             lblVehicleWeaponRangeMain.Visible = blnDisplay;
             lblVehicleWeaponRangeAlternate.Visible = blnDisplay;
@@ -19149,6 +19180,11 @@ namespace Chummer
 
             lblFiringModeLabel.Visible = blnDisplay;
             cboVehicleWeaponFiringMode.Visible = blnDisplay;
+            cboVehicleWeaponAmmo.Visible = blnDisplay;
+            cmdFireVehicleWeapon.Visible = blnDisplay;
+            cmdReloadVehicleWeapon.Visible = blnDisplay;
+            lblVehicleWeaponAmmoRemainingLabel.Visible = blnDisplay;
+            lblVehicleWeaponAmmoRemaining.Visible = blnDisplay;
         }
 
         /// <summary>
@@ -19252,8 +19288,6 @@ namespace Chummer
             lblVehicleGearQty.Text = string.Empty;
             cmdVehicleGearReduceQty.Enabled = false;
             cmdVehicleMoveToInventory.Enabled = false;
-            cboVehicleWeaponAmmo.Enabled = false;
-            cboVehicleWeaponFiringMode.Enabled = false;
 
             chkVehicleHomeNode.Visible = false;
             chkVehicleActiveCommlink.Visible = false;
@@ -19499,12 +19533,10 @@ namespace Chummer
                             lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                             lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                            lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
                             if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                             {
-                                cmdFireVehicleWeapon.Enabled = true;
-                                cmdReloadVehicleWeapon.Enabled = true;
+                                lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                 lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
                                 cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
@@ -19561,7 +19593,6 @@ namespace Chummer
                                 }
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 cboVehicleWeaponAmmo.BeginUpdate();
-                                cboVehicleWeaponAmmo.Enabled = true;
                                 cboVehicleWeaponAmmo.ValueMember = "Value";
                                 cboVehicleWeaponAmmo.DisplayMember = "Name";
                                 cboVehicleWeaponAmmo.DataSource = lstAmmo;
@@ -19569,6 +19600,16 @@ namespace Chummer
                                 if (cboVehicleWeaponAmmo.SelectedIndex == -1)
                                     cboVehicleWeaponAmmo.SelectedIndex = 0;
                                 cboVehicleWeaponAmmo.EndUpdate();
+                            }
+                            else
+                            {
+                                cmdFireVehicleWeapon.Visible = false;
+                                cmdReloadVehicleWeapon.Visible = false;
+                                lblVehicleWeaponAmmoRemainingLabel.Visible = false;
+                                lblVehicleWeaponAmmoRemaining.Visible = false;
+                                cboVehicleWeaponAmmo.Visible = false;
+                                lblVehicleWeaponAmmoLabel.Visible = false;
+                                lblVehicleWeaponAmmo.Visible = false;
                             }
                             lblVehicleWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                             cmdVehicleMoveToInventory.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objVehicle?.InternalId;

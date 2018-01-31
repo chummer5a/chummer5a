@@ -210,9 +210,6 @@
   <metadata name="cmsQuality.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>974, 95</value>
   </metadata>
-  <metadata name="cmsMartialArtManeuver.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>470, 173</value>
-  </metadata>
   <metadata name="cmsSpell.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>1402, 95</value>
   </metadata>
