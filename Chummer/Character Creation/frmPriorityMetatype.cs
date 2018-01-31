@@ -1510,56 +1510,59 @@ namespace Chummer
         /// </summary>
         void PopulateMetatypes()
         {
-            string strSelectedMetatypeCategory = cboCategory.SelectedValue.ToString();
-            List<ListItem> lstMetatype = new List<ListItem>();
-
-            XmlNodeList objXmlMetatypeList = XmlManager.Load(_strXmlFile).SelectNodes("/chummer/metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedMetatypeCategory + "\"]");
-
-            XmlNodeList xmlBaseMetatypePriorityList = XmlManager.Load("priorities.xml").SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
-            foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+            string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedMetatypeCategory))
             {
-                if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
+                List<ListItem> lstMetatype = new List<ListItem>();
+
+                XmlNodeList objXmlMetatypeList = XmlManager.Load(_strXmlFile).SelectNodes("/chummer/metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedMetatypeCategory + "\"]");
+
+                XmlNodeList xmlBaseMetatypePriorityList = XmlManager.Load("priorities.xml").SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
+                foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
-                    foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
+                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
                     {
-                        string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
-                        if (null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strName + "\"]"))
+                        foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
                         {
-                            lstMetatype.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
+                            string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
+                            if (null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strName + "\"]"))
+                            {
+                                lstMetatype.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
+                            }
                         }
+                        break;
                     }
-                    break;
                 }
-            }
-            
-            lstMetatype.Sort(CompareListItems.CompareNames);
-            string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
-            bool blnOldInitializing = _blnInitializing;
-            _blnInitializing = true;
-            lstMetatypes.BeginUpdate();
-            lstMetatypes.ValueMember = "Value";
-            lstMetatypes.DisplayMember = "Name";
-            lstMetatypes.DataSource = lstMetatype;
-            _blnInitializing = blnOldInitializing;
-            if (!string.IsNullOrEmpty(strOldSelectedValue))
-                lstMetatypes.SelectedValue = strOldSelectedValue;
-            if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
-                lstMetatypes.SelectedIndex = 0;
-            lstMetatypes.EndUpdate();
 
-            if (strSelectedMetatypeCategory.EndsWith("Spirits"))
-            {
-                chkBloodSpirit.Visible = true;
-                chkPossessionBased.Visible = true;
-                cboPossessionMethod.Visible = true;
-            }
-            else
-            {
-                chkBloodSpirit.Checked = false;
-                chkBloodSpirit.Visible = false;
-                chkPossessionBased.Visible = false;
-                chkPossessionBased.Checked = false;
-                cboPossessionMethod.Visible = false;
+                lstMetatype.Sort(CompareListItems.CompareNames);
+                string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
+                bool blnOldInitializing = _blnInitializing;
+                _blnInitializing = true;
+                lstMetatypes.BeginUpdate();
+                lstMetatypes.ValueMember = "Value";
+                lstMetatypes.DisplayMember = "Name";
+                lstMetatypes.DataSource = lstMetatype;
+                _blnInitializing = blnOldInitializing;
+                if (!string.IsNullOrEmpty(strOldSelectedValue))
+                    lstMetatypes.SelectedValue = strOldSelectedValue;
+                if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
+                    lstMetatypes.SelectedIndex = 0;
+                lstMetatypes.EndUpdate();
+
+                if (strSelectedMetatypeCategory.EndsWith("Spirits"))
+                {
+                    chkBloodSpirit.Visible = true;
+                    chkPossessionBased.Visible = true;
+                    cboPossessionMethod.Visible = true;
+                }
+                else
+                {
+                    chkBloodSpirit.Checked = false;
+                    chkBloodSpirit.Visible = false;
+                    chkPossessionBased.Visible = false;
+                    chkPossessionBased.Checked = false;
+                    cboPossessionMethod.Visible = false;
+                }
             }
         }
 
