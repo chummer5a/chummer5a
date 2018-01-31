@@ -601,8 +601,8 @@ namespace Chummer
             tabSkillsUc.ObjCharacter = CharacterObject;
 
             // Set the visibility of the Armor Degradation buttons.
-            cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions.ArmorDegradation, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdArmorIncrease.DataBindings.Add("Visible", CharacterObjectOptions.ArmorDegradation, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdArmorIncrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
 
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
