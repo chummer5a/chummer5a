@@ -5371,7 +5371,7 @@ namespace Chummer
 
                                 objContactControl.Top = intEnemies * objContactControl.Height;
 
-                                panContacts.Controls.Add(objContactControl);
+                                panEnemies.Controls.Add(objContactControl);
                             }
                             break;
                         case ContactType.Pet:
@@ -5382,7 +5382,7 @@ namespace Chummer
                                 objContactControl.DeleteContact += DeletePet;
                                 objContactControl.MouseDown += DragContactControl;
 
-                                panContacts.Controls.Add(objContactControl);
+                                panPets.Controls.Add(objContactControl);
                             }
                             break;
                     }
@@ -5428,7 +5428,7 @@ namespace Chummer
 
                                             objContactControl.Top = intEnemies * objContactControl.Height;
 
-                                            panContacts.Controls.Add(objContactControl);
+                                            panEnemies.Controls.Add(objContactControl);
                                         }
                                         break;
                                     case ContactType.Pet:
@@ -5439,7 +5439,7 @@ namespace Chummer
                                             objPetControl.DeleteContact += DeletePet;
                                             //objPetControl.MouseDown += DragContactControl;
 
-                                            panContacts.Controls.Add(objPetControl);
+                                            panPets.Controls.Add(objPetControl);
                                         }
                                         break;
                                 }
@@ -5590,7 +5590,7 @@ namespace Chummer
 
                                             objContactControl.Top = intEnemies * objContactControl.Height;
 
-                                            panContacts.Controls.Add(objContactControl);
+                                            panEnemies.Controls.Add(objContactControl);
                                         }
                                         break;
                                     case ContactType.Pet:
@@ -5601,7 +5601,7 @@ namespace Chummer
                                             objPetControl.DeleteContact += DeletePet;
                                             //objPetControl.MouseDown += DragContactControl;
 
-                                            panContacts.Controls.Add(objPetControl);
+                                            panPets.Controls.Add(objPetControl);
                                         }
                                         break;
                                 }
