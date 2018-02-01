@@ -124,6 +124,7 @@ Application Changes:
 - Fixed a bug where selling an item that added gear or cyberware via a bonus would not factor the price of the bonus-granted item into the amount the character would gain from selling the item.
 - Fixed a crash when deleting a lifestyle quality from an advanced lifestyle. Fixes #2428.
 - Fixed an issue where skill group names would not get printed properly if using a translation with no translated string specified for a skill group. Fixes #2430.
+- Fixed a crash when switching list selections in the Translator before the existing list had fully loaded. Fixes #2431.
 
 Data Changes:
 
