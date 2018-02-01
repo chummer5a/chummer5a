@@ -1182,12 +1182,12 @@ namespace Chummer
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "")
+        public static decimal RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "")
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
             {
-                return;
+                return 0;
             }
 
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
@@ -1196,7 +1196,7 @@ namespace Chummer
             List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
                 ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
                 : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
-            RemoveImprovements(objCharacter, objImprovementList);
+            return RemoveImprovements(objCharacter, objImprovementList);
         }
 
         /// <summary>
@@ -1206,7 +1206,7 @@ namespace Chummer
         /// <param name="objImprovementList">List of improvements to delete.</param>
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
-        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
+        public static decimal RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
         {
             Log.Enter("RemoveImprovements");
 
@@ -1214,7 +1214,7 @@ namespace Chummer
             if (objCharacter == null)
             {
                 Log.Exit("RemoveImprovements");
-                return;
+                return 0;
             }
 
             // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
@@ -1226,6 +1226,7 @@ namespace Chummer
                 objCharacter.Improvements.Remove(objImprovement);
                 ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
+            decimal decReturn = 0;
             bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
             bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -1425,7 +1426,7 @@ namespace Chummer
                         Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMetamagic != null)
                         {
-                            RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
                             objCharacter.Metamagics.Remove(objMetamagic);
                         }
                         break;
@@ -1433,7 +1434,7 @@ namespace Chummer
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || ( x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
                         if (objCritterPower != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
                         }
                         break;
@@ -1442,7 +1443,7 @@ namespace Chummer
                         MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMentor != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
                             objCharacter.MentorSpirits.Remove(objMentor);
                         }
                         break;
@@ -1450,8 +1451,8 @@ namespace Chummer
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objGear != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            objGear.DeleteGear();
+                            decReturn += objGear.DeleteGear();
+                            decReturn += objGear.TotalCost;
                             objCharacter.Gear.Remove(objGear);
                         }
                         break;
@@ -1459,7 +1460,7 @@ namespace Chummer
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objSpell != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
                             objCharacter.Spells.Remove(objSpell);
                         }
                         break;
@@ -1467,7 +1468,7 @@ namespace Chummer
                         ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objComplexForm != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
                             objCharacter.ComplexForms.Remove(objComplexForm);
                         }
                         break;
@@ -1475,11 +1476,11 @@ namespace Chummer
                         MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMartialArt != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             // Remove the Improvements for any Advantages for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                             {
-                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }
@@ -1492,7 +1493,7 @@ namespace Chummer
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
                         if (objQuality != null)
                         {
-                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                             objCharacter.Qualities.Remove(objQuality);
                         }
                         break;
@@ -1539,7 +1540,8 @@ namespace Chummer
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
                             if (objCyberware != null)
                             {
-                                objCyberware.DeleteCyberware();
+                                decReturn += objCyberware.DeleteCyberware();
+                                decReturn += objCyberware.TotalCost;
                                 objCharacter.Cyberware.Remove(objCyberware);
                             }
                         }
@@ -1553,6 +1555,7 @@ namespace Chummer
             objCharacter.ImprovementHook(objImprovementList);
 
             Log.Exit("RemoveImprovements");
+            return decReturn;
         }
 
         /// <summary>

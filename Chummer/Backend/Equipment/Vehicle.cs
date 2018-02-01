@@ -2990,6 +2990,30 @@ namespace Chummer.Backend.Equipment
             return intBase;
         }
 
+        public decimal DeleteVehicle()
+        {
+            decimal decReturn = 0;
+
+            foreach (Gear objGear in Gear)
+            {
+                decReturn += objGear.DeleteGear();
+            }
+            foreach (Weapon objLoopWeapon in Weapons)
+            {
+                decReturn += objLoopWeapon.DeleteWeapon();
+            }
+            foreach (VehicleMod objLoopMod in Mods)
+            {
+                decReturn += objLoopMod.DeleteVehicleMod();
+            }
+            foreach (WeaponMount objLoopMount in WeaponMounts)
+            {
+                decReturn += objLoopMount.DeleteWeaponMount();
+            }
+
+            return decReturn;
+        }
+
         /// <summary>
         /// Add a Vehicle to the TreeView.
         /// </summary>

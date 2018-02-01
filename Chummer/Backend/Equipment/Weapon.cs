@@ -4353,12 +4353,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += objChild.DeleteWeapon();
 
             foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
-            {
-                foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                {
-                    decReturn += objLoopGear.DeleteGear();
-                }
-            }
+                decReturn += objLoopAccessory.DeleteWeaponAccessory();
             
             List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
             foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))

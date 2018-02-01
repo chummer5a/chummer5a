@@ -1013,7 +1013,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId);
+            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId);
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in Gear)
                 decReturn += objGear.DeleteGear();

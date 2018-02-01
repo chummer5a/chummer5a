@@ -765,6 +765,22 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Methods
+        public decimal DeleteWeaponMount()
+        {
+            decimal decReturn = 0;
+
+            foreach (Weapon objLoopWeapon in Weapons)
+            {
+                decReturn += objLoopWeapon.DeleteWeapon();
+            }
+            foreach (VehicleMod objLoopMod in Mods)
+            {
+                decReturn += objLoopMod.DeleteVehicleMod();
+            }
+
+            return decReturn;
+        }
+
         /// <summary>
         /// Add a Weapon Mount to the TreeView
         /// </summary>

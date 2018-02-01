@@ -1122,6 +1122,22 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Methods
+        public decimal DeleteVehicleMod()
+        {
+            decimal decReturn = 0;
+
+            foreach (Weapon objLoopWeapon in Weapons)
+            {
+                decReturn += objLoopWeapon.DeleteWeapon();
+            }
+            foreach (Cyberware objLoopCyberware in Cyberware)
+            {
+                decReturn += objLoopCyberware.DeleteCyberware();
+            }
+
+            return decReturn;
+        }
+
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>

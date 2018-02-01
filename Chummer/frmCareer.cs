@@ -3876,8 +3876,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
                         if (objAccessory != null)
                         {
-                            foreach (Gear objGear in objAccessory.Gear)
-                                objGear.DeleteGear();
+                            objAccessory.DeleteWeaponAccessory();
                             objWeapon.WeaponAccessories.Remove(objAccessory);
                         }
                         else
@@ -4179,44 +4178,8 @@ namespace Chummer
                 // Removing a Vehicle
                 if (objVehicle != null)
                 {
-                    // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
-                    foreach (Gear objGear in objVehicle.Gear)
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
+                    objVehicle.DeleteVehicle();
                     CharacterObject.Vehicles.Remove(objVehicle);
-                    foreach (Weapon objLoopWeapon in objVehicle.Weapons)
-                    {
-                        objLoopWeapon.DeleteWeapon();
-                    }
-                    foreach (VehicleMod objLoopMod in objVehicle.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                        {
-                            objLoopCyberware.DeleteCyberware();
-                        }
-                    }
-                    foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (VehicleMod objLoopMod in objLoopMount.Mods)
-                        {
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -4224,22 +4187,8 @@ namespace Chummer
                     // Removing a Weapon Mount
                     if (objWeaponMount != null)
                     {
+                        objWeaponMount.DeleteWeaponMount();
                         objVehicle.WeaponMounts.Remove(objWeaponMount);
-                        foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
-                        {
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
-                        }
                     }
                     else
                     {
@@ -4297,18 +4246,11 @@ namespace Chummer
                                 CharacterObject.Nuyen += decCost * -1;
                             }
 
+                            objMod.DeleteVehicleMod();
                             if (objWeaponMount != null)
                                 objWeaponMount.Mods.Remove(objMod);
                             else
                                 objVehicle.Mods.Remove(objMod);
-                            foreach (Weapon objLoopWeapon in objMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
                         }
                         else
                         {
@@ -4333,11 +4275,8 @@ namespace Chummer
                                 // Removing a weapon accessory
                                 if (objWeaponAccessory != null)
                                 {
+                                    objWeaponAccessory.DeleteWeaponAccessory();
                                     objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
-                                    foreach (Gear objLoopGear in objWeaponAccessory.Gear)
-                                    {
-                                        objLoopGear.DeleteGear();
-                                    }
                                 }
                                 else
                                 {
@@ -4382,6 +4321,8 @@ namespace Chummer
 
                                             objGear.DeleteGear();
                                         }
+                                        else
+                                            return;
                                     }
                                 }
                             }
@@ -8985,15 +8926,11 @@ namespace Chummer
                             return;
 
                         // Record the Weapon's original cost.
-                        decimal decOriginal = objWeapon.TotalCost;
+                        decimal decOriginal = objWeapon.TotalCost + objAccessory.DeleteWeaponAccessory();
 
                         objWeapon.WeaponAccessories.Remove(objAccessory);
 
                         decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
-                        foreach (Gear objGear in objAccessory.Gear)
-                        {
-                            decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                        }
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -9111,46 +9048,7 @@ namespace Chummer
                         return;
 
                     // Create the Expense Log Entry for the sale.
-                    decimal decAmount = objVehicle.TotalCost * frmSell.SellPercent;
-                    // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
-                    foreach (Gear objGear in objVehicle.Gear)
-                    {
-                        decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                    }
-
-                    foreach (Weapon objLoopWeapon in objVehicle.Weapons)
-                    {
-                        decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                    }
-                    foreach (VehicleMod objLoopMod in objVehicle.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                        {
-                            decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                        }
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                        {
-                            decAmount += objLoopCyberware.DeleteCyberware() * frmSell.SellPercent;
-                        }
-                    }
-                    foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
-                        {
-                            decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                        }
-                        foreach (VehicleMod objLoopMod in objLoopMount.Mods)
-                        {
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                decAmount += objLoopCyberware.DeleteCyberware() * frmSell.SellPercent;
-                            }
-                        }
-                    }
+                    decimal decAmount = (objVehicle.TotalCost + objVehicle.DeleteVehicle()) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + ' ' + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -9177,30 +9075,18 @@ namespace Chummer
                             return;
 
                         // Record the original value of the Vehicle.
-                        decimal decOriginal = objVehicle.TotalCost;
+                        decimal decOriginal = objVehicle.TotalCost + objWeaponMount.DeleteWeaponMount();
 
                         objVehicle.WeaponMounts.Remove(objWeaponMount);
 
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                        foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
-                        {
-                            decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                        }
                         foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
                         {
                             // Check for Improved Sensor bonus.
                             if (objLoopMod.Bonus?["improvesensor"] != null || (objLoopMod.WirelessOn && objLoopMod.WirelessBonus?["improvesensor"] != null))
                             {
                                 objVehicle.ChangeVehicleSensor(treVehicles, false, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            }
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                decAmount += objLoopCyberware.DeleteCyberware() * frmSell.SellPercent;
                             }
                         }
 
@@ -9229,7 +9115,7 @@ namespace Chummer
                                 return;
 
                             // Record the original value of the Vehicle.
-                            decimal decOriginal = objVehicle.TotalCost;
+                            decimal decOriginal = objVehicle.TotalCost + objMod.DeleteVehicleMod();
 
                             // Check for Improved Sensor bonus.
                             if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
@@ -9244,14 +9130,6 @@ namespace Chummer
 
                             // Create the Expense Log Entry for the sale.
                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                            foreach (Weapon objLoopWeapon in objMod.Weapons)
-                            {
-                                decAmount += objLoopWeapon.DeleteWeapon() * frmSell.SellPercent;
-                            }
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware)
-                            {
-                                decAmount += objLoopCyberware.DeleteCyberware() * frmSell.SellPercent;
-                            }
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
@@ -9301,15 +9179,11 @@ namespace Chummer
                                         return;
 
                                     // Record the original value of the Vehicle.
-                                    decimal decOriginal = objWeapon.TotalCost;
+                                    decimal decOriginal = objWeapon.TotalCost + objWeaponAccessory.DeleteWeaponAccessory();
                                     objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
 
                                     // Create the Expense Log Entry for the sale.
-                                    decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                    foreach (Gear objLoopGear in objWeaponAccessory.Gear)
-                                    {
-                                        decAmount += objLoopGear.DeleteGear() * frmSell.SellPercent;
-                                    }
+                                    decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -9328,7 +9202,7 @@ namespace Chummer
                                             return;
 
                                         // Record the original value of the Vehicle.
-                                        decimal decOriginal = objMod.TotalCost;
+                                        decimal decOriginal = objMod.TotalCost + objCyberware.DeleteCyberware();
                                         if (objCyberware.Parent == null)
                                         {
                                             objMod.Cyberware.Remove(objCyberware);
@@ -9339,8 +9213,7 @@ namespace Chummer
                                         }
 
                                         // Create the Expense Log Entry for the sale.
-                                        decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                        decAmount += objCyberware.DeleteCyberware() * frmSell.SellPercent;
+                                        decimal decAmount = (decOriginal - objMod.TotalCost) * frmSell.SellPercent;
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware", GlobalOptions.Language) + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -9361,7 +9234,7 @@ namespace Chummer
                                                 return;
 
                                             // Record the original value of the vehicle.
-                                            decimal decOriginal = objVehicle.TotalCost;
+                                            decimal decOriginal = objVehicle.TotalCost + objGear.DeleteGear();
                                             if (objGear.Parent == null)
                                             {
                                                 if (objCyberware != null)
@@ -9379,7 +9252,6 @@ namespace Chummer
 
                                             // Create the Expense Log Entry for the sale.
                                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                            decAmount += objGear.DeleteGear() * frmSell.SellPercent;
                                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                             CharacterObject.ExpenseEntries.Add(objExpense);

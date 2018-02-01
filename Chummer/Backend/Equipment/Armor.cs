@@ -1359,7 +1359,7 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Gear)
                 decReturn += objGear.DeleteGear();
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
+            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
 
             // Remove the Cyberweapon created by the Mod if applicable.
             if (!WeaponID.IsEmptyGuid())

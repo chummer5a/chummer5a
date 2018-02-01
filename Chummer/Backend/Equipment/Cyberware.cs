@@ -3147,7 +3147,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
             if (PairBonus != null)
             {
                 List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => IncludePair.Contains(x.Name) && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
@@ -3186,7 +3186,7 @@ namespace Chummer.Backend.Equipment
                     if (objQuality != null)
                     {
                         _objCharacter.Qualities.Remove(objQuality);
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                        decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                     }
                 }
             }

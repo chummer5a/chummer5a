@@ -2648,7 +2648,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
+            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
 
             // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
             if (Category == "Foci" || Category == "Metamagic Foci")
@@ -2679,7 +2679,7 @@ namespace Chummer.Backend.Equipment
                 StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
                 if (objStack != null)
                 {
-                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
                     _objCharacter.StackedFoci.Remove(objStack);
                 }
             }

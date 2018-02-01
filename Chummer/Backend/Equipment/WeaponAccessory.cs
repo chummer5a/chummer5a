@@ -1107,6 +1107,16 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Methods
+        public decimal DeleteWeaponAccessory()
+        {
+            decimal decReturn = 0;
+            // Remove any children the Gear may have.
+            foreach (Gear objLoopGear in Gear)
+                decReturn += objLoopGear.DeleteGear();
+
+            return decReturn;
+        }
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
         {
             TreeNode objNode = new TreeNode

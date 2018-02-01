@@ -3327,8 +3327,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
                         if (objAccessory != null)
                         {
-                            foreach (Gear objGear in objAccessory.Gear)
-                                objGear.DeleteGear();
+                            objAccessory.DeleteWeaponAccessory();
                             objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
                         }
                         else
@@ -3598,44 +3597,8 @@ namespace Chummer
                 // Removing a Vehicle
                 if (objVehicle != null)
                 {
-                    // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
-                    foreach (Gear objGear in objVehicle.Gear)
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
+                    objVehicle.DeleteVehicle();
                     CharacterObject.Vehicles.Remove(objVehicle);
-                    foreach (Weapon objLoopWeapon in objVehicle.Weapons)
-                    {
-                        objLoopWeapon.DeleteWeapon();
-                    }
-                    foreach (VehicleMod objLoopMod in objVehicle.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                        {
-                            objLoopCyberware.DeleteCyberware();
-                        }
-                    }
-                    foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (VehicleMod objLoopMod in objLoopMount.Mods)
-                        {
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -3643,22 +3606,8 @@ namespace Chummer
                     // Removing a Weapon Mount
                     if (objWeaponMount != null)
                     {
+                        objWeaponMount.DeleteWeaponMount();
                         objVehicle.WeaponMounts.Remove(objWeaponMount);
-                        foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
-                        {
-                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
-                        }
                     }
                     else
                     {
@@ -3704,18 +3653,11 @@ namespace Chummer
                                 objVehicle.Mods.Add(objRetrofit);
                             }
 
+                            objMod.DeleteVehicleMod();
                             if (objWeaponMount != null)
                                 objWeaponMount.Mods.Remove(objMod);
                             else
                                 objVehicle.Mods.Remove(objMod);
-                            foreach (Weapon objLoopWeapon in objMod.Weapons)
-                            {
-                                objLoopWeapon.DeleteWeapon();
-                            }
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware)
-                            {
-                                objLoopCyberware.DeleteCyberware();
-                            }
                         }
                         else
                         {
@@ -3740,11 +3682,8 @@ namespace Chummer
                                 // Removing a weapon accessory
                                 if (objWeaponAccessory != null)
                                 {
+                                    objWeaponAccessory.DeleteWeaponAccessory();
                                     objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
-                                    foreach (Gear objLoopGear in objWeaponAccessory.Gear)
-                                    {
-                                        objLoopGear.DeleteGear();
-                                    }
                                 }
                                 else
                                 {
@@ -3786,7 +3725,11 @@ namespace Chummer
                                                 objVehicle.Gear.Remove(objGear);
                                                 objVehicle.RefreshMatrixAttributeArray();
                                             }
+
+                                            objGear.DeleteGear();
                                         }
+                                        else
+                                            return;
                                     }
                                 }
                             }
