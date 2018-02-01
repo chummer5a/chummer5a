@@ -177,6 +177,7 @@ namespace Chummer
                 LoadMetatypes();
                 PopulateMetatypes();
                 PopulateMetavariants();
+                RefreshSelectedMetatype();
 
                 //Magical/Resonance Type
                 cboTalents.SelectedValue = _objCharacter.TalentPriority;
@@ -215,6 +216,7 @@ namespace Chummer
                 LoadMetatypes();
                 PopulateMetatypes();
                 PopulateMetavariants();
+                RefreshSelectedMetatype();
             }
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
@@ -470,203 +472,9 @@ namespace Chummer
 
         private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
-            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
-            XmlDocument objXmlDocumentPriority = XmlManager.Load("priorities.xml");
-
-            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-            string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
-            string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
-
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-            XmlNode objXmlMetavariant = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None" ? null : objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
-            XmlNode objXmlMetatypePriorityNode = null;
-            XmlNode objXmlMetavariantPriorityNode = null;
-            XmlNodeList xmlBaseMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + strSelectedHeritage + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
-            foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
-            {
-                if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
-                {
-                    objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-                    objXmlMetavariantPriorityNode = objXmlMetavariant != null ? objXmlMetatypePriorityNode.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]") : null;
-                    break;
-                }
-            }
-
-            if (objXmlMetavariant != null)
-            {
-                if (objXmlMetavariantPriorityNode == null)
-                {
-                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    cmdOK.Enabled = false;
-                }
-                else
-                {
-                    cmdOK.Enabled = true;
-                }
-
-                lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
-                lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);
-                lblREA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["reamin"].InnerText, objXmlMetavariant["reamax"].InnerText, objXmlMetavariant["reaaug"].InnerText);
-                lblSTR.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["strmin"].InnerText, objXmlMetavariant["strmax"].InnerText, objXmlMetavariant["straug"].InnerText);
-                lblCHA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["chamin"].InnerText, objXmlMetavariant["chamax"].InnerText, objXmlMetavariant["chaaug"].InnerText);
-                lblINT.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["intmin"].InnerText, objXmlMetavariant["intmax"].InnerText, objXmlMetavariant["intaug"].InnerText);
-                lblLOG.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["logmin"].InnerText, objXmlMetavariant["logmax"].InnerText, objXmlMetavariant["logaug"].InnerText);
-                lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["wilmin"].InnerText, objXmlMetavariant["wilmax"].InnerText, objXmlMetavariant["wilaug"].InnerText);
-                lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["inimin"].InnerText, objXmlMetavariant["inimax"].InnerText, objXmlMetavariant["iniaug"].InnerText);
-
-                lblMetavariantBP.Text = objXmlMetavariantPriorityNode["karma"]?.InnerText ?? "0";
-
-                // Set the special attributes label.
-                int.TryParse(objXmlMetavariantPriorityNode?["value"]?.InnerText, out int intSpecialAttribPoints);
-
-                XmlNodeList xmlBaseTalentPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue?.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
-                foreach (XmlNode xmlBaseTalentPriority in xmlBaseTalentPriorityList)
-                {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
-                    {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
-                        if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
-                            intSpecialAttribPoints += intTemp;
-                        break;
-                    }
-                }
-
-                lblSpecial.Text = intSpecialAttribPoints.ToString();
-
-                string strQuality = string.Empty;
-                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
-                // Build a list of the Metavariant's Qualities.
-                foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/*/quality"))
-                {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    {
-                        XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                        strQuality = objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
-
-                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
-                    }
-                    else
-                    {
-                        strQuality = objXmlQuality.InnerText;
-                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ')';
-                    }
-                    if (dicQualities.ContainsKey(strQuality))
-                    {
-                        dicQualities[strQuality] += 1;
-                    }
-                    else
-                        dicQualities.Add(strQuality, 1);
-                }
-
-                if (dicQualities.Count > 0)
-                {
-                    StringBuilder strQualities = new StringBuilder();
-                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
-                    {
-                        strQualities.Append(objLoopQuality.Key);
-                        if (objLoopQuality.Value > 1)
-                        {
-                            strQualities.Append(' ');
-                            strQualities.Append(objLoopQuality.Value.ToString());
-                        }
-                        strQualities.Append(", ");
-                    }
-                    strQualities.Length -= 2;
-                    lblMetavariantQualities.Text = strQualities.ToString();
-                }
-                else
-                {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                }
-            }
-            else if (objXmlMetatype != null)
-            {
-                cmdOK.Enabled = true;
-                lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);
-                lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["agimin"].InnerText, objXmlMetatype["agimax"].InnerText, objXmlMetatype["agiaug"].InnerText);
-                lblREA.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["reamin"].InnerText, objXmlMetatype["reamax"].InnerText, objXmlMetatype["reaaug"].InnerText);
-                lblSTR.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["strmin"].InnerText, objXmlMetatype["strmax"].InnerText, objXmlMetatype["straug"].InnerText);
-                lblCHA.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["chamin"].InnerText, objXmlMetatype["chamax"].InnerText, objXmlMetatype["chaaug"].InnerText);
-                lblINT.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["intmin"].InnerText, objXmlMetatype["intmax"].InnerText, objXmlMetatype["intaug"].InnerText);
-                lblLOG.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["logmin"].InnerText, objXmlMetatype["logmax"].InnerText, objXmlMetatype["logaug"].InnerText);
-                lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["wilmin"].InnerText, objXmlMetatype["wilmax"].InnerText, objXmlMetatype["wilaug"].InnerText);
-                lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
-
-                string strQuality = string.Empty;
-                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
-                // Build a list of the Metatype's Qualities.
-                foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/*/quality"))
-                {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    {
-                        XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                        strQuality = objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
-
-                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
-                    }
-                    else
-                    {
-                        strQuality = objXmlQuality.InnerText;
-                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ')';
-                    }
-                    if (dicQualities.ContainsKey(strQuality))
-                    {
-                        dicQualities[strQuality] += 1;
-                    }
-                    else
-                        dicQualities.Add(strQuality, 1);
-                }
-
-                if (dicQualities.Count > 0)
-                {
-                    StringBuilder strQualities = new StringBuilder();
-                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
-                    {
-                        strQualities.Append(objLoopQuality.Key);
-                        if (objLoopQuality.Value > 1)
-                        {
-                            strQualities.Append(' ');
-                            strQualities.Append(objLoopQuality.Value.ToString());
-                        }
-                        strQualities.Append(", ");
-                    }
-                    strQualities.Length -= 2;
-                    lblMetavariantQualities.Text = strQualities.ToString();
-                }
-                else
-                {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                }
-
-                lblMetavariantBP.Text = objXmlMetatypePriorityNode["karma"]?.InnerText;
-                // Set the special attributes label.
-                int.TryParse(objXmlMetatypePriorityNode["value"]?.InnerText, out int intSpecialAttribPoints);
-
-                XmlNodeList xmlBaseTalentPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue?.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
-                foreach (XmlNode xmlBaseTalentPriority in xmlBaseTalentPriorityList)
-                {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
-                    {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
-                        if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
-                            intSpecialAttribPoints += intTemp;
-                        break;
-                    }
-                }
-
-                lblSpecial.Text = intSpecialAttribPoints.ToString();
-            }
-            else
-                cmdOK.Enabled = false;
+            if (_blnInitializing)
+                return;
+            RefreshSelectedMetatype();
             PopulateTalents();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -1244,6 +1052,207 @@ namespace Chummer
             else if (intValue < 0)
                 intValue = 0;
             return intValue.ToString();
+        }
+
+        void RefreshSelectedMetatype()
+        {
+            XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
+            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+            XmlDocument objXmlDocumentPriority = XmlManager.Load("priorities.xml");
+
+            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+            string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
+            string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
+
+            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+            XmlNode objXmlMetavariant = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None" ? null : objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+            XmlNode objXmlMetatypePriorityNode = null;
+            XmlNode objXmlMetavariantPriorityNode = null;
+            XmlNodeList xmlBaseMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + strSelectedHeritage + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
+            foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+            {
+                if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
+                {
+                    objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+                    objXmlMetavariantPriorityNode = objXmlMetavariant != null ? objXmlMetatypePriorityNode.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]") : null;
+                    break;
+                }
+            }
+
+            if (objXmlMetavariant != null)
+            {
+                if (objXmlMetavariantPriorityNode == null)
+                {
+                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    cmdOK.Enabled = false;
+                }
+                else
+                {
+                    cmdOK.Enabled = true;
+                }
+
+                lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
+                lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);
+                lblREA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["reamin"].InnerText, objXmlMetavariant["reamax"].InnerText, objXmlMetavariant["reaaug"].InnerText);
+                lblSTR.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["strmin"].InnerText, objXmlMetavariant["strmax"].InnerText, objXmlMetavariant["straug"].InnerText);
+                lblCHA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["chamin"].InnerText, objXmlMetavariant["chamax"].InnerText, objXmlMetavariant["chaaug"].InnerText);
+                lblINT.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["intmin"].InnerText, objXmlMetavariant["intmax"].InnerText, objXmlMetavariant["intaug"].InnerText);
+                lblLOG.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["logmin"].InnerText, objXmlMetavariant["logmax"].InnerText, objXmlMetavariant["logaug"].InnerText);
+                lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["wilmin"].InnerText, objXmlMetavariant["wilmax"].InnerText, objXmlMetavariant["wilaug"].InnerText);
+                lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["inimin"].InnerText, objXmlMetavariant["inimax"].InnerText, objXmlMetavariant["iniaug"].InnerText);
+
+                lblMetavariantBP.Text = objXmlMetavariantPriorityNode["karma"]?.InnerText ?? "0";
+
+                // Set the special attributes label.
+                int.TryParse(objXmlMetavariantPriorityNode?["value"]?.InnerText, out int intSpecialAttribPoints);
+
+                XmlNodeList xmlBaseTalentPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue?.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
+                foreach (XmlNode xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                {
+                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
+                    {
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
+                        if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
+                            intSpecialAttribPoints += intTemp;
+                        break;
+                    }
+                }
+
+                lblSpecial.Text = intSpecialAttribPoints.ToString();
+
+                string strQuality = string.Empty;
+                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
+                // Build a list of the Metavariant's Qualities.
+                foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/*/quality"))
+                {
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    {
+                        XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                        strQuality = objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
+
+                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
+                    }
+                    else
+                    {
+                        strQuality = objXmlQuality.InnerText;
+                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += " (" + strSelect + ')';
+                    }
+                    if (dicQualities.ContainsKey(strQuality))
+                    {
+                        dicQualities[strQuality] += 1;
+                    }
+                    else
+                        dicQualities.Add(strQuality, 1);
+                }
+
+                if (dicQualities.Count > 0)
+                {
+                    StringBuilder strQualities = new StringBuilder();
+                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
+                    {
+                        strQualities.Append(objLoopQuality.Key);
+                        if (objLoopQuality.Value > 1)
+                        {
+                            strQualities.Append(' ');
+                            strQualities.Append(objLoopQuality.Value.ToString());
+                        }
+                        strQualities.Append(", ");
+                    }
+                    strQualities.Length -= 2;
+                    lblMetavariantQualities.Text = strQualities.ToString();
+                }
+                else
+                {
+                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                }
+            }
+            else if (objXmlMetatype != null)
+            {
+                cmdOK.Enabled = true;
+                lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);
+                lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["agimin"].InnerText, objXmlMetatype["agimax"].InnerText, objXmlMetatype["agiaug"].InnerText);
+                lblREA.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["reamin"].InnerText, objXmlMetatype["reamax"].InnerText, objXmlMetatype["reaaug"].InnerText);
+                lblSTR.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["strmin"].InnerText, objXmlMetatype["strmax"].InnerText, objXmlMetatype["straug"].InnerText);
+                lblCHA.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["chamin"].InnerText, objXmlMetatype["chamax"].InnerText, objXmlMetatype["chaaug"].InnerText);
+                lblINT.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["intmin"].InnerText, objXmlMetatype["intmax"].InnerText, objXmlMetatype["intaug"].InnerText);
+                lblLOG.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["logmin"].InnerText, objXmlMetatype["logmax"].InnerText, objXmlMetatype["logaug"].InnerText);
+                lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["wilmin"].InnerText, objXmlMetatype["wilmax"].InnerText, objXmlMetatype["wilaug"].InnerText);
+                lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
+
+                string strQuality = string.Empty;
+                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
+                // Build a list of the Metatype's Qualities.
+                foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/*/quality"))
+                {
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    {
+                        XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                        strQuality = objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
+
+                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
+                    }
+                    else
+                    {
+                        strQuality = objXmlQuality.InnerText;
+                        string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += " (" + strSelect + ')';
+                    }
+                    if (dicQualities.ContainsKey(strQuality))
+                    {
+                        dicQualities[strQuality] += 1;
+                    }
+                    else
+                        dicQualities.Add(strQuality, 1);
+                }
+
+                if (dicQualities.Count > 0)
+                {
+                    StringBuilder strQualities = new StringBuilder();
+                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
+                    {
+                        strQualities.Append(objLoopQuality.Key);
+                        if (objLoopQuality.Value > 1)
+                        {
+                            strQualities.Append(' ');
+                            strQualities.Append(objLoopQuality.Value.ToString());
+                        }
+                        strQualities.Append(", ");
+                    }
+                    strQualities.Length -= 2;
+                    lblMetavariantQualities.Text = strQualities.ToString();
+                }
+                else
+                {
+                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                }
+
+                lblMetavariantBP.Text = objXmlMetatypePriorityNode["karma"]?.InnerText;
+                // Set the special attributes label.
+                int.TryParse(objXmlMetatypePriorityNode["value"]?.InnerText, out int intSpecialAttribPoints);
+
+                XmlNodeList xmlBaseTalentPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue?.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
+                foreach (XmlNode xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                {
+                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
+                    {
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
+                        if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
+                            intSpecialAttribPoints += intTemp;
+                        break;
+                    }
+                }
+
+                lblSpecial.Text = intSpecialAttribPoints.ToString();
+            }
+            else
+                cmdOK.Enabled = false;
         }
 
         void PopulateTalents()
