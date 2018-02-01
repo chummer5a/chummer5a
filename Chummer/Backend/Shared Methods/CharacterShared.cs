@@ -5665,7 +5665,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
