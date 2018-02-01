@@ -122,6 +122,7 @@ Application Changes:
 - Fixed an issue where editing spirit or sprite notes would not mark the underlying character as "dirty". Fixes #2420.
 - Fixed an issue where removing a source for prototype transhuman would not cause 'ware originally marked as prototype transhuman to revert. Fixes #2425.
 - Fixed a bug where selling an item that added gear or cyberware via a bonus would not factor the price of the bonus-granted item into the amount the character would gain from selling the item.
+- Fixed a crash when deleting a lifestyle quality from an advanced lifestyle. Fixes #2428.
 
 Data Changes:
 

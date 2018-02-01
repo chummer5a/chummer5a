@@ -33,6 +33,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID;
         private Guid _SourceGuid;
         private string _strName = string.Empty;
+        private string _strCategory = string.Empty;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -116,8 +117,10 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
-            if (objXmlLifestyleQuality["category"] != null)
-                _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
+            if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
+            {
+                _objLifestyleQualityType = ConvertToLifestyleQualityType(_strCategory);
+            }
             _objLifestyleQualitySource = objLifestyleQualitySource;
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
@@ -134,9 +137,10 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlLifestyleQuality.InnerXml.Contains("<bonus>"))
+            XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
+            if (xmlBonus != null)
             {
-                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString("D"), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -165,6 +169,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("id", _SourceGuid.ToString("D"));
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
@@ -215,6 +220,10 @@ namespace Chummer.Backend.Equipment
 #else
             _objLifestyleQualitySource = QualitySource.Selected;
 #endif
+            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory))
+            {
+                _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
+            }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
@@ -593,7 +602,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Category of the Quality. 
         /// </summary>
-        public string Category { get; set; }
+        public string Category
+        {
+            get => _strCategory;
+            set => _strCategory = value;
+        }
 
         /// <summary>
         /// Area/Neighborhood LP Cost/Benefit of the Quality.

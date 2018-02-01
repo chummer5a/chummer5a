@@ -824,7 +824,7 @@ namespace Chummer.Backend.Equipment
                 foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
                     //Add the flat cost from Qualities.
-                    if (objQuality.Category == "Contracts")
+                    if (objQuality.Type == QualityType.Contracts)
                         decContractCost += objQuality.Cost;
                     else
                         decExtraAssetCost += objQuality.Cost;

@@ -405,22 +405,22 @@ namespace Chummer
                 if (objQuality.InternalId.IsEmptyGuid())
                     continue;
 
+                TreeNode nodParent;
                 // Add the Quality to the appropriate parent node.
                 if (objQuality.Type == QualityType.Positive)
                 {
-                    treLifestyleQualities.Nodes[0].Nodes.Add(objQuality.CreateTreeNode());
-                    treLifestyleQualities.Nodes[0].Expand();
+                    nodParent = treLifestyleQualities.Nodes[0];
                 }
                 else if (objQuality.Type == QualityType.Negative)
                 {
-                    treLifestyleQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode());
-                    treLifestyleQualities.Nodes[1].Expand();
+                    nodParent = treLifestyleQualities.Nodes[1];
                 }
                 else
                 {
-                    treLifestyleQualities.Nodes[2].Nodes.Add(objQuality.CreateTreeNode());
-                    treLifestyleQualities.Nodes[2].Expand();
+                    nodParent = treLifestyleQualities.Nodes[2];
                 }
+                nodParent.Nodes.Add(objQuality.CreateTreeNode());
+                nodParent.Expand();
                 _objLifestyle.LifestyleQualities.Add(objQuality);
 
                 CalculateValues();
@@ -433,16 +433,21 @@ namespace Chummer
             // Locate the selected Quality.
             if (treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
-            else
+
+            string strQualityId = treLifestyleQualities.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strQualityId))
             {
-                string strQualityName = treLifestyleQualities.SelectedNode.Name;
-                if (strQualityName == "Not a Home" && cboBaseLifestyle.SelectedValue.ToString() == "Bolt Hole")
+                LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FirstOrDefault(x => x.InternalId == strQualityId);
+                if (objQuality != null)
                 {
-                    return;
+                    if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
+                    {
+                        return;
+                    }
+                    _objLifestyle.LifestyleQualities.Remove(objQuality);
+                    treLifestyleQualities.SelectedNode.Remove();
+                    CalculateValues();
                 }
-                _objLifestyle.LifestyleQualities.Remove(_objLifestyle.LifestyleQualities.First(x => x.Name.Equals(strQualityName)));
-                treLifestyleQualities.SelectedNode.Remove();
-                CalculateValues();
             }
         }
 
@@ -609,17 +614,13 @@ namespace Chummer
                     {
                         decExtraCostContracts += decCost;
                     }
+                    else if (objQuality.Category == "Entertainment - Outing" || objQuality.Category == "Entertainment - Service")
+                    {
+                        decExtraCostServicesOutings += decCost;
+                    }
                     else
                     {
-                        string strCategory = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]/category")?.InnerText;
-                        if (strCategory.Equals("Entertainment - Outing") || strCategory.Equals("Entertainment - Service"))
-                        {
-                            decExtraCostServicesOutings += decCost;
-                        }
-                        else
-                        {
-                            decExtraCostAssets += decCost;
-                        }
+                        decExtraCostAssets += decCost;
                     }
                 }
                 else
