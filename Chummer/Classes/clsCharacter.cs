@@ -7947,7 +7947,16 @@ namespace Chummer
             }
             set
             {
-                _decPrototypeTranshuman = value;
+                if (value <= 0)
+                {
+                    if (_decPrototypeTranshuman > 0)
+                        foreach (Cyberware objCyberware in Cyberware)
+                            if (objCyberware.PrototypeTranshuman)
+                                objCyberware.PrototypeTranshuman = false;
+                    _decPrototypeTranshuman = 0;
+                }
+                else
+                    _decPrototypeTranshuman = value;
             }
         }
 

@@ -719,7 +719,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
             objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier", ref _decExtraESSMultiplicativeMultiplier);
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
-            objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
+            if (_objCharacter.PrototypeTranshuman > 0)
+                objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
             _nodPairBonus = objNode["pairbonus"];
             XmlNode xmlPairIncludeNode = objNode["pairinclude"];
@@ -1865,7 +1866,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnPrototypeTranshuman && _objCharacter.PrototypeTranshuman > 0;
+                return _blnPrototypeTranshuman;
             }
             set
             {
@@ -2121,7 +2122,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal CalculatedESS(bool blnReturnPrototype = true)
         {
-            if (_blnPrototypeTranshuman && blnReturnPrototype)
+            if (PrototypeTranshuman && blnReturnPrototype)
                 return 0;
             if (SourceID == EssenceHoleGUID) //Essence hole
             {

@@ -120,6 +120,7 @@ Application Changes:
 - Fixed an issue where unequipping modular cyberware that was equipped to a vehicle in career mode would keep the old cyberware node on the vehicle tree view.
 - Fixed a bug where lifestyle qualities with restrictions based on existing lifestyle qualities would not function properly.
 - Fixed an issue where editing spirit or sprite notes would not mark the underlying character as "dirty". Fixes #2420.
+- Fixed an issue where removing a source for prototype transhuman would not cause 'ware originally marked as prototype transhuman to revert. Fixes #2425.
 
 Data Changes:
 
