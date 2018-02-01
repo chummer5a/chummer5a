@@ -5239,7 +5239,7 @@ namespace Chummer
             if (listChangedEventArgs == null)
             {
                 lstCalendar.Items.Clear();
-                for (int i = CharacterObject.Calendar.Count - 1; i >= 0; i--)
+                for (int i = CharacterObject.Calendar.Count - 1; i >= 0; --i)
                 {
                     CalendarWeek objWeek = CharacterObject.Calendar[i];
 
@@ -5297,13 +5297,37 @@ namespace Chummer
                         break;
                     case ListChangedType.ItemDeleted:
                         {
-                            lstCalendar.Items.RemoveAt(listChangedEventArgs.OldIndex);
+                            lstCalendar.Items.RemoveAt(listChangedEventArgs.NewIndex);
                         }
                         break;
                     case ListChangedType.ItemChanged:
-                    case ListChangedType.ItemMoved:
                         {
                             lstCalendar.Items.RemoveAt(listChangedEventArgs.NewIndex);
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.Notes
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId
+                            };
+
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
+
+                            lstCalendar.Items.Insert(intInsertIndex, objItem);
+                        }
+                        break;
+                    case ListChangedType.ItemMoved:
+                        {
+                            lstCalendar.Items.RemoveAt(listChangedEventArgs.OldIndex);
                             int intInsertIndex = listChangedEventArgs.NewIndex;
                             CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
 

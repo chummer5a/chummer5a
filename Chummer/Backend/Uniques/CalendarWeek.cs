@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public class CalendarWeek : IHasInternalId
+    public class CalendarWeek : IHasInternalId, IComparable
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -234,6 +234,19 @@ namespace Chummer
         {
             string strReturn = LanguageManager.GetString("String_WeekDisplay", strLanguage).Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
             return strReturn;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is CalendarWeek objWeek)
+            {
+                int intReturn = Year.CompareTo(objWeek.Year);
+                if (intReturn == 0)
+                    intReturn = Week.CompareTo(objWeek.Week);
+                return intReturn;
+            }
+            else
+                return DisplayName(GlobalOptions.Language).CompareTo(obj);
         }
 
         /// <summary>

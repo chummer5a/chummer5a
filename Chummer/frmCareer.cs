@@ -6408,20 +6408,19 @@ namespace Chummer
         private void cmdAddWeek_Click(object sender, EventArgs e)
         {
             CalendarWeek objWeek = new CalendarWeek();
-            if (CharacterObject.Calendar != null && CharacterObject.Calendar.LastOrDefault() != null)
+            CalendarWeek objLastWeek = CharacterObject.Calendar?.LastOrDefault();
+            if (objLastWeek != null)
             {
-                objWeek.Year = CharacterObject.Calendar.Last().Year;
-                objWeek.Week = CharacterObject.Calendar.Last().Week;
-                objWeek.Week++;
+                objWeek.Year = objLastWeek.Year;
+                objWeek.Week = objLastWeek.Week + 1;
                 if (objWeek.Week > 52)
                 {
                     objWeek.Week = 1;
-                    objWeek.Year++;
+                    objWeek.Year += 1;
                 }
             }
             else
             {
-                objWeek = new CalendarWeek();
                 frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart();
                 frmPickStart.ShowDialog(this);
 
@@ -6431,8 +6430,8 @@ namespace Chummer
                 objWeek.Year = frmPickStart.SelectedYear;
                 objWeek.Week = frmPickStart.SelectedWeek;
             }
-
-            CharacterObject.Calendar.Add(objWeek);
+            
+            CharacterObject.Calendar.AddWithSort(objWeek);
             
             IsDirty = true;
         }
@@ -6440,17 +6439,14 @@ namespace Chummer
 
         private void cmdDeleteWeek_Click(object sender, EventArgs e)
         {
-            ListViewItem objItem = null;
-            if (lstCalendar != null && lstCalendar.SelectedItems.Count > 0)
-            {
-                objItem = lstCalendar.SelectedItems[0];
-            }
-            else
+            if (lstCalendar == null || lstCalendar.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == objItem.SubItems[2].Text);
+            string strWeekId = lstCalendar.SelectedItems[0].SubItems[2].Text;
+
+            CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
 
             if (objCharacterWeek != null)
             {
@@ -6464,41 +6460,31 @@ namespace Chummer
 
         private void cmdEditWeek_Click(object sender, EventArgs e)
         {
-            ListViewItem objItem = null;
-            if (lstCalendar != null && lstCalendar.SelectedItems.Count > 0)
-            {
-                objItem = lstCalendar.SelectedItems[0];
-            }
-            else
+            if (lstCalendar == null || lstCalendar.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            CalendarWeek objWeek = new CalendarWeek();
+            string strWeekId = lstCalendar.SelectedItems[0].SubItems[2].Text;
 
-            // Find the selected Calendar Week.
-            foreach (CalendarWeek objCharacterWeek in CharacterObject.Calendar)
+            CalendarWeek objWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
+
+            if (objWeek != null)
             {
-                if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
+                string strOldValue = objWeek.Notes;
+                frmNotes frmItemNotes = new frmNotes
                 {
-                    objWeek = objCharacterWeek;
-                    break;
-                }
-            }
+                    Notes = strOldValue
+                };
+                frmItemNotes.ShowDialog(this);
 
-            string strOldValue = objWeek.Notes;
-            frmNotes frmItemNotes = new frmNotes
-            {
-                Notes = strOldValue
-            };
-            frmItemNotes.ShowDialog(this);
-
-            if (frmItemNotes.DialogResult == DialogResult.OK)
-            {
-                objWeek.Notes = frmItemNotes.Notes;
-                if (objWeek.Notes != strOldValue)
+                if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
-                    IsDirty = true;
+                    objWeek.Notes = frmItemNotes.Notes;
+                    if (objWeek.Notes != strOldValue)
+                    {
+                        IsDirty = true;
+                    }
                 }
             }
         }
@@ -6506,12 +6492,8 @@ namespace Chummer
         private void cmdChangeStartWeek_Click(object sender, EventArgs e)
         {
             // Find the first date.
-            CalendarWeek objStart;
-            if (CharacterObject.Calendar != null && CharacterObject.Calendar.FirstOrDefault() != null)
-            {
-                 objStart = CharacterObject.Calendar.First();
-            }
-            else
+            CalendarWeek objStart = CharacterObject.Calendar?.FirstOrDefault();
+            if (objStart == null)
             {
                 return;
             }

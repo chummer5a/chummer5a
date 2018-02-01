@@ -1898,7 +1898,7 @@ namespace Chummer
             {
                 CalendarWeek objWeek = new CalendarWeek();
                 objWeek.Load(objXmlWeek);
-                _lstCalendar.Add(objWeek);
+                _lstCalendar.AddWithSort(objWeek);
             }
 
             Timekeeper.Finish("load_char_calendar");
