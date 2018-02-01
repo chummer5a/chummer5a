@@ -391,9 +391,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
-            XmlDocument objXmlDocument = XmlManager.Load("skills.xml", strLanguage);
-            XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
-            return objNode?.Attributes?["translate"]?.InnerText;
+            return XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]/@translate")?.InnerText ?? Name;
         }
 
         public string DisplayRating
