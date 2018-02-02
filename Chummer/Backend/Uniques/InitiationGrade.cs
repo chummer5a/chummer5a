@@ -229,7 +229,7 @@ namespace Chummer
 
         public int CompareTo(object obj)
         {
-            return Grade.CompareTo(obj);
+            return CompareTo((InitiationGrade)obj);
         }
 
         public int CompareTo(InitiationGrade obj)
