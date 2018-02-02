@@ -110,6 +110,27 @@ namespace Chummer
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets the rightmost edge of the node or any of its descendents.
+        /// </summary>
+        /// <param name="treTree"></param>
+        /// <returns></returns>
+        public static int GetRightMostEdge(this TreeNode objNode)
+        {
+            if (objNode.Nodes.Count == 0)
+            {
+                return objNode.Bounds.Right;
+            }
+            int intReturn = 0;
+            foreach (TreeNode objChild in objNode.Nodes)
+            {
+                int intLoopEdge = objChild.GetRightMostEdge();
+                if (intLoopEdge > intReturn)
+                    intReturn = intLoopEdge;
+            }
+            return intReturn;
+        }
         #endregion
 
         #region TreeView Extensions
@@ -239,6 +260,27 @@ namespace Chummer
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets the rightmost edge of the tree or any of its descendents.
+        /// </summary>
+        /// <param name="treTree"></param>
+        /// <returns></returns>
+        public static int GetRightMostEdge(this TreeView treTree)
+        {
+            if (treTree.Nodes.Count == 0)
+            {
+                return treTree.Bounds.Right;
+            }
+            int intReturn = 0;
+            foreach (TreeNode objChild in treTree.Nodes)
+            {
+                int intLoopEdge = objChild.GetRightMostEdge();
+                if (intLoopEdge > intReturn)
+                    intReturn = intLoopEdge;
+            }
+            return intReturn;
         }
         #endregion
 
