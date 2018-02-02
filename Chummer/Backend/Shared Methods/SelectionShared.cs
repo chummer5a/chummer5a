@@ -784,23 +784,22 @@ namespace Chummer.Backend
                         }
                         return false;
                     }
-                case "quality":
+                    case "quality":
                     {
-                        Quality quality = objCharacter.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Name != strIgnoreQuality);
+                        Quality quality = xmlNode.Attributes?["extra"] != null
+                            ? objCharacter.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Extra == xmlNode.Attributes?["extra"].InnerText && q.Name != strIgnoreQuality)
+                            : objCharacter.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Name != strIgnoreQuality);
                         if (quality != null)
                         {
                             if (blnShowMessage)
                                 strName = quality.DisplayNameShort(GlobalOptions.Language);
                             return true;
                         }
-                        if (blnShowMessage)
-                        {
-                            string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            if (!string.IsNullOrEmpty(strTranslate))
-                                strName = $"\n\t {strTranslate} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
-                            else
-                                strName = $"\n\t {strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
-                        }
+                        if (!blnShowMessage) return false;
+                        string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"\n\t {strTranslate} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})"
+                            : $"\n\t {strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
                         return false;
                     }
                 case "skill":

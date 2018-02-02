@@ -541,6 +541,24 @@
       <source>SG</source>
       <page>90</page>
     </metamagic>
+    <metamagic>
+      <id>ef0f4461-4da9-4a24-b508-77f5c3a920d7</id>
+      <name>Movement</name>
+      <adept>True</adept>
+      <magician>False</magician>
+      <required>
+        <allof>
+          <quality extra="Horse">Mentor Spirit</quality>
+        </allof>
+      </required>
+      <bonus>
+        <critterpowers>
+          <power select="Self-Only x 3">Movement</power>
+        </critterpowers>  
+      </bonus>
+      <source>SR5</source>
+      <page>399</page>
+    </metamagic>
     <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <metamagic>
