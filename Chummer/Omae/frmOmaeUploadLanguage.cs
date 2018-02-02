@@ -83,11 +83,19 @@ namespace Chummer
             XmlDocument objXmlDocument = new XmlDocument();
             try
             {
-                objXmlDocument.Load(openFileDialog.FileName);
+                using (StreamReader objStreamReader = new StreamReader(openFileDialog.FileName, true))
+                {
+                    objXmlDocument.Load(objStreamReader);
+                }
             }
-            catch
+            catch (IOException ex)
             {
-                MessageBox.Show("This is not a valid XML file.", "Invalid XML File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+            catch (XmlException ex)
+            {
+                MessageBox.Show(ex.ToString());
                 return;
             }
 

@@ -473,48 +473,48 @@
     <Compile Include="frmNotes.Designer.cs">
       <DependentUpon>frmNotes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\frmOmae.cs">
+    <None Include="Omae\frmOmae.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmae.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmae.Designer.cs">
       <DependentUpon>frmOmae.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.Designer.cs">
       <DependentUpon>frmOmaeAccount.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.Designer.cs">
       <DependentUpon>frmOmaeCompress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.Designer.cs">
       <DependentUpon>frmOmaeUpload.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.Designer.cs">
       <DependentUpon>frmOmaeUploadData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.Designer.cs">
       <DependentUpon>frmOmaeUploadLanguage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.Designer.cs">
       <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmPlayerDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -815,12 +815,12 @@
     <Compile Include="Controls\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\OmaeRecord.cs">
+    <None Include="Omae\OmaeRecord.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Omae\OmaeRecord.Designer.cs">
+    </None>
+    <None Include="Omae\OmaeRecord.Designer.cs">
       <DependentUpon>OmaeRecord.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Controls\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

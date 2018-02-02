@@ -5836,8 +5836,25 @@ namespace Chummer
             // If the user cancels out, return early.
             if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
+
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(dlgOpenFileDialog.FileName);
+            try
+            {
+                using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, true))
+                {
+                    xmlDoc.Load(objStreamReader);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+            catch (XmlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
 
             XmlNodeList xmlContactList = xmlDoc.SelectNodes("/chummer/contacts/contact");
             if (xmlContactList != null)

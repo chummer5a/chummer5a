@@ -1216,10 +1216,17 @@ namespace Chummer
             foreach (string filePath in settingsFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument();
-
+                
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {
@@ -1262,7 +1269,14 @@ namespace Chummer
 
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {
@@ -1310,7 +1324,14 @@ namespace Chummer
 
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {

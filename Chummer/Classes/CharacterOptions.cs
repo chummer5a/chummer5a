@@ -622,9 +622,17 @@ namespace Chummer
             {
                 try
                 {
-                    objXmlDocument.Load(strFilePath);
+                    using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                    {
+                        objXmlDocument.Load(objStreamReader);
+                    }
                 }
-                catch (NotSupportedException)
+                catch (IOException)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                catch (XmlException)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -641,7 +649,23 @@ namespace Chummer
                 {
                     _strFileName = "default.xml";
                     strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
-                    objXmlDocument.Load(strFilePath);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        {
+                            objXmlDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (XmlException)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
                 }
             }
             

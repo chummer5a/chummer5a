@@ -45,7 +45,21 @@ namespace Chummer
             {
                 // Load the file so we can get the Setting name.
                 XmlDocument objXmlDocument = new XmlDocument();
-                objXmlDocument.Load(strFileName);
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFileName, true))
+                    {
+                        objXmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
 
                 lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name").InnerText));
             }

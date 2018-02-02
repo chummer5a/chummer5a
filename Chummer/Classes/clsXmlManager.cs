@@ -139,15 +139,28 @@ namespace Chummer
                 objDoc.AppendChild(objCont);
                 XmlElement objDocElement = objDoc.DocumentElement;
                 // Load the base file and retrieve all of the child nodes.
-                objXmlFile.Load(strPath);
-                XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*");
-                if (xmlNodeList != null)
-                    foreach (XmlNode objNode in xmlNodeList)
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strPath, true))
                     {
-                        // Append the entire child node to the new document.
-                        objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
+                        objXmlFile.Load(objStreamReader);
                     }
-
+                    using (XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*"))
+                    {
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            // Append the entire child node to the new document.
+                            objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
+                        }
+                    }
+                }
+                catch (IOException)
+                {
+                }
+                catch (XmlException)
+                {
+                }
+                
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                 if (strFileName != "improvements.xml")
                 {
@@ -155,7 +168,21 @@ namespace Chummer
                     {
                         foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName))
                         {
-                            objXmlFile.Load(strFile);
+                            try
+                            {
+                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                {
+                                    objXmlFile.Load(objStreamReader);
+                                }
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
                             foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                             {
                                 foreach (XmlNode objType in objNode.ChildNodes)
@@ -191,7 +218,21 @@ namespace Chummer
                         // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
                         foreach (string strFile in Directory.GetFiles(strLoopPath, "custom*_" + strFileName))
                         {
-                            objXmlFile.Load(strFile);
+                            try
+                            {
+                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                {
+                                    objXmlFile.Load(objStreamReader);
+                                }
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
                             foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                             {
                                 // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
@@ -235,7 +276,21 @@ namespace Chummer
                         // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
                         foreach (string strFile in Directory.GetFiles(strLoopPath, "amend*_" + strFileName))
                         {
-                            objXmlFile.Load(strFile);
+                            try
+                            {
+                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                {
+                                    objXmlFile.Load(objStreamReader);
+                                }
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
                             foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                             {
                                 AmendNodeChildern(objDoc, objNode, "/chummer");
@@ -290,7 +345,21 @@ namespace Chummer
                 {
                     foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName, SearchOption.AllDirectories))
                     {
-                        objXmlFile.Load(strFile);
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                            {
+                                objXmlFile.Load(objStreamReader);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
                         foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                         {
                             blnHasLiveCustomData = true;
@@ -715,7 +784,24 @@ namespace Chummer
             XmlDocument objLanguageDoc = new XmlDocument();
             string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
-            objLanguageDoc.Load(strFilePath);
+
+            try
+            {
+                using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                {
+                    objLanguageDoc.Load(objStreamReader);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+            catch (XmlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
 
             XPathNavigator objLanguageNavigator = objLanguageDoc.GetFastNavigator();
 
