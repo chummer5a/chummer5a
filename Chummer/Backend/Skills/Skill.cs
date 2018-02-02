@@ -45,7 +45,19 @@ namespace Chummer.Backend.Skills
         {
         }
 
-        public CharacterAttrib AttributeObject { get; protected set; } //Attribute this skill primarily depends on
+        private CharacterAttrib _objAttribute;
+        public CharacterAttrib AttributeObject
+        {
+            get => _objAttribute;
+            protected set
+            {
+                if (_objAttribute != null)
+                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                _objAttribute = value;
+                if (_objAttribute != null)
+                    _objAttribute.PropertyChanged += OnLinkedAttributeChanged;
+            }
+        } //Attribute this skill primarily depends on
         private readonly Character _objCharacter; //The Character (parent) to this skill
         private readonly string _strCategory = string.Empty; //Name of the skill category it belongs to
         private readonly string _strGroup = string.Empty; //Name of the skill group this skill belongs to (remove?)
@@ -356,13 +368,19 @@ namespace Chummer.Backend.Skills
         protected Skill(Character character)
         {
             _objCharacter = character;
-
             _objCharacter.PropertyChanged += OnCharacterChanged;
+            _objCharacter.SkillImprovementEvent += OnImprovementEvent;
 
-            character.SkillImprovementEvent += OnImprovementEvent;
             Specializations.ListChanged += SpecializationsOnListChanged;
         }
 
+        public void UnbindSkill()
+        {
+            _objCharacter.PropertyChanged -= OnCharacterChanged;
+            _objCharacter.SkillImprovementEvent -= OnImprovementEvent;
+            if (SkillGroupObject != null)
+                SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
+        }
 
         //load from data
         protected Skill(Character character, XmlNode xmlNode) : this(character)
@@ -382,8 +400,6 @@ namespace Chummer.Backend.Skills
                 SkillId = guiTemp;
             if (xmlNode["guid"] != null && Guid.TryParse(xmlNode["guid"].InnerText, out guiTemp))
                 Id = guiTemp;
-
-            AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
             
             XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
             if (lstSuggestedSpecializationsXml != null)

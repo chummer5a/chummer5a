@@ -32,7 +32,7 @@ namespace Chummer.Backend.Skills
     {
         private readonly Character _objCharacter;
         private readonly Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
-        private readonly static List<Skill> s_LstSkillBackups = new List<Skill>();
+        private readonly Dictionary<Guid, Skill> _dicSkillBackups = new Dictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
         {
@@ -42,6 +42,12 @@ namespace Chummer.Backend.Skills
 
             _objCharacter.SkillImprovementEvent += CharacterOnImprovementEvent;
 
+        }
+
+        public void UnbindSkillsSection()
+        {
+            _objCharacter.LOG.PropertyChanged -= (sender, args) => KnoChanged();
+            _objCharacter.INT.PropertyChanged -= (sender, args) => KnoChanged();
         }
 
         private void CharacterOnImprovementEvent(ICollection<Improvement> improvements)
@@ -56,7 +62,7 @@ namespace Chummer.Backend.Skills
 
         internal void AddSkills(FilterOptions skills, string strName = "")
         {
-            List<Skill> lstExistingSkills = GetSkillList(_objCharacter, skills, strName).ToList();
+            List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
 
             Skills.MergeInto(lstExistingSkills, CompareSkills, (objExistSkill, objNewSkill) =>
             {
@@ -119,8 +125,7 @@ namespace Chummer.Backend.Skills
                 if (Skills[i].SkillCategory == strCategory)
                 {
                     Skill skill = Skills[i];
-                    _skillValueBackup[skill.SkillId] = skill;
-                    s_LstSkillBackups.Add(skill);
+                    _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
                     SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
                     
@@ -423,12 +428,20 @@ namespace Chummer.Backend.Skills
 
         internal void Reset()
         {
+            foreach (Skill objSkill in _lstSkills)
+                objSkill.UnbindSkill();
             _lstSkills.Clear();
             _dicSkills.Clear();
+            foreach (KnowledgeSkill objKnowledgeSkill in KnowledgeSkills)
+                objKnowledgeSkill.UnbindSkill();
             KnowledgeSkills.Clear();
+            foreach (SkillGroup objGroup in SkillGroups)
+                objGroup.UnbindSkillGroup();
             SkillGroups.Clear();
             SkillPointsMaximum = 0;
             SkillGroupPointsMaximum = 0;
+            foreach (KnowledgeSkill objKnowledgeSkill in KnowsoftSkills)
+                objKnowledgeSkill.UnbindSkill();
             KnowsoftSkills.Clear();
         }
 
@@ -449,7 +462,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_lstSkills.Count == 0)
                 {
-                    foreach (Skill objLoopSkill in GetSkillList(_objCharacter, FilterOptions.NonSpecial))
+                    foreach (Skill objLoopSkill in GetSkillList(FilterOptions.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
                         _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objLoopSkill.Name, objLoopSkill);
@@ -620,14 +633,12 @@ namespace Chummer.Backend.Skills
             return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
-        public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
+        public IEnumerable<Skill> GetSkillList(FilterOptions filter, string strName = "", bool blnFetchFromBackup = false)
         {
             //TODO less retarded way please
             // Load the Skills information.
-            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
-
             // Populate the Skills list.
-            XmlNodeList xmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ')' + SkillFilter(filter,strName) + "]");
+            XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter,strName) + "]");
 
             // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
             Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(xmlSkillList.Count);
@@ -637,18 +648,21 @@ namespace Chummer.Backend.Skills
                 string strSkillName = xmlSkill["name"]?.InnerText ?? string.Empty;
                 lstSkillOrder.Add(new ListItem(strSkillName, xmlSkill["translate"]?.InnerText ?? strSkillName));
                 //TODO: read from backup
-                if (s_LstSkillBackups.Count > 0 && Guid.TryParse(xmlSkill["id"].InnerText, out Guid guiSkillId))
+                if (blnFetchFromBackup && _dicSkillBackups.Count > 0 && Guid.TryParse(xmlSkill["id"].InnerText, out Guid guiSkillId))
                 {
-                    Skill objSkill = s_LstSkillBackups.FirstOrDefault(s => s.SkillId == guiSkillId);
-                    if (objSkill != null)
+                    if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
                     {
-                        dicSkills.Add(objSkill.Name,objSkill);
-                        s_LstSkillBackups.Remove(objSkill);
+                        dicSkills.Add(objSkill.Name, objSkill);
+                        _dicSkillBackups.Remove(guiSkillId);
+                    }
+                    else
+                    {
+                        dicSkills.Add(strSkillName, Skill.FromData(xmlSkill, _objCharacter));
                     }
                 }
                 else
                 {
-                    Skill objSkill = Skill.FromData(xmlSkill, c);
+                    Skill objSkill = Skill.FromData(xmlSkill, _objCharacter);
                     dicSkills.Add(strSkillName, objSkill);
                 }
             }

@@ -743,7 +743,8 @@ namespace Chummer
                 if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
                 {
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
-                    CharacterObject.Dispose();
+                    CharacterObject.DeleteCharacter();
+                    CharacterObject = null;
                 }
                 Dispose(true);
             }

@@ -135,11 +135,30 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
+                cmdDelete.Click += (sender, args) =>
+                {
+                    skill.UnbindSkill();
+                    skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
+                };
             }
             cboType.EndUpdate();
             cboSkill.EndUpdate();
             cboSpec.EndUpdate();
+        }
+
+        public void UnbindKnowledgeSkillControl()
+        {
+            _skill.PropertyChanged -= (sender, args) =>
+            {
+                if (args.PropertyName == nameof(Skill.CGLSpecializations))
+                {
+                    cboSpec.DataSource = null;
+                    cboSpec.DisplayMember = nameof(ListItem.Name);
+                    cboSpec.ValueMember = nameof(ListItem.Value);
+                    cboSpec.DataSource = _skill.CGLSpecializations;
+                    cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+                }
+            };
         }
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)

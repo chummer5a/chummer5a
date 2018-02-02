@@ -28,6 +28,7 @@ using System.ComponentModel;
 using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
 using System.Globalization;
+using Microsoft.Win32;
 
 namespace Chummer
 {
@@ -75,10 +76,12 @@ namespace Chummer
                     _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
             }
 
-            Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
-            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
-            objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
-            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
+            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
+            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+            objRegistry.Close();
+            objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
+            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+            objRegistry.Close();
 
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);

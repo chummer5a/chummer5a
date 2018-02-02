@@ -134,13 +134,14 @@ namespace Chummer
                         {
                             //on 32 bit builds?
                             //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-
+                            cv.Close();
                             cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
                         String[] keys = cv.GetValueNames();
                         report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
                         report.AppendLine();
+                        cv.Close();
                     }
                 }
 

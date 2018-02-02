@@ -601,7 +601,6 @@ namespace Chummer
         {
             Character _objOldLinkedCharacter = _objLinkedCharacter;
             _objCharacter.LinkedCharacters.Remove(_objLinkedCharacter);
-            _objLinkedCharacter = null;
             bool blnError = false;
             bool blnUseRelative = false;
 
@@ -642,7 +641,8 @@ namespace Chummer
                     if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
                         Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
-                        _objOldLinkedCharacter.Dispose();
+                        _objOldLinkedCharacter.DeleteCharacter();
+                        _objOldLinkedCharacter = null;
                     }
                 }
                 if (_objLinkedCharacter != null)
@@ -650,11 +650,10 @@ namespace Chummer
                     if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
                         _strCritterName = CritterName;
                 }
-                PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
-                if (objPropertyChanged != null)
+                if (PropertyChanged != null)
                 {
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
                 }
             }
         }

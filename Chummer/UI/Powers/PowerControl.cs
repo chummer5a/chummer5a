@@ -69,6 +69,14 @@ namespace Chummer
             MoveControls();
         }
 
+        public void UnbindPowerControl()
+        {
+            PowerObject.PropertyChanged -= Power_PropertyChanged;
+            PowerObject.CharacterObject.PropertyChanged -= Power_PropertyChanged;
+            if (PowerObject.Name == "Improved Ability (skill)")
+                PowerObject.CharacterObject.SkillsSection.PropertyChanged -= Power_PropertyChanged;
+        }
+
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             string strPropertyName = propertyChangedEventArgs?.PropertyName;
@@ -77,6 +85,12 @@ namespace Chummer
                 PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString(GlobalOptions.CultureInfo);
                 tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
                 cmdDelete.Enabled = PowerObject.FreeLevels == 0;
+            }
+            if (strPropertyName == nameof(PowerObject.Name))
+            {
+                PowerObject.CharacterObject.SkillsSection.PropertyChanged -= Power_PropertyChanged;
+                if (PowerObject.Name == "Improved Ability (skill)")
+                    PowerObject.CharacterObject.SkillsSection.PropertyChanged += Power_PropertyChanged;
             }
             // Super hacky solution, but we need all values updated properly if maxima change for any reason
             if (strPropertyName == nameof(PowerObject.TotalMaximumLevels))

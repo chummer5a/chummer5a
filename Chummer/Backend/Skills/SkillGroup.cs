@@ -356,8 +356,16 @@ namespace Chummer.Backend.Skills
             _strGroupName = strGroupName;
             _blnBaseBrokenOldValue = BaseUnbroken;
 
-            objCharacter.SkillImprovementEvent += OnImprovementEvent;
-            objCharacter.PropertyChanged += Character_PropertyChanged;
+            _objCharacter.SkillImprovementEvent += OnImprovementEvent;
+            _objCharacter.PropertyChanged += Character_PropertyChanged;
+        }
+
+        public void UnbindSkillGroup()
+        {
+            _objCharacter.SkillImprovementEvent -= OnImprovementEvent;
+            _objCharacter.PropertyChanged -= Character_PropertyChanged;
+            foreach (Skill objSkill in _lstAffectedSkills)
+                objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
 
         public Character Character

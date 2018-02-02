@@ -81,11 +81,14 @@ namespace Chummer.Backend
                         if (!cv.GetValueNames().Contains("ProductId"))
                         {
                             //On 32 bit builds? get 64 bit registry
+                            cv.Close();
                             cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
                         attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
                         attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+
+                        cv.Close();
                     }
                 }
 

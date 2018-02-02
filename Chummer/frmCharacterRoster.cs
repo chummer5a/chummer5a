@@ -676,7 +676,8 @@ namespace Chummer
                 Program.MainForm.OpenCharacters.Remove(objOpenCharacter);
                 Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
                 Program.MainForm.CharacterRoster.PopulateCharacterList();
-                objOpenCharacter.Dispose();
+                objOpenCharacter.DeleteCharacter();
+                objOpenCharacter = null;
             }
             Cursor = Cursors.Default;
         }

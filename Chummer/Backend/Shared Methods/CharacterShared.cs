@@ -46,7 +46,7 @@ namespace Chummer
     [System.ComponentModel.DesignerCategory("")]
     public class CharacterShared : Form, IDisposable
     {
-        private readonly Character _objCharacter;
+        private Character _objCharacter;
         private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
         private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
@@ -5239,7 +5239,7 @@ namespace Chummer
             if (listChangedEventArgs == null)
             {
                 lstCalendar.Items.Clear();
-                for (int i = CharacterObject.Calendar.Count - 1; i >= 0; --i)
+                for (int i = 0; i < CharacterObject.Calendar.Count; ++i)
                 {
                     CalendarWeek objWeek = CharacterObject.Calendar[i];
 
@@ -6211,6 +6211,10 @@ namespace Chummer
             get
             {
                 return _objCharacter;
+            }
+            protected set
+            {
+                _objCharacter = value;
             }
         }
 

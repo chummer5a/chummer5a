@@ -1073,7 +1073,8 @@ namespace Chummer
                 if (!blnLoaded)
                 {
                     OpenCharacters.Remove(objCharacter);
-                    objCharacter.Dispose();
+                    objCharacter.DeleteCharacter();
+                    objCharacter = null;
                     return null;
                 }
 

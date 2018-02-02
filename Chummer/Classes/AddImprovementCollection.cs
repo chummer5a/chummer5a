@@ -4889,17 +4889,10 @@ namespace Chummer.Classes
                 final = frmSelect.SelectedItem;
             }
 
-            string strName = string.Empty;
+            string strName = bonusNode.Attributes["name"]?.InnerText;
             if (Enum.TryParse(final, out SkillsSection.FilterOptions skills))
             {
-                bool blnAdd = true;
-                if (bonusNode.Attributes["name"] != null)
-                {
-                    strName = bonusNode.Attributes["name"].InnerText;
-                    blnAdd = !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName);
-                }
-
-                if (blnAdd)
+                if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName))
                 {
                     _objCharacter.SkillsSection.AddSkills(skills, strName);
                     CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, SourceName,
