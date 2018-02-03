@@ -46,7 +46,9 @@ namespace Chummer
 {
     public sealed partial class frmChummerMain : Form
     {
+#if LEGACY
         private frmOmae _frmOmae;
+#endif
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private readonly List<Character> _lstCharacters = new List<Character>();
@@ -55,7 +57,7 @@ namespace Chummer
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion = string.Empty;
 
-        #region Control Events
+#region Control Events
         public frmChummerMain()
         {
             InitializeComponent();
@@ -705,6 +707,7 @@ namespace Chummer
 
         private void mnuToolsOmae_Click(object sender, EventArgs e)
         {
+#if LEGACY
             // Only a single instance of Omae can be open, so either find the current instance and focus on it, or create a new one.
             if (_frmOmae == null)
             {
@@ -715,6 +718,7 @@ namespace Chummer
             {
                 _frmOmae.Focus();
             }
+#endif
         }
 
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
@@ -815,9 +819,9 @@ namespace Chummer
             if (File.Exists(strTranslator))
                 System.Diagnostics.Process.Start(strTranslator);
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
@@ -1073,7 +1077,8 @@ namespace Chummer
                 if (!blnLoaded)
                 {
                     OpenCharacters.Remove(objCharacter);
-                    objCharacter.Dispose();
+                    objCharacter.DeleteCharacter();
+                    objCharacter = null;
                     return null;
                 }
 
@@ -1213,9 +1218,10 @@ namespace Chummer
         {
             Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         }
-        #endregion
+#endregion
 
-        #region Application Properties
+#region Application Properties
+#if LEGACY
         /// <summary>
         /// The frmOmae window being used by the application.
         /// </summary>
@@ -1230,6 +1236,7 @@ namespace Chummer
                 _frmOmae = value;
             }
         }
+#endif
 
         /// <summary>
         /// The frmDiceRoller window being used by the application.
@@ -1255,7 +1262,7 @@ namespace Chummer
         {
             get { return _lstOpenCharacterForms; }
         }
-        #endregion
+#endregion
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {

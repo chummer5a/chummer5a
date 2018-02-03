@@ -402,7 +402,14 @@ namespace Chummer.UI.Shared
             public void Cleanup()
             {
                 if (ControlCreated)
+                {
+                    if (Item is INotifyPropertyChanged prop)
+                    {
+                        prop.PropertyChanged -= item_ChangedEvent;
+                    }
                     _parent.pnlDisplay.Controls.Remove(Control);
+                    Control.Dispose();
+                }
             }
         }
 

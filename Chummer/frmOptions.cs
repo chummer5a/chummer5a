@@ -25,6 +25,7 @@ using System.Xml;
  using System.Net;
  using Application = System.Windows.Forms.Application;
 using System.Text;
+using Microsoft.Win32;
 
 namespace Chummer
 {
@@ -398,7 +399,7 @@ namespace Chummer
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
             {
                 openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
                 if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
@@ -414,7 +415,7 @@ namespace Chummer
         private void cmdPDFLocation_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
             {
                 openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
                 if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
@@ -955,7 +956,7 @@ namespace Chummer
         {
             SaveGlobalOptions();
 
-            Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
             objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked.ToString());
             objRegistry.SetValue("liveupdatecleancharacterfiles", chkLiveUpdateCleanCharacterFiles.Checked.ToString());
@@ -976,19 +977,18 @@ namespace Chummer
             objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
 
             // Save the SourcebookInfo.
-            Microsoft.Win32.RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
-            foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
-                objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
-            objSourceRegistry.Close();
+            using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
+                foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
+                    objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
 
             // Save the Custom Data Directory Info.
             if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
                 objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-            Microsoft.Win32.RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
+            RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
             for (int i = 0; i < GlobalOptions.CustomDataDirectoryInfo.Count; ++i)
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.CustomDataDirectoryInfo[i];
-                Microsoft.Win32.RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
+                RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
                 objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
                 objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
                 objLoopKey.SetValue("LoadOrder", i);
@@ -1216,10 +1216,17 @@ namespace Chummer
             foreach (string filePath in settingsFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument();
-
+                
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {
@@ -1262,7 +1269,14 @@ namespace Chummer
 
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {
@@ -1310,7 +1324,14 @@ namespace Chummer
 
                 try
                 {
-                    xmlDocument.Load(filePath);
+                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
                 }
                 catch (XmlException)
                 {
@@ -1462,7 +1483,7 @@ namespace Chummer
         private void SetDefaultValueForSheetLanguageList()
         {
             string strDefaultCharacterSheet = GlobalOptions.DefaultCharacterSheet;
-            if (string.IsNullOrEmpty(strDefaultCharacterSheet))
+            if (string.IsNullOrEmpty(strDefaultCharacterSheet) || strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 strDefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
 
             string strDefaultSheetLanguage = GlobalOptions.Language;

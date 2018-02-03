@@ -885,13 +885,41 @@ namespace Chummer
             string strCustomPath = Path.Combine(Application.StartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
             {
-                objXmlDocument.Load(strFile);
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                    {
+                        objXmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
                 XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + strSelectedKit + "\" and category = \"Custom\"]");
                 if (objXmlPACKSList.Count > 0)
                 {
                     // Read in the entire file.
                     XmlDocument objXmlCurrentDocument = new XmlDocument();
-                    objXmlCurrentDocument.Load(strFile);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                        {
+                            objXmlCurrentDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
 
                     FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                     XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)

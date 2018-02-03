@@ -85,7 +85,8 @@ namespace Chummer
                 chkBoxChummer.Items.RemoveAt(index);
                 if (chkBoxChummer.Items.Count > 0)
                     chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
-                characters[index].Dispose();
+                characters[index].DeleteCharacter();
+                characters[index] = null;
                 characters.RemoveAt(index);
             }
         }

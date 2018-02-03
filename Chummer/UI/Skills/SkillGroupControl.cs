@@ -72,6 +72,11 @@ namespace Chummer.UI.Skills
             sw.TaskEnd("Create skillgroup");
         }
 
+        public void UnbindSkillGroupControl()
+        {
+            _skillGroup.PropertyChanged -= SkillGroup_PropertyChanged;
+        }
+
         #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {

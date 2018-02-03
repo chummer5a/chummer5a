@@ -394,6 +394,14 @@ namespace Chummer
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (!objNode.TryGetField("id", Guid.TryParse, out _guiQualityId))
+            {
+                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                if (objNewNode?.TryGetField("id", Guid.TryParse, out _guiQualityId) == true)
+                    _objCachedMyXmlNode = null;
+            }
+            else
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
@@ -425,14 +433,6 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _stage);
             }
-            if (!objNode.TryGetField("id", Guid.TryParse, out _guiQualityId))
-            {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
-                if (objNewNode?.TryGetField("id", Guid.TryParse, out _guiQualityId) == true)
-                    _objCachedMyXmlNode = null;
-            }
-            else
-                _objCachedMyXmlNode = null;
         }
 
         /// <summary>
@@ -457,8 +457,7 @@ namespace Chummer
                 string strQualityType = Type.ToString();
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
-                    XmlNode objNode = XmlManager.Load("qualities.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate");
-                    strQualityType = objNode?.InnerText ?? strQualityType;
+                    strQualityType = XmlManager.Load("qualities.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate")?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", Type.ToString());

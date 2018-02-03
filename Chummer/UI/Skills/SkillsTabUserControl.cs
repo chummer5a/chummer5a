@@ -200,6 +200,23 @@ namespace Chummer.UI.Skills
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
+        public void UnbindSkillsTabUserControl()
+        {
+            _skills.ChildPropertyChanged -= MakeDirtyWithCharacterUpdate;
+            _groups.ChildPropertyChanged -= MakeDirtyWithCharacterUpdate;
+            _knoSkills.ChildPropertyChanged -= MakeDirtyWithCharacterUpdate;
+            _character.SkillsSection.PropertyChanged -= (o, e) =>
+            {
+                if (e.PropertyName ==
+                    nameof(SkillsSection.HasKnowledgePoints))
+                {
+                    lblKnoSp.Visible =
+                        _character.SkillsSection.HasKnowledgePoints;
+                    lblKnoBwk.Visible = _character.SkillsSection.HasKnowledgePoints;
+                }
+            };
+        }
+
         private static IList<Tuple<string, IComparer<Skill>>> GenerateSortList()
         {
             List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()

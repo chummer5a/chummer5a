@@ -19,6 +19,7 @@ namespace Chummer.UI.Skills
             {
                 components.Dispose();
             }
+            UnbindSkillsTabUserControl();
             base.Dispose(disposing);
         }
 

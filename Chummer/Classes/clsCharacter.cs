@@ -50,7 +50,7 @@ namespace Chummer
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
-    public class Character : INotifyPropertyChanged, IDisposable, IHasMugshots, IHasName
+    public class Character : INotifyPropertyChanged, IHasMugshots, IHasName
     {
         private XmlNode oldSkillsBackup;
         private XmlNode oldSKillGroupBackup;
@@ -1898,7 +1898,7 @@ namespace Chummer
             {
                 CalendarWeek objWeek = new CalendarWeek();
                 objWeek.Load(objXmlWeek);
-                _lstCalendar.AddWithSort(objWeek);
+                _lstCalendar.AddWithSort(objWeek, true);
             }
 
             Timekeeper.Finish("load_char_calendar");
@@ -2904,6 +2904,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Remove stray event handlers and clear all info used by this character
+        /// </summary>
+        public void DeleteCharacter()
+        {
+            SkillsSection.UnbindSkillsSection();
+            ResetCharacter();
+        }
+
+        /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
         private void ResetCharacter()
@@ -2991,6 +3000,9 @@ namespace Chummer
             _lstCalendar.Clear();
 
             SkillsSection.Reset();
+
+            _intMainMugshotIndex = -1;
+            _lstMugshots.Clear();
         }
 #endregion
 
@@ -9000,7 +9012,6 @@ namespace Chummer
 
         public SkillsSection SkillsSection { get; }
 
-
         public int RedlinerBonus
         {
             get { return _intRedlinerBonus; }
@@ -9228,28 +9239,5 @@ namespace Chummer
                 SkillImprovementEvent?.Invoke(_lstTransaction);
             }
         }
-
-#region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _objOptions?.Dispose();
-                }
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-#endregion
-
     }
 }

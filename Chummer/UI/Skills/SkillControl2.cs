@@ -60,10 +60,9 @@ namespace Chummer.UI.Skills
             }
 
             lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
-
-            skill.PropertyChanged += Skill_PropertyChanged;
-            skill.CharacterObject.AttributeSection.AttributeCategoryChanged += AttributeCategoryOnPropertyChanged;
             _attributeActive = skill.AttributeObject;
+            _skill.PropertyChanged += Skill_PropertyChanged;
+            _skill.CharacterObject.AttributeSection.PropertyChanged += AttributeSection_PropertyChanged;
             Skill_PropertyChanged(null, null);  //if null it updates all
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
@@ -145,7 +144,12 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name); };
+                cmdDelete.Click += (sender, args) =>
+                {
+                    skill.UnbindSkill();
+                    skill.CharacterObject.SkillsSection.Skills.Remove(skill);
+                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name);
+                };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -156,13 +160,16 @@ namespace Chummer.UI.Skills
             ResumeLayout();
         }
 
-        private void AttributeCategoryOnPropertyChanged(object obj)
+        private void AttributeSection_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
-            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            {
+                _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
 
-            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
-            AttributeActiveOnPropertyChanged(null, null);
+                _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+                AttributeActiveOnPropertyChanged(sender, e);
+            }
         }
 
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -354,7 +361,7 @@ namespace Chummer.UI.Skills
 
         private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
+            Skill_PropertyChanged(sender, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
         
         private void lblName_Click(object sender, EventArgs e)
@@ -393,6 +400,12 @@ namespace Chummer.UI.Skills
                 nudKarma.Left = nudSkill.Right + 2;
                 lblAttribute.Left = nudKarma.Right + 2;
             }
+        }
+
+        public void UnbindSkillControl()
+        {
+            _skill.PropertyChanged -= Skill_PropertyChanged;
+            _skill.CharacterObject.AttributeSection.PropertyChanged -= AttributeSection_PropertyChanged;
         }
     }
 }

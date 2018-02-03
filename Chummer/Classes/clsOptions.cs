@@ -194,7 +194,7 @@ namespace Chummer
 
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
-        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating > 0)";
+        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
 
         private static bool _blnAutomaticUpdate = false;
         private static bool _blnLiveCustomData = false;
@@ -232,33 +232,97 @@ namespace Chummer
 
         #region Constructor
         /// <summary>
-        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// Load a Bool Option from the Registry.
         /// </summary>
-        private static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
+        public static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
+            RegistryKey objKey = _objBaseChummerKey;
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey = objKey.OpenSubKey(strSubKey);
+            object objRegistryResult = objKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
-                {
                     blnStorage = blnTemp;
-                    return true;
-                }
+                if (!string.IsNullOrWhiteSpace(strSubKey))
+                    objKey.Close();
+                if (blnDeleteAfterFetch)
+                    objKey.DeleteValue(strBoolName);
+                return true;
             }
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey.Close();
             return false;
         }
 
         /// <summary>
-        /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// Load an Int Option from the Registry.
         /// </summary>
-        private static bool LoadStringFromRegistry(ref string strStorage, string strBoolName, string strSubKey = "")
+        public static bool LoadInt32FromRegistry(ref int intStorage, string strIntName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.OpenSubKey(strSubKey).GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
+            RegistryKey objKey = _objBaseChummerKey;
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey = objKey.OpenSubKey(strSubKey);
+            object objRegistryResult = objKey.GetValue(strIntName);
+            if (objRegistryResult != null)
+            {
+                if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
+                    intStorage = intTemp;
+                if (blnDeleteAfterFetch)
+                    objKey.DeleteValue(strIntName);
+                if (!string.IsNullOrWhiteSpace(strSubKey))
+                    objKey.Close();
+                return true;
+            }
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey.Close();
+            return false;
+        }
+
+        /// <summary>
+        /// Load a Decimal Option from the Registry.
+        /// </summary>
+        public static bool LoadDecFromRegistry(ref decimal decStorage, string strDecName, string strSubKey = "", bool blnDeleteAfterFetch = false)
+        {
+            RegistryKey objKey = _objBaseChummerKey;
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey = objKey.OpenSubKey(strSubKey);
+            object objRegistryResult = objKey.GetValue(strDecName);
+            if (objRegistryResult != null)
+            {
+                if (decimal.TryParse(objRegistryResult.ToString(), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
+                    decStorage = decTemp;
+                if (blnDeleteAfterFetch)
+                    objKey.DeleteValue(strDecName);
+                if (!string.IsNullOrWhiteSpace(strSubKey))
+                    objKey.Close();
+                return true;
+            }
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey.Close();
+            return false;
+        }
+
+        /// <summary>
+        /// Load an String Option from the Registry.
+        /// </summary>
+        public static bool LoadStringFromRegistry(ref string strStorage, string strStringName, string strSubKey = "", bool blnDeleteAfterFetch = false)
+        {
+            RegistryKey objKey = _objBaseChummerKey;
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey = objKey.OpenSubKey(strSubKey);
+            object objRegistryResult = objKey.GetValue(strStringName);
             if (objRegistryResult != null)
             {
                 strStorage = objRegistryResult.ToString();
+                if (blnDeleteAfterFetch)
+                    objKey.DeleteValue(strStringName);
+                if (!string.IsNullOrWhiteSpace(strSubKey))
+                    objKey.Close();
                 return true;
             }
+            if (!string.IsNullOrWhiteSpace(strSubKey))
+                objKey.Close();
             return false;
         }
 
@@ -314,6 +378,8 @@ namespace Chummer
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
+            if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
+                _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
             // Omae Settings.
             // Username.
@@ -367,7 +433,7 @@ namespace Chummer
             RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
             if (objCustomDataDirectoryKey != null)
             {
-                List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int> > (objCustomDataDirectoryKey.SubKeyCount);
+                List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int>>(objCustomDataDirectoryKey.SubKeyCount);
 
                 string[] astrCustomDataDirectoryNames = objCustomDataDirectoryKey.GetSubKeyNames();
                 int intMinLoadOrderValue = int.MaxValue;
@@ -746,6 +812,14 @@ namespace Chummer
             set
             {
                 _strDefaultCharacterSheet = value;
+            }
+        }
+
+        public static RegistryKey ChummerRegistryKey
+        {
+            get
+            {
+                return _objBaseChummerKey;
             }
         }
 

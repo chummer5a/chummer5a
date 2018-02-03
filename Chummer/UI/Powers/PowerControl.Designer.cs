@@ -17,6 +17,7 @@ namespace Chummer
             {
                 components.Dispose();
             }
+            UnbindPowerControl();
             base.Dispose(disposing);
         }
 

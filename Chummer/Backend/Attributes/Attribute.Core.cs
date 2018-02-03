@@ -68,6 +68,12 @@ namespace Chummer.Backend.Attributes
 			_objCharacter.PropertyChanged += OnCharacterChanged;
 		}
 
+        public void UnbindAttribute()
+        {
+            _objCharacter.AttributeImprovementEvent -= OnImprovementEvent;
+            _objCharacter.PropertyChanged -= OnCharacterChanged;
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>

@@ -779,11 +779,10 @@ namespace Chummer
 
         public void RefreshForControl()
         {
-            PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
-            if (objPropertyChanged != null)
+            if (PropertyChanged != null)
             {
-                objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loyalty)));
-                objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Connection)));
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loyalty)));
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Connection)));
             }
             RefreshLinkedCharacter(false);
         }
@@ -792,7 +791,6 @@ namespace Chummer
         {
             Character _objOldLinkedCharacter = _objLinkedCharacter;
             _objCharacter.LinkedCharacters.Remove(_objLinkedCharacter);
-            _objLinkedCharacter = null;
             bool blnError = false;
             bool blnUseRelative = false;
 
@@ -833,7 +831,8 @@ namespace Chummer
                     if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
                         Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
-                        _objOldLinkedCharacter.Dispose();
+                        _objOldLinkedCharacter.DeleteCharacter();
+                        _objOldLinkedCharacter = null;
                     }
                 }
                 if (_objLinkedCharacter != null)

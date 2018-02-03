@@ -92,7 +92,6 @@ namespace Chummer.Backend.Skills
         public KnowledgeSkill(Character character) : base(character)
         {
             AttributeObject = character.LOG;
-            AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
         }
 
         public KnowledgeSkill(Character character, string forcedName) : this(character)

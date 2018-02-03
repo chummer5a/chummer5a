@@ -1267,16 +1267,27 @@ namespace Chummer
                         blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
-                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
+                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(objCharacter.SkillsSection.KnowsoftSkills.Contains).ToList())
+                        {
+                            objKnowledgeSkill.UnbindSkill();
+                            objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                        }
                         break;
                     case Improvement.ImprovementType.SkillKnowledgeForced:
                         {
-                            objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
+                            {
+                                objKnowledgeSkill.UnbindSkill();
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
                             for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count; i >= 0; --i)
                             {
                                 KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
                                 if (objSkill.InternalId == objImprovement.ImprovedName)
+                                {
+                                    objSkill.UnbindSkill();
                                     objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                }
                             }
                         }
                         break;

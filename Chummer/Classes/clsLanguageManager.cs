@@ -83,7 +83,25 @@ namespace Chummer
                     XmlDocument objLanguageDocument = new XmlDocument();
                     try
                     {
-                        objLanguageDocument.Load(strFilePath);
+                        string strExtraMessage = string.Empty;
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                            {
+                                objLanguageDocument.Load(objStreamReader);
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            objLanguageDocument = null;
+                            strExtraMessage += ex.ToString();
+                        }
+                        catch (XmlException ex)
+                        {
+                            objLanguageDocument = null;
+                            strExtraMessage += ex.ToString();
+                        }
+
                         if (objLanguageDocument != null)
                         {
                             foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
@@ -103,11 +121,12 @@ namespace Chummer
                         }
                         else
                         {
-                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument.\n";
+                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".\n";
                         }
                     }
                     catch (Exception ex)
                     {
+                        objLanguageDocument = null;
                         ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + ".\n";
                     }
                 }
@@ -122,14 +141,28 @@ namespace Chummer
                 {
                     try
                     {
-                        DataDocument.Load(strDataPath);
-                        if (DataDocument == null)
+                        string strExtraMessage = string.Empty;
+                        try
                         {
-                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument.\n";
+                            using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                            {
+                                DataDocument.Load(objStreamReader);
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            DataDocument = null;
+                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
+                        }
+                        catch (XmlException ex)
+                        {
+                            DataDocument = null;
+                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
                         }
                     }
                     catch (Exception ex)
                     {
+                        DataDocument = null;
                         ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
                     }
                 }
@@ -153,7 +186,21 @@ namespace Chummer
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
-                    objEnglishDocument.Load(strFilePath);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        {
+                            objEnglishDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded: " + ex.ToString() + ".", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    catch (XmlException ex)
+                    {
+                        MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded: " + ex.ToString() + ".", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
                         string strKey = objNode["key"]?.InnerText;
@@ -377,10 +424,29 @@ namespace Chummer
                     // Load the English version.
                     XmlDocument objEnglishDocument = new XmlDocument();
                     string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
-                    objEnglishDocument.Load(strFilePath);
-                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+
+                    try
                     {
-                        lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        {
+                            objEnglishDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        objEnglishDocument = null;
+                    }
+                    catch (XmlException)
+                    {
+                        objEnglishDocument = null;
+                    }
+
+                    if (objEnglishDocument != null)
+                    {
+                        foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                        {
+                            lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                        }
                     }
                 },
                 () =>
@@ -388,10 +454,29 @@ namespace Chummer
                     // Load the selected language version.
                     XmlDocument objLanguageDocument = new XmlDocument();
                     string strLangPath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
-                    objLanguageDocument.Load(strLangPath);
-                    foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
+
+                    try
                     {
-                        lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                        using (StreamReader objStreamReader = new StreamReader(strLangPath, true))
+                        {
+                            objLanguageDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        objLanguageDocument = null;
+                    }
+                    catch (XmlException)
+                    {
+                        objLanguageDocument = null;
+                    }
+
+                    if (objLanguageDocument != null)
+                    {
+                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        {
+                            lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                        }
                     }
                 }
             );

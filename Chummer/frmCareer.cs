@@ -956,7 +956,8 @@ namespace Chummer
                 if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
                 {
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
-                    CharacterObject.Dispose();
+                    CharacterObject.DeleteCharacter();
+                    CharacterObject = null;
                 }
                 Dispose(true);
             }
@@ -2202,7 +2203,7 @@ namespace Chummer
                 {
                     Cursor = Cursors.Default;
                     MessageBox.Show(LanguageManager.GetString("Message_VesselInCareerMode", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Possession", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    objVessel.Dispose();
+                    objVessel.DeleteCharacter();
                     objVessel = null;
                     return;
                 }
@@ -2321,9 +2322,9 @@ namespace Chummer
                     {
                         // Get the name of the file and destroy the references to the Vessel and the merged character.
                         string strOpenFile = objMerge.FileName;
-                        objMerge.Dispose();
+                        objMerge.DeleteCharacter();
                         objMerge = null;
-                        objVessel.Dispose();
+                        objVessel.DeleteCharacter();
                         objVessel = null;
 
                         Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
@@ -2333,9 +2334,9 @@ namespace Chummer
                     else
                     {
                         // The save process was canceled, so drop everything.
-                        objMerge.Dispose();
+                        objMerge.DeleteCharacter();
                         objMerge = null;
-                        objVessel.Dispose();
+                        objVessel.DeleteCharacter();
                         objVessel = null;
                         Cursor = Cursors.Default;
                     }
@@ -2343,9 +2344,9 @@ namespace Chummer
                 else
                 {
                     // The save process was canceled, so drop everything.
-                    objMerge.Dispose();
+                    objMerge.DeleteCharacter();
                     objMerge = null;
-                    objVessel.Dispose();
+                    objVessel.DeleteCharacter();
                     objVessel = null;
                 }
             }
@@ -2523,7 +2524,7 @@ namespace Chummer
                 {
                     // Get the name of the file and destroy the references to the Vessel and the merged character.
                     string strOpenFile = objMerge.FileName;
-                    objMerge.Dispose();
+                    objMerge.DeleteCharacter();
                     objMerge = null;
 
                     Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
@@ -2533,7 +2534,7 @@ namespace Chummer
                 else
                 {
                     // The save process was canceled, so drop everything.
-                    objMerge.Dispose();
+                    objMerge.DeleteCharacter();
                     objMerge = null;
                     Cursor = Cursors.Default;
                 }
@@ -2541,7 +2542,7 @@ namespace Chummer
             else
             {
                 // The save process was canceled, so drop everything.
-                objMerge.Dispose();
+                objMerge.DeleteCharacter();
                 objMerge = null;
             }
         }
@@ -6408,7 +6409,7 @@ namespace Chummer
         private void cmdAddWeek_Click(object sender, EventArgs e)
         {
             CalendarWeek objWeek = new CalendarWeek();
-            CalendarWeek objLastWeek = CharacterObject.Calendar?.LastOrDefault();
+            CalendarWeek objLastWeek = CharacterObject.Calendar?.FirstOrDefault();
             if (objLastWeek != null)
             {
                 objWeek.Year = objLastWeek.Year;
@@ -6431,7 +6432,7 @@ namespace Chummer
                 objWeek.Week = frmPickStart.SelectedWeek;
             }
             
-            CharacterObject.Calendar.AddWithSort(objWeek);
+            CharacterObject.Calendar.AddWithSort(objWeek, true);
             
             IsDirty = true;
         }
@@ -6492,7 +6493,7 @@ namespace Chummer
         private void cmdChangeStartWeek_Click(object sender, EventArgs e)
         {
             // Find the first date.
-            CalendarWeek objStart = CharacterObject.Calendar?.FirstOrDefault();
+            CalendarWeek objStart = CharacterObject.Calendar?.LastOrDefault();
             if (objStart == null)
             {
                 return;

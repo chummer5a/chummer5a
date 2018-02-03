@@ -28,13 +28,12 @@ using Chummer.Backend;
 
 namespace Chummer
 {
-    public class CharacterOptions : IDisposable
+    public class CharacterOptions
     {
         private readonly Character _character;
         private string _strFileName = "default.xml";
         private string _strName = "Default Settings";
         private string _strImageFolder = string.Empty;
-        private readonly RegistryKey _objBaseChummerKey;
 
         // Settings.
         private bool _blnAllow2ndMaxAttribute;
@@ -216,7 +215,6 @@ namespace Chummer
         public CharacterOptions(Character character)
         {
             _character = character;
-            _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
@@ -624,9 +622,17 @@ namespace Chummer
             {
                 try
                 {
-                    objXmlDocument.Load(strFilePath);
+                    using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                    {
+                        objXmlDocument.Load(objStreamReader);
+                    }
                 }
-                catch (NotSupportedException)
+                catch (IOException)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                catch (XmlException)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -643,7 +649,23 @@ namespace Chummer
                 {
                     _strFileName = "default.xml";
                     strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
-                    objXmlDocument.Load(strFilePath);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        {
+                            objXmlDocument.Load(objStreamReader);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (XmlException)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
                 }
             }
             
@@ -931,136 +953,94 @@ namespace Chummer
 
         #region Properties and Methods
         /// <summary>
-        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
-            if (objRegistryResult != null)
-            {
-                if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
-                    blnStorage = blnTemp;
-                _objBaseChummerKey.DeleteValue(strBoolName);
-            }
-        }
-
-        /// <summary>
-        /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadInt32FromRegistry(ref int intStorage, string strIntName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
-            if (objRegistryResult != null)
-            {
-                if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
-                    intStorage = intTemp;
-                _objBaseChummerKey.DeleteValue(strIntName);
-            }
-        }
-
-        /// <summary>
-        /// Load a Decimal Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadDecFromRegistry(ref decimal decStorage, string strDecName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
-            if (objRegistryResult != null)
-            {
-                if (decimal.TryParse(objRegistryResult.ToString(), System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
-                    decStorage = decTemp;
-                _objBaseChummerKey.DeleteValue(strDecName);
-            }
-        }
-
-        /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
         private void LoadFromRegistry()
         {
-            if (_objBaseChummerKey == null)
+            if (GlobalOptions.ChummerRegistryKey == null)
                 return;
             // Confirm delete.
-            LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete", string.Empty, true);
 
             // Confirm Karama Expense.
-            LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense", string.Empty, true);
 
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-            LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills", string.Empty, true);
 
             // More Lethal Gameplay.
-            LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay", string.Empty, true);
 
             // Spirit Force Based on Total MAG.
-            LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
             // Skill Defaulting Includes Modifers.
-            LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers", string.Empty, true);
 
             // Print Expenses.
-            LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses", string.Empty, true);
 
             // Print Free Expenses.
-            LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses", string.Empty, true);
 
             // Nuyen per Build Point
-            LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
+            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
 
             // Free Contacts Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled", string.Empty, true);
 
             // Free Contacts Multiplier Value
-            LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier");
+            GlobalOptions.LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier", string.Empty, true);
 
             // Free Knowledge Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled", string.Empty, true);
 
             // Free Knowledge Multiplier Value
-            LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier");
+            GlobalOptions.LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier", string.Empty, true);
 
             // Karma Free Knowledge Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled", string.Empty, true);
 
             // No Single Armor Encumbrance
-            LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
 
             // Essence Loss Reduces Maximum Only.
-            LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly", string.Empty, true);
 
             // Allow Skill Regrouping.
-            LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping", string.Empty, true);
 
             // Attempt to populate the Karma values.
-            LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute");
-            LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality");
-            LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization");
-            LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization");
-            LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill");
-            LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill");
-            LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup");
-            LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill");
-            LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill");
-            LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup");
-            LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell");
-            LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement");
-            LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform");
-            LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform");
-            LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram");
-            LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram");
-            LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper");
-            LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact");
-            LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy");
-            LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover");
-            LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit");
-            LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver");
-            LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation");
-            LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat");
-            LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic");
-            LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption");
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption", string.Empty, true);
 
             // Retrieve the sourcebooks that are in the Registry.
             string strBookList;
-            object objBooksKeyValue = _objBaseChummerKey.GetValue("books");
+            object objBooksKeyValue = GlobalOptions.ChummerRegistryKey.GetValue("books");
             if (objBooksKeyValue != null)
             {
                 strBookList = objBooksKeyValue.ToString();
@@ -1069,7 +1049,7 @@ namespace Chummer
             {
                 // We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
                 strBookList = "Shadowrun 5th Edition";
-                _objBaseChummerKey.SetValue("books", strBookList);
+                GlobalOptions.ChummerRegistryKey.SetValue("books", strBookList);
             }
             string[] strBooks = strBookList.Split(',');
 
@@ -1086,7 +1066,7 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-            _objBaseChummerKey.DeleteValue("books");
+            GlobalOptions.ChummerRegistryKey.DeleteValue("books");
         }
 
         /// <summary>
@@ -3413,31 +3393,6 @@ namespace Chummer
         }
 
         public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _objBaseChummerKey?.Dispose();
-                }
-                
-                disposedValue = true;
-            }
-        }
-        
-        public void Dispose()
-        {
-            Dispose(true);
-        }
         #endregion
-
-
-        #endregion
-
     }
 }
