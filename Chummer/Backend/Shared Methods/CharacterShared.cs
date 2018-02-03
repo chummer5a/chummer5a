@@ -25,14 +25,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
-using TheArtOfDev.HtmlRenderer.WinForms;
 using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
@@ -43,15 +40,15 @@ namespace Chummer
     /// <summary>
     /// Contains functionality shared between frmCreate and frmCareer
     /// </summary>
-    [System.ComponentModel.DesignerCategory("")]
-    public class CharacterShared : Form, IDisposable
+    [DesignerCategory("")]
+    public class CharacterShared : Form
     {
         private Character _objCharacter;
         private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
         private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
-        private bool _blnIsDirty = false;
-        private bool _blnRequestCharacterUpdate = false;
+        private bool _blnIsDirty;
+        private bool _blnRequestCharacterUpdate;
         private frmViewer _frmPrintView;
 
         public CharacterShared(Character objCharacter)
@@ -126,12 +123,12 @@ namespace Chummer
 
             public static bool operator ==(object objX, TransportWrapper objY)
             {
-                return objX.Equals(objY);
+                return objX?.Equals(objY) ?? objY == null;
             }
 
             public static bool operator !=(object objX, TransportWrapper objY)
             {
-                return !objX.Equals(objY);
+                return objX?.Equals(objY) ?? objY == null;
             }
 
             public override int GetHashCode()
@@ -145,7 +142,7 @@ namespace Chummer
             }
         }
 
-        public Stopwatch Autosave_StopWatch { get; } = Stopwatch.StartNew();
+        public Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
@@ -163,7 +160,7 @@ namespace Chummer
                 {
                     Cursor = Cursors.Default;
                     MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
-                    Autosave_StopWatch.Restart();
+                    AutosaveStopWatch.Restart();
                     return;
                 }
             }
@@ -176,7 +173,7 @@ namespace Chummer
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
             Cursor = Cursors.Default;
-            Autosave_StopWatch.Restart();
+            AutosaveStopWatch.Restart();
         }
 
         /// <summary>
@@ -185,7 +182,6 @@ namespace Chummer
         /// <param name="lblPhysical"></param>
         /// <param name="lblStun"></param>
         /// <param name="tipTooltip"></param>
-        /// <param name="_objImprovementManager"></param>
         protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, ToolTip tipTooltip)
         {
             // Condition Monitor.
@@ -217,7 +213,6 @@ namespace Chummer
         /// </summary>
         /// <param name="lblArmor"></param>
         /// <param name="tipTooltip"></param>
-        /// <param name="objImprovementManager"></param>
         /// <param name="lblCMArmor"></param>
         protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
         {
@@ -437,8 +432,11 @@ namespace Chummer
         /// <summary>
         /// Clears and updates the treeview for Spells. Typically called as part of AddQuality or UpdateCharacterInfo.
         /// </summary>
-        /// <param name="treSpells">Treenode that will be cleared and populated.</param>
-        /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
+        /// <param name="treSpells">Spells tree.</param>
+        /// <param name="treMetamagic">Initiations tree.</param>
+        /// <param name="cmsSpell">ContextMenuStrip that will be added to spells in the spell tree.</param>
+        /// <param name="cmsInitiationNotes">ContextMenuStrip that will be added to spells in the initiations tree.</param>
+        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objCombatNode = null;
@@ -673,24 +671,29 @@ namespace Chummer
                         }
                     }
                 }
-                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
-                if (blnSingleAdd)
+
+                if (objParentNode != null)
                 {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        treSpells.SelectedNode = objNode;
                     }
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treSpells.SelectedNode = objNode;
+                    else
+                        objParentNode.Nodes.Add(objNode);
                 }
-                else
-                    objParentNode.Nodes.Add(objNode);
             }
         }
 
@@ -1168,7 +1171,7 @@ namespace Chummer
                             treLimit.Nodes.Add(objParentNode);
                             break;
                     }
-                    objParentNode.Expand();
+                    objParentNode?.Expand();
                 }
                 return objParentNode;
             }
@@ -1728,7 +1731,7 @@ namespace Chummer
 
             void AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
-                TreeNode objParentNode = null;
+                TreeNode objParentNode;
                 switch (objPower.Category)
                 {
                     case "Weakness":
@@ -1784,7 +1787,6 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
-        /// <param name="blnForce">Forces a refresh of the TreeNode despite a match.</param>
         protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objPositiveQualityRoot = null;
@@ -1946,24 +1948,29 @@ namespace Chummer
                         objParentNode = objLifeModuleRoot;
                         break;
                 }
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
-                if (blnSingleAdd)
+
+                if (objParentNode != null)
                 {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        treQualities.SelectedNode = objNode;
                     }
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treQualities.SelectedNode = objNode;
+                    else
+                        objParentNode.Nodes.Add(objNode);
                 }
-                else
-                    objParentNode.Nodes.Add(objNode);
             }
         }
 
@@ -2134,6 +2141,8 @@ namespace Chummer
                     }
                     break;
             }
+
+            treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
         }
 
         protected void RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -2195,7 +2204,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                         }
                         break;
@@ -2218,7 +2226,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                             treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                         }
@@ -2238,7 +2245,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                             treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                         }
@@ -2601,6 +2607,8 @@ namespace Chummer
                     }
                     break;
             }
+
+            treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
         }
 
         protected void RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -2664,7 +2672,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                         }
                         break;
@@ -2687,7 +2694,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                             treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
                         }
@@ -2707,7 +2713,6 @@ namespace Chummer
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
                                 nodRoot.Remove();
-                                nodRoot = null;
                             }
                             treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
                         }
@@ -3141,7 +3146,6 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        List<TreeNode> lstOldLocations = new List<TreeNode>();
                         string strSelectedId = treGear.SelectedNode?.Tag.ToString();
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
@@ -3156,11 +3160,6 @@ namespace Chummer
                             AddToTree(objGear, intNewIndex);
                             objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
                             intNewIndex += 1;
-                        }
-                        foreach (TreeNode nodLocation in lstOldLocations)
-                        {
-                            if (nodLocation.Nodes.Count == 0 && nodLocation.Tag?.ToString().IsGuid() != true)
-                                nodLocation.Remove();
                         }
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
                     }
@@ -3385,26 +3384,30 @@ namespace Chummer
                     }
                     nodParent = objBiowareRoot;
                 }
-
-                TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
-
-                if (blnSingleAdd)
+                
+                if (nodParent != null)
                 {
-                    TreeNodeCollection lstParentNodeChildren = nodParent.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
+
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = nodParent.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        treCyberware.SelectedNode = objNode;
                     }
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treCyberware.SelectedNode = objNode;
+                    else
+                        nodParent.Nodes.Add(objNode);
                 }
-                else
-                    nodParent.Nodes.Add(objNode);
             }
         }
 
@@ -4564,7 +4567,7 @@ namespace Chummer
             {
                 TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
 
-                TreeNode objParentNode = null;
+                TreeNode objParentNode;
                 if (objMartialArt.IsQuality)
                 {
                     if (objQualityNode == null)
@@ -4703,7 +4706,7 @@ namespace Chummer
         {
             string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
             
-            TreeNode objRoot = null;
+            TreeNode objRoot;
 
             if (notifyCollectionChangedEventArgs == null)
             {
@@ -4893,7 +4896,7 @@ namespace Chummer
                                     treLimit.Nodes.Add(objParentNode);
                                     break;
                             }
-                            objParentNode.Expand();
+                            objParentNode?.Expand();
                         }
 
                         string strName = objImprovement.UniqueName + ": ";
@@ -4902,7 +4905,7 @@ namespace Chummer
                         strName += objImprovement.Value.ToString();
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
                             strName += ", " + objImprovement.Condition;
-                        if (!objParentNode.Nodes.ContainsKey(strName))
+                        if (objParentNode?.Nodes.ContainsKey(strName) == false)
                         {
                             TreeNode objNode = new TreeNode
                             {
@@ -5123,6 +5126,8 @@ namespace Chummer
                     }
                     break;
             }
+
+            treImprovements.SelectedNode = treImprovements.FindNode(strSelectedId);
         }
 
         protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -5749,15 +5754,11 @@ namespace Chummer
                     intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
-
-            int intEnemyMax = 0;
-            int intQualityMax = 0;
-            string strQualityPoints = string.Empty;
-            string strEnemyPoints = string.Empty;
-            intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
-            intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            strEnemyPoints = intEnemyMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            strQualityPoints = intQualityMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            
+            int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
+            int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
+            string strEnemyPoints = intEnemyMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strQualityPoints = intQualityMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
@@ -6276,19 +6277,21 @@ namespace Chummer
         {
             //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
             //allow wrapping back to first/last tab item based on scroll direction
-            TabControl tabControl = (sender as TabControl);
-            if (e.Location.Y <= tabControl.ItemSize.Height)
+            if (sender is TabControl tabControl)
             {
-                int intScrollAmount = e.Delta;
-                int intSelectedTabIndex = tabControl.SelectedIndex;
-
-                if (intScrollAmount < 0)
+                if (e.Location.Y <= tabControl.ItemSize.Height)
                 {
-                    if (intSelectedTabIndex < tabControl.TabCount - 1)
-                        tabControl.SelectedIndex = intSelectedTabIndex + 1;
+                    int intScrollAmount = e.Delta;
+                    int intSelectedTabIndex = tabControl.SelectedIndex;
+
+                    if (intScrollAmount < 0)
+                    {
+                        if (intSelectedTabIndex < tabControl.TabCount - 1)
+                            tabControl.SelectedIndex = intSelectedTabIndex + 1;
+                    }
+                    else if (intSelectedTabIndex > 0)
+                        tabControl.SelectedIndex = intSelectedTabIndex - 1;
                 }
-                else if (intSelectedTabIndex > 0)
-                    tabControl.SelectedIndex = intSelectedTabIndex - 1;
             }
         }
 
@@ -6362,10 +6365,9 @@ namespace Chummer
             {
                 Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
             };
-
-            string strShowFileName = string.Empty;
+            
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-            strShowFileName = strFile[strFile.Length - 1];
+            string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
@@ -6435,7 +6437,6 @@ namespace Chummer
         /// Processes the string strDrain into a calculated Drain dicepool and appropriate display attributes and labels.
         /// </summary>
         /// <param name="strDrain"></param>
-        /// <param name="objImprovementManager"></param>
         /// <param name="drain"></param>
         /// <param name="attributeText"></param>
         /// <param name="valueText"></param>
@@ -6484,9 +6485,10 @@ namespace Chummer
             if (attributeText != null)
                 attributeText.Text = objDisplayDrain.ToString();
             if (valueText != null)
+            {
                 valueText.Text = intDrain.ToString();
-            if (tooltip != null)
-                tooltip.SetToolTip(valueText, objTip.ToString());
+                tooltip?.SetToolTip(valueText, objTip.ToString());
+            }
         }
 
         /// <summary>

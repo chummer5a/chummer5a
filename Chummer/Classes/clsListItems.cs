@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace Chummer
 {
@@ -73,12 +72,12 @@ namespace Chummer
 
         public static bool operator ==(object x, ListItem y)
         {
-            return x.Equals(y);
+            return x?.Equals(y) ?? y == null;
         }
 
         public static bool operator !=(object x, ListItem y)
         {
-            return !x.Equals(y);
+            return !(x?.Equals(y) ?? y == null);
         }
     }
 
@@ -170,8 +169,8 @@ namespace Chummer
             }
             else
             {
-                string strX = listviewX.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                string strY = listviewY.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                string strX = listviewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
                 if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
                     decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
                     intCompareResult = decimal.Compare(decX, decY);
@@ -236,12 +235,12 @@ namespace Chummer
             DataGridViewRow datagridviewrowY = (DataGridViewRow)y;
 
             // Compare the two items
-            string strX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString();
-            string strY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
+            string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
+            string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
+            string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
                 .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
                 .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
-            string strNumberY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
+            string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
                 .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
                 .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))

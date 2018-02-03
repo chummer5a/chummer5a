@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -28,10 +27,10 @@ namespace Chummer
 {
     public sealed class StoryBuilder
     {
-        private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
-        private Character _objCharacter;
-        Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp = 0;
+        private readonly Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
+        private readonly Character _objCharacter;
+        readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp;
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;

@@ -18,10 +18,8 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using Chummer.Backend.Skills;
 
 namespace Chummer
@@ -31,7 +29,7 @@ namespace Chummer
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
         private readonly string _strForceItem = string.Empty;
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
         public frmSelectSpec(Skill skill)

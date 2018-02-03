@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,17 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 ﻿using System.IO;
-﻿using System.Linq;
-﻿using System.Net;
-﻿using System.Reflection;
-﻿using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.XPath;
+ using System.Reflection;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -42,7 +36,7 @@ namespace Chummer
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version s_VersionCachedGitVersion = null;
+        private static Version s_VersionCachedGitVersion;
         public static Version CachedGitVersion
         {
             get

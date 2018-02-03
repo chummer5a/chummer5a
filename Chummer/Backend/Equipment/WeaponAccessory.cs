@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
-        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private Weapon _objParent;
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
@@ -56,23 +56,23 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
-        private int _intAccuracy = 0;
-        private int _intRating = 0;
-        private int _intRCGroup = 0;
-        private int _intAmmoSlots = 0;
-        private bool _blnDeployable = false;
-        private bool _blnDiscountCost = false;
-        private bool _blnBlackMarketDiscount = false;
-        private bool _blnIncludedInWeapon = false;
+        private int _intAccuracy;
+        private int _intRating;
+        private int _intRCGroup;
+        private int _intAmmoSlots;
+        private bool _blnDeployable;
+        private bool _blnDiscountCost;
+        private bool _blnBlackMarketDiscount;
+        private bool _blnIncludedInWeapon;
         private bool _blnInstalled = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
-        private int _intRangeBonus = 0;
-        private int _intSuppressive = 0;
-        private int _intFullBurst = 0;
+        private int _intRangeBonus;
+        private int _intSuppressive;
+        private int _intFullBurst;
         private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
-        private int _intAmmoBonus = 0;
+        private int _intAmmoBonus;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -1087,7 +1087,7 @@ namespace Chummer.Backend.Equipment
             }
         }
         
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

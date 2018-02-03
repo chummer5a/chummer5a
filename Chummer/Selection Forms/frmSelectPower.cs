@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
         public frmSelectPower(Character objCharacter)

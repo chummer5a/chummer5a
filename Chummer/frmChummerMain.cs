@@ -24,19 +24,14 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
  using System.Text.RegularExpressions;
- using System.Windows;
- using System.Windows.Shapes;
- using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
- using Application = System.Windows.Forms.Application;
+using Chummer.Backend.Equipment;
+using Application = System.Windows.Forms.Application;
  using DataFormats = System.Windows.Forms.DataFormats;
  using DragDropEffects = System.Windows.Forms.DragDropEffects;
  using DragEventArgs = System.Windows.Forms.DragEventArgs;
  using MessageBox = System.Windows.Forms.MessageBox;
  using Path = System.IO.Path;
- using Point = System.Drawing.Point;
- using Rectangle = System.Drawing.Rectangle;
- using Size = System.Drawing.Size;
+using Size = System.Drawing.Size;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
@@ -55,14 +50,14 @@ namespace Chummer
         private readonly List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-        private readonly string _strCurrentVersion = string.Empty;
+        private readonly string _strCurrentVersion;
 
 #region Control Events
         public frmChummerMain()
         {
             InitializeComponent();
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            this.Text = "Chummer 5a - Version " + _strCurrentVersion;
+            Text = "Chummer 5a - Version " + _strCurrentVersion;
 #if DEBUG
             Text += " DEBUG BUILD";
 #endif
@@ -138,20 +133,21 @@ namespace Chummer
                 () => XmlManager.Load("skills.xml"),
                 () => XmlManager.Load("spells.xml"),
                 () => XmlManager.Load("spiritpowers.xml"),
+                () => XmlManager.Load("streams.xml"),
                 () => XmlManager.Load("traditions.xml"),
                 () => XmlManager.Load("vehicles.xml"),
                 () => XmlManager.Load("weapons.xml")
             );
             Timekeeper.Finish("cache_load");
 
-            _frmCharacterRoster = new frmCharacterRoster
+            CharacterRoster = new frmCharacterRoster
             {
                 MdiParent = this
             };
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
-            string strLoop = string.Empty;
+            string strLoop;
             List<Character> lstCharactersToLoad = new List<Character>();
             object lstCharactersToLoadLock = new object();
             bool blnShowTest = false;
@@ -179,18 +175,11 @@ namespace Chummer
             }
             OpenCharacterList(lstCharactersToLoad);
 
-            _frmCharacterRoster.WindowState = FormWindowState.Maximized;
-            _frmCharacterRoster.Show();
+            CharacterRoster.WindowState = FormWindowState.Maximized;
+            CharacterRoster.Show();
         }
 
-        private readonly frmCharacterRoster _frmCharacterRoster;
-        public frmCharacterRoster CharacterRoster
-        {
-            get
-            {
-                return _frmCharacterRoster;
-            }
-        }
+        public frmCharacterRoster CharacterRoster { get; }
 
         private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
@@ -199,7 +188,7 @@ namespace Chummer
             {
                 strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
             }
-            HttpWebRequest request = null;
+            HttpWebRequest request;
             try
             {
                 WebRequest objTemp = WebRequest.Create(strUpdateLocation);
@@ -226,7 +215,7 @@ namespace Chummer
             request.Accept = "application/json";
 
             // Get the response.
-            HttpWebResponse response = null;
+            HttpWebResponse response;
             try
             {
                 response = request.GetResponse() as HttpWebResponse;
@@ -338,7 +327,6 @@ namespace Chummer
             response.Close();
 
             Utils.CachedGitVersion = verLatestVersion;
-            return;
         }
 
         private void CheckForUpdate(object sender, RunWorkerCompletedEventArgs e)
@@ -354,17 +342,17 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                this.Text = string.Format("Chummer 5a - Version " + _strCurrentVersion + " - Update {0} now available!", Utils.CachedGitVersion);
+                Text = string.Format("Chummer 5a - Version " + _strCurrentVersion + " - Update {0} now available!", Utils.CachedGitVersion);
             }
         }
 
-        private readonly Stopwatch IdleUpdateCheck_StopWatch = Stopwatch.StartNew();
+        private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
         private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
-            if (IdleUpdateCheck_StopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)
+            if (_idleUpdateCheckStopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)
             {
-                IdleUpdateCheck_StopWatch.Restart();
+                _idleUpdateCheckStopWatch.Restart();
                 _workerVersionUpdateChecker.RunWorkerAsync();
             }
         }
@@ -437,17 +425,17 @@ namespace Chummer
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.chummergen.com/chummer/wiki/");
+            Process.Start("http://www.chummergen.com/chummer/wiki/");
         }
 
         private void mnuChummerDiscord_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://discord.gg/mJB7st9");
+            Process.Start("https://discord.gg/mJB7st9");
         }
 
         private void mnuHelpDumpshock_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/chummer5a/chummer5a/issues/");
+            Process.Start("https://github.com/chummer5a/chummer5a/issues/");
         }
 
         private frmPrintMultiple _frmPrintMultipleCharacters;
@@ -639,8 +627,7 @@ namespace Chummer
 
         private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabForms.SelectedTab != null && tabForms.SelectedTab.Tag != null)
-                (tabForms.SelectedTab.Tag as Form)?.Select();
+            (tabForms.SelectedTab?.Tag as Form)?.Select();
         }
 
         public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMRU)
@@ -817,7 +804,7 @@ namespace Chummer
         {
             string strTranslator = Path.Combine(Application.StartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
-                System.Diagnostics.Process.Start(strTranslator);
+                Process.Start(strTranslator);
         }
 #endregion
 
@@ -960,7 +947,6 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
         {
             OpenCharacterList(new List<Character>{ objCharacter }, blnIncludeInMRU);
@@ -1019,16 +1005,15 @@ namespace Chummer
         /// Load a Character from a file and return it (thread-safe).
         /// </summary>
         /// <param name="strFileName">File to load.</param>
-        /// <param name="blnIncludeInMRU">Whether or not the file should appear in the MRU list.</param>
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         public Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
         {
             Character objCharacter = null;
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
             {
                 Timekeeper.Start("loading");
-                bool blnLoaded = false;
                 objCharacter = new Character
                 {
                     FileName = strFileName
@@ -1072,13 +1057,12 @@ namespace Chummer
 
                 OpenCharacters.Add(objCharacter);
                 Timekeeper.Start("load_file");
-                blnLoaded = objCharacter.Load();
+                bool blnLoaded = objCharacter.Load();
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
                     OpenCharacters.Remove(objCharacter);
                     objCharacter.DeleteCharacter();
-                    objCharacter = null;
                     return null;
                 }
 

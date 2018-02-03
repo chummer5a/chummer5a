@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
@@ -10,7 +9,7 @@ namespace CrashHandler
 {
 	static class Program
 	{
-		static Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
+		static readonly Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
 		{
 			{"crash", ShowCrashReport }
 		};

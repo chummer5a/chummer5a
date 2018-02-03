@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Generic;
-
 namespace Chummer
 {
     public interface IHasInternalId

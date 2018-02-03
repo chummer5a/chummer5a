@@ -18,14 +18,13 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-    partial class Skill : IHasName, IHasInternalId
+    partial class Skill : IHasInternalId
     {
         private int _intBase;
         private int _intKarma;
@@ -298,10 +297,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        protected int Bonus(bool AddToRating)
+        protected int Bonus(bool blnAddToRating)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == AddToRating).Sum(x => x.Value);
+            return RelevantImprovements(x => x.AddToRating == blnAddToRating).Sum(x => x.Value);
         }
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
@@ -488,7 +487,7 @@ namespace Chummer.Backend.Skills
 
             intLevelsModded /= 2; //we get square, we need triangle
 
-            int cost = 0;
+            int cost;
             if (lower == 0)
                 cost = (intLevelsModded - 1) * _objCharacter.Options.KarmaImproveActiveSkill + _objCharacter.Options.KarmaNewActiveSkill;
             else
@@ -518,7 +517,7 @@ namespace Chummer.Backend.Skills
 
                         intGroupLevelsModded /= 2; //we get square, we need triangle
 
-                        int intGroupCost = 0;
+                        int intGroupCost;
                         int intNakedSkillCost = objMySkillGroup.SkillList.Count;
                         if (lower == 0)
                         {
@@ -580,7 +579,7 @@ namespace Chummer.Backend.Skills
                 return -1;
             }
             int upgrade = 0;
-            int intOptionsCost = 1;
+            int intOptionsCost;
             if (intTotalBaseRating == 0)
             {
                 intOptionsCost = _objCharacter.Options.KarmaNewActiveSkill;
@@ -609,7 +608,7 @@ namespace Chummer.Backend.Skills
                     }
                     if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
                     {
-                        int intGroupCost = 0;
+                        int intGroupCost;
                         int intNakedSkillCost = objMySkillGroup.SkillList.Count;
                         if (intTotalBaseRating == 0)
                         {
@@ -685,7 +684,7 @@ namespace Chummer.Backend.Skills
             CharacterObject.Karma -= price;
         }
 
-        private bool _oldCanAffordSpecialization = false;
+        private bool _oldCanAffordSpecialization;
         public bool CanAffordSpecialization
         {
             get

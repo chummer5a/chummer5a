@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -41,27 +40,27 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strLimbSlot = string.Empty;
         private string _strLimbSlotCount = "1";
-        private bool _blnInheritAttributes = false;
+        private bool _blnInheritAttributes;
         private string _strESS = string.Empty;
-        private decimal _decExtraESSAdditiveMultiplier = 0.0m;
+        private decimal _decExtraESSAdditiveMultiplier;
         private decimal _decExtraESSMultiplicativeMultiplier = 1.0m;
         private string _strCapacity = string.Empty;
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
-        private int _intMatrixCMFilled = 0;
-        private int _intRating = 0;
+        private int _intMatrixCMFilled;
+        private int _intRating;
         private string _strMinRating = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strAllowSubsystems = string.Empty;
-        private bool _blnSuite = false;
+        private bool _blnSuite;
         private string _strLocation = string.Empty;
         private string _strExtra = string.Empty;
         private Guid _guiWeaponID = Guid.Empty;
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
-        private ObservableCollection<Cyberware> _lstChildren = new ObservableCollection<Cyberware>();
+        private readonly ObservableCollection<Cyberware> _lstChildren = new ObservableCollection<Cyberware>();
         private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
@@ -71,13 +70,13 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
-        private int _intEssenceDiscount = 0;
+        private int _intEssenceDiscount;
         private string _strForceGrade = string.Empty;
-        private bool _blnDiscountCost = false;
-        private Vehicle _objParentVehicle = null;
+        private bool _blnDiscountCost;
+        private Vehicle _objParentVehicle;
         private bool _blnPrototypeTranshuman;
         private Cyberware _objParent;
-        private bool _blnAddToParentESS = false;
+        private bool _blnAddToParentESS;
         private string _strParentID = string.Empty;
         private string _strHasModularMount = string.Empty;
         private string _strPlugsIntoModularMount = string.Empty;
@@ -97,7 +96,7 @@ namespace Chummer.Backend.Equipment
         private string _strModAttributeArray = string.Empty;
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
-        private bool _blnCanSwapAttributes = false;
+        private bool _blnCanSwapAttributes;
 
         private readonly Character _objCharacter;
 
@@ -1876,7 +1875,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

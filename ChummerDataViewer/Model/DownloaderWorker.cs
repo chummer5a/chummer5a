@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChummerDataViewer.Model
 {
@@ -152,7 +149,7 @@ namespace ChummerDataViewer.Model
 		private string Queue() => _queue.Count > 0 ? _queue.Count.ToString() + " in queue" : string.Empty;
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

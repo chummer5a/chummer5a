@@ -22,7 +22,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 using System.Globalization;
@@ -125,8 +124,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private bool _blnCachedGroupEnabledIsCached = false;
-        private bool _blnCachedGroupEnabled = false;
+        private bool _blnCachedGroupEnabledIsCached;
+        private bool _blnCachedGroupEnabled;
         public bool IsDisabled
         {
             get
@@ -609,8 +608,8 @@ namespace Chummer.Backend.Skills
                 (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
                 return -1;
             int intRating = SkillList.Min(x => x.TotalBaseRating);
-            int intReturn = 0;
-            int intOptionsCost = 1;
+            int intReturn;
+            int intOptionsCost;
             if (intRating == 0)
             {
                 intOptionsCost = Character.Options.KarmaNewSkillGroup;

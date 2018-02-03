@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -40,7 +38,7 @@ namespace CrashHandler
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
         private string _strLatestDumpName = string.Empty;
 	    
-	    private TextWriter CrashLogWriter;
+	    private readonly TextWriter CrashLogWriter;
 
         /// <summary>
         /// 
@@ -483,7 +481,7 @@ namespace CrashHandler
 		}
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

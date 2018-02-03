@@ -32,7 +32,7 @@ namespace Chummer
 	    private readonly Vehicle _objVehicle;
 	    private readonly Character _objCharacter;
 	    private WeaponMount _objMount;
-        private XmlDocument _xmlDoc;
+        private readonly XmlDocument _xmlDoc;
 
         public WeaponMount WeaponMount
         {

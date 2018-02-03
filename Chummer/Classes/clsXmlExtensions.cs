@@ -17,13 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
  using System.Globalization;
- using System.Linq;
-using System.Text;
 using System.Xml;
-using Chummer;
 using System.Runtime.CompilerServices;
 
 namespace Chummer
@@ -107,7 +103,7 @@ namespace Chummer
 #if DEBUG
                 System.Reflection.MethodBase mth 
                     = new StackTrace().GetFrame(1).GetMethod();
-                string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType.Name, mth);
+                string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType?.Name, mth);
 #else
                 string errorMsg = string.Format("Tried to read missing field \"{0}\"", field);
 #endif
@@ -162,7 +158,7 @@ namespace Chummer
                         "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
                         field,
                         typeof (T),
-                        mth.ReflectedType.Name
+                        mth.ReflectedType?.Name
                     );
 #else //So if DEBUG flag is missing we don't reflect info
                 string errorMsg = $"Tried to read missing field \"{field}\" of type \"{typeof(T)}\"";
@@ -222,136 +218,158 @@ namespace Chummer
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
-        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode = false)
+        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
         {
             if (xmlOperationNode == null)
                 return false;
-            
-            foreach (XmlNode xmlOperationChildNode in xmlOperationNode.SelectNodes("*"))
+
+            using (XmlNodeList xmlOperationChildNodeList = xmlOperationNode.SelectNodes("*"))
             {
-                XmlAttributeCollection xmlOperationChildNodeAttributes = xmlOperationChildNode.Attributes;
-                bool blnInvert = xmlOperationChildNodeAttributes?["NOT"] != null;
-
-                bool blnOperationChildNodeResult = blnInvert;
-                string strNodeName = xmlOperationChildNode.Name;
-                if (strNodeName == "OR")
+                if (xmlOperationChildNodeList != null)
                 {
-                    blnOperationChildNodeResult = ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) != blnInvert;
-                }
-                else if (strNodeName == "AND")
-                {
-                    blnOperationChildNodeResult = ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode) != blnInvert;
-                }
-                else if (strNodeName == "NONE")
-                {
-                    blnOperationChildNodeResult = (xmlParentNode == null) != blnInvert;
-                }
-                else if (xmlParentNode != null)
-                {
-                    string strOperationType = xmlOperationChildNodeAttributes?["operation"]?.InnerText ?? "==";
-                    XmlNodeList objXmlTargetNodeList = xmlParentNode.SelectNodes(strNodeName);
-                    // If we're just checking for existance of a node, no need for more processing
-                    if (strOperationType == "exists")
+                    foreach (XmlNode xmlOperationChildNode in xmlOperationChildNodeList)
                     {
-                        blnOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != blnInvert;
-                    }
-                    else
-                    {
-                        // default is "any", replace with switch() if more check modes are necessary
-                        bool blnCheckAll = xmlOperationChildNodeAttributes?["checktype"]?.InnerText == "all";
-                        blnOperationChildNodeResult = blnCheckAll;
-                        string strOperationChildNodeText = xmlOperationChildNode.InnerText;
-                        bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
+                        XmlAttributeCollection xmlOperationChildNodeAttributes = xmlOperationChildNode.Attributes;
+                        bool blnInvert = xmlOperationChildNodeAttributes?["NOT"] != null;
 
-                        foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
+                        bool blnOperationChildNodeResult = blnInvert;
+                        string strNodeName = xmlOperationChildNode.Name;
+                        if (strNodeName == "OR")
                         {
-                            bool boolSubNodeResult = blnInvert;
-                            if (objXmlTargetNode.SelectSingleNode("*") != null)
+                            blnOperationChildNodeResult =
+                                ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) != blnInvert;
+                        }
+                        else if (strNodeName == "AND")
+                        {
+                            blnOperationChildNodeResult =
+                                ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) != blnInvert;
+                        }
+                        else if (strNodeName == "NONE")
+                        {
+                            blnOperationChildNodeResult = (xmlParentNode == null) != blnInvert;
+                        }
+                        else if (xmlParentNode != null)
+                        {
+                            string strOperationType = xmlOperationChildNodeAttributes?["operation"]?.InnerText ?? "==";
+                            XmlNodeList objXmlTargetNodeList = xmlParentNode.SelectNodes(strNodeName);
+                            // If we're just checking for existance of a node, no need for more processing
+                            if (strOperationType == "exists")
                             {
-                                if (xmlOperationChildNode.SelectSingleNode("*") != null)
-                                    boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode, xmlOperationChildNode, xmlOperationChildNodeAttributes?["OR"] != null) != blnInvert;
+                                blnOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != blnInvert;
                             }
                             else
                             {
-                                string strTargetNodeText = objXmlTargetNode.InnerText;
-                                bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
-                                if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
+                                // default is "any", replace with switch() if more check modes are necessary
+                                bool blnCheckAll = xmlOperationChildNodeAttributes?["checktype"]?.InnerText == "all";
+                                blnOperationChildNodeResult = blnCheckAll;
+                                string strOperationChildNodeText = xmlOperationChildNode.InnerText;
+                                bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
+
+                                foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
                                 {
-                                    if (blnTargetNodeEmpty == blnOperationChildNodeEmpty &&
-                                        (strOperationType == "==" || strOperationType == "equals"))
+                                    bool boolSubNodeResult = blnInvert;
+                                    if (objXmlTargetNode.SelectSingleNode("*") != null)
                                     {
-                                        boolSubNodeResult = !blnInvert;
+                                        if (xmlOperationChildNode.SelectSingleNode("*") != null)
+                                            boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode,
+                                                                    xmlOperationChildNode,
+                                                                    xmlOperationChildNodeAttributes?["OR"] != null) !=
+                                                                blnInvert;
                                     }
                                     else
                                     {
-                                        boolSubNodeResult = blnInvert;
+                                        string strTargetNodeText = objXmlTargetNode.InnerText;
+                                        bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
+                                        if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
+                                        {
+                                            if (blnTargetNodeEmpty == blnOperationChildNodeEmpty &&
+                                                (strOperationType == "==" || strOperationType == "equals"))
+                                            {
+                                                boolSubNodeResult = !blnInvert;
+                                            }
+                                            else
+                                            {
+                                                boolSubNodeResult = blnInvert;
+                                            }
+                                        }
+                                        // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
+                                        else
+                                            switch (strOperationType)
+                                            {
+                                                case "doesnotequal":
+                                                case "notequals":
+                                                case "!=":
+                                                    blnInvert = !blnInvert;
+                                                    goto case "==";
+                                                case "lessthan":
+                                                    blnInvert = !blnInvert;
+                                                    goto case ">=";
+                                                case "lessthanequals":
+                                                    blnInvert = !blnInvert;
+                                                    goto case ">";
+
+                                                case "like":
+                                                case "contains":
+                                                {
+                                                    boolSubNodeResult =
+                                                        strTargetNodeText.Contains(strOperationChildNodeText) !=
+                                                        blnInvert;
+                                                    break;
+                                                }
+                                                case "greaterthan":
+                                                case ">":
+                                                {
+                                                    boolSubNodeResult =
+                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
+                                                         int.TryParse(strOperationChildNodeText,
+                                                             out int intChildNodeValue) &&
+                                                         intTargetNodeValue > intChildNodeValue) != blnInvert;
+                                                    break;
+                                                }
+                                                case "greaterthanequals":
+                                                case ">=":
+                                                {
+                                                    boolSubNodeResult =
+                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
+                                                         int.TryParse(strOperationChildNodeText,
+                                                             out int intChildNodeValue) &&
+                                                         intTargetNodeValue >= intChildNodeValue) != blnInvert;
+                                                    break;
+                                                }
+                                                case "==":
+                                                default:
+                                                    boolSubNodeResult =
+                                                        (strTargetNodeText.Trim() ==
+                                                         strOperationChildNodeText.Trim()) !=
+                                                        blnInvert;
+                                                    break;
+                                            }
+                                    }
+
+                                    if (blnCheckAll)
+                                    {
+                                        if (!boolSubNodeResult)
+                                        {
+                                            blnOperationChildNodeResult = false;
+                                            break;
+                                        }
+                                    }
+                                    // default is "any", replace above with a switch() should more than two checktypes be required
+                                    else if (boolSubNodeResult)
+                                    {
+                                        blnOperationChildNodeResult = true;
+                                        break;
                                     }
                                 }
-                                // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
-                                else switch (strOperationType)
-                                {
-                                    case "doesnotequal":
-                                    case "notequals":
-                                    case "!=":
-                                        blnInvert = !blnInvert;
-                                        goto case "==";
-                                    case "lessthan":
-                                        blnInvert = !blnInvert;
-                                        goto case ">=";
-                                    case "lessthanequals":
-                                        blnInvert = !blnInvert;
-                                        goto case ">";
-
-                                    case "like":
-                                    case "contains":
-                                            {
-                                                boolSubNodeResult = strTargetNodeText.Contains(strOperationChildNodeText) != blnInvert;
-                                                break;
-                                            }
-                                    case "greaterthan":
-                                    case ">":
-                                            {
-                                                boolSubNodeResult = (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                    int.TryParse(strOperationChildNodeText, out int intChildNodeValue) &&
-                                                    intTargetNodeValue > intChildNodeValue) != blnInvert;
-                                                break;
-                                            }
-                                    case "greaterthanequals":
-                                    case ">=":
-                                            {
-                                                boolSubNodeResult = (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                    int.TryParse(strOperationChildNodeText, out int intChildNodeValue) &&
-                                                    intTargetNodeValue >= intChildNodeValue) != blnInvert;
-                                                break;
-                                            }
-                                    case "equals":
-                                    case "==":
-                                    default:
-                                        boolSubNodeResult = (strTargetNodeText.Trim() == strOperationChildNodeText.Trim()) != blnInvert;
-                                        break;
-                                }
-                            }
-                            if (blnCheckAll)
-                            {
-                                if (!boolSubNodeResult)
-                                {
-                                    blnOperationChildNodeResult = false;
-                                    break;
-                                }
-                            }
-                            // default is "any", replace above with a switch() should more than two checktypes be required
-                            else if (boolSubNodeResult)
-                            {
-                                blnOperationChildNodeResult = true;
-                                break;
                             }
                         }
+
+                        if (blnIsOrNode && blnOperationChildNodeResult)
+                            return true;
+                        if (!blnIsOrNode && !blnOperationChildNodeResult)
+                            return false;
                     }
                 }
-                if (blnIsOrNode && blnOperationChildNodeResult)
-                    return true;
-                if (!blnIsOrNode && !blnOperationChildNodeResult)
-                    return false;
             }
 
             return !blnIsOrNode;

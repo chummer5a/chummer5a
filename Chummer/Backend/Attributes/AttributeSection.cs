@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -42,7 +41,7 @@ namespace Chummer.Backend.Attributes
         private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
         public static ReadOnlyCollection<string> MentalAttributes { get { return Array.AsReadOnly(s_LstMentalAttributes); } }
 
-        private Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 

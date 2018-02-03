@@ -31,15 +31,15 @@ namespace Chummer
         private string _strSelectedArmorMod = string.Empty;
 
         private string _strAllowedCategories = string.Empty;
-        private bool _blnAddAgain = false;
-        private decimal _decArmorCost = 0;
-        private decimal _decMarkup = 0;
+        private bool _blnAddAgain;
+        private decimal _decArmorCost;
+        private decimal _decMarkup;
         private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
-        private bool _blnExcludeGeneralCategory = false;
+        private bool _blnExcludeGeneralCategory;
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
@@ -271,7 +271,7 @@ namespace Chummer
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
-                while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -418,7 +418,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
+                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
                 {
                     lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }

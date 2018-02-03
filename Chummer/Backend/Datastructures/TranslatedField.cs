@@ -18,16 +18,14 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Chummer.Properties;
 
-namespace Chummer.Datastructures
+namespace Chummer
 {
     public sealed class TranslatedField<T> where T : class
     {
         private readonly Dictionary<T, T> _translate = new Dictionary<T, T>();
         private readonly Dictionary<T, T> _back = new Dictionary<T, T>();
-        private readonly string _strLanguage = string.Empty;
+        private readonly string _strLanguage;
 
         public TranslatedField(string strLanguage)
         {

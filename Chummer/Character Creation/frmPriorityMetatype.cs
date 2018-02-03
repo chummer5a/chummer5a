@@ -24,7 +24,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -33,9 +32,9 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly string _strXmlFile = "metatypes.xml";
-        private int _intBuildMethod = 0;
+        private int _intBuildMethod;
         private bool _blnInitializing = true;
-        private readonly List<string> _lstPrioritySkills = null;
+        private readonly List<string> _lstPrioritySkills;
 
         #region Character Events
         private void DoNothing(object sender)

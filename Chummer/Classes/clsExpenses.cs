@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Xml;
-using Chummer.Backend;
-using System.Globalization;
+ using System.Globalization;
 
 namespace Chummer
 {
@@ -97,7 +96,7 @@ namespace Chummer
         private KarmaExpenseType _objKarmaExpenseType;
         private NuyenExpenseType _objNuyenExpenseType;
         private string _strObjectId;
-        private decimal _decQty = 0;
+        private decimal _decQty;
         private string _strExtra = string.Empty;
 
         #region Helper Methods
@@ -268,11 +267,11 @@ namespace Chummer
     {
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
-        private DateTime _datDate = new DateTime();
-        private decimal _decAmount = 0;
+        private DateTime _datDate;
+        private decimal _decAmount;
         private string _strReason = string.Empty;
         private ExpenseType _objExpenseType;
-        private bool _blnRefund = false;
+        private bool _blnRefund;
         private ExpenseUndo _objUndo;
 
         #region Helper Methods

@@ -31,7 +31,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = "Standard";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
-        private int _intAvail = 0;
+        private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
         private readonly Improvement.ImprovementSource _eSource;
@@ -75,7 +75,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

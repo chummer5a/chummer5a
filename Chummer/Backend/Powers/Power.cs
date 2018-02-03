@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -43,17 +42,17 @@ namespace Chummer
         private string _strPage = string.Empty;
         private string _strPointsPerLevel = "0";
         private string _strAction = string.Empty;
-        private decimal _decExtraPointCost = 0;
-        private int _intMaxLevel = 0;
-        private bool _blnDiscountedAdeptWay = false;
-        private bool _blnDiscountedGeas = false;
+        private decimal _decExtraPointCost;
+        private int _intMaxLevel;
+        private bool _blnDiscountedAdeptWay;
+        private bool _blnDiscountedGeas;
         private XmlNode _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
-        private bool _blnFree = false;
-        private int _intFreeLevels = 0;
+        private bool _blnFree;
+        private int _intFreeLevels;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
-        private decimal _decFreePoints = 0;
+        private decimal _decFreePoints;
         private string _displayPoints = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -731,7 +730,7 @@ namespace Chummer
 
         public string Category { get; set; }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

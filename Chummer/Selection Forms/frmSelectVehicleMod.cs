@@ -30,24 +30,24 @@ namespace Chummer
     public partial class frmSelectVehicleMod : Form
     {
         private Vehicle _objVehicle;
-        private int _intWeaponMountSlots = 0;
+        private int _intWeaponMountSlots;
         private string _strSelectedMod = string.Empty;
-        private int _intSelectedRating = 0;
-        private int _intWeaponCost = 0;
-        private int _intTotalWeaponCost = 0;
+        private int _intSelectedRating;
+        private int _intWeaponCost;
+        private int _intTotalWeaponCost;
         private int _intModMultiplier = 1;
-        private int _intMarkup = 0;
-        private bool _blnSkipUpdate = false;
+        private int _intMarkup;
+        private bool _blnSkipUpdate;
         private static string s_StrSelectCategory = string.Empty;
 
         private static readonly string[] s_LstCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
         private string _strAllowedCategories = string.Empty;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
-        private string _strLimitToCategories = string.Empty;
+        private readonly string _strLimitToCategories = string.Empty;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly HashSet<string> _setBlackMarketMaps;
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
@@ -453,7 +453,7 @@ namespace Chummer
                     }
                 }
 
-                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
+                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
                 {
                     lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }
@@ -560,7 +560,7 @@ namespace Chummer
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(xmlVehicleMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlVehicleMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }

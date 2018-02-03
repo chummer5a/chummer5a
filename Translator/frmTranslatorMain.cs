@@ -425,7 +425,7 @@ namespace Translator
             }
         }
 
-        private Tuple<XmlDocument, string> _objStringsDocWithPath = null;
+        private Tuple<XmlDocument, string> _objStringsDocWithPath;
         private void DoStringsProcessing(object sender, DoWorkEventArgs e)
         {
             _blnQueueStringsProcessorRun = false;
@@ -528,7 +528,7 @@ namespace Translator
             pbProcessProgress.PerformStep();
         }
 
-        private Tuple<XmlDocument, string> _objDataDocWithPath = null;
+        private Tuple<XmlDocument, string> _objDataDocWithPath;
         private void DoDataProcessing(object sender, DoWorkEventArgs e)
         {
             _blnQueueDataProcessorRun = false;

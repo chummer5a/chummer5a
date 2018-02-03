@@ -18,8 +18,7 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 using System.Xml.XPath;
@@ -29,13 +28,13 @@ namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
-        private bool _blnAddAgain = false;
-        private Lifestyle _objLifestyle;
+        private bool _blnAddAgain;
+        private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Standard;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         private bool _blnSkipRefresh = true;
 

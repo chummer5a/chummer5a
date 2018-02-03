@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -27,8 +26,8 @@ namespace ChummerDataViewer.Model
             _worker.RunWorkerAsync();
         }
 
-        private Stopwatch _objTimeoutStopwatch = Stopwatch.StartNew();
-        private int _intCurrentTimeout = 0;
+        private readonly Stopwatch _objTimeoutStopwatch = Stopwatch.StartNew();
+        private int _intCurrentTimeout;
 		private void WorkerEntryPrt(object sender, DoWorkEventArgs e)
 		{
 			try
@@ -186,7 +185,7 @@ namespace ChummerDataViewer.Model
 		}
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

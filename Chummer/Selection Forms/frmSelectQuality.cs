@@ -21,11 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using Chummer.Backend;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
-using Chummer.Backend.Attributes;
 using System.Text;
 
 namespace Chummer
@@ -33,11 +28,11 @@ namespace Chummer
     public partial class frmSelectQuality : Form
     {
         private string _strSelectedQuality = string.Empty;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private bool _blnLoading = true;
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 

@@ -18,13 +18,9 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -34,7 +30,7 @@ namespace Chummer.Classes
 {
     public class AddImprovementCollection
     {
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating, Func<Character, string, int, int> valueToInt, Action<Character> rollback)
         {

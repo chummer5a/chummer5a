@@ -79,11 +79,14 @@ namespace Chummer
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Load the selected XML file and its associated custom file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [Annotations.NotNull]
         public static XmlDocument Load(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
@@ -100,7 +103,7 @@ namespace Chummer
             if (!blnFileFound)
             {
                 Utils.BreakIfDebug();
-                return null;
+                return new XmlDocument();
             }
 
             DateTime datDate = File.GetLastWriteTime(strPath);
@@ -108,7 +111,7 @@ namespace Chummer
                 strLanguage = GlobalOptions.Language;
 
             // Look to see if this XmlDocument is already loaded.
-            XmlReference objReference = null;
+            XmlReference objReference;
             lock (s_LstXmlDocumentsLock)
             {
                 objReference = s_LstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
@@ -335,9 +338,12 @@ namespace Chummer
                     objDoc = objReference.XmlContent;
             }
 
+            if (strFileName != "improvements.xml")
+                return objDoc;
+
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
-            if (GlobalOptions.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
+            if (GlobalOptions.LiveCustomData && objDoc != null)
             {
                 XmlElement objDocElement = objDoc.DocumentElement;
                 strPath = Path.Combine(Application.StartupPath, "livecustomdata");
@@ -371,13 +377,15 @@ namespace Chummer
                                 if (objParentNode != null)
                                 {
                                     string strFilter = string.Empty;
-                                    if (objChild["id"] != null)
-                                        strFilter = "id = \"" + objChild["id"].InnerText.Replace("&amp;", "&") + '\"';
-                                    if (objChild["name"] != null)
+                                    string strId = objChild["id"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strId))
+                                        strFilter = "id = \"" + strId.Replace("&amp;", "&") + '\"';
+                                    string strName = objChild["name"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strName))
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
                                             strFilter += " and ";
-                                        strFilter += "name = \"" + objChild["name"].InnerText.Replace("&amp;", "&") + '\"';
+                                        strFilter += "name = \"" + strName.Replace("&amp;", "&") + '\"';
                                     }
                                     // Only do this if the child has the name or id field since this is what we must match on.
                                     if (!string.IsNullOrEmpty(strFilter))
@@ -402,7 +410,7 @@ namespace Chummer
             }
 
             // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-            if (strFileName == "improvements.xml" || (objReference.DuplicatesChecked && !blnHasLiveCustomData)) return objDoc;
+            if (!objReference.DuplicatesChecked || blnHasLiveCustomData)
             {
                 foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
                 {
@@ -599,11 +607,17 @@ namespace Chummer
                 }
             }
             // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-            foreach (XmlNode objExtraId in objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
+            using (XmlNodeList xmlChildrenWithIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
             {
-                if (!string.IsNullOrEmpty(strFilter))
-                    strFilter += " and ";
-                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                if (xmlChildrenWithIds != null)
+                {
+                    foreach (XmlNode objExtraId in xmlChildrenWithIds)
+                    {
+                        if (!string.IsNullOrEmpty(strFilter))
+                            strFilter += " and ";
+                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                    }
+                }
             }
 
             string strOperation = string.Empty;
@@ -671,16 +685,16 @@ namespace Chummer
                     break;
                 case "recurse":
                     // Operation only supported if we have children
-                    if (lstElementChildren.Count > 0)
+                    if (lstElementChildren?.Count > 0)
                         break;
                     goto default;
                 // If no supported operation is specified, the default is...
                 default:
                     // ..."recurse" if we have children...
-                    if (lstElementChildren.Count > 0)
+                    if (lstElementChildren?.Count > 0)
                         strOperation = "recurse";
                     // ..."append" if we don't have children and there's no target...
-                    else if (objNodesToEdit.Count == 0)
+                    else if (objNodesToEdit?.Count == 0)
                         strOperation = "append";
                     // ..."replace" if we don't have children and there are one or more targets.
                     else
@@ -689,14 +703,17 @@ namespace Chummer
             }
 
             // We found nodes to target with the amend!
-            if (objNodesToEdit.Count > 0)
+            if (objNodesToEdit?.Count > 0)
             {
                 // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
                 if (strOperation == "recurse")
                 {
-                    foreach (XmlNode objChild in lstElementChildren)
+                    if (lstElementChildren != null)
                     {
-                        AmendNodeChildern(objDoc, objChild, strNewXPath);
+                        foreach (XmlNode objChild in lstElementChildren)
+                        {
+                            AmendNodeChildern(objDoc, objChild, strNewXPath);
+                        }
                     }
                 }
                 // ... otherwise loop through any nodes that satisfy the XPath filter.
@@ -704,11 +721,11 @@ namespace Chummer
                 {
                     foreach (XmlNode objNodeToEdit in objNodesToEdit)
                     {
-                        XmlNode objParentNode = objNodeToEdit.ParentNode;
+                        XmlNode xmlParentNode = objNodeToEdit.ParentNode;
                         // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
                         if (strOperation == "remove")
                         {
-                            objParentNode.RemoveChild(objNodeToEdit);
+                            xmlParentNode?.RemoveChild(objNodeToEdit);
                         }
                         else
                         {
@@ -755,7 +772,7 @@ namespace Chummer
                                     }
                                     break;
                                 case "replace":
-                                    objParentNode.ReplaceChild(objDoc.ImportNode(objAmendingNode, true), objNodeToEdit);
+                                    xmlParentNode?.ReplaceChild(objDoc.ImportNode(objAmendingNode, true), objNodeToEdit);
                                     break;
                             }
                         }
@@ -765,9 +782,15 @@ namespace Chummer
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
             else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && blnAddIfNotFound)
             {
-                foreach (XmlNode objParentNode in objDoc.SelectNodes(strXPath))
+                using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
                 {
-                    objParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                    if (xmlParentNodeList != null)
+                    {
+                        foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                        {
+                            xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                        }
+                    }
                 }
             }
         }

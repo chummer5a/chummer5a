@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -40,12 +39,12 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
-        private int _intLP = 0;
+        private int _intLP;
         private string _strCost = string.Empty;
-        private int _intMultiplier = 0;
-        private int _intBaseMultiplier = 0;
+        private int _intMultiplier;
+        private int _intBaseMultiplier;
         private List<string> _lstAllowedFreeLifestyles = new List<string>();
-        private Lifestyle _objParentLifestyle = null;
+        private Lifestyle _objParentLifestyle;
         private QualityType _objLifestyleQualityType = QualityType.Positive;
         private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
         private XmlNode _nodBonus;
@@ -633,7 +632,7 @@ namespace Chummer.Backend.Equipment
         private int _comfortMaximum;
         private int _securityMaximum;
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

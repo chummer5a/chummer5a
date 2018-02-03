@@ -32,25 +32,25 @@ namespace Chummer
     {
         private bool _blnLoading = true;
         private string _strSelectedGear = string.Empty;
-        private int _intSelectedRating = 0;
+        private int _intSelectedRating;
         private decimal _decSelectedQty = 1;
-        private decimal _decMarkup = 0;
+        private decimal _decMarkup;
 
-        private int _intAvailModifier = 0;
-        private int _intCostMultiplier = 1;
+        private readonly int _intAvailModifier;
+        private readonly int _intCostMultiplier = 1;
 
         private string _strAllowedCategories = string.Empty;
-        private readonly XmlNode _objParentNode = null;
+        private readonly XmlNode _objParentNode;
         private decimal _decMaximumCapacity = -1;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
-        private bool _blnShowPositiveCapacityOnly = false;
-        private bool _blnShowNegativeCapacityOnly = false;
-        private bool _blnShowArmorCapacityOnly = false;
+        private bool _blnShowPositiveCapacityOnly;
+        private bool _blnShowNegativeCapacityOnly;
+        private bool _blnShowArmorCapacityOnly;
         private bool _blnBlackMarketDiscount;
         private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
@@ -949,7 +949,7 @@ namespace Chummer
                 }
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -1054,9 +1054,9 @@ namespace Chummer
                 if (chkBlackMarketDiscount.Checked)
                     decCostMultiplier *= 0.9m;
                 if (!blnDoUIUpdate ||
-                    ((!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, 1, _intAvailModifier) &&
+                    ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    Backend.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))))
+                    SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))))
                 {
                     string strDisplayName = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
 

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -33,11 +32,11 @@ namespace Chummer
         private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private readonly string _strType = "cyberware";
         private readonly Character _objCharacter;
-        private decimal _decCost = 0;
+        private decimal _decCost;
 
         private readonly List<Cyberware> _lstCyberware = new List<Cyberware>();
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control events
         public frmSelectCyberwareSuite(Improvement.ImprovementSource objSource, Character objCharacter)

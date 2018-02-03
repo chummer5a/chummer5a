@@ -18,11 +18,7 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
+ using System.Text.RegularExpressions;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -42,9 +38,9 @@ namespace Chummer
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
         private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
-        private Gear _gear;
-        private String _attribute;
-        private double[] fixedDoubles;
+        private readonly Gear _gear;
+        private readonly String _attribute;
+        private readonly double[] fixedDoubles;
         /// <summary>
         /// 
         /// </summary>

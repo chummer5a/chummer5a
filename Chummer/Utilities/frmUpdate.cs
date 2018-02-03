@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.ComponentModel;
-using System.Diagnostics;
- using System.Globalization;
  using System.IO;
  using System.IO.Compression;
  using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
-﻿using System.Windows;
-﻿using Application = System.Windows.Forms.Application;
+ using Application = System.Windows.Forms.Application;
 ﻿using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
 
@@ -40,12 +37,12 @@ namespace Chummer
         private bool _blnSilentCheck;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
-        private string _strCurrentVersion = string.Empty;
-        private Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        private readonly string _strCurrentVersion = string.Empty;
+        private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private string _strTempPath = string.Empty;
-        private string _strTempUpdatePath = string.Empty;
+        private readonly string _strTempUpdatePath = string.Empty;
         private readonly string _strAppPath = Application.StartupPath;
-        private bool _blnPreferNightly = false;
+        private readonly bool _blnPreferNightly;
         private bool _blnIsConnected = true;
         private readonly bool _blnChangelogDownloaded = false;
         private readonly BackgroundWorker _workerConnectionLoader = new BackgroundWorker();
@@ -102,7 +99,7 @@ namespace Chummer
             Log.Exit("frmUpdate_Load");
         }
 
-        private bool _blnIsClosing = false;
+        private bool _blnIsClosing;
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnIsClosing = true;

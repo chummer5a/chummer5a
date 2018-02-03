@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -29,11 +28,11 @@ namespace Chummer
     {
         private string _strSelectedMartialArt = string.Empty;
         
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private string _strForcedValue = string.Empty;
-        private bool _blnShowQualities = false;
+        private bool _blnShowQualities;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         #region Control Events

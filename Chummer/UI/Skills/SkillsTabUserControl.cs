@@ -51,12 +51,12 @@ namespace Chummer.UI.Skills
             UpdateKnoSkillRemaining();
         }
 
-        private bool _initialized = false;
-        private Character _character = null;
+        private bool _initialized;
+        private Character _character;
         private IList<Tuple<string, Predicate<Skill>>> _dropDownList;
         private IList<Tuple<string, IComparer<Skill>>>  _sortList;
         private readonly List<SkillControl2> _controls = new List<SkillControl2>();
-        private bool _searchMode = false;
+        private bool _searchMode;
         private IList<Tuple<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
         private IList<Tuple<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
 

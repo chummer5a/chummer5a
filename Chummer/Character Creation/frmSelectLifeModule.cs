@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend;
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -29,14 +29,14 @@ namespace Chummer
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
-        private int _intStage;
+        private readonly int _intStage;
         private String _strDefaultStageName;
         private XmlDocument _xmlDocument;
         private String _selectedId;
         private Regex searchRegex;
 
 
-        private String _strWorkStage = null;
+        private String _strWorkStage;
         
         public frmSelectLifeModule(Character objCharacter, int stage)
         {

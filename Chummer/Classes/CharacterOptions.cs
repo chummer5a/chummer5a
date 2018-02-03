@@ -18,13 +18,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Microsoft.Win32;
-using Chummer.Backend;
 
 namespace Chummer
 {
@@ -55,7 +52,7 @@ namespace Chummer
         private bool _blnArmorDegradation;
         private bool _blnArmorSuitCapacity;
         private bool _blnStrictSkillGroupsInCreateMode;
-        private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
+        private bool _blnAllowPointBuySpecializationsOnKarmaSkills;
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
@@ -105,7 +102,7 @@ namespace Chummer
         private bool _blnEnemyKarmaQualityLimit = true;
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
-        private int _intFreeContactsFlatNumber = 0;
+        private readonly int _intFreeContactsFlatNumber = 0;
         private int _intFreeContactsMultiplier = 3;
         private int _intDroneArmorMultiplier = 2;
         private int _intFreeKnowledgeMultiplier = 2;
@@ -117,13 +114,13 @@ namespace Chummer
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
         private bool _blnMysAdeptAllowPPCareer;
-        private bool _blnMysAdeptSecondMAGAttribute = false;
+        private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
         private bool _blnHideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
-        private bool _blnCompensateSkillGroupKarmaDifference = false;
+        private bool _blnCompensateSkillGroupKarmaDifference;
         
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
@@ -929,13 +926,17 @@ namespace Chummer
 
             // Load Books.
             _lstBooks.Clear();
-            foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/settings/books/book"))
-                _lstBooks.Add(objXmlBook.InnerText);
+            using (XmlNodeList xmlBookList = objXmlDocument.SelectNodes("/settings/books/book"))
+                if (xmlBookList != null)
+                    foreach (XmlNode objXmlBook in xmlBookList)
+                        _lstBooks.Add(objXmlBook.InnerText);
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             _lstCustomDataDirectoryNames.Clear();
-            foreach (XmlNode objXmlDirectoryName in objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+            using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                if (xmlDirectoryList != null)
+                    foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
                 _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
 
             // Load default build settings.

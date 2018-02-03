@@ -84,7 +84,7 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            this.SuspendLayout();
+            SuspendLayout();
             DoubleBuffered = true;
             MakePowerDisplays();
 
@@ -125,7 +125,7 @@ namespace Chummer.UI.Powers
             Panel1_Resize();
             parts.TaskEnd("resize");
             //this.Update();
-            this.ResumeLayout(true);
+            ResumeLayout(true);
             //this.PerformLayout();
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -234,7 +234,7 @@ namespace Chummer.UI.Powers
         {
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-            bool blnAddAgain = false;
+            bool blnAddAgain;
 
             do
             {
@@ -284,10 +284,7 @@ namespace Chummer.UI.Powers
                 if (ObjCharacter.IsMysticAdept)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    if (ObjCharacter.Options.MysAdeptSecondMAGAttribute)
-                        intMAG = ObjCharacter.MAGAdept.TotalValue;
-                    else
-                        intMAG = ObjCharacter.MysticAdeptPowerPoints;
+                    intMAG = ObjCharacter.Options.MysAdeptSecondMAGAttribute ? ObjCharacter.MAGAdept.TotalValue : ObjCharacter.MysticAdeptPowerPoints;
                 }
                 else
                 {

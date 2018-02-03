@@ -20,12 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Security.AccessControl;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Backend.Skills;
@@ -343,14 +339,14 @@ namespace Chummer
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
-        private readonly Character _objCharacter = null;
+        private readonly Character _objCharacter;
         private string _strImprovedName = string.Empty;
         private string _strSourceName = string.Empty;
-        private int _intMin = 0;
-        private int _intMax = 0;
-        private int _intAug = 0;
-        private int _intAugMax = 0;
-        private int _intVal = 0;
+        private int _intMin;
+        private int _intMax;
+        private int _intAug;
+        private int _intAugMax;
+        private int _intVal;
         private int _intRating = 1;
         private string _strExclude = string.Empty;
         private string _strCondition = string.Empty;
@@ -358,14 +354,14 @@ namespace Chummer
         private string _strTarget = string.Empty;
         private ImprovementType _objImprovementType;
         private ImprovementSource _objImprovementSource;
-        private bool _blnCustom = false;
+        private bool _blnCustom;
         private string _strCustomName = string.Empty;
         private string _strCustomId = string.Empty;
         private string _strCustomGroup = string.Empty;
         private string _strNotes = string.Empty;
-        private bool _blnAddToRating = false;
+        private bool _blnAddToRating;
         private bool _blnEnabled = true;
-        private int _intOrder = 0;
+        private int _intOrder;
 
         #region Helper Methods
 

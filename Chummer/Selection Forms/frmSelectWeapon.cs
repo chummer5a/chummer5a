@@ -24,8 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
-using System.Globalization;
-using System.Collections;
+
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -42,8 +41,8 @@ namespace Chummer
         private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private XmlNodeList _objXmlCategoryList;
-        private readonly XmlDocument _objXmlDocument = null;
-        private Weapon _objSelectedWeapon = null;
+        private readonly XmlDocument _objXmlDocument;
+        private Weapon _objSelectedWeapon;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly HashSet<string> _setBlackMarketMaps;
@@ -264,7 +263,7 @@ namespace Chummer
                     strTest = objXmlWeapon["extramount"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                         continue;
-                    if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                         continue;
 
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -347,7 +346,7 @@ namespace Chummer
                         continue;
                     }
 
-                    if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                     {
                         continue;
                     }

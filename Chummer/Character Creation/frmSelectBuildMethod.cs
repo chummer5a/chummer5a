@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Windows.Documents;
  using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -30,10 +27,10 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
-        private readonly bool _blnUseCurrentValues = false;
+        private readonly bool _blnUseCurrentValues;
         private readonly string _strDefaultOption = "Standard";
-        int intQualityLimits = 0;
-        decimal decNuyenBP = 0;
+        int intQualityLimits;
+        decimal decNuyenBP;
 
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)

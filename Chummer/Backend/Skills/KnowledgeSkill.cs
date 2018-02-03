@@ -16,7 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
@@ -30,12 +29,13 @@ namespace Chummer.Backend.Skills
 
         public static IEnumerable<ListItem> DefaultKnowledgeSkills(string strLanguage)
         {
-            XmlDocument objSkillsDocument = XmlManager.Load("skills.xml", strLanguage);
-            foreach (XmlNode objXmlSkill in objSkillsDocument.SelectNodes("/chummer/knowledgeskills/skill"))
-            {
-                string strName = objXmlSkill["name"]?.InnerText ?? string.Empty;
-                yield return new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName);
-            }
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/knowledgeskills/skill"))
+                if (xmlSkillList != null)
+                    foreach (XmlNode xmlSkill in xmlSkillList)
+                    {
+                        string strName = xmlSkill["name"]?.InnerText ?? string.Empty;
+                        yield return new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName);
+                    }
         }
 
         /// <summary>
@@ -45,40 +45,42 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public static IEnumerable<ListItem> KnowledgeTypes(string strLanguage)
         {
-            XmlDocument objSkillsDocument = XmlManager.Load("skills.xml", strLanguage);
-            foreach (XmlNode objXmlCategory in objSkillsDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
-            {
-                string strInnerText = objXmlCategory.InnerText;
-                yield return new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText);
-            }
+            using (XmlNodeList xmlCategoryList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+                if (xmlCategoryList != null)
+                    foreach (XmlNode objXmlCategory in xmlCategoryList)
+                    {
+                        string strInnerText = objXmlCategory.InnerText;
+                        yield return new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText);
+                    }
         }
 
         static KnowledgeSkill()
         {
-            XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill");
-
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
-            {
-                string strCategory = objXmlSkill["category"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strCategory))
-                {
-                    s_CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
-                }
-            }
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
+                if (xmlSkillList != null)
+                    foreach (XmlNode objXmlSkill in xmlSkillList)
+                    {
+                        string strCategory = objXmlSkill["category"]?.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strCategory))
+                        {
+                            s_CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
+                        }
+                    }
         }
 
         public static IEnumerable<ListItem> KnowledgeSkillsWithCategory(string strLanguage, params string[] categories)
         {
             HashSet<string> lstCategories = new HashSet<string>(categories);
-            XmlDocument objSkillsDocument = XmlManager.Load("skills.xml", strLanguage);
-            foreach (XmlNode objXmlSkill in objSkillsDocument.SelectNodes("/chummer/knowledgeskills/skill"))
-            {
-                if (lstCategories.Contains(objXmlSkill["category"]?.InnerText))
-                {
-                    string strName = objXmlSkill["name"]?.InnerText ?? string.Empty;
-                    yield return new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName);
-                }
-            }
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
+                if (xmlSkillList != null)
+                    foreach (XmlNode objXmlSkill in xmlSkillList)
+                    {
+                        if (lstCategories.Contains(objXmlSkill["category"]?.InnerText))
+                        {
+                            string strName = objXmlSkill["name"]?.InnerText ?? string.Empty;
+                            yield return new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName);
+                        }
+                    }
         } 
 
         public override bool AllowDelete
@@ -114,16 +116,10 @@ namespace Chummer.Backend.Skills
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-                    if (xmlSkillDoc != null)
-                    {
-                        XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\" and category = \"" + Type + "\"]");
-                        if (xmlNewNode == null)
-                            xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\"]");
-                        if (xmlNewNode != null)
-                            strNewName = xmlNewNode["name"]?.InnerText ?? value;
-                        else
-                            strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-                    }
+                    XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\" and category = \"" + Type + "\"]") ??
+                                         xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\"]");
+                    if (xmlNewNode != null)
+                        strNewName = xmlNewNode["name"]?.InnerText ?? value;
                     else
                         strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
                 }
@@ -162,29 +158,23 @@ namespace Chummer.Backend.Skills
         public bool LoadDefaultType()
         {
             XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            if (xmlSkillDoc != null)
+            XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\" and category = \"" + Type + "\"]") ??
+                                 xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+            if (xmlNewNode != null)
             {
-                XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\" and category = \"" + Type + "\"]") ??
-                    xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
-                if (xmlNewNode != null)
-                {
-                    if (xmlNewNode["id"] != null && Guid.TryParse(xmlNewNode["id"].InnerText, out Guid guidTemp))
-                        SkillId = guidTemp;
-                    else
-                        SkillId = Guid.Empty;
-                    string strCategory = xmlNewNode["category"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strCategory))
-                        Type = strCategory;
-                    string strAttribute = xmlNewNode["attribute"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAttribute))
-                        AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
-                    return true;
-                }
+                if (xmlNewNode["id"] != null && Guid.TryParse(xmlNewNode["id"].InnerText, out Guid guidTemp))
+                    SkillId = guidTemp;
                 else
                     SkillId = Guid.Empty;
+                string strCategory = xmlNewNode["category"]?.InnerText;
+                if (!string.IsNullOrEmpty(strCategory))
+                    Type = strCategory;
+                string strAttribute = xmlNewNode["attribute"]?.InnerText;
+                if (!string.IsNullOrEmpty(strAttribute))
+                    AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
+                return true;
             }
-            else
-                SkillId = Guid.Empty;
+            SkillId = Guid.Empty;
             return false;
         }
 
@@ -248,11 +238,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                         {
-                            CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strNewAttributeValue);
-                            if (objNewAttribute != AttributeObject)
-                            {
-                                AttributeObject = objNewAttribute;
-                            }
+                            AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
                         }
                     }
 
@@ -336,17 +322,17 @@ namespace Chummer.Backend.Skills
             {
                 return -1;
             }
-            int intOptionsCost = 1;
-            int value = 0;
+            int intOptionsCost;
+            int intValue;
             if (intTotalBaseRating == 0)
             {
                 intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
-                value = intOptionsCost;
+                intValue = intOptionsCost;
             }
             else
             {
                 intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
-                value = (intTotalBaseRating + 1) * intOptionsCost;
+                intValue = (intTotalBaseRating + 1) * intOptionsCost;
             }
 
             decimal decMultiplier = 1.0m;
@@ -373,10 +359,10 @@ namespace Chummer.Backend.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                value = decimal.ToInt32(decimal.Ceiling(value * decMultiplier));
-            value += intExtra;
+                intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier));
+            intValue += intExtra;
 
-            return Math.Max(value, Math.Min(1, intOptionsCost));
+            return Math.Max(intValue, Math.Min(1, intOptionsCost));
         }
 
         /// <summary>

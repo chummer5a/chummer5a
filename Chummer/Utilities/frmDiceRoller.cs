@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -26,9 +26,9 @@ namespace Chummer
     public partial class frmDiceRoller : Form
     {
         private readonly frmChummerMain _frmMain;
-        private List<ListItem> _lstResults = new List<ListItem>(40);
-        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp = 0;
+        private readonly List<ListItem> _lstResults = new List<ListItem>(40);
+        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp;
 
         #region Control Events
         public frmDiceRoller(frmChummerMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)

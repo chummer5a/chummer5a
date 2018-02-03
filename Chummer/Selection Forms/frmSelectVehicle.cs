@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -29,15 +29,15 @@ namespace Chummer
     public partial class frmSelectVehicle : Form
     {
         private string _strSelectedVehicle = string.Empty;
-        private bool _blnUsedVehicle = false;
+        private bool _blnUsedVehicle;
         private string _strUsedAvail = string.Empty;
-        private decimal _decUsedCost = 0;
-        private decimal _decMarkup = 0;
+        private decimal _decUsedCost;
+        private decimal _decMarkup;
 
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
@@ -427,7 +427,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
                 {
                     string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? objXmlVehicle["name"]?.InnerText;
 

@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
@@ -37,38 +36,38 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
-        private int _intHandling = 0;
-        private int _intOffroadHandling = 0;
-        private int _intAccel = 0;
-        private int _intOffroadAccel = 0;
-        private int _intSpeed = 0;
-        private int _intOffroadSpeed = 0;
-        private int _intPilot = 0;
-        private int _intBody = 0;
-        private int _intArmor = 0;
-        private int _intSensor = 0;
-        private int _intSeats = 0;
+        private int _intHandling;
+        private int _intOffroadHandling;
+        private int _intAccel;
+        private int _intOffroadAccel;
+        private int _intSpeed;
+        private int _intOffroadSpeed;
+        private int _intPilot;
+        private int _intBody;
+        private int _intArmor;
+        private int _intSensor;
+        private int _intSeats;
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strVehicleName = string.Empty;
-        private int _intAddSlots = 0;
-        private int _intDroneModSlots = 0;
-        private int _intAddPowertrainModSlots = 0;
-        private int _intAddProtectionModSlots = 0;
-        private int _intAddWeaponModSlots = 0;
-        private int _intAddBodyModSlots = 0;
-        private int _intAddElectromagneticModSlots = 0;
-        private int _intAddCosmeticModSlots = 0;
-        private ObservableCollection<VehicleMod> _lstVehicleMods = new ObservableCollection<VehicleMod>();
-        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
-        private ObservableCollection<WeaponMount> _lstWeaponMounts = new ObservableCollection<WeaponMount>();
+        private int _intAddSlots;
+        private int _intDroneModSlots;
+        private int _intAddPowertrainModSlots;
+        private int _intAddProtectionModSlots;
+        private int _intAddWeaponModSlots;
+        private int _intAddBodyModSlots;
+        private int _intAddElectromagneticModSlots;
+        private int _intAddCosmeticModSlots;
+        private readonly ObservableCollection<VehicleMod> _lstVehicleMods = new ObservableCollection<VehicleMod>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+        private readonly ObservableCollection<WeaponMount> _lstWeaponMounts = new ObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
-        private ObservableCollection<string> _lstLocations = new ObservableCollection<string>();
-        private bool _blnBlackMarketDiscount = false;
+        private readonly ObservableCollection<string> _lstLocations = new ObservableCollection<string>();
+        private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
@@ -86,11 +85,11 @@ namespace Chummer.Backend.Equipment
         private string _strModAttributeArray = string.Empty;
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
-        private bool _blnCanSwapAttributes = false;
+        private bool _blnCanSwapAttributes;
 
         // Condition Monitor Progress.
-        private int _intPhysicalCMFilled = 0;
-        private int _intMatrixCMFilled = 0;
+        private int _intPhysicalCMFilled;
+        private int _intMatrixCMFilled;
         private Guid _sourceID;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -2650,7 +2649,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

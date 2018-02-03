@@ -18,16 +18,12 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Attributes;
 using System.Text;
-using Chummer.Backend;
 
 namespace Chummer
 {
@@ -41,7 +37,7 @@ namespace Chummer
         private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
 
-        private Grade _objForcedGrade = null;
+        private Grade _objForcedGrade;
         private string _strSubsystems = string.Empty;
         private string _strDisallowedMounts = string.Empty;
         private string _strHasModularMounts = string.Empty;
@@ -50,17 +46,17 @@ namespace Chummer
         private bool _blnLoading = true;
 
         private readonly Mode _objMode = Mode.Cyberware;
-        private string _strNodeXPath = "/chummer/cyberwares/cyberware";
+        private readonly string _strNodeXPath = "/chummer/cyberwares/cyberware";
         private static string _sStrSelectCategory = string.Empty;
         private static string _sStrSelectGrade = string.Empty;
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private bool _blnIgnoreSecondHand = false;
+        private bool _blnIgnoreSecondHand;
         private string _strForceGrade = string.Empty;
-        private readonly XmlNode _objParentNode = null;
+        private readonly XmlNode _objParentNode;
         private readonly HashSet<string> _setBlackMarketMaps;
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         private enum Mode
         {
@@ -876,7 +872,7 @@ namespace Chummer
             }
         }
 
-        private bool _blnSkipListRefresh = false;
+        private bool _blnSkipListRefresh;
         private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
@@ -1180,7 +1176,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private bool _blnPopulatingGrades = false;
+        private bool _blnPopulatingGrades;
         /// <summary>
         /// Populate the list of Cyberware Grades.
         /// </summary>
@@ -1259,7 +1255,7 @@ namespace Chummer
             _blnPopulatingGrades = false;
         }
 
-        private bool _blnPopulatingCategories = false;
+        private bool _blnPopulatingCategories;
         private void PopulateCategories()
         {
             if (_blnPopulatingCategories)

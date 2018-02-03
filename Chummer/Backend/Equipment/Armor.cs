@@ -43,23 +43,23 @@ namespace Chummer.Backend.Equipment
         private string _strArmorCapacity = "0";
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
-        private int _intRating = 0;
-        private int _intMaxRating = 0;
+        private int _intRating;
+        private int _intMaxRating;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strArmorName = string.Empty;
         private string _strExtra = string.Empty;
-        private int _intDamage = 0;
+        private int _intDamage;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
-        private ObservableCollection<ArmorMod> _lstArmorMods = new ObservableCollection<ArmorMod>();
-        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly ObservableCollection<ArmorMod> _lstArmorMods = new ObservableCollection<ArmorMod>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
-        private bool _blnDiscountCost = false;
+        private bool _blnDiscountCost;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -1324,7 +1324,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
  using System.Collections.Generic;
  using System.IO;
- using System.Linq;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
@@ -31,9 +30,9 @@ namespace Chummer
 {
     public partial class frmExport : Form
     {
-        private readonly XmlDocument _objCharacterXML = null;
+        private readonly XmlDocument _objCharacterXML;
         private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
-        private bool _blnSelected = false;
+        private bool _blnSelected;
 
         #region Control Events
         public frmExport(XmlDocument objCharacterXML)

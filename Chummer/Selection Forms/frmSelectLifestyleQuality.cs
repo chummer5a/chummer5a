@@ -33,13 +33,13 @@ namespace Chummer
     {
         private bool _blnLoading = true;
         private string _strSelectedQuality = string.Empty;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
-        private string _strSelectedLifestyle = string.Empty;
+        private readonly string _strSelectedLifestyle = string.Empty;
         private readonly IList<LifestyleQuality> _lstExistingQualities;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private static readonly List<string> s_LstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
@@ -47,8 +47,8 @@ namespace Chummer
 
         private static string s_StrSelectCategory = string.Empty;
 
-        private readonly XmlDocument _objMetatypeDocument = null;
-        private readonly XmlDocument _objCritterDocument = null;
+        private readonly XmlDocument _objMetatypeDocument;
+        private readonly XmlDocument _objCritterDocument;
 
         #region Control Events
         public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IList<LifestyleQuality> lstExistingQualities)

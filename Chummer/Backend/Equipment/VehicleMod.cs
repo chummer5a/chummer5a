@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
@@ -61,9 +60,9 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnDowngrade;
         private string _strCapacity = string.Empty;
-        private WeaponMount _objWeaponMountParent = null;
+        private WeaponMount _objWeaponMountParent;
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private string _strAmmoReplace;
         private int _intAmmoBonus;

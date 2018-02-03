@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Chummer.Backend
+namespace Chummer
 { 
-    static class BindingListExtensions
+    public static class BindingListExtensions
     {
         internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
         {

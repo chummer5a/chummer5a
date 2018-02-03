@@ -744,7 +744,7 @@ namespace Chummer.Backend.Equipment
             set => _decCostForSecurity = value;
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

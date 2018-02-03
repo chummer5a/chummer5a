@@ -24,8 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 using System.Text;
-using System.Collections;
-using System.Globalization;
+
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -39,7 +38,7 @@ namespace Chummer
         private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
         private decimal _decMarkup;
-        private Armor _objSelectedArmor = null;
+        private Armor _objSelectedArmor;
 
         private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
@@ -162,7 +161,7 @@ namespace Chummer
                     nudRating.Maximum = Convert.ToInt32(strRating);
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -371,7 +370,7 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
+                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
                         {
                             Armor objArmor = new Armor(_objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
@@ -413,7 +412,7 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
+                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
                         {
                             string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)

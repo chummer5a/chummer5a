@@ -16,9 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- ﻿using System;
+  using System;
 using System.Collections.Generic;
-  using System.Drawing;
   using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -28,16 +27,16 @@ namespace Chummer
 {
     public partial class frmSelectLifestyleAdvanced : Form
     {
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
         private LifestyleType _eType = LifestyleType.Advanced;
 
-        private readonly XmlDocument _xmlDocument = null;
+        private readonly XmlDocument _xmlDocument;
 
         private bool _blnSkipRefresh = true;
-        private int _intTravelerRdmLP = 0;
+        private int _intTravelerRdmLP;
 
         #region Control Events
         public frmSelectLifestyleAdvanced(Character objCharacter)
@@ -199,7 +198,7 @@ namespace Chummer
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain = false;
+            bool blnAddAgain;
             do
             {
                 frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities);
@@ -338,10 +337,12 @@ namespace Chummer
         {
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
-            _objLifestyle.Source = objXmlLifestyle["source"].InnerText;
-            _objLifestyle.Page = objXmlLifestyle["page"].InnerText;
+            if (objXmlLifestyle == null)
+                return;
+            _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
+            _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
@@ -352,8 +353,8 @@ namespace Chummer
             _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
 
             // Get the starting Nuyen information.
-            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
-            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
+            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
+            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.StyleType = _eType;
 
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
@@ -436,7 +437,7 @@ namespace Chummer
                     if (strBaseLifestyle == "Traveler")
                     {
                         Random rndTavelerLp = MersenneTwister.SfmtRandom.Create();
-                        int intModuloTemp = 0;
+                        int intModuloTemp;
                         do
                         {
                             intModuloTemp = rndTavelerLp.Next();
@@ -610,7 +611,7 @@ namespace Chummer
             {
                 decNuyen /= intRoommatesValue + 1.0m;
             }
-            decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m)); ;
+            decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m));
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';

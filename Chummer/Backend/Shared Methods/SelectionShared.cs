@@ -17,20 +17,17 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Attributes;
-using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace Chummer.Backend
+namespace Chummer
 {
     public static class SelectionShared
     {
@@ -198,6 +195,7 @@ namespace Chummer.Backend
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
+                        List<IHasName> lstToCheck = objListToCheck.ToList();
                         string strNameNode = xmlNode["name"]?.InnerText;
                         if (blnCheckCyberwareChildren)
                         {
@@ -212,7 +210,7 @@ namespace Chummer.Backend
                             }
                         }
                         else
-                            intCount = objListToCheck.Count(objItem => strNameNode == objItem.Name);
+                            intCount = lstToCheck.Count(objItem => strNameNode == objItem.Name);
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
                         XmlNode xmlIncludeInLimit = xmlNode["includeinlimit"];
@@ -241,7 +239,7 @@ namespace Chummer.Backend
                                 }
                             }
                             else
-                                intExtendedCount = objListToCheck.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                intExtendedCount = lstToCheck.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                         }
                     }
                     if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
@@ -307,7 +305,7 @@ namespace Chummer.Backend
                     if (!blnOneOfMet)
                         blnRequirementMet = false;
                     if (blnShowMessage)
-                        objRequirement.Append(objThisRequirement.ToString());
+                        objRequirement.Append(objThisRequirement);
                     else if (!blnRequirementMet)
                         break;
                 }
@@ -337,7 +335,7 @@ namespace Chummer.Backend
                         if (!blnAllOfMet)
                             blnRequirementMet = false;
                         if (blnShowMessage)
-                            objRequirement.Append(objThisRequirement.ToString());
+                            objRequirement.Append(objThisRequirement);
                         else if (!blnRequirementMet)
                             break;
                     }
@@ -349,7 +347,7 @@ namespace Chummer.Backend
                     if (blnShowMessage)
                     {
                         string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement.ToString();
+                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement;
                         MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -373,7 +371,7 @@ namespace Chummer.Backend
                     {
                         // Check to see if an Attribute meets a requirement.
                         CharacterAttrib objAttribute = objCharacter.GetAttribute(strNodeName);
-                        int intTargetValue = Convert.ToInt32(xmlNode["total"].InnerText);
+                        int intTargetValue = Convert.ToInt32(xmlNode["total"]?.InnerText);
                         if (blnShowMessage)
                             strName = $"\n\t{objAttribute.DisplayAbbrev} {intTargetValue}";
                         // Special cases for when we want to check if a special attribute is enabled
@@ -392,8 +390,8 @@ namespace Chummer.Backend
                     }
                 case "attributetotal":
                     {
-                        string strNodeAttributes = xmlNode["attributes"].InnerText;
-                        int intNodeVal = Convert.ToInt32(xmlNode["val"].InnerText);
+                        string strNodeAttributes = xmlNode["attributes"]?.InnerText ?? string.Empty;
+                        int intNodeVal = Convert.ToInt32(xmlNode["val"]?.InnerText);
                         // Check if the character's Attributes add up to a particular total.
                         string strAttributes = strNodeAttributes;
                         string strValue = strNodeAttributes;
@@ -688,11 +686,11 @@ namespace Chummer.Backend
                                 XmlNode xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{metamagic.Name}\"]");
                                 if (xmlMetamagicNode != null)
                                 {
-                                    if (xmlMetamagicNode?.SelectSingleNode($"required/art[text() = \"{strNodeInnerText}\"]") != null)
+                                    if (xmlMetamagicNode.SelectSingleNode($"required/art[text() = \"{strNodeInnerText}\"]") != null)
                                     {
                                         return true;
                                     }
-                                    if (xmlMetamagicNode?.SelectSingleNode($"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
+                                    if (xmlMetamagicNode.SelectSingleNode($"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
                                     {
                                         return false;
                                     }
@@ -884,28 +882,32 @@ namespace Chummer.Backend
                     {
                         // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                         int intTotal = 0;
-                        string[] strGroups = xmlNode["skillgroups"].InnerText.Split('+');
+                        string[] strGroups = xmlNode["skillgroups"]?.InnerText.Split('+');
                         StringBuilder objOutputString = new StringBuilder("\n\t");
-                        for (int i = 0; i <= strGroups.Length - 1; ++i)
+                        if (strGroups != null)
                         {
-                            foreach (SkillGroup objGroup in objCharacter.SkillsSection.SkillGroups)
+                            for (int i = 0; i <= strGroups.Length - 1; ++i)
                             {
-                                if (objGroup.Name == strGroups[i])
+                                foreach (SkillGroup objGroup in objCharacter.SkillsSection.SkillGroups)
                                 {
-                                    if (blnShowMessage)
-                                        objOutputString.Append(objGroup.DisplayName + ", ");
-                                    intTotal += objGroup.Rating;
-                                    break;
+                                    if (objGroup.Name == strGroups[i])
+                                    {
+                                        if (blnShowMessage)
+                                            objOutputString.Append(objGroup.DisplayName + ", ");
+                                        intTotal += objGroup.Rating;
+                                        break;
+                                    }
                                 }
                             }
                         }
+
                         if (blnShowMessage)
                         {
                             if (objOutputString.Length > 0)
                                 objOutputString.Length -= 2;
-                            strName = objOutputString.ToString() + $" ({LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)})";
+                            strName = objOutputString + $" ({LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)})";
                         }
-                        return intTotal >= Convert.ToInt32(xmlNode["val"].InnerText);
+                        return intTotal >= Convert.ToInt32(xmlNode["val"]?.InnerText);
                     }
                 case "spell":
                     {
@@ -938,11 +940,11 @@ namespace Chummer.Backend
                             else
                                 strName = $"\n\t {strNodeInnerText} ({LanguageManager.GetString("String_SpellCategory", GlobalOptions.Language)})";
                         }
-                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= Convert.ToInt32(xmlNode["count"].InnerText);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= Convert.ToInt32(xmlNode["count"]?.InnerText);
                     }
                 case "spelldescriptor":
                     {
-                        string strCount = xmlNode["count"].InnerText;
+                        string strCount = xmlNode["count"]?.InnerText ?? string.Empty;
                         // Check for a specified amount of a particular Spell Descriptor.
                         if (blnShowMessage)
                             strName = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + strCount;
@@ -989,7 +991,6 @@ namespace Chummer.Backend
         /// </summary>
         /// <param name="objXmlGear"></param>
         /// <param name="objCharacter"></param>
-        /// <param name="blnHide"></param>
         /// <param name="intRating"></param>
         /// <param name="intAvailModifier"></param>
         /// <returns></returns>
@@ -1069,7 +1070,7 @@ namespace Chummer.Backend
                 }
                 else if (objCostNode.InnerText.StartsWith("Variable"))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     string strCost = objCostNode.InnerText.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {

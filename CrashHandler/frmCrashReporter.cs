@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CrashHandler
@@ -87,7 +80,7 @@ namespace CrashHandler
 			Close();
 		}
 
-		private FileStream fs = null;
+		private FileStream fs;
 		private void timerRefreshTextFile_Tick(object sender, EventArgs e)
 		{
 			timerRefreshTextFile.Stop();

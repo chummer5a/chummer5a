@@ -31,7 +31,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Input;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
@@ -259,7 +258,7 @@ namespace Chummer
             get { return _wrapValue; }
             set { _wrapValue = value; }
         }
-        private bool _wrapValue = false;
+        private bool _wrapValue;
 
         #endregion
 
@@ -321,10 +320,10 @@ namespace Chummer
         public event CancelEventHandler BeforeValueIncrement;
 
         // flag to track mouse position
-        private bool _mouseOver = false;
+        private bool _mouseOver;
 
         // flag to track focus
-        private bool _haveFocus = false;
+        private bool _haveFocus;
 
         // this handler is called at each mouse Enter/Leave movement
         private void _mouseEnterLeave(object sender, System.EventArgs e)

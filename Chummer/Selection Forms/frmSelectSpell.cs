@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend;
 
 namespace Chummer
 {
@@ -34,11 +33,11 @@ namespace Chummer
         private bool _blnIgnoreRequirements;
         private string _strLimitCategory = string.Empty;
         private string _strForceSpell = string.Empty;
-        private bool _blnCanGenericSpellBeFree = false;
-        private bool _blnCanTouchOnlySpellBeFree = false;
+        private bool _blnCanGenericSpellBeFree;
+        private bool _blnCanTouchOnlySpellBeFree;
         private static string s_StrSelectCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 

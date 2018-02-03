@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -29,12 +29,12 @@ namespace Chummer
     public partial class frmSelectPACKSKit : Form
     {
         private string _strSelectedKit = string.Empty;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
 
         // Not readonly because content can change while form is up
-        private XmlDocument _objXmlDocument = null;
+        private XmlDocument _objXmlDocument;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 

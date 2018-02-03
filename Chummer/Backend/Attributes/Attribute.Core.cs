@@ -18,7 +18,6 @@
  */
 using Chummer.Annotations;
 using Chummer.Backend.Equipment;
-using Chummer.Datastructures;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,7 +43,7 @@ namespace Chummer.Backend.Attributes
         private int _intAugModifier;
         private int _intBase;
         private int _intKarma;
-        private string _strAbbrev = string.Empty;
+        private string _strAbbrev;
         private readonly Character _objCharacter;
 		private AttributeCategory _enumCategory;
 		private AttributeCategory _enumMetatypeCategory;
@@ -100,20 +99,20 @@ namespace Chummer.Backend.Attributes
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _strAbbrev = objNode["name"].InnerText;
-            _intMetatypeMin = Convert.ToInt32(objNode["metatypemin"].InnerText);
-            _intMetatypeMax = Convert.ToInt32(objNode["metatypemax"].InnerText);
-            _intMetatypeAugMax = Convert.ToInt32(objNode["metatypeaugmax"].InnerText);
-            objNode.TryGetField("base", out _intBase);
-            objNode.TryGetField("karma", out _intKarma);
+            objNode.TryGetStringFieldQuickly("name", ref _strAbbrev);
+            objNode.TryGetInt32FieldQuickly("metatypemin", ref _intMetatypeMin);
+            objNode.TryGetInt32FieldQuickly("metatypemax", ref _intMetatypeMax);
+            objNode.TryGetInt32FieldQuickly("metatypeaugmax", ref _intMetatypeAugMax);
+            objNode.TryGetInt32FieldQuickly("base", ref _intBase);
+            objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
             if (!BaseUnlocked)
 			{
 				_intBase = 0;
 			}
-			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
-			if (objNode["value"] != null)
+			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
+            int i = 0;
+			if (objNode.TryGetInt32FieldQuickly("value", ref i))
 			{
-				int i = Convert.ToInt32(objNode["value"].InnerText);
 				i -= _intMetatypeMin;
 				if (BaseUnlocked)
 				{
@@ -137,13 +136,15 @@ namespace Chummer.Backend.Attributes
             _enumMetatypeCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText);
 			_enumCategory = ConvertToAttributeCategory(Abbrev);
 	        _enumMetatypeCategory = ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
-			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
+            objNode.TryGetInt32FieldQuickly("augmodifier", ref _intAugModifier);
         }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
@@ -853,7 +854,7 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
-                int intReturn = 0;
+                int intReturn;
                 if (Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
@@ -1361,7 +1362,6 @@ namespace Chummer.Backend.Attributes
 		/// <summary>
 		/// Convert a string to an Attribute Category.
 		/// </summary>
-		/// <param name="strValue">String value to convert.</param>
 		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
 		public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
 		{
@@ -1390,8 +1390,6 @@ namespace Chummer.Backend.Attributes
 			{
 				case "Shapeshifter":
 					return AttributeCategory.Shapeshifter;
-				case "Metahuman":
-				case "Standard":
 				default:
 					return AttributeCategory.Standard;
 			}

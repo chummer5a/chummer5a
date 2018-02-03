@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Chummer.Backend.Skills

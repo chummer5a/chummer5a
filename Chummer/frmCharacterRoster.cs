@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -33,7 +32,7 @@ namespace Chummer
 {
     public partial class frmCharacterRoster : Form
     {
-        ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
+        private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
         private readonly HtmlToolTip tipTooltip = new HtmlToolTip();
 
         public frmCharacterRoster()
@@ -134,22 +133,19 @@ namespace Chummer
             object lstWatchNodesLock = new object();
             Parallel.Invoke(
                 () => {
-                    if (objFavouriteNode != null)
+                    Parallel.For(0, lstFavorites.Count, i =>
                     {
-                        Parallel.For(0, lstFavorites.Count, i =>
-                        {
-                            string strFile = lstFavorites[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock (lstFavoritesNodesLock)
-                                lstFavoritesNodes[i] = objNode;
-                        });
+                        string strFile = lstFavorites[i];
+                        TreeNode objNode = CacheCharacter(strFile);
+                        lock (lstFavoritesNodesLock)
+                            lstFavoritesNodes[i] = objNode;
+                    });
 
-                        for (int i = 0; i < lstFavoritesNodes.Length; i++)
-                        {
-                            TreeNode objNode = lstFavoritesNodes[i];
-                            if (objNode != null)
-                                objFavouriteNode.Nodes.Add(objNode);
-                        }
+                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstFavoritesNodes[i];
+                        if (objNode != null)
+                            objFavouriteNode.Nodes.Add(objNode);
                     }
                 },
                 () => {
@@ -198,11 +194,11 @@ namespace Chummer
                 treCharacterList.Nodes.Add(objWatchNode);
             treCharacterList.ExpandAll();
         }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        /// <param name="objParentNode"></param>
         private TreeNode CacheCharacter(string strFile)
         {
             if (!File.Exists(strFile))
@@ -240,9 +236,9 @@ namespace Chummer
                 objCache.PlayerName = xmlSourceNode.Element("playername")?.Value;
                 objCache.CharacterName = xmlSourceNode.Element("name")?.Value;
                 objCache.CharacterAlias = xmlSourceNode.Element("alias")?.Value;
-                objCache.Created = xmlSourceNode.Element("created")?.Value == System.Boolean.TrueString;
+                objCache.Created = xmlSourceNode.Element("created")?.Value == bool.TrueString;
                 objCache.Essence = xmlSourceNode.Element("totaless")?.Value;
-                string strSettings = xmlSourceNode.Element("settings")?.Value;
+                string strSettings = xmlSourceNode.Element("settings")?.Value ?? string.Empty;
                 objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
                 string strMugshotBase64 = xmlSourceNode.Element("mugshot")?.Value;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
@@ -254,9 +250,9 @@ namespace Chummer
                     XElement xmlMainMugshotIndex = xmlSourceNode.Element("mainmugshotindex");
                     if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
                     {
-                        XElement[] xmlMugshots = xmlSourceNode.Element("mugshots").Elements("mugshot").ToArray();
-                        if (intMainMugshotIndex < xmlMugshots.Length)
-                            objCache.Mugshot = xmlMugshots[intMainMugshotIndex].Value?.ToImage();
+                        XElement[] xmlMugshots = xmlSourceNode.Element("mugshots")?.Elements("mugshot").ToArray();
+                        if (xmlMugshots != null && intMainMugshotIndex < xmlMugshots.Length)
+                            objCache.Mugshot = xmlMugshots[intMainMugshotIndex].Value.ToImage();
                     }
                 }
             }
@@ -270,7 +266,6 @@ namespace Chummer
                 Tag = strFile
             };
             _lstCharacterCache.TryAdd(strFile, objCache);
-            xmlSource = null;
             return objNode;
         }
 
@@ -336,7 +331,7 @@ namespace Chummer
                 {
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                    strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
             }
@@ -433,8 +428,7 @@ namespace Chummer
 
         private void treCharacterList_DragOver(object sender, DragEventArgs e)
         {
-            TreeView treSenderView = sender as TreeView;
-            if (treSenderView == null)
+            if (!(sender is TreeView treSenderView))
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
             TreeNode objNode = treSenderView.GetNodeAt(pt);
@@ -459,8 +453,7 @@ namespace Chummer
 
             if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
             {
-                TreeView treSenderView = sender as TreeView;
-                if (treSenderView == null)
+                if (!(sender is TreeView treSenderView))
                     return;
                 Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
@@ -469,8 +462,7 @@ namespace Chummer
                 string strDestinationNode = nodDestinationNode.Tag.ToString();
                 if (strDestinationNode != "Watch")
                 {
-                    TreeNode nodNewNode = e.Data.GetData("System.Windows.Forms.TreeNode") as TreeNode;
-                    if (nodNewNode == null)
+                    if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
                         return;
 
                     if (nodNewNode.Level == 0 || nodNewNode.Parent == nodDestinationNode)
@@ -635,7 +627,6 @@ namespace Chummer
                 Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
                 Program.MainForm.CharacterRoster.PopulateCharacterList();
                 objOpenCharacter.DeleteCharacter();
-                objOpenCharacter = null;
             }
             Cursor = Cursors.Default;
         }

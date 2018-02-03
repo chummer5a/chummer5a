@@ -39,14 +39,14 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strArmorCapacity = "[0]";
         private string _strGearCapacity = string.Empty;
-        private int _intArmorValue = 0;
-        private int _intMaxRating = 0;
-        private int _intRating = 0;
+        private int _intArmorValue;
+        private int _intMaxRating;
+        private int _intRating;
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
-        private bool _blnIncludedInArmor = false;
+        private bool _blnIncludedInArmor;
         private bool _blnEquipped = true;
         private string _strExtra = string.Empty;
         private Guid _guiWeaponID = Guid.Empty;
@@ -54,9 +54,9 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private readonly Character _objCharacter;
-        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private bool _blnDiscountCost = false;
+        private bool _blnDiscountCost;
         private Armor _objParent;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -937,7 +937,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

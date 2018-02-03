@@ -22,7 +22,6 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
 using System.Linq;
-using Chummer.Classes;
 using System.Text;
 
 namespace Chummer
@@ -38,13 +37,13 @@ namespace Chummer
         private string _strLimitToCategories = string.Empty;
         private string _strForceSkill = string.Empty;
         private readonly string _strSourceName = string.Empty;
-        private bool _blnKnowledgeSkill = false;
-        private int _intMinimumRating = 0;
+        private bool _blnKnowledgeSkill;
+        private int _intMinimumRating;
         private int _intMaximumRating = int.MaxValue;
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         #region Control Events

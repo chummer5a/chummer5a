@@ -24,7 +24,6 @@ using System.IO;
  using System.Xml;
 using System.Windows.Forms;
  using Chummer.Annotations;
- using Chummer.Backend.Equipment;
  using Microsoft.Win32;
 using iTextSharp.text.pdf;
 
@@ -47,8 +46,8 @@ namespace Chummer
     {
         string _strCode = string.Empty;
         string _strPath = string.Empty;
-        int _intOffset = 0;
-        PdfReader _objPdfReader = null;
+        int _intOffset;
+        PdfReader _objPdfReader;
 
         #region Properties
         public string Code
@@ -110,7 +109,7 @@ namespace Chummer
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
@@ -139,7 +138,7 @@ namespace Chummer
     {
         private string _strName = string.Empty;
         private string _strPath = string.Empty;
-        private bool _blnEnabled = false;
+        private bool _blnEnabled;
 
         #region Properties
 
@@ -196,35 +195,35 @@ namespace Chummer
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
 
-        private static bool _blnAutomaticUpdate = false;
-        private static bool _blnLiveCustomData = false;
-        private static bool _blnLocalisedUpdatesOnly = false;
-        private static bool _blnStartupFullscreen = false;
+        private static bool _blnAutomaticUpdate;
+        private static bool _blnLiveCustomData;
+        private static bool _blnLocalisedUpdatesOnly;
+        private static bool _blnStartupFullscreen;
         private static bool _blnSingleDiceRoller = true;
         private static string _strLanguage = DefaultLanguage;
         private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
-        private static bool _blnPrintToFileFirst = false;
+        private static bool _blnPrintToFileFirst;
         private static bool _lifeModuleEnabled;
-        private static bool _blnDronemods = false;
-        private static bool _blnDronemodsMaximumPilot = false;
-        private static bool _blnPreferNightlyUpdates = false;
-        private static bool _blnLiveUpdateCleanCharacterFiles = false;
+        private static bool _blnDronemods;
+        private static bool _blnDronemodsMaximumPilot;
+        private static bool _blnPreferNightlyUpdates;
+        private static bool _blnLiveUpdateCleanCharacterFiles;
 
         // Omae Information.
-        private static bool _omaeEnabled = false;
+        private static bool _omaeEnabled;
         private static string _strOmaeUserName = string.Empty;
         private static string _strOmaePassword = string.Empty;
-        private static bool _blnOmaeAutoLogin = false;
+        private static bool _blnOmaeAutoLogin;
 
         private static XmlDocument _objXmlClipboard = new XmlDocument();
-        private static ClipboardContentType _objClipboardContentType = new ClipboardContentType();
+        private static ClipboardContentType _objClipboardContentType;
 
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
-        private static HashSet<SourcebookInfo> _lstSourcebookInfo = null;
-        private static bool _blnUseLogging = false;
+        private static HashSet<SourcebookInfo> _lstSourcebookInfo;
+        private static bool _blnUseLogging;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.

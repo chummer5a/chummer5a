@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Windows.Forms;
@@ -32,7 +30,7 @@ namespace Chummer
     {
         private static readonly StreamWriter s_LogWriter;
         private static readonly StringBuilder s_TimeStamper;  //This will break in case of multithreading
-        private static bool s_BlnLogEnabled = false;
+        private static bool s_BlnLogEnabled;
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();

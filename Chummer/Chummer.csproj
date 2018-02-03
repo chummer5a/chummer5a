@@ -136,7 +136,7 @@
     <Compile Include="Backend\Datastructures\SourceString.cs" />
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
-    <Compile Include="Backend\Extensions\IListExtensions.cs" />
+    <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
@@ -166,7 +166,7 @@
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Backend\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />

@@ -18,18 +18,15 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Equipment;
-using Chummer.Datastructures;
 using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
@@ -51,11 +48,14 @@ namespace Chummer.Backend.Skills
             get => _objAttribute;
             protected set
             {
-                if (_objAttribute != null)
-                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
-                _objAttribute = value;
-                if (_objAttribute != null)
-                    _objAttribute.PropertyChanged += OnLinkedAttributeChanged;
+                if (_objAttribute != value)
+                {
+                    if (_objAttribute != null)
+                        _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                    if (value != null)
+                        value.PropertyChanged += OnLinkedAttributeChanged;
+                    _objAttribute = value;
+                }
             }
         } //Attribute this skill primarily depends on
         private readonly Character _objCharacter; //The Character (parent) to this skill
@@ -182,7 +182,7 @@ namespace Chummer.Backend.Skills
             }
             else if (suid != Guid.Empty)
             {
-                XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"].InnerText}']");
+                XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"]?.InnerText}']");
 
                 if (node == null) return null;
 
@@ -234,10 +234,12 @@ namespace Chummer.Backend.Skills
             if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref skill._strNotes))
                 xmlSkillNode.TryGetStringFieldQuickly("notes", ref skill._strNotes);
 
-            foreach (XmlNode spec in xmlSkillNode.SelectNodes("specs/spec"))
-            {
-                skill.Specializations.Add(SkillSpecialization.Load(spec, skill));
-            }
+            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+                if (xmlSpecList != null)
+                    foreach (XmlNode xmlSpec in xmlSpecList)
+                    {
+                        skill.Specializations.Add(SkillSpecialization.Load(xmlSpec, skill));
+                    }
 
             return skill;
         }
@@ -298,10 +300,12 @@ namespace Chummer.Backend.Skills
             }
 
             List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
-            foreach (XmlNode xmlSpecializationNode in xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
-            {
-                lstSpecializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
-            }
+            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
+                if (xmlSpecList != null)
+                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
+                    {
+                        lstSpecializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
+                    }
             if (lstSpecializations.Count != 0)
             {
                 objSkill.Specializations.AddRange(lstSpecializations);
@@ -332,21 +336,18 @@ namespace Chummer.Backend.Skills
             }
             else
             {
-                XmlDocument document = XmlManager.Load("skills.xml");
-                XmlNode knoNode = null;
                 string category = xmlNode["category"]?.InnerText;
                 if (string.IsNullOrEmpty(category))
                     return null;
-                if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool knoSkill))
+                if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
-                    knoSkill = knoNode?.Attributes?["type"]?.InnerText != "active";
+                    blnIsKnowledgeSkill = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/categories/category[. = '{category}']/@type")?.InnerText != "active";
                     if (SkillTypeCache != null)
-                        SkillTypeCache[category] = knoSkill;
+                        SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
 
 
-                if (knoSkill)
+                if (blnIsKnowledgeSkill)
                 {
                     //TODO INIT SKILL
                     Utils.BreakIfDebug();
@@ -519,7 +520,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private bool _blnOldUpgrade = false;
+        private bool _blnOldUpgrade;
 
         public bool CanUpgradeCareer
         {
@@ -613,7 +614,7 @@ namespace Chummer.Backend.Skills
             get { return SuggestedSpecializations; }
         }
 
-        private Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)
         {
             if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
@@ -1015,7 +1016,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

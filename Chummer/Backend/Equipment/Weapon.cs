@@ -41,14 +41,14 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
-        private int _intReach = 0;
+        private int _intReach;
         private string _strDamage = string.Empty;
         private string _strAP = "0";
         private string _strMode = string.Empty;
         private string _strRC = string.Empty;
         private string _strAmmo = string.Empty;
         private string _strAmmoCategory = string.Empty;
-        private int _intConceal = 0;
+        private int _intConceal;
         private List<Clip> _lstAmmo = new List<Clip>();
         //private int _intAmmoRemaining = 0;
         //private int _intAmmoRemaining2 = 0;
@@ -69,27 +69,27 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponName = string.Empty;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
-        private ObservableCollection<WeaponAccessory> _lstAccessories = new ObservableCollection<WeaponAccessory>();
-        private ObservableCollection<Weapon> _lstUnderbarrel = new ObservableCollection<Weapon>();
-        private Vehicle _objMountedVehicle = null;
-        private WeaponMount _objWeaponMount = null;
+        private readonly ObservableCollection<WeaponAccessory> _lstAccessories = new ObservableCollection<WeaponAccessory>();
+        private readonly ObservableCollection<Weapon> _lstUnderbarrel = new ObservableCollection<Weapon>();
+        private Vehicle _objMountedVehicle;
+        private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
         private string _strLocation = string.Empty;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
-        private bool _blnIncludedInWeapon = false;
+        private bool _blnIncludedInWeapon;
         private bool _blnInstalled = true;
-        private bool _blnDiscountCost = false;
+        private bool _blnDiscountCost;
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
-        private bool _blnCyberware = false;
+        private bool _blnCyberware;
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private FiringMode _eFiringMode;
 
@@ -106,8 +106,8 @@ namespace Chummer.Backend.Equipment
         private string _strModAttributeArray = string.Empty;
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
-        private bool _blnCanSwapAttributes = false;
-        private int _intMatrixCMFilled = 0;
+        private bool _blnCanSwapAttributes;
+        private int _intMatrixCMFilled;
 
         private readonly Character _objCharacter;
         private string _mount;
@@ -1312,7 +1312,7 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
-        public Weapon Parent { get; set; } = null;
+        public Weapon Parent { get; set; }
 
         /// <summary>
         /// ID of the object that added this weapon (if any).

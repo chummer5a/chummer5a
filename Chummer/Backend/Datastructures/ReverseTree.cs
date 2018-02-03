@@ -19,7 +19,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Chummer.Datastructures
+namespace Chummer
 {
     /// <summary>
     /// This class is for multiple objects that depend on one or more child objects

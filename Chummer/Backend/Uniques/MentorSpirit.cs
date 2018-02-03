@@ -1,8 +1,22 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -17,13 +31,13 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private XmlNode _nodBonus = null;
-        private XmlNode _nodChoice1 = null;
-        private XmlNode _nodChoice2 = null;
+        private XmlNode _nodBonus;
+        private XmlNode _nodChoice1;
+        private XmlNode _nodChoice2;
         private Improvement.ImprovementType _eMentorType;
         private Guid _sourceID;
         private readonly Character _objCharacter;
-        private bool _blnMentorMask = false;
+        private bool _blnMentorMask;
 
         #region Constructor
         public MentorSpirit(Character objCharacter)
@@ -344,7 +358,7 @@ namespace Chummer
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

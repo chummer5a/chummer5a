@@ -27,7 +27,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap
     {
-        Dictionary<string, int> _map = new Dictionary<string, int>();
+        readonly Dictionary<string, int> _map = new Dictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {

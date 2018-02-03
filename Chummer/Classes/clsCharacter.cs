@@ -26,12 +26,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
-using System.Reflection;
 using Chummer.Backend.Attributes;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -52,37 +49,37 @@ namespace Chummer
     /// </summary>
     public class Character : INotifyPropertyChanged, IHasMugshots, IHasName
     {
-        private XmlNode oldSkillsBackup;
-        private XmlNode oldSKillGroupBackup;
+        private XmlNode _oldSkillsBackup;
+        private XmlNode _oldSkillGroupBackup;
 
         private readonly CharacterOptions _objOptions;
 
         private string _strFileName = string.Empty;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
         private string _strSettingsFileName = "default.xml";
-        private bool _blnIgnoreRules = false;
-        private int _intKarma = 0;
-        private int _intTotalKarma = 0;
-        private int _intStreetCred = 0;
-        private int _intNotoriety = 0;
-        private int _intPublicAwareness = 0;
-        private int _intBurntStreetCred = 0;
-        private decimal _decNuyen = 0;
-        private decimal _decStartingNuyen = 0;
+        private bool _blnIgnoreRules;
+        private int _intKarma;
+        private int _intTotalKarma;
+        private int _intStreetCred;
+        private int _intNotoriety;
+        private int _intPublicAwareness;
+        private int _intBurntStreetCred;
+        private decimal _decNuyen;
+        private decimal _decStartingNuyen;
         private int _intMaxAvail = 12;
         private decimal _decEssenceAtSpecialStart = 6.0m;
-        private int _intSpecial = 0;
-        private int _intTotalSpecial = 0;
-        private int _intAttributes = 0;
-        private int _intTotalAttributes = 0;
-        private int _intSpellLimit = 0;
-        private int _intCFPLimit = 0;
-        private int _intAINormalProgramLimit = 0;
-        private int _intAIAdvancedProgramLimit = 0;
-        private int _intContactPoints = 0;
-        private int _intContactPointsUsed = 0;
-        private int _intMetageneticLimit = 0;
-        private int _intRedlinerBonus = 0;
+        private int _intSpecial;
+        private int _intTotalSpecial;
+        private int _intAttributes;
+        private int _intTotalAttributes;
+        private int _intSpellLimit;
+        private int _intCFPLimit;
+        private int _intAINormalProgramLimit;
+        private int _intAIAdvancedProgramLimit;
+        private int _intContactPoints;
+        private int _intContactPointsUsed;
+        private int _intMetageneticLimit;
+        private int _intRedlinerBonus;
 
         // General character info.
         private string _strName = string.Empty;
@@ -104,24 +101,24 @@ namespace Chummer
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
         private static readonly string[] s_LstLimbStrings = { "skull", "torso", "arm", "leg" };
-        public static ReadOnlyCollection<string> LimbStrings { get { return Array.AsReadOnly(s_LstLimbStrings); } }
+        public static ReadOnlyCollection<string> LimbStrings => Array.AsReadOnly(s_LstLimbStrings);
 
         // AI Home Node
-        private IHasMatrixAttributes _objHomeNode = null;
+        private IHasMatrixAttributes _objHomeNode;
 
         // Active Commlink
-        private IHasMatrixAttributes _objActiveCommlink = null;
+        private IHasMatrixAttributes _objActiveCommlink;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
-        private bool _blnCreated = false;
+        private bool _blnCreated;
 
         // Build Points
         private int _intSumtoTen = 10;
         private int _intBuildPoints = 800;
         private decimal _decNuyenMaximumBP = 50;
-        private decimal _decNuyenBP = 0;
-        private int _intBuildKarma = 0;
-        private int _intAdeptWayDiscount = 0;
+        private decimal _decNuyenBP;
+        private int _intBuildKarma;
+        private int _intAdeptWayDiscount;
         private int _intGameplayOptionQualityLimit = 25;
         private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
@@ -136,42 +133,42 @@ namespace Chummer
         private string _strWalkAlt = string.Empty;
         private string _strRunAlt = string.Empty;
         private string _strSprintAlt = string.Empty;
-        private int _intMetatypeBP = 0;
+        private int _intMetatypeBP;
 
         // Special Flags.
 
-        private bool _blnAdeptEnabled = false;
-        private bool _blnMagicianEnabled = false;
-        private bool _blnTechnomancerEnabled = false;
-        private bool _blnAdvancedProgramsEnabled = false;
-        private bool _blnCyberwareDisabled = false;
-        private bool _blnInitiationEnabled = false;
-        private bool _blnCritterEnabled = false;
-        private bool _blnIsCritter = false;
-        private bool _blnPossessed = false;
-        private bool _blnBlackMarketDiscount = false;
-        private bool _blnFriendsInHighPlaces = false;
-        private bool _blnExCon = false;
-        private bool _blnRestrictedGear = false;
-        private bool _blnOverclocker = false;
-        private bool _blnMadeMan = false;
-        private bool _blnFame = false;
-        private bool _blnBornRich = false;
-        private bool _blnErased = false;
-		private int _intTrustFund = 0;
-		private decimal _decPrototypeTranshuman = 0m;
-        private bool _blnMAGEnabled = false;
-        private bool _blnRESEnabled = false;
-        private bool _blnDEPEnabled = false;
-        private bool _blnGroupMember = false;
+        private bool _blnAdeptEnabled;
+        private bool _blnMagicianEnabled;
+        private bool _blnTechnomancerEnabled;
+        private bool _blnAdvancedProgramsEnabled;
+        private bool _blnCyberwareDisabled;
+        private bool _blnInitiationEnabled;
+        private bool _blnCritterEnabled;
+        private bool _blnIsCritter;
+        private bool _blnPossessed;
+        private bool _blnBlackMarketDiscount;
+        private bool _blnFriendsInHighPlaces;
+        private bool _blnExCon;
+        private bool _blnRestrictedGear;
+        private bool _blnOverclocker;
+        private bool _blnMadeMan;
+        private bool _blnFame;
+        private bool _blnBornRich;
+        private bool _blnErased;
+		private int _intTrustFund;
+		private decimal _decPrototypeTranshuman;
+        private bool _blnMAGEnabled;
+        private bool _blnRESEnabled;
+        private bool _blnDEPEnabled;
+        private bool _blnGroupMember;
         private string _strGroupName = string.Empty;
         private string _strGroupNotes = string.Empty;
-        private int _intInitiateGrade = 0;
-        private int _intSubmersionGrade = 0;
+        private int _intInitiateGrade;
+        private int _intSubmersionGrade;
 
         // Pseudo-Attributes use for Mystic Adepts.
-        private int _intMAGMagician = 0;
-        private int _intMAGAdept = 0;
+        private int _intMAGMagician;
+        private int _intMAGAdept;
 
         // Magic Tradition.
         private string _strMagicTradition = string.Empty;
@@ -187,8 +184,8 @@ namespace Chummer
         private string _strTechnomancerFading = "RES + WIL";
 
         // Condition Monitor Progress.
-        private int _intPhysicalCMFilled = 0;
-        private int _intStunCMFilled = 0;
+        private int _intPhysicalCMFilled;
+        private int _intStunCMFilled;
 
         // Priority Selections.
         private string _strGameplayOption = "Standard";
@@ -199,50 +196,48 @@ namespace Chummer
         private string _strPriorityResources = "E,0";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>();
-        private decimal _decMaxNuyen = 0;
-        private int _intMaxKarma = 0;
-        private int _intContactMultiplier = 0;
+        private decimal _decMaxNuyen;
+        private int _intMaxKarma;
+        private int _intContactMultiplier;
 
         // Lists.
         private readonly List<string> _lstSources = new List<string>();
-        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
-        private ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
-        private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
-        private ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
-        private ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
-        private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
-        private List<Focus> _lstFoci = new List<Focus>();
-        private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
-        private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
-        private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
-        private ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
+        private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
+        private readonly List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
+        private readonly ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
+        private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
+        private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
+        private readonly List<Focus> _lstFoci = new List<Focus>();
+        private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
+        private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
+        private readonly ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
+        private readonly ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
+        private readonly ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
         #if LEGACY
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         #endif
-        private ObservableCollection<LimitModifier> _lstLimitModifiers = new ObservableCollection<LimitModifier>();
-        private ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
-        private ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
-        private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
-        private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
-        private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
-        private ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
-        private ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
-        private ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
-        private ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
-        private ObservableCollection<ExpenseLogEntry> _lstExpenseLog = new ObservableCollection<ExpenseLogEntry>();
-        private ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
-        private ObservableCollection<InitiationGrade> _lstInitiationGrades = new ObservableCollection<InitiationGrade>();
-        private List<string> _lstOldQualities = new List<string>();
-        private ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
-        private ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
-        private ObservableCollection<string> _lstVehicleLocations = new ObservableCollection<string>();
-        private ObservableCollection<string> _lstWeaponLocations = new ObservableCollection<string>();
-        private ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
-        private BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
+        private readonly ObservableCollection<LimitModifier> _lstLimitModifiers = new ObservableCollection<LimitModifier>();
+        private readonly ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
+        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
+        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+        private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
+        private readonly ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
+        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
+        private readonly ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
+        private readonly ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
+        private readonly ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
+        private readonly ObservableCollection<ExpenseLogEntry> _lstExpenseLog = new ObservableCollection<ExpenseLogEntry>();
+        private readonly ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
+        private readonly ObservableCollection<InitiationGrade> _lstInitiationGrades = new ObservableCollection<InitiationGrade>();
+        private readonly ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _lstVehicleLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _lstWeaponLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
+        private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
-        private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
+        private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
@@ -278,7 +273,7 @@ namespace Chummer
 			SkillsSection.Reset();
         }
 
-	    public AttributeSection AttributeSection { get; set; }
+	    public AttributeSection AttributeSection { get; private set; }
 
         public bool IsSaving { get; set; }
 
@@ -584,16 +579,14 @@ namespace Chummer
             objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString());
 
             ///////////////////////////////////////////SKILLS
-            ///
 
             SkillsSection.Save(objWriter);
 
             //Write copy of old skill groups, to not totally fuck a file if error
-            oldSKillGroupBackup?.WriteTo(objWriter);
-            oldSkillsBackup?.WriteTo(objWriter);
+            _oldSkillGroupBackup?.WriteTo(objWriter);
+            _oldSkillsBackup?.WriteTo(objWriter);
 
             ///////////////////////////////////////////SKILLS
-            ///
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
@@ -896,7 +889,7 @@ namespace Chummer
 
             // <sources>
             objWriter.WriteStartElement("customdatadirectorynames");
-            foreach (string strItem in _lstCustomDataDirectoryNames)
+            foreach (string strItem in _objOptions.CustomDataDirectoryNames)
             {
                 objWriter.WriteElementString("directoryname", strItem);
             }
@@ -923,7 +916,7 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
-            catch (System.UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
@@ -942,7 +935,8 @@ namespace Chummer
         {
             Timekeeper.Start("load_xml");
             XmlDocument objXmlDocument = new XmlDocument();
-            if (!File.Exists(_strFileName)) return false;
+            if (!File.Exists(_strFileName))
+                return false;
             using (StreamReader sr = new StreamReader(_strFileName, true))
             {
                 try
@@ -956,9 +950,13 @@ namespace Chummer
                 }
             }
             Timekeeper.Finish("load_xml");
-            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
             Timekeeper.Start("load_char_misc");
             XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+
+            if (objXmlCharacter == null)
+                return false;
+
+            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
 
             objXmlCharacter.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
             objXmlCharacter.TryGetBoolFieldQuickly("created", ref _blnCreated);
@@ -986,7 +984,7 @@ namespace Chummer
                 Version.TryParse(strVersion, out _verSavedVersion);
             }
 #if !DEBUG
-                Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
+                Version verCurrentversion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
                 {
@@ -1011,7 +1009,7 @@ namespace Chummer
             if (xmlTempNode != null)
             {
                 string strMissingBooks = string.Empty;
-                string strLoopString = string.Empty;
+                string strLoopString;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
                 {
@@ -1036,7 +1034,7 @@ namespace Chummer
             if (xmlTempNode != null)
             {
                 string strMissingSourceNames = string.Empty;
-                string strLoopString = string.Empty;
+                string strLoopString;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
                 {
@@ -1262,9 +1260,9 @@ namespace Chummer
             {
                 string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                 
-                if (string.IsNullOrEmpty(strLoopSourceName) || !strLoopSourceName.IsGuid() || (objXmlImprovement["custom"]?.InnerText == System.Boolean.TrueString) ||
+                if (string.IsNullOrEmpty(strLoopSourceName) || !strLoopSourceName.IsGuid() || (objXmlImprovement["custom"]?.InnerText == bool.TrueString) ||
                     // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                    (strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)))
+                    (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) != strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal)))
                 {
                     Improvement objImprovement = new Improvement(this);
                     try
@@ -1284,12 +1282,12 @@ namespace Chummer
             Quality objLivingPersonaQuality = null;
             objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
             bool blnHasOldQualities = false;
-            XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
+            XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
             foreach (XmlNode objXmlQuality in objXmlNodeList)
             {
                 if (objXmlQuality["name"] != null)
                 {
-                    if (!CorrectedUnleveledQuality(objXmlQuality, xmlQualitiesDocument))
+                    if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
                     {
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
@@ -1401,13 +1399,13 @@ namespace Chummer
             Timekeeper.Finish("load_char_misc2");
             Timekeeper.Start("load_char_skills");  //slightly messy
 
-            oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
-            oldSKillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
+            _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
+            _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
 
-            XmlNode SkillNode = objXmlCharacter.SelectSingleNode("newskills");
-            if (SkillNode != null)
+            XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
+            if (objSkillNode != null)
             {
-                SkillsSection.Load(SkillNode);
+                SkillsSection.Load(objSkillNode);
             }
             else
             {
@@ -1942,23 +1940,17 @@ namespace Chummer
                     if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins")) == false &&
                         Qualities.Any(x => x.Name.Equals("Dwarf Resistance")) == false)
                     {
-                        XmlNode xmlRootQualitiesNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities");
-                        if (xmlRootQualitiesNode != null)
-                        {
-                            XmlNode objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Resistance to Pathogens/Toxins\"]");
-                            if (objXmlDwarfQuality == null)
-                                objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
-                            
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            Quality objQuality = new Quality(this);
+                        XmlNode objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Resistance to Pathogens/Toxins\"]") ??
+                                                     xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
 
-                            objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
-                            foreach (Weapon objWeapon in lstWeapons)
-                                _lstWeapons.Add(objWeapon);
-                            _lstQualities.Add(objQuality);
-                        }
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        Quality objQuality = new Quality(this);
+
+                        objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
+                        foreach (Weapon objWeapon in lstWeapons)
+                            _lstWeapons.Add(objWeapon);
+                        _lstQualities.Add(objQuality);
                     }
-                    blnHasOldQualities = true;
                 }
             }
 
@@ -1973,11 +1965,7 @@ namespace Chummer
                 {
                     string strKarma = objXmlGameplayOption["karma"]?.InnerText;
                     string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                    string strContactMultiplier = string.Empty;
-                    if (_objOptions.FreeContactsMultiplierEnabled)
-                        strContactMultiplier = _objOptions.FreeContactsMultiplier.ToString();
-                    else
-                        strContactMultiplier = objXmlGameplayOption["contactmultiplier"]?.InnerText;
+                    string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled ? _objOptions.FreeContactsMultiplier.ToString() : objXmlGameplayOption["contactmultiplier"]?.InnerText;
                     _intMaxKarma = Convert.ToInt32(strKarma);
                     _decMaxNuyen = Convert.ToDecimal(strNuyen);
                     _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
@@ -2050,6 +2038,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objStream">MemoryStream to use.</param>
         /// <param name="objWriter">XmlTextWriter to write to.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
 #if DEBUG
         public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 #else
@@ -2322,21 +2312,38 @@ namespace Chummer
                 string strNone = LanguageManager.GetString("String_None", strLanguageToPrint);
                 if (MagicTradition != "Custom")
                 {
-                    strSpiritCombat = objXmlTradition.SelectSingleNode("spirits/spiritcombat")?.InnerText ?? strNone;
-                    if (strSpiritCombat == "All")
-                        strSpiritCombat = LanguageManager.GetString("String_All", strLanguageToPrint);
-                    strSpiritDetection = objXmlTradition.SelectSingleNode("spirits/spiritdetection")?.InnerText ?? strNone;
-                    if (strSpiritDetection == "All")
-                        strSpiritDetection = LanguageManager.GetString("String_All", strLanguageToPrint);
-                    strSpiritHealth = objXmlTradition.SelectSingleNode("spirits/spirithealth")?.InnerText ?? strNone;
-                    if (strSpiritHealth == "All")
-                        strSpiritHealth = LanguageManager.GetString("String_All", strLanguageToPrint);
-                    strSpiritIllusion = objXmlTradition.SelectSingleNode("spirits/spiritillusion")?.InnerText ?? strNone;
-                    if (strSpiritIllusion == "All")
-                        strSpiritIllusion = LanguageManager.GetString("String_All", strLanguageToPrint);
-                    strSpiritManipulation = objXmlTradition.SelectSingleNode("spirits/spiritmanipulation")?.InnerText ?? strNone;
-                    if (strSpiritManipulation == "All")
-                        strSpiritManipulation = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    if (objXmlTradition == null)
+                    {
+                        strSpiritCombat = strNone;
+                        strSpiritDetection = strNone;
+                        strSpiritHealth = strNone;
+                        strSpiritIllusion = strNone;
+                        strSpiritManipulation = strNone;
+                        
+                    }
+                    else
+                    {
+                        strSpiritCombat = objXmlTradition.SelectSingleNode("spirits/spiritcombat")?.InnerText ??
+                                          strNone;
+                        if (strSpiritCombat == "All")
+                            strSpiritCombat = LanguageManager.GetString("String_All", strLanguageToPrint);
+                        strSpiritDetection = objXmlTradition.SelectSingleNode("spirits/spiritdetection")?.InnerText ??
+                                             strNone;
+                        if (strSpiritDetection == "All")
+                            strSpiritDetection = LanguageManager.GetString("String_All", strLanguageToPrint);
+                        strSpiritHealth = objXmlTradition.SelectSingleNode("spirits/spirithealth")?.InnerText ??
+                                          strNone;
+                        if (strSpiritHealth == "All")
+                            strSpiritHealth = LanguageManager.GetString("String_All", strLanguageToPrint);
+                        strSpiritIllusion = objXmlTradition.SelectSingleNode("spirits/spiritillusion")?.InnerText ??
+                                            strNone;
+                        if (strSpiritIllusion == "All")
+                            strSpiritIllusion = LanguageManager.GetString("String_All", strLanguageToPrint);
+                        strSpiritManipulation =
+                            objXmlTradition.SelectSingleNode("spirits/spiritmanipulation")?.InnerText ?? strNone;
+                        if (strSpiritManipulation == "All")
+                            strSpiritManipulation = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    }
                 }
                 else
                 {
@@ -2802,12 +2809,11 @@ namespace Chummer
                     strQualitiesToPrint.Add(strKey, 1);
                 }
             }
-            int intLoopRating = 0;
             objWriter.WriteStartElement("qualities");
             foreach (Quality objQuality in Qualities)
             {
                 string strKey = objQuality.QualityId + '|' + objQuality.SourceName + '|' + objQuality.Extra;
-                if (strQualitiesToPrint.TryGetValue(strKey, out intLoopRating))
+                if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                 {
                     objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint);
                     strQualitiesToPrint.Remove(strKey);
@@ -2996,7 +3002,6 @@ namespace Chummer
             _lstCritterPowers.Clear();
             _lstInitiationGrades.Clear();
             _lstQualities.Clear();
-            _lstOldQualities.Clear();
             _lstCalendar.Clear();
 
             SkillsSection.Reset();
@@ -3017,10 +3022,12 @@ namespace Chummer
                 _lstSources.Add(strInput);
             }
         }
+
         /// <summary>
         /// Retrieve the name of the Object that created an Improvement.
         /// </summary>
         /// <param name="objImprovement">Improvement to check.</param>
+        /// <param name="strLanguage">Language in which to fetch name.</param>
         public string GetObjectName(Improvement objImprovement, string strLanguage)
         {
             switch (objImprovement.ImproveSource)
@@ -3327,6 +3334,7 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             List<Grade> lstGrades = new List<Grade>();
@@ -3350,12 +3358,14 @@ namespace Chummer
             }
             else
                 strXPath = "/chummer/grades/grade";
-            foreach (XmlNode objNode in XmlManager.Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml").SelectNodes(strXPath))
-            {
-                Grade objGrade = new Grade(objSource);
-                objGrade.Load(objNode);
-                lstGrades.Add(objGrade);
-            }
+            using (XmlNodeList xmlGradeList = XmlManager.Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml").SelectNodes(strXPath))
+                if (xmlGradeList != null)
+                    foreach (XmlNode objNode in xmlGradeList)
+                    {
+                        Grade objGrade = new Grade(objSource);
+                        objGrade.Load(objNode);
+                        lstGrades.Add(objGrade);
+                    }
 
             return lstGrades;
         }
@@ -3698,15 +3708,17 @@ namespace Chummer
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && objImprovement.Enabled)
                         setNames.Add(objImprovement.ImprovedName);
                 }
-                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
-                foreach (XmlNode xmlCategoryNode in xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
-                {
-                    string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strBlackMarketAttribute) && strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
-                    {
-                        setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
-                    }
-                }
+                using (XmlNodeList xmlCategoryList = xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
+                    if (xmlCategoryList != null)
+                        // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+                        foreach (XmlNode xmlCategoryNode in xmlCategoryList)
+                        {
+                            string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strBlackMarketAttribute) && strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                            {
+                                setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
+                            }
+                        }
             }
             return setBlackMarketMaps;
         }
@@ -3740,7 +3752,6 @@ namespace Chummer
         /// <summary>
         /// Clear all Spell tab elements from the character.
         /// </summary>
-        /// <param name="treSpells"></param>
         public void ClearMagic()
         {
             // Run through all of the Spells and remove their Improvements.
@@ -5990,7 +6001,7 @@ namespace Chummer
                     return MatrixInitiativeValue;
                 }
                 int intCommlinkDP = ActiveCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0;
-                return INT.TotalValue + intCommlinkDP + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
+                return INT.TotalValue + intCommlinkDP + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative);
             }
         }
 
@@ -7465,7 +7476,6 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
             {
-                string strReturn = string.Empty;
                 XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
                 XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
@@ -7512,7 +7522,7 @@ namespace Chummer
         private int WalkingRate(string strType = "Ground")
         {
             string[] strReturn;
-            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
             {
                 strReturn = _strWalk.Split('/');
             }
@@ -7562,7 +7572,7 @@ namespace Chummer
                 return imp.Value;
             }
             string[] strReturn;
-            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
             {
                 strReturn = _strRun.Split('/');
             }
@@ -7602,7 +7612,7 @@ namespace Chummer
                 return imp.Value;
             }
             string[] strReturn;
-            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
             {
                 strReturn = _strSprint.Split('/');
             }
@@ -7666,7 +7676,7 @@ namespace Chummer
 
             if (objCulture == null)
                 objCulture = GlobalOptions.CultureInfo;
-            string strReturn = string.Empty;
+            string strReturn;
             if (strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
@@ -8138,7 +8148,7 @@ namespace Chummer
         /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
         /// </summary>
-        /// <param name="intCost">Item's cost.</param>
+        /// <param name="decCost">Item's cost.</param>
         /// <param name="strAvail">Item's Availability.</param>
         public string AvailTest(decimal decCost, string strAvail)
         {
@@ -8169,8 +8179,8 @@ namespace Chummer
         /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
         /// </summary>
-        /// <param name="intCost">Item's cost.</param>
-        /// <param name="strAvail">Item's Availability.</param>
+        /// <param name="decCost">Item's cost.</param>
+        /// <param name="objAvailability">Item's Availability.</param>
         public string AvailTest(decimal decCost, AvailabilityValue objAvailability)
         {
             if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
@@ -8257,165 +8267,161 @@ namespace Chummer
         {
             XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
 
-            // Convert the old Qualities.
-            foreach (XmlNode objXmlQuality in objXmlQualityList)
+            if (xmlRootQualitiesNode != null)
             {
-                if (objXmlQuality["name"] == null)
+                // Convert the old Qualities.
+                foreach (XmlNode objXmlQuality in objXmlQualityList)
                 {
-                    _lstOldQualities.Add(objXmlQuality.InnerText);
-
-                    string strForceValue = string.Empty;
-
-                    XmlNode objXmlQualityNode = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + GetQualityName(objXmlQuality.InnerText) + "\"]");
-
-                    // Re-create the bonuses for the Quality.
-                    if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
+                    if (objXmlQuality["name"] == null)
                     {
-                        // Look for the existing Improvement.
-                        foreach (Improvement objImprovement in _lstImprovements)
+                        string strForceValue = string.Empty;
+
+                        XmlNode objXmlQualityNode = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + GetQualityName(objXmlQuality.InnerText) + "\"]");
+
+                        if (objXmlQualityNode != null)
                         {
-                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality && objImprovement.SourceName == objXmlQuality.InnerText && objImprovement.Enabled)
+                            // Re-create the bonuses for the Quality.
+                            if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
                             {
-                                strForceValue = objImprovement.ImprovedName;
-                                _lstImprovements.Remove(objImprovement);
+                                // Look for the existing Improvement.
+                                foreach (Improvement objImprovement in _lstImprovements)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                                        objImprovement.SourceName == objXmlQuality.InnerText && objImprovement.Enabled)
+                                    {
+                                        strForceValue = objImprovement.ImprovedName;
+                                        _lstImprovements.Remove(objImprovement);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Convert the item to the new Quality class.
+                            Quality objQuality = new Quality(this);
+                            objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons, strForceValue);
+                            _lstQualities.Add(objQuality);
+                        }
+                    }
+                }
+
+                // Take care of the Metatype information.
+                string strXPath = "/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]";
+                XmlNode objXmlMetatype = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPath) ??
+                                         XmlManager.Load("critters.xml").SelectSingleNode(strXPath);
+
+                if (objXmlMetatype != null)
+                {
+                    // Positive Qualities.
+                    foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                    {
+                        bool blnFound = false;
+                        // See if the Quality already exists in the character.
+                        foreach (Quality objCharacterQuality in _lstQualities)
+                        {
+                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                            {
+                                blnFound = true;
                                 break;
                             }
                         }
-                    }
 
-                    // Convert the item to the new Quality class.
-                    Quality objQuality = new Quality(this);
-                    objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons, strForceValue);
-                    _lstQualities.Add(objQuality);
-                }
-            }
-
-            // Take care of the Metatype information.
-            string strXPath = "/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]";
-            XmlNode objXmlMetatype = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPath);
-            if (objXmlMetatype == null)
-            {
-                objXmlMetatype = XmlManager.Load("critters.xml").SelectSingleNode(strXPath);
-            }
-
-            // Positive Qualities.
-            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
-            {
-                bool blnFound = false;
-                // See if the Quality already exists in the character.
-                foreach (Quality objCharacterQuality in _lstQualities)
-                {
-                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
-                    {
-                        blnFound = true;
-                        break;
-                    }
-                }
-
-                // If the Quality was not found, create it.
-                if (!blnFound)
-                {
-                    string strForceValue = string.Empty;
-                    Quality objQuality = new Quality(this);
-
-                    if (objXmlMetatypeQuality.Attributes["select"] != null)
-                        strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
-
-                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                    _lstQualities.Add(objQuality);
-                }
-            }
-
-            // Negative Qualities.
-            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
-            {
-                bool blnFound = false;
-                // See if the Quality already exists in the character.
-                foreach (Quality objCharacterQuality in _lstQualities)
-                {
-                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
-                    {
-                        blnFound = true;
-                        break;
-                    }
-                }
-
-                // If the Quality was not found, create it.
-                if (!blnFound)
-                {
-                    string strForceValue = string.Empty;
-                    Quality objQuality = new Quality(this);
-
-                    if (objXmlMetatypeQuality.Attributes["select"] != null)
-                        strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
-
-                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                    _lstQualities.Add(objQuality);
-                }
-            }
-
-            // Do it all over again for Metavariants.
-            if (!string.IsNullOrEmpty(_strMetavariant))
-            {
-                objXmlMetatype = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
-
-                // Positive Qualities.
-                foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
-                {
-                    bool blnFound = false;
-                    // See if the Quality already exists in the character.
-                    foreach (Quality objCharacterQuality in _lstQualities)
-                    {
-                        if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                        // If the Quality was not found, create it.
+                        if (!blnFound)
                         {
-                            blnFound = true;
-                            break;
+                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                            Quality objQuality = new Quality(this);
+
+                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                            _lstQualities.Add(objQuality);
                         }
                     }
 
-                    // If the Quality was not found, create it.
-                    if (!blnFound)
+                    // Negative Qualities.
+                    foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                     {
-                        string strForceValue = string.Empty;
-                        Quality objQuality = new Quality(this);
-
-                        if (objXmlMetatypeQuality.Attributes["select"] != null)
-                            strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
-
-                        XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                        _lstQualities.Add(objQuality);
-                    }
-                }
-
-                // Negative Qualities.
-                foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
-                {
-                    bool blnFound = false;
-                    // See if the Quality already exists in the character.
-                    foreach (Quality objCharacterQuality in _lstQualities)
-                    {
-                        if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                        bool blnFound = false;
+                        // See if the Quality already exists in the character.
+                        foreach (Quality objCharacterQuality in _lstQualities)
                         {
-                            blnFound = true;
-                            break;
+                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+
+                        // If the Quality was not found, create it.
+                        if (!blnFound)
+                        {
+                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                            Quality objQuality = new Quality(this);
+
+                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                            _lstQualities.Add(objQuality);
                         }
                     }
 
-                    // If the Quality was not found, create it.
-                    if (!blnFound)
+                    // Do it all over again for Metavariants.
+                    if (!string.IsNullOrEmpty(_strMetavariant))
                     {
-                        string strForceValue = string.Empty;
-                        Quality objQuality = new Quality(this);
+                        objXmlMetatype = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
 
-                        if (objXmlMetatypeQuality.Attributes["select"] != null)
-                            strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
+                        if (objXmlMetatype != null)
+                        {
+                            // Positive Qualities.
+                            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                            {
+                                bool blnFound = false;
+                                // See if the Quality already exists in the character.
+                                foreach (Quality objCharacterQuality in _lstQualities)
+                                {
+                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
 
-                        XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                        _lstQualities.Add(objQuality);
+                                // If the Quality was not found, create it.
+                                if (!blnFound)
+                                {
+                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    Quality objQuality = new Quality(this);
+
+                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                    _lstQualities.Add(objQuality);
+                                }
+                            }
+
+                            // Negative Qualities.
+                            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                            {
+                                bool blnFound = false;
+                                // See if the Quality already exists in the character.
+                                foreach (Quality objCharacterQuality in _lstQualities)
+                                {
+                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+
+                                // If the Quality was not found, create it.
+                                if (!blnFound)
+                                {
+                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    Quality objQuality = new Quality(this);
+
+                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                    _lstQualities.Add(objQuality);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -8437,430 +8443,429 @@ namespace Chummer
         /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
         /// Returns true if it's a corrected quality, false otherwise
         /// </summary>
-        /// <param name="strQuality">String to parse.</param>
-        private bool CorrectedUnleveledQuality(XmlNode objOldXmlQuality, XmlDocument xmlQualitiesDocument)
+        private bool CorrectedUnleveledQuality(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode)
         {
-            XmlNode objXmlNewQuality = null;
+            XmlNode xmlNewQuality = null;
             int intRanks = 0;
-            switch (objOldXmlQuality["name"].InnerText)
+            switch (xmlOldQuality["name"]?.InnerText)
             {
                 case "Focused Concentration (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Focused Concentration (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Focused Concentration (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Focused Concentration (Rating 4)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Focused Concentration (Rating 5)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 5;
                         break;
                     }
                 case "Focused Concentration (Rating 6)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Focused Concentration\"]");
                         intRanks = 6;
                         break;
                     }
                 case "High Pain Tolerance (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"High Pain Tolerance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "High Pain Tolerance (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"High Pain Tolerance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "High Pain Tolerance (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"High Pain Tolerance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Magic Resistance (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Magic Resistance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Magic Resistance (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Magic Resistance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Magic Resistance (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Magic Resistance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Magic Resistance (Rating 4)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Magic Resistance\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Will to Live (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Will to Live\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Will to Live (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Will to Live\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Will to Live (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Will to Live\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Gremlins (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Gremlins\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Gremlins (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Gremlins\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Gremlins (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Gremlins\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Gremlins (Rating 4)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Gremlins\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Aged (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Aged\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Aged (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Aged\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Aged (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Aged\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Illness (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Illness\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Illness (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Illness\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Illness (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Illness\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Perceptive I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Perceptive\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Perceptive II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Perceptive\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Spike Resistance I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Spike Resistance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Spike Resistance II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Spike Resistance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Spike Resistance III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Spike Resistance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Tough as Nails Physical I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Tough as Nails Physical II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Tough as Nails Physical III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Tough as Nails Stun I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Tough as Nails Stun II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Tough as Nails Stun III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Dimmer Bulb I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dimmer Bulb\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Dimmer Bulb II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dimmer Bulb\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Dimmer Bulb III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dimmer Bulb\"]");
                         intRanks = 3;
                         break;
                     }
                 case "In Debt I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 1;
                         break;
                     }
                 case "In Debt II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 2;
                         break;
                     }
                 case "In Debt III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 3;
                         break;
                     }
                 case "In Debt IV":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 4;
                         break;
                     }
                 case "In Debt V":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 5;
                         break;
                     }
                 case "In Debt VI":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 6;
                         break;
                     }
                 case "In Debt VII":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 7;
                         break;
                     }
                 case "In Debt VIII":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 8;
                         break;
                     }
                 case "In Debt IX":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 9;
                         break;
                     }
                 case "In Debt X":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 10;
                         break;
                     }
                 case "In Debt XI":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 11;
                         break;
                     }
                 case "In Debt XII":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 12;
                         break;
                     }
                 case "In Debt XIII":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 13;
                         break;
                     }
                 case "In Debt XIV":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 14;
                         break;
                     }
                 case "In Debt XV":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"In Debt\"]");
                         intRanks = 15;
                         break;
                     }
                 case "Infirm I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Infirm\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Infirm II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Infirm\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Infirm III":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Infirm\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Infirm IV":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Infirm\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Infirm V":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Infirm\"]");
                         intRanks = 5;
                         break;
                     }
                 case "Shiva Arms (1 Pair)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Shiva Arms (Pair)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Shiva Arms (2 Pair)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Shiva Arms (Pair)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Arcane Arrester I":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Arcane Arrester\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Arcane Arrester II":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Arcane Arrester\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Pilot Origins (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Pilot Origins\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Pilot Origins (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Pilot Origins\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Pilot Origins (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Pilot Origins\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 1)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 2)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 3)":
                     {
-                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        xmlNewQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 3;
                         break;
                     }
@@ -8870,11 +8875,11 @@ namespace Chummer
                 for (int i = 0; i < intRanks; ++i)
                 {
                     Quality objQuality = new Quality(this);
-                    if (i == 0 && Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
+                    if (i == 0 && Guid.TryParse(xmlOldQuality["guid"]?.InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
-                    QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
-                    objQuality.Create(objXmlNewQuality, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
-                    if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
+                    QualitySource objQualitySource = Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
+                    objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons, xmlOldQuality["extra"]?.InnerText);
+                    if (xmlOldQuality["bp"] != null && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 
                     _lstQualities.Add(objQuality);
@@ -8936,29 +8941,27 @@ namespace Chummer
         /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
         /// </summary>
         /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
         public static string TranslatedBookList(string strInput, string strLanguage)
         {
             string strReturn = string.Empty;
             strInput = strInput.TrimEnd(';');
             string[] strArray = strInput.Split(';');
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", strLanguage);
 
             foreach (string strBook in strArray)
             {
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if (objXmlBook != null)
                 {
-                    if (objXmlBook["translate"] != null)
-                        strReturn += objXmlBook["translate"]?.InnerText;
-                    else
-                        strReturn += objXmlBook["name"]?.InnerText;
+                    strReturn += objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? "Unknown book! ";
                 }
                 else
                 {
                     strReturn += "Unknown book! ";
                 }
-                strReturn += $" ({objXmlBook?["code"]?.InnerText ?? strBook})";
+                strReturn += $" ({objXmlBook?["altcode"]?.InnerText ?? strBook})";
             }
             return strReturn;
         }
@@ -9226,17 +9229,17 @@ namespace Chummer
         //Ugly, ugly done, but we cannot get events out of it today
         // FUTURE REFACTOR HERE
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        internal void ImprovementHook(ICollection<Improvement> _lstTransaction)
+        internal void ImprovementHook(ICollection<Improvement> lstTransaction)
         {
-            if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
+            if (lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
                 ResetCachedEssence();
-                AttributeImprovementEvent?.Invoke(_lstTransaction);
+                AttributeImprovementEvent?.Invoke(lstTransaction);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
-            else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
+            else if (lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
             {
-                SkillImprovementEvent?.Invoke(_lstTransaction);
+                SkillImprovementEvent?.Invoke(lstTransaction);
             }
         }
     }

@@ -24,11 +24,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using System.Security;
 
 namespace Chummer.Backend
 {
@@ -49,11 +47,11 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local 
-            public List<string> capturefiles = new List<string>();
+            public readonly List<string> capturefiles = new List<string>();
             // ReSharper disable once MemberCanBePrivate.Local 
-            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            public readonly Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
             // ReSharper disable once MemberCanBePrivate.Local 
-            public Dictionary<string, string> attributes = new Dictionary<string, string>();
+            public readonly Dictionary<string, string> attributes = new Dictionary<string, string>();
             public int processid = Process.GetCurrentProcess().Id;
             public uint threadId = NativeMethods.GetCurrentThreadId();
 

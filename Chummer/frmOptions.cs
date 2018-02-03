@@ -33,7 +33,7 @@ namespace Chummer
     {
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
         private bool _blnSkipRefresh;
-        private bool blnDirty = false;
+        private bool blnDirty;
         private bool blnLoading = true;
         private bool blnSourcebookToggle = true;
         private string _strSelectedLanguage = GlobalOptions.Language;

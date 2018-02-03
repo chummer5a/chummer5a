@@ -22,7 +22,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -42,7 +41,7 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
 		private bool _blnInstalled = true;
-		private ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+		private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
 		private string _strWeaponMountCategories = string.Empty;
@@ -50,13 +49,13 @@ namespace Chummer.Backend.Equipment
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
 		private string _strLimit = string.Empty;
-		private int _intSlots = 0;
+		private int _intSlots;
 		private string _strCost = string.Empty;
         private string _strSourceId = string.Empty;
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private ObservableCollection<VehicleMod> _lstMods = new ObservableCollection<VehicleMod>();
+        private readonly ObservableCollection<VehicleMod> _lstMods = new ObservableCollection<VehicleMod>();
 
         private readonly Vehicle _vehicle;
 	    private readonly Character _objCharacter;
@@ -1025,7 +1024,7 @@ namespace Chummer.Backend.Equipment
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

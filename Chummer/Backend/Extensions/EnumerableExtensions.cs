@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Chummer
 {
-    static class IEnumerableExtensions
+    public static class EnumerableExtensions
     {
         /// <summary>
         /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match.

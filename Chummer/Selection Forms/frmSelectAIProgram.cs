@@ -31,13 +31,13 @@ namespace Chummer
         private static string s_StrSelectedCategory = string.Empty;
 
         private bool _blnLoading = true;
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
         private readonly bool _blnAdvancedProgramAllowed = true;
-        private readonly bool _blnInherentProgram = false;
+        private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)

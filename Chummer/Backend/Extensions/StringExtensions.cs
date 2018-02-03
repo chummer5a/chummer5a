@@ -17,14 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Chummer
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
 
@@ -41,7 +39,9 @@ namespace Chummer
         /// <returns>New string with characters removed</returns>
         public static string FastEscape(this string strInput, char chrToDelete)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
             char[] achrNewChars = new char[intLength];
@@ -65,10 +65,12 @@ namespace Chummer
         /// <returns>New string with characters removed</returns>
         public static string FastEscape(this string strInput, params char[] achrToDelete)
         {
+            if (strInput == null)
+                return string.Empty;
             int intDeleteLength = achrToDelete.Length;
             if (intDeleteLength == 0)
                 return strInput;
-            int intLength = strInput?.Length ?? 0;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
             char[] achrNewChars = new char[intLength];
@@ -100,7 +102,9 @@ namespace Chummer
         /// <returns>New string with any excess whitespace removed</returns>
         public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', bool keepLineBreaks = false)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
             char[] achrNewChars = new char[intLength];
@@ -182,6 +186,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStart(this string strInput, params string[] astrStringToTrim)
         {
+            if (strInput == null)
+                return string.Empty;
             // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
             int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
@@ -209,6 +215,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEnd(this string strInput, params string[] astrStringToTrim)
         {
+            if (strInput == null)
+                return string.Empty;
             // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
             int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
@@ -248,7 +256,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EndsWith(this string strInput, char chrCharToCheck)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
             return (intLength > 0 && strInput[intLength - 1] == chrCharToCheck);
         }
 
@@ -261,7 +271,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this string strInput, params char[] achrCharToCheck)
         {
-            if (strInput?.Length == 0)
+            if (strInput == null)
+                return false;
+            if (strInput.Length == 0)
                 return false;
             char chrCharToCheck = strInput[0];
             int intParamsLength = achrCharToCheck.Length;
@@ -282,7 +294,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EndsWith(this string strInput, params char[] achrCharToCheck)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return false;
             char chrCharToCheck = strInput[intLength - 1];
@@ -387,7 +401,7 @@ namespace Chummer
         /// <summary>
         /// Tests whether a given string is a Guid. Returns false if not. 
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="strGuid">String to test.</param>
         /// <returns>True if string is a Guid, false if not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsGuid(this string strGuid)
@@ -410,7 +424,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strText))
                 return strText;
 
-            int next = 0;
+            int next;
             StringBuilder sb = new StringBuilder(strText.Length);
 
             // Parse each line of text
@@ -456,7 +470,9 @@ namespace Chummer
         /// <returns>The modified line length</returns>
         private static int BreakLine(this string strText, int intPosition, int intMax)
         {
-            if (intMax + intPosition >= strText?.Length)
+            if (strText == null)
+                return intMax;
+            if (intMax + intPosition >= strText.Length)
                 return intMax;
             // Find last whitespace in line
             for (int i = intMax; i >= 0; --i)

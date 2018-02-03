@@ -19,9 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using Chummer.Backend.Equipment;
@@ -214,10 +212,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Weapon objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    objReturn = objVehicle.Weapons.DeepFindById(strGuid);
+                    Weapon objReturn = objVehicle.Weapons.DeepFindById(strGuid);
                     if (objReturn != null)
                     {
                         objFoundVehicle = objVehicle;
@@ -369,7 +366,6 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Cyberware to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
         public static Cyberware FindVehicleCyberware(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
             return lstVehicles.FindVehicleCyberware(strGuid, out VehicleMod objFoundVehicleMod);
@@ -1049,7 +1045,8 @@ namespace Chummer
         /// <summary>
         /// Book code (using the translated version if applicable).
         /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
@@ -1064,6 +1061,7 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookShort(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
@@ -1078,6 +1076,7 @@ namespace Chummer
         /// Book name (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookLong(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
@@ -1125,7 +1124,8 @@ namespace Chummer
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
-        /// <param name="strSource">Book coode and page number to open.</param>
+        /// <param name="sender">Control from which this method was called.</param>
+        /// <param name="e">EventArgs used when this method was called.</param>
         public static void OpenPDFFromControl(object sender, EventArgs e)
         {
             if (sender is Control objControl)
@@ -1135,6 +1135,8 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book coode and page number to open.</param>
+        /// <param name="strPDFParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
+        /// <param name="strPDFAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
         public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
         {
             if (string.IsNullOrEmpty(strPDFParamaters))

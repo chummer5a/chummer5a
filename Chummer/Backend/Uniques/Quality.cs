@@ -1,12 +1,28 @@
-using Chummer.Backend;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -58,18 +74,18 @@ namespace Chummer
     {
         private Guid _guiID;
         private string _strName = string.Empty;
-        private bool _blnMetagenetic = false;
+        private bool _blnMetagenetic;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
-        private bool _blnMutant = false;
+        private bool _blnMutant;
         private string _strNotes = string.Empty;
         private bool _blnImplemented = true;
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
-        private bool _blnCanBuyWithSpellPoints = false;
-        private int _intBP = 0;
+        private bool _blnCanBuyWithSpellPoints;
+        private int _intBP;
         private QualityType _eQualityType = QualityType.Positive;
         private QualitySource _eQualitySource = QualitySource.Selected;
         private string _strSourceName = string.Empty;
@@ -79,12 +95,12 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
         private Guid _guiQualityId;
-        private string _stage;
+        private string _strStage;
 
-        public String Stage
+        public string Stage
         {
-            get => _stage;
-            private set => _stage = value;
+            get => _strStage;
+            private set => _strStage = value;
         }
 
         #region Helper Methods
@@ -211,7 +227,7 @@ namespace Chummer
 
             if (_eQualityType == QualityType.LifeModule)
             {
-                objXmlQuality.TryGetStringFieldQuickly("stage", ref _stage);
+                objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
             }
 
             if (objXmlQuality["id"] != null && Guid.TryParse(objXmlQuality["id"].InnerText, out Guid guiTemp))
@@ -374,7 +390,7 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             if (_eQualityType == QualityType.LifeModule)
             {
-                objWriter.WriteElementString("stage", _stage);
+                objWriter.WriteElementString("stage", _strStage);
             }
 
             if (!_guiQualityId.Equals(Guid.Empty))
@@ -431,7 +447,7 @@ namespace Chummer
 
             if (_eQualityType == QualityType.LifeModule)
             {
-                objNode.TryGetStringFieldQuickly("stage", ref _stage);
+                objNode.TryGetStringFieldQuickly("stage", ref _strStage);
             }
         }
 
@@ -751,7 +767,7 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()

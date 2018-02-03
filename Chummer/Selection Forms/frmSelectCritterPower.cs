@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,13 +28,13 @@ namespace Chummer
     public partial class frmSelectCritterPower : Form
     {
         private string _strSelectedPower = string.Empty;
-        private int _intSelectedRating = 0;
+        private int _intSelectedRating;
         private static string s_StrSelectCategory = string.Empty;
-        private decimal _decPowerPoints = 0.0m;
-        private bool _blnAddAgain = false;
+        private decimal _decPowerPoints;
+        private bool _blnAddAgain;
 
-        private readonly XmlDocument _objXmlDocument = null;
-        private readonly XmlDocument _objXmlCritterDocument = null;
+        private readonly XmlDocument _objXmlDocument;
+        private readonly XmlDocument _objXmlCritterDocument;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
