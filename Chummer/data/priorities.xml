@@ -4552,7 +4552,7 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 2 Depth</name>
+          <name>AI - 1 Depth</name>
           <value>AI</value>
           <depth>1</depth>
           <required>
