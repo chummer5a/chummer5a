@@ -69,8 +69,8 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponName = string.Empty;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
-        private readonly ObservableCollection<WeaponAccessory> _lstAccessories = new ObservableCollection<WeaponAccessory>();
-        private readonly ObservableCollection<Weapon> _lstUnderbarrel = new ObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
+        private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel = new TaggedObservableCollection<Weapon>();
         private Vehicle _objMountedVehicle;
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
@@ -871,17 +871,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
-        public ObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
+        public TaggedObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
 
         /// <summary>
         /// Underbarrel Weapon.
         /// </summary>
-        public ObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
+        public TaggedObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
 
         /// <summary>
         /// Children as Underbarrel Weapon.
         /// </summary>
-        public ObservableCollection<Weapon> Children => UnderbarrelWeapons;
+        public TaggedObservableCollection<Weapon> Children => UnderbarrelWeapons;
         /// <summary>
         /// Whether or not this Weapon is an Underbarrel Weapon.
         /// </summary>

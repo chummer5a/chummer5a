@@ -1536,7 +1536,7 @@ namespace Chummer
             {
                 case ListChangedType.ItemAdded:
                     {
-                        CharacterObject.Powers[listChangedEventArgs.NewIndex].Enhancements.CollectionChanged += (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y);
+                        CharacterObject.Powers[listChangedEventArgs.NewIndex].Enhancements.AddTaggedCollectionChanged(this, (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
                     }
                     break;
                 case ListChangedType.Reset:
@@ -1551,7 +1551,7 @@ namespace Chummer
         {
             if (removingOldEventArgs.OldObject is Power objPower)
             {
-                objPower.Enhancements.CollectionChanged -= (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y);
+                objPower.Enhancements.RemoveTaggedCollectionChanged(this);
             }
         }
 
@@ -1652,6 +1652,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
+        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objPowersNode = null;
@@ -1787,6 +1788,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             TreeNode objPositiveQualityRoot = null;
@@ -2169,8 +2171,8 @@ namespace Chummer
                 foreach (Weapon objWeapon in CharacterObject.Weapons)
                 {
                     AddToTree(objWeapon, -1, false);
-                    objWeapon.Children.CollectionChanged += (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                    objWeapon.WeaponAccessories.CollectionChanged += (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                    objWeapon.UnderbarrelWeapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                    objWeapon.WeaponAccessories.AddTaggedCollectionChanged(this, (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.UnderbarrelWeapons.Count, y));
                 }
 
                 treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
@@ -2188,8 +2190,8 @@ namespace Chummer
                             {
                                 AddToTree(objWeapon, intNewIndex);
                                 intNewIndex += 1;
-                                objWeapon.Children.CollectionChanged += (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                                objWeapon.WeaponAccessories.CollectionChanged += (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                                objWeapon.UnderbarrelWeapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                                objWeapon.WeaponAccessories.AddTaggedCollectionChanged(this, (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.UnderbarrelWeapons.Count, y));
                             }
                         }
                         break;
@@ -2197,8 +2199,8 @@ namespace Chummer
                         {
                             foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objWeapon.Children.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                                objWeapon.WeaponAccessories.CollectionChanged -= (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                                objWeapon.UnderbarrelWeapons.RemoveTaggedCollectionChanged(this);
+                                objWeapon.WeaponAccessories.RemoveTaggedCollectionChanged(this);
                                 treWeapons.FindNode(objWeapon.InternalId)?.Remove();
                             }
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
@@ -2211,8 +2213,8 @@ namespace Chummer
                         {
                             foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objWeapon.Children.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                                objWeapon.WeaponAccessories.CollectionChanged -= (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                                objWeapon.UnderbarrelWeapons.RemoveTaggedCollectionChanged(this);
+                                objWeapon.WeaponAccessories.RemoveTaggedCollectionChanged(this);
                                 treWeapons.FindNode(objWeapon.InternalId)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -2220,8 +2222,8 @@ namespace Chummer
                             {
                                 AddToTree(objWeapon, intNewIndex);
                                 intNewIndex += 1;
-                                objWeapon.Children.CollectionChanged += (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                                objWeapon.WeaponAccessories.CollectionChanged += (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                                objWeapon.UnderbarrelWeapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                                objWeapon.WeaponAccessories.AddTaggedCollectionChanged(this, (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.UnderbarrelWeapons.Count, y));
                             }
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
@@ -2309,8 +2311,8 @@ namespace Chummer
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeapon, intNewIndex);
-                            objWeapon.Children.CollectionChanged += (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                            objWeapon.WeaponAccessories.CollectionChanged += (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                            objWeapon.UnderbarrelWeapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                            objWeapon.WeaponAccessories.AddTaggedCollectionChanged(this, (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.UnderbarrelWeapons.Count, y));
                             intNewIndex += 1;
                         }
                     }
@@ -2319,8 +2321,8 @@ namespace Chummer
                     {
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeapon.Children.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                            objWeapon.WeaponAccessories.CollectionChanged -= (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                            objWeapon.UnderbarrelWeapons.RemoveTaggedCollectionChanged(this);
+                            objWeapon.WeaponAccessories.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objWeapon.InternalId)?.Remove();
                         }
                     }
@@ -2330,8 +2332,8 @@ namespace Chummer
                         string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeapon.Children.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                            objWeapon.WeaponAccessories.CollectionChanged -= (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                            objWeapon.UnderbarrelWeapons.RemoveTaggedCollectionChanged(this);
+                            objWeapon.WeaponAccessories.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objWeapon.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -2340,8 +2342,8 @@ namespace Chummer
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeapon, intNewIndex);
-                            objWeapon.Children.CollectionChanged += (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y);
-                            objWeapon.WeaponAccessories.CollectionChanged += (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.Children.Count, y);
+                            objWeapon.UnderbarrelWeapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treWeapons, objWeapon, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                            objWeapon.WeaponAccessories.AddTaggedCollectionChanged(this, (x, y) => RefreshWeaponAccessories(treWeapons, objWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => objWeapon.UnderbarrelWeapons.Count, y));
                             intNewIndex += 1;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
@@ -2403,7 +2405,7 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y);
+                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y));
                             intNewIndex += 1;
                         }
                     }
@@ -2412,7 +2414,7 @@ namespace Chummer
                     {
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y);
+                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
                     }
@@ -2422,7 +2424,7 @@ namespace Chummer
                         string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y);
+                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -2431,7 +2433,7 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y);
+                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treWeapons, objWeaponAccessory, cmsWeaponAccessoryGear, null, y));
                             intNewIndex += 1;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
@@ -2637,8 +2639,8 @@ namespace Chummer
                 foreach (Armor objArmor in CharacterObject.Armor)
                 {
                     AddToTree(objArmor, -1, false);
-                    objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
-                    objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                    objArmor.ArmorMods.AddTaggedCollectionChanged(this, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                    objArmor.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                 }
 
                 treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
@@ -2656,8 +2658,8 @@ namespace Chummer
                             {
                                 AddToTree(objArmor, intNewIndex);
                                 intNewIndex += 1;
-                                objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
-                                objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                objArmor.ArmorMods.AddTaggedCollectionChanged(this, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                                objArmor.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                             }
                         }
                         break;
@@ -2665,8 +2667,8 @@ namespace Chummer
                         {
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objArmor.ArmorMods.CollectionChanged -= (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
-                                objArmor.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                objArmor.ArmorMods.RemoveTaggedCollectionChanged(this);
+                                objArmor.Gear.RemoveTaggedCollectionChanged(this);
                                 treArmor.FindNode(objArmor.InternalId)?.Remove();
                             }
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
@@ -2679,8 +2681,8 @@ namespace Chummer
                         {
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objArmor.ArmorMods.CollectionChanged -= (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
-                                objArmor.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                objArmor.ArmorMods.RemoveTaggedCollectionChanged(this);
+                                objArmor.Gear.RemoveTaggedCollectionChanged(this);
                                 treArmor.FindNode(objArmor.InternalId)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -2688,8 +2690,8 @@ namespace Chummer
                             {
                                 AddToTree(objArmor, intNewIndex);
                                 intNewIndex += 1;
-                                objArmor.ArmorMods.CollectionChanged += (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
-                                objArmor.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+                                objArmor.ArmorMods.AddTaggedCollectionChanged(this, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                                objArmor.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treArmor, objArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                             }
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
                             {
@@ -2774,7 +2776,7 @@ namespace Chummer
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objArmorMod, intNewIndex);
-                            objArmorMod.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            objArmorMod.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y));
                             intNewIndex += 1;
                         }
                     }
@@ -2783,7 +2785,7 @@ namespace Chummer
                     {
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objArmorMod.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            objArmorMod.Gear.RemoveTaggedCollectionChanged(this);
                             nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                         }
                     }
@@ -2793,14 +2795,14 @@ namespace Chummer
                         string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objArmorMod.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            objArmorMod.Gear.RemoveTaggedCollectionChanged(this);
                             nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objArmorMod, intNewIndex);
-                            objArmorMod.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y);
+                            objArmorMod.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treArmor, objArmorMod, cmsArmorGear, null, y));
                             intNewIndex += 1;
                         }
                         treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
@@ -3004,7 +3006,7 @@ namespace Chummer
                 foreach (Gear objGear in CharacterObject.Gear)
                 {
                     AddToTree(objGear, -1, false);
-                    objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                    objGear.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y));
                 }
 
                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -3021,7 +3023,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objGear, intNewIndex);
-                                objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                objGear.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y));
                                 intNewIndex += 1;
                             }
                         }
@@ -3030,7 +3032,7 @@ namespace Chummer
                         {
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objGear.Children.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                objGear.Children.RemoveTaggedCollectionChanged(this);
                                 treGear.FindNode(objGear.InternalId)?.Remove();
                             }
                         }
@@ -3039,14 +3041,14 @@ namespace Chummer
                         {
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objGear.Children.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                objGear.Children.RemoveTaggedCollectionChanged(this);
                                 treGear.FindNode(objGear.InternalId)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objGear, intNewIndex);
-                                objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                                objGear.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y));
                                 intNewIndex += 1;
                             }
                             treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -3130,7 +3132,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
-                            objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            objGear.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y));
                             intNewIndex += 1;
                         }
                     }
@@ -3139,7 +3141,7 @@ namespace Chummer
                     {
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objGear.Children.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            objGear.Children.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objGear.InternalId)?.Remove();
                         }
                     }
@@ -3149,7 +3151,7 @@ namespace Chummer
                         string strSelectedId = treGear.SelectedNode?.Tag.ToString();
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objGear.Children.CollectionChanged -= (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            objGear.Children.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objGear.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -3158,7 +3160,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
-                            objGear.Children.CollectionChanged += (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y);
+                            objGear.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treGear, objGear, cmsGear, null, y));
                             intNewIndex += 1;
                         }
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -3243,8 +3245,8 @@ namespace Chummer
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware)
                 {
                     AddToTree(objCyberware, false);
-                    objCyberware.Children.CollectionChanged += (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                    objCyberware.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                    objCyberware.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                    objCyberware.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y));
                 }
 
                 treCyberware.SortCustom(strSelectedId);
@@ -3262,8 +3264,8 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objCyberware);
-                                objCyberware.Children.CollectionChanged += (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                                objCyberware.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                                objCyberware.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                                objCyberware.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y));
                             }
                         }
                         break;
@@ -3271,8 +3273,8 @@ namespace Chummer
                         {
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objCyberware.Children.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                                objCyberware.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                                objCyberware.Children.RemoveTaggedCollectionChanged(this);
+                                objCyberware.Gear.RemoveTaggedCollectionChanged(this);
                                 TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
                                 if (objNode != null)
                                 {
@@ -3290,8 +3292,8 @@ namespace Chummer
 
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objCyberware.Children.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                                objCyberware.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                                objCyberware.Children.RemoveTaggedCollectionChanged(this);
+                                objCyberware.Gear.RemoveTaggedCollectionChanged(this);
                                 TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
                                 if (objNode != null)
                                 {
@@ -3304,8 +3306,8 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objCyberware);
-                                objCyberware.Children.CollectionChanged += (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                                objCyberware.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                                objCyberware.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                                objCyberware.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y));
                             }
                             foreach (TreeNode objOldParent in lstOldParentNodes)
                             {
@@ -3430,8 +3432,8 @@ namespace Chummer
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
-                            objCyberware.Children.CollectionChanged += (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                            objCyberware.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                            objCyberware.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                            objCyberware.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y));
                             intNewIndex += 1;
                         }
                     }
@@ -3440,8 +3442,8 @@ namespace Chummer
                     {
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objCyberware.Children.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                            objCyberware.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                            objCyberware.Children.RemoveTaggedCollectionChanged(this);
+                            objCyberware.Gear.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objCyberware.InternalId)?.Remove();
                         }
                     }
@@ -3451,8 +3453,8 @@ namespace Chummer
                         string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objCyberware.Children.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                            objCyberware.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                            objCyberware.Children.RemoveTaggedCollectionChanged(this);
+                            objCyberware.Gear.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objCyberware.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -3461,8 +3463,8 @@ namespace Chummer
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
-                            objCyberware.Children.CollectionChanged += (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y);
-                            objCyberware.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y);
+                            objCyberware.Children.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treCyberware, objCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                            objCyberware.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treCyberware, objCyberware, cmsCyberwareGear, () => objCyberware.Children.Count, y));
                             intNewIndex += 1;
                         }
                         treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
@@ -3778,8 +3780,8 @@ namespace Chummer
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
-                            objVehicleMod.Cyberware.CollectionChanged += (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y);
-                            objVehicleMod.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y);
+                            objVehicleMod.Cyberware.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y));
+                            objVehicleMod.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             intNewIndex += 1;
                         }
                     }
@@ -3788,8 +3790,8 @@ namespace Chummer
                     {
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objVehicleMod.Cyberware.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y);
-                            objVehicleMod.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y);
+                            objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(this);
+                            objVehicleMod.Weapons.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
                         }
                     }
@@ -3799,8 +3801,8 @@ namespace Chummer
                         string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objVehicleMod.Cyberware.CollectionChanged -= (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y);
-                            objVehicleMod.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y);
+                            objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(this);
+                            objVehicleMod.Weapons.RemoveTaggedCollectionChanged(this);
                             nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -3809,8 +3811,8 @@ namespace Chummer
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
-                            objVehicleMod.Cyberware.CollectionChanged += (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y);
-                            objVehicleMod.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y);
+                            objVehicleMod.Cyberware.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenCyberware(treVehicles, objVehicleMod, cmsCyberware, cmsCyberwareGear, null, y));
+                            objVehicleMod.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objVehicleMod, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             intNewIndex += 1;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -3873,8 +3875,9 @@ namespace Chummer
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponMount, intNewIndex);
-                            objWeaponMount.Mods.CollectionChanged += (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                            objWeaponMount.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y);
+                            objWeaponMount.Mods.AddTaggedCollectionChanged(this,
+                                (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                            objWeaponMount.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
                             intNewIndex += 1;
                         }
                     }
@@ -3883,8 +3886,8 @@ namespace Chummer
                     {
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponMount.Mods.CollectionChanged -= (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                            objWeaponMount.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y);
+                            objWeaponMount.Mods.RemoveTaggedCollectionChanged(this);
+                            objWeaponMount.Weapons.RemoveTaggedCollectionChanged(this);
                             if (nodParent != null)
                             {
                                 nodParent.FindNode(objWeaponMount.InternalId)?.Remove();
@@ -3899,16 +3902,17 @@ namespace Chummer
                         string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponMount.Mods.CollectionChanged -= (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                            objWeaponMount.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y);
+                            objWeaponMount.Mods.RemoveTaggedCollectionChanged(this);
+                            objWeaponMount.Weapons.RemoveTaggedCollectionChanged(this);
                             nodParent?.FindNode(objWeaponMount.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponMount, intNewIndex);
-                            objWeaponMount.Mods.CollectionChanged += (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                            objWeaponMount.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y);
+                            objWeaponMount.Mods.AddTaggedCollectionChanged(this,
+                                (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                            objWeaponMount.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
                             intNewIndex += 1;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -3988,11 +3992,11 @@ namespace Chummer
                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                 {
                     AddToTree(objVehicle, -1, false);
-                    objVehicle.Mods.CollectionChanged += (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                    objVehicle.WeaponMounts.CollectionChanged += (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
-                    objVehicle.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                    objVehicle.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                    objVehicle.Locations.CollectionChanged += (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y);
+                    objVehicle.Mods.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                    objVehicle.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                    objVehicle.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                    objVehicle.Locations.AddTaggedCollectionChanged(this, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
                 }
 
                 treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -4009,11 +4013,11 @@ namespace Chummer
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objVehicle, intNewIndex);
-                                objVehicle.Mods.CollectionChanged += (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                                objVehicle.WeaponMounts.CollectionChanged += (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
-                                objVehicle.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Locations.CollectionChanged += (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y);
+                                objVehicle.Mods.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                                objVehicle.WeaponMounts.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                objVehicle.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                objVehicle.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                objVehicle.Locations.AddTaggedCollectionChanged(this, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
                                 intNewIndex += 1;
                             }
                         }
@@ -4022,11 +4026,11 @@ namespace Chummer
                         {
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objVehicle.Mods.CollectionChanged -= (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                                objVehicle.WeaponMounts.CollectionChanged -= (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
-                                objVehicle.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Locations.CollectionChanged -= (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y);
+                                objVehicle.Mods.RemoveTaggedCollectionChanged(this);
+                                objVehicle.WeaponMounts.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Weapons.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Gear.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Locations.RemoveTaggedCollectionChanged(this);
                                 treVehicles.FindNode(objVehicle.InternalId)?.Remove();
                             }
                         }
@@ -4035,22 +4039,22 @@ namespace Chummer
                         {
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objVehicle.Mods.CollectionChanged -= (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                                objVehicle.WeaponMounts.CollectionChanged -= (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
-                                objVehicle.Weapons.CollectionChanged -= (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Gear.CollectionChanged -= (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Locations.CollectionChanged -= (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y);
+                                objVehicle.Mods.RemoveTaggedCollectionChanged(this);
+                                objVehicle.WeaponMounts.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Weapons.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Gear.RemoveTaggedCollectionChanged(this);
+                                objVehicle.Locations.RemoveTaggedCollectionChanged(this);
                                 treVehicles.FindNode(objVehicle.InternalId)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objVehicle, intNewIndex);
-                                objVehicle.Mods.CollectionChanged += (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
-                                objVehicle.WeaponMounts.CollectionChanged += (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
-                                objVehicle.Weapons.CollectionChanged += (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Gear.CollectionChanged += (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y);
-                                objVehicle.Locations.CollectionChanged += (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y);
+                                objVehicle.Mods.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleMods(treVehicles, objVehicle, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                                objVehicle.WeaponMounts.AddTaggedCollectionChanged(this, (x, y) => RefreshVehicleWeaponMounts(treVehicles, objVehicle, cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                objVehicle.Weapons.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenWeapons(treVehicles, objVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                objVehicle.Gear.AddTaggedCollectionChanged(this, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                objVehicle.Locations.AddTaggedCollectionChanged(this, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
                                 intNewIndex += 1;
                             }
                             treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -4496,7 +4500,7 @@ namespace Chummer
                 foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                 {
                     AddToTree(objMartialArt, false);
-                    objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                    objMartialArt.Techniques.AddTaggedCollectionChanged(this, (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
                 }
 
                 treMartialArts.SortCustom(strSelectedId);
@@ -4510,7 +4514,7 @@ namespace Chummer
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objMartialArt);
-                                objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                                objMartialArt.Techniques.AddTaggedCollectionChanged(this, (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
                             }
                         }
                         break;
@@ -4518,7 +4522,7 @@ namespace Chummer
                         {
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objMartialArt.Techniques.CollectionChanged -= (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                                objMartialArt.Techniques.RemoveTaggedCollectionChanged(this);
                                 TreeNode objNode = treMartialArts.FindNode(objMartialArt.InternalId);
                                 if (objNode != null)
                                 {
@@ -4535,7 +4539,8 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                objMartialArt.Techniques.CollectionChanged -= (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                                objMartialArt.Techniques.RemoveTaggedCollectionChanged(this);
+
                                 TreeNode objNode = treMartialArts.FindNode(objMartialArt.InternalId);
                                 if (objNode != null)
                                 {
@@ -4546,7 +4551,7 @@ namespace Chummer
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objMartialArt);
-                                objMartialArt.Techniques.CollectionChanged += (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                                objMartialArt.Techniques.AddTaggedCollectionChanged(this, (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
                             }
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
@@ -4618,7 +4623,7 @@ namespace Chummer
                 objParentNode.Expand();
             }
         }
-        
+
         protected void RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
@@ -4626,7 +4631,7 @@ namespace Chummer
             TreeNode nodMartialArt = treMartialArts.FindNode(objMartialArt.InternalId);
             if (nodMartialArt == null)
                 return;
-            
+
             switch (notifyCollectionChangedEventArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -4676,7 +4681,7 @@ namespace Chummer
             void AddToTree(MartialArtTechnique objTechnique, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objTechnique.CreateTreeNode(cmsTechnique);
-                
+
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = nodMartialArt.Nodes;

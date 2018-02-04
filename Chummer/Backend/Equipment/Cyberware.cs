@@ -60,8 +60,8 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
-        private readonly ObservableCollection<Cyberware> _lstChildren = new ObservableCollection<Cyberware>();
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Cyberware> _lstChildren = new TaggedObservableCollection<Cyberware>();
+        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
@@ -1728,7 +1728,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Cyberware.
         /// </summary>
-        public ObservableCollection<Cyberware> Children
+        public TaggedObservableCollection<Cyberware> Children
         {
             get
             {
@@ -1739,7 +1739,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public ObservableCollection<Gear> Gear
+        public TaggedObservableCollection<Gear> Gear
         {
             get
             {

@@ -52,8 +52,8 @@ namespace Chummer.Backend.Equipment
         private int _intDamage;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<ArmorMod> _lstArmorMods = new ObservableCollection<ArmorMod>();
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
+        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private XmlNode _nodBonus;
@@ -967,7 +967,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public ObservableCollection<ArmorMod> ArmorMods
+        public TaggedObservableCollection<ArmorMod> ArmorMods
         {
             get
             {
@@ -978,7 +978,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public ObservableCollection<Gear> Gear
+        public TaggedObservableCollection<Gear> Gear
         {
             get
             {

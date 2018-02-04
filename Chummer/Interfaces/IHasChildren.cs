@@ -23,6 +23,6 @@ namespace Chummer
 {
     public interface IHasChildren<T>
     {
-        ObservableCollection<T> Children { get; }
+        TaggedObservableCollection<T> Children { get; }
     }
 }

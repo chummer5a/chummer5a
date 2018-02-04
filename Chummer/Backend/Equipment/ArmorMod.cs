@@ -54,7 +54,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
         private Armor _objParent;
@@ -710,7 +710,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public ObservableCollection<Gear> Gear
+        public TaggedObservableCollection<Gear> Gear
         {
             get
             {

@@ -134,6 +134,7 @@
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
+    <Compile Include="Backend\Datastructures\TaggedObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
@@ -1379,9 +1380,6 @@
     <None Include="lang\language.xss">
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="nuget.config">
-      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>

@@ -60,13 +60,13 @@ namespace Chummer.Backend.Equipment
         private int _intAddBodyModSlots;
         private int _intAddElectromagneticModSlots;
         private int _intAddCosmeticModSlots;
-        private readonly ObservableCollection<VehicleMod> _lstVehicleMods = new ObservableCollection<VehicleMod>();
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
-        private readonly ObservableCollection<WeaponMount> _lstWeaponMounts = new ObservableCollection<WeaponMount>();
+        private readonly TaggedObservableCollection<VehicleMod> _lstVehicleMods = new TaggedObservableCollection<VehicleMod>();
+        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
-        private readonly ObservableCollection<string> _lstLocations = new ObservableCollection<string>();
+        private readonly TaggedObservableCollection<string> _lstLocations = new TaggedObservableCollection<string>();
         private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
 
@@ -1263,7 +1263,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public ObservableCollection<VehicleMod> Mods
+        public TaggedObservableCollection<VehicleMod> Mods
         {
             get
             {
@@ -1274,7 +1274,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public ObservableCollection<Gear> Gear
+        public TaggedObservableCollection<Gear> Gear
         {
             get
             {
@@ -1285,7 +1285,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons
+        public TaggedObservableCollection<Weapon> Weapons
         {
             get
             {
@@ -1293,7 +1293,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public ObservableCollection<WeaponMount> WeaponMounts
+        public TaggedObservableCollection<WeaponMount> WeaponMounts
         {
             get
             {
@@ -1509,7 +1509,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public ObservableCollection<string> Locations
+        public TaggedObservableCollection<string> Locations
         {
             get
             {

@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -36,7 +36,7 @@ namespace Chummer
         private int _intKarmaCost = 7;
         private int _intRating = 1;
         private Guid _guiID;
-        private readonly ObservableCollection<MartialArtTechnique> _lstTechniques = new ObservableCollection<MartialArtTechnique>();
+        private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
         private bool _blnIsQuality;
@@ -119,18 +119,23 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
-            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialartadvantages/martialartadvantage"))
-            {
-                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                objTechnique.Load(nodTechnique);
-                _lstTechniques.Add(objTechnique);
-            }
-            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialarttechniques/martialarttechnique"))
-            {
-                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                objTechnique.Load(nodTechnique);
-                _lstTechniques.Add(objTechnique);
-            }
+            using (XmlNodeList xmlLegacyTechniqueList = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
+                if (xmlLegacyTechniqueList != null)
+                    foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                    {
+                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                        objTechnique.Load(nodTechnique);
+                        _lstTechniques.Add(objTechnique);
+                    }
+
+            using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
+                if (xmlTechniqueList != null)
+                    foreach (XmlNode nodTechnique in xmlTechniqueList)
+                    {
+                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                        objTechnique.Load(nodTechnique);
+                        _lstTechniques.Add(objTechnique);
+                    }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
@@ -250,8 +255,8 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public ObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
-        public ObservableCollection<MartialArtTechnique> Children => Techniques;
+        public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
+        public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
         /// Notes.

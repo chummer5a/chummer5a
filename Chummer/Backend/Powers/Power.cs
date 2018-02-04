@@ -302,7 +302,7 @@ namespace Chummer
         /// <summary>
         /// The Enhancements currently applied to the Power.
         /// </summary>
-        public ObservableCollection<Enhancement> Enhancements { get; } = new ObservableCollection<Enhancement>();
+        public TaggedObservableCollection<Enhancement> Enhancements { get; } = new TaggedObservableCollection<Enhancement>();
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

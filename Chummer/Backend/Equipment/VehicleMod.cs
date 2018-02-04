@@ -51,10 +51,10 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludeInVehicle;
         private bool _blnInstalled = true;
         private int _intConditionMonitor;
-        private readonly ObservableCollection<Weapon> _lstVehicleWeapons = new ObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
         private string _strSubsystems = string.Empty;
-        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
+        private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
         private string _strExtra = string.Empty;
         private string _strWeaponMountCategories = string.Empty;
         private bool _blnDiscountCost;
@@ -347,9 +347,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
+        public TaggedObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
 
-        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
+        public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         public WeaponMount WeaponMountParent
         {
