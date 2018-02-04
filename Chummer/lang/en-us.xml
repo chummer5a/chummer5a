@@ -3997,6 +3997,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Skill_SortCategory</key>
       <text>Category</text>
     </string>
+    <string>
+      <key>Skill_NativeLanguageShort</key>
+      <text>N</text>
+    </string>
     <!-- End Region -->
     <!-- Region  Martial Arts Tab -->
     <string>

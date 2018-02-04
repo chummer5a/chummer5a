@@ -171,6 +171,7 @@ New Strings:
 - String_EssenceLossChargen
 - String_SpiritFettering
 - String_AttributeLoss
+- Skill_NativeLanguageShort
 
 Changed Strings:
 

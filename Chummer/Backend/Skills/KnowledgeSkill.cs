@@ -189,7 +189,7 @@ namespace Chummer.Backend.Skills
             {
                 if (Rating == 0 && _strType == "Language")
                 {
-                    return "N";
+                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Language);
                 }
                 else
                 {
