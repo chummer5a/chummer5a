@@ -6430,6 +6430,7 @@ namespace Chummer
                 if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
                     objWeek.Notes = frmItemNotes.Notes;
+                    lstCalendar.SelectedItems[0].SubItems[1].Text = frmItemNotes.Notes;
                     if (objWeek.Notes != strOldValue)
                     {
                         IsDirty = true;
