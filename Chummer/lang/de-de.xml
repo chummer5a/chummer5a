@@ -907,7 +907,7 @@
 		</string>
 		<string>
 			<key>Message_NegativeQualityLimit</key>
-			<text>Sie können nicht mehr als {0} aus Handicaps bekommen</text>
+			<text>Sie können nicht mehr als {0} aus Nachteilen bekommen</text>
 		</string>
 		<string>
 			<key>MessageTitle_NegativeQualityLimit</key>
@@ -1051,11 +1051,11 @@
 		</string>
 		<string>
 			<key>Message_PositiveQualityLimit</key>
-			<text>Sie können nicht mehr als {0} für Gaben ausgeben</text>
+			<text>Sie können nicht mehr als {0} für Vorteile ausgeben</text>
 		</string>
 		<string>
 			<key>MessageTitle_PositiveQualityLimit</key>
-			<text>Gaben</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Message_MetavariantQuality</key>
@@ -2537,11 +2537,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedMartialArts</key>
-			<text>Ausgewählte Kampfkunst</text>
+			<text>Kampfkünste</text>
 		</string>
 		<string>
 			<key>Node_SelectedManeuvers</key>
-			<text>Ausgewählte Manöver</text>
+			<text>Manöver</text>
 		</string>
 		<string>
 			<key>Label_SelectedSpells</key>
@@ -2761,7 +2761,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedLifestyles</key>
-			<text>Ausgewählte Lebensstile</text>
+			<text>Lebensstile</text>
 		</string>
 		<string>
 			<key>Tab_IncreaseLifestyleMonths</key>
@@ -2785,7 +2785,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedArmor</key>
-			<text>Ausgewählte Panzerung</text>
+			<text>Panzerungen</text>
 		</string>
 		<string>
 			<key>Tip_ArmorEquipped</key>
@@ -2873,7 +2873,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedWeapons</key>
-			<text>Ausgewählte Waffen</text>
+			<text>Waffen</text>
 		</string>
 		<string>
 			<key>Tip_WeaponInstalled</key>
@@ -2925,7 +2925,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGear</key>
-			<text>Ausgewählte Ausrüstung</text>
+			<text>Ausrüstungen</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
@@ -2969,7 +2969,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedVehicles</key>
-			<text>Ausgewählte Fahrzeuge</text>
+			<text>Fahrzeuge</text>
 		</string>
 		<string>
 			<key>Tip_TransferToInventory</key>
@@ -3113,11 +3113,11 @@
 		</string>
 		<string>
 			<key>Label_SummaryPositiveQualities</key>
-			<text>Gaben</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Label_SummaryNegativeQualities</key>
-			<text>Handicaps</text>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Label_SummaryContacts</key>
@@ -3177,11 +3177,11 @@
 		</string>
 		<string>
 			<key>Tip_BuildPositiveQualities</key>
-			<text>Charaktere können maximal 35 GP für Gaben ausgeben. Dunkelrot markierte Gaben zählen nicht in dieses Limit.</text>
+			<text>Charaktere können maximal 35 GP für Vorteile ausgeben. Dunkelrot markierte Vorteile zählen nicht in dieses Limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
-			<text>Charaktere können maximal 35 GP für Handicaps erhalten. Dunkelrot markierte Gaben zählen nicht in dieses Limit.</text>
+			<text>Charaktere können maximal 35 GP für Nachteile erhalten. Dunkelrot markierte Nachteile zählen nicht in dieses Limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildFoci</key>
@@ -4473,15 +4473,15 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Gaben auszugeben</text>
+			<text>Charakteren gestatten, mehr als 35 GP für Vorteile auszugeben</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Handicaps zu erhalten</text>
+			<text>Charakteren gestatten, mehr als 35 GP für Nachteile zu erhalten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Charaktere können maximal 35 GP für Handicaps erhalten</text>
+			<text>Charaktere können maximal 35 GP für Nachteile erhalten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -4525,11 +4525,11 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
-			<text>Gaben</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
-			<text>Handicaps</text>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -4964,8 +4964,12 @@
 			<text>Gabe auswählen</text>
 		</string>
 		<string>
+			<key>Label_FilterByKarma</key>
+			<text>Filtern nach Karma:</text>
+		</string>
+		<string>
 			<key>Checkbox_SelectQuality_LimitList</key>
-			<text>Nur Gaben/Handicaps, die ich auswählen kann</text>
+			<text>Nur Gaben, die ich auswählen kann</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectQuality_Metagenetic</key>
@@ -4981,7 +4985,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectQuality_QualityLimit</key>
-			<text>Limit für Gaben/Handicaps</text>
+			<text>Limit für Gaben</text>
 		</string>
 		<string>
 			<key>Message_SelectQuality_QualityRestriction</key>
@@ -5368,6 +5372,10 @@
 			<text>Wert:</text>
 		</string>
 		<string>
+			<key>Label_CreateImprovementExactly</key>
+			<text>Exakt:</text>
+		</string>
+		<string>
 			<key>Label_CreateImprovementMinimum</key>
 			<text>Minimum:</text>
 		</string>
@@ -5421,39 +5429,39 @@
 		</string>
 		<string>
 			<key>Node_SelectedAdvancedComplexForms</key>
-			<text>Ausgewählte Erweiterte komplexe Formen</text>
+			<text>Erweiterte Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedAREComplexForms</key>
-			<text>Ausgewählte ARE-Komplexe Form</text>
+			<text>ARE-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedAutosoftComplexForms</key>
-			<text>Ausgewählte Autosoft-Komplexe Form</text>
+			<text>Autosoft-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedCommonUseComplexForms</key>
-			<text>Ausgewählte Gewöhnliche-Nutzung-Komplexe Formen</text>
+			<text>Gewöhnliche-Nutzung-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedHackingComplexForms</key>
-			<text>Ausgewählte Hacking-Komplexe Formen</text>
+			<text>Hacking-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedMalwareComplexForms</key>
-			<text>Ausgewählte Schadsoftware-Komplexe Formen</text>
+			<text>Schadsoftware-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedSensorComplexForms</key>
-			<text>Sensoren-Komplexe Form wählen</text>
+			<text>Sensoren-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedSkillsoftsComplexForms</key>
-			<text>Ausgewählte Talentsoft-Komplexe Formen</text>
+			<text>Talentsoft-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedTacticalARComplexForms</key>
-			<text>Ausgewählte Taktische AR-Komplexe Formen</text>
+			<text>Taktische AR-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Tab_Options_BPCosts</key>
@@ -5913,7 +5921,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedImprovements</key>
-			<text>Ausgewählte Verbesserungen</text>
+			<text>Verbesserungen</text>
 		</string>
 		<string>
 			<key>Button_EditImprovement</key>
@@ -7528,7 +7536,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedAIPrograms</key>
-			<text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
+			<text>KI Programme und fortgeschrittene Programme</text>
 		</string>
 		<!-- End Region-->
 		<!-- Select AI Program Window -->
@@ -8228,7 +8236,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedQualities</key>
-			<text>Ausgewählte Gaben</text>
+			<text>Gaben</text>
 		</string>
 		<string>
 			<key>Label_QualityLevel</key>
