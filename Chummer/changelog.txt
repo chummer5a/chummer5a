@@ -145,6 +145,7 @@ Data Changes:
 - Removed the <hide /> flag from the Aware quality.
 - Horse mentor spirit now adds a proxy for the Movement critter power as a metamagic. 
 - Added a customdata entry for German Commlink App prices.
+- Fixed incorrect priority values for the Falconine and Canine shifter metatypes at Priority C.
 
 New Strings:
 
