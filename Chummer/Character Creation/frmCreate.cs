@@ -50,8 +50,8 @@ namespace Chummer
         private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear;
         private StoryBuilder _objStoryBuilder;
-        private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
-        private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
+        //private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
+        //private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -2504,20 +2504,15 @@ namespace Chummer
                     }
 
                     // Paste Gear.
-                    Gear objGear = null;
                     objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
 
                     if (objXmlNode != null)
                     {
-                        Gear objNewGear = new Gear(CharacterObject);
-                        objNewGear.Load(objXmlNode, true);
-                        objGear = objNewGear;
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Load(objXmlNode, true);
                         
                         Armor objSelectedArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
-                        if (objSelectedArmor != null)
-                        {
-                            objSelectedArmor.Gear.Add(objGear);
-                        }
+                        objSelectedArmor?.Gear.Add(objGear);
 
                         // Add any Weapons that come with the Gear.
                         XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
@@ -2542,13 +2537,11 @@ namespace Chummer
                 if (tabStreetGearTabs.SelectedTab == tabWeapons)
                 {
                     // Paste Gear into a Weapon Accessory.
-                    Gear objGear = null;
                     XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        Gear objNewGear = new Gear(CharacterObject);
-                        objNewGear.Load(objXmlNode, true);
-                        objGear = objNewGear;
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Load(objXmlNode, true);
 
                         objGear.Parent = null;
                         
@@ -2609,13 +2602,11 @@ namespace Chummer
                 if (tabStreetGearTabs.SelectedTab == tabGear)
                 {
                     // Paste Gear.
-                    Gear objGear = null;
                     XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        Gear objNewGear = new Gear(CharacterObject);
-                        objNewGear.Load(objXmlNode, true);
-                        objGear = objNewGear;
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Load(objXmlNode, true);
 
                         objGear.Parent = null;
                         CharacterObject.Gear.Add(objGear);
@@ -2651,19 +2642,6 @@ namespace Chummer
                     objVehicle.Load(objXmlNode, true);
 
                     CharacterObject.Vehicles.Add(objVehicle);
-
-                    TreeNode objParent = treVehicles.Nodes[0];
-                    if (!string.IsNullOrEmpty(objVehicle.Location))
-                    {
-                        foreach (TreeNode objFind in treVehicles.Nodes)
-                        {
-                            if (objFind.Text == objVehicle.Location)
-                            {
-                                objParent = objFind;
-                                break;
-                            }
-                        }
-                    }
                     
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -2671,14 +2649,12 @@ namespace Chummer
                 }
 
                 // Paste Gear.
-                Gear objGear = null;
                 objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
 
                 if (objXmlNode != null)
                 {
-                    Gear objNewGear = new Gear(CharacterObject);
-                    objNewGear.Load(objXmlNode, true);
-                    objGear = objNewGear;
+                    Gear objGear = new Gear(CharacterObject);
+                    objGear.Load(objXmlNode, true);
 
                     // Paste the Gear into a Vehicle.
                     foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
@@ -3612,7 +3588,7 @@ namespace Chummer
                             // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                             if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && CharacterObjectOptions.AllowObsolescentUpgrade))
                             {
-                                frmSelectNumber frmModPercent = new frmSelectNumber(2)
+                                frmSelectNumber frmModPercent = new frmSelectNumber()
                                 {
                                     Minimum = 0,
                                     Maximum = 1000000,
@@ -3766,9 +3742,7 @@ namespace Chummer
 
             if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier", GlobalOptions.Language)))
                 return;
-
-            string strLimit = treLimit.SelectedNode.Parent.Text;
-
+            
             // Delete the selected Limit Modifier.
             CharacterObject.LimitModifiers.Remove(objLimitModifier);
 
@@ -4043,7 +4017,7 @@ namespace Chummer
                 InitiationGrade objGrade = CharacterObject.InitiationGrades.FindById(strSelectedId);
                 if (objGrade != null)
                 {
-                    string strMessage = string.Empty;
+                    string strMessage;
                     // Stop if this isn't the highest grade
                     if (CharacterObject.MAGEnabled)
                     {
@@ -4168,7 +4142,7 @@ namespace Chummer
                         {
                             if (objMetamagic.Grade <= 0)
                                 return;
-                            string strMessage = string.Empty;
+                            string strMessage;
                             if (CharacterObject.MAGEnabled)
                                 strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
                             else if (CharacterObject.RESEnabled)
@@ -11269,7 +11243,7 @@ namespace Chummer
 
                 lblSpritesBP.Text = string.Format("{0} " + strPoints, intSpritePointsUsed);
 
-                string strComplexFormsBP = $"0 {strPoints}";
+                string strComplexFormsBP;
                 if (CharacterObject.CFPLimit > 0)
                 {
                     strComplexFormsBP = $"{intFormsPointsUsed} {LanguageManager.GetString("String_Of", GlobalOptions.Language)} {CharacterObject.CFPLimit}";
@@ -11310,58 +11284,58 @@ namespace Chummer
             string karma = LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             string of = LanguageManager.GetString("String_Of", GlobalOptions.Language);
             string def = $"0 {karma}";
-            string s = string.Empty;
+            string strTemp = string.Empty;
             //Update Skill Labels
             //Active skills
-            s = def;
+            strTemp = def;
             int intActiveSkillPointsMaximum = CharacterObject.SkillsSection.SkillPointsMaximum;
             if (intActiveSkillPointsMaximum > 0)
             {
-                s = $"{CharacterObject.SkillsSection.SkillPoints} {of} {intActiveSkillPointsMaximum}";
+                strTemp = $"{CharacterObject.SkillsSection.SkillPoints} {of} {intActiveSkillPointsMaximum}";
             }
             int intActiveSkillsTotalCostKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
             if (intActiveSkillsTotalCostKarma > 0)
             {
-                if (s != def)
-                { s += $": {intActiveSkillsTotalCostKarma} {karma}"; }
+                if (strTemp != def)
+                { strTemp += $": {intActiveSkillsTotalCostKarma} {karma}"; }
                 else
-                { s = $"{intActiveSkillsTotalCostKarma} {karma}"; }
+                { strTemp = $"{intActiveSkillsTotalCostKarma} {karma}"; }
 
             }
-            lblActiveSkillsBP.Text = s;
+            lblActiveSkillsBP.Text = strTemp;
             //Knowledge skills
-            s = def;
+            strTemp = def;
             int intKnowledgeSkillPointsMaximum = CharacterObject.SkillsSection.KnowledgeSkillPoints;
             if (intKnowledgeSkillPointsMaximum > 0)
             {
-                s = $"{CharacterObject.SkillsSection.KnowledgeSkillPointsRemain} {of} {intKnowledgeSkillPointsMaximum}";
+                strTemp = $"{CharacterObject.SkillsSection.KnowledgeSkillPointsRemain} {of} {intKnowledgeSkillPointsMaximum}";
             }
             int intKnowledgeSkillsTotalCostKarma = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
-                if (s != def)
-                { s += $": {intKnowledgeSkillsTotalCostKarma} {karma}"; }
+                if (strTemp != def)
+                { strTemp += $": {intKnowledgeSkillsTotalCostKarma} {karma}"; }
                 else
-                { s = $"{intKnowledgeSkillsTotalCostKarma} {karma}"; }
+                { strTemp = $"{intKnowledgeSkillsTotalCostKarma} {karma}"; }
             }
-            lblKnowledgeSkillsBP.Text = s;
+            lblKnowledgeSkillsBP.Text = strTemp;
             //Groups
-            s = def;
+            strTemp = def;
             int intSkillGroupPointsMaximum = CharacterObject.SkillsSection.SkillGroupPointsMaximum;
             if (intSkillGroupPointsMaximum > 0)
             {
-                s = $"{CharacterObject.SkillsSection.SkillGroupPoints} {of} {intSkillGroupPointsMaximum}";
+                strTemp = $"{CharacterObject.SkillsSection.SkillGroupPoints} {of} {intSkillGroupPointsMaximum}";
             }
             int intSkillGroupsTotalCostKarma = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
             if (intSkillGroupsTotalCostKarma > 0)
             {
-                if (s != def)
-                { s += $": {intSkillGroupsTotalCostKarma} {karma}"; }
+                if (strTemp != def)
+                { strTemp += $": {intSkillGroupsTotalCostKarma} {karma}"; }
                 else
-                { s = $"{intSkillGroupsTotalCostKarma} {karma}"; }
+                { strTemp = $"{intSkillGroupsTotalCostKarma} {karma}"; }
 
             }
-            lblSkillGroupsBP.Text = s;
+            lblSkillGroupsBP.Text = strTemp;
         }
 
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)

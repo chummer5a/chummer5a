@@ -637,7 +637,7 @@ namespace Chummer
                     string strCost = xmlVehicleMod["cost"]?.InnerText ?? string.Empty;
                     if (strCost.StartsWith("Variable("))
                     {
-                        decimal decMin = 0;
+                        decimal decMin;
                         decimal decMax = decimal.MaxValue;
                         strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
                         if (strCost.Contains('-'))

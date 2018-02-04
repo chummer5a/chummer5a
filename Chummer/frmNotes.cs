@@ -51,8 +51,7 @@ namespace Chummer
             if (e.Control && e.KeyCode == Keys.A)
             {
                 e.SuppressKeyPress = true;
-                if (sender != null)
-                    ((TextBox)sender).SelectAll();
+                ((TextBox) sender)?.SelectAll();
             }
         }
 
@@ -72,10 +71,7 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return txtNotes.Text;
-            }
+            get => txtNotes.Text;
             set
             {
                 txtNotes.Text = value;

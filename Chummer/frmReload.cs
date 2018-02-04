@@ -107,10 +107,9 @@ namespace Chummer
             Graphics objGraphics = objSender.CreateGraphics();
             Font objFont = objSender.Font;
             int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
             foreach (ListItem objItem in objSender.Items)
             {
-                intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
+                int intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
                 if (intWidth < intNewWidth)
                 {
                     intWidth = intNewWidth;

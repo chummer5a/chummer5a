@@ -326,7 +326,7 @@ namespace Chummer
                 string strCostElement = objXmlMod["cost"]?.InnerText ?? string.Empty;
                 if (strCostElement.StartsWith("Variable("))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))

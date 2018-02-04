@@ -744,7 +744,7 @@ namespace Chummer.Backend.Equipment
             if (strReturn.StartsWith("Variable("))
             {
                 strReturn = strReturn.TrimStart("Variable(", true).TrimEnd(')');
-                decimal decMin = 0;
+                decimal decMin;
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
                 {

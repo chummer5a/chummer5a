@@ -169,10 +169,7 @@ namespace Chummer
                 else
                 {
                     _characterOptions.LimbCount = Convert.ToInt32(strLimbCount.Substring(0, intSeparatorIndex));
-                    if (intSeparatorIndex + 1 < strLimbCount.Length)
-                        _characterOptions.ExcludeLimbSlot = strLimbCount.Substring(intSeparatorIndex + 1);
-                    else
-                        _characterOptions.ExcludeLimbSlot = string.Empty;
+                    _characterOptions.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length ? strLimbCount.Substring(intSeparatorIndex + 1) : string.Empty;
                 }
             }
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
@@ -186,10 +183,7 @@ namespace Chummer
                 objNuyenFormat.Append(".");
                 for (int i = 0; i < intNuyenDecimalPlacesMaximum; ++i)
                 {
-                    if (i < intNuyenDecimalPlacesMinimum)
-                        objNuyenFormat.Append("0");
-                    else
-                        objNuyenFormat.Append("#");
+                    objNuyenFormat.Append(i < intNuyenDecimalPlacesMinimum ? "0" : "#");
                 }
             }
             _characterOptions.NuyenFormat = objNuyenFormat.ToString();
@@ -1481,17 +1475,11 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOldSelected))
             {
-                if (strSelectedSheetLanguage == GlobalOptions.DefaultLanguage)
-                    cboXSLT.SelectedValue = strOldSelected;
-                else
-                    cboXSLT.SelectedValue = Path.Combine(strSelectedSheetLanguage, strOldSelected);
+                cboXSLT.SelectedValue = !string.IsNullOrEmpty(strSelectedSheetLanguage) && strSelectedSheetLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strSelectedSheetLanguage, strOldSelected) : strOldSelected;
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
                 if (cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
                 {
-                    if (strSelectedSheetLanguage == GlobalOptions.DefaultLanguage)
-                        cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
-                    else
-                        cboXSLT.SelectedValue = Path.Combine(strSelectedSheetLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    cboXSLT.SelectedValue = !string.IsNullOrEmpty(strSelectedSheetLanguage) && strSelectedSheetLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strSelectedSheetLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue) : GlobalOptions.DefaultCharacterSheetDefaultValue;
                     if (cboXSLT.SelectedIndex == -1)
                     {
                         cboXSLT.SelectedIndex = 0;

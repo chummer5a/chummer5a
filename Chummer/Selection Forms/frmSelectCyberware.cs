@@ -716,7 +716,7 @@ namespace Chummer
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable("))
                     {
-                        decimal decMin = 0;
+                        decimal decMin;
                         decimal decMax = decimal.MaxValue;
                         strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
                         if (strCost.Contains('-'))

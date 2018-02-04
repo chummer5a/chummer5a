@@ -104,7 +104,7 @@ namespace Chummer.Backend.Equipment
                 _strCost = objXmlAccessory["cost"]?.InnerText ?? "0";
                 if (_strCost.StartsWith("Variable("))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))

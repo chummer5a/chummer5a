@@ -92,7 +92,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strCost.StartsWith("Variable("))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))

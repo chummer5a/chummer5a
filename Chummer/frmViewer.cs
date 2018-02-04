@@ -378,7 +378,7 @@ namespace Chummer
             string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
-                string strReturn = string.Format("File not found when attempting to load {0}\n", _strSelectedSheet);
+                string strReturn = $"File not found when attempting to load {_strSelectedSheet}\n";
                 Log.Enter(strReturn);
                 MessageBox.Show(strReturn);
                 return;
@@ -394,7 +394,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                string strReturn = string.Format("Error attempting to load {0}\n", _strSelectedSheet);
+                string strReturn = $"Error attempting to load {_strSelectedSheet}\n";
                 Log.Enter(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
@@ -687,10 +687,7 @@ namespace Chummer
         /// </summary>
         public string SelectedSheet
         {
-            set
-            {
-                _strSelectedSheet = value;
-            }
+            set => _strSelectedSheet = value;
         }
 
         /// <summary>
@@ -698,10 +695,7 @@ namespace Chummer
         /// </summary>
         public List<Character> Characters
         {
-            set
-            {
-                _lstCharacters = value;
-            }
+            set => _lstCharacters = value;
         }
 #endregion
         
@@ -727,28 +721,18 @@ namespace Chummer
             string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
             if (strNewLanguage == strOldSelected)
             {
-                if (strNewLanguage == GlobalOptions.DefaultLanguage)
-                    _strSelectedSheet = strOldSelected;
-                else
-                    _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+                _strSelectedSheet = strNewLanguage == GlobalOptions.DefaultLanguage ? strOldSelected : Path.Combine(strNewLanguage, strOldSelected);
             }
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                int intNameIndex;
-                if (strNewLanguage == GlobalOptions.DefaultLanguage)
-                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
-                else
-                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
                 else if (cboXSLT.Items.Count > 0)
                 {
-                    if (strNewLanguage == GlobalOptions.DefaultLanguage)
-                        _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
-                    else
-                        _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    _strSelectedSheet = strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheetDefaultValue : Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
                     cboXSLT.SelectedValue = _strSelectedSheet;
                     if (cboXSLT.SelectedIndex == -1)
                     {
