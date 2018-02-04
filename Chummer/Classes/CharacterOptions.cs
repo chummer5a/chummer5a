@@ -228,14 +228,12 @@ namespace Chummer
 
             // If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
             string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
-            if (!File.Exists(strFilePath))
+            if (!File.Exists(strFilePath) || !Load("default.xml"))
             {
                 _strFileName = "default.xml";
                 LoadFromRegistry();
                 Save();
             }
-            else
-                Load("default.xml");
         }
 
         /// <summary>
@@ -245,7 +243,7 @@ namespace Chummer
         {
             string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
             {
                 Formatting = Formatting.Indented,
                 Indentation = 1,
@@ -956,7 +954,7 @@ namespace Chummer
         /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private void LoadFromRegistry()
+        public void LoadFromRegistry()
         {
             if (GlobalOptions.ChummerRegistryKey == null)
                 return;

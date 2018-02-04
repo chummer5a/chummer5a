@@ -36,7 +36,7 @@ namespace Chummer
             _blnUseDecimal = decimal.TryParse(_strBaseString, out _decValue);
         }
 
-        override public string ToString()
+        public override string ToString()
         {
             return _strBaseString + '¥';
         }

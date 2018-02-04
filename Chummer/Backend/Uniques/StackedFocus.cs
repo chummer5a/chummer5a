@@ -70,7 +70,7 @@ namespace Chummer
         {
             Guid.TryParse(objNode["guid"].InnerText, out _guiID);
             Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
-            _blnBonded = objNode["bonded"]?.InnerText == System.Boolean.TrueString;
+            _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
             foreach (XmlNode nodGear in objNode.SelectNodes("gears/gear"))
             {
                 Gear objGear = new Gear(_objCharacter);

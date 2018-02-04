@@ -27,7 +27,7 @@ namespace Chummer
 {
     public sealed class StoryBuilder
     {
-        private readonly Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
+        private readonly Dictionary<string, string> persistenceDictionary = new Dictionary<string, string>(); 
         private readonly Character _objCharacter;
         readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp;
@@ -59,7 +59,7 @@ namespace Chummer
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)
                 {
-                    String stageName = string.Empty;
+                    string stageName = string.Empty;
                     if (i <= 4)
                     {
                         stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]").InnerText;
@@ -106,7 +106,7 @@ namespace Chummer
 
             int startingLength = story.Length;
 
-            String[] words;
+            string[] words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
                 words = Macro(innerText, xmlDoc).Split(' ', '\n', '\r', '\t');
@@ -119,7 +119,7 @@ namespace Chummer
             bool mfix = false;
             foreach (string word in words)
             {
-                String trim = word.Trim();
+                string trim = word.Trim();
                 if (trim.StartsWith("$DOLLAR"))
                 {
                     story.Append('$');

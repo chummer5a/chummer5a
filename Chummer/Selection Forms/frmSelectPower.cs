@@ -76,7 +76,7 @@ namespace Chummer
                 XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedId + "\"]");
 
                 string strPowerPointsText = objXmlPower["points"].InnerText;
-                if (objXmlPower["levels"]?.InnerText == System.Boolean.TrueString)
+                if (objXmlPower["levels"]?.InnerText == bool.TrueString)
                 {
                     strPowerPointsText += $" / {LanguageManager.GetString("Label_Power_Level", GlobalOptions.Language)}";
                 }

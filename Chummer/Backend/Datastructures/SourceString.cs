@@ -54,7 +54,7 @@ namespace Chummer
             _intPage = intPage;
         }
 
-        override public string ToString()
+        public override string ToString()
         {
             return ToString(GlobalOptions.Language);
         }

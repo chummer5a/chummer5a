@@ -39,14 +39,14 @@ namespace Chummer
         //This might not be thread save if winforms ever gets multithreaded
         private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
         private readonly Gear _gear;
-        private readonly String _attribute;
+        private readonly string _attribute;
         private readonly double[] fixedDoubles;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gear"></param>
         /// <param name="attribute"></param>
-        public ParameterAttribute(Gear gear, String attribute)
+        public ParameterAttribute(Gear gear, string attribute)
         {
             
             _gear = gear;
@@ -59,7 +59,7 @@ namespace Chummer
             {
                 //Regex to extracxt anything between ( ) in Param
                 Match m = FixedExtract.Match(_attribute);
-                String vals = m.Groups[1].Value;
+                string vals = m.Groups[1].Value;
 
                 //Regex to extract anything inbetween [ ]
                 //Not sure why i don't just split by , and remove it durring 
@@ -90,7 +90,7 @@ namespace Chummer
             get { return _gear; }
         }
 
-        public String AttributeString
+        public string AttributeString
         {
             get { return _attribute; }
         }

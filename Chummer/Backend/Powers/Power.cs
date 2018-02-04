@@ -115,7 +115,7 @@ namespace Chummer
             _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
-            LevelsEnabled = objNode["levels"]?.InnerText == System.Boolean.TrueString;
+            LevelsEnabled = objNode["levels"]?.InnerText == bool.TrueString;
             Rating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -205,7 +205,7 @@ namespace Chummer
                 _strAdeptWayDiscount = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
-            LevelsEnabled = objNode["levels"]?.InnerText == System.Boolean.TrueString;
+            LevelsEnabled = objNode["levels"]?.InnerText == bool.TrueString;
             objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
             objNode.TryGetInt32FieldQuickly("freelevels", ref _intFreeLevels);

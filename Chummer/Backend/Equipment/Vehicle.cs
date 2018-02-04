@@ -897,7 +897,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Is this vehicle a drone?
         /// </summary>
-        public Boolean IsDrone
+        public bool IsDrone
         {
             get
             {

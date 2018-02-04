@@ -169,7 +169,7 @@ namespace Chummer
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string strAttribute in new String[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
+                foreach (string strAttribute in new string[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
                 {
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))

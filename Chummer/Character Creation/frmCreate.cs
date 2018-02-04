@@ -1990,7 +1990,7 @@ namespace Chummer
                         return;
 
                     MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,
@@ -2036,7 +2036,7 @@ namespace Chummer
                     if (objCopyArmor != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2081,7 +2081,7 @@ namespace Chummer
                     if (objCopyGear != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2146,7 +2146,7 @@ namespace Chummer
                             return;
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2190,7 +2190,7 @@ namespace Chummer
                     if (objCopyGear != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2252,7 +2252,7 @@ namespace Chummer
                         return;
 
                     MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,
@@ -2311,7 +2311,7 @@ namespace Chummer
                     Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
 
                     MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,
@@ -2354,7 +2354,7 @@ namespace Chummer
                     if (objCopyGear != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2417,7 +2417,7 @@ namespace Chummer
                                     return;
 
                                 MemoryStream objStream = new MemoryStream();
-                                XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                                XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                                 {
                                     Formatting = Formatting.Indented,
                                     Indentation = 1,
@@ -8183,7 +8183,7 @@ namespace Chummer
             }
             XmlNode objQualityNode = objSelectedQuality.GetNode();
             string strLimitString = objQualityNode != null ? (objQualityNode["chargenlimit"]?.InnerText ?? objQualityNode["limit"]?.InnerText) : string.Empty;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode["nolevels"] == null && Int32.TryParse(strLimitString, out int intMaxRating))
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
                 nudQualityLevel.Value = objSelectedQuality.Levels;
@@ -16923,7 +16923,7 @@ namespace Chummer
         /// <param name="objXmlGear">XmlNode of the Gear to add.</param>
         /// <param name="objParentObject">Object to associate the newly-created items with.</param>
         /// <param name="blnCreateChildren">Whether or not the default plugins for the Gear should be created.</param>
-        private Gear AddPACKSGear(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Object objParentObject, bool blnCreateChildren)
+        private Gear AddPACKSGear(XmlDocument objXmlGearDocument, XmlNode objXmlGear, object objParentObject, bool blnCreateChildren)
         {
             XmlNode objXmlGearNode = null;
             string strName = objXmlGear["name"]?.InnerText;

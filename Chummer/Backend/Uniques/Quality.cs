@@ -867,7 +867,7 @@ namespace Chummer
                 if (xmlOneOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<String> lstRequired = new HashSet<String>();
+                    HashSet<string> lstRequired = new HashSet<string>();
                     foreach (XmlNode node in xmlOneOfNode.SelectNodes("quality"))
                     {
                         lstRequired.Add(node.InnerText);
@@ -892,7 +892,7 @@ namespace Chummer
                 if (xmlAllOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<String> lstRequired = new HashSet<String>();
+                    HashSet<string> lstRequired = new HashSet<string>();
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
                         lstRequired.Add(objQuality.Name);
@@ -915,7 +915,7 @@ namespace Chummer
                 if (xmlOneOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<String> qualityForbidden = new HashSet<String>();
+                    HashSet<string> qualityForbidden = new HashSet<string>();
                     foreach (XmlNode node in xmlOneOfNode.SelectNodes("quality"))
                     {
                         qualityForbidden.Add(node.InnerText);

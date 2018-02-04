@@ -59,7 +59,7 @@ namespace Chummer
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
+            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
             {

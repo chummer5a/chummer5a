@@ -2540,7 +2540,7 @@ namespace Chummer
                         return;
 
                     MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,
@@ -2586,7 +2586,7 @@ namespace Chummer
                     if (objCopyArmor != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2631,7 +2631,7 @@ namespace Chummer
                     if (objCopyGear != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2696,7 +2696,7 @@ namespace Chummer
                             return;
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2740,7 +2740,7 @@ namespace Chummer
                     if (objCopyGear != null)
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2801,7 +2801,7 @@ namespace Chummer
                         return;
 
                     MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,
@@ -2862,7 +2862,7 @@ namespace Chummer
                         Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
@@ -2905,7 +2905,7 @@ namespace Chummer
                         if (objCopyGear != null)
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
                                 Indentation = 1,
@@ -2968,7 +2968,7 @@ namespace Chummer
                                         return;
 
                                     MemoryStream objStream = new MemoryStream();
-                                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                                     {
                                         Formatting = Formatting.Indented,
                                         Indentation = 1,
@@ -6430,7 +6430,6 @@ namespace Chummer
                 if (frmItemNotes.DialogResult == DialogResult.OK)
                 {
                     objWeek.Notes = frmItemNotes.Notes;
-                    lstCalendar.SelectedItems[0].SubItems[1].Text = frmItemNotes.Notes;
                     if (objWeek.Notes != strOldValue)
                     {
                         IsDirty = true;
@@ -15850,7 +15849,6 @@ namespace Chummer
         /// <param name="intConditionMax">Highest value of the condition monitor type.</param>
         /// <param name="intConditionValueIn">Current value of the condition monitor type.</param>
         /// <param name="blnStun">Whether or not we're working on the Stun or Physical track. Stun track == true</param>
-        /// <param name="intPenalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
         private void ProcessConditionMonitor(int intBoxTag, Panel pnlConditionMonitorPanel, int intConditionMax, int intConditionValueIn, bool blnStun, bool blnCurrent = false)
         {
             if (_blnSkipRefresh)

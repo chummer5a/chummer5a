@@ -26,7 +26,7 @@ namespace Chummer.UI.Attributes
     public partial class AttributeControl : UserControl
     {
         // ConnectionRatingChanged Event Handler.
-        public delegate void ValueChangedHandler(Object sender, EventArgs e);
+        public delegate void ValueChangedHandler(object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
         private readonly CharacterAttrib _objAttribute;
         private readonly object sender;

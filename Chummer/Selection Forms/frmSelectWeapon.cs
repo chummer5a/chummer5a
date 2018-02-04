@@ -236,11 +236,11 @@ namespace Chummer
                 tabWeapons.Columns.Add("WeaponName");
                 tabWeapons.Columns.Add("Dice");
                 tabWeapons.Columns.Add("Accuracy");
-                tabWeapons.Columns["Accuracy"].DataType = typeof(Int32);
+                tabWeapons.Columns["Accuracy"].DataType = typeof(int);
                 tabWeapons.Columns.Add("Damage");
                 tabWeapons.Columns.Add("AP");
                 tabWeapons.Columns.Add("RC");
-                tabWeapons.Columns["RC"].DataType = typeof(Int32);
+                tabWeapons.Columns["RC"].DataType = typeof(int);
                 tabWeapons.Columns.Add("Ammo");
                 tabWeapons.Columns.Add("Mode");
                 tabWeapons.Columns.Add("Reach");

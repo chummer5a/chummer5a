@@ -47,7 +47,7 @@ namespace Chummer
             }
         }
 
-        override public string ToString()
+        public override string ToString()
         {
             return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
         }
