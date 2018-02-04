@@ -338,23 +338,7 @@ namespace Chummer
                     objDoc = objReference.XmlContent;
             }
             
-            // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-            if (!objReference.DuplicatesChecked && strFileName != "improvements.xml")
-            {
-                foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
-                {
-                    // Only process nodes that have children and are not the version node
-                    if (objNode.Name != "version" && objNode.HasChildNodes)
-                    {
-                        // Parse the node into an XDocument for LINQ parsing.
-                        CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
-                    }
-                }
-
-                objReference.DuplicatesChecked = true;
-            }
-
-            if (strFileName != "improvements.xml")
+            if (strFileName == "improvements.xml")
                 return objDoc;
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
@@ -423,6 +407,22 @@ namespace Chummer
                         }
                     }
                 }
+            }
+
+            // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
+            if (!objReference.DuplicatesChecked || blnHasLiveCustomData)
+            {
+                foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
+                {
+                    // Only process nodes that have children and are not the version node
+                    if (objNode.Name != "version" && objNode.HasChildNodes)
+                    {
+                        // Parse the node into an XDocument for LINQ parsing.
+                        CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
+                    }
+                }
+
+                objReference.DuplicatesChecked = true;
             }
 
             return objDoc;
