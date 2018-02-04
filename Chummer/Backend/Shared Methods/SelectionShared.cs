@@ -195,7 +195,7 @@ namespace Chummer
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        List<IHasName> lstToCheck = objListToCheck.ToList();
+                        var lstToCheck = objListToCheck?.ToList() ?? new List<IHasName>();
                         string strNameNode = xmlNode["name"]?.InnerText;
                         if (blnCheckCyberwareChildren)
                         {

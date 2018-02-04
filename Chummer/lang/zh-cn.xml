@@ -7379,10 +7379,6 @@
 			<text>操纵-物理</text>
 		</string>
 		<string>
-			<key>Label_SpellDicePool</key>
-			<text>骰池：</text>
-		</string>
-		<string>
 			<key>Label_SummaryPreparations</key>
 			<text>制剂</text>
 		</string>

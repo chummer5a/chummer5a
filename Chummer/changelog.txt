@@ -142,6 +142,7 @@ Data Changes:
 - Fixed a bug where the Evo Atlantis was granting two cyberfins instead of cyberfins on both hands and both feet.
 - Removed the <hide /> flag from the Aware quality.
 - Horse mentor spirit now adds a proxy for the Movement critter power as a metamagic. 
+- Added a customdata entry for German Commlink App prices.
 
 New Strings:
 

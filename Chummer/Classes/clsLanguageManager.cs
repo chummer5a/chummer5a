@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -328,7 +328,7 @@ namespace Chummer
                     UpdateControls(objSplitControl.Panel1, strIntoLanguage);
                     UpdateControls(objSplitControl.Panel2, strIntoLanguage);
                 }
-                else if (objChild as Panel != null)
+                else if (objChild is Panel)
                 {
                     UpdateControls(objChild, strIntoLanguage);
                 }
@@ -348,6 +348,16 @@ namespace Chummer
                         }
                         else if (objNode.Text.StartsWith('['))
                             objNode.Text = string.Empty;
+                    }
+                }
+                else if (objChild is DataGridView)
+                {
+                    foreach (DataGridViewTextBoxColumnTranslated column in ((DataGridView) objChild).Columns)
+                    {
+                        if (!string.IsNullOrWhiteSpace(column.TranslationTag))
+                        {
+                            column.HeaderText = GetString(column.TranslationTag, strIntoLanguage);
+                        }
                     }
                 }
             }

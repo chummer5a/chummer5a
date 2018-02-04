@@ -4305,12 +4305,8 @@
       <text>Extremo (-6)</text>
     </string>
     <string>
-      <key>Label_SpellDicePool</key>
-      <text>Pilha de Dados:</text>
-    </string>
-    <string>
       <key>Label_DicePool</key>
-      <text>Pilha de Dados</text>
+      <text>Pilha de Dados:</text>
     </string>
     <string>
       <key>Checkbox_BaseWeapon</key>

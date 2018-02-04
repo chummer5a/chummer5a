@@ -242,6 +242,7 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1643,6 +1644,7 @@
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Commlink App Prices\amend_commlinkappsprices_gear.xml" />
     <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml" />
     <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml" />
     <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml" />

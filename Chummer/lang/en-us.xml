@@ -4508,12 +4508,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Extreme (-6)</text>
     </string>
     <string>
-      <key>Label_SpellDicePool</key>
-      <text>Dice Pool:</text>
-    </string>
-    <string>
       <key>Label_DicePool</key>
-      <text>Dice Pool</text>
+      <text>Dice Pool:</text>
     </string>
     <string>
       <key>Checkbox_BaseWeapon</key>

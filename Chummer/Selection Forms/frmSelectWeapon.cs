@@ -70,8 +70,7 @@ namespace Chummer
                 Format = _objCharacter.Options.NuyenFormat + '¥',
                 NullValue = null
             };
-            dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewNuyenCellStyle;
-            Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
+            dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
             
             if (_objCharacter.Created)
             {

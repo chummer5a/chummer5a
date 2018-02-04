@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -7661,10 +7661,6 @@
 		<string>
 			<key>String_DataProcessing</key>
 			<text>Datenverarbeitung</text>
-		</string>
-		<string>
-			<key>Label_SpellDicePool</key>
-			<text>Würfelpool:</text>
 		</string>
 		<string>
 			<key>Node_SelectAdvancedLifestyle_Entertainments</key>

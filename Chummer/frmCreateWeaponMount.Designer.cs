@@ -288,7 +288,7 @@ namespace Chummer
             this.cmdDeleteMod.Name = "cmdDeleteMod";
             this.cmdDeleteMod.Size = new System.Drawing.Size(122, 23);
             this.cmdDeleteMod.TabIndex = 67;
-            this.cmdDeleteMod.Tag = "Button_AddMod";
+            this.cmdDeleteMod.Tag = "Button_DeleteMod";
             this.cmdDeleteMod.Text = "Delete Mod";
             this.cmdDeleteMod.UseVisualStyleBackColor = true;
             this.cmdDeleteMod.Click += new System.EventHandler(this.cmdDeleteMod_Click);
@@ -299,6 +299,7 @@ namespace Chummer
             this.cmdAddMod.Name = "cmdAddMod";
             this.cmdAddMod.Size = new System.Drawing.Size(122, 23);
             this.cmdAddMod.TabIndex = 66;
+            this.cmdAddMod.Tag = "Button_AddMod";
             this.cmdAddMod.Text = "Add Mod";
             this.cmdAddMod.UseVisualStyleBackColor = true;
             this.cmdAddMod.Click += new System.EventHandler(this.cmdAddMod_Click);

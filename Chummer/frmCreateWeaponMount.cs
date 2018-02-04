@@ -133,6 +133,7 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
