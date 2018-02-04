@@ -81,8 +81,7 @@ namespace Chummer
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
-
-            GlobalOptions.MRUChanged += DoNothing;
+            
             Program.MainForm.OpenCharacterForms.Add(this);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -488,7 +487,6 @@ namespace Chummer
             List<ListItem> lstFireModes = new List<ListItem>();
             foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
             {
-                string strName = mode.ToString();
                 lstFireModes.Add(new ListItem(mode.ToString(), LanguageManager.GetString($"Enum_{mode}", GlobalOptions.Language)));
             }
             lstStreams.Sort(CompareListItems.CompareNames);
@@ -887,7 +885,6 @@ namespace Chummer
                 CharacterObject.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 CharacterObject.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 CharacterObject.ExConChanged -= objCharacter_ExConChanged;
-                GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1322,7 +1319,6 @@ namespace Chummer
             if (CharacterObject.ExCon)
             {
                 bool blnDoRefresh = false;
-                string strSelectedCyberware = treCyberware.SelectedNode?.Tag.ToString();
                 bool funcExConIneligibleWare(Cyberware x)
                 {
                     if (x.Grade.Name == "None")
@@ -1347,7 +1343,7 @@ namespace Chummer
                     }
                 }
                 if (!string.IsNullOrEmpty(strExConString))
-                    strExConString = " (" + strExConString + ')';
+                    strExConString = " (" + strExConString + ") ";
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, funcExConIneligibleWare))
                 {
                     char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
@@ -1357,7 +1353,7 @@ namespace Chummer
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
-                        objExpense.Create(0, strEntry + strExConString + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(0, strEntry + strExConString + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
 
                         if (objCyberware.Parent != null)
@@ -2381,14 +2377,15 @@ namespace Chummer
             // Get the Node for the selected Vessel.
             XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
 
+            //TODO: Update spirit attribute values.
+            /*
             // Get the CharacterAttribute Modifiers for the Vessel.
             int intBOD = Convert.ToInt32(objSelected["bodmin"].InnerText);
             int intAGI = Convert.ToInt32(objSelected["agimin"].InnerText);
             int intREA = Convert.ToInt32(objSelected["reamin"].InnerText);
             int intSTR = Convert.ToInt32(objSelected["strmin"].InnerText);
 
-            //TODO: Update spirit attribute values.
-            /* Add the CharacterAttribute modifiers, making sure that none of them go below 1.
+            // Add the CharacterAttribute modifiers, making sure that none of them go below 1.
             int intSetBOD = objMerge.MAG.TotalValue + intBOD;
             int intSetAGI = objMerge.MAG.TotalValue + intAGI;
             int intSetREA = objMerge.MAG.TotalValue + intREA;
@@ -3058,13 +3055,12 @@ namespace Chummer
         private void UpdateSpellDefence(Dictionary<string, int> dicAttributeTotalValues)
         {
             // Update the Spell Defence labels.
-            string strSpellTooltip = string.Empty;
             string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
             string strCounterSpelling = LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language);
             string strSpellResistance = LanguageManager.GetString("String_SpellResistanceDice", GlobalOptions.Language);
             //Indirect Dodge
             lblSpellDefenceIndirectDodge.Text = (dicAttributeTotalValues["INT"] + dicAttributeTotalValues["REA"] + CharacterObject.TotalBonusDodgeRating).ToString();
-            strSpellTooltip = $"{strModifiers}: " +
+            string strSpellTooltip = $"{strModifiers}: " +
                               $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) + {CharacterObject.REA.DisplayAbbrev} ({dicAttributeTotalValues["REA"]}) + {strModifiers} ({CharacterObject.TotalBonusDodgeRating})";
             tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
             //Indirect Soak
@@ -4185,7 +4181,7 @@ namespace Chummer
                             // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                             if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && CharacterObjectOptions.AllowObsolescentUpgrade))
                             {
-                                frmSelectNumber frmModPercent = new frmSelectNumber(2)
+                                frmSelectNumber frmModPercent = new frmSelectNumber()
                                 {
                                     Minimum = 0,
                                     Maximum = 1000000,
@@ -4748,7 +4744,7 @@ namespace Chummer
                     {
                         if (objMetamagic.Grade <= 0)
                             return;
-                        string strMessage = string.Empty;
+                        string strMessage;
                         if (CharacterObject.MAGEnabled)
                             strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
                         else if (CharacterObject.RESEnabled)
@@ -5055,8 +5051,6 @@ namespace Chummer
         {
             // Make sure the Critter is allowed to have Optional Powers.
             XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
-            XmlNode objXmlCritter = XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
             bool blnAddAgain;
             do
@@ -5279,8 +5273,6 @@ namespace Chummer
                 return;
 
             // Create a new piece of Gear.
-            XmlNode objNode = objSelectedGear.GetNode();
-            
             List<Weapon> lstWeapons = new List<Weapon>();
             Gear objGear = new Gear(CharacterObject);
 
@@ -5429,7 +5421,13 @@ namespace Chummer
             // Locate the selected Vehicle.
             Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == frmPickItem.SelectedItem);
 
+            if (objVehicle == null)
+                return;
+
             Gear objSelectedGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
+
+            if (objSelectedGear == null)
+                return;
 
             decimal decMinimumAmount = 1.0m;
             int intDecimalPlaces = 0;
@@ -5446,7 +5444,7 @@ namespace Chummer
                 decMinimumAmount = 0.01m;
             }
 
-            decimal decMove = 0;
+            decimal decMove;
             if (objSelectedGear.Quantity == decMinimumAmount)
                 decMove = decMinimumAmount;
             else
@@ -5660,8 +5658,10 @@ namespace Chummer
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
         {
             // Locate the currently selected piece of Gear.
-            Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
-            Gear objParent = objGear?.Parent;
+            Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+            if (objGear == null)
+                return;
+            Gear objParent = objGear.Parent;
 
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
@@ -6029,7 +6029,7 @@ namespace Chummer
                 int intBP = 0;
                 if (objSelectedQuality.Type == QualityType.Negative || objXmlDeleteQuality["refundkarmaonremove"] != null)
                 {
-                    intBP = Convert.ToInt32(objXmlDeleteQuality["karma"].InnerText) * CharacterObjectOptions.KarmaQuality;
+                    intBP = Convert.ToInt32(objXmlDeleteQuality["karma"]?.InnerText) * CharacterObjectOptions.KarmaQuality;
                     if (blnCompleteDelete)
                         intBP *= objSelectedQuality.Levels;
                     if (!CharacterObjectOptions.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
@@ -19609,13 +19609,6 @@ namespace Chummer
             //chtKarma.ChartAreas[0].AxisX.MaximumAutoSize = 100;
             chtKarma.Invalidate();
             chtNuyen.Invalidate();
-        }
-        
-        /// <summary>
-        /// Dummy method to trap the Options MRUChanged Event.
-        /// </summary>
-        public static void DoNothing()
-        {
         }
 
         /// <summary>

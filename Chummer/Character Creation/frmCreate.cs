@@ -97,9 +97,7 @@ namespace Chummer
                             DataSourceUpdateMode.OnPropertyChanged);
             nudMysticAdeptMAGMagician.DataBindings.Add("Value", CharacterObject, nameof(CharacterObject.MysticAdeptPowerPoints), false,
                             DataSourceUpdateMode.OnPropertyChanged);
-
-            GlobalOptions.MRUChanged += DoNothing;
-
+            
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsAdvancedLifestyle,
@@ -216,24 +214,24 @@ namespace Chummer
                     CharacterObject.GameplayOption = "Standard";
                 }
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
-                string strKarma = objXmlGameplayOption["karma"].InnerText;
-                string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
-                if (!CharacterObjectOptions.FreeContactsMultiplierEnabled)
+                if (objXmlGameplayOption != null)
                 {
-                    string strContactMultiplier = objXmlGameplayOption["contactmultiplier"].InnerText;
-                    CharacterObject.ContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                }
-                else
-                {
-                    CharacterObject.ContactMultiplier = CharacterObjectOptions.FreeContactsMultiplier;
-                }
-                CharacterObject.GameplayOptionQualityLimit = CharacterObject.MaxKarma = Convert.ToInt32(strKarma);
-                CharacterObject.MaxNuyen = Convert.ToInt32(strNuyen);
-            }
+                    string strKarma = objXmlGameplayOption["karma"]?.InnerText;
+                    string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
+                    if (!CharacterObjectOptions.FreeContactsMultiplierEnabled)
+                    {
+                        string strContactMultiplier = objXmlGameplayOption["contactmultiplier"]?.InnerText;
+                        CharacterObject.ContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                    }
+                    else
+                    {
+                        CharacterObject.ContactMultiplier = CharacterObjectOptions.FreeContactsMultiplier;
+                    }
 
-            int count = 0;
-            foreach (Contact contact in CharacterObject.Contacts)
-                count += contact.ContactPoints;
+                    CharacterObject.GameplayOptionQualityLimit = CharacterObject.MaxKarma = Convert.ToInt32(strKarma);
+                    CharacterObject.MaxNuyen = Convert.ToInt32(strNuyen);
+                }
+            }
 
             tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             tssBPRemainLabel.Text = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language);
@@ -682,7 +680,6 @@ namespace Chummer
                 CharacterObject.RestrictedGearChanged -= objCharacter_RestrictedGearChanged;
                 CharacterObject.MadeManChanged -= objCharacter_MadeManChanged;
                 CharacterObject.BornRichChanged -= objCharacter_BornRichChanged;
-                GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1137,7 +1134,6 @@ namespace Chummer
             if (CharacterObject.ExCon)
             {
                 bool blnDoRefresh = false;
-                string strSelectedCyberware = treCyberware.SelectedNode?.Tag.ToString();
                 bool funcExConIneligibleWare(Cyberware x)
                 {
                     Cyberware objParent = x;
@@ -4233,8 +4229,6 @@ namespace Chummer
         {
             // Make sure the Critter is allowed to have Optional Powers.
             XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
-            XmlNode objXmlCritter = XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
             bool blnAddAgain;
 
@@ -15891,14 +15885,7 @@ namespace Chummer
             frmCreatePACKSKit frmBuildPACKSKit = new frmCreatePACKSKit(CharacterObject);
             frmBuildPACKSKit.ShowDialog(this);
         }
-
-        /// <summary>
-        /// Dummy method to trap the Options MRUChanged Event.
-        /// </summary>
-        public void DoNothing()
-        {
-        }
-
+        
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>

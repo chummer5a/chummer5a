@@ -955,8 +955,8 @@ namespace Chummer
                 List<string> strStickyFiles = ReadMRUList("stickymru");
                 if (strStickyFiles.Contains(strFile))
                 {
-                    if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
-                        MRUChanged.Invoke();
+                    if (blnForceDoMRUChanged && blnDoMRUChanged)
+                        MRUChanged?.Invoke();
                     return;
                 }
             }
@@ -967,8 +967,8 @@ namespace Chummer
             {
                 if (intOldIndex == intIndex)
                 {
-                    if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
-                        MRUChanged.Invoke();
+                    if (blnForceDoMRUChanged && blnDoMRUChanged)
+                        MRUChanged?.Invoke();
                     return;
                 }
                 strFiles.RemoveAt(intOldIndex);
@@ -986,8 +986,8 @@ namespace Chummer
                 i++;
                 _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
             }
-            if (blnDoMRUChanged && MRUChanged != null)
-                MRUChanged.Invoke();
+            if (blnDoMRUChanged)
+                MRUChanged?.Invoke();
         }
 
         /// <summary>
@@ -1009,11 +1009,11 @@ namespace Chummer
                     else
                         _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
                 }
-                if (blnDoMRUChanged && MRUChanged != null)
-                    MRUChanged.Invoke();
+                if (blnDoMRUChanged)
+                    MRUChanged?.Invoke();
             }
-            else if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
-                MRUChanged.Invoke();
+            else if (blnForceDoMRUChanged && blnDoMRUChanged)
+                MRUChanged?.Invoke();
         }
 
         /// <summary>
@@ -1053,8 +1053,8 @@ namespace Chummer
                     i++;
                     _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
                 }
-                if (blnDoMRUChanged && MRUChanged != null)
-                    MRUChanged.Invoke();
+                if (blnDoMRUChanged)
+                    MRUChanged?.Invoke();
             }
         }
 
@@ -1083,8 +1083,8 @@ namespace Chummer
                     else
                         _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
                 }
-                if (blnDoMRUChanged && MRUChanged != null)
-                    MRUChanged.Invoke();
+                if (blnDoMRUChanged)
+                    MRUChanged?.Invoke();
             }
         }
 
