@@ -4158,7 +4158,7 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 6 Depth</name>
+          <name>A.I. - 6 Depth</name>
           <value>A.I.</value>
           <depth>6</depth>
           <skillqty>2</skillqty>
@@ -4280,8 +4280,8 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 4 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 4 Depth</name>
+          <value>A.I.</value>
           <depth>4</depth>
           <skillqty>2</skillqty>
           <skillval>4</skillval>
@@ -4436,8 +4436,8 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 3 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 3 Depth</name>
+          <value>A.I.</value>
           <depth>3</depth>
           <skillqty>1</skillqty>
           <skillval>2</skillval>
@@ -4525,8 +4525,8 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 2 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 2 Depth</name>
+          <value>A.I.</value>
           <depth>2</depth>
           <required>
             <oneof>
@@ -4552,8 +4552,8 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 1 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 1 Depth</name>
+          <value>A.I.</value>
           <depth>1</depth>
           <required>
             <oneof>
