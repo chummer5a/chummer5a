@@ -83,7 +83,6 @@ namespace Chummer
             this.lstWeapon = new System.Windows.Forms.ListBox();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.Accuracy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvc_Name = new Chummer.DataGridViewTextBoxColumnTranslated();
@@ -605,15 +604,6 @@ namespace Chummer
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // Accuracy
-            // 
-            this.Accuracy.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Accuracy.DataPropertyName = "Accuracy";
-            this.Accuracy.FillWeight = 50F;
-            this.Accuracy.HeaderText = "Accuracy";
-            this.Accuracy.Name = "Accuracy";
-            this.Accuracy.ReadOnly = true;
-            // 
             // tipTooltip
             // 
             this.tipTooltip.AllowLinksHandling = true;
@@ -875,7 +865,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDamageLabel;
         private System.Windows.Forms.ListBox lstWeapon;
         private System.Windows.Forms.Timer tmrSearch;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Accuracy;
         private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvc_Guid;

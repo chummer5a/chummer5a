@@ -351,11 +351,11 @@ namespace Chummer
                 }
                 else if (objChild is DataGridView)
                 {
-                    foreach (DataGridViewTextBoxColumnTranslated column in ((DataGridView) objChild).Columns)
+                    foreach (DataGridViewTextBoxColumn objColumn in ((DataGridView) objChild).Columns)
                     {
-                        if (!string.IsNullOrWhiteSpace(column.TranslationTag))
+                        if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                         {
-                            column.HeaderText = GetString(column.TranslationTag, strIntoLanguage);
+                            objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
                         }
                     }
                 }

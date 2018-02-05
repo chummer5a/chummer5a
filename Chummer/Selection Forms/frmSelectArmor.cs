@@ -85,7 +85,6 @@ namespace Chummer
                 Format = _objCharacter.Options.NuyenFormat + '¥',
                 NullValue = null
             };
-            dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewNuyenCellStyle;
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
             // Populate the Armor Category list.
