@@ -243,22 +243,22 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
         Version _verSavedVersion = new Version();
         // Events.
-        public Action<object> AdeptTabEnabledChanged { get; set; }
-        public Action<object> AmbidextrousChanged { get; set; }
-        public Action<object> CritterTabEnabledChanged { get; set; }
-        public Action<object> MAGEnabledChanged { get; set; }
-        public Action<object> BornRichChanged { get; set; }
-        public Action<object> CharacterNameChanged { get; set; }
-        public Action<object> ExConChanged { get; set; }
-        public Action<object> InitiationTabEnabledChanged { get; set; }
-        public Action<object> MadeManChanged { get; set; }
-        public Action<object> MagicianTabEnabledChanged { get; set; }
-        public Action<object> RESEnabledChanged { get; set; }
-        public Action<object> DEPEnabledChanged { get; set; }
-        public Action<object> RestrictedGearChanged { get; set; }
-        public Action<object> TechnomancerTabEnabledChanged { get; set; }
-        public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
-        public Action<object> CyberwareTabDisabledChanged { get; set; }
+        public event EventHandler AdeptTabEnabledChanged;
+        public event EventHandler AmbidextrousChanged;
+        public event EventHandler CritterTabEnabledChanged;
+        public event EventHandler MAGEnabledChanged;
+        public event EventHandler BornRichChanged;
+        public event EventHandler CharacterNameChanged;
+        public event EventHandler ExConChanged;
+        public event EventHandler InitiationTabEnabledChanged;
+        public event EventHandler MadeManChanged;
+        public event EventHandler MagicianTabEnabledChanged;
+        public event EventHandler RESEnabledChanged;
+        public event EventHandler DEPEnabledChanged;
+        public event EventHandler RestrictedGearChanged;
+        public event EventHandler TechnomancerTabEnabledChanged;
+        public event EventHandler AdvancedProgramsTabEnabledChanged;
+        public event EventHandler CyberwareTabDisabledChanged;
 
 #region Initialization, Save, Load, Print, and Reset Methods
         /// <summary>
@@ -4046,7 +4046,7 @@ namespace Chummer
                 {
                     _strName = value;
                     if (CharacterNameChanged != null && string.IsNullOrWhiteSpace(Alias))
-                        CharacterNameChanged.Invoke(this);
+                        CharacterNameChanged.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -4624,7 +4624,7 @@ namespace Chummer
                 if (_strAlias != value)
                 {
                     _strAlias = value;
-                    CharacterNameChanged?.Invoke(this);
+                    CharacterNameChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -5124,7 +5124,7 @@ namespace Chummer
                 if (_blnAmbidextrous != value)
                 {
                     _blnAmbidextrous = value;
-                    AmbidextrousChanged?.Invoke(this);
+                    AmbidextrousChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -5326,7 +5326,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)
-                    MAGEnabledChanged?.Invoke(this);
+                    MAGEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -5557,7 +5557,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)
-                    RESEnabledChanged?.Invoke(this);
+                    RESEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
                 }
 
@@ -5577,7 +5577,7 @@ namespace Chummer
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                 if (blnOldValue != value)
-                    DEPEnabledChanged?.Invoke(this);
+                    DEPEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -7870,7 +7870,7 @@ namespace Chummer
                 if (_blnAdeptEnabled != value)
                 {
                     _blnAdeptEnabled = value;
-                    AdeptTabEnabledChanged?.Invoke(this);
+                    AdeptTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7889,7 +7889,7 @@ namespace Chummer
                 if (_blnMagicianEnabled != value)
                 {
                     _blnMagicianEnabled = value;
-                    MagicianTabEnabledChanged?.Invoke(this);
+                    MagicianTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7908,7 +7908,7 @@ namespace Chummer
                 if (_blnTechnomancerEnabled != value)
                 {
                     _blnTechnomancerEnabled = value;
-                    TechnomancerTabEnabledChanged?.Invoke(this);
+                    TechnomancerTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7927,7 +7927,7 @@ namespace Chummer
                 if (_blnAdvancedProgramsEnabled != value)
                 {
                     _blnAdvancedProgramsEnabled = value;
-                    AdvancedProgramsTabEnabledChanged?.Invoke(this);
+                    AdvancedProgramsTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7946,7 +7946,7 @@ namespace Chummer
                 if (_blnCyberwareDisabled != value)
                 {
                     _blnCyberwareDisabled = value;
-                    CyberwareTabDisabledChanged?.Invoke(this);
+                    CyberwareTabDisabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7965,7 +7965,7 @@ namespace Chummer
                 if (_blnInitiationEnabled != value)
                 {
                     _blnInitiationEnabled = value;
-                    InitiationTabEnabledChanged?.Invoke(this);
+                    InitiationTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -7984,7 +7984,7 @@ namespace Chummer
                 if (_blnCritterEnabled != value)
                 {
                     _blnCritterEnabled = value;
-                    CritterTabEnabledChanged?.Invoke(this);
+                    CritterTabEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -8057,7 +8057,7 @@ namespace Chummer
                 if (_blnExCon != value)
                 {
                     _blnExCon = value;
-                    ExConChanged?.Invoke(this);
+                    ExConChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -8090,7 +8090,7 @@ namespace Chummer
                 if (_blnRestrictedGear != value)
                 {
                     _blnRestrictedGear = value;
-                    RestrictedGearChanged?.Invoke(this);
+                    RestrictedGearChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -8122,7 +8122,7 @@ namespace Chummer
                 if (_blnMadeMan != value)
                 {
                     _blnMadeMan = value;
-                    MadeManChanged?.Invoke(this);
+                    MadeManChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -8154,7 +8154,7 @@ namespace Chummer
                 if (_blnBornRich != value)
                 {
                     _blnBornRich = value;
-                    BornRichChanged?.Invoke(this);
+                    BornRichChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

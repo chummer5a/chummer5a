@@ -7231,7 +7231,7 @@
 			<text>泛形态</text>
 		</string>
 		<string>
-			<key>String_No_Update_Found</key>
+			<key>String_Error</key>
 			<text>错误</text>
 		</string>
 		<string>
@@ -8250,7 +8250,7 @@
 		</string>
 		<string>
 			<key>String_Up_To_Date</key>
-			<text>Chummer5已更新。当前安装版本为{0}。 Chummer5的最新{1}版本是{2}。</text>
+			<text>Chummer5已更新。</text>
 		</string>
 		<string>
 			<key>String_Stable</key>
@@ -8262,8 +8262,16 @@
 		</string>
 		<string>
 			<key>String_Update_Available</key>
-			<text>已经可以更新到新版本了({0})！当前安装版本为({1})。</text>
+			<text>已经可以更新到新版本了{0}！</text>
 		</string>
+	  <string>
+	    <key>String_Currently_Installed_Version</key>
+	    <text>当前安装版本为{0}。</text>
+	  </string>
+	  <string>
+	    <key>String_Latest_Version</key>
+	    <text>Chummer5的最新{0}版本是{1}。</text>
+	  </string>
 		<string>
 			<key>String_Nightly_Changelog_Warning</key>
 			<text>在每日版本中的更新是暂时的。</text>

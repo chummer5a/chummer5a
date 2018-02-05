@@ -21,8 +21,9 @@ namespace Chummer.UI.Skills
             {
                 components?.Dispose();
                 tipTooltip?.Dispose();
+                _italic?.Dispose();
+                _italicName?.Dispose();
                 UnbindSkillControl();
-                _italic.Dispose();
             }
             base.Dispose(disposing);
         }

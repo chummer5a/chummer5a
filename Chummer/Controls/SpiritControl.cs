@@ -33,8 +33,8 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public EventHandler ContactDetailChanged { get; set; }
-        public EventHandler DeleteSpirit { get; set; }
+        public event EventHandler ContactDetailChanged;
+        public event EventHandler DeleteSpirit;
 
         #region Control Events
         public SpiritControl(Spirit objSpirit)
@@ -236,7 +236,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
             if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
             {
@@ -485,7 +485,7 @@ namespace Chummer
                 strForce = LanguageManager.GetString("String_Rating", GlobalOptions.Language);
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
                 FileName = strCritterName + " (" + strForce + ' ' + _objSpirit.Force.ToString() + ").chum5"
             };
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)

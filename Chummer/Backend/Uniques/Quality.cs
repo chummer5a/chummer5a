@@ -277,7 +277,7 @@ namespace Chummer
                     if (objXmlNaturalWeapon["damage"] != null)
                         objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
                     if (objXmlNaturalWeapon["ap"] != null)
-                        objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+                        objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
                     objWeapon.Mode = "0";
                     objWeapon.RC = "0";
                     objWeapon.Concealability = 0;

@@ -37,7 +37,7 @@ namespace Chummer
         private decimal _decMarkup;
 
         private readonly int _intAvailModifier;
-        private readonly int _intCostMultiplier = 1;
+        private readonly int _intCostMultiplier;
 
         private string _strAllowedCategories = string.Empty;
         private readonly XmlNode _objParentNode;
@@ -667,7 +667,7 @@ namespace Chummer
                     }
                 }
             }
-            string strAvailExpr = objAvailNode.InnerText;
+            string strAvailExpr = objAvailNode?.InnerText ?? string.Empty;
 
             if (!string.IsNullOrEmpty(strAvailExpr))
             {
@@ -803,11 +803,7 @@ namespace Chummer
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacity = "0";
-            string strCapacityField = "capacity";
-            if (_blnShowArmorCapacityOnly)
-                strCapacityField = "armorcapacity";
-            bool blnSquareBrackets = false;
+            string strCapacityField = _blnShowArmorCapacityOnly ? "armorcapacity" : "capacity";
 
             if (_eCapacityStyle == CapacityStyle.Zero)
                 lblCapacity.Text = "[0]";
@@ -816,9 +812,10 @@ namespace Chummer
                 string strCapacityText = objXmlGear[strCapacityField]?.InnerText;
                 if (!string.IsNullOrEmpty(strCapacityText))
                 {
-                    if (strCapacityText.Contains("/["))
+                    int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
+                    string strCapacity;
+                    if (intPos != -1)
                     {
-                        int intPos = strCapacityText.IndexOf("/[");
                         string strFirstHalf = strCapacityText.Substring(0, intPos);
                         string strSecondHalf = strCapacityText.Substring(intPos + 1, strCapacityText.Length - intPos - 1);
 
@@ -826,7 +823,7 @@ namespace Chummer
                             lblCapacity.Text = "*";
                         else
                         {
-                            blnSquareBrackets = strFirstHalf.Contains('[');
+                            bool blnSquareBrackets = strFirstHalf.Contains('[');
                             strCapacity = strFirstHalf;
                             if (blnSquareBrackets && strCapacity.Length > 2)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -886,7 +883,7 @@ namespace Chummer
                         lblCapacity.Text = "*";
                     else
                     {
-                        blnSquareBrackets = strCapacityText.Contains('[');
+                        bool blnSquareBrackets = strCapacityText.Contains('[');
                         strCapacity = strCapacityText;
                         if (blnSquareBrackets && strCapacity.Length > 2)
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -931,9 +928,10 @@ namespace Chummer
             }
 
             // Rating.
-            if (Convert.ToInt32(objXmlGear["rating"].InnerText) > 0)
+            int intRating = Convert.ToInt32(objXmlGear["rating"]?.InnerText);
+            if (intRating > 0)
             {
-                nudRating.Maximum = Convert.ToInt32(objXmlGear["rating"].InnerText);
+                nudRating.Maximum = intRating;
                 if (objXmlGear["minrating"] != null)
                 {
                     decimal decOldMinimum = nudRating.Minimum;

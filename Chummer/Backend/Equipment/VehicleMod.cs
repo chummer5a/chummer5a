@@ -728,13 +728,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strReturn = "0";
-                if (!string.IsNullOrEmpty(_strCapacity) && _strCapacity.Contains("/["))
+                string strReturn;
+                int intPos = _strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                if (!string.IsNullOrEmpty(_strCapacity) && intPos != -1)
                 {
-                    int intPos = _strCapacity.IndexOf("/[");
                     string strFirstHalf = _strCapacity.Substring(0, intPos);
                     string strSecondHalf = _strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
-                    bool blnSquareBrackets = strFirstHalf.Contains('['); ;
+                    bool blnSquareBrackets = strFirstHalf.Contains('[');
                     string strCapacity = strFirstHalf;
 
                     if (blnSquareBrackets && strCapacity.Length > 2)

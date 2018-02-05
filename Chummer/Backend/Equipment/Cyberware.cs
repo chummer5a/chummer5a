@@ -2044,13 +2044,13 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 if (strCapacity == "[*]")
                     return "*";
-                string strReturn = "0";
+                string strReturn;
                 if (strCapacity.Contains("/["))
                 {
-                    int intPos = strCapacity.IndexOf("/[");
+                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                     string strFirstHalf = strCapacity.Substring(0, intPos);
                     string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
-                    bool blnSquareBrackets = strFirstHalf.Contains('['); ;
+                    bool blnSquareBrackets = strFirstHalf.Contains('[');
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);

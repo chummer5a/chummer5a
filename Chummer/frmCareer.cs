@@ -66,6 +66,7 @@ namespace Chummer
             InitializeComponent();
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
+            CharacterObject.CharacterNameChanged += ForceUpdateWindowTitle;
             CharacterObject.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             CharacterObject.RESEnabledChanged += objCharacter_RESEnabledChanged;
             CharacterObject.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
@@ -201,7 +202,6 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-            
             // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
             if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
                 tabCharacterTabs.TabPages.Remove(tabMagician);
@@ -337,7 +337,7 @@ namespace Chummer
             CharacterObject.ImprovementGroups.CollectionChanged += ImprovementGroupCollectionChanged;
             CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
 
-            objCharacter_AmbidextrousChanged();
+            objCharacter_AmbidextrousChanged(this, EventArgs.Empty);
 
             // Populate the Magician Traditions list.
             XmlDocument xmlTraditionsDocument = XmlManager.Load("traditions.xml");
@@ -874,6 +874,7 @@ namespace Chummer
                 CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
                 CharacterObject.ImprovementGroups.CollectionChanged -= ImprovementGroupCollectionChanged;
                 CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
+                CharacterObject.CharacterNameChanged -= ForceUpdateWindowTitle;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -985,7 +986,7 @@ namespace Chummer
         #endregion
 
         #region Character Events
-        private void objCharacter_MAGEnabledChanged(object sender)
+        private void objCharacter_MAGEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1035,7 +1036,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_RESEnabledChanged(object sender)
+        private void objCharacter_RESEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1072,7 +1073,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_AmbidextrousChanged(object sender = null)
+        private void objCharacter_AmbidextrousChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1112,7 +1113,7 @@ namespace Chummer
             cboPrimaryArm.EndUpdate();
         }
 
-        private void objCharacter_DEPEnabledChanged(object sender)
+        private void objCharacter_DEPEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1133,7 +1134,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_AdeptTabEnabledChanged(object sender)
+        private void objCharacter_AdeptTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1179,7 +1180,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_MagicianTabEnabledChanged(object sender)
+        private void objCharacter_MagicianTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1225,7 +1226,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_TechnomancerTabEnabledChanged(object sender)
+        private void objCharacter_TechnomancerTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1248,7 +1249,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender)
+        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1271,7 +1272,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CyberwareTabDisabledChanged(object sender)
+        private void objCharacter_CyberwareTabDisabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1287,7 +1288,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CritterTabEnabledChanged(object sender)
+        private void objCharacter_CritterTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1311,7 +1312,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_ExConChanged(object sender)
+        private void objCharacter_ExConChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -2143,11 +2144,11 @@ namespace Chummer
 
             // If the status of any Character Event flags has changed, manually trigger those events.
             if (blnMAGEnabled != CharacterObject.MAGEnabled)
-                objCharacter_MAGEnabledChanged(this);
+                objCharacter_MAGEnabledChanged(this, EventArgs.Empty);
             if (blnRESEnabled != CharacterObject.RESEnabled)
-                objCharacter_RESEnabledChanged(this);
+                objCharacter_RESEnabledChanged(this, EventArgs.Empty);
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
-                objCharacter_DEPEnabledChanged(this);
+                objCharacter_DEPEnabledChanged(this, EventArgs.Empty);
             
             IsCharacterUpdateRequested = true;
             // Immediately call character update because it re-applies essence loss improvements
@@ -2176,7 +2177,7 @@ namespace Chummer
             // Prompt the user to select a save file to possess.
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -2296,7 +2297,7 @@ namespace Chummer
                 // Now that everything is done, save the merged character and open them.
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
                     FileName = strShowFileName
                 };
 
@@ -2482,7 +2483,7 @@ namespace Chummer
             // Now that everything is done, save the merged character and open them.
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
             
             string[] strFile = CharacterObject.FileName.Split(Path.DirectorySeparatorChar);
@@ -6174,15 +6175,15 @@ namespace Chummer
 
         private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
-            nudQualityLevel.Enabled = false;
             if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype)
             {
                 nudQualityLevel.Value = 1;
+                nudQualityLevel.Enabled = false;
                 return;
             }
             XmlNode objQualityNode = objSelectedQuality.GetNode();
             string strLimitString = objQualityNode?["limit"]?.InnerText;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
                 nudQualityLevel.Value = objSelectedQuality.Levels;
@@ -6191,6 +6192,7 @@ namespace Chummer
             else
             {
                 nudQualityLevel.Value = 1;
+                nudQualityLevel.Enabled = false;
             }
         }
 
@@ -7255,6 +7257,7 @@ namespace Chummer
                 frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
                 {
                     ArmorCost = objArmor.OwnCost,
+                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo),
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };
@@ -18740,7 +18743,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblBaseLifestyle.Text = "Error in lifestyle;\nplease edit to fix.";
+                    lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
                     lblLifestyleQualities.Text = string.Empty;
                 }
             }

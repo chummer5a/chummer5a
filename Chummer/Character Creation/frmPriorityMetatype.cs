@@ -31,17 +31,10 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
 
-        private readonly string _strXmlFile = "metatypes.xml";
+        private readonly string _strXmlFile;
         private int _intBuildMethod;
         private bool _blnInitializing = true;
         private readonly List<string> _lstPrioritySkills;
-
-        #region Character Events
-        private void DoNothing(object sender)
-        {
-            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
-        }
-        #endregion
         
         #region Form Events
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
@@ -51,39 +44,12 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            // Attach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
-            _objCharacter.MAGEnabledChanged += DoNothing;
-            _objCharacter.RESEnabledChanged += DoNothing;
-            _objCharacter.DEPEnabledChanged += DoNothing;
-            _objCharacter.AdeptTabEnabledChanged += DoNothing;
-            _objCharacter.MagicianTabEnabledChanged += DoNothing;
-            _objCharacter.TechnomancerTabEnabledChanged += DoNothing;
-            _objCharacter.AdvancedProgramsTabEnabledChanged += DoNothing;
-            _objCharacter.CyberwareTabDisabledChanged += DoNothing;
-            _objCharacter.InitiationTabEnabledChanged += DoNothing;
-            _objCharacter.CritterTabEnabledChanged += DoNothing;
-
-            _lstPrioritySkills = new List<string>(objCharacter?.PriorityBonusSkillList);
+            _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
 
             Height = cmdOK.Bottom + 40;
             lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
         }
-
-        private void frmPriorityMetatype_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // Detach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
-            _objCharacter.MAGEnabledChanged -= DoNothing;
-            _objCharacter.RESEnabledChanged -= DoNothing;
-            _objCharacter.DEPEnabledChanged -= DoNothing;
-            _objCharacter.AdeptTabEnabledChanged -= DoNothing;
-            _objCharacter.MagicianTabEnabledChanged -= DoNothing;
-            _objCharacter.TechnomancerTabEnabledChanged -= DoNothing;
-            _objCharacter.AdvancedProgramsTabEnabledChanged -= DoNothing;
-            _objCharacter.CyberwareTabDisabledChanged -= DoNothing;
-            _objCharacter.InitiationTabEnabledChanged -= DoNothing;
-            _objCharacter.CritterTabEnabledChanged -= DoNothing;
-        }
-
+        
         private void frmPriorityMetatype_Load(object sender, EventArgs e)
         {
             // Load the Priority information.
@@ -102,7 +68,7 @@ namespace Chummer
             {
                 XmlNodeList objItems = xmlBasePrioritiesNode.SelectNodes("priority[category = \"" + objXmlPriorityCategory.InnerText + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]");
 
-                if (objItems.Count == 0)
+                if (objItems?.Count == 0)
                 {
                     objItems = xmlBasePrioritiesNode.SelectNodes("priority[category = \"" + objXmlPriorityCategory.InnerText + "\" and not(gameplayoption)]");
                 }
@@ -152,8 +118,6 @@ namespace Chummer
                             cboResources.DisplayMember = "Name";
                             cboResources.DataSource = lstItems;
                             cboResources.EndUpdate();
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -337,7 +301,7 @@ namespace Chummer
                         if (intSkillCount > 0)
                         {
                             List<ListItem> lstSkills = new List<ListItem>();
-                            if (objNodeList.Count > 0)
+                            if (objNodeList?.Count > 0)
                             {
                                 foreach (XmlNode objXmlSkill in objXmlSkillsList)
                                 {
@@ -630,7 +594,7 @@ namespace Chummer
                     strSelectedMetavariant = "Human";
 
                 XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-                XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                XmlNode objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
 
                 int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
 
@@ -652,11 +616,7 @@ namespace Chummer
                         intMaxModifier = 3;
                     }
                 }*/
-                XmlNode charNode = objXmlMetavariant ?? objXmlMetatype;
-                if (strSelectedMetatypeCategory == "Shapeshifter")
-                {
-                    charNode = objXmlMetatype;
-                }
+                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
 
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits(ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
@@ -1064,7 +1024,7 @@ namespace Chummer
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-            XmlNode objXmlMetavariant = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None" ? null : objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+            XmlNode objXmlMetavariant = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None" ? null : objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
             XmlNode objXmlMetatypePriorityNode = null;
             XmlNode objXmlMetavariantPriorityNode = null;
             XmlNodeList xmlBaseMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + strSelectedHeritage + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
@@ -1082,7 +1042,7 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
                 }
                 else
@@ -1182,7 +1142,7 @@ namespace Chummer
                 lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["wilmin"].InnerText, objXmlMetatype["wilmax"].InnerText, objXmlMetatype["wilaug"].InnerText);
                 lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
 
-                string strQuality = string.Empty;
+                string strQuality;
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metatype's Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/*/quality"))
@@ -1327,7 +1287,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndForbiddenLoop:;
+                            EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1373,7 +1333,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndRequiredLoop:;
+                            EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }
@@ -1462,9 +1422,10 @@ namespace Chummer
                         lblForceLabel.Visible = true;
                         nudForce.Visible = true;
 
-                        if (strEssMax.Contains("D6"))
+                        int intPos = !string.IsNullOrEmpty(strEssMax) ? strEssMax.IndexOf("D6", StringComparison.Ordinal) : -1;
+                        if (intPos != -1)
                         {
-                            int intPos = strEssMax.IndexOf("D6") - 1;
+                            intPos -= 1;
                             lblForceLabel.Text = strEssMax.Substring(intPos, 3);
                             nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
                         }

@@ -395,7 +395,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
             {
-                openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
+                openFileDialog.Filter = LanguageManager.GetString("DialogFilter_Exe", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
                 {
                     openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
@@ -411,7 +411,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
             {
-                openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
+                openFileDialog.Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
                 {
                     openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
@@ -491,10 +491,24 @@ namespace Chummer
         {
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
             PopulateBuildMethodList();
+
+            XmlNode xmlBooksNode = XmlManager.Load("books.xml", _strSelectedLanguage).SelectSingleNode("/chummer/books");
+            if (xmlBooksNode != null)
+            {
+                foreach (TreeNode nodBook in treSourcebook.Nodes)
+                {
+                    XmlNode xmlBook = xmlBooksNode.SelectSingleNode("book[code = \"" + nodBook.Tag + "\"]");
+                    if (xmlBook != null)
+                    {
+                        nodBook.Text = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText ?? string.Empty;
+                    }
+                }
+
+                treSourcebook.Sort();
+            }
+
             PopulateLimbCountList();
             SetToolTips();
-            PopulateSettingsList();
-            PopulateGlobalOptions();
 
             string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             if (strSheetLanguage != _strSelectedLanguage)
@@ -663,8 +677,15 @@ namespace Chummer
             lblKarmaSummoningFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaSustainingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaWeaponFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
-
-            intWidth = (from TreeNode objNode in treSourcebook.Nodes select objNode.Bounds.Left * 2 + objNode.Bounds.Width).Concat(new[] { treSourcebook.Width }).Max();
+            
+            intWidth = 0;
+            int intMargin = treSourcebook.Left;
+            foreach (TreeNode objNode in treSourcebook.Nodes)
+            {
+                intMargin = Math.Max(intMargin, objNode.Bounds.Left);
+                intWidth = Math.Max(intWidth, objNode.GetRightMostEdge());
+            }
+            intWidth += intMargin * 2 - treSourcebook.Left;
             treSourcebook.Width = intWidth;
             cmdEnableSourcebooks.Left = treSourcebook.Left;
             cmdEnableSourcebooks.Width = treSourcebook.Width;
@@ -1201,7 +1222,7 @@ namespace Chummer
 
         private void SetToolTips()
         {
-            const int width = 50;
+            const int width = 100;
             tipTooltip.SetToolTip(chkUnarmedSkillImprovements, LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
             tipTooltip.SetToolTip(chkIgnoreArt, LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
             tipTooltip.SetToolTip(chkCyberlegMovement, LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
@@ -1626,7 +1647,7 @@ namespace Chummer
         {
             if (chkLifeModule.Checked && !_blnLoading)
             {
-                if (MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel) != DialogResult.OK)
+                if (MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                     chkLifeModule.Checked = false;
                 else
                 {
@@ -1639,7 +1660,7 @@ namespace Chummer
         {
             if (chkOmaeEnabled.Checked && !_blnLoading)
             {
-                if (MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel) != DialogResult.OK)
+                if (MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                     chkOmaeEnabled.Checked = false;
                 else
                 {

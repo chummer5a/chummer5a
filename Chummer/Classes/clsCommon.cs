@@ -83,10 +83,9 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    objReturn = objVehicle.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objVehicle.Gear.DeepFindById(strGuid);
                     if (!string.IsNullOrEmpty(objReturn?.Name))
                     {
                         objFoundVehicle = objVehicle;
@@ -329,10 +328,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                WeaponAccessory objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    objReturn = objVehicle.Weapons.FindWeaponAccessory(strGuid);
+                    WeaponAccessory objReturn = objVehicle.Weapons.FindWeaponAccessory(strGuid);
                     if (objReturn != null)
                     {
                         return objReturn;
@@ -381,12 +379,11 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Cyberware objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
                     foreach (VehicleMod objMod in objVehicle.Mods)
                     {
-                        objReturn = objMod.Cyberware.DeepFindById(strGuid);
+                        Cyberware objReturn = objMod.Cyberware.DeepFindById(strGuid);
                         if (objReturn != null)
                         {
                             objFoundVehicleMod = objMod;
@@ -421,10 +418,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Armor objArmor in lstArmors)
                 {
-                    objReturn = objArmor.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objArmor.Gear.DeepFindById(strGuid);
                     if (objReturn != null)
                     {
                         objFoundArmor = objArmor;
@@ -492,10 +488,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                 {
-                    objReturn = objCyberware.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objCyberware.Gear.DeepFindById(strGuid);
 
                     if (objReturn != null)
                     {
@@ -553,12 +548,11 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        objReturn = objAccessory.Gear.DeepFindById(strGuid);
+                        Gear objReturn = objAccessory.Gear.DeepFindById(strGuid);
 
                         if (objReturn != null)
                         {

@@ -29,7 +29,7 @@
                            "Chummer5 update by Adam Schmidt: srchummer5@gmail.com\n\r" +
                            "Chummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\r" +
                            "Additional 5a updates by Johannes Elgaard: joha4270@gmail.com")]
-[assembly: AssemblyProduct("Chummer")]
+[assembly: AssemblyProduct("Chummer5a")]
 [assembly: AssemblyCopyright("Copyright © Keith Rudolph 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

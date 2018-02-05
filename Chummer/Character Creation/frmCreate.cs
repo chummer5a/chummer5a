@@ -72,6 +72,7 @@ namespace Chummer
             Program.MainForm.OpenCharacterForms.Add(this);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
+            CharacterObject.CharacterNameChanged += ForceUpdateWindowTitle;
             CharacterObject.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             CharacterObject.RESEnabledChanged += objCharacter_RESEnabledChanged;
             CharacterObject.DEPEnabledChanged += objCharacter_DEPEnabledChanged;
@@ -312,7 +313,7 @@ namespace Chummer
             // Refresh character information fields.
             RefreshMetatypeFields();
 
-            objCharacter_AmbidextrousChanged(null);
+            objCharacter_AmbidextrousChanged(this, EventArgs.Empty);
 
             // Check for Special Attributes.
             lblFoci.Visible = CharacterObject.MAGEnabled;
@@ -664,6 +665,7 @@ namespace Chummer
                 CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
                 CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                 CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
+                CharacterObject.CharacterNameChanged -= ForceUpdateWindowTitle;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -738,7 +740,6 @@ namespace Chummer
                 {
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
                     CharacterObject.DeleteCharacter();
-                    CharacterObject = null;
                 }
                 Dispose(true);
             }
@@ -779,7 +780,7 @@ namespace Chummer
         #endregion
 
         #region Character Events
-        private void objCharacter_MAGEnabledChanged(object sender)
+        private void objCharacter_MAGEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -837,7 +838,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_RESEnabledChanged(object sender)
+        private void objCharacter_RESEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -886,7 +887,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_DEPEnabledChanged(object sender)
+        private void objCharacter_DEPEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -907,7 +908,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_AdeptTabEnabledChanged(object sender)
+        private void objCharacter_AdeptTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -942,7 +943,7 @@ namespace Chummer
             nudMysticAdeptMAGMagician.Visible = !CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept;
         }
 
-        private void objCharacter_AmbidextrousChanged(object sender)
+        private void objCharacter_AmbidextrousChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -976,7 +977,7 @@ namespace Chummer
             cboPrimaryArm.EndUpdate();
         }
 
-        private void objCharacter_MagicianTabEnabledChanged(object sender)
+        private void objCharacter_MagicianTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1012,7 +1013,7 @@ namespace Chummer
             nudMysticAdeptMAGMagician.Visible = !CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept;
         }
 
-        private void objCharacter_TechnomancerTabEnabledChanged(object sender)
+        private void objCharacter_TechnomancerTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1035,7 +1036,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender)
+        private void objCharacter_AdvancedProgramsTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1058,7 +1059,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CyberwareTabDisabledChanged(object sender)
+        private void objCharacter_CyberwareTabDisabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1074,7 +1075,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_InitiationTabEnabledChanged(object sender)
+        private void objCharacter_InitiationTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1101,7 +1102,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CritterTabEnabledChanged(object sender)
+        private void objCharacter_CritterTabEnabledChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1125,7 +1126,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_ExConChanged(object sender)
+        private void objCharacter_ExConChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1167,7 +1168,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_RestrictedGearChanged(object sender)
+        private void objCharacter_RestrictedGearChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1179,7 +1180,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_MadeManChanged(object sender)
+        private void objCharacter_MadeManChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1191,7 +1192,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_BornRichChanged(object sender)
+        private void objCharacter_BornRichChanged(object sender, EventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1954,11 +1955,11 @@ namespace Chummer
 
             // If the status of any Character Event flags has changed, manually trigger those events.
             if (blnMAGEnabled != CharacterObject.MAGEnabled)
-                objCharacter_MAGEnabledChanged(this);
+                objCharacter_MAGEnabledChanged(this, EventArgs.Empty);
             if (blnRESEnabled != CharacterObject.RESEnabled)
-                objCharacter_RESEnabledChanged(this);
+                objCharacter_RESEnabledChanged(this, EventArgs.Empty);
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
-                objCharacter_DEPEnabledChanged(this);
+                objCharacter_DEPEnabledChanged(this, EventArgs.Empty);
             
             IsCharacterUpdateRequested = true;
             // Immediately call character update because it re-applies essence loss improvements
@@ -5218,6 +5219,7 @@ namespace Chummer
                 frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
                 {
                     ArmorCost = objArmor.OwnCost,
+                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo),
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };
@@ -8148,10 +8150,10 @@ namespace Chummer
 
         private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
-            nudQualityLevel.Enabled = false;
             if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype)
             {
                 nudQualityLevel.Value = 1;
+                nudQualityLevel.Enabled = false;
                 return;
             }
             XmlNode objQualityNode = objSelectedQuality.GetNode();
@@ -8165,6 +8167,7 @@ namespace Chummer
             else
             {
                 nudQualityLevel.Value = 1;
+                nudQualityLevel.Enabled = false;
             }
         }
 
@@ -13461,7 +13464,7 @@ namespace Chummer
             }
             else
             {
-                lblBaseLifestyle.Text = string.Empty;
+                lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
                 lblLifestyleQualities.Text = string.Empty;
             }
 

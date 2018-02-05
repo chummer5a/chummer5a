@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -158,26 +158,22 @@ namespace Chummer
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        if (intHitCount >= nudThreshold.Value)
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language).Replace("{0}", intHitCount.ToString()) + ')';
-                        else
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language).Replace("{0}", intHitCount.ToString()) + ')';
+                        lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                           " (" + string.Format(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language), intHitCount.ToString()) + ')';
                     }
                     else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language).Replace("{0}", intHitCount.ToString());
+                        lblResults.Text += string.Format(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language), intHitCount.ToString());
                 }
                 else
                     lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch", GlobalOptions.Language);
             }
             else if (nudThreshold.Value > 0)
             {
-                if (intHitCount >= nudThreshold.Value)
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language).Replace("{0}", intHitCount.ToString()) + ')';
-                else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language).Replace("{0}", intHitCount.ToString()) + ')';
+                lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                   " (" + string.Format(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language), intHitCount.ToString()) + ')';
             }
             else
-                lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language).Replace("{0}", intHitCount.ToString());
+                lblResults.Text += string.Format(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language), intHitCount.ToString());
 
             lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum", GlobalOptions.Language) + ' ' + lstRandom.Sum().ToString();
             lstResults.BeginUpdate();

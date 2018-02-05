@@ -38,14 +38,7 @@ namespace Chummer
 
         private readonly XmlDocument _xmlDocument;
         private readonly XmlDocument _xmlQualityDocument;
-
-        #region Character Events
-        private void DoNothing(object sender)
-        {
-            // Do nothing. This is just an Event trap so an exception doesn't get thrown.
-        }
-        #endregion
-
+        
         #region Form Events
         public frmKarmaMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
@@ -54,35 +47,8 @@ namespace Chummer
             _xmlQualityDocument = XmlManager.Load("qualities.xml");
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-
-            // Attach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
-            _objCharacter.MAGEnabledChanged += DoNothing;
-            _objCharacter.RESEnabledChanged += DoNothing;
-            _objCharacter.DEPEnabledChanged += DoNothing;
-            _objCharacter.AdeptTabEnabledChanged += DoNothing;
-            _objCharacter.MagicianTabEnabledChanged += DoNothing;
-            _objCharacter.TechnomancerTabEnabledChanged += DoNothing;
-            _objCharacter.AdvancedProgramsTabEnabledChanged += DoNothing;
-            _objCharacter.CyberwareTabDisabledChanged += DoNothing;
-            _objCharacter.InitiationTabEnabledChanged += DoNothing;
-            _objCharacter.CritterTabEnabledChanged += DoNothing;
         }
-
-        private void frmMetatype_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // Detach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
-            _objCharacter.MAGEnabledChanged -= DoNothing;
-            _objCharacter.RESEnabledChanged -= DoNothing;
-            _objCharacter.DEPEnabledChanged -= DoNothing;
-            _objCharacter.AdeptTabEnabledChanged -= DoNothing;
-            _objCharacter.MagicianTabEnabledChanged -= DoNothing;
-            _objCharacter.TechnomancerTabEnabledChanged -= DoNothing;
-            _objCharacter.AdvancedProgramsTabEnabledChanged -= DoNothing;
-            _objCharacter.CyberwareTabDisabledChanged -= DoNothing;
-            _objCharacter.InitiationTabEnabledChanged -= DoNothing;
-            _objCharacter.CritterTabEnabledChanged -= DoNothing;
-        }
-
+        
         private void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
@@ -244,15 +210,8 @@ namespace Chummer
                     }
                 }*/
 
-                XmlNode charNode;
-                if (strSelectedMetatypeCategory == "Shapeshifter")
-                {
-                    charNode = objXmlMetatype;
-                }
-                else
-                {
-                    charNode = objXmlMetavariant ?? objXmlMetatype;
-                }
+                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
+
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits(ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
                 _objCharacter.AGI.AssignLimits(ExpressionToString(charNode["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["agimax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["agiaug"]?.InnerText, intForce, intMaxModifier));
@@ -288,7 +247,6 @@ namespace Chummer
                 foreach (XmlNode objXmlQualityItem in charNode.SelectNodes("qualities/*/quality"))
                 {
                     XmlNode objXmlQuality = _xmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
@@ -948,9 +906,10 @@ namespace Chummer
                     lblForceLabel.Visible = true;
                     nudForce.Visible = true;
 
-                    if (!string.IsNullOrEmpty(strEssMax) && strEssMax.Contains("D6"))
+                    int intPos = !string.IsNullOrEmpty(strEssMax) ? strEssMax.IndexOf("D6", StringComparison.Ordinal) : - 1;
+                    if (intPos != -1)
                     {
-                        int intPos = strEssMax.IndexOf("D6") - 1;
+                        intPos -= 1;
                         lblForceLabel.Text = strEssMax.Substring(intPos, 3);
                         nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
                     }

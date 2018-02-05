@@ -128,7 +128,7 @@ namespace Chummer
         private void ExportNormal()
         {
             // Look for the file extension information.
-            string strLine = string.Empty;
+            string strLine;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
             StreamReader objFile = new StreamReader(exportSheetPath);
@@ -149,7 +149,7 @@ namespace Chummer
             
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void GenerateXml()
@@ -195,8 +195,8 @@ namespace Chummer
         {
             SaveFileDialog1.AddExtension = true;
             SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = "JSON File|*.json";
-            SaveFileDialog1.Title = "Save JSON as";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
@@ -204,7 +204,7 @@ namespace Chummer
 
             File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
         #endregion
         #endregion

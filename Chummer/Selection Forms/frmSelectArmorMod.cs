@@ -32,6 +32,7 @@ namespace Chummer
 
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain;
+        private decimal _decArmorCapacity;
         private decimal _decArmorCost;
         private decimal _decMarkup;
         private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
@@ -138,6 +139,17 @@ namespace Chummer
             set
             {
                 _decArmorCost = value;
+            }
+        }
+
+        /// <summary>
+        /// Armor's Cost.
+        /// </summary>
+        public decimal ArmorCapacity
+        {
+            set
+            {
+                _decArmorCapacity = value;
             }
         }
 
@@ -347,8 +359,8 @@ namespace Chummer
                 }
                 else
                 {
-                    string strCost = strCostElement.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    string strCost = strCostElement.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))
+                        .CheapReplace("Armor Cost", () => _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // Apply any markup.
                     decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
@@ -362,13 +374,11 @@ namespace Chummer
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacity = objXmlMod["armorcapacity"].InnerText;
+            string strCapacity = objXmlMod["armorcapacity"]?.InnerText;
 
             // Handle YNT Softweave
-            if (strCapacity.Contains("Capacity"))
-            {
-                lblCapacity.Text = "+50%";
-            }
+            if (_eCapacityStyle == CapacityStyle.Zero || string.IsNullOrEmpty(strCapacity))
+                lblCapacity.Text = "[0]";
             else
             {
                 if (strCapacity.StartsWith("FixedValues("))
@@ -377,12 +387,18 @@ namespace Chummer
                     strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 
-                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                strCapacity = strCapacity.CheapReplace("Capacity", () => _decArmorCapacity.ToString(GlobalOptions.InvariantCultureInfo))
+                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                bool blnSquareBrackets = strCapacity.Contains('[');
+                if (blnSquareBrackets)
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                if (_eCapacityStyle == CapacityStyle.Zero)
-                    lblCapacity.Text = "[0]";
-                else
-                    lblCapacity.Text = '[' + CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
+                //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
+                string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+
+                lblCapacity.Text = strReturn;
             }
 
             string strSource = objXmlMod["source"].InnerText;

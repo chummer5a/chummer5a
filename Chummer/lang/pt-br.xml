@@ -7961,7 +7961,7 @@
       <text>Chummer não pode ser atualizado enquanto houver mais do que 1 instância na aplicação executando. Por favor, feche as outras instância do Chummer e execute a atualização de novo.</text>
     </string>
     <string>
-      <key>String_No_Update_Found</key>
+      <key>String_Error</key>
       <text>Erro</text>
     </string>
     <string>
@@ -8622,7 +8622,7 @@
     </string>
     <string>
       <key>String_Up_To_Date</key>
-      <text>Chummer5 está atualizado. A versão atualmente instalada é {0}. A última versão {1} do Chummer5 é {2}.</text>
+      <text>Chummer5 está atualizado.</text>
     </string>
     <string>
       <key>String_Nightly_Changelog_Warning</key>
@@ -8634,7 +8634,15 @@
     </string>
     <string>
       <key>String_Update_Available</key>
-      <text>Atualização disponível para a versão ({0})! A versão atualmente instalada é ({1}).</text>
+      <text>Atualização disponível para a versão {0}!</text>
+    </string>
+    <string>
+      <key>String_Currently_Installed_Version</key>
+      <text>A versão atualmente instalada é {0}.</text>
+    </string>
+    <string>
+      <key>String_Latest_Version</key>
+      <text>A última versão {0} do Chummer5 é {1}.</text>
     </string>
     <string>
       <key>String_Checking_For_Update</key>

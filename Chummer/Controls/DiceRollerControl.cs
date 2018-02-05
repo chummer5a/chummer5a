@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -156,7 +156,6 @@ namespace Chummer
         {
             // TODO roll the dice
             List<int> results = new List<int>();
-            int val = 0;
             for (int i = 0; i < NumberOfDice; i++)
             {
                 do
@@ -164,7 +163,7 @@ namespace Chummer
                     _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                val = 1 + _intModuloTemp % 6;
+                int val = 1 + _intModuloTemp % 6;
                 results.Add(val);
 
                 // check for pushing the limit
@@ -217,32 +216,47 @@ namespace Chummer
             txtResults.Text = sb.ToString();
 
             // calculate if we glitched or critically glitched (using gremlins)
-            bool glitch = false, criticalGlitch = false;
-            glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
-
-            if (glitch && hits == 0)
-                criticalGlitch = true;
-            int limitAppliedHits = hits;
-            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
-                limitAppliedHits = Limit;
+            bool glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
             
+            int limitAppliedHits = hits;
+            string strLimitString = string.Empty;
+            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
+            {
+                limitAppliedHits = Limit;
+                strLimitString = ", " + LanguageManager.GetString("String_Limit", GlobalOptions.Language) + ' ' + limitAppliedHits.ToString();
+            }
+
             // show the results
             // we have not gone over our limit
-            sb = new StringBuilder();
-            if (hits > 0 && limitAppliedHits == hits)
-                sb.Append("Results: " + hits + " Hits!");
-            if (limitAppliedHits < hits)
-                sb.Append("Results: " + limitAppliedHits + " Hits by Limit!");
-            if (glitch && !criticalGlitch)
-                sb.Append(" Glitch!");   // we glitched though...
-            if (criticalGlitch)
-                sb.Append("Results: Critical Glitch!");   // we crited!
-            if (hits == 0 && !glitch)
-                sb.Append("Results: 0 Hits.");   // we have no hits and no glitches
-
-            if (Threshold > 0)
-                if (hits >= Threshold || limitAppliedHits >= Threshold)
-                    lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
+            sb = new StringBuilder(LanguageManager.GetString("Label_DiceRoller_Result", GlobalOptions.Language) + ' ');
+            if (glitch)
+            {
+                if (hits > 0)
+                {
+                    if (Threshold > 0)
+                    {
+                        sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                        " (" + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString + ')', hits.ToString());
+                    }
+                    else
+                    {
+                        sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString, hits.ToString());
+                    }
+                }
+                else
+                {
+                    sb.Append(LanguageManager.GetString("String_DiceRoller_CriticalGlitch", GlobalOptions.Language));
+                }
+            }
+            else if (Threshold > 0)
+            {
+                sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                " (" + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString + ')', hits.ToString());
+            }
+            else
+            {
+                sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString, hits.ToString());
+            }
 
             lblResults.Text = sb.ToString();
         }

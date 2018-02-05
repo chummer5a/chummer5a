@@ -31,8 +31,8 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public EventHandler ContactDetailChanged { get; set; }
-        public EventHandler DeleteContact { get; set; }
+        public event EventHandler ContactDetailChanged;
+        public event EventHandler DeleteContact;
 
         #region Control Events
         public PetControl(Contact objContact)
@@ -148,7 +148,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
             if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
             {

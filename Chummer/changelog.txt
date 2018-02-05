@@ -131,6 +131,7 @@ Application Changes:
 - Fixed an issue where sorting active skills by name, category, or skill group would use sort by English names instead of the localized ones.
 - Fixed an issue where characters could not sort by skill groups of skills that were added after the skills tab was initialized (e.g. Resonance- or Magic-based skill groups).
 - Fixed various memory leaks that would occur whenever a character and/or a form were closed.
+- Added localization support to the About screen, file dialog filters, the JSON export dialog, and the application title.
 
 Data Changes:
 
@@ -180,6 +181,24 @@ New Strings:
 - String_SpiritFettering
 - String_AttributeLoss
 - Skill_NativeLanguageShort
+- DialogFilter_Chum5
+- DialogFilter_Xml
+- DialogFilter_Html
+- DialogFilter_Pdf
+- DialogFilter_Exe
+- DialogFilter_Json
+- DialogFilter_All
+- String_Version
+- String_Error
+- About_Description_Text
+- About_Company_Text
+- About_Copyright_Text
+- About_Label_Contributors
+- About_Label_Disclaimer
+- About_Label_Disclaimer_Text
+- String_Currently_Installed_Version
+- String_Latest_Version
+- Button_Export_SaveJsonAs
 
 Changed Strings:
 
@@ -198,6 +217,8 @@ Changed Strings:
 - Node_SelectedBioware
 - Tab_IncreaseLifestyleMonths
 - Tab_DecreaseLifestyleMonths
+- String_Up_To_Date
+- String_Update_Available
 
 Removed Strings:
 
@@ -213,6 +234,7 @@ Removed Strings:
 - MessageTitle_SelectMartialArtAdvantage
 - Title_SelectMartialArtAdvantage
 - Label_LifestyleMonths
+- String_No_Update_Found
 
 Build 197
 

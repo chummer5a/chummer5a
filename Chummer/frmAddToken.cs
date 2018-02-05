@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace Chummer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)

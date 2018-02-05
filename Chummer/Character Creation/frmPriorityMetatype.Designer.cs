@@ -724,7 +724,6 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Choose Character Priorities";
             this.Tag = "Title_ChooseCharacterPriorities";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmPriorityMetatype_FormClosed);
             this.Load += new System.EventHandler(this.frmPriorityMetatype_Load);
             this.pnlPriorities.ResumeLayout(false);
             this.pnlPriorities.PerformLayout();

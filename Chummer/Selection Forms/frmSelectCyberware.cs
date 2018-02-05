@@ -92,7 +92,7 @@ namespace Chummer
             MoveControls();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
-            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None").SourceId.ToString("D");
+            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
@@ -224,7 +224,7 @@ namespace Chummer
             if (xmlCyberware != null)
             {
                 // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
-                if (xmlCyberware?["rating"] != null)
+                if (xmlCyberware["rating"] != null)
                 {
                     nudRating.Enabled = true;
 
@@ -296,7 +296,7 @@ namespace Chummer
                     if (cboGrade.Enabled)
                         cboGrade.Enabled = false;
                     objForcedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
-                    strForceGrade = objForcedGrade.SourceId.ToString("D");
+                    strForceGrade = objForcedGrade?.SourceId.ToString("D");
                 }
                 else
                 {
@@ -842,9 +842,9 @@ namespace Chummer
                     lblCapacity.Text = "*";
                 else
                 {
-                    if (strCapacity.Contains("/["))
+                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                    if (intPos != -1)
                     {
-                        int intPos = strCapacity.IndexOf("/[");
                         string strFirstHalf = strCapacity.Substring(0, intPos);
                         string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
 
@@ -1120,32 +1120,37 @@ namespace Chummer
             if (objCyberwareNode == null)
                 return;
 
-            if (_objCharacter.Options.EnforceCapacity && _objParentNode != null && objCyberwareNode["capacity"].InnerText.Contains('['))
+            if (_objCharacter.Options.EnforceCapacity && _objParentNode != null)
             {
                 // Capacity.
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = objCyberwareNode["capacity"].InnerText;
-                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                if (strCapacity.StartsWith("FixedValues("))
+                string strCapacity = objCyberwareNode["capacity"]?.InnerText;
+                if (strCapacity?.Contains('[') == true)
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
-                }
-                decimal decCapacity = 0;
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                    if (strCapacity.StartsWith("FixedValues("))
+                    {
+                        string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
+                    }
 
-                if (strCapacity != "*")
-                {
-                    decCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
-                }
-                if (MaximumCapacity - decCapacity < 0)
-                {
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
-                            .Replace("{0}", MaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo))
-                            .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
-                        LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    decimal decCapacity = 0;
+
+                    if (strCapacity != "*")
+                    {
+                        decCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
+                    }
+
+                    if (MaximumCapacity - decCapacity < 0)
+                    {
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                                .Replace("{0}", MaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo))
+                                .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
+                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                 }
             }
             if (ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))

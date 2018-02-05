@@ -361,13 +361,13 @@ namespace Chummer
         private void MoveControls()
         {
             int intWidth = 0;
-            int intMargin = 0;
+            int intMargin = treCharacterList.Left;
             foreach (TreeNode objNode in treCharacterList.Nodes)
             {
                 intMargin = Math.Max(intMargin, objNode.Bounds.Left);
-                intWidth = Math.Max(0, objNode.GetRightMostEdge());
+                intWidth = Math.Max(intWidth, objNode.GetRightMostEdge());
             }
-            intWidth += intMargin;
+            intWidth += intMargin - treCharacterList.Left;
 
             int intDifference = intWidth - treCharacterList.Width;
             treCharacterList.Width = intWidth;

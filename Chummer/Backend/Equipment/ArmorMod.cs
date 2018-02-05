@@ -827,7 +827,7 @@ namespace Chummer.Backend.Equipment
                 if (strMyCapacity.Contains("/["))
                 {
                     // If this is a multiple-capacity item, use only the first half.
-                    int intPos = strMyCapacity.IndexOf("/[");
+                    int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
                     strMyCapacity = strMyCapacity.Substring(0, intPos);
                     decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
                 }
@@ -841,7 +841,7 @@ namespace Chummer.Backend.Equipment
                     if (strCapacity.Contains("/["))
                     {
                         // If this is a multiple-capacity item, use only the second half.
-                        int intPos = strCapacity.IndexOf("/[");
+                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         strCapacity = strCapacity.Substring(intPos + 1);
                     }
 

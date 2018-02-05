@@ -43,7 +43,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
         private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
@@ -55,8 +55,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            _objCharacter.CharacterNameChanged += ForceUpdateWindowTitle;
-
+            
             _lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>
             {
                 CharacterObject.BOD,
@@ -5835,7 +5834,7 @@ namespace Chummer
             // Displays an OpenFileDialog so the user can select the XML to read.  
             OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
             {
-                Filter = "XML Files|*.xml"
+                Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
             // Show the Dialog.  
@@ -6229,54 +6228,20 @@ namespace Chummer
             }
         }
 
-        public Character CharacterObject
-        {
-            get
-            {
-                return _objCharacter;
-            }
-            protected set
-            {
-                _objCharacter = value;
-            }
-        }
+        public Character CharacterObject => _objCharacter;
 
-        public CharacterOptions CharacterObjectOptions
-        {
-            get
-            {
-                return _objOptions;
-            }
-        }
+        protected CharacterOptions CharacterObjectOptions => _objOptions;
 
-        public ObservableCollection<CharacterAttrib> PrimaryAttributes
-        {
-            get
-            {
-                return _lstPrimaryAttributes;
-            }
-        }
+        protected ObservableCollection<CharacterAttrib> PrimaryAttributes => _lstPrimaryAttributes;
 
-        public ObservableCollection<CharacterAttrib> SpecialAttributes
-        {
-            get
-            {
-                return _lstSpecialAttributes;
-            }
-        }
+        protected ObservableCollection<CharacterAttrib> SpecialAttributes => _lstSpecialAttributes;
 
-        private void ForceUpdateWindowTitle(object sender)
+        protected void ForceUpdateWindowTitle(object sender, EventArgs e)
         {
             UpdateWindowTitle(false);
         }
 
-        public virtual string FormMode
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {
@@ -6368,7 +6333,7 @@ namespace Chummer
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
             
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);

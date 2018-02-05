@@ -18,7 +18,9 @@
  */
 using System;
  using System.Collections.Generic;
- using System.IO;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -46,7 +48,7 @@ namespace Chummer
 #endif
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
-        private readonly List<Character> _lstCharacters = new List<Character>();
+        private readonly ObservableCollection<Character> _lstCharacters = new ObservableCollection<Character>();
         private readonly List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
@@ -57,7 +59,7 @@ namespace Chummer
         {
             InitializeComponent();
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            Text = "Chummer 5a - Version " + _strCurrentVersion;
+            Text = Application.ProductName + " - " + LanguageManager.GetString("String_Version", GlobalOptions.Language) + ' ' + _strCurrentVersion;
 #if DEBUG
             Text += " DEBUG BUILD";
 #endif
@@ -145,6 +147,8 @@ namespace Chummer
                 MdiParent = this
             };
 
+            _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
+
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
             string strLoop;
@@ -177,6 +181,33 @@ namespace Chummer
 
             CharacterRoster.WindowState = FormWindowState.Maximized;
             CharacterRoster.Show();
+        }
+
+        private void LstCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                {
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        objCharacter.CharacterNameChanged += UpdateCharacterTabTitle;
+                    break;
+                }
+                case NotifyCollectionChangedAction.Remove:
+                {
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        objCharacter.CharacterNameChanged -= UpdateCharacterTabTitle;
+                    break;
+                }
+                case NotifyCollectionChangedAction.Replace:
+                {
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        objCharacter.CharacterNameChanged -= UpdateCharacterTabTitle;
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        objCharacter.CharacterNameChanged += UpdateCharacterTabTitle;
+                    break;
+                }
+            }
         }
 
         public frmCharacterRoster CharacterRoster { get; }
@@ -342,7 +373,9 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                Text = string.Format("Chummer 5a - Version " + _strCurrentVersion + " - Update {0} now available!", Utils.CachedGitVersion);
+                Text = Application.ProductName + " - " +
+                       LanguageManager.GetString("String_Version", GlobalOptions.Language) + ' ' + _strCurrentVersion + " - " +
+                       string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), Utils.CachedGitVersion);
             }
         }
 
@@ -525,8 +558,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-
-            objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            
             Cursor = Cursors.Default;
         }
 
@@ -655,16 +687,18 @@ namespace Chummer
             return false;
         }
 
-        private void objCharacter_CharacterNameChanged(object sender)
+        public void UpdateCharacterTabTitle(object sender, EventArgs e)
         {
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-            if (tabForms.TabCount > 0 && tabForms.SelectedTab != null)
+            if (tabForms.TabCount > 0 && sender is Character objCharacter)
             {
-                if (sender is Character objCharacter)
+                foreach (TabPage objTabPage in tabForms.TabPages)
                 {
-                    string strTitle = objCharacter.CharacterName.Trim();
-
-                    tabForms.SelectedTab.Text = strTitle;
+                    if (objTabPage.Tag is CharacterShared objCharacterForm && objCharacterForm.CharacterObject == objCharacter)
+                    {
+                        objTabPage.Text = objCharacter.CharacterName.Trim();
+                        return;
+                    }
                 }
             }
         }
@@ -896,8 +930,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-
-            objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            
             Cursor = Cursors.Default;
         }
 
@@ -908,7 +941,7 @@ namespace Chummer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
                 Multiselect = true
             };
 
@@ -992,9 +1025,9 @@ namespace Chummer
 
                 if (blnIncludeInMRU)
                     GlobalOptions.AddToMRUList(objCharacter.FileName);
+                
+                UpdateCharacterTabTitle(objCharacter, EventArgs.Empty);
 
-                objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
-                objCharacter_CharacterNameChanged(objCharacter);
                 Timekeeper.Finish("load_event_time");
             }
 
@@ -1237,7 +1270,7 @@ namespace Chummer
             }
         }
 
-        public IList<Character> OpenCharacters
+        public ObservableCollection<Character> OpenCharacters
         {
             get { return _lstCharacters; }
         }

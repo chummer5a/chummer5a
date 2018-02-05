@@ -496,7 +496,6 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Metatype";
             this.Text = "Select a Metatype";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMetatype_FormClosed);
             this.Load += new System.EventHandler(this.frmMetatype_Load);
             this.pnlMetatypes.ResumeLayout(false);
             this.pnlMetatypes.PerformLayout();

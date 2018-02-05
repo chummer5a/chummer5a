@@ -177,9 +177,9 @@ namespace Chummer
             }
             else
             {
-                lblBP.Text = "ERROR";
-                lblStage.Text = "ERROR";
-                lblSource.Text = "ERROR";
+                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
 
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;

@@ -1662,10 +1662,9 @@ namespace Chummer.Backend.Equipment
             // Evaluate the min expression if there is one.
             if (strDamage.Contains("min("))
             {
-                string strMin = string.Empty;
-                int intStart = strDamage.IndexOf("min(");
+                int intStart = strDamage.IndexOf("min(", StringComparison.Ordinal);
                 int intEnd = strDamage.IndexOf(')', intStart);
-                strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
+                string strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
                 
                 string[] strValue = strMin.TrimStart("min(", true).TrimEnd(')').Split(',');
                 int intMinValue = Convert.ToInt32(strValue[0]);

@@ -34,6 +34,7 @@ namespace Chummer.UI.Skills
         private readonly Skill _skill;
         private readonly Font _normal;
         private readonly Font _italic;
+        private readonly Font _italicName;
         private CharacterAttrib _attributeActive;
 
         public SkillControl2(Skill skill)
@@ -52,7 +53,8 @@ namespace Chummer.UI.Skills
             //Display
             if (!skill.Default)
             {
-                lblName.Font = new Font(lblName.Font, FontStyle.Italic);
+                _italicName = new Font(lblName.Font, FontStyle.Italic);
+                lblName.Font = _italicName;
             }
             if (!string.IsNullOrWhiteSpace(_skill.Notes))
             {
