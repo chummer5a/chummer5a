@@ -108,16 +108,10 @@ namespace Chummer.UI.Skills
                     DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, 
                     DataSourceUpdateMode.OnPropertyChanged);
-                if (skill.CharacterObject.BuildMethod.HaveSkillPoints())
-                {
-                    chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
-                        DataSourceUpdateMode.OnPropertyChanged);
-                    chkKarma.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                }
-                else
-                {
-                    chkKarma.Visible = false;
-                }
+
+                chkKarma.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false, DataSourceUpdateMode.OnPropertyChanged);
+                chkKarma.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 cboSpec.BeginUpdate();
                 if (skill.IsExoticSkill)
@@ -406,6 +400,11 @@ namespace Chummer.UI.Skills
         {
             _skill.PropertyChanged -= Skill_PropertyChanged;
             _skill.CharacterObject.AttributeSection.PropertyChanged -= AttributeSection_PropertyChanged;
+
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
         }
     }
 }

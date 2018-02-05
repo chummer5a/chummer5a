@@ -30,13 +30,13 @@ namespace Chummer
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
         private readonly int _intStage;
-        private String _strDefaultStageName;
+        private string _strDefaultStageName;
         private XmlDocument _xmlDocument;
-        private String _selectedId;
+        private string _selectedId;
         private Regex searchRegex;
 
 
-        private String _strWorkStage;
+        private string _strWorkStage;
         
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
@@ -52,7 +52,7 @@ namespace Chummer
             MoveControls();
 
             _xmlDocument = XmlManager.Load("lifemodules.xml");
-            String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
+            string selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
             if (stageNode != null)
@@ -67,7 +67,7 @@ namespace Chummer
             }
         }
 
-        private void BuildTree(String stageString)
+        private void BuildTree(string stageString)
         {
             XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
             treModules.Nodes.Clear();
@@ -155,7 +155,7 @@ namespace Chummer
             else
             {
                 //Select any node that have an id node equal to tag
-                String selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
+                string selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not

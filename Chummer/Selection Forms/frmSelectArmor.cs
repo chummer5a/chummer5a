@@ -356,9 +356,9 @@ namespace Chummer
                     tabArmor.Columns.Add("ArmorGuid");
                     tabArmor.Columns.Add("ArmorName");
                     tabArmor.Columns.Add("Armor");
-                    tabArmor.Columns["Armor"].DataType = typeof(Int32);
+                    tabArmor.Columns["Armor"].DataType = typeof(int);
                     tabArmor.Columns.Add("Capacity");
-                    tabArmor.Columns["Capacity"].DataType = typeof(Decimal);
+                    tabArmor.Columns["Capacity"].DataType = typeof(decimal);
                     tabArmor.Columns.Add("Avail");
                     tabArmor.Columns["Avail"].DataType = typeof(AvailabilityValue);
                     tabArmor.Columns.Add("Special");

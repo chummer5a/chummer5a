@@ -133,10 +133,10 @@ namespace Chummer
         public DiceRollerControl()
         {
             InitializeComponent();
-            nudDice.Maximum = Int32.MaxValue;
-            nudGremlins.Maximum = Int32.MaxValue;
-            nudLimit.Maximum = Int32.MaxValue;
-            nudThreshold.Maximum = Int32.MaxValue;
+            nudDice.Maximum = int.MaxValue;
+            nudGremlins.Maximum = int.MaxValue;
+            nudLimit.Maximum = int.MaxValue;
+            nudThreshold.Maximum = int.MaxValue;
             List<EdgeUses> edge = new List<EdgeUses>() 
             { 
                 EdgeUses.None, 

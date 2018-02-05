@@ -655,7 +655,7 @@ namespace Chummer
             return false;
         }
 
-        private void objCharacter_CharacterNameChanged(Object sender)
+        private void objCharacter_CharacterNameChanged(object sender)
         {
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
             if (tabForms.TabCount > 0 && tabForms.SelectedTab != null)
@@ -1164,7 +1164,7 @@ namespace Chummer
             }
         }
 
-        private void objCareer_DiceRollerOpened(Object sender)
+        private void objCareer_DiceRollerOpened(object sender)
         {
             MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
             //TODO: IMPLEMENT THIS SHIT

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -922,7 +922,7 @@ namespace Chummer
                     }
 
                     FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
                         Formatting = Formatting.Indented,
                         Indentation = 1,

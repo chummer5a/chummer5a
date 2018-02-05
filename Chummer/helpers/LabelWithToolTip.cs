@@ -75,5 +75,14 @@ namespace Chummer
         {
             _tt.Hide(this);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tt?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

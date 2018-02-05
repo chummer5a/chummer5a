@@ -406,7 +406,7 @@ namespace Chummer.Classes
             else if (strNodeOuterXml.Contains("limittoattribute"))
                 frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
 
-            bool useKnowledge = bonusNode.Attributes?["knowledgeskills"]?.InnerText == System.Boolean.TrueString;
+            bool useKnowledge = bonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
             frmPickSkill.ShowKnowledgeSkills = useKnowledge;
 
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1218,7 +1218,7 @@ namespace Chummer.Classes
                 frmPickSpell.Opacity = 0;
             }
 
-            frmPickSpell.IgnoreRequirements = bonusNode.Attributes["ignorerequirements"]?.InnerText == System.Boolean.TrueString;
+            frmPickSpell.IgnoreRequirements = bonusNode.Attributes["ignorerequirements"]?.InnerText == bool.TrueString;
 
             frmPickSpell.ShowDialog();
 
@@ -1663,7 +1663,7 @@ namespace Chummer.Classes
 
             frmSelectItem frmSelect = new frmSelectItem();
 
-            String strMode = nodSelect["type"]?.InnerText ?? "all";
+            string strMode = nodSelect["type"]?.InnerText ?? "all";
 
             List<Contact> lstSelectedContacts;
             if (strMode == "all")
@@ -1698,7 +1698,7 @@ namespace Chummer.Classes
             //Black magic LINQ to cast content of list to another type
             List<ListItem> contacts = new List<ListItem>(from x in lstSelectedContacts select new ListItem(count++.ToString(), x.Name));
 
-            String strPrice = nodSelect?.InnerText ?? string.Empty;
+            string strPrice = nodSelect?.InnerText ?? string.Empty;
 
             frmSelect.GeneralItems = contacts;
             frmSelect.ShowDialog();
@@ -1719,7 +1719,7 @@ namespace Chummer.Classes
             {
                 objSelectedContact.Loyalty = Convert.ToInt32(nodSelect["loyalty"].InnerText);
             }
-            if (String.IsNullOrWhiteSpace(SelectedValue))
+            if (string.IsNullOrWhiteSpace(SelectedValue))
             {
                 SelectedValue = objSelectedContact.Name;
             }
@@ -1814,7 +1814,7 @@ namespace Chummer.Classes
         public void attributelevel(XmlNode bonusNode)
         {
             Log.Info(new object[] { "attributelevel", bonusNode.OuterXml });
-            String strAttrib = string.Empty;
+            string strAttrib = string.Empty;
             int value = 1;
             bonusNode.TryGetInt32FieldQuickly("val", ref value);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strAttrib))
@@ -3458,7 +3458,7 @@ namespace Chummer.Classes
                     Log.Info("selectpower = " + objNode.OuterXml);
 
                     int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString()));
-                    frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == System.Boolean.TrueString;
+                    frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
                     string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                     if (!string.IsNullOrEmpty(strPointsPerLevel))
                         frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);

@@ -61,8 +61,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public bool BaseUnlocked
         {
-            get { return _objCharacter.BuildMethod.HaveSkillPoints() && 
-                    (SkillGroupObject == null || SkillGroupObject.Base <= 0); }
+            get { return _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0); }
         }
 
         /// <summary>

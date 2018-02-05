@@ -403,7 +403,7 @@ namespace Chummer
         /// <param name="character"></param>
         public void AddToken(Character character)
         {
-            if (character.InitRoll == Int32.MinValue)
+            if (character.InitRoll == int.MinValue)
             {
                 frmInitRoller frmHits = new frmInitRoller
                 {

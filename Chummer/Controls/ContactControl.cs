@@ -95,6 +95,14 @@ namespace Chummer
             _blnLoading = false;
         }
 
+        public void UnbindContactControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
+        }
+
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.

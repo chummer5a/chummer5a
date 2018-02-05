@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -26,6 +26,7 @@ using System.Xml;
 using Chummer.OmaeService;
 using Chummer.TranslationService;
 using System.IO.Packaging;
+ using System.Text;
 
 namespace Chummer
 {
@@ -50,7 +51,7 @@ namespace Chummer
                 MaxReceivedMessageSize = 5242880, // 5 MB
                 MaxBufferPoolSize = 524288,
                 MessageEncoding = WSMessageEncoding.Text,
-                TextEncoding = System.Text.Encoding.UTF8,
+                TextEncoding = Encoding.UTF8,
                 TransferMode = TransferMode.Buffered,
                 UseDefaultWebProxy = true
             };
@@ -95,7 +96,7 @@ namespace Chummer
                 MaxReceivedMessageSize = 5242880, // 5 MB
                 MaxBufferPoolSize = 524288,
                 MessageEncoding = WSMessageEncoding.Text,
-                TextEncoding = System.Text.Encoding.UTF8,
+                TextEncoding = Encoding.UTF8,
                 TransferMode = TransferMode.Buffered,
                 UseDefaultWebProxy = true
             };
@@ -146,9 +147,7 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(data))
             {
-                byte[] bytEncode = new byte[data.Length];
-                bytEncode = System.Text.Encoding.UTF8.GetBytes(data);
-                return Convert.ToBase64String(bytEncode);
+                return Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
             }
 
             return null;
@@ -161,14 +160,14 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(data))
             {
-                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
+                UTF8Encoding encoder = new UTF8Encoding();
+                Decoder utf8Decode = encoder.GetDecoder();
 
                 byte[] bytToDecode = Convert.FromBase64String(data);
                 int charCount = utf8Decode.GetCharCount(bytToDecode, 0, bytToDecode.Length);
                 char[] chrDecoded = new char[charCount];
                 utf8Decode.GetChars(bytToDecode, 0, bytToDecode.Length, chrDecoded, 0);
-                return new String(chrDecoded);
+                return new string(chrDecoded);
             }
 
             return null;

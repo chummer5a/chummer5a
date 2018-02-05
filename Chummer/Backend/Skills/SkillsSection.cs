@@ -36,17 +36,21 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character character)
         {
             _objCharacter = character;
-            _objCharacter.LOG.PropertyChanged += (sender, args) => KnoChanged();
-            _objCharacter.INT.PropertyChanged += (sender, args) => KnoChanged();
-
+            _objCharacter.LOG.PropertyChanged += KnoChanged;
+            _objCharacter.INT.PropertyChanged += KnoChanged;
+            
             _objCharacter.SkillImprovementEvent += CharacterOnImprovementEvent;
 
         }
 
         public void UnbindSkillsSection()
         {
-            _objCharacter.LOG.PropertyChanged -= (sender, args) => KnoChanged();
-            _objCharacter.INT.PropertyChanged -= (sender, args) => KnoChanged();
+            _objCharacter.LOG.PropertyChanged -= KnoChanged;
+            _objCharacter.INT.PropertyChanged -= KnoChanged;
+            
+            _objCharacter.SkillImprovementEvent -= CharacterOnImprovementEvent;
+            _skillValueBackup.Clear();
+            _dicSkillBackups.Clear();
         }
 
         private void CharacterOnImprovementEvent(ICollection<Improvement> improvements)
@@ -58,7 +62,7 @@ namespace Chummer.Backend.Skills
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
             }
         }
-
+        
         internal void AddSkills(FilterOptions skills, string strName = "")
         {
             List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
@@ -69,7 +73,7 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
@@ -138,13 +142,13 @@ namespace Chummer.Backend.Skills
                             Karma = skill.Karma
                         };
                         kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.MergeInto(kno, (x, y) => String.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (String.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
+                        KnowledgeSkills.MergeInto(kno, (x, y) => string.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (string.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
                         {
                             if (objNewSkill.Base > objExistSkill.Base)
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                         });
                     }
                 }
@@ -179,7 +183,7 @@ namespace Chummer.Backend.Skills
                     objGroup.Load(xmlNode);
                         lstLoadingSkillGroups.Add(objGroup);
                 }
-                lstLoadingSkillGroups.Sort((i1, i2) => String.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+                lstLoadingSkillGroups.Sort((i1, i2) => string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
                 foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
                 {
                     SkillGroups.Add(skillgroup);
@@ -211,7 +215,7 @@ namespace Chummer.Backend.Skills
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
                             objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                     });
                     if (blnDoAddToDictionary)
                         _dicSkills.Add(strName, objSkill);
@@ -515,24 +519,22 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int fromAttributes;
+                int fromAttributes = _objCharacter.Options.FreeKnowledgeMultiplier;
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
                 if (_objCharacter.Options.UseTotalValueForFreeKnowledge)
                 {
-                    fromAttributes = (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
+                    fromAttributes *= (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
                 }
                 else
                 {
-                    fromAttributes = (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
+                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
                 }
-
-                fromAttributes *= _objCharacter.Options.FreeKnowledgeMultiplier;
 
                 int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
                 return fromAttributes + val;
             }
         }
-
+        
         /// <summary>
         /// Number of free Knowledge skill points the character have remaining
         /// </summary>
@@ -565,8 +567,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
-                    _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+                if (!_objCharacter.BuildMethodHasSkillPoints)
                 {
                     return 0;
                 }
@@ -737,7 +738,7 @@ namespace Chummer.Backend.Skills
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
-        private void KnoChanged()
+        private void KnoChanged(object sender, PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
             {
@@ -745,7 +746,6 @@ namespace Chummer.Backend.Skills
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
             }
         }
-
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {

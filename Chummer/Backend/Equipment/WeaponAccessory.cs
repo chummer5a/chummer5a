@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private Weapon _objParent;
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
@@ -103,7 +102,7 @@ namespace Chummer.Backend.Equipment
                 _strCost = objXmlAccessory["cost"]?.InnerText ?? "0";
                 if (_strCost.StartsWith("Variable("))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
@@ -868,14 +867,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public ObservableCollection<Gear> Gear
+        public TaggedObservableCollection<Gear> Gear
         {
             get
             {
                 return _lstGear;
             }
         }
-
+        
         /// <summary>
         /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>

@@ -140,13 +140,13 @@ namespace Chummer.Backend
                 dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
                 dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
-                Byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Application.StartupPath, "json.txt"), info);
 
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt"));
 
-                crashHandler.WaitForExit();
+                crashHandler?.WaitForExit();
             }
             catch(Exception nex)
             {

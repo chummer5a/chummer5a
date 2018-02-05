@@ -13,9 +13,10 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {  
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -1316,7 +1317,7 @@ namespace Chummer
             this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
             this.chkLifeModule.Text = "Life modules visible";
             this.chkLifeModule.UseVisualStyleBackColor = true;
-            this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkLifeModule.CheckedChanged += new System.EventHandler(this.chkLifeModules_CheckedChanged);
             // 
             // lblPDFParametersLabel
             // 

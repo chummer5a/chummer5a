@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -60,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
-        private readonly ObservableCollection<Gear> _objChildren = new ObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _objChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private readonly Character _objCharacter;
@@ -1337,7 +1336,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
-        public ObservableCollection<Gear> Children
+        public TaggedObservableCollection<Gear> Children
         {
             get
             {

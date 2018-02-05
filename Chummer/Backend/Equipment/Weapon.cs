@@ -27,7 +27,6 @@ using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
-using System.Collections.ObjectModel;
 
 namespace Chummer.Backend.Equipment
 {
@@ -69,8 +68,8 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponName = string.Empty;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
-        private readonly ObservableCollection<WeaponAccessory> _lstAccessories = new ObservableCollection<WeaponAccessory>();
-        private readonly ObservableCollection<Weapon> _lstUnderbarrel = new ObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
+        private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel = new TaggedObservableCollection<Weapon>();
         private Vehicle _objMountedVehicle;
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
@@ -586,7 +585,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory))
-                _blnAllowAccessory = GetNode()?["allowaccessory"]?.InnerText != System.Boolean.FalseString;
+                _blnAllowAccessory = GetNode()?["allowaccessory"]?.InnerText != bool.FalseString;
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
@@ -871,17 +870,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
-        public ObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
+        public TaggedObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
 
         /// <summary>
         /// Underbarrel Weapon.
         /// </summary>
-        public ObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
+        public TaggedObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
 
         /// <summary>
         /// Children as Underbarrel Weapon.
         /// </summary>
-        public ObservableCollection<Weapon> Children => UnderbarrelWeapons;
+        public TaggedObservableCollection<Weapon> Children => UnderbarrelWeapons;
         /// <summary>
         /// Whether or not this Weapon is an Underbarrel Weapon.
         /// </summary>
@@ -1242,7 +1241,7 @@ namespace Chummer.Backend.Equipment
             if (strReturn.StartsWith("Variable("))
             {
                 strReturn = strReturn.TrimStart("Variable(", true).TrimEnd(')');
-                decimal decMin = 0;
+                decimal decMin;
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
                 {

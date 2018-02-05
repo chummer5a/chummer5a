@@ -17,17 +17,20 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Xml;
 
 namespace Chummer
 {
-    public class CalendarWeek : IHasInternalId, IComparable
+    public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged
     {
         private Guid _guiID;
         private int _intYear = 2072;
         private int _intWeek = 1;
         private string _strNotes = string.Empty;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region Constructor, Save, Load, and Print Methods
         public CalendarWeek()
@@ -64,10 +67,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            _intYear = Convert.ToInt32(objNode["year"].InnerText);
-            _intWeek = Convert.ToInt32(objNode["week"].InnerText);
-            _strNotes = objNode["notes"].InnerText;
+            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetInt32FieldQuickly("year", ref _intYear);
+            objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -98,7 +101,14 @@ namespace Chummer
         public int Year
         {
             get => _intYear;
-            set => _intYear = value;
+            set
+            {
+                if (_intYear != value)
+                {
+                    _intYear = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Year)));
+                }
+            }
         }
 
         /// <summary>
@@ -269,7 +279,14 @@ namespace Chummer
         public int Week
         {
             get => _intWeek;
-            set => _intWeek = value;
+            set
+            {
+                if (_intWeek != value)
+                {
+                    _intWeek = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Week)));
+                }
+            }
         }
 
         /// <summary>
@@ -278,7 +295,14 @@ namespace Chummer
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notes)));
+                }
+            }
         }
         #endregion
     }

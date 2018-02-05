@@ -84,7 +84,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void LoadRange(int min, int max, bool blnSuspend = true)
+        private void LoadRange(int min, int max)
         {
             min = Math.Max(0, min);
             max = Math.Min(_displayIndex.Count, max);
@@ -221,7 +221,7 @@ namespace Chummer.UI.Shared
 
         public void Sort(IComparer<TType> comparison)
         {
-            if (_comparison == comparison) return;
+            if (Equals(_comparison, comparison)) return;
             _comparison = comparison;
 
             pnlDisplay.SuspendLayout();
@@ -234,7 +234,7 @@ namespace Chummer.UI.Shared
         {
             int intNewIndex = eventArgs?.NewIndex ?? 0;
             List<ControlWithMetaData> lstToRedraw = null;
-            switch (eventArgs.ListChangedType)
+            switch (eventArgs?.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
                     break;
@@ -418,9 +418,9 @@ namespace Chummer.UI.Shared
 
             public int Compare(TType x, TType y)
             {
-                if (_index.TryGetValue(x, out int xindex))
+                if (x != null && _index.TryGetValue(x, out int xindex))
                 {
-                    if (_index.TryGetValue(y, out int yindex))
+                    if (y != null && _index.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -433,7 +433,8 @@ namespace Chummer.UI.Shared
                 else
                 {
                     Utils.BreakIfDebug();
-                    if (_index.ContainsKey(y)) return -1;
+                    if (y != null && (x == null || _index.ContainsKey(y)))
+                        return -1;
 
                     return 0;
                 }

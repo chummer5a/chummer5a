@@ -279,7 +279,7 @@ namespace Chummer
         /// <param name="line">Do not use this</param>
         public static void Info
             (
-            String info = null,
+            string info = null,
 #if LEGACY
             string file = "LEGACY",
             string method = "LEGACY",

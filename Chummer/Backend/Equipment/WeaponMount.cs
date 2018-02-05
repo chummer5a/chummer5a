@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -41,7 +40,7 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
 		private bool _blnInstalled = true;
-		private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+		private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
 		private string _strWeaponMountCategories = string.Empty;
@@ -55,7 +54,7 @@ namespace Chummer.Backend.Equipment
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private readonly ObservableCollection<VehicleMod> _lstMods = new ObservableCollection<VehicleMod>();
+        private readonly TaggedObservableCollection<VehicleMod> _lstMods = new TaggedObservableCollection<VehicleMod>();
 
         private readonly Vehicle _vehicle;
 	    private readonly Character _objCharacter;
@@ -92,7 +91,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strCost.StartsWith("Variable("))
                 {
-                    decimal decMin = 0;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
@@ -315,7 +314,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons
+        public TaggedObservableCollection<Weapon> Weapons
 		{
 			get
 			{
@@ -703,7 +702,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public ObservableCollection<VehicleMod> Mods
+        public TaggedObservableCollection<VehicleMod> Mods
         {
             get => _lstMods;
         }

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -346,12 +346,14 @@ namespace Chummer
 
             // Build the XML for the Improvement.
             XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
-            if (objFetchNode == null) return;
+            string strInternal = objFetchNode?["internal"]?.InnerText;
+            if (string.IsNullOrEmpty(strInternal))
+                return;
             objWriter.WriteStartDocument();
             // <bonus>
             objWriter.WriteStartElement("bonus");
             // <whatever element>
-            objWriter.WriteStartElement(objFetchNode["internal"]?.InnerText);
+            objWriter.WriteStartElement(strInternal);
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
@@ -448,10 +450,7 @@ namespace Chummer
         /// </summary>
         public Improvement EditImprovementObject
         {
-            set
-            {
-                _objEditImprovement = value;
-            }
+            set => _objEditImprovement = value;
         }
         #endregion
     }

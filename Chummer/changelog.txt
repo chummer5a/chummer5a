@@ -126,6 +126,12 @@ Application Changes:
 - Fixed an issue where skill group names would not get printed properly if using a translation with no translated string specified for a skill group. Fixes #2430.
 - Fixed a crash when switching list selections in the Translator before the existing list had fully loaded. Fixes #2431.
 - Minor changes to the Quality condition in required/forbidden nodes to support looking for an Extra value.
+- Fixed a crash that sometimes occurred when closing a character form on a slower machine without having visited the skills tab first.
+- Restored the ability to search knowledge skills by name.
+- Fixed an issue where sorting active skills by name, category, or skill group would use sort by English names instead of the localized ones.
+- Fixed an issue where characters could not sort by skill groups of skills that were added after the skills tab was initialized (e.g. Resonance- or Magic-based skill groups).
+- Fixed various memory leaks that would occur whenever a character and/or a form were closed.
+
 Data Changes:
 
 - Added new items to allow for translation of certain extras, special equipment, and non-standard form factors that come with certain vehicles, weapons, and gear. Fixes #2309.
@@ -143,6 +149,8 @@ Data Changes:
 - Removed the <hide /> flag from the Aware quality.
 - Horse mentor spirit now adds a proxy for the Movement critter power as a metamagic. 
 - Added a customdata entry for German Commlink App prices.
+- Fixed incorrect priority values for the Falconine and Canine shifter metatypes at Priority C.
+- Fixed incorrect available mod slots for most of the drones from Rigger 5.
 
 New Strings:
 

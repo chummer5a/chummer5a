@@ -33,15 +33,15 @@ namespace Chummer.Backend.Attributes
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings { get { return Array.AsReadOnly(s_LstAttributeStrings); } }
+        public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
-        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes { get { return Array.AsReadOnly(s_LstPhysicalAttributes); } }
+	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
+        public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
 
-        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes { get { return Array.AsReadOnly(s_LstMentalAttributes); } }
+	    private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
+        public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
-        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+	    private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
@@ -60,7 +60,16 @@ namespace Chummer.Backend.Attributes
             }
 		}
 
-		internal void Save(XmlTextWriter objWriter)
+	    public void UnbindAttributeSection()
+	    {
+	        _dicBindings.Clear();
+	        foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+	            objAttribute.UnbindAttribute();
+	        AttributeList.Clear();
+	        SpecialAttributeList.Clear();
+	    }
+
+        internal void Save(XmlTextWriter objWriter)
 		{
 			foreach (CharacterAttrib objAttribute in AttributeList)
 			{
@@ -81,14 +90,14 @@ namespace Chummer.Backend.Attributes
 			SpecialAttributeList.Clear();
             XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
             XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-            XmlNode xmlCharNode = xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
+            XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
             XmlNode xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
                 // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
-                if (lstAttributeNodes.Count == 0)
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0)
                 {
                     CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
@@ -143,9 +152,9 @@ namespace Chummer.Backend.Attributes
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
                 strAttributeLower = "mag";
-            int intMinValue = 1;
-            int intMaxValue = 1;
-            int intAugValue = 1;
+            int intMinValue;
+            int intMaxValue;
+            int intAugValue;
 
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
@@ -220,10 +229,14 @@ namespace Chummer.Backend.Attributes
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
             XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
-			target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"].InnerText);
-			target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"].InnerText);
-			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"].InnerText);
-			target.Base = source.Base;
+		    if (node != null)
+		    {
+		        target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+		        target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+		        target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+		    }
+
+		    target.Base = source.Base;
 			target.Karma = source.Karma;
         }
 

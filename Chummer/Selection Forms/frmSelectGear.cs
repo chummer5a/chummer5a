@@ -776,7 +776,7 @@ namespace Chummer
                     }
                     else if (objCostNode.InnerText.StartsWith("Variable("))
                     {
-                        decimal decMin = 0;
+                        decimal decMin;
                         decimal decMax = decimal.MaxValue;
                         string strCost = objCostNode.InnerText.TrimStart("Variable(", true).TrimEnd(')');
                         if (strCost.Contains('-'))

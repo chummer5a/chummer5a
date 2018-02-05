@@ -110,6 +110,14 @@ namespace Chummer
             _blnLoading = false;
         }
 
+        public void UnbindSpiritControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
+        }
+
         private void chkFettered_CheckedChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.

@@ -103,7 +103,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled || _lstAffectedSkills.Count == 0)
                     return false;
-                return _objCharacter.BuildMethod.HaveSkillPoints() && !_lstAffectedSkills.Any(x => x.Ibase > 0);
+                return _objCharacter.BuildMethodHasSkillPoints && !_lstAffectedSkills.Any(x => x.Ibase > 0);
             }
         }
 
@@ -174,7 +174,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (UpgradeKarmaCost() > Character.Karma) return false;
+                if (UpgradeKarmaCost() > CharacterObject.Karma) return false;
 
                 return CareerIncrease;
             }
@@ -231,10 +231,10 @@ namespace Chummer.Backend.Skills
             objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
             objEntry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
 
-            Character.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.Add(objEntry);
 
             Karma += 1;
-            Character.Karma -= intPrice;
+            CharacterObject.Karma -= intPrice;
         }
 
         #endregion
@@ -260,7 +260,7 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => String.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal),
+            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal),
                 (l, r) => { foreach (Skill x in r.SkillList.Where(y => !l.SkillList.Contains(y))) l.SkillList.Add(x); });
 
             return objNewGroup;
@@ -367,7 +367,7 @@ namespace Chummer.Backend.Skills
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
 
-        public Character Character
+        public Character CharacterObject
         {
             get { return _objCharacter; }
         }
@@ -612,12 +612,12 @@ namespace Chummer.Backend.Skills
             int intOptionsCost;
             if (intRating == 0)
             {
-                intOptionsCost = Character.Options.KarmaNewSkillGroup;
+                intOptionsCost = CharacterObject.Options.KarmaNewSkillGroup;
                 intReturn = intOptionsCost;
             }
             else if (RatingMaximum > intRating)
             {
-                intOptionsCost = Character.Options.KarmaImproveSkillGroup;
+                intOptionsCost = CharacterObject.Options.KarmaImproveSkillGroup;
                 intReturn = (intRating + 1) * intOptionsCost;
             }
             else

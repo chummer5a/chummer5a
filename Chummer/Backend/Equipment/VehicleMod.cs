@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -51,10 +50,10 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludeInVehicle;
         private bool _blnInstalled = true;
         private int _intConditionMonitor;
-        private readonly ObservableCollection<Weapon> _lstVehicleWeapons = new ObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
         private string _strSubsystems = string.Empty;
-        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
+        private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
         private string _strExtra = string.Empty;
         private string _strWeaponMountCategories = string.Empty;
         private bool _blnDiscountCost;
@@ -124,7 +123,7 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (_strCost.StartsWith("Variable("))
             {
-                decimal decMin = 0;
+                decimal decMin;
                 decimal decMax = decimal.MaxValue;
                 string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                 if (strCost.Contains('-'))
@@ -347,9 +346,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
+        public TaggedObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
 
-        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
+        public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         public WeaponMount WeaponMountParent
         {

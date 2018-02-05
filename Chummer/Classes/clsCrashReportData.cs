@@ -138,7 +138,7 @@ namespace Chummer
                             cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
-                        String[] keys = cv.GetValueNames();
+                        string[] keys = cv.GetValueNames();
                         report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
                         report.AppendLine();
                         cv.Close();
@@ -156,7 +156,7 @@ namespace Chummer
             return report.ToString();
         }
 
-        public CrashReportData AddData(String title, String contents)
+        public CrashReportData AddData(string title, string contents)
         {
             //Convert string to stream
             MemoryStream stream = new MemoryStream();
@@ -168,7 +168,7 @@ namespace Chummer
             return AddData(title, stream);
         }
 
-        public CrashReportData AddData(String title, Stream contents)
+        public CrashReportData AddData(string title, Stream contents)
         {
             values.Add(new KeyValuePair<string, Stream>(title, contents));
             return this;
@@ -180,7 +180,7 @@ namespace Chummer
             {
                 //Not worried about password, but don't want to place it in clear. Not that this is going to stop anybody
                 //But hopefully this barrier keeps it above the lowest hanging fruits
-                String password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
+                string password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
 
                 MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
                 SmtpClient client = new SmtpClient
