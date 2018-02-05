@@ -18,9 +18,10 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -3583,7 +3584,6 @@ namespace Chummer
             this.tabSkillUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSkillUc.Location = new System.Drawing.Point(0, 0);
             this.tabSkillUc.Name = "tabSkillUc";
-            this.tabSkillUc.ObjCharacter = null;
             this.tabSkillUc.Size = new System.Drawing.Size(840, 611);
             this.tabSkillUc.TabIndex = 0;
             this.tabSkillUc.Tag = "";
@@ -4350,7 +4350,6 @@ namespace Chummer
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
             this.tabPowerUc.Name = "tabPowerUc";
-            this.tabPowerUc.ObjCharacter = null;
             this.tabPowerUc.Size = new System.Drawing.Size(840, 611);
             this.tabPowerUc.TabIndex = 0;
             // 

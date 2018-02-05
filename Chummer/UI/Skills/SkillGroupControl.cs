@@ -40,7 +40,7 @@ namespace Chummer.UI.Skills
             _skillGroup.PropertyChanged += SkillGroup_PropertyChanged;
             tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
 
-            if (_skillGroup.Character.Created)
+            if (_skillGroup.CharacterObject.Created)
             {
                 nudKarma.Visible = false;
                 nudSkill.Visible = false;
@@ -56,14 +56,14 @@ namespace Chummer.UI.Skills
             {
                 nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                if (_skillGroup.Character.BuildMethod == CharacterBuildMethod.Karma ||
-                    _skillGroup.Character.BuildMethod == CharacterBuildMethod.LifeModule)
+                if (_skillGroup.CharacterObject.BuildMethod == CharacterBuildMethod.Karma ||
+                    _skillGroup.CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     nudSkill.Enabled = false;
                 }
@@ -75,6 +75,10 @@ namespace Chummer.UI.Skills
         public void UnbindSkillGroupControl()
         {
             _skillGroup.PropertyChanged -= SkillGroup_PropertyChanged;
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
         }
 
         #region Control Events
@@ -83,7 +87,7 @@ namespace Chummer.UI.Skills
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
 
-            if (!_skillGroup.Character.ConfirmKarmaExpense(confirmstring))
+            if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
             _skillGroup.Upgrade();
@@ -127,7 +131,7 @@ namespace Chummer.UI.Skills
         {
             lblName.Width = nameWidth;
             lblGroupRating.Left = lblName.Right + 2;
-            if (_skillGroup.Character.Created)
+            if (_skillGroup.CharacterObject.Created)
             {
                 btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 4;
             }

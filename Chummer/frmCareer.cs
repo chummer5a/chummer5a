@@ -201,8 +201,7 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-
-            tabPowerUc.ObjCharacter = CharacterObject;
+            
             // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
             if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
                 tabCharacterTabs.TabPages.Remove(tabMagician);
@@ -620,7 +619,8 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            tabSkillsUc.ObjCharacter = CharacterObject;
+            tabSkillsUc.RealLoad();
+            tabPowerUc.RealLoad();
 
             // Set the visibility of the Armor Degradation buttons.
             cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);

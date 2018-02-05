@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -105,17 +106,7 @@ namespace Chummer.UI.Skills
                 cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
                 cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                skill.PropertyChanged += (sender, args) =>
-                {
-                    if (args.PropertyName == nameof(Skill.CGLSpecializations))
-                    {
-                        cboSpec.DataSource = null;
-                        cboSpec.DisplayMember = nameof(ListItem.Name);
-                        cboSpec.ValueMember = nameof(ListItem.Value);
-                        cboSpec.DataSource = skill.CGLSpecializations;
-                        cboSpec.MaxDropDownItems = Math.Max(1, skill.CGLSpecializations.Count);
-                    }
-                };
+                skill.PropertyChanged += RefreshSpecializationComboBox;
             }
 
             if (skill.ForcedName)
@@ -146,19 +137,25 @@ namespace Chummer.UI.Skills
             cboSpec.EndUpdate();
         }
 
+        public void RefreshSpecializationComboBox(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Skill.CGLSpecializations))
+            {
+                cboSpec.DataSource = null;
+                cboSpec.DisplayMember = nameof(ListItem.Name);
+                cboSpec.ValueMember = nameof(ListItem.Value);
+                cboSpec.DataSource = _skill.CGLSpecializations;
+                cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+            }
+        }
+
         public void UnbindKnowledgeSkillControl()
         {
-            _skill.PropertyChanged -= (sender, args) =>
+            _skill.PropertyChanged -= RefreshSpecializationComboBox;
+            foreach (Control objControl in Controls)
             {
-                if (args.PropertyName == nameof(Skill.CGLSpecializations))
-                {
-                    cboSpec.DataSource = null;
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = _skill.CGLSpecializations;
-                    cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
-                }
-            };
+                objControl.DataBindings.Clear();
+            }
         }
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
@@ -227,8 +224,7 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
-                nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills && nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
             {
                 chkKarma.Checked = true;
             }

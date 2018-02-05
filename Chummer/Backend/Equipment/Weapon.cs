@@ -27,7 +27,6 @@ using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
-using System.Collections.ObjectModel;
 
 namespace Chummer.Backend.Equipment
 {

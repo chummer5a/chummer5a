@@ -918,7 +918,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return _objCharacter.BuildMethod.HaveSkillPoints();
+                return _objCharacter.BuildMethodHasSkillPoints;
             }
         }
 
@@ -1431,7 +1431,7 @@ namespace Chummer.Backend.Attributes
                 return GetDisplayAbbrev(GlobalOptions.Language);
             }
         }
-
+        
         public string GetDisplayAbbrev(string strLanguage)
         {
             if (Abbrev == "MAGAdept")

@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.ObjectModel;
-
 namespace Chummer
 {
     public interface IHasChildren<T>

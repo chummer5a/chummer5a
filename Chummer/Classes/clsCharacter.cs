@@ -2914,8 +2914,42 @@ namespace Chummer
         /// </summary>
         public void DeleteCharacter()
         {
+            ImprovementManager.ClearCachedValues(this);
+            _lstImprovements.Clear();
+            _lstContacts.Clear();
+            _lstSpirits.Clear();
+            _lstSpells.Clear();
+            _lstFoci.Clear();
+            _lstStackedFoci.Clear();
+            _lstPowers.Clear();
+            _lstComplexForms.Clear();
+            _lstAIPrograms.Clear();
+            _lstMartialArts.Clear();
+#if LEGACY
+            _lstMartialArtManeuvers.Clear();
+#endif
+            _lstLimitModifiers.Clear();
+            _lstArmor.Clear();
+            _lstCyberware.Clear();
+            _lstMetamagics.Clear();
+            _lstArts.Clear();
+            _lstEnhancements.Clear();
+            _lstWeapons.Clear();
+            _lstLifestyles.Clear();
+            _lstGear.Clear();
+            _lstVehicles.Clear();
+            _lstExpenseLog.Clear();
+            _lstCritterPowers.Clear();
+            _lstInitiationGrades.Clear();
+            _lstQualities.Clear();
+            _lstCalendar.Clear();
+
+            _lstMugshots.Clear();
+
+            _lstLinkedCharacters.Clear();
+
             SkillsSection.UnbindSkillsSection();
-            ResetCharacter();
+            AttributeSection.UnbindAttributeSection();
         }
 
         /// <summary>
@@ -2975,6 +3009,7 @@ namespace Chummer
 
             // Reset all of the Lists.
             // This kills the GC
+            ImprovementManager.ClearCachedValues(this);
             _lstImprovements.Clear();
             _lstContacts.Clear();
             _lstSpirits.Clear();
@@ -3008,6 +3043,8 @@ namespace Chummer
 
             _intMainMugshotIndex = -1;
             _lstMugshots.Clear();
+
+            _lstLinkedCharacters.Clear();
         }
 #endregion
 
@@ -7184,8 +7221,17 @@ namespace Chummer
             }
             set
             {
-                _objBuildMethod = value;
+                if (value != _objBuildMethod)
+                {
+                    _objBuildMethod = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BuildMethodHasSkillPoints)));
+                }
             }
+        }
+
+        public bool BuildMethodHasSkillPoints
+        {
+            get => BuildMethod == CharacterBuildMethod.Priority || BuildMethod == CharacterBuildMethod.SumtoTen;
         }
 
         /// <summary>

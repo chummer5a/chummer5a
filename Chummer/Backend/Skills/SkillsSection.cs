@@ -36,17 +36,21 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character character)
         {
             _objCharacter = character;
-            _objCharacter.LOG.PropertyChanged += (sender, args) => KnoChanged();
-            _objCharacter.INT.PropertyChanged += (sender, args) => KnoChanged();
-
+            _objCharacter.LOG.PropertyChanged += KnoChanged;
+            _objCharacter.INT.PropertyChanged += KnoChanged;
+            
             _objCharacter.SkillImprovementEvent += CharacterOnImprovementEvent;
 
         }
 
         public void UnbindSkillsSection()
         {
-            _objCharacter.LOG.PropertyChanged -= (sender, args) => KnoChanged();
-            _objCharacter.INT.PropertyChanged -= (sender, args) => KnoChanged();
+            _objCharacter.LOG.PropertyChanged -= KnoChanged;
+            _objCharacter.INT.PropertyChanged -= KnoChanged;
+            
+            _objCharacter.SkillImprovementEvent -= CharacterOnImprovementEvent;
+            _skillValueBackup.Clear();
+            _dicSkillBackups.Clear();
         }
 
         private void CharacterOnImprovementEvent(ICollection<Improvement> improvements)
@@ -58,7 +62,7 @@ namespace Chummer.Backend.Skills
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
             }
         }
-
+        
         internal void AddSkills(FilterOptions skills, string strName = "")
         {
             List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
@@ -515,24 +519,22 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int fromAttributes;
+                int fromAttributes = _objCharacter.Options.FreeKnowledgeMultiplier;
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
                 if (_objCharacter.Options.UseTotalValueForFreeKnowledge)
                 {
-                    fromAttributes = (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
+                    fromAttributes *= (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
                 }
                 else
                 {
-                    fromAttributes = (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
+                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
                 }
-
-                fromAttributes *= _objCharacter.Options.FreeKnowledgeMultiplier;
 
                 int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
                 return fromAttributes + val;
             }
         }
-
+        
         /// <summary>
         /// Number of free Knowledge skill points the character have remaining
         /// </summary>
@@ -565,8 +567,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
-                    _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+                if (!_objCharacter.BuildMethodHasSkillPoints)
                 {
                     return 0;
                 }
@@ -737,7 +738,7 @@ namespace Chummer.Backend.Skills
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
-        private void KnoChanged()
+        private void KnoChanged(object sender, PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
             {
@@ -745,7 +746,6 @@ namespace Chummer.Backend.Skills
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
             }
         }
-
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {

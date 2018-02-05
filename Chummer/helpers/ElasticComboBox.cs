@@ -128,5 +128,15 @@ namespace Chummer
             }
             DropDownWidth = Convert.ToInt32(Math.Ceiling(fltMaxItemWidth));
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tt?.Dispose();
+                _objGraphics?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

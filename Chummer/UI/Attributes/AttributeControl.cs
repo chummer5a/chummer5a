@@ -87,6 +87,14 @@ namespace Chummer.UI.Attributes
 			_dataSource.DataSource = attrib;
 		}
 
+        public void UnbindAttributeControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
+        }
+
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
             int intUpgradeKarmaCost = _objAttribute.UpgradeKarmaCost;

@@ -75,6 +75,10 @@ namespace Chummer
             PowerObject.CharacterObject.PropertyChanged -= Power_PropertyChanged;
             if (PowerObject.Name == "Improved Ability (skill)")
                 PowerObject.CharacterObject.SkillsSection.PropertyChanged -= Power_PropertyChanged;
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
         }
 
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

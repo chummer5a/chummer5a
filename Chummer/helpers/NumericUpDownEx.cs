@@ -77,6 +77,15 @@ namespace Chummer
             base.MouseLeave += _mouseEnterLeave;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _textbox?.Dispose();
+                _upDownButtons?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
         {

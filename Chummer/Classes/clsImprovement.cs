@@ -782,6 +782,15 @@ namespace Chummer
             else
                 s_DictionaryCachedValues.Add(objImprovementType, int.MinValue);
         }
+
+        public static void ClearCachedValues(Character objCharacter)
+        {
+            foreach (Tuple<Character, Improvement.ImprovementType> objKey in s_DictionaryCachedValues.Keys.ToList())
+            {
+                if (objKey.Item1 == objCharacter)
+                    s_DictionaryCachedValues.Remove(objKey);
+            }
+        }
         #endregion
 
         #region Helper Methods
@@ -1680,18 +1689,5 @@ namespace Chummer
         }
 
         #endregion
-}
-
-    public static class ImprovementExtensions
-    {
-        /// <summary>
-        /// Are Skill Points enabled for the character?
-        /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        public static bool HaveSkillPoints(this CharacterBuildMethod method)
-        {
-            return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;
-        }
     }
 }

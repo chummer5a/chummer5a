@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;

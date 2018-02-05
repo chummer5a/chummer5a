@@ -33,15 +33,15 @@ namespace Chummer.Backend.Attributes
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings { get { return Array.AsReadOnly(s_LstAttributeStrings); } }
+        public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
-        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes { get { return Array.AsReadOnly(s_LstPhysicalAttributes); } }
+	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
+        public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
 
-        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes { get { return Array.AsReadOnly(s_LstMentalAttributes); } }
+	    private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
+        public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
-        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+	    private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
@@ -60,7 +60,16 @@ namespace Chummer.Backend.Attributes
             }
 		}
 
-		internal void Save(XmlTextWriter objWriter)
+	    public void UnbindAttributeSection()
+	    {
+	        _dicBindings.Clear();
+	        foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+	            objAttribute.UnbindAttribute();
+	        AttributeList.Clear();
+	        SpecialAttributeList.Clear();
+	    }
+
+        internal void Save(XmlTextWriter objWriter)
 		{
 			foreach (CharacterAttrib objAttribute in AttributeList)
 			{

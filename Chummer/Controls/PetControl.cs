@@ -58,6 +58,14 @@ namespace Chummer
             _blnLoading = false;
         }
 
+        public void UnbindPetControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
+        }
+
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -194,10 +193,7 @@ namespace Chummer
         {
             Timekeeper.Finish("load_free");
             Timekeeper.Start("load_frm_create");
-
-            tabSkillUc.ObjCharacter = CharacterObject;
-            tabPowerUc.ObjCharacter = CharacterObject;
-
+            
             if (!CharacterObject.IsCritter && (CharacterObject.BuildMethod == CharacterBuildMethod.Karma && CharacterObject.BuildKarma == 0) || (CharacterObject.BuildMethod == CharacterBuildMethod.Priority && CharacterObject.BuildKarma == 0))
             {
                 _blnFreestyle = true;
@@ -559,6 +555,9 @@ namespace Chummer
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
+
+            tabSkillUc.RealLoad();
+            tabPowerUc.RealLoad();
 
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
