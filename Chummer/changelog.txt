@@ -132,6 +132,7 @@ Application Changes:
 - Fixed an issue where characters could not sort by skill groups of skills that were added after the skills tab was initialized (e.g. Resonance- or Magic-based skill groups).
 - Fixed various memory leaks that would occur whenever a character and/or a form were closed.
 - Added localization support to the About screen, file dialog filters, the JSON export dialog, and the application title.
+- Fixed an issue where weapon mounts would not get printed with vehicles. Fixes #2426.
 
 Data Changes:
 

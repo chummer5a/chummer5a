@@ -815,12 +815,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in Mods)
                 objMod.Print(objWriter, objCulture, strLanguageToPrint);
+            foreach (WeaponMount objMount in WeaponMounts)
+                objMount.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in Gear)
-            {
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
-            }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
