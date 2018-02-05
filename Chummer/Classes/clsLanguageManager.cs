@@ -140,10 +140,9 @@ namespace Chummer
                 {
                     try
                     {
-                        string strExtraMessage = string.Empty;
                         try
                         {
-                            using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                            using (StreamReader objStreamReader = new StreamReader(strDataPath, true))
                             {
                                 DataDocument.Load(objStreamReader);
                             }
