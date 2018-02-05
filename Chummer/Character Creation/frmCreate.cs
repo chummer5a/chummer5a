@@ -13113,11 +13113,15 @@ namespace Chummer
             if (objSelectedCyberware != null)
             {
                 objSelectedCyberware.Children.Add(objCyberware);
+                objSelectedCyberware.RefreshMatrixAttributeArray();
             }
             else
             {
                 CharacterObject.Cyberware.Add(objCyberware);
             }
+
+            CharacterObject.Weapons.AddRange(lstWeapons);
+            CharacterObject.Vehicles.AddRange(lstVehicles);
             
             IsCharacterUpdateRequested = true;
 
