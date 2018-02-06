@@ -12926,7 +12926,7 @@ namespace Chummer
             // chtKarma
             // 
             this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea1.Name = "ChartArea1";
+            chartArea1.Name = "KarmaArea";
             this.chtKarma.ChartAreas.Add(chartArea1);
             this.chtKarma.Location = new System.Drawing.Point(0, 449);
             this.chtKarma.Name = "chtKarma";
@@ -12973,7 +12973,6 @@ namespace Chummer
             this.lstKarma.MultiSelect = false;
             this.lstKarma.Name = "lstKarma";
             this.lstKarma.Size = new System.Drawing.Size(409, 411);
-            this.lstKarma.Sorting = System.Windows.Forms.SortOrder.Descending;
             this.lstKarma.TabIndex = 0;
             this.lstKarma.UseCompatibleStateImageBehavior = false;
             this.lstKarma.View = System.Windows.Forms.View.Details;
@@ -13025,7 +13024,7 @@ namespace Chummer
             // chtNuyen
             // 
             this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea2.Name = "ChartArea1";
+            chartArea2.Name = "NuyenArea";
             this.chtNuyen.ChartAreas.Add(chartArea2);
             this.chtNuyen.Location = new System.Drawing.Point(0, 449);
             this.chtNuyen.Name = "chtNuyen";
@@ -13060,7 +13059,6 @@ namespace Chummer
             this.lstNuyen.MultiSelect = false;
             this.lstNuyen.Name = "lstNuyen";
             this.lstNuyen.Size = new System.Drawing.Size(410, 411);
-            this.lstNuyen.Sorting = System.Windows.Forms.SortOrder.Descending;
             this.lstNuyen.TabIndex = 3;
             this.lstNuyen.UseCompatibleStateImageBehavior = false;
             this.lstNuyen.View = System.Windows.Forms.View.Details;

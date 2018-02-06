@@ -597,7 +597,7 @@ namespace Chummer
                     objExpense.Create(decCost * -1,
                         LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
                         ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.Add(objExpense);
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();

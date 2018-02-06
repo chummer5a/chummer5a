@@ -564,7 +564,7 @@ namespace Chummer
                             objExpense.Create(FetteringCost * -1,
                                 LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + ' ' + Name,
                                 ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Karma -= FetteringCost;
 
                             ExpenseUndo objUndo = new ExpenseUndo();

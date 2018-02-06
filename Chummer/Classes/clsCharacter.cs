@@ -16,23 +16,23 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
-using Chummer.Backend.Attributes;
-using System.Globalization;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 
 namespace Chummer
 {
@@ -1823,7 +1823,7 @@ namespace Chummer
             {
                 ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
                 objExpenseLogEntry.Load(objXmlExpense);
-                _lstExpenseLog.Add(objExpenseLogEntry);
+                _lstExpenseLog.AddWithSort(objExpenseLogEntry);
             }
 
             Timekeeper.Finish("load_char_elog");
@@ -2898,8 +2898,7 @@ namespace Chummer
             {
                 // <expenses>
                 objWriter.WriteStartElement("expenses");
-                ExpenseEntries.Sort(ExpenseLogEntry.CompareDate);
-                foreach (ExpenseLogEntry objExpense in ExpenseEntries)
+                foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
                     objExpense.Print(objWriter, objCulture, strLanguageToPrint);
                 // </expenses>
                 objWriter.WriteEndElement();

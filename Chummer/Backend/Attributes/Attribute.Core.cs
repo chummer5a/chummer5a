@@ -1455,7 +1455,7 @@ namespace Chummer.Backend.Attributes
                 objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
                 objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-                _objCharacter.ExpenseEntries.Add(objEntry);
+                _objCharacter.ExpenseEntries.AddWithSort(objEntry);
 
                 Karma += 1;
                 _objCharacter.Karma -= intPrice;

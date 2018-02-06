@@ -1355,7 +1355,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
                         objExpense.Create(0, strEntry + strExConString + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         if (objCyberware.Parent != null)
                             objCyberware.Parent.Children.Remove(objCyberware);
@@ -3342,7 +3342,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                     objEntry.Create(-intSpellKarmaCost, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + ' ' + objSpell.Name, ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objEntry);
+                    CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                     CharacterObject.Karma -= intSpellKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -3609,7 +3609,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm", GlobalOptions.Language) + ' ' + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intComplexFormKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -3762,7 +3762,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4046,7 +4046,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicle", GlobalOptions.Language) + ' ' + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4216,7 +4216,7 @@ namespace Chummer
                                 // Create an Expense Log Entry for removing the Obsolete Mod.
                                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                                 objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit", GlobalOptions.Language).Replace("{0}", objVehicle.DisplayName(GlobalOptions.Language)), ExpenseType.Nuyen, DateTime.Now);
-                                CharacterObject.ExpenseEntries.Add(objEntry);
+                                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                                 // Adjust the character's Nuyen total.
                                 CharacterObject.Nuyen += decCost * -1;
@@ -4341,7 +4341,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -4443,7 +4443,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnManeuver", GlobalOptions.Language) + ' ' + objManeuver.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -4591,7 +4591,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade + " 🡒 " + (CharacterObject.InitiateGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 // Create the Initiate Grade object.
@@ -4607,7 +4607,7 @@ namespace Chummer
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
                     objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade + " 🡒 " + (CharacterObject.InitiateGrade + 1), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objNuyenExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objNuyenExpense);
                     CharacterObject.Nuyen -= 10000;
 
                     ExpenseUndo objNuyenUndo = new ExpenseUndo();
@@ -4674,7 +4674,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + ' ' + CharacterObject.SubmersionGrade + " 🡒 " + (CharacterObject.SubmersionGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 // Create the Initiate Grade object.
@@ -4815,7 +4815,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-            CharacterObject.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
@@ -4828,15 +4828,15 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount * 2000 * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                objEntry.Create(frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount * 2000.0m * -1;
+                CharacterObject.Nuyen += frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4866,7 +4866,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-            CharacterObject.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
@@ -4879,15 +4879,15 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount * 2000.0m, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                objEntry.Create(frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount * 2000.0m;
+                CharacterObject.Nuyen += frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4916,7 +4916,7 @@ namespace Chummer
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
             objEntry.Refund = frmNewExpense.Refund;
-            CharacterObject.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
@@ -4929,15 +4929,16 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount / 2000.0m * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                int intAmount = -decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
+                objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount / 2000.0m) * -1;
+                CharacterObject.Karma += intAmount;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4967,7 +4968,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-            CharacterObject.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
@@ -4980,15 +4981,16 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount / 2000.0m, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                int intAmount = decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
+                objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount / 2000.0m);
+                CharacterObject.Karma += intAmount;
             }
 
             IsCharacterUpdateRequested = true;
@@ -5033,7 +5035,7 @@ namespace Chummer
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + objLifestyle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decAmount;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -5082,7 +5084,7 @@ namespace Chummer
                 {
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower", GlobalOptions.Language) + ' ' + objPower.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
@@ -5157,7 +5159,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseComplexForm", GlobalOptions.Language) + ' ' + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -5786,7 +5788,7 @@ namespace Chummer
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Karma -= intKarmaCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -5804,7 +5806,7 @@ namespace Chummer
                         // Create a Karma Expense for the Negative Quality.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
@@ -5934,7 +5936,7 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language).Replace("{0}", objQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", objNewQuality.DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Karma -= intKarmaCost;
                 }
             }
@@ -5964,7 +5966,7 @@ namespace Chummer
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language).Replace("{0}", objQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", objNewQuality.DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Karma -= intKarmaCost;
                     }
                 }
@@ -6063,7 +6065,7 @@ namespace Chummer
 
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                     objEntry.Create(intKarmaCost, LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language).Replace("{0}", objSelectedQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", LanguageManager.GetString("String_Karma", GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now, true);
-                    CharacterObject.ExpenseEntries.Add(objEntry);
+                    CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                     CharacterObject.Karma += intKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -6106,7 +6108,7 @@ namespace Chummer
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language) + ' ' + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -6246,7 +6248,7 @@ namespace Chummer
                             // Create the Karma expense.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Karma -= intKarmaCost;
 
                             ExpenseUndo objUndo = new ExpenseUndo();
@@ -6262,7 +6264,7 @@ namespace Chummer
                             // Create a Karma Expense for the Negative Quality.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
@@ -6924,7 +6926,7 @@ namespace Chummer
             // Create the Karma expense.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseQuickenMetamagic", GlobalOptions.Language) + ' ' + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -7128,7 +7130,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -7197,7 +7199,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor", GlobalOptions.Language) + ' ' + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -7333,7 +7335,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -7519,7 +7521,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -7644,7 +7646,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -7708,7 +7710,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + frmPickVehicleMod.WeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -7807,7 +7809,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -7887,7 +7889,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, strExpenseString + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -7974,7 +7976,7 @@ namespace Chummer
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                         objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objEntry);
+                        CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                         CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -8082,7 +8084,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -8224,7 +8226,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -8602,7 +8604,7 @@ namespace Chummer
                         string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
                         decAmount += objCyberware.DeleteCyberware() * frmSell.SellPercent;
                         objExpense.Create(decAmount, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen += decAmount;
 
                         Cyberware objParent = objCyberware.Parent;
@@ -8636,7 +8638,7 @@ namespace Chummer
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
                             objExpense.Create(decAmount, strEntry + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen += decAmount;
 
                             Gear objParent = objGear.Parent;
@@ -8687,7 +8689,7 @@ namespace Chummer
                     decAmount += objArmor.DeleteArmor() * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen += decAmount;
                 }
                 else
@@ -8712,7 +8714,7 @@ namespace Chummer
                         decAmount += objArmorMod.DeleteArmorMod() * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + ' ' + objArmorMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen += decAmount;
                     }
                     else
@@ -8744,7 +8746,7 @@ namespace Chummer
                             decAmount += objGear.DeleteGear() * frmSell.SellPercent;
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen += decAmount;
                         }
                     }
@@ -8792,7 +8794,7 @@ namespace Chummer
                     decimal decAmount = (objWeapon.TotalCost + objWeapon.DeleteWeapon()) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen += decAmount;
 
                     CharacterObject.Weapons.Remove(objWeapon);
@@ -8818,7 +8820,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen += decAmount;
                     }
                     else
@@ -8846,7 +8848,7 @@ namespace Chummer
                             decAmount += objGear.DeleteGear() * frmSell.SellPercent;
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen += decAmount;
                         }
                     }
@@ -8882,7 +8884,7 @@ namespace Chummer
                     decAmount += objGear.DeleteGear() * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen += decAmount;
                     
                     // If the Parent is populated, remove the item from its Parent.
@@ -8936,7 +8938,7 @@ namespace Chummer
                     decimal decAmount = (objVehicle.TotalCost + objVehicle.DeleteVehicle()) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + ' ' + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen += decAmount;
                     CharacterObject.Vehicles.Remove(objVehicle);
                 }
@@ -8977,7 +8979,7 @@ namespace Chummer
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + ' ' + objWeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.Add(objExpense);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen += decAmount;
                     }
                     else
@@ -9017,7 +9019,7 @@ namespace Chummer
                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen += decAmount;
                         }
                         else
@@ -9048,7 +9050,7 @@ namespace Chummer
                                 decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                CharacterObject.ExpenseEntries.Add(objExpense);
+                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 CharacterObject.Nuyen += decAmount;
                             }
                             else
@@ -9072,7 +9074,7 @@ namespace Chummer
                                     decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                    CharacterObject.ExpenseEntries.Add(objExpense);
+                                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     CharacterObject.Nuyen += decAmount;
                                 }
                                 else
@@ -9102,7 +9104,7 @@ namespace Chummer
                                         decimal decAmount = (decOriginal - objMod.TotalCost) * frmSell.SellPercent;
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware", GlobalOptions.Language) + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                        CharacterObject.ExpenseEntries.Add(objExpense);
+                                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                         CharacterObject.Nuyen += decAmount;
                                     }
                                     else
@@ -9137,7 +9139,7 @@ namespace Chummer
                                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                            CharacterObject.ExpenseEntries.Add(objExpense);
+                                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                             CharacterObject.Nuyen += decAmount;
                                         }
                                     }
@@ -9375,7 +9377,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -9439,7 +9441,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11303,7 +11305,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     string strEntry = LanguageManager.GetString("String_ExpensePurchaseVehicleCyberware", GlobalOptions.Language);
                     objExpense.Create(decCost * -1, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11508,7 +11510,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(intSpellKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + ' ' + objSpell.Name, ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objEntry);
+            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
             CharacterObject.Karma -= intSpellKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -11715,7 +11717,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11838,7 +11840,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11945,7 +11947,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -12061,7 +12063,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -12288,7 +12290,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -12396,7 +12398,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -14509,7 +14511,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + ' ' + objSelectedFocus.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -14599,7 +14601,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ' ' + objStack.Name(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -14643,7 +14645,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade + " 🡒 " + (CharacterObject.InitiateGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 // Create the Initiate Grade object.
@@ -14711,7 +14713,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + ' ' + CharacterObject.SubmersionGrade + " 🡒 " + (CharacterObject.SubmersionGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 // Create the Initiate Grade object.
@@ -15003,7 +15005,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -15047,7 +15049,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.Add(objExpense);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -18183,7 +18185,7 @@ namespace Chummer
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpensePurchaseCyberware" : "String_ExpensePurchaseBioware", GlobalOptions.Language);
                 objExpense.Create(decCost * -1, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -18396,7 +18398,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, objGear.InternalId, objGear.Quantity);
@@ -18599,7 +18601,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objExpense);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen -= decCost;
 
                 objUndo.CreateNuyen(NuyenExpenseType.AddArmorGear, objGear.InternalId, objGear.Quantity);
@@ -19434,7 +19436,7 @@ namespace Chummer
             }
             _blnSkipRefresh = false;
         }
-
+        
         /// <summary>
         /// Populate the Expense Log Lists.
         /// TODO: Change this so that it works off of ObservableCollection Events instead of needing repopulation
@@ -19445,95 +19447,6 @@ namespace Chummer
             lstNuyen.Items.Clear();
             lstKarma.ContextMenuStrip = null;
             lstNuyen.ContextMenuStrip = null;
-            foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
-            {
-                bool blnAdd = true;
-                if (objExpense.Amount == 0)
-                {
-                    if (objExpense.Type == ExpenseType.Nuyen)
-                    {
-                        blnAdd = chkShowFreeNuyen.Checked;
-                    }
-                    else if (objExpense.Type == ExpenseType.Karma)
-                    {
-                        blnAdd = chkShowFreeKarma.Checked;
-                    }
-                }
-                if (blnAdd)
-                {
-                    ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
-                    {
-                        Text = objExpense.Amount.ToString(objExpense.Type == ExpenseType.Nuyen ? CharacterObjectOptions.NuyenFormat + '¥' : "#,0.##", GlobalOptions.CultureInfo)
-                    };
-                    ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
-                    {
-                        Text = objExpense.DisplayReason(GlobalOptions.Language)
-                    };
-                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                    {
-                        Text = objExpense.InternalId
-                    };
-
-                    ListViewItem objItem = new ListViewItem
-                    {
-                        Text = objExpense.Date.ToShortDateString() + ' ' + objExpense.Date.ToShortTimeString()
-                    };
-                    objItem.SubItems.Add(objAmountItem);
-                    objItem.SubItems.Add(objReasonItem);
-                    objItem.SubItems.Add(objInternalIdItem);
-
-                    if (objExpense.Type == ExpenseType.Nuyen)
-                    {
-                        lstNuyen.Items.Add(objItem);
-                        if (objExpense.Undo != null)
-                            lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
-                    }
-                    else
-                    {
-                        lstKarma.Items.Add(objItem);
-                        if (objExpense.Undo != null)
-                            lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
-                    }
-                }
-            }
-            lstKarma.Sort();
-            lstNuyen.Sort();
-
-            // Charting test for Expenses.
-            chtKarma.Series.Clear();
-            chtNuyen.Series.Clear();
-
-            // Setup the series used for charts.
-            Series objKarmaSeries = new Series
-            {
-                Name = "Series1",
-                Color = Color.Blue,
-                IsVisibleInLegend = false,
-                IsXValueIndexed = false,
-                ChartType = SeriesChartType.Area
-            };
-            Series objNuyenSeries = new Series
-            {
-                Name = "Series1",
-                Color = Color.Green,
-                IsVisibleInLegend = false,
-                IsXValueIndexed = false,
-                ChartType = SeriesChartType.Area
-            };
-
-            // Configure the Karma chart.
-            chtKarma.Series.Add(objKarmaSeries);
-            chtKarma.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
-            chtKarma.ChartAreas[0].AxisY.Title = "Karma Remaining";
-            chtKarma.ChartAreas[0].AxisX.Minimum = 0;
-
-            // Configure the Nuyen chart.
-            chtNuyen.Series.Add(objNuyenSeries);
-            chtNuyen.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
-            chtNuyen.ChartAreas[0].AxisY.Title = "Nuyen Remaining";
-            chtNuyen.ChartAreas[0].AxisX.Minimum = 0;
-
-
             //Find the first karma/nuyen entry
             DateTime KarmaFirst = DateTime.MaxValue;
             DateTime NuyenFirst = DateTime.MaxValue;
@@ -19542,59 +19455,143 @@ namespace Chummer
                 if (objExpense.Type == ExpenseType.Karma)
                 {
                     if (objExpense.Date.CompareTo(KarmaFirst) < 0)
-                    {
                         KarmaFirst = objExpense.Date;
+
+                    if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
+                    {
+                        ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.Amount.ToString("#,0.##", GlobalOptions.CultureInfo)
+                        };
+                        ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.DisplayReason(GlobalOptions.Language)
+                        };
+                        ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.InternalId
+                        };
+
+                        ListViewItem objItem = new ListViewItem
+                        {
+                            Text = objExpense.Date.ToShortDateString() + ' ' + objExpense.Date.ToShortTimeString()
+                        };
+                        objItem.SubItems.Add(objAmountItem);
+                        objItem.SubItems.Add(objReasonItem);
+                        objItem.SubItems.Add(objInternalIdItem);
+
+                        lstKarma.Items.Insert(0, objItem);
+                        if (objExpense.Undo != null)
+                            lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
                     }
                 }
                 else
                 {
                     if (objExpense.Date.CompareTo(NuyenFirst) < 0)
-                    {
                         NuyenFirst = objExpense.Date;
+
+                    if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
+                    {
+                        ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.Amount.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                        };
+                        ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.DisplayReason(GlobalOptions.Language)
+                        };
+                        ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                        {
+                            Text = objExpense.InternalId
+                        };
+
+                        ListViewItem objItem = new ListViewItem
+                        {
+                            Text = objExpense.Date.ToShortDateString() + ' ' + objExpense.Date.ToShortTimeString()
+                        };
+                        objItem.SubItems.Add(objAmountItem);
+                        objItem.SubItems.Add(objReasonItem);
+                        objItem.SubItems.Add(objInternalIdItem);
+
+                        lstNuyen.Items.Insert(0, objItem);
+                        if (objExpense.Undo != null)
+                            lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
                     }
                 }
             }
 
-            //Problem data isen't ordered so we have to sort it anyway
-            CharacterObject.ExpenseEntries.Sort(delegate(ExpenseLogEntry e1, ExpenseLogEntry e2)
+            // Charting test for Expenses.
+            Series objKarmaSeries;
+            if (chtKarma.Series.Count > 0)
             {
-                if (e1 == null && e2 == null) return 0;
-                if (e1 == null) return -1;
-                if (e2 == null) return 1;
+                objKarmaSeries = chtKarma.Series[0];
+                objKarmaSeries.Points.Clear();
+            }
+            else
+            {
+                objKarmaSeries = new Series
+                {
+                    Name = "KarmaSeries",
+                    Color = Color.Blue,
+                    IsVisibleInLegend = false,
+                    IsXValueIndexed = false,
+                    ChartType = SeriesChartType.Area
+                };
+                chtKarma.Series.Add(objKarmaSeries);
+            }
+            Series objNuyenSeries;
+            if (chtNuyen.Series.Count > 0)
+            {
+                objNuyenSeries = chtNuyen.Series[0];
+                objNuyenSeries.Points.Clear();
+            }
+            else
+            {
+                objNuyenSeries = new Series
+                {
+                    Name = "NuyenSeries",
+                    Color = Color.Green,
+                    IsVisibleInLegend = false,
+                    IsXValueIndexed = false,
+                    ChartType = SeriesChartType.Area
+                };
+                chtNuyen.Series.Add(objNuyenSeries);
+            }
 
-                if (e1.Date == null && e2.Date == null) return 0;
-                if (e1.Date == null) return -1;
-                if (e2.Date == null) return 1;
+            // Configure the Karma chart.
+            ChartArea objKarmaChartArea = chtKarma.ChartAreas[0];
+            objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
+            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEnd(':');
+            objKarmaChartArea.AxisX.Minimum = 0;
+            objKarmaChartArea.AxisX.Maximum = (DateTime.Now - KarmaFirst).TotalDays;
 
-                return e1.Date.CompareTo(e2.Date);
-            });
-
-            double doubleKarmaX = 0;
-            double doubleNuyenX = 0;
+            // Configure the Nuyen chart.
+            ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
+            objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
+            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEnd(':');
+            objNuyenChartArea.AxisX.Minimum = 0;
+            objNuyenChartArea.AxisX.Maximum = (DateTime.Now - NuyenFirst).TotalDays;
+            
             double dblKarmaValue = 0;
             double dblNuyenValue = 0;
+
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
-                    double seconds = (objExpense.Date - KarmaFirst).TotalDays;
-                    if (seconds > doubleKarmaX) doubleKarmaX = seconds;
                     dblKarmaValue += decimal.ToDouble(objExpense.Amount);
-                    objKarmaSeries.Points.AddXY(seconds, dblKarmaValue);
+                    objKarmaSeries.Points.AddXY((objExpense.Date - KarmaFirst).TotalDays, dblKarmaValue);
                 }
                 else
                 {
-                    double seconds = (objExpense.Date - NuyenFirst).TotalDays;
-                    if (seconds > doubleNuyenX) doubleNuyenX = seconds;
                     dblNuyenValue += decimal.ToDouble(objExpense.Amount);
-                    objNuyenSeries.Points.AddXY(seconds, dblNuyenValue);
+                    objNuyenSeries.Points.AddXY((objExpense.Date - NuyenFirst).TotalDays, dblNuyenValue);
                 }
             }
-            
 
-            chtKarma.ChartAreas[0].AxisX.Maximum = doubleKarmaX;
-            chtNuyen.ChartAreas[0].AxisX.Maximum = doubleNuyenX;
-            //chtKarma.ChartAreas[0].AxisX.MaximumAutoSize = 100;
+            objKarmaSeries.Points.AddXY((DateTime.Now - KarmaFirst).TotalDays, CharacterObject.Karma);
+            objNuyenSeries.Points.AddXY((DateTime.Now - NuyenFirst).TotalDays, CharacterObject.Nuyen);
+
             chtKarma.Invalidate();
             chtNuyen.Invalidate();
         }
@@ -20485,7 +20482,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + ' ' + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
 
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
@@ -20657,7 +20654,7 @@ namespace Chummer
             // Create the Karma expense.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_PowerPoint", GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objExpense);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -20768,7 +20765,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objNewMetamagic.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
@@ -20826,7 +20823,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objArt.InternalId);
@@ -20902,7 +20899,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
@@ -20978,7 +20975,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
@@ -21157,7 +21154,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + ' ' + objEnhancement.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
@@ -21402,7 +21399,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram", GlobalOptions.Language) + ' ' + objProgram.Name, ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                 CharacterObject.Karma -= (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost);
 
                 ExpenseUndo objUndo = new ExpenseUndo();

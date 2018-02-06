@@ -12858,7 +12858,7 @@ namespace Chummer
             {
                 ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
                 objKarma.Create(CharacterObject.Karma, "Starting Karma", ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.Add(objKarma);
+                CharacterObject.ExpenseEntries.AddWithSort(objKarma);
 
                 // Create an Undo entry so that the starting Karma amount can be modified if needed.
                 ExpenseUndo objKarmaUndo = new ExpenseUndo();
@@ -12886,7 +12886,7 @@ namespace Chummer
             // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
             objNuyen.Create(CharacterObject.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
-            CharacterObject.ExpenseEntries.Add(objNuyen);
+            CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
 
             // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
             ExpenseUndo objNuyenUndo = new ExpenseUndo();

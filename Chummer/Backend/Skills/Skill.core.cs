@@ -677,7 +677,7 @@ namespace Chummer.Backend.Skills
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
             
-            CharacterObject.ExpenseEntries.Add(entry);
+            CharacterObject.ExpenseEntries.AddWithSort(entry);
 
             Karma += 1;
             CharacterObject.Karma -= price;
@@ -755,7 +755,7 @@ namespace Chummer.Backend.Skills
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
-            CharacterObject.ExpenseEntries.Add(entry);
+            CharacterObject.ExpenseEntries.AddWithSort(entry);
 
             Specializations.Add(nspec);
             CharacterObject.Karma -= price;

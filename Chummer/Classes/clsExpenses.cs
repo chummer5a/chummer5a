@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -93,8 +93,6 @@ namespace Chummer
     /// </summary>
     public class ExpenseUndo
     {
-        private KarmaExpenseType _objKarmaExpenseType;
-        private NuyenExpenseType _objNuyenExpenseType;
         private string _strObjectId;
         private decimal _decQty;
         private string _strExtra = string.Empty;
@@ -127,7 +125,7 @@ namespace Chummer
         /// <param name="strObjectId">Object identifier.</param>
         public ExpenseUndo CreateKarma(KarmaExpenseType objExpenseType, string strObjectId)
         {
-            _objKarmaExpenseType = objExpenseType;
+            KarmaType = objExpenseType;
             _strObjectId = strObjectId;
 
             return this;
@@ -138,10 +136,10 @@ namespace Chummer
         /// </summary>
         /// <param name="objExpenseType">Nuyen expense type.</param>
         /// <param name="strObjectId">Object identifier.</param>
-        /// <param name="intQty">Amount of Nuyen.</param>
+        /// <param name="decQty">Amount of Nuyen.</param>
         public ExpenseUndo CreateNuyen(NuyenExpenseType objExpenseType, string strObjectId, decimal decQty = 0)
         {
-            _objNuyenExpenseType = objExpenseType;
+            NuyenType = objExpenseType;
             _strObjectId = strObjectId;
             _decQty = decQty;
 
@@ -155,8 +153,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("undo");
-            objWriter.WriteElementString("karmatype", _objKarmaExpenseType.ToString());
-            objWriter.WriteElementString("nuyentype", _objNuyenExpenseType.ToString());
+            objWriter.WriteElementString("karmatype", KarmaType.ToString());
+            objWriter.WriteElementString("nuyentype", NuyenType.ToString());
             objWriter.WriteElementString("objectid", _strObjectId);
             objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
@@ -172,9 +170,9 @@ namespace Chummer
             if (objNode == null)
                 return;
             if (objNode["karmatype"] != null)
-                _objKarmaExpenseType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
+                KarmaType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
             if (objNode["nuyentype"] != null)
-                _objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
+                NuyenType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
             objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -186,46 +184,20 @@ namespace Chummer
         /// <summary>
         /// Karma Expense Type.
         /// </summary>
-        public KarmaExpenseType KarmaType
-        {
-            get
-            {
-                return _objKarmaExpenseType;
-            }
-            set
-            {
-                _objKarmaExpenseType = value;
-            }
-        }
+        public KarmaExpenseType KarmaType { get; set; }
 
         /// <summary>
         /// Nuyen Expense Type.
         /// </summary>
-        public NuyenExpenseType NuyenType
-        {
-            get
-            {
-                return _objNuyenExpenseType;
-            }
-            set
-            {
-                _objNuyenExpenseType = value;
-            }
-        }
+        public NuyenExpenseType NuyenType { get; set; }
 
         /// <summary>
         /// Object InternalId.
         /// </summary>
         public string ObjectId
         {
-            get
-            {
-                return _strObjectId;
-            }
-            set
-            {
-                _strObjectId = value;
-            }
+            get => _strObjectId;
+            set => _strObjectId = value;
         }
 
         /// <summary>
@@ -233,14 +205,8 @@ namespace Chummer
         /// </summary>
         public decimal Qty
         {
-            get
-            {
-                return _decQty;
-            }
-            set
-            {
-                _decQty = value;
-            }
+            get => _decQty;
+            set => _decQty = value;
         }
 
         /// <summary>
@@ -248,14 +214,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
         #endregion
     }
@@ -263,40 +223,24 @@ namespace Chummer
     /// <summary>
     /// Exense Log Entry.
     /// </summary>
-    public class ExpenseLogEntry
+    public class ExpenseLogEntry : IHasInternalId, IComparable
     {
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private readonly Character _objCharacter;
         private DateTime _datDate;
         private decimal _decAmount;
         private string _strReason = string.Empty;
         private ExpenseType _objExpenseType;
         private bool _blnRefund;
-        private ExpenseUndo _objUndo;
 
         #region Helper Methods
-        /// <summary>
-        /// ExpenseLogEntry Comparer.
-        /// </summary>
-        public static int CompareDate(ExpenseLogEntry x, ExpenseLogEntry y)
+        public int CompareTo(object obj)
         {
-            if (x == null)
+            if (obj is ExpenseLogEntry objEntry)
             {
-                if (y == null)
-                    return 0;
-                else
-                    return -1;
+                return Date.CompareTo(objEntry.Date);
             }
-            else
-            {
-                if (y == null)
-                    return 1;
-                else
-                {
-                    int intReturn = y.Date.CompareTo(x.Date);
-                    return intReturn;
-                }
-            }
+            return 1;
         }
 
         /// <summary>
@@ -354,8 +298,7 @@ namespace Chummer
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
-            if (_objUndo != null)
-                _objUndo.Save(objWriter);
+            Undo?.Save(objWriter);
             objWriter.WriteEndElement();
         }
 
@@ -376,8 +319,8 @@ namespace Chummer
 
             if (objNode["undo"] != null)
             {
-                _objUndo = new ExpenseUndo();
-                _objUndo.Load(objNode["undo"]);
+                Undo = new ExpenseUndo();
+                Undo.Load(objNode["undo"]);
             }
         }
 
@@ -411,14 +354,8 @@ namespace Chummer
         /// </summary>
         public DateTime Date
         {
-            get
-            {
-                return _datDate;
-            }
-            set
-            {
-                _datDate = value;
-            }
+            get => _datDate;
+            set => _datDate = value;
         }
 
         /// <summary>
@@ -426,14 +363,8 @@ namespace Chummer
         /// </summary>
         public decimal Amount
         {
-            get
-            {
-                return _decAmount;
-            }
-            set
-            {
-                _decAmount = value;
-            }
+            get => _decAmount;
+            set => _decAmount = value;
         }
 
         /// <summary>
@@ -441,14 +372,8 @@ namespace Chummer
         /// </summary>
         public string Reason
         {
-            get
-            {
-                return _strReason;
-            }
-            set
-            {
-                _strReason = value;
-            }
+            get => _strReason;
+            set => _strReason = value;
         }
 
         /// <summary>
@@ -456,10 +381,9 @@ namespace Chummer
         /// </summary>
         public string DisplayReason(string strLanguage)
         {
-            string strReturn = _strReason;
-            if (_blnRefund)
-                strReturn += " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
-            return strReturn;
+            if (Refund)
+                return Reason + " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+            return Reason;
         }
 
         /// <summary>
@@ -467,14 +391,8 @@ namespace Chummer
         /// </summary>
         public ExpenseType Type
         {
-            get
-            {
-                return _objExpenseType;
-            }
-            set
-            {
-                _objExpenseType = value;
-            }
+            get => _objExpenseType;
+            set => _objExpenseType = value;
         }
 
         /// <summary>
@@ -482,30 +400,15 @@ namespace Chummer
         /// </summary>
         public bool Refund
         {
-            get
-            {
-                return _blnRefund;
-            }
-            set
-            {
-                _blnRefund = value;
-            }
+            get => _blnRefund;
+            set => _blnRefund = value;
         }
 
         /// <summary>
         /// Undo object.
         /// </summary>
-        public ExpenseUndo Undo
-        {
-            get
-            {
-                return _objUndo;
-            }
-            set
-            {
-                _objUndo = value;
-            }
-        }
+        public ExpenseUndo Undo { get; set; }
+
         #endregion
     }
 }
