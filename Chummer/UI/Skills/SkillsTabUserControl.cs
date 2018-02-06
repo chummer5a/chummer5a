@@ -107,6 +107,7 @@ namespace Chummer.UI.Skills
                 Location = new Point(0, 15),
             };
             _groups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+            _groups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
             int name = 0;
             int rating = 0;
             foreach (SkillGroupControl sg in _groups.Controls[0].Controls)
@@ -276,18 +277,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeName", GlobalOptions.Language),
                     new SkillSorter((x, y) => string.Compare(x.DisplayAttribute, y.DisplayAttribute, StringComparison.Ordinal))),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName", GlobalOptions.Language),
-                    new SkillSorter((x, y) =>
-                    {
-                        SkillGroup objXGroup = x.SkillGroupObject;
-                        SkillGroup objYGroup = y.SkillGroupObject;
-                        if (objXGroup == null)
-                        {
-                            if (objYGroup == null)
-                                return 0;
-                            return -1;
-                        }
-                        return objYGroup == null ? 1 : string.Compare(objXGroup.DisplayName, objYGroup.DisplayName, StringComparison.Ordinal);
-                    })),
+                    new SkillSorter((x, y) => SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject))),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating", GlobalOptions.Language),
                     new SkillSortBySkillGroup()),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory", GlobalOptions.Language),

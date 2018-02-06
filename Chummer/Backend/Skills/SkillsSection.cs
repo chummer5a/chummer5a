@@ -633,6 +633,17 @@ namespace Chummer.Backend.Skills
             return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
+        public static int CompareSkillGroups(SkillGroup objXGroup, SkillGroup objYGroup)
+        {
+            if (objXGroup == null)
+            {
+                if (objYGroup == null)
+                    return 0;
+                return -1;
+            }
+            return objYGroup == null ? 1 : string.Compare(objXGroup.DisplayName, objYGroup.DisplayName, StringComparison.Ordinal);
+        }
+
         public IEnumerable<Skill> GetSkillList(FilterOptions filter, string strName = "", bool blnFetchFromBackup = false)
         {
             //TODO less retarded way please
