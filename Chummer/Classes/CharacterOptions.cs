@@ -1126,14 +1126,8 @@ namespace Chummer
         /// </summary>
         public bool PrintSkillsWithZeroRating
         {
-            get
-            {
-                return _blnPrintSkillsWithZeroRating;
-            }
-            set
-            {
-                _blnPrintSkillsWithZeroRating = value;
-            }
+            get => _blnPrintSkillsWithZeroRating;
+            set => _blnPrintSkillsWithZeroRating = value;
         }
 
         /// <summary>
@@ -1141,14 +1135,8 @@ namespace Chummer
         /// </summary>
         public bool MoreLethalGameplay
         {
-            get
-            {
-                return _blnMoreLethalGameplay;
-            }
-            set
-            {
-                _blnMoreLethalGameplay = value;
-            }
+            get => _blnMoreLethalGameplay;
+            set => _blnMoreLethalGameplay = value;
         }
 
         /// <summary>
@@ -1156,14 +1144,8 @@ namespace Chummer
         /// </summary>
         public bool LicenseRestricted
         {
-            get
-            {
-                return _blnLicenseRestrictedItems;
-            }
-            set
-            {
-                _blnLicenseRestrictedItems = value;
-            }
+            get => _blnLicenseRestrictedItems;
+            set => _blnLicenseRestrictedItems = value;
         }
 
         /// <summary>
@@ -1171,14 +1153,8 @@ namespace Chummer
         /// </summary>
         public bool SpiritForceBasedOnTotalMAG
         {
-            get
-            {
-                return _blnSpiritForceBasedOnTotalMAG;
-            }
-            set
-            {
-                _blnSpiritForceBasedOnTotalMAG = value;
-            }
+            get => _blnSpiritForceBasedOnTotalMAG;
+            set => _blnSpiritForceBasedOnTotalMAG = value;
         }
 
         /// <summary>
@@ -1186,14 +1162,8 @@ namespace Chummer
         /// </summary>
         public bool SkillDefaultingIncludesModifiers
         {
-            get
-            {
-                return _blnSkillDefaultingIncludesModifiers;
-            }
-            set
-            {
-                _blnSkillDefaultingIncludesModifiers = value;
-            }
+            get => _blnSkillDefaultingIncludesModifiers;
+            set => _blnSkillDefaultingIncludesModifiers = value;
         }
 
         /// <summary>
@@ -1201,14 +1171,8 @@ namespace Chummer
         /// </summary>
         public bool PrintExpenses
         {
-            get
-            {
-                return _blnPrintExpenses;
-            }
-            set
-            {
-                _blnPrintExpenses = value;
-            }
+            get => _blnPrintExpenses;
+            set => _blnPrintExpenses = value;
         }
 
         /// <summary>
@@ -1216,14 +1180,8 @@ namespace Chummer
         /// </summary>
         public bool PrintFreeExpenses
         {
-            get
-            {
-                return _blnPrintFreeExpenses;
-            }
-            set
-            {
-                _blnPrintFreeExpenses = value;
-            }
+            get => _blnPrintFreeExpenses;
+            set => _blnPrintFreeExpenses = value;
         }
 
         /// <summary>
@@ -1231,14 +1189,8 @@ namespace Chummer
         /// </summary>
         public decimal NuyenPerBP
         {
-            get
-            {
-                return _decNuyenPerBP;
-            }
-            set
-            {
-                _decNuyenPerBP = value;
-            }
+            get => _decNuyenPerBP;
+            set => _decNuyenPerBP = value;
         }
 
         /// <summary>
@@ -1246,14 +1198,8 @@ namespace Chummer
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
-            get
-            {
-                return _blnUnarmedImprovementsApplyToWeapons;
-            }
-            set
-            {
-                _blnUnarmedImprovementsApplyToWeapons = value;
-            }
+            get => _blnUnarmedImprovementsApplyToWeapons;
+            set => _blnUnarmedImprovementsApplyToWeapons = value;
         }
 
         /// <summary>
@@ -1261,14 +1207,8 @@ namespace Chummer
         /// </summary>
         public bool AllowInitiationInCreateMode
         {
-            get
-            {
-                return _blnAllowInitiationInCreateMode;
-            }
-            set
-            {
-                _blnAllowInitiationInCreateMode = value;
-            }
+            get => _blnAllowInitiationInCreateMode;
+            set => _blnAllowInitiationInCreateMode = value;
         }
 
         /// <summary>
@@ -1276,14 +1216,8 @@ namespace Chummer
         /// </summary>
         public bool UsePointsOnBrokenGroups
         {
-            get
-            {
-                return _blnUsePointsOnBrokenGroups;
-            }
-            set
-            {
-                _blnUsePointsOnBrokenGroups = value;
-            }
+            get => _blnUsePointsOnBrokenGroups;
+            set => _blnUsePointsOnBrokenGroups = value;
         }
 
         /// <summary>
@@ -1291,14 +1225,8 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityPurchases
         {
-            get
-            {
-                return _blnDontDoubleQualityPurchaseCost;
-            }
-            set
-            {
-                _blnDontDoubleQualityPurchaseCost = value;
-            }
+            get => _blnDontDoubleQualityPurchaseCost;
+            set => _blnDontDoubleQualityPurchaseCost = value;
         }
 
         /// <summary>
@@ -1306,14 +1234,8 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityRefunds
         {
-            get
-            {
-                return _blnDontDoubleQualityRefundCost;
-            }
-            set
-            {
-                _blnDontDoubleQualityRefundCost = value;
-            }
+            get => _blnDontDoubleQualityRefundCost;
+            set => _blnDontDoubleQualityRefundCost = value;
         }
 
         /// <summary>
@@ -1321,14 +1243,8 @@ namespace Chummer
         /// </summary>
         public bool IgnoreArt
         {
-            get
-            {
-                return _blnIgnoreArt;
-            }
-            set
-            {
-                _blnIgnoreArt = value;
-            }
+            get => _blnIgnoreArt;
+            set => _blnIgnoreArt = value;
         }
 
         /// <summary>
@@ -1336,14 +1252,8 @@ namespace Chummer
         /// </summary>
         public bool CyberlegMovement
         {
-            get
-            {
-                return _blnCyberlegMovement;
-            }
-            set
-            {
-                _blnCyberlegMovement = value;
-            }
+            get => _blnCyberlegMovement;
+            set => _blnCyberlegMovement = value;
         }
 
         /// <summary>
@@ -1351,8 +1261,8 @@ namespace Chummer
         /// </summary>
         public bool MysAdeptAllowPPCareer
         {
-            get { return _blnMysAdeptAllowPPCareer; }
-            set { _blnMysAdeptAllowPPCareer = value; }
+            get => _blnMysAdeptAllowPPCareer;
+            set => _blnMysAdeptAllowPPCareer = value;
         }
 
         /// <summary>
@@ -1360,8 +1270,8 @@ namespace Chummer
         /// </summary>
         public bool MysAdeptSecondMAGAttribute
         {
-            get { return _blnMysAdeptSecondMAGAttribute; }
-            set { _blnMysAdeptSecondMAGAttribute = value; }
+            get => _blnMysAdeptSecondMAGAttribute;
+            set => _blnMysAdeptSecondMAGAttribute = value;
         }
 
         /// <summary>
@@ -1369,14 +1279,8 @@ namespace Chummer
         /// </summary>
         public bool Allow2ndMaxAttribute
         {
-            get
-            {
-                return _blnAllow2ndMaxAttribute;
-            }
-            set
-            {
-                _blnAllow2ndMaxAttribute = value;
-            }
+            get => _blnAllow2ndMaxAttribute;
+            set => _blnAllow2ndMaxAttribute = value;
         }
 
         /// <summary>
@@ -1384,14 +1288,8 @@ namespace Chummer
         /// </summary>
         public bool AllowAttributePointsOnExceptional
         {
-            get
-            {
-                return _blnAllowAttributePointsOnExceptional;
-            }
-            set
-            {
-                _blnAllowAttributePointsOnExceptional = value;
-            }
+            get => _blnAllowAttributePointsOnExceptional;
+            set => _blnAllowAttributePointsOnExceptional = value;
         }
 
         /// <summary>
@@ -1425,14 +1323,8 @@ namespace Chummer
         /// </summary>
         public bool FreeContactsMultiplierEnabled
         {
-            get
-            {
-                return _blnFreeContactsMultiplierEnabled;
-            }
-            set
-            {
-                _blnFreeContactsMultiplierEnabled = value;
-            }
+            get => _blnFreeContactsMultiplierEnabled;
+            set => _blnFreeContactsMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1440,14 +1332,8 @@ namespace Chummer
         /// </summary>
         public int DroneArmorMultiplier
         {
-            get
-            {
-                return _intDroneArmorMultiplier;
-            }
-            set
-            {
-                _intDroneArmorMultiplier = value;
-            }
+            get => _intDroneArmorMultiplier;
+            set => _intDroneArmorMultiplier = value;
         }
 
         /// <summary>
@@ -1455,14 +1341,8 @@ namespace Chummer
         /// </summary>
         public bool DroneArmorMultiplierEnabled
         {
-            get
-            {
-                return _blnDroneArmorMultiplierEnabled;
-            }
-            set
-            {
-                _blnDroneArmorMultiplierEnabled = value;
-            }
+            get => _blnDroneArmorMultiplierEnabled;
+            set => _blnDroneArmorMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1470,14 +1350,8 @@ namespace Chummer
         /// </summary>
         public bool FreeKnowledgeMultiplierEnabled
         {
-            get
-            {
-                return _blnFreeKnowledgeMultiplierEnabled;
-            }
-            set
-            {
-                _blnFreeKnowledgeMultiplierEnabled = value;
-            }
+            get => _blnFreeKnowledgeMultiplierEnabled;
+            set => _blnFreeKnowledgeMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1485,14 +1359,8 @@ namespace Chummer
         /// </summary>
         public int FreeKnowledgeMultiplier
         {
-            get
-            {
-                return _intFreeKnowledgeMultiplier;
-            }
-            set
-            {
-                _intFreeKnowledgeMultiplier = value;
-            }
+            get => _intFreeKnowledgeMultiplier;
+            set => _intFreeKnowledgeMultiplier = value;
         }
 
         /// <summary>
@@ -1500,14 +1368,8 @@ namespace Chummer
         /// </summary>
         public bool NoSingleArmorEncumbrance
         {
-            get
-            {
-                return _blnNoSingleArmorEncumbrance;
-            }
-            set
-            {
-                _blnNoSingleArmorEncumbrance = value;
-            }
+            get => _blnNoSingleArmorEncumbrance;
+            set => _blnNoSingleArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1515,14 +1377,8 @@ namespace Chummer
         /// </summary>
         public bool IgnoreArmorEncumbrance
         {
-            get
-            {
-                return _blnIgnoreArmorEncumbrance;
-            }
-            set
-            {
-                _blnIgnoreArmorEncumbrance = value;
-            }
+            get => _blnIgnoreArmorEncumbrance;
+            set => _blnIgnoreArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1530,14 +1386,8 @@ namespace Chummer
         /// </summary>
         public bool AlternateArmorEncumbrance
         {
-            get
-            {
-                return _blnAlternateArmorEncumbrance;
-            }
-            set
-            {
-                _blnAlternateArmorEncumbrance = value;
-            }
+            get => _blnAlternateArmorEncumbrance;
+            set => _blnAlternateArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1545,14 +1395,8 @@ namespace Chummer
         /// </summary>
         public bool ESSLossReducesMaximumOnly
         {
-            get
-            {
-                return _blnESSLossReducesMaximumOnly;
-            }
-            set
-            {
-                _blnESSLossReducesMaximumOnly = value;
-            }
+            get => _blnESSLossReducesMaximumOnly;
+            set => _blnESSLossReducesMaximumOnly = value;
         }
 
         /// <summary>
@@ -1560,14 +1404,8 @@ namespace Chummer
         /// </summary>
         public bool AllowSkillRegrouping
         {
-            get
-            {
-                return _blnAllowSkillRegrouping;
-            }
-            set
-            {
-                _blnAllowSkillRegrouping = value;
-            }
+            get => _blnAllowSkillRegrouping;
+            set => _blnAllowSkillRegrouping = value;
         }
 
         /// <summary>
@@ -1575,14 +1413,8 @@ namespace Chummer
         /// </summary>
         public bool ConfirmDelete
         {
-            get
-            {
-                return _blnConfirmDelete;
-            }
-            set
-            {
-                _blnConfirmDelete = value;
-            }
+            get => _blnConfirmDelete;
+            set => _blnConfirmDelete = value;
         }
 
         /// <summary>
@@ -1590,51 +1422,27 @@ namespace Chummer
         /// </summary>
         public bool ConfirmKarmaExpense
         {
-            get
-            {
-                return _blnConfirmKarmaExpense;
-            }
-            set
-            {
-                _blnConfirmKarmaExpense = value;
-            }
+            get => _blnConfirmKarmaExpense;
+            set => _blnConfirmKarmaExpense = value;
         }
 
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public ICollection<string> Books
-        {
-            get
-            {
-                return _lstBooks;
-            }
-        }
+        public ICollection<string> Books => _lstBooks;
 
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public IList<string> CustomDataDirectoryNames
-        {
-            get
-            {
-                return _lstCustomDataDirectoryNames;
-            }
-        }
+        public IList<string> CustomDataDirectoryNames => _lstCustomDataDirectoryNames;
 
         /// <summary>
         /// Setting name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -1642,14 +1450,8 @@ namespace Chummer
         /// </summary>
         public bool MetatypeCostsKarma
         {
-            get
-            {
-                return _blnMetatypeCostsKarma;
-            }
-            set
-            {
-                _blnMetatypeCostsKarma = value;
-            }
+            get => _blnMetatypeCostsKarma;
+            set => _blnMetatypeCostsKarma = value;
         }
 
         /// <summary>
@@ -1657,14 +1459,8 @@ namespace Chummer
         /// </summary>
         public int MetatypeCostsKarmaMultiplier
         {
-            get
-            {
-                return _intMetatypeCostMultiplier;
-            }
-            set
-            {
-                _intMetatypeCostMultiplier = value;
-            }
+            get => _intMetatypeCostMultiplier;
+            set => _intMetatypeCostMultiplier = value;
         }
 
         /// <summary>
@@ -1672,14 +1468,8 @@ namespace Chummer
         /// </summary>
         public int LimbCount
         {
-            get
-            {
-                return _intLimbCount;
-            }
-            set
-            {
-                _intLimbCount = value;
-            }
+            get => _intLimbCount;
+            set => _intLimbCount = value;
         }
 
         /// <summary>
@@ -1687,14 +1477,8 @@ namespace Chummer
         /// </summary>
         public string ExcludeLimbSlot
         {
-            get
-            {
-                return _strExcludeLimbSlot;
-            }
-            set
-            {
-                _strExcludeLimbSlot = value;
-            }
+            get => _strExcludeLimbSlot;
+            set => _strExcludeLimbSlot = value;
         }
 
         /// <summary>
@@ -1702,14 +1486,8 @@ namespace Chummer
         /// </summary>
         public bool AllowCyberwareESSDiscounts
         {
-            get
-            {
-                return _blnAllowCyberwareESSDiscounts;
-            }
-            set
-            {
-                _blnAllowCyberwareESSDiscounts = value;
-            }
+            get => _blnAllowCyberwareESSDiscounts;
+            set => _blnAllowCyberwareESSDiscounts = value;
         }
 
         /// <summary>
@@ -1717,14 +1495,8 @@ namespace Chummer
         /// </summary>
         public bool StrengthAffectsRecoil
         {
-            get
-            {
-                return _blnStrengthAffectsRecoil;
-            }
-            set
-            {
-                _blnStrengthAffectsRecoil = value;
-            }
+            get => _blnStrengthAffectsRecoil;
+            set => _blnStrengthAffectsRecoil = value;
         }
 
         /// <summary>
@@ -1732,14 +1504,8 @@ namespace Chummer
         /// </summary>
         public bool MaximumArmorModifications
         {
-            get
-            {
-                return _blnMaximumArmorModifications;
-            }
-            set
-            {
-                _blnMaximumArmorModifications = value;
-            }
+            get => _blnMaximumArmorModifications;
+            set => _blnMaximumArmorModifications = value;
         }
 
         /// <summary>
@@ -1747,14 +1513,8 @@ namespace Chummer
         /// </summary>
         public bool ArmorSuitCapacity
         {
-            get
-            {
-                return _blnArmorSuitCapacity;
-            }
-            set
-            {
-                _blnArmorSuitCapacity = value;
-            }
+            get => _blnArmorSuitCapacity;
+            set => _blnArmorSuitCapacity = value;
         }
 
         /// <summary>
@@ -1762,14 +1522,8 @@ namespace Chummer
         /// </summary>
         public bool ArmorDegradation
         {
-            get
-            {
-                return _blnArmorDegradation;
-            }
-            set
-            {
-                _blnArmorDegradation = value;
-            }
+            get => _blnArmorDegradation;
+            set => _blnArmorDegradation = value;
         }
         
         /// <summary>
@@ -1777,14 +1531,8 @@ namespace Chummer
         /// </summary>
         public bool SpecialKarmaCostBasedOnShownValue
         {
-            get
-            {
-                return _blnSpecialKarmaCostBasedOnShownValue;
-            }
-            set
-            {
-                _blnSpecialKarmaCostBasedOnShownValue = value;
-            }
+            get => _blnSpecialKarmaCostBasedOnShownValue;
+            set => _blnSpecialKarmaCostBasedOnShownValue = value;
         }
 
         /// <summary>
@@ -1792,14 +1540,8 @@ namespace Chummer
         /// </summary>
         public bool ExceedPositiveQualities
         {
-            get
-            {
-                return _blnExceedPositiveQualities;
-            }
-            set
-            {
-                _blnExceedPositiveQualities = value;
-            }
+            get => _blnExceedPositiveQualities;
+            set => _blnExceedPositiveQualities = value;
         }
 
         /// <summary>
@@ -1807,14 +1549,8 @@ namespace Chummer
         /// </summary>
         public bool ExceedPositiveQualitiesCostDoubled
         {
-            get
-            {
-                return _blnExceedPositiveQualitiesCostDoubled;
-            }
-            set
-            {
-                _blnExceedPositiveQualitiesCostDoubled = value;
-            }
+            get => _blnExceedPositiveQualitiesCostDoubled;
+            set => _blnExceedPositiveQualitiesCostDoubled = value;
         }
 
         /// <summary>
@@ -1822,14 +1558,8 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualities
         {
-            get
-            {
-                return _blnExceedNegativeQualities;
-            }
-            set
-            {
-                _blnExceedNegativeQualities = value;
-            }
+            get => _blnExceedNegativeQualities;
+            set => _blnExceedNegativeQualities = value;
         }
 
         /// <summary>
@@ -1837,14 +1567,8 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualitiesLimit
         {
-            get
-            {
-                return _blnExceedNegativeQualitiesLimit;
-            }
-            set
-            {
-                _blnExceedNegativeQualitiesLimit = value;
-            }
+            get => _blnExceedNegativeQualitiesLimit;
+            set => _blnExceedNegativeQualitiesLimit = value;
         }
         
         /// <summary>
@@ -1852,14 +1576,8 @@ namespace Chummer
         /// </summary>
         public bool MultiplyRestrictedCost
         {
-            get
-            {
-                return _blnMultiplyRestrictedCost;
-            }
-            set
-            {
-                _blnMultiplyRestrictedCost = value;
-            }
+            get => _blnMultiplyRestrictedCost;
+            set => _blnMultiplyRestrictedCost = value;
         }
 
         /// <summary>
@@ -1867,14 +1585,8 @@ namespace Chummer
         /// </summary>
         public bool MultiplyForbiddenCost
         {
-            get
-            {
-                return _blnMultiplyForbiddenCost;
-            }
-            set
-            {
-                _blnMultiplyForbiddenCost = value;
-            }
+            get => _blnMultiplyForbiddenCost;
+            set => _blnMultiplyForbiddenCost = value;
         }
 
         /// <summary>
@@ -1882,14 +1594,8 @@ namespace Chummer
         /// </summary>
         public int RestrictedCostMultiplier
         {
-            get
-            {
-                return _intRestrictedCostMultiplier;
-            }
-            set
-            {
-                _intRestrictedCostMultiplier = value;
-            }
+            get => _intRestrictedCostMultiplier;
+            set => _intRestrictedCostMultiplier = value;
         }
 
         /// <summary>
@@ -1897,14 +1603,8 @@ namespace Chummer
         /// </summary>
         public int ForbiddenCostMultiplier
         {
-            get
-            {
-                return _intForbiddenCostMultiplier;
-            }
-            set
-            {
-                _intForbiddenCostMultiplier = value;
-            }
+            get => _intForbiddenCostMultiplier;
+            set => _intForbiddenCostMultiplier = value;
         }
 
         /// <summary>
@@ -1912,14 +1612,8 @@ namespace Chummer
         /// </summary>
         public string NuyenFormat
         {
-            get
-            {
-                return _strNuyenFormat;
-            }
-            set
-            {
-                _strNuyenFormat = value;
-            }
+            get => _strNuyenFormat;
+            set => _strNuyenFormat = value;
         }
 
         /// <summary>
@@ -1927,14 +1621,8 @@ namespace Chummer
         /// </summary>
         public int EssenceDecimals
         {
-            get
-            {
-                return _intEssenceDecimals;
-            }
-            set
-            {
-                _intEssenceDecimals = value;
-            }
+            get => _intEssenceDecimals;
+            set => _intEssenceDecimals = value;
         }
 
         /// <summary>
@@ -1942,14 +1630,8 @@ namespace Chummer
         /// </summary>
         public bool DontRoundEssenceInternally
         {
-            get
-            {
-                return _blnDoNotRoundEssenceInternally;
-            }
-            set
-            {
-                _blnDoNotRoundEssenceInternally = value;
-            }
+            get => _blnDoNotRoundEssenceInternally;
+            set => _blnDoNotRoundEssenceInternally = value;
         }
 
         /// <summary>
@@ -1966,14 +1648,8 @@ namespace Chummer
         /// </summary>
         public bool EnforceCapacity
         {
-            get
-            {
-                return _blnEnforceCapacity;
-            }
-            set
-            {
-                _blnEnforceCapacity = value;
-            }
+            get => _blnEnforceCapacity;
+            set => _blnEnforceCapacity = value;
         }
 
         /// <summary>
@@ -1981,14 +1657,8 @@ namespace Chummer
         /// </summary>
         public bool RestrictRecoil
         {
-            get
-            {
-                return _blnRestrictRecoil;
-            }
-            set
-            {
-                _blnRestrictRecoil = value;
-            }
+            get => _blnRestrictRecoil;
+            set => _blnRestrictRecoil = value;
         }
 
         /// <summary>
@@ -1996,14 +1666,8 @@ namespace Chummer
         /// </summary>
         public bool AllowExceedAttributeBP
         {
-            get
-            {
-                return _blnAllowExceedAttributeBP;
-            }
-            set
-            {
-                _blnAllowExceedAttributeBP = value;
-            }
+            get => _blnAllowExceedAttributeBP;
+            set => _blnAllowExceedAttributeBP = value;
         }
 
         /// <summary>
@@ -2011,14 +1675,8 @@ namespace Chummer
         /// </summary>
         public bool UnrestrictedNuyen
         {
-            get
-            {
-                return _blnUnrestrictedNuyen;
-            }
-            set
-            {
-                _blnUnrestrictedNuyen = value;
-            }
+            get => _blnUnrestrictedNuyen;
+            set => _blnUnrestrictedNuyen = value;
         }
 
         /// <summary>
@@ -2026,14 +1684,8 @@ namespace Chummer
         /// </summary>
         public bool CalculateCommlinkResponse
         {
-            get
-            {
-                return _blnCalculateCommlinkResponse;
-            }
-            set
-            {
-                _blnCalculateCommlinkResponse = value;
-            }
+            get => _blnCalculateCommlinkResponse;
+            set => _blnCalculateCommlinkResponse = value;
         }
 
         /// <summary>
@@ -2041,14 +1693,8 @@ namespace Chummer
         /// </summary>
         public bool AllowHigherStackedFoci
         {
-            get
-            {
-                return _blnAllowHigherStackedFoci;
-            }
-            set
-            {
-                _blnAllowHigherStackedFoci = value;
-            }
+            get => _blnAllowHigherStackedFoci;
+            set => _blnAllowHigherStackedFoci = value;
         }
 
         /// <summary>
@@ -2056,14 +1702,8 @@ namespace Chummer
         /// </summary>
         public bool AlternateComplexFormCost
         {
-            get
-            {
-                return _blnAlternateComplexFormCost;
-            }
-            set
-            {
-                _blnAlternateComplexFormCost = value;
-            }
+            get => _blnAlternateComplexFormCost;
+            set => _blnAlternateComplexFormCost = value;
         }
 
         /// <summary>
@@ -2071,14 +1711,8 @@ namespace Chummer
         /// </summary>
         public bool AlternateMatrixAttribute
         {
-            get
-            {
-                return _blnAlternateMatrixAttribute;
-            }
-            set
-            {
-                _blnAlternateMatrixAttribute = value;
-            }
+            get => _blnAlternateMatrixAttribute;
+            set => _blnAlternateMatrixAttribute = value;
         }
 
         /// <summary>
@@ -2086,14 +1720,8 @@ namespace Chummer
         /// </summary>
         public bool AllowEditPartOfBaseWeapon
         {
-            get
-            {
-                return _blnAllowEditPartOfBaseWeapon;
-            }
-            set
-            {
-                _blnAllowEditPartOfBaseWeapon = value;
-            }
+            get => _blnAllowEditPartOfBaseWeapon;
+            set => _blnAllowEditPartOfBaseWeapon = value;
         }
 
         /// <summary>
@@ -2101,14 +1729,8 @@ namespace Chummer
         /// </summary>
         public bool MayBuyQualities
         {
-            get
-            {
-                return _blnMayBuyQualities;
-            }
-            set
-            {
-                _blnMayBuyQualities = value;
-            }
+            get => _blnMayBuyQualities;
+            set => _blnMayBuyQualities = value;
         }
 
         /// <summary>
@@ -2116,14 +1738,8 @@ namespace Chummer
         /// </summary>
         public bool UseContactPoints
         {
-            get
-            {
-                return _blnUseContactPoints;
-            }
-            set
-            {
-                _blnUseContactPoints = value;
-            }
+            get => _blnUseContactPoints;
+            set => _blnUseContactPoints = value;
         }
 
         /// <summary>
@@ -2131,14 +1747,8 @@ namespace Chummer
         /// </summary>
         public bool StrictSkillGroupsInCreateMode
         {
-            get
-            {
-                return _blnStrictSkillGroupsInCreateMode;
-            }
-            set
-            {
-                _blnStrictSkillGroupsInCreateMode = value;
-            }
+            get => _blnStrictSkillGroupsInCreateMode;
+            set => _blnStrictSkillGroupsInCreateMode = value;
         }
 
         /// <summary>
@@ -2146,14 +1756,8 @@ namespace Chummer
         /// </summary>
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
-            get
-            {
-                return _blnAllowPointBuySpecializationsOnKarmaSkills;
-            }
-            set
-            {
-                _blnAllowPointBuySpecializationsOnKarmaSkills = value;
-            }
+            get => _blnAllowPointBuySpecializationsOnKarmaSkills;
+            set => _blnAllowPointBuySpecializationsOnKarmaSkills = value;
         }
 
         /// <summary>
@@ -2161,14 +1765,8 @@ namespace Chummer
         /// </summary>
         public bool ExtendAnyDetectionSpell
         {
-            get
-            {
-                return _blnExtendAnyDetectionSpell;
-            }
-            set
-            {
-                _blnExtendAnyDetectionSpell = value;
-            }
+            get => _blnExtendAnyDetectionSpell;
+            set => _blnExtendAnyDetectionSpell = value;
         }
 
         /// <summary>
@@ -2176,14 +1774,8 @@ namespace Chummer
         /// </summary>
         public bool AllowSkillDiceRolling
         {
-            get
-            {
-                return _blnAllowSkillDiceRolling;
-            }
-            set
-            {
-                _blnAllowSkillDiceRolling = value;
-            }
+            get => _blnAllowSkillDiceRolling;
+            set => _blnAllowSkillDiceRolling = value;
         }
 
         /// <summary>
@@ -2191,14 +1783,8 @@ namespace Chummer
         /// </summary>
         public bool DontUseCyberlimbCalculation
         {
-            get
-            {
-                return _blnDontUseCyberlimbCalculation;
-            }
-            set
-            {
-                _blnDontUseCyberlimbCalculation = value;
-            }
+            get => _blnDontUseCyberlimbCalculation;
+            set => _blnDontUseCyberlimbCalculation = value;
         }
 
         /// <summary>
@@ -2206,14 +1792,8 @@ namespace Chummer
         /// </summary>
         public bool AlternateMetatypeAttributeKarma
         {
-            get
-            {
-                return _blnAlternateMetatypeAttributeKarma;
-            }
-            set
-            {
-                _blnAlternateMetatypeAttributeKarma = value;
-            }
+            get => _blnAlternateMetatypeAttributeKarma;
+            set => _blnAlternateMetatypeAttributeKarma = value;
         }
 
         /// <summary>
@@ -2221,14 +1801,8 @@ namespace Chummer
         /// </summary>
         public bool CompensateSkillGroupKarmaDifference
         {
-            get
-            {
-                return _blnCompensateSkillGroupKarmaDifference;
-            }
-            set
-            {
-                _blnCompensateSkillGroupKarmaDifference = value;
-            }
+            get => _blnCompensateSkillGroupKarmaDifference;
+            set => _blnCompensateSkillGroupKarmaDifference = value;
         }
 
         /// <summary>
@@ -2236,14 +1810,8 @@ namespace Chummer
         /// </summary>
         public bool CreateBackupOnCareer
         {
-            get
-            {
-                return _blnCreateBackupOnCareer;
-            }
-            set
-            {
-                _blnCreateBackupOnCareer = value;
-            }
+            get => _blnCreateBackupOnCareer;
+            set => _blnCreateBackupOnCareer = value;
         }
 
         /// <summary>
@@ -2251,14 +1819,8 @@ namespace Chummer
         /// </summary>
         public bool PrintNotes
         {
-            get
-            {
-                return _blnPrintNotes;
-            }
-            set
-            {
-                _blnPrintNotes = value;
-            }
+            get => _blnPrintNotes;
+            set => _blnPrintNotes = value;
         }
 
         /// <summary>
@@ -2266,14 +1828,8 @@ namespace Chummer
         /// </summary>
         public bool AllowObsolescentUpgrade
         {
-            get
-            {
-                return _blnAllowObsolescentUpgrade;
-            }
-            set
-            {
-                _blnAllowObsolescentUpgrade = value;
-            }
+            get => _blnAllowObsolescentUpgrade;
+            set => _blnAllowObsolescentUpgrade = value;
         }
 
         /// <summary>
@@ -2281,14 +1837,8 @@ namespace Chummer
         /// </summary>
         public bool AllowBiowareSuites
         {
-            get
-            {
-                return _blnAllowBiowareSuites;
-            }
-            set
-            {
-                _blnAllowBiowareSuites = value;
-            }
+            get => _blnAllowBiowareSuites;
+            set => _blnAllowBiowareSuites = value;
         }
 
         /// <summary>
@@ -2296,14 +1846,8 @@ namespace Chummer
         /// </summary>
         public bool FreeSpiritPowerPointsMAG
         {
-            get
-            {
-                return _blnFreeSpiritPowerPointsMAG;
-            }
-            set
-            {
-                _blnFreeSpiritPowerPointsMAG = value;
-            }
+            get => _blnFreeSpiritPowerPointsMAG;
+            set => _blnFreeSpiritPowerPointsMAG = value;
         }
 
         /// <summary>
@@ -2311,14 +1855,8 @@ namespace Chummer
         /// </summary>
         public bool SpecialAttributeKarmaLimit
         {
-            get
-            {
-                return _blnSpecialAttributeKarmaLimit;
-            }
-            set
-            {
-                _blnSpecialAttributeKarmaLimit = value;
-            }
+            get => _blnSpecialAttributeKarmaLimit;
+            set => _blnSpecialAttributeKarmaLimit = value;
         }
         #endregion
 
@@ -2328,14 +1866,8 @@ namespace Chummer
         /// </summary>
         public int BPAttribute
         {
-            get
-            {
-                return _intBPAttribute;
-            }
-            set
-            {
-                _intBPAttribute = value;
-            }
+            get => _intBPAttribute;
+            set => _intBPAttribute = value;
         }
 
         /// <summary>
@@ -2343,14 +1875,8 @@ namespace Chummer
         /// </summary>
         public int BPAttributeMax
         {
-            get
-            {
-                return _intBPAttributeMax;
-            }
-            set
-            {
-                _intBPAttributeMax = value;
-            }
+            get => _intBPAttributeMax;
+            set => _intBPAttributeMax = value;
         }
 
         /// <summary>
@@ -2358,14 +1884,8 @@ namespace Chummer
         /// </summary>
         public int BPContact
         {
-            get
-            {
-                return _intBPContact;
-            }
-            set
-            {
-                _intBPContact = value;
-            }
+            get => _intBPContact;
+            set => _intBPContact = value;
         }
 
         /// <summary>
@@ -2373,14 +1893,8 @@ namespace Chummer
         /// </summary>
         public int BPMartialArt
         {
-            get
-            {
-                return _intBPMartialArt;
-            }
-            set
-            {
-                _intBPMartialArt = value;
-            }
+            get => _intBPMartialArt;
+            set => _intBPMartialArt = value;
         }
 
         /// <summary>
@@ -2388,14 +1902,8 @@ namespace Chummer
         /// </summary>
         public int BPMartialArtManeuver
         {
-            get
-            {
-                return _intBPMartialArtManeuver;
-            }
-            set
-            {
-                _intBPMartialArtManeuver = value;
-            }
+            get => _intBPMartialArtManeuver;
+            set => _intBPMartialArtManeuver = value;
         }
 
         /// <summary>
@@ -2403,14 +1911,8 @@ namespace Chummer
         /// </summary>
         public int BPSkillGroup
         {
-            get
-            {
-                return _intBPSkillGroup;
-            }
-            set
-            {
-                _intBPSkillGroup = value;
-            }
+            get => _intBPSkillGroup;
+            set => _intBPSkillGroup = value;
         }
 
         /// <summary>
@@ -2418,14 +1920,8 @@ namespace Chummer
         /// </summary>
         public int BPActiveSkill
         {
-            get
-            {
-                return _intBPActiveSkill;
-            }
-            set
-            {
-                _intBPActiveSkill = value;
-            }
+            get => _intBPActiveSkill;
+            set => _intBPActiveSkill = value;
         }
 
         /// <summary>
@@ -2433,14 +1929,8 @@ namespace Chummer
         /// </summary>
         public int BPActiveSkillSpecialization
         {
-            get
-            {
-                return _intBPActiveSkillSpecialization;
-            }
-            set
-            {
-                _intBPActiveSkillSpecialization = value;
-            }
+            get => _intBPActiveSkillSpecialization;
+            set => _intBPActiveSkillSpecialization = value;
         }
 
         /// <summary>
@@ -2448,14 +1938,8 @@ namespace Chummer
         /// </summary>
         public int BPKnowledgeSkill
         {
-            get
-            {
-                return _intBPKnowledgeSkill;
-            }
-            set
-            {
-                _intBPKnowledgeSkill = value;
-            }
+            get => _intBPKnowledgeSkill;
+            set => _intBPKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -2463,14 +1947,8 @@ namespace Chummer
         /// </summary>
         public int BPSpell
         {
-            get
-            {
-                return _intBPSpell;
-            }
-            set
-            {
-                _intBPSpell = value;
-            }
+            get => _intBPSpell;
+            set => _intBPSpell = value;
         }
 
         /// <summary>
@@ -2478,14 +1956,8 @@ namespace Chummer
         /// </summary>
         public int BPFocus
         {
-            get
-            {
-                return _intBPFocus;
-            }
-            set
-            {
-                _intBPFocus = value;
-            }
+            get => _intBPFocus;
+            set => _intBPFocus = value;
         }
 
         /// <summary>
@@ -2493,14 +1965,8 @@ namespace Chummer
         /// </summary>
         public int BPSpirit
         {
-            get
-            {
-                return _intBPSpirit;
-            }
-            set
-            {
-                _intBPSpirit = value;
-            }
+            get => _intBPSpirit;
+            set => _intBPSpirit = value;
         }
 
         /// <summary>
@@ -2508,14 +1974,8 @@ namespace Chummer
         /// </summary>
         public int BPComplexForm
         {
-            get
-            {
-                return _intBPComplexForm;
-            }
-            set
-            {
-                _intBPComplexForm = value;
-            }
+            get => _intBPComplexForm;
+            set => _intBPComplexForm = value;
         }
 
         /// <summary>
@@ -2523,14 +1983,8 @@ namespace Chummer
         /// </summary>
         public int BPComplexFormOption
         {
-            get
-            {
-                return _intBPComplexFormOption;
-            }
-            set
-            {
-                _intBPComplexFormOption = value;
-            }
+            get => _intBPComplexFormOption;
+            set => _intBPComplexFormOption = value;
         }
         #endregion
 
@@ -2540,14 +1994,8 @@ namespace Chummer
         /// </summary>
         public int KarmaAttribute
         {
-            get
-            {
-                return _intKarmaAttribute;
-            }
-            set
-            {
-                _intKarmaAttribute = value;
-            }
+            get => _intKarmaAttribute;
+            set => _intKarmaAttribute = value;
         }
 
         /// <summary>
@@ -2555,14 +2003,8 @@ namespace Chummer
         /// </summary>
         public int KarmaQuality
         {
-            get
-            {
-                return _intKarmaQuality;
-            }
-            set
-            {
-                _intKarmaQuality = value;
-            }
+            get => _intKarmaQuality;
+            set => _intKarmaQuality = value;
         }
 
         /// <summary>
@@ -2570,14 +2012,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpecialization
         {
-            get
-            {
-                return _intKarmaSpecialization;
-            }
-            set
-            {
-                _intKarmaSpecialization = value;
-            }
+            get => _intKarmaSpecialization;
+            set => _intKarmaSpecialization = value;
         }
 
         /// <summary>
@@ -2585,14 +2021,8 @@ namespace Chummer
         /// </summary>
         public int KarmaKnowledgeSpecialization
         {
-            get
-            {
-                return _intKarmaKnoSpecialization;
-            }
-            set
-            {
-                _intKarmaKnoSpecialization = value;
-            }
+            get => _intKarmaKnoSpecialization;
+            set => _intKarmaKnoSpecialization = value;
         }
 
         /// <summary>
@@ -2600,14 +2030,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewKnowledgeSkill
         {
-            get
-            {
-                return _intKarmaNewKnowledgeSkill;
-            }
-            set
-            {
-                _intKarmaNewKnowledgeSkill = value;
-            }
+            get => _intKarmaNewKnowledgeSkill;
+            set => _intKarmaNewKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -2615,14 +2039,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewActiveSkill
         {
-            get
-            {
-                return _intKarmaNewActiveSkill;
-            }
-            set
-            {
-                _intKarmaNewActiveSkill = value;
-            }
+            get => _intKarmaNewActiveSkill;
+            set => _intKarmaNewActiveSkill = value;
         }
 
         /// <summary>
@@ -2630,14 +2048,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewSkillGroup
         {
-            get
-            {
-                return _intKarmaNewSkillGroup;
-            }
-            set
-            {
-                _intKarmaNewSkillGroup = value;
-            }
+            get => _intKarmaNewSkillGroup;
+            set => _intKarmaNewSkillGroup = value;
         }
 
         /// <summary>
@@ -2645,14 +2057,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveKnowledgeSkill
         {
-            get
-            {
-                return _intKarmaImproveKnowledgeSkill;
-            }
-            set
-            {
-                _intKarmaImproveKnowledgeSkill = value;
-            }
+            get => _intKarmaImproveKnowledgeSkill;
+            set => _intKarmaImproveKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -2660,14 +2066,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveActiveSkill
         {
-            get
-            {
-                return _intKarmaImproveActiveSkill;
-            }
-            set
-            {
-                _intKarmaImproveActiveSkill = value;
-            }
+            get => _intKarmaImproveActiveSkill;
+            set => _intKarmaImproveActiveSkill = value;
         }
 
         /// <summary>
@@ -2675,14 +2075,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveSkillGroup
         {
-            get
-            {
-                return _intKarmaImproveSkillGroup;
-            }
-            set
-            {
-                _intKarmaImproveSkillGroup = value;
-            }
+            get => _intKarmaImproveSkillGroup;
+            set => _intKarmaImproveSkillGroup = value;
         }
 
         /// <summary>
@@ -2690,14 +2084,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpell
         {
-            get
-            {
-                return _intKarmaSpell;
-            }
-            set
-            {
-                _intKarmaSpell = value;
-            }
+            get => _intKarmaSpell;
+            set => _intKarmaSpell = value;
         }
 
         /// <summary>
@@ -2705,14 +2093,8 @@ namespace Chummer
         /// </summary>
         public int KarmaEnhancement
         {
-            get
-            {
-                return _intKarmaEnhancement;
-            }
-            set
-            {
-                _intKarmaEnhancement = value;
-            }
+            get => _intKarmaEnhancement;
+            set => _intKarmaEnhancement = value;
         }
 
         /// <summary>
@@ -2720,14 +2102,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewComplexForm
         {
-            get
-            {
-                return _intKarmaNewComplexForm;
-            }
-            set
-            {
-                _intKarmaNewComplexForm = value;
-            }
+            get => _intKarmaNewComplexForm;
+            set => _intKarmaNewComplexForm = value;
         }
 
         /// <summary>
@@ -2735,14 +2111,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveComplexForm
         {
-            get
-            {
-                return _intKarmaImproveComplexForm;
-            }
-            set
-            {
-                _intKarmaImproveComplexForm = value;
-            }
+            get => _intKarmaImproveComplexForm;
+            set => _intKarmaImproveComplexForm = value;
         }
 
         /// <summary>
@@ -2750,14 +2120,8 @@ namespace Chummer
         /// </summary>
         public int KarmaComplexFormOption
         {
-            get
-            {
-                return _intKarmaComplexFormOption;
-            }
-            set
-            {
-                _intKarmaComplexFormOption = value;
-            }
+            get => _intKarmaComplexFormOption;
+            set => _intKarmaComplexFormOption = value;
         }
 
         /// <summary>
@@ -2765,14 +2129,8 @@ namespace Chummer
         /// </summary>
         public int KarmaComplexFormSkillsoft
         {
-            get
-            {
-                return _intKarmaComplexFormSkillfot;
-            }
-            set
-            {
-                _intKarmaComplexFormSkillfot = value;
-            }
+            get => _intKarmaComplexFormSkillfot;
+            set => _intKarmaComplexFormSkillfot = value;
         }
 
         /// <summary>
@@ -2780,14 +2138,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIProgram
         {
-            get
-            {
-                return _intKarmaNewAIProgram;
-            }
-            set
-            {
-                _intKarmaNewAIProgram = value;
-            }
+            get => _intKarmaNewAIProgram;
+            set => _intKarmaNewAIProgram = value;
         }
 
         /// <summary>
@@ -2795,14 +2147,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIAdvancedProgram
         {
-            get
-            {
-                return _intKarmaNewAIAdvancedProgram;
-            }
-            set
-            {
-                _intKarmaNewAIAdvancedProgram = value;
-            }
+            get => _intKarmaNewAIAdvancedProgram;
+            set => _intKarmaNewAIAdvancedProgram = value;
         }
 
         /// <summary>
@@ -2810,14 +2156,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNuyenPer
         {
-            get
-            {
-                return _intKarmaNuyenPer;
-            }
-            set
-            {
-                _intKarmaNuyenPer = value;
-            }
+            get => _intKarmaNuyenPer;
+            set => _intKarmaNuyenPer = value;
         }
 
         /// <summary>
@@ -2825,14 +2165,8 @@ namespace Chummer
         /// </summary>
         public int KarmaContact
         {
-            get
-            {
-                return _intKarmaContact;
-            }
-            set
-            {
-                _intKarmaContact = value;
-            }
+            get => _intKarmaContact;
+            set => _intKarmaContact = value;
         }
 
         /// <summary>
@@ -2840,14 +2174,8 @@ namespace Chummer
         /// </summary>
         public int KarmaEnemy
         {
-            get
-            {
-                return _intKarmaEnemy;
-            }
-            set
-            {
-                _intKarmaEnemy = value;
-            }
+            get => _intKarmaEnemy;
+            set => _intKarmaEnemy = value;
         }
 
         /// <summary>
@@ -2855,14 +2183,8 @@ namespace Chummer
         /// </summary>
         public int KarmaCarryover
         {
-            get
-            {
-                return _intKarmaCarryover;
-            }
-            set
-            {
-                _intKarmaCarryover = value;
-            }
+            get => _intKarmaCarryover;
+            set => _intKarmaCarryover = value;
         }
 
         /// <summary>
@@ -2870,14 +2192,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpirit
         {
-            get
-            {
-                return _intKarmaSpirit;
-            }
-            set
-            {
-                _intKarmaSpirit = value;
-            }
+            get => _intKarmaSpirit;
+            set => _intKarmaSpirit = value;
         }
 
         /// <summary>
@@ -2885,14 +2201,8 @@ namespace Chummer
         /// </summary>
         public int KarmaManeuver
         {
-            get
-            {
-                return _intKarmaManeuver;
-            }
-            set
-            {
-                _intKarmaManeuver = value;
-            }
+            get => _intKarmaManeuver;
+            set => _intKarmaManeuver = value;
         }
 
         /// <summary>
@@ -2900,14 +2210,8 @@ namespace Chummer
         /// </summary>
         public int KarmaInitiation
         {
-            get
-            {
-                return _intKarmaInitiation;
-            }
-            set
-            {
-                _intKarmaInitiation = value;
-            }
+            get => _intKarmaInitiation;
+            set => _intKarmaInitiation = value;
         }
 
         /// <summary>
@@ -2915,14 +2219,8 @@ namespace Chummer
         /// </summary>
         public int KarmaInititationFlat
         {
-            get
-            {
-                return _intKarmaInitiationFlat;
-            }
-            set
-            {
-                _intKarmaInitiationFlat = value;
-            }
+            get => _intKarmaInitiationFlat;
+            set => _intKarmaInitiationFlat = value;
         }
 
         /// <summary>
@@ -2930,14 +2228,8 @@ namespace Chummer
         /// </summary>
         public int KarmaMetamagic
         {
-            get
-            {
-                return _intKarmaMetamagic;
-            }
-            set
-            {
-                _intKarmaMetamagic = value;
-            }
+            get => _intKarmaMetamagic;
+            set => _intKarmaMetamagic = value;
         }
 
         /// <summary>
@@ -2945,14 +2237,8 @@ namespace Chummer
         /// </summary>
         public int KarmaJoinGroup
         {
-            get
-            {
-                return _intKarmaJoinGroup;
-            }
-            set
-            {
-                _intKarmaJoinGroup = value;
-            }
+            get => _intKarmaJoinGroup;
+            set => _intKarmaJoinGroup = value;
         }
 
         /// <summary>
@@ -2960,14 +2246,8 @@ namespace Chummer
         /// </summary>
         public int KarmaLeaveGroup
         {
-            get
-            {
-                return _intKarmaLeaveGroup;
-            }
-            set
-            {
-                _intKarmaLeaveGroup = value;
-            }
+            get => _intKarmaLeaveGroup;
+            set => _intKarmaLeaveGroup = value;
         }
 
         /// <summary>
@@ -2975,14 +2255,8 @@ namespace Chummer
         /// </summary>
         public int KarmaAlchemicalFocus
         {
-            get
-            {
-                return _intKarmaAlchemicalFocus;
-            }
-            set
-            {
-                _intKarmaAlchemicalFocus = value;
-            }
+            get => _intKarmaAlchemicalFocus;
+            set => _intKarmaAlchemicalFocus = value;
         }
 
         /// <summary>
@@ -2990,14 +2264,8 @@ namespace Chummer
         /// </summary>
         public int KarmaBanishingFocus
         {
-            get
-            {
-                return _intKarmaBanishingFocus;
-            }
-            set
-            {
-                _intKarmaBanishingFocus = value;
-            }
+            get => _intKarmaBanishingFocus;
+            set => _intKarmaBanishingFocus = value;
         }
 
         /// <summary>
@@ -3005,14 +2273,8 @@ namespace Chummer
         /// </summary>
         public int KarmaBindingFocus
         {
-            get
-            {
-                return _intKarmaBindingFocus;
-            }
-            set
-            {
-                _intKarmaBindingFocus = value;
-            }
+            get => _intKarmaBindingFocus;
+            set => _intKarmaBindingFocus = value;
         }
 
         /// <summary>
@@ -3020,14 +2282,8 @@ namespace Chummer
         /// </summary>
         public int KarmaCenteringFocus
         {
-            get
-            {
-                return _intKarmaCenteringFocus;
-            }
-            set
-            {
-                _intKarmaCenteringFocus = value;
-            }
+            get => _intKarmaCenteringFocus;
+            set => _intKarmaCenteringFocus = value;
         }
 
         /// <summary>
@@ -3035,14 +2291,8 @@ namespace Chummer
         /// </summary>
         public int KarmaCounterspellingFocus
         {
-            get
-            {
-                return _intKarmaCounterspellingFocus;
-            }
-            set
-            {
-                _intKarmaCounterspellingFocus = value;
-            }
+            get => _intKarmaCounterspellingFocus;
+            set => _intKarmaCounterspellingFocus = value;
         }
 
         /// <summary>
@@ -3050,14 +2300,8 @@ namespace Chummer
         /// </summary>
         public int KarmaDisenchantingFocus
         {
-            get
-            {
-                return _intKarmaDisenchantingFocus;
-            }
-            set
-            {
-                _intKarmaDisenchantingFocus = value;
-            }
+            get => _intKarmaDisenchantingFocus;
+            set => _intKarmaDisenchantingFocus = value;
         }
 
         /// <summary>
@@ -3065,14 +2309,8 @@ namespace Chummer
         /// </summary>
         public int KarmaFlexibleSignatureFocus
         {
-            get
-            {
-                return _intKarmaFlexibleSignatureFocus;
-            }
-            set
-            {
-                _intKarmaFlexibleSignatureFocus = value;
-            }
+            get => _intKarmaFlexibleSignatureFocus;
+            set => _intKarmaFlexibleSignatureFocus = value;
         }
 
         /// <summary>
@@ -3080,14 +2318,8 @@ namespace Chummer
         /// </summary>
         public int KarmaMaskingFocus
         {
-            get
-            {
-                return _intKarmaMaskingFocus;
-            }
-            set
-            {
-                _intKarmaMaskingFocus = value;
-            }
+            get => _intKarmaMaskingFocus;
+            set => _intKarmaMaskingFocus = value;
         }
 
         /// <summary>
@@ -3095,14 +2327,8 @@ namespace Chummer
         /// </summary>
         public int KarmaPowerFocus
         {
-            get
-            {
-                return _intKarmaPowerFocus;
-            }
-            set
-            {
-                _intKarmaPowerFocus = value;
-            }
+            get => _intKarmaPowerFocus;
+            set => _intKarmaPowerFocus = value;
         }
 
         /// <summary>
@@ -3110,14 +2336,8 @@ namespace Chummer
         /// </summary>
         public int KarmaQiFocus
         {
-            get
-            {
-                return _intKarmaQiFocus;
-            }
-            set
-            {
-                _intKarmaQiFocus = value;
-            }
+            get => _intKarmaQiFocus;
+            set => _intKarmaQiFocus = value;
         }
 
         /// <summary>
@@ -3125,14 +2345,8 @@ namespace Chummer
         /// </summary>
         public int KarmaRitualSpellcastingFocus
         {
-            get
-            {
-                return _intKarmaRitualSpellcastingFocus;
-            }
-            set
-            {
-                _intKarmaRitualSpellcastingFocus = value;
-            }
+            get => _intKarmaRitualSpellcastingFocus;
+            set => _intKarmaRitualSpellcastingFocus = value;
         }
 
         /// <summary>
@@ -3140,14 +2354,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellcastingFocus
         {
-            get
-            {
-                return _intKarmaSpellcastingFocus;
-            }
-            set
-            {
-                _intKarmaSpellcastingFocus = value;
-            }
+            get => _intKarmaSpellcastingFocus;
+            set => _intKarmaSpellcastingFocus = value;
         }
 
         /// <summary>
@@ -3155,14 +2363,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellShapingFocus
         {
-            get
-            {
-                return _intKarmaSpellShapingFocus;
-            }
-            set
-            {
-                _intKarmaSpellShapingFocus = value;
-            }
+            get => _intKarmaSpellShapingFocus;
+            set => _intKarmaSpellShapingFocus = value;
         }
 
         /// <summary>
@@ -3170,14 +2372,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSummoningFocus
         {
-            get
-            {
-                return _intKarmaSummoningFocus;
-            }
-            set
-            {
-                _intKarmaSummoningFocus = value;
-            }
+            get => _intKarmaSummoningFocus;
+            set => _intKarmaSummoningFocus = value;
         }
 
         /// <summary>
@@ -3185,14 +2381,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSustainingFocus
         {
-            get
-            {
-                return _intKarmaSustainingFocus;
-            }
-            set
-            {
-                _intKarmaSustainingFocus = value;
-            }
+            get => _intKarmaSustainingFocus;
+            set => _intKarmaSustainingFocus = value;
         }
 
         /// <summary>
@@ -3200,14 +2390,8 @@ namespace Chummer
         /// </summary>
         public int KarmaWeaponFocus
         {
-            get
-            {
-                return _intKarmaWeaponFocus;
-            }
-            set
-            {
-                _intKarmaWeaponFocus = value;
-            }
+            get => _intKarmaWeaponFocus;
+            set => _intKarmaWeaponFocus = value;
         }
         #endregion
 
@@ -3217,14 +2401,8 @@ namespace Chummer
         /// </summary>
         public string BuildMethod
         {
-            get
-            {
-                return _strBuildMethod;
-            }
-            set
-            {
-                _strBuildMethod = value;
-            }
+            get => _strBuildMethod;
+            set => _strBuildMethod = value;
         }
 
         /// <summary>
@@ -3232,14 +2410,8 @@ namespace Chummer
         /// </summary>
         public int BuildPoints
         {
-            get
-            {
-                return _intBuildPoints;
-            }
-            set
-            {
-                _intBuildPoints = value;
-            }
+            get => _intBuildPoints;
+            set => _intBuildPoints = value;
         }
 
         /// <summary>
@@ -3247,14 +2419,8 @@ namespace Chummer
         /// </summary>
         public int Availability
         {
-            get
-            {
-                return _intAvailability;
-            }
-            set
-            {
-                _intAvailability = value;
-            }
+            get => _intAvailability;
+            set => _intAvailability = value;
         }
 
         /// <summary>
@@ -3262,8 +2428,8 @@ namespace Chummer
         /// </summary>
         public bool AutomaticBackstory
         {
-            get { return _blnAutomaticBackstory; }
-            set { _blnAutomaticBackstory = value; }
+            get => _blnAutomaticBackstory;
+            set => _blnAutomaticBackstory = value;
         }
 
         /// <summary>
@@ -3271,14 +2437,8 @@ namespace Chummer
         /// </summary>
         public bool UseCalculatedPublicAwareness
         {
-            get
-            {
-                return _blnUseCalculatedPublicAwareness;
-            }
-            set
-            {
-                _blnUseCalculatedPublicAwareness = value;
-            }
+            get => _blnUseCalculatedPublicAwareness;
+            set => _blnUseCalculatedPublicAwareness = value;
         }
 
         /// <summary>
@@ -3286,14 +2446,8 @@ namespace Chummer
         /// </summary>
         public bool UseTotalValueForFreeContacts
         {
-            get
-            {
-                return _blnUseTotalValueForFreeContacts;
-            }
-            set
-            {
-                _blnUseTotalValueForFreeContacts = value;
-            }
+            get => _blnUseTotalValueForFreeContacts;
+            set => _blnUseTotalValueForFreeContacts = value;
         }
 
         /// <summary>
@@ -3301,14 +2455,8 @@ namespace Chummer
         /// </summary>
         public bool UseTotalValueForFreeKnowledge
         {
-            get
-            {
-                return _blnUseTotalValueForFreeKnowledge;
-            }
-            set
-            {
-                _blnUseTotalValueForFreeKnowledge = value;
-            }
+            get => _blnUseTotalValueForFreeKnowledge;
+            set => _blnUseTotalValueForFreeKnowledge = value;
         }
 
         /// <summary>
@@ -3316,14 +2464,8 @@ namespace Chummer
         /// </summary>
         public bool FreeMartialArtSpecialization
         {
-            get
-            {
-                return _blnFreeMartialArtSpecialization;
-            }
-            set
-            {
-                _blnFreeMartialArtSpecialization = value;
-            }
+            get => _blnFreeMartialArtSpecialization;
+            set => _blnFreeMartialArtSpecialization = value;
         }
 
         /// <summary>
@@ -3331,14 +2473,8 @@ namespace Chummer
         /// </summary>
         public bool PrioritySpellsAsAdeptPowers
         {
-            get
-            {
-                return _blnPrioritySpellsAsAdeptPowers;
-            }
-            set
-            {
-                _blnPrioritySpellsAsAdeptPowers = value;
-            }
+            get => _blnPrioritySpellsAsAdeptPowers;
+            set => _blnPrioritySpellsAsAdeptPowers = value;
         }
 
         /// <summary>
@@ -3346,14 +2482,8 @@ namespace Chummer
         /// </summary>
         public string RecentImageFolder
         {
-            get
-            {
-                return _strImageFolder;
-            }
-            set
-            {
-                _strImageFolder = value;
-            }
+            get => _strImageFolder;
+            set => _strImageFolder = value;
         }
 
         /// <summary>
@@ -3361,8 +2491,8 @@ namespace Chummer
         /// </summary>
         public bool ReverseAttributePriorityOrder
         {
-            get { return _blnReverseAttributePriorityOrder; }
-            internal set { _blnReverseAttributePriorityOrder = value; }
+            get => _blnReverseAttributePriorityOrder;
+            internal set => _blnReverseAttributePriorityOrder = value;
         }
 
         /// <summary>
@@ -3370,8 +2500,8 @@ namespace Chummer
         /// </summary>
         public bool HideItemsOverAvailLimit
         {
-            get { return _blnHideItemsOverAvailLimit; }
-            set { _blnHideItemsOverAvailLimit = value; }
+            get => _blnHideItemsOverAvailLimit;
+            set => _blnHideItemsOverAvailLimit = value;
         }
 
         /// <summary>
@@ -3379,16 +2509,16 @@ namespace Chummer
         /// </summary>
         public bool AllowHoverIncrement
         {
-            get { return _blnAllowHoverIncrement; }
-            internal set { _blnAllowHoverIncrement = value; }
+            get => _blnAllowHoverIncrement;
+            internal set => _blnAllowHoverIncrement = value;
         }
         /// <summary>
         /// Whether searching in a selection form will limit itself to the current Category that's selected.
         /// </summary>
         public bool SearchInCategoryOnly
         {
-            get { return _blnSearchInCategoryOnly; }
-            internal set { _blnSearchInCategoryOnly = value; }
+            get => _blnSearchInCategoryOnly;
+            internal set => _blnSearchInCategoryOnly = value;
         }
 
         public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;

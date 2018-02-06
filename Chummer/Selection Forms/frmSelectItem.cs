@@ -382,27 +382,15 @@ namespace Chummer
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>
-        public string SelectedName
-        {
-            get
-            {
-                return cboAmmo.Text;
-            }
-        }
+        public string SelectedName => cboAmmo.Text;
 
         /// <summary>
         /// Whether or not the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect
         {
-            get
-            {
-                return _blnAllowAutoSelect;
-            }
-            set
-            {
-                _blnAllowAutoSelect = value;
-            }
+            get => _blnAllowAutoSelect;
+            set => _blnAllowAutoSelect = value;
         }
 
         /// <summary>
@@ -410,10 +398,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -421,10 +406,7 @@ namespace Chummer
         /// </summary>
         public string ForceItem
         {
-            set
-            {
-                _strForceItem = value;
-            }
+            set => _strForceItem = value;
         }
         #endregion
 

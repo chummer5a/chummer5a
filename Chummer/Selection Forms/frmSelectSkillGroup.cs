@@ -104,21 +104,12 @@ namespace Chummer
 
         #region Properties
         // Skill Group that was selected in the dialogue.
-        public string SelectedSkillGroup
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedSkillGroup => _strReturnValue;
 
         // Description to show in the window.
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -126,10 +117,7 @@ namespace Chummer
         /// </summary>
         public string OnlyGroup
         {
-            set
-            {
-                _strForceValue = value;
-            }
+            set => _strForceValue = value;
         }
 
         /// <summary>
@@ -137,10 +125,7 @@ namespace Chummer
         /// </summary>
         public string ExcludeCategory
         {
-            set
-            {
-                _strExcludeCategory = value;
-            }
+            set => _strExcludeCategory = value;
         }
         #endregion
     }

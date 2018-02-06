@@ -52,22 +52,13 @@ namespace Chummer
         #region Properties
         public string Code
         {
-            get
-            {
-                return _strCode;
-            }
-            set
-            {
-                _strCode = value;
-            }
+            get => _strCode;
+            set => _strCode = value;
         }
 
         public string Path
         {
-            get
-            {
-                return _strPath;
-            }
+            get => _strPath;
             set
             {
                 if (_strPath != value)
@@ -81,14 +72,8 @@ namespace Chummer
 
         public int Offset
         {
-            get
-            {
-                return _intOffset;
-            }
-            set
-            {
-                _intOffset = value;
-            }
+            get => _intOffset;
+            set => _intOffset = value;
         }
 
         internal PdfReader CachedPdfReader
@@ -144,38 +129,20 @@ namespace Chummer
 
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         public string Path
         {
-            get
-            {
-                return _strPath;
-            }
-            set
-            {
-                _strPath = value;
-            }
+            get => _strPath;
+            set => _strPath = value;
         }
 
         public bool Enabled
         {
-            get
-            {
-                return _blnEnabled;
-            }
-            set
-            {
-                _blnEnabled = value;
-            }
+            get => _blnEnabled;
+            set => _blnEnabled = value;
         }
         #endregion
     }
@@ -509,14 +476,8 @@ namespace Chummer
         /// </summary>
         public static bool AutomaticUpdate
         {
-            get
-            {
-                return _blnAutomaticUpdate;
-            }
-            set
-            {
-                _blnAutomaticUpdate = value;
-            }
+            get => _blnAutomaticUpdate;
+            set => _blnAutomaticUpdate = value;
         }
 
         /// <summary>
@@ -524,32 +485,20 @@ namespace Chummer
         /// </summary>
         public static bool LiveCustomData
         {
-            get
-            {
-                return _blnLiveCustomData;
-            }
-            set
-            {
-                _blnLiveCustomData = value;
-            }
+            get => _blnLiveCustomData;
+            set => _blnLiveCustomData = value;
         }
 
         public static bool LiveUpdateCleanCharacterFiles
         {
-            get
-            {
-                return _blnLiveUpdateCleanCharacterFiles;
-            }
-            set
-            {
-                _blnLiveUpdateCleanCharacterFiles = value;
-            }
+            get => _blnLiveUpdateCleanCharacterFiles;
+            set => _blnLiveUpdateCleanCharacterFiles = value;
         }
 
         public static bool LifeModuleEnabled
         {
-            get { return _lifeModuleEnabled; }
-            set { _lifeModuleEnabled = value; }
+            get => _lifeModuleEnabled;
+            set => _lifeModuleEnabled = value;
         }
 
         /// <summary>
@@ -557,14 +506,8 @@ namespace Chummer
         /// </summary>
         public static bool LocalisedUpdatesOnly
         {
-            get
-            {
-                return _blnLocalisedUpdatesOnly;
-            }
-            set
-            {
-                _blnLocalisedUpdatesOnly = value;
-            }
+            get => _blnLocalisedUpdatesOnly;
+            set => _blnLocalisedUpdatesOnly = value;
         }
 
         /// <summary>
@@ -572,14 +515,8 @@ namespace Chummer
         /// </summary>
         public static bool UseLogging
         {
-            get
-            {
-                return _blnUseLogging;
-            }
-            set
-            {
-                _blnUseLogging = value;
-            }
+            get => _blnUseLogging;
+            set => _blnUseLogging = value;
         }
 
         /// <summary>
@@ -587,36 +524,20 @@ namespace Chummer
         /// </summary>
         public static bool DatesIncludeTime
         {
-            get
-            {
-                return _blnDatesIncludeTime;
-            }
-            set
-            {
-                _blnDatesIncludeTime = value;
-            }
+            get => _blnDatesIncludeTime;
+            set => _blnDatesIncludeTime = value;
         }
 
         public static bool Dronemods
         {
-            get
-            {
-                return _blnDronemods;
-
-            }
-            set
-            {
-                _blnDronemods = value;
-            }
+            get => _blnDronemods;
+            set => _blnDronemods = value;
         }
 
         public static bool DronemodsMaximumPilot
         {
-            get
-            {
-                return _blnDronemodsMaximumPilot;
-            }
-            set { _blnDronemodsMaximumPilot = value; }
+            get => _blnDronemodsMaximumPilot;
+            set => _blnDronemodsMaximumPilot = value;
         }
 
 
@@ -625,14 +546,8 @@ namespace Chummer
         /// </summary>
         public static bool PrintToFileFirst
         {
-            get
-            {
-                return _blnPrintToFileFirst;
-            }
-            set
-            {
-                _blnPrintToFileFirst = value;
-            }
+            get => _blnPrintToFileFirst;
+            set => _blnPrintToFileFirst = value;
         }
 
         /// <summary>
@@ -640,14 +555,8 @@ namespace Chummer
         /// </summary>
         public static string OmaeUserName
         {
-            get
-            {
-                return _strOmaeUserName;
-            }
-            set
-            {
-                _strOmaeUserName = value;
-            }
+            get => _strOmaeUserName;
+            set => _strOmaeUserName = value;
         }
 
         /// <summary>
@@ -655,14 +564,8 @@ namespace Chummer
         /// </summary>
         public static string OmaePassword
         {
-            get
-            {
-                return _strOmaePassword;
-            }
-            set
-            {
-                _strOmaePassword = value;
-            }
+            get => _strOmaePassword;
+            set => _strOmaePassword = value;
         }
 
         /// <summary>
@@ -670,14 +573,8 @@ namespace Chummer
         /// </summary>
         public static bool OmaeAutoLogin
         {
-            get
-            {
-                return _blnOmaeAutoLogin;
-            }
-            set
-            {
-                _blnOmaeAutoLogin = value;
-            }
+            get => _blnOmaeAutoLogin;
+            set => _blnOmaeAutoLogin = value;
         }
 
         /// <summary>
@@ -685,10 +582,7 @@ namespace Chummer
         /// </summary>
         public static string Language
         {
-            get
-            {
-                return _strLanguage;
-            }
+            get => _strLanguage;
             set
             {
                 if (value != _strLanguage)
@@ -711,14 +605,8 @@ namespace Chummer
         /// </summary>
         public static bool StartupFullscreen
         {
-            get
-            {
-                return _blnStartupFullscreen;
-            }
-            set
-            {
-                _blnStartupFullscreen = value;
-            }
+            get => _blnStartupFullscreen;
+            set => _blnStartupFullscreen = value;
         }
 
         /// <summary>
@@ -726,62 +614,32 @@ namespace Chummer
         /// </summary>
         public static bool SingleDiceRoller
         {
-            get
-            {
-                return _blnSingleDiceRoller;
-            }
-            set
-            {
-                _blnSingleDiceRoller = value;
-            }
+            get => _blnSingleDiceRoller;
+            set => _blnSingleDiceRoller = value;
         }
 
         /// <summary>
         /// CultureInfo for number localization.
         /// </summary>
-        public static CultureInfo CultureInfo
-        {
-            get
-            {
-                return s_ObjLanguageCultureInfo;
-            }
-        }
+        public static CultureInfo CultureInfo => s_ObjLanguageCultureInfo;
 
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
         /// </summary>
-        public static CultureInfo InvariantCultureInfo
-        {
-            get
-            {
-                return s_ObjInvariantCultureInfo;
-            }
-        }
+        public static CultureInfo InvariantCultureInfo => s_ObjInvariantCultureInfo;
 
         /// <summary>
         /// CultureInfo of the user's current system.
         /// </summary>
-        public static CultureInfo SystemCultureInfo
-        {
-            get
-            {
-                return s_ObjSystemCultureInfo;
-            }
-        }
+        public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
 
         /// <summary>
         /// Clipboard.
         /// </summary>
         public static XmlDocument Clipboard
         {
-            get
-            {
-                return _objXmlClipboard;
-            }
-            set
-            {
-                _objXmlClipboard = value;
-            }
+            get => _objXmlClipboard;
+            set => _objXmlClipboard = value;
         }
 
         /// <summary>
@@ -789,14 +647,8 @@ namespace Chummer
         /// </summary>
         public static ClipboardContentType ClipboardContentType
         {
-            get
-            {
-                return _objClipboardContentType;
-            }
-            set
-            {
-                _objClipboardContentType = value;
-            }
+            get => _objClipboardContentType;
+            set => _objClipboardContentType = value;
         }
 
         /// <summary>
@@ -804,43 +656,25 @@ namespace Chummer
         /// </summary>
         public static string DefaultCharacterSheet
         {
-            get
-            {
-                return _strDefaultCharacterSheet;
-            }
-            set
-            {
-                _strDefaultCharacterSheet = value;
-            }
+            get => _strDefaultCharacterSheet;
+            set => _strDefaultCharacterSheet = value;
         }
 
-        public static RegistryKey ChummerRegistryKey
-        {
-            get
-            {
-                return _objBaseChummerKey;
-            }
-        }
+        public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;
 
         /// <summary>
         /// Path to the user's PDF application.
         /// </summary>
         public static string PDFAppPath
         {
-            get
-            {
-                return _strPDFAppPath;
-            }
-            set
-            {
-                _strPDFAppPath = value;
-            }
+            get => _strPDFAppPath;
+            set => _strPDFAppPath = value;
         }
 
         public static string PDFParameters
         {
-            get { return _strPDFParameters;}
-            set { _strPDFParameters = value; }
+            get => _strPDFParameters;
+            set => _strPDFParameters = value;
         }
         /// <summary>
         /// List of SourcebookInfo.
@@ -896,42 +730,24 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo
-        {
-            get
-            {
-                return _lstCustomDataDirectoryInfo;
-            }
-        }
+        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
 
         public static bool OmaeEnabled
         {
-            get { return _omaeEnabled; }
-            set { _omaeEnabled = value; }
+            get => _omaeEnabled;
+            set => _omaeEnabled = value;
         }
 
         public static bool PreferNightlyBuilds
         {
-            get
-            {
-                return _blnPreferNightlyUpdates;
-            }
-            set
-            {
-                _blnPreferNightlyUpdates = value;
-            }
+            get => _blnPreferNightlyUpdates;
+            set => _blnPreferNightlyUpdates = value;
         }
 
         public static string CharacterRosterPath
         {
-            get
-            {
-                return _strCharacterRosterPath;
-            }
-            set
-            {
-                _strCharacterRosterPath = value;
-            }
+            get => _strCharacterRosterPath;
+            set => _strCharacterRosterPath = value;
         }
 
         public static string PDFArguments { get; internal set; }

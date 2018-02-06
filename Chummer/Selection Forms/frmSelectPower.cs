@@ -172,10 +172,7 @@ namespace Chummer
         /// </summary>
         public string LimitToPowers
         {
-            set
-            {
-                _strLimitToPowers = value;
-            }
+            set => _strLimitToPowers = value;
         }
 
         /// <summary>
@@ -183,7 +180,7 @@ namespace Chummer
         /// </summary>
         public int LimitToRating 
         {
-            set { _decLimitToRating = value * PointsPerLevel; } 
+            set => _decLimitToRating = value * PointsPerLevel;
         }
 
         /// <summary>

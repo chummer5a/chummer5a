@@ -189,14 +189,8 @@ namespace Chummer
         /// </summary>
         public int SortColumn
         {
-            get
-            {
-                return _intColumnToSort;
-            }
-            set
-            {
-                _intColumnToSort = value;
-            }
+            get => _intColumnToSort;
+            set => _intColumnToSort = value;
         }
 
         /// <summary>
@@ -204,14 +198,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get
-            {
-                return _objOrderOfSort;
-            }
-            set
-            {
-                _objOrderOfSort = value;
-            }
+            get => _objOrderOfSort;
+            set => _objOrderOfSort = value;
         }
     }
 
@@ -269,14 +257,8 @@ namespace Chummer
         /// </summary>
         public int SortColumn
         {
-            get
-            {
-                return _intColumnToSort;
-            }
-            set
-            {
-                _intColumnToSort = value;
-            }
+            get => _intColumnToSort;
+            set => _intColumnToSort = value;
         }
 
         /// <summary>
@@ -284,14 +266,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get
-            {
-                return _objOrderOfSort;
-            }
-            set
-            {
-                _objOrderOfSort = value;
-            }
+            get => _objOrderOfSort;
+            set => _objOrderOfSort = value;
         }
     }
     #endregion

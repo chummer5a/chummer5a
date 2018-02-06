@@ -196,13 +196,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                return DisplayNameShort(GlobalOptions.Language);
-            }
-        }
+        public string DisplayName => DisplayNameShort(GlobalOptions.Language);
 
         /// <summary>
         /// Complex Form's Duration.

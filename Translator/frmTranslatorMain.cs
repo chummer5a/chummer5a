@@ -7739,13 +7739,8 @@ namespace Translator
         #endregion Data Processing
 
         #region Properties
-        public IList<frmTranslate> OpenTranslateWindows
-        {
-            get
-            {
-                return s_LstOpenTranslateWindows;
-            }
-        }
+        public IList<frmTranslate> OpenTranslateWindows => s_LstOpenTranslateWindows;
+
         #endregion
     }
 }

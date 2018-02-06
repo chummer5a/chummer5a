@@ -177,10 +177,7 @@ namespace Chummer.UI.Attributes
             return true;
         }
 
-        public string AttributeName
-	    {
-		    get { return _objAttribute.Abbrev; }
-	    }
+        public string AttributeName => _objAttribute.Abbrev;
 
         private void cmdBurnEdge_Click(object sender, EventArgs e)
         {

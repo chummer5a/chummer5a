@@ -134,38 +134,20 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Martial Art that was selected in the dialogue.
         /// </summary>
-        public string SelectedMartialArt
-        {
-            get
-            {
-                return _strSelectedMartialArt;
-            }
-        }
+        public string SelectedMartialArt => _strSelectedMartialArt;
 
         /// <summary>
         /// Only show Martial Arts that are provided by a quality
         /// </summary>
         public bool ShowQualities
         {
-            get
-            {
-                return _blnShowQualities;
-            }
-            set
-            {
-                _blnShowQualities = value;
-            }
+            get => _blnShowQualities;
+            set => _blnShowQualities = value;
         }
 
         /// <summary>
@@ -173,10 +155,7 @@ namespace Chummer
         /// </summary>
         public string ForcedValue
         {
-            set
-            {
-                _strForcedValue = value;
-            }
+            set => _strForcedValue = value;
         }
         #endregion
 

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -374,10 +374,7 @@ namespace Chummer
 
         private void chkRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkRestricted.Checked)
-                chkVeryRestricted.Enabled = false;
-            else
-                chkVeryRestricted.Enabled = true;
+            chkVeryRestricted.Enabled = !chkRestricted.Checked;
 
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
@@ -387,10 +384,7 @@ namespace Chummer
 
         private void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkVeryRestricted.Checked)
-                chkRestricted.Enabled = false;
-            else
-                chkRestricted.Enabled = true;
+            chkRestricted.Enabled = !chkVeryRestricted.Checked;
 
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
@@ -816,10 +810,7 @@ namespace Chummer
             _objSpell.Limited = chkLimited.Checked;
             if (cboCategory.SelectedValue.ToString() == "Combat")
             {
-                if (chkModifier4.Checked)
-                    _objSpell.Damage = "P";
-                else
-                    _objSpell.Damage = "S";
+                _objSpell.Damage = chkModifier4.Checked ? "P" : "S";
             }
             _objSpell.DV = CalculateDrain();
             if (!string.IsNullOrEmpty(txtRestriction.Text))
@@ -854,13 +845,8 @@ namespace Chummer
         /// <summary>
         /// Spell that was created in the dialogue.
         /// </summary>
-        public Spell SelectedSpell
-        {
-            get
-            {
-                return _objSpell;
-            }
-        }
+        public Spell SelectedSpell => _objSpell;
+
         #endregion
     }
 }

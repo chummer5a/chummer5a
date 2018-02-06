@@ -233,10 +233,8 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public IList<Gear> Gear
-        {
-            get => _lstGear;
-        }
+        public IList<Gear> Gear => _lstGear;
+
         #endregion
 
         #region Methods

@@ -171,27 +171,15 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Program that was selected in the dialogue.
         /// </summary>
         public string SelectedProgram
         {
-            get
-            {
-                return _strSelectedAIProgram;
-            }
-            set
-            {
-                _strSelectedAIProgram = value;
-            }
+            get => _strSelectedAIProgram;
+            set => _strSelectedAIProgram = value;
         }
         #endregion
 

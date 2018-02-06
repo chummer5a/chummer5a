@@ -66,11 +66,7 @@ namespace Chummer
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
-                int intRating = 1;
-                if (_objCharacter.SubmersionGrade > 0)
-                    intRating = _objCharacter.SubmersionGrade;
-                else
-                    intRating = _objCharacter.InitiateGrade;
+                int intRating = _objCharacter.SubmersionGrade > 0 ? _objCharacter.SubmersionGrade : _objCharacter.InitiateGrade;
 
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
@@ -292,10 +288,9 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
-                    _objCachedMyXmlNode = XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
-                else
-                    _objCachedMyXmlNode = XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = _objImprovementSource == Improvement.ImprovementSource.Metamagic
+                    ? XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]")
+                    : XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

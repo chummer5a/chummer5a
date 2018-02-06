@@ -381,14 +381,7 @@ namespace Chummer.Backend.Skills
             {
                 for (int i = 0; i < lstNodesToChange.Count; i++)
                 {
-                    if (map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop))
-                    {
-                        lstNodesToChange[i].InnerText = guidLoop.ToString("D");
-                    }
-                    else
-                    {
-                        lstNodesToChange[i].InnerText = StringExtensions.EmptyGuid; //This creates 00.. guid in default formatting
-                    }
+                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop) ? guidLoop.ToString("D") : StringExtensions.EmptyGuid;
                 }
             }
         }
@@ -478,13 +471,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Active Skills Dictionary
         /// </summary>
-        public IDictionary<string, Skill> SkillsDictionary
-        {
-            get
-            {
-                return _dicSkills;
-            }
-        }
+        public IDictionary<string, Skill> SkillsDictionary => _dicSkills;
 
         /// <summary>
         /// Gets an active skill by its Name. Returns null if none found.
@@ -538,18 +525,12 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Number of free Knowledge skill points the character have remaining
         /// </summary>
-        public int KnowledgeSkillPointsRemain
-        {
-            get { return KnowledgeSkillPoints - KnowledgeSkillPointsUsed; }
-        }
+        public int KnowledgeSkillPointsRemain => KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
 
         /// <summary>
         /// Number of knowledge skill points the character have used.
         /// </summary>
-        public int KnowledgeSkillPointsUsed
-        {
-            get { return KnowledgeSkillRanksSum - SkillPointsSpentOnKnoskills; }
-        }
+        public int KnowledgeSkillPointsUsed => KnowledgeSkillRanksSum - SkillPointsSpentOnKnoskills;
 
         /// <summary>
         /// Sum of knowledge skill ranks the character has allocated.

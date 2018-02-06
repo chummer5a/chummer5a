@@ -79,23 +79,14 @@ namespace Chummer
         /// <summary>
         /// Attribute that was selected in the dialogue.
         /// </summary>
-        public string SelectedAttribute
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedAttribute => _strReturnValue;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -103,22 +94,14 @@ namespace Chummer
         /// </summary>
         public bool ShowMetatypeMaximum
         {
-            set
-            {
-                chkDoNotAffectMetatypeMaximum.Visible = value;
-            }
+            set => chkDoNotAffectMetatypeMaximum.Visible = value;
         }
 
         /// <summary>
         /// Whether or not the Metatype Maximum value should be affected as well.
         /// </summary>
-        public bool DoNotAffectMetatypeMaximum
-        {
-            get
-            {
-                return chkDoNotAffectMetatypeMaximum.Checked;
-            }
-        }
+        public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
+
         #endregion
     }
 }

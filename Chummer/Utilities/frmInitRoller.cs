@@ -54,14 +54,8 @@ namespace Chummer
         /// </summary>
         public int Dice
         {
-            get
-            {
-                return dice;
-            }
-            set
-            {
-                dice = value;
-            }
+            get => dice;
+            set => dice = value;
         }
 
         /// <summary>
@@ -69,10 +63,7 @@ namespace Chummer
         /// </summary>
         public string Title
         {
-            set
-            {
-                Text = value;
-            }
+            set => Text = value;
         }
 
         /// <summary>
@@ -80,22 +71,14 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result
-        {
-            get
-            {
-                return decimal.ToInt32(nudDiceResult.Value);
-            }
-        }
+        public int Result => decimal.ToInt32(nudDiceResult.Value);
+
         #endregion
 
         #region Methods

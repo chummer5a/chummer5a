@@ -712,10 +712,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Gear item.
-                if (objNewParent.Tag.ToString() == "Node_SelectedGear")
-                    objGear.Location = string.Empty;
-                else
-                    objGear.Location = objNewParent.Text;
+                objGear.Location = objNewParent.Tag.ToString() == "Node_SelectedGear" ? string.Empty : objNewParent.Text;
 
                 objCharacter.Gear.Move(objCharacter.Gear.IndexOf(objGear), intNewIndex);
             }
@@ -784,10 +781,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                if (objNewParent.Tag.ToString() == "Node_SelectedArmor")
-                    objArmor.Location = string.Empty;
-                else
-                    objArmor.Location = objNewParent.Text;
+                objArmor.Location = objNewParent.Tag.ToString() == "Node_SelectedArmor" ? string.Empty : objNewParent.Text;
 
                 objCharacter.Armor.Move(objCharacter.Armor.IndexOf(objArmor), intNewIndex);
             }
@@ -832,10 +826,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                if (objNewParent.Tag.ToString() == "Node_SelectedWeapons")
-                    objWeapon.Location = string.Empty;
-                else
-                    objWeapon.Location = objNewParent.Text;
+                objWeapon.Location = objNewParent.Tag.ToString() == "Node_SelectedWeapons" ? string.Empty : objNewParent.Text;
 
                 objCharacter.Weapons.Move(objCharacter.Weapons.IndexOf(objWeapon), intNewIndex);
             }
@@ -880,10 +871,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                if (objNewParent.Tag.ToString() == "Node_SelectedVehicles")
-                    objVehicle.Location = string.Empty;
-                else
-                    objVehicle.Location = objNewParent.Text;
+                objVehicle.Location = objNewParent.Tag.ToString() == "Node_SelectedVehicles" ? string.Empty : objNewParent.Text;
 
                 objCharacter.Vehicles.Move(objCharacter.Vehicles.IndexOf(objVehicle), intNewIndex);
             }

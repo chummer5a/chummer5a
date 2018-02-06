@@ -27,10 +27,8 @@ namespace Chummer
         /// <summary>
         /// The initiative controler for this form
         /// </summary>
-        public InitiativeUserControl InitUC
-        {
-            get { return ucInit; }
-        }
+        public InitiativeUserControl InitUC => ucInit;
+
         #endregion
 
         public frmInitiative()

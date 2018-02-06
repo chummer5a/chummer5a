@@ -479,23 +479,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Armor in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Name of the Armor.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -509,14 +500,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -524,14 +509,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode WirelessBonus
         {
-            get
-            {
-                return _nodWirelessBonus;
-            }
-            set
-            {
-                _nodWirelessBonus = value;
-            }
+            get => _nodWirelessBonus;
+            set => _nodWirelessBonus = value;
         }
 
         /// <summary>
@@ -539,14 +518,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-            }
+            get => _strExtra;
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -565,14 +538,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
@@ -580,14 +547,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ArmorValue
         {
-            get
-            {
-                return _strArmorValue;
-            }
-            set
-            {
-                _strArmorValue = value;
-            }
+            get => _strArmorValue;
+            set => _strArmorValue = value;
         }
 
         /// <summary>
@@ -595,17 +556,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ArmorOverrideValue
         {
-            get
-            {
-                return _strArmorOverrideValue;
-            }
-            set
-            {
-                if (value == "0")
-                    _strArmorOverrideValue = string.Empty;
-                else
-                    _strArmorOverrideValue = value;
-            }
+            get => _strArmorOverrideValue;
+            set => _strArmorOverrideValue = value == "0" ? string.Empty : value;
         }
 
         /// <summary>
@@ -613,10 +565,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int ArmorDamage
         {
-            get
-            {
-                return _intDamage;
-            }
+            get => _intDamage;
             set
             {
                 _intDamage = value;
@@ -651,14 +600,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int MaxRating
         {
-            get
-            {
-                return _intMaxRating;
-            }
-            set
-            {
-                _intMaxRating = value;
-            }
+            get => _intMaxRating;
+            set => _intMaxRating = value;
         }
 
         /// <summary>
@@ -666,14 +609,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ArmorCapacity
         {
-            get
-            {
-                return _strArmorCapacity;
-            }
-            set
-            {
-                _strArmorCapacity = value;
-            }
+            get => _strArmorCapacity;
+            set => _strArmorCapacity = value;
         }
 
         /// <summary>
@@ -711,14 +648,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -726,14 +657,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                return _strCost;
-            }
-            set
-            {
-                _strCost = value;
-            }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         public string DisplayCost(out decimal decItemCost, bool blnUseRating = true, decimal decMarkup = 0.0m)
@@ -797,14 +722,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -812,10 +731,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string WeaponID
         {
-            get
-            {
-                return _guiWeaponID.ToString("D");
-            }
+            get => _guiWeaponID.ToString("D");
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
@@ -839,13 +755,62 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Equipped
         {
-            get
-            {
-                return _blnEquipped;
-            }
+            get => _blnEquipped;
             set
             {
-                _blnEquipped = value;
+                if (_blnEquipped != value)
+                {
+                    _blnEquipped = value;
+                    if (value)
+                    {
+                        // Add the Armor's Improevments to the character.
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        // Add the Improvements from any Armor Mods in the Armor.
+                        foreach (ArmorMod objMod in ArmorMods)
+                        {
+                            if (objMod.Equipped)
+                            {
+                                ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                                // Add the Improvements from any Gear in the Armor.
+                                foreach (Gear objGear in objMod.Gear)
+                                {
+                                    if (objGear.Equipped)
+                                    {
+                                        objGear.ChangeEquippedStatus(true);
+                                    }
+                                }
+                            }
+                        }
+                        // Add the Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in Gear)
+                        {
+                            if (objGear.Equipped)
+                            {
+                                objGear.ChangeEquippedStatus(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Add the Armor's Improevments to the character.
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        // Add the Improvements from any Armor Mods in the Armor.
+                        foreach (ArmorMod objMod in ArmorMods)
+                        {
+                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                            // Add the Improvements from any Gear in the Armor.
+                            foreach (Gear objGear in objMod.Gear)
+                            {
+                                objGear.ChangeEquippedStatus(false);
+                            }
+                        }
+                        // Add the Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in Gear)
+                        {
+                            objGear.ChangeEquippedStatus(false);
+                        }
+                    }
+                }
             }
         }
 
@@ -854,14 +819,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool WirelessOn
         {
-            get
-            {
-                return _blnWirelessOn;
-            }
-            set
-            {
-                _blnWirelessOn = value;
-            }
+            get => _blnWirelessOn;
+            set => _blnWirelessOn = value;
         }
 
         /// <summary>
@@ -966,38 +925,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public TaggedObservableCollection<ArmorMod> ArmorMods
-        {
-            get
-            {
-                return _lstArmorMods;
-            }
-        }
+        public TaggedObservableCollection<ArmorMod> ArmorMods => _lstArmorMods;
 
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear
-        {
-            get
-            {
-                return _lstGear;
-            }
-        }
+        public TaggedObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Location.
         /// </summary>
         public string Location
         {
-            get
-            {
-                return _strLocation;
-            }
-            set
-            {
-                _strLocation = value;
-            }
+            get => _strLocation;
+            set => _strLocation = value;
         }
 
         /// <summary>
@@ -1005,14 +946,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -1020,22 +955,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool DiscountCost
         {
-            get
-            {
-                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
-            }
-            set
-            {
-                _blnDiscountCost = value;
-            }
+            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            set => _blnDiscountCost = value;
         }
-        public Guid SourceID
-        {
-            get
-            {
-                return _sourceID;
-            }
-        }
+        public Guid SourceID => _sourceID;
+
         #endregion
 
         #region Complex Properties
@@ -1313,14 +1237,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ArmorName
         {
-            get
-            {
-                return _strArmorName;
-            }
-            set
-            {
-                _strArmorName = value;
-            }
+            get => _strArmorName;
+            set => _strArmorName = value;
         }
 
         private XmlNode _objCachedMyXmlNode;

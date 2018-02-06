@@ -16,12 +16,6 @@ namespace Translator
             Application.Run(s_FrmMain);
         }
 
-        public static frmTranslatorMain MainForm
-        {
-            get
-            {
-                return s_FrmMain;
-            }
-        }
+        public static frmTranslatorMain MainForm => s_FrmMain;
     }
 }

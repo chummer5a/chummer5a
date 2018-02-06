@@ -484,46 +484,23 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Criter Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strSelectedPower;
-            }
-        }
+        public string SelectedPower => _strSelectedPower;
 
         /// <summary>
         /// Rating for the Critter Power that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating
-        {
-            get
-            {
-                return _intSelectedRating;
-            }
-        }
+        public int SelectedRating => _intSelectedRating;
 
         /// <summary>
         /// Power Point cost for the Critter Power (only applies to Free Spirits).
         /// </summary>
-        public decimal PowerPoints
-        {
-            get
-            {
-                return _decPowerPoints;
-            }
-        }
+        public decimal PowerPoints => _decPowerPoints;
+
         #endregion
     }
 }

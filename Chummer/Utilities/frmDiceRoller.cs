@@ -353,10 +353,7 @@ namespace Chummer
         /// </summary>
         public int Dice
         {
-            set
-            {
-                nudDice.Value = value;
-            }
+            set => nudDice.Value = value;
         }
 
         /// <summary>

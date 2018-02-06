@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,15 +31,7 @@ namespace Chummer
         /// <summary>
         /// The singleton instance of this object.
         /// </summary>
-        public static frmPlayerDashboard Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new frmPlayerDashboard();
-                return _instance;
-            }
-        }
+        public static frmPlayerDashboard Instance => _instance ?? (_instance = new frmPlayerDashboard());
 
         protected frmPlayerDashboard()
         {
@@ -62,10 +54,8 @@ namespace Chummer
             set;
         }
 
-        public DiceRollerControl DiceRoller
-        {
-            get { return tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
-        }
+        public DiceRollerControl DiceRoller => tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
+
         #endregion
 
         #region Events

@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
  using Application = System.Windows.Forms.Application;
-﻿using MessageBox = System.Windows.Forms.MessageBox;
+ using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
 
 namespace Chummer
@@ -323,14 +323,8 @@ namespace Chummer
         /// </summary>
         public bool SilentCheck
         {
-            get
-            {
-                return _blnSilentCheck;
-            }
-            set
-            {
-                _blnSilentCheck = value;
-            }
+            get => _blnSilentCheck;
+            set => _blnSilentCheck = value;
         }
 
         /// <summary>
@@ -338,10 +332,7 @@ namespace Chummer
         /// </summary>
         public bool SilentMode
         {
-            get
-            {
-                return _blnSilentMode;
-            }
+            get => _blnSilentMode;
             set
             {
                 _blnSilentMode = value;
@@ -357,10 +348,7 @@ namespace Chummer
         /// </summary>
         public string LatestVersion
         {
-            get
-            {
-                return _strLatestVersion;
-            }
+            get => _strLatestVersion;
             set
             {
                 _strLatestVersion = value;
@@ -371,13 +359,7 @@ namespace Chummer
         /// <summary>
         /// Latest release build number located on Github.
         /// </summary>
-        public string CurrentVersion
-        {
-            get
-            {
-                return _strCurrentVersion;
-            }
-        }
+        public string CurrentVersion => _strCurrentVersion;
 
         public void DoVersionTextUpdate()
         {

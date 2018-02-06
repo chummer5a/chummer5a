@@ -170,13 +170,8 @@ namespace Chummer
         /// <summary>
         /// Weapon that was created as a result of the dialogue.
         /// </summary>
-        public Weapon SelectedWeapon
-        {
-            get
-            {
-                return _objWeapon;
-            }
-        }
+        public Weapon SelectedWeapon => _objWeapon;
+
         #endregion
     }
 }

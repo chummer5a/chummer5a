@@ -98,38 +98,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
-            }
-        }
+        public string InternalId => _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
 
         /// <summary>
         /// Identifier of the grade within data files.
         /// </summary>
-        public Guid SourceId
-        {
-            get
-            {
-                return _guidSourceId;
-            }
-        }
+        public Guid SourceId => _guidSourceId;
 
         /// <summary>
         /// The English name of the Grade.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -146,90 +128,43 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Grade's Essence cost multiplier.
         /// </summary>
-        public decimal Essence
-        {
-            get
-            {
-                return _decEss;
-            }
-        }
+        public decimal Essence => _decEss;
 
         /// <summary>
         /// Device rating of the grade.
         /// </summary>
-        public int DeviceRating
-        {
-            get
-            {
-                return _intDeviceRating;
-            }
-        }
+        public int DeviceRating => _intDeviceRating;
 
         /// <summary>
         /// The Grade's cost multiplier.
         /// </summary>
-        public decimal Cost
-        {
-            get
-            {
-                return _decCost;
-            }
-        }
+        public decimal Cost => _decCost;
 
         /// <summary>
         /// The Grade's Availability modifier.
         /// </summary>
-        public int Avail
-        {
-            get
-            {
-                return _intAvail;
-            }
-        }
+        public int Avail => _intAvail;
 
         /// <summary>
         /// Sourcebook.
         /// </summary>
-        public string Source
-        {
-            get
-            {
-                return _strSource;
-            }
-        }
+        public string Source => _strSource;
 
         /// <summary>
         /// Whether or not the Grade is for Adapsin.
         /// </summary>
-        public bool Adapsin
-        {
-            get
-            {
-                return _strName.Contains("(Adapsin)");
-            }
-        }
+        public bool Adapsin => _strName.Contains("(Adapsin)");
 
         /// <summary>
         /// Whether or not the Grade is for the Burnout's Way.
         /// </summary>
-        public bool Burnout
-        {
-            get
-            {
-                return _strName.Contains("Burnout's Way");
-            }
-        }
+        public bool Burnout => _strName.Contains("Burnout's Way");
 
         /// <summary>
         /// Whether or not this is a Second-Hand Grade.
         /// </summary>
-        public bool SecondHand
-        {
-            get
-            {
-                return _strName.Contains("Used");
-            }
-        }
+        public bool SecondHand => _strName.Contains("Used");
+
         #endregion
     }
 }

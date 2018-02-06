@@ -168,14 +168,8 @@ namespace Chummer
         /// </summary>
         public int Membership
         {
-            get
-            {
-                return _intMembership;
-            }
-            set
-            {
-                _intMembership = value;
-            }
+            get => _intMembership;
+            set => _intMembership = value;
         }
 
         /// <summary>
@@ -183,14 +177,8 @@ namespace Chummer
         /// </summary>
         public int AreaOfInfluence
         {
-            get
-            {
-                return _intAreaOfInfluence;
-            }
-            set
-            {
-                _intAreaOfInfluence = value;
-            }
+            get => _intAreaOfInfluence;
+            set => _intAreaOfInfluence = value;
         }
 
         /// <summary>
@@ -198,14 +186,8 @@ namespace Chummer
         /// </summary>
         public int MagicalResources
         {
-            get
-            {
-                return _intMagicalResources;
-            }
-            set
-            {
-                _intMagicalResources = value;
-            }
+            get => _intMagicalResources;
+            set => _intMagicalResources = value;
         }
 
         /// <summary>
@@ -213,14 +195,8 @@ namespace Chummer
         /// </summary>
         public int MatrixResources
         {
-            get
-            {
-                return _intMatrixResources;
-            }
-            set
-            {
-                _intMatrixResources = value;
-            }
+            get => _intMatrixResources;
+            set => _intMatrixResources = value;
         }
 
         /// <summary>
@@ -228,14 +204,8 @@ namespace Chummer
         /// </summary>
         public string GroupName
         {
-            get
-            {
-                return _strGroupName;
-            }
-            set
-            {
-                _strGroupName = value;
-            }
+            get => _strGroupName;
+            set => _strGroupName = value;
         }
 
         /// <summary>
@@ -243,14 +213,8 @@ namespace Chummer
         /// </summary>
         public Color Colour
         {
-            get
-            {
-                return _objColour;
-            }
-            set
-            {
-                _objColour = value;
-            }
+            get => _objColour;
+            set => _objColour = value;
         }
 
         /// <summary>
@@ -258,14 +222,8 @@ namespace Chummer
         /// </summary>
         public bool Free
         {
-            get
-            {
-                return _blnFree;
-            }
-            set
-            {
-                _blnFree = value;
-            }
+            get => _blnFree;
+            set => _blnFree = value;
         }
         #endregion
 

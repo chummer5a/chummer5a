@@ -216,34 +216,19 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Vehicle's Cost.
         /// </summary>
         public Vehicle SelectedVehicle
         {
-            set
-            {
-                _objVehicle = value;
-            }
+            set => _objVehicle = value;
         }
 
         /// <summary>
@@ -251,10 +236,7 @@ namespace Chummer
         /// </summary>
         public int WeaponMountSlots
         {
-            set
-            {
-                _intWeaponMountSlots = value;
-            }
+            set => _intWeaponMountSlots = value;
         }
 
         /// <summary>
@@ -262,10 +244,7 @@ namespace Chummer
         /// </summary>
         public int WeaponCost
         {
-            set
-            {
-                _intWeaponCost = value;
-            }
+            set => _intWeaponCost = value;
         }
 
         /// <summary>
@@ -273,10 +252,7 @@ namespace Chummer
         /// </summary>
         public int TotalWeaponCost
         {
-            set
-            {
-                _intTotalWeaponCost = value;
-            }
+            set => _intTotalWeaponCost = value;
         }
 
         /// <summary>
@@ -284,71 +260,38 @@ namespace Chummer
         /// </summary>
         public int ModMultiplier
         {
-            set
-            {
-                _intModMultiplier = value;
-            }
+            set => _intModMultiplier = value;
         }
 
         /// <summary>
         /// Name of the Mod that was selected in the dialogue.
         /// </summary>
-        public string SelectedMod
-        {
-            get
-            {
-                return _strSelectedMod;
-            }
-        }
+        public string SelectedMod => _strSelectedMod;
 
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating
-        {
-            get
-            {
-                return _intSelectedRating;
-            }
-        }
+        public int SelectedRating => _intSelectedRating;
 
         /// <summary>
         /// Categories that the Gear allows to be used.
         /// </summary>
         public string AllowedCategories
         {
-            get
-            {
-                return _strAllowedCategories;
-            }
-            set
-            {
-                _strAllowedCategories = value;
-            }
+            get => _strAllowedCategories;
+            set => _strAllowedCategories = value;
         }
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
-        {
-            get
-            {
-                return _intMarkup;
-            }
-        }
-        
+        public int Markup => _intMarkup;
+
         /// <summary>
         /// Is the mod being added to a vehicle weapon mount?
         /// </summary>

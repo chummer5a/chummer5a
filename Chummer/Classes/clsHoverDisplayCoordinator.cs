@@ -60,10 +60,7 @@ namespace Chummer
         /// <summary>
         /// Has the mouse allready left the group of controls once?
         /// </summary>
-        public bool Left
-        {
-            get { return _left; }
-        }
+        public bool Left => _left;
 
         /// <summary>
         /// Add a new control to the list of controls

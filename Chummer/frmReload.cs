@@ -125,10 +125,7 @@ namespace Chummer
         /// </summary>
         public List<Gear> Ammo
         {
-            set
-            {
-                _lstAmmo = value;
-            }
+            set => _lstAmmo = value;
         }
         
         /// <summary>
@@ -136,33 +133,19 @@ namespace Chummer
         /// </summary>
         public List<string> Count
         {
-            set
-            {
-                _lstCount = value;
-            }
+            set => _lstCount = value;
         }
 
         /// <summary>
         /// Name of the ammunition that was selected.
         /// </summary>
-        public string SelectedAmmo
-        {
-            get
-            {
-                return cboAmmo.SelectedValue?.ToString() ?? string.Empty;
-            }
-        }
+        public string SelectedAmmo => cboAmmo.SelectedValue?.ToString() ?? string.Empty;
 
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount
-        {
-            get
-            {
-                return Convert.ToInt32(cboType.Text);
-            }
-        }
+        public int SelectedCount => Convert.ToInt32(cboType.Text);
+
         #endregion
 
         #region Methods

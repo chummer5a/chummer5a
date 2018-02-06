@@ -836,35 +836,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
-        public Guid SourceID
-        {
-            get
-            {
-                return _sourceID;
-            }
-        }
+        public Guid SourceID => _sourceID;
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -883,40 +865,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
         /// Is this vehicle a drone?
         /// </summary>
-        public bool IsDrone
-        {
-            get
-            {
-                return Category.Contains("Drone");
-            }
-        }
+        public bool IsDrone => Category.Contains("Drone");
 
         /// <summary>
         /// Handling.
         /// </summary>
         public int Handling
         {
-            get
-            {
-                return _intHandling;
-            }
-            set
-            {
-                _intHandling = value;
-            }
+            get => _intHandling;
+            set => _intHandling = value;
         }
 
 
@@ -925,14 +889,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Seats
         {
-            get
-            {
-                return _intSeats;
-            }
-            set
-            {
-                _intSeats = value;
-            }
+            get => _intSeats;
+            set => _intSeats = value;
         }
 
 
@@ -941,14 +899,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int OffroadHandling
         {
-            get
-            {
-                return _intOffroadHandling;
-            }
-            set
-            {
-                _intOffroadHandling = value;
-            }
+            get => _intOffroadHandling;
+            set => _intOffroadHandling = value;
         }
 
         /// <summary>
@@ -956,14 +908,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Accel
         {
-            get
-            {
-                return _intAccel;
-            }
-            set
-            {
-                _intAccel = value;
-            }
+            get => _intAccel;
+            set => _intAccel = value;
         }
 
         /// <summary>
@@ -971,14 +917,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int OffroadAccel
         {
-            get
-            {
-                return _intOffroadAccel;
-            }
-            set
-            {
-                _intOffroadAccel = value;
-            }
+            get => _intOffroadAccel;
+            set => _intOffroadAccel = value;
         }
 
         /// <summary>
@@ -986,14 +926,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Speed
         {
-            get
-            {
-                return _intSpeed;
-            }
-            set
-            {
-                _intSpeed = value;
-            }
+            get => _intSpeed;
+            set => _intSpeed = value;
         }
 
         /// <summary>
@@ -1001,14 +935,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int OffroadSpeed
         {
-            get
-            {
-                return _intOffroadSpeed;
-            }
-            set
-            {
-                _intOffroadSpeed = value;
-            }
+            get => _intOffroadSpeed;
+            set => _intOffroadSpeed = value;
         }
 
         /// <summary>
@@ -1045,10 +973,7 @@ namespace Chummer.Backend.Equipment
                 }
                 return intReturn;
             }
-            set
-            {
-                _intPilot = value;
-            }
+            set => _intPilot = value;
         }
 
         /// <summary>
@@ -1056,14 +981,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Body
         {
-            get
-            {
-                return _intBody;
-            }
-            set
-            {
-                _intBody = value;
-            }
+            get => _intBody;
+            set => _intBody = value;
         }
 
         /// <summary>
@@ -1071,14 +990,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Armor
         {
-            get
-            {
-                return _intArmor;
-            }
-            set
-            {
-                _intArmor = value;
-            }
+            get => _intArmor;
+            set => _intArmor = value;
         }
 
         /// <summary>
@@ -1086,51 +999,27 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int BaseSensor
         {
-            get
-            {
-                return _intSensor;
-            }
-            set
-            {
-                _intSensor = value;
-            }
+            get => _intSensor;
+            set => _intSensor = value;
         }
 
         /// <summary>
         /// Base Matrix Boxes.
         /// </summary>
-        public int BaseMatrixBoxes
-        {
-            get
-            {
-                return 8;
-            }
-        }
+        public int BaseMatrixBoxes => 8;
 
         /// <summary>
         /// Matrix Condition Monitor boxes.
         /// </summary>
-        public int MatrixCM
-        {
-            get
-            {
-                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
-            }
-        }
+        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
 
         /// <summary>
         /// Matrix Condition Monitor boxes filled.
         /// </summary>
         public int MatrixCMFilled
         {
-            get
-            {
-                return _intMatrixCMFilled;
-            }
-            set
-            {
-                _intMatrixCMFilled = value;
-            }
+            get => _intMatrixCMFilled;
+            set => _intMatrixCMFilled = value;
         }
 
         /// <summary>
@@ -1163,14 +1052,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int PhysicalCMFilled
         {
-            get
-            {
-                return _intPhysicalCMFilled;
-            }
-            set
-            {
-                _intPhysicalCMFilled = value;
-            }
+            get => _intPhysicalCMFilled;
+            set => _intPhysicalCMFilled = value;
         }
 
         /// <summary>
@@ -1178,14 +1061,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -1193,14 +1070,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                return _strCost;
-            }
-            set
-            {
-                _strCost = value;
-            }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -1208,14 +1079,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -1234,14 +1099,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ParentID
         {
-            get
-            {
-                return _strParentID;
-            }
-            set
-            {
-                _strParentID = value;
-            }
+            get => _strParentID;
+            set => _strParentID = value;
         }
 
         /// <summary>
@@ -1249,56 +1108,26 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Location
         {
-            get
-            {
-                return _strLocation;
-            }
-            set
-            {
-                _strLocation = value;
-            }
+            get => _strLocation;
+            set => _strLocation = value;
         }
 
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<VehicleMod> Mods
-        {
-            get
-            {
-                return _lstVehicleMods;
-            }
-        }
+        public TaggedObservableCollection<VehicleMod> Mods => _lstVehicleMods;
 
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear
-        {
-            get
-            {
-                return _lstGear;
-            }
-        }
+        public TaggedObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons
-        {
-            get
-            {
-                return _lstWeapons;
-            }
-        }
+        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
-        public TaggedObservableCollection<WeaponMount> WeaponMounts
-        {
-            get
-            {
-                return _lstWeaponMounts;
-            }
-        }
+        public TaggedObservableCollection<WeaponMount> WeaponMounts => _lstWeaponMounts;
 
         /// <summary>
         /// Calculated Availablility of the Vehicle.
@@ -1454,14 +1283,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -1469,14 +1292,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string VehicleName
         {
-            get
-            {
-                return _strVehicleName;
-            }
-            set
-            {
-                _strVehicleName = value;
-            }
+            get => _strVehicleName;
+            set => _strVehicleName = value;
         }
 
         /// <summary>
@@ -1508,46 +1325,28 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<string> Locations
-        {
-            get
-            {
-                return _lstLocations;
-            }
-        }
+        public TaggedObservableCollection<string> Locations => _lstLocations;
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
         public bool BlackMarketDiscount
         {
-            get
-            {
-                return _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
-            }
-            set
-            {
-                _blnBlackMarketDiscount = value;
-            }
+            get => _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
+            set => _blnBlackMarketDiscount = value;
         }
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
-        public bool DealerConnectionDiscount
-        {
-            get
-            {
-                return UpdateDealerConnectionDiscount();
-            }
-        }
+        public bool DealerConnectionDiscount => UpdateDealerConnectionDiscount();
 
         /// <summary>
         /// Update info on Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
         public bool UpdateDealerConnectionDiscount()
         {
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection))
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
             {
                 if (
                         (objImprovement.UniqueName == "Drones" && (
@@ -2673,14 +2472,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DeviceRating
         {
-            get
-            {
-                return _strDeviceRating;
-            }
-            set
-            {
-                _strDeviceRating = value;
-            }
+            get => _strDeviceRating;
+            set => _strDeviceRating = value;
         }
 
         /// <summary>
@@ -2688,14 +2481,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Attack
         {
-            get
-            {
-                return _strAttack;
-            }
-            set
-            {
-                _strAttack = value;
-            }
+            get => _strAttack;
+            set => _strAttack = value;
         }
 
         /// <summary>
@@ -2703,14 +2490,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Sleaze
         {
-            get
-            {
-                return _strSleaze;
-            }
-            set
-            {
-                _strSleaze = value;
-            }
+            get => _strSleaze;
+            set => _strSleaze = value;
         }
 
         /// <summary>
@@ -2718,14 +2499,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DataProcessing
         {
-            get
-            {
-                return _strDataProcessing;
-            }
-            set
-            {
-                _strDataProcessing = value;
-            }
+            get => _strDataProcessing;
+            set => _strDataProcessing = value;
         }
 
         /// <summary>
@@ -2733,14 +2508,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Firewall
         {
-            get
-            {
-                return _strFirewall;
-            }
-            set
-            {
-                _strFirewall = value;
-            }
+            get => _strFirewall;
+            set => _strFirewall = value;
         }
 
         /// <summary>
@@ -2748,14 +2517,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModAttack
         {
-            get
-            {
-                return _strModAttack;
-            }
-            set
-            {
-                _strModAttack = value;
-            }
+            get => _strModAttack;
+            set => _strModAttack = value;
         }
 
         /// <summary>
@@ -2763,14 +2526,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModSleaze
         {
-            get
-            {
-                return _strModSleaze;
-            }
-            set
-            {
-                _strModSleaze = value;
-            }
+            get => _strModSleaze;
+            set => _strModSleaze = value;
         }
 
         /// <summary>
@@ -2778,14 +2535,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModDataProcessing
         {
-            get
-            {
-                return _strModDataProcessing;
-            }
-            set
-            {
-                _strModDataProcessing = value;
-            }
+            get => _strModDataProcessing;
+            set => _strModDataProcessing = value;
         }
 
         /// <summary>
@@ -2793,14 +2544,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModFirewall
         {
-            get
-            {
-                return _strModFirewall;
-            }
-            set
-            {
-                _strModFirewall = value;
-            }
+            get => _strModFirewall;
+            set => _strModFirewall = value;
         }
 
         /// <summary>
@@ -2808,14 +2553,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AttributeArray
         {
-            get
-            {
-                return _strAttributeArray;
-            }
-            set
-            {
-                _strAttributeArray = value;
-            }
+            get => _strAttributeArray;
+            set => _strAttributeArray = value;
         }
 
         /// <summary>
@@ -2823,14 +2562,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModAttributeArray
         {
-            get
-            {
-                return _strModAttributeArray;
-            }
-            set
-            {
-                _strModAttributeArray = value;
-            }
+            get => _strModAttributeArray;
+            set => _strModAttributeArray = value;
         }
         
         /// <summary>
@@ -2838,14 +2571,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Overclocked
         {
-            get
-            {
-                return _strOverclocked;
-            }
-            set
-            {
-                _strOverclocked = value;
-            }
+            get => _strOverclocked;
+            set => _strOverclocked = value;
         }
 
         /// <summary>
@@ -2898,14 +2625,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ProgramLimit
         {
-            get
-            {
-                return _strProgramLimit;
-            }
-            set
-            {
-                _strProgramLimit = value;
-            }
+            get => _strProgramLimit;
+            set => _strProgramLimit = value;
         }
 
         /// <summary>
@@ -2913,23 +2634,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool CanSwapAttributes
         {
-            get
-            {
-                return _blnCanSwapAttributes;
-            }
-            set
-            {
-                _blnCanSwapAttributes = value;
-            }
+            get => _blnCanSwapAttributes;
+            set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
-        {
-            get
-            {
-                return Gear.Cast<IHasMatrixAttributes>().Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
-            }
-        }
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Cast<IHasMatrixAttributes>().Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+
         #endregion
 
         #region Methods

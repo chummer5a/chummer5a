@@ -104,10 +104,8 @@ namespace Chummer
         public static ReadOnlyCollection<string> LimbStrings => Array.AsReadOnly(s_LstLimbStrings);
 
         // AI Home Node
-        private IHasMatrixAttributes _objHomeNode;
 
         // Active Commlink
-        private IHasMatrixAttributes _objActiveCommlink;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated;
@@ -273,7 +271,7 @@ namespace Chummer
 			SkillsSection.Reset();
         }
 
-	    public AttributeSection AttributeSection { get; private set; }
+	    public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
 
@@ -1009,11 +1007,10 @@ namespace Chummer
             if (xmlTempNode != null)
             {
                 string strMissingBooks = string.Empty;
-                string strLoopString;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
                 {
-                    strLoopString = objXmlNode.InnerText;
+                    string strLoopString = objXmlNode.InnerText;
                     if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
                     {
                         strMissingBooks += strLoopString + ';';
@@ -1034,11 +1031,10 @@ namespace Chummer
             if (xmlTempNode != null)
             {
                 string strMissingSourceNames = string.Empty;
-                string strLoopString;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
                 {
-                    strLoopString = objXmlNode.InnerText;
+                    string strLoopString = objXmlNode.InnerText;
                     if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
                     {
                         strMissingSourceNames += strLoopString + ";\n";
@@ -1425,6 +1421,20 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_contacts");
+
+            Timekeeper.Start("load_char_sfoci");
+
+            // Stacked Foci.
+            objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
+            foreach (XmlNode objXmlStack in objXmlNodeList)
+            {
+                StackedFocus objStack = new StackedFocus(this);
+                objStack.Load(objXmlStack);
+                _lstStackedFoci.Add(objStack);
+            }
+
+            Timekeeper.Finish("load_char_sfoci");
+
             Timekeeper.Start("load_char_armor");
             // Armor.
             objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
@@ -1459,46 +1469,45 @@ namespace Chummer
                 objCyberware.Load(objXmlCyberware);
                 _lstCyberware.Add(objCyberware);
                 // Legacy shim
-                if (objCyberware.Name == "Myostatin Inhibitor")
+                if ((objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)) ||
+                    (objCyberware.PairBonus != null && Improvements.All(x => x.SourceName != objCyberware.InternalId + "Pair")))
                 {
-                    if (LastSavedVersion <= new Version("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                    XmlNode objNode = objCyberware.GetNode();
+                    if (objNode != null)
                     {
-                        XmlNode objNode = objCyberware.GetNode();
-                        if (objNode != null)
+                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, objCyberware.InternalId);
+                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, objCyberware.InternalId + "Pair");
+                        objCyberware.Bonus = objNode["bonus"];
+                        objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                        objCyberware.PairBonus = objNode["pairbonus"];
+                        if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                            ImprovementManager.ForcedValue = objCyberware.Forced;
+                        if (objCyberware.Bonus != null)
                         {
-                            objCyberware.Bonus = objNode["bonus"];
-                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                            objCyberware.PairBonus = objNode["pairbonus"];
-                            if (objCyberware.IsModularCurrentlyEquipped)
-                            {
-                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                if (objCyberware.Bonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                }
-                                if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                }
-                                if (objCyberware.PairBonus != null)
-                                {
-                                    Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
-                                    if (objMatchingCyberware != null)
-                                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
-                                    else
-                                        dicPairableCyberwares.Add(objCyberware, 1);
-                                }
-                            }
+                            ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
-                        else
+                        if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                         {
-                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                            ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
+                        if (!objCyberware.IsModularCurrentlyEquipped)
+                            objCyberware.ChangeModularEquip(false);
+                        else if (objCyberware.PairBonus != null)
+                        {
+                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                            if (objMatchingCyberware != null)
+                                dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                            else
+                                dicPairableCyberwares.Add(objCyberware, 1);
+                        }
+                    }
+                    else
+                    {
+                        _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                     }
                 }
             }
@@ -1519,7 +1528,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
-                            ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
@@ -1555,18 +1564,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_foci");
-            Timekeeper.Start("load_char_sfoci");
-
-            // Stacked Foci.
-            objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
-            foreach (XmlNode objXmlStack in objXmlNodeList)
-            {
-                StackedFocus objStack = new StackedFocus(this);
-                objStack.Load(objXmlStack);
-                _lstStackedFoci.Add(objStack);
-            }
-
-            Timekeeper.Finish("load_char_sfoci");
             Timekeeper.Start("load_char_powers");
 
             // Powers.
@@ -2142,10 +2139,7 @@ namespace Chummer
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
             // <name />
-            if (!string.IsNullOrEmpty(Name))
-                objWriter.WriteElementString("name", Name);
-            else
-                objWriter.WriteElementString("name", LanguageManager.GetString("String_UnnamedCharacter", strLanguageToPrint));
+            objWriter.WriteElementString("name", !string.IsNullOrEmpty(Name) ? Name : LanguageManager.GetString("String_UnnamedCharacter", strLanguageToPrint));
 
             PrintMugshots(objWriter);
 
@@ -2272,15 +2266,12 @@ namespace Chummer
                 string strDrainAtt = TraditionDrain;
                 XmlNode objXmlTradition = xmlTraditions.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
-                if (objXmlTradition != null)
+                string strName = objXmlTradition?["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName) && strName != "Custom")
                 {
-                    string strName = objXmlTradition["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strName) && strName != "Custom")
-                    {
-                        strTraditionName = objXmlTradition["translate"]?.InnerText ?? strName;
-                    }
+                    strTraditionName = objXmlTradition["translate"]?.InnerText ?? strName;
                 }
-                
+
                 StringBuilder objDrain = new StringBuilder(strDrainAtt);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
@@ -2622,7 +2613,7 @@ namespace Chummer
                 objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
+            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical" && objImprovement.Enabled)))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
@@ -2651,7 +2642,7 @@ namespace Chummer
                 objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
+            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental" && objImprovement.Enabled)))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
@@ -2680,7 +2671,7 @@ namespace Chummer
                 objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
+            foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social" && objImprovement.Enabled)))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
@@ -3503,7 +3494,7 @@ namespace Chummer
                     objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
                 {
                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                    if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                    if (objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                     {
                         string strName = objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ?? objLoopCyberware.DisplayName(GlobalOptions.Language);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
@@ -3521,7 +3512,7 @@ namespace Chummer
                             objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
                         {
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                            if (objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                             {
                                 string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + ' ' +
                                     (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ?? objLoopVehicleMod.DisplayName(GlobalOptions.Language));
@@ -3541,7 +3532,7 @@ namespace Chummer
                                 objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
                             {
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                                if (objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                                 {
                                     string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + ' ' +
                                         (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ?? objLoopVehicleMod.DisplayName(GlobalOptions.Language));
@@ -3962,49 +3953,28 @@ namespace Chummer
         /// <summary>
         /// Character Options object.
         /// </summary>
-        public CharacterOptions Options
-        {
-            get
-            {
-                return _objOptions;
-            }
-        }
+        public CharacterOptions Options => _objOptions;
 
         /// <summary>
         /// Name of the file the Character is saved to.
         /// </summary>
         public string FileName
         {
-            get
-            {
-                return _strFileName;
-            }
-            set
-            {
-                _strFileName = value;
-            }
+            get => _strFileName;
+            set => _strFileName = value;
         }
 
         /// <summary>
         /// Name of the file the Character is saved to.
         /// </summary>
-        public DateTime FileLastWriteTime
-        {
-            get
-            {
-                return _dateFileLastWriteTime;
-            }
-        }
+        public DateTime FileLastWriteTime => _dateFileLastWriteTime;
 
         /// <summary>
         /// Name of the settings file the Character uses.
         /// </summary>
         public string SettingsFile
         {
-            get
-            {
-                return _strSettingsFileName;
-            }
+            get => _strSettingsFileName;
             set
             {
                 if (_strSettingsFileName != value)
@@ -4020,14 +3990,8 @@ namespace Chummer
         /// </summary>
         public bool Created
         {
-            get
-            {
-                return _blnCreated;
-            }
-            set
-            {
-                _blnCreated = value;
-            }
+            get => _blnCreated;
+            set => _blnCreated = value;
         }
 
         /// <summary>
@@ -4035,10 +3999,7 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -4053,13 +4014,7 @@ namespace Chummer
 		/// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public IList<Image> Mugshots
-        {
-            get
-            {
-                return _lstMugshots;
-            }
-        }
+		public IList<Image> Mugshots => _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -4098,10 +4053,7 @@ namespace Chummer
         /// </summary>
         public int MainMugshotIndex
         {
-            get
-            {
-                return _intMainMugshotIndex;
-            }
+            get => _intMainMugshotIndex;
             set
             {
                 if (value >= _lstMugshots.Count || value < -1)
@@ -4158,14 +4110,11 @@ namespace Chummer
             if (Mugshots.Count == 0)
             {
                 XmlNode objOldMugshotNode = xmlSavedNode.SelectSingleNode("mugshot");
-                if (objOldMugshotNode != null)
+                string strMugshot = objOldMugshotNode?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMugshot))
                 {
-                    string strMugshot = objOldMugshotNode.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
-                    {
-                        _lstMugshots.Add(strMugshot.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
-                        _intMainMugshotIndex = 0;
-                    }
+                    _lstMugshots.Add(strMugshot.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    _intMainMugshotIndex = 0;
                 }
             }
         }
@@ -4228,14 +4177,8 @@ namespace Chummer
         /// </summary>
         public string GameplayOption
         {
-            get
-            {
-                return _strGameplayOption;
-            }
-            set
-            {
-                _strGameplayOption = value;
-            }
+            get => _strGameplayOption;
+            set => _strGameplayOption = value;
         }
 
         /// <summary>
@@ -4243,14 +4186,8 @@ namespace Chummer
         /// </summary>
         public int GameplayOptionQualityLimit
         {
-            get
-            {
-                return _intGameplayOptionQualityLimit;
-            }
-            set
-            {
-                _intGameplayOptionQualityLimit = value;
-            }
+            get => _intGameplayOptionQualityLimit;
+            set => _intGameplayOptionQualityLimit = value;
         }
 
         /// <summary>
@@ -4258,14 +4195,8 @@ namespace Chummer
         /// </summary>
         public int MaxKarma
         {
-            get
-            {
-                return _intMaxKarma;
-            }
-            set
-            {
-                _intMaxKarma = value;
-            }
+            get => _intMaxKarma;
+            set => _intMaxKarma = value;
         }
 
         /// <summary>
@@ -4273,14 +4204,8 @@ namespace Chummer
         /// </summary>
         public decimal MaxNuyen
         {
-            get
-            {
-                return _decMaxNuyen;
-            }
-            set
-            {
-                _decMaxNuyen = value;
-            }
+            get => _decMaxNuyen;
+            set => _decMaxNuyen = value;
         }
 
         /// <summary>
@@ -4288,14 +4213,8 @@ namespace Chummer
         /// </summary>
         public int ContactMultiplier
         {
-            get
-            {
-                return _intContactMultiplier;
-            }
-            set
-            {
-                _intContactMultiplier = value;
-            }
+            get => _intContactMultiplier;
+            set => _intContactMultiplier = value;
         }
 
         /// <summary>
@@ -4303,14 +4222,8 @@ namespace Chummer
         /// </summary>
         public string MetatypePriority
         {
-            get
-            {
-                return _strPriorityMetatype;
-            }
-            set
-            {
-                _strPriorityMetatype = value;
-            }
+            get => _strPriorityMetatype;
+            set => _strPriorityMetatype = value;
         }
 
         /// <summary>
@@ -4318,14 +4231,8 @@ namespace Chummer
         /// </summary>
         public string AttributesPriority
         {
-            get
-            {
-                return _strPriorityAttributes;
-            }
-            set
-            {
-                _strPriorityAttributes = value;
-            }
+            get => _strPriorityAttributes;
+            set => _strPriorityAttributes = value;
         }
 
         /// <summary>
@@ -4333,14 +4240,8 @@ namespace Chummer
         /// </summary>
         public string SpecialPriority
         {
-            get
-            {
-                return _strPrioritySpecial;
-            }
-            set
-            {
-                _strPrioritySpecial = value;
-            }
+            get => _strPrioritySpecial;
+            set => _strPrioritySpecial = value;
         }
 
         /// <summary>
@@ -4348,14 +4249,8 @@ namespace Chummer
         /// </summary>
         public string SkillsPriority
         {
-            get
-            {
-                return _strPrioritySkills;
-            }
-            set
-            {
-                _strPrioritySkills = value;
-            }
+            get => _strPrioritySkills;
+            set => _strPrioritySkills = value;
         }
 
         /// <summary>
@@ -4363,14 +4258,8 @@ namespace Chummer
         /// </summary>
         public string ResourcesPriority
         {
-            get
-            {
-                return _strPriorityResources;
-            }
-            set
-            {
-                _strPriorityResources = value;
-            }
+            get => _strPriorityResources;
+            set => _strPriorityResources = value;
         }
 
         /// <summary>
@@ -4378,40 +4267,22 @@ namespace Chummer
         /// </summary>
         public string TalentPriority
         {
-            get
-            {
-                return _strPriorityTalent;
-            }
-            set
-            {
-                _strPriorityTalent = value;
-            }
+            get => _strPriorityTalent;
+            set => _strPriorityTalent = value;
         }
 
         /// <summary>
         /// Character's list of priority bonus skills.
         /// </summary>
-        public IList<string> PriorityBonusSkillList
-        {
-            get
-            {
-                return _lstPrioritySkills;
-            }
-        }
+        public IList<string> PriorityBonusSkillList => _lstPrioritySkills;
 
         /// <summary>
         /// Character's sex.
         /// </summary>
         public string Sex
         {
-            get
-            {
-                return _strSex;
-            }
-            set
-            {
-                _strSex = value;
-            }
+            get => _strSex;
+            set => _strSex = value;
         }
 
         /// <summary>
@@ -4419,14 +4290,8 @@ namespace Chummer
         /// </summary>
         public string Age
         {
-            get
-            {
-                return _strAge;
-            }
-            set
-            {
-                _strAge = value;
-            }
+            get => _strAge;
+            set => _strAge = value;
         }
 
         /// <summary>
@@ -4434,14 +4299,8 @@ namespace Chummer
         /// </summary>
         public string Eyes
         {
-            get
-            {
-                return _strEyes;
-            }
-            set
-            {
-                _strEyes = value;
-            }
+            get => _strEyes;
+            set => _strEyes = value;
         }
 
         /// <summary>
@@ -4449,14 +4308,8 @@ namespace Chummer
         /// </summary>
         public string Height
         {
-            get
-            {
-                return _strHeight;
-            }
-            set
-            {
-                _strHeight = value;
-            }
+            get => _strHeight;
+            set => _strHeight = value;
         }
 
         /// <summary>
@@ -4464,14 +4317,8 @@ namespace Chummer
         /// </summary>
         public string Weight
         {
-            get
-            {
-                return _strWeight;
-            }
-            set
-            {
-                _strWeight = value;
-            }
+            get => _strWeight;
+            set => _strWeight = value;
         }
 
         /// <summary>
@@ -4479,14 +4326,8 @@ namespace Chummer
         /// </summary>
         public string Skin
         {
-            get
-            {
-                return _strSkin;
-            }
-            set
-            {
-                _strSkin = value;
-            }
+            get => _strSkin;
+            set => _strSkin = value;
         }
 
         /// <summary>
@@ -4494,14 +4335,8 @@ namespace Chummer
         /// </summary>
         public string Hair
         {
-            get
-            {
-                return _strHair;
-            }
-            set
-            {
-                _strHair = value;
-            }
+            get => _strHair;
+            set => _strHair = value;
         }
 
         /// <summary>
@@ -4509,14 +4344,8 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            get
-            {
-                return _strDescription;
-            }
-            set
-            {
-                _strDescription = value;
-            }
+            get => _strDescription;
+            set => _strDescription = value;
         }
 
         /// <summary>
@@ -4524,14 +4353,8 @@ namespace Chummer
         /// </summary>
         public string Background
         {
-            get
-            {
-                return _strBackground;
-            }
-            set
-            {
-                _strBackground = value;
-            }
+            get => _strBackground;
+            set => _strBackground = value;
         }
 
         /// <summary>
@@ -4539,14 +4362,8 @@ namespace Chummer
         /// </summary>
         public string Concept
         {
-            get
-            {
-                return _strConcept;
-            }
-            set
-            {
-                _strConcept = value;
-            }
+            get => _strConcept;
+            set => _strConcept = value;
         }
 
         /// <summary>
@@ -4554,14 +4371,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -4569,14 +4380,8 @@ namespace Chummer
         /// </summary>
         public string GameNotes
         {
-            get
-            {
-                return _strGameNotes;
-            }
-            set
-            {
-                _strGameNotes = value;
-            }
+            get => _strGameNotes;
+            set => _strGameNotes = value;
         }
 
         /// <summary>
@@ -4584,14 +4389,8 @@ namespace Chummer
         /// </summary>
         public string PrimaryArm
         {
-            get
-            {
-                return _strPrimaryArm;
-            }
-            set
-            {
-                _strPrimaryArm = value;
-            }
+            get => _strPrimaryArm;
+            set => _strPrimaryArm = value;
         }
 
         /// <summary>
@@ -4599,14 +4398,8 @@ namespace Chummer
         /// </summary>
         public string PlayerName
         {
-            get
-            {
-                return _strPlayerName;
-            }
-            set
-            {
-                _strPlayerName = value;
-            }
+            get => _strPlayerName;
+            set => _strPlayerName = value;
         }
 
         /// <summary>
@@ -4614,10 +4407,7 @@ namespace Chummer
         /// </summary>
         public string Alias
         {
-            get
-            {
-                return _strAlias;
-            }
+            get => _strAlias;
             set
             {
                 if (_strAlias != value)
@@ -4648,14 +4438,8 @@ namespace Chummer
         /// </summary>
         public int StreetCred
         {
-            get
-            {
-                return _intStreetCred;
-            }
-            set
-            {
-                _intStreetCred = value;
-            }
+            get => _intStreetCred;
+            set => _intStreetCred = value;
         }
 
         /// <summary>
@@ -4663,14 +4447,8 @@ namespace Chummer
         /// </summary>
         public int BurntStreetCred
         {
-            get
-            {
-                return _intBurntStreetCred;
-            }
-            set
-            {
-                _intBurntStreetCred = value;
-            }
+            get => _intBurntStreetCred;
+            set => _intBurntStreetCred = value;
         }
 
         /// <summary>
@@ -4678,14 +4456,8 @@ namespace Chummer
         /// </summary>
         public int Notoriety
         {
-            get
-            {
-                return _intNotoriety;
-            }
-            set
-            {
-                _intNotoriety = value;
-            }
+            get => _intNotoriety;
+            set => _intNotoriety = value;
         }
 
         /// <summary>
@@ -4693,14 +4465,8 @@ namespace Chummer
         /// </summary>
         public int PublicAwareness
         {
-            get
-            {
-                return _intPublicAwareness;
-            }
-            set
-            {
-                _intPublicAwareness = value;
-            }
+            get => _intPublicAwareness;
+            set => _intPublicAwareness = value;
         }
 
         /// <summary>
@@ -4708,14 +4474,8 @@ namespace Chummer
         /// </summary>
         public int PhysicalCMFilled
         {
-            get
-            {
-                return _intPhysicalCMFilled;
-            }
-            set
-            {
-                _intPhysicalCMFilled = value;
-            }
+            get => _intPhysicalCMFilled;
+            set => _intPhysicalCMFilled = value;
         }
 
         /// <summary>
@@ -4723,14 +4483,8 @@ namespace Chummer
         /// </summary>
         public int StunCMFilled
         {
-            get
-            {
-                return _intStunCMFilled;
-            }
-            set
-            {
-                _intStunCMFilled = value;
-            }
+            get => _intStunCMFilled;
+            set => _intStunCMFilled = value;
         }
 
         /// <summary>
@@ -4738,14 +4492,8 @@ namespace Chummer
         /// </summary>
         public bool IgnoreRules
         {
-            get
-            {
-                return _blnIgnoreRules;
-            }
-            set
-            {
-                _blnIgnoreRules = value;
-            }
+            get => _blnIgnoreRules;
+            set => _blnIgnoreRules = value;
         }
 
         /// <summary>
@@ -4753,14 +4501,8 @@ namespace Chummer
         /// </summary>
         public int ContactPoints
         {
-            get
-            {
-                return _intContactPoints;
-            }
-            set
-            {
-                _intContactPoints = value;
-            }
+            get => _intContactPoints;
+            set => _intContactPoints = value;
         }
 
 
@@ -4769,14 +4511,8 @@ namespace Chummer
         /// </summary>
         public int ContactPointsUsed
         {
-            get
-            {
-                return _intContactPointsUsed;
-            }
-            set
-            {
-                _intContactPointsUsed = value;
-            }
+            get => _intContactPointsUsed;
+            set => _intContactPointsUsed = value;
         }
 
         /// <summary>
@@ -4784,14 +4520,8 @@ namespace Chummer
         /// </summary>
         public int CFPLimit
         {
-            get
-            {
-                return _intCFPLimit;
-            }
-            set
-            {
-                _intCFPLimit = value;
-            }
+            get => _intCFPLimit;
+            set => _intCFPLimit = value;
         }
 
         /// <summary>
@@ -4799,14 +4529,8 @@ namespace Chummer
         /// </summary>
         public int AINormalProgramLimit
         {
-            get
-            {
-                return _intAINormalProgramLimit;
-            }
-            set
-            {
-                _intAINormalProgramLimit = value;
-            }
+            get => _intAINormalProgramLimit;
+            set => _intAINormalProgramLimit = value;
         }
 
         /// <summary>
@@ -4814,14 +4538,8 @@ namespace Chummer
         /// </summary>
         public int AIAdvancedProgramLimit
         {
-            get
-            {
-                return _intAIAdvancedProgramLimit;
-            }
-            set
-            {
-                _intAIAdvancedProgramLimit = value;
-            }
+            get => _intAIAdvancedProgramLimit;
+            set => _intAIAdvancedProgramLimit = value;
         }
 
         /// <summary>
@@ -4829,14 +4547,8 @@ namespace Chummer
         /// </summary>
         public int SpellLimit
         {
-            get
-            {
-                return _intSpellLimit;
-            }
-            set
-            {
-                _intSpellLimit = value;
-            }
+            get => _intSpellLimit;
+            set => _intSpellLimit = value;
         }
 
         /// <summary>
@@ -4844,10 +4556,7 @@ namespace Chummer
         /// </summary>
         public int Karma
         {
-            get
-            {
-                return _intKarma;
-            }
+            get => _intKarma;
             set
             {
                 if (OnPropertyChanged(ref _intKarma, value))
@@ -4860,14 +4569,8 @@ namespace Chummer
         /// </summary>
         public int Special
         {
-            get
-            {
-                return _intSpecial;
-            }
-            set
-            {
-                _intSpecial = value;
-            }
+            get => _intSpecial;
+            set => _intSpecial = value;
         }
 
         /// <summary>
@@ -4875,14 +4578,8 @@ namespace Chummer
         /// </summary>
         public int TotalSpecial
         {
-            get
-            {
-                return _intTotalSpecial;
-            }
-            set
-            {
-                _intTotalSpecial = value;
-            }
+            get => _intTotalSpecial;
+            set => _intTotalSpecial = value;
         }
 
         /// <summary>
@@ -4890,14 +4587,8 @@ namespace Chummer
         /// </summary>
         public int Attributes
         {
-            get
-            {
-                return _intAttributes;
-            }
-            set
-            {
-                _intAttributes = value;
-            }
+            get => _intAttributes;
+            set => _intAttributes = value;
         }
 
         /// <summary>
@@ -4905,14 +4596,8 @@ namespace Chummer
         /// </summary>
         public int TotalAttributes
         {
-            get
-            {
-                return _intTotalAttributes;
-            }
-            set
-            {
-                _intTotalAttributes = value;
-            }
+            get => _intTotalAttributes;
+            set => _intTotalAttributes = value;
         }
 
         /// <summary>
@@ -4960,14 +4645,8 @@ namespace Chummer
         /// </summary>
         public bool IsCritter
         {
-            get
-            {
-                return _blnIsCritter;
-            }
-            set
-            {
-                _blnIsCritter = value;
-            }
+            get => _blnIsCritter;
+            set => _blnIsCritter = value;
         }
 
         /// <summary>
@@ -4975,14 +4654,8 @@ namespace Chummer
         /// </summary>
         public int MetageneticLimit
         {
-            get
-            {
-                return _intMetageneticLimit;
-            }
-            set
-            {
-                _intMetageneticLimit = value;
-            }
+            get => _intMetageneticLimit;
+            set => _intMetageneticLimit = value;
         }
 
         /// <summary>
@@ -4990,14 +4663,8 @@ namespace Chummer
         /// </summary>
         public bool Possessed
         {
-            get
-            {
-                return _blnPossessed;
-            }
-            set
-            {
-                _blnPossessed = value;
-            }
+            get => _blnPossessed;
+            set => _blnPossessed = value;
         }
 
         /// <summary>
@@ -5005,14 +4672,8 @@ namespace Chummer
         /// </summary>
         public int MaximumAvailability
         {
-            get
-            {
-                return _intMaxAvail;
-            }
-            set
-            {
-                _intMaxAvail = value;
-            }
+            get => _intMaxAvail;
+            set => _intMaxAvail = value;
         }
 
         public int SpellKarmaCost
@@ -5114,10 +4775,7 @@ namespace Chummer
 
         public bool Ambidextrous
         {
-            get
-            {
-                return _blnAmbidextrous;
-            }
+            get => _blnAmbidextrous;
             set
             {
                 if (_blnAmbidextrous != value)
@@ -5144,123 +4802,57 @@ namespace Chummer
         /// <summary>
         /// Body (BOD) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib BOD
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("BOD");
-			}
-        }
+        public CharacterAttrib BOD => AttributeSection.GetAttributeByName("BOD");
 
         /// <summary>
         /// Agility (AGI) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib AGI
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("AGI");
-			}
-        }
+        public CharacterAttrib AGI => AttributeSection.GetAttributeByName("AGI");
 
         /// <summary>
         /// Reaction (REA) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib REA
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("REA");
-			}
-        }
+        public CharacterAttrib REA => AttributeSection.GetAttributeByName("REA");
 
         /// <summary>
         /// Strength (STR) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib STR
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("STR");
-			}
-        }
+        public CharacterAttrib STR => AttributeSection.GetAttributeByName("STR");
 
         /// <summary>
         /// Charisma (CHA) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib CHA
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("CHA");
-			}
-        }
+        public CharacterAttrib CHA => AttributeSection.GetAttributeByName("CHA");
 
         /// <summary>
         /// Intuition (INT) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib INT
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("INT");
-			}
-        }
+        public CharacterAttrib INT => AttributeSection.GetAttributeByName("INT");
 
         /// <summary>
         /// Logic (LOG) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib LOG
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("LOG");
-			}
-        }
+        public CharacterAttrib LOG => AttributeSection.GetAttributeByName("LOG");
 
         /// <summary>
         /// Willpower (WIL) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib WIL
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("WIL");
-			}
-        }
+        public CharacterAttrib WIL => AttributeSection.GetAttributeByName("WIL");
 
         /// <summary>
         /// Initiative (INI) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib INI
-        {
-            get
-			{
-				return AttributeSection.GetAttributeByName("INT");
-			}
-        }
+        public CharacterAttrib INI => AttributeSection.GetAttributeByName("INT");
 
         /// <summary>
         /// Edge (EDG) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib EDG
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("EDG");
-			}
-        }
+        public CharacterAttrib EDG => AttributeSection.GetAttributeByName("EDG");
 
         /// <summary>
         /// Magic (MAG) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib MAG
-        {
-            get
-            {
-				return AttributeSection.GetAttributeByName("MAG");
-			}
-        }
+        public CharacterAttrib MAG => AttributeSection.GetAttributeByName("MAG");
 
         /// <summary>
         /// Magic (MAG) CharacterAttribute for Adept powers of Mystic Adepts when the appropriate house rule is enabled.
@@ -5279,45 +4871,24 @@ namespace Chummer
         /// <summary>
         /// Resonance (RES) CharacterAttribute.
         /// </summary>
-        public CharacterAttrib RES
-        {
-	        get
-	        {
-				return AttributeSection.GetAttributeByName("RES");
-			}
-		}
-        
+        public CharacterAttrib RES => AttributeSection.GetAttributeByName("RES");
+
         /// <summary>
         /// Depth (DEP) Attribute.
         /// </summary>
-        public CharacterAttrib DEP
-		{
-			get
-			{
-				return AttributeSection.GetAttributeByName("DEP");
-			}
-		}
+        public CharacterAttrib DEP => AttributeSection.GetAttributeByName("DEP");
 
         /// <summary>
         /// Essence (ESS) Attribute.
         /// </summary>
-        public CharacterAttrib ESS
-        {
-			get
-			{
-				return AttributeSection.GetAttributeByName("ESS");
-			}
-		}
+        public CharacterAttrib ESS => AttributeSection.GetAttributeByName("ESS");
 
         /// <summary>
         /// Is the MAG CharacterAttribute enabled?
         /// </summary>
         public bool MAGEnabled
         {
-            get
-            {
-                return _blnMAGEnabled;
-            }
+            get => _blnMAGEnabled;
             set
             {
                 bool blnOldValue = _blnMAGEnabled;
@@ -5332,38 +4903,20 @@ namespace Chummer
         /// <summary>
         /// Maximum force of spirits summonable/bindable by the character
         /// </summary>
-        public int MaxSpiritForce
-        {
-            get
-            {
-                return 2 * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
-            }
-        }
+        public int MaxSpiritForce => 2 * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
 
         /// <summary>
         /// Maximum level of sprites compilable/registerable by the character
         /// </summary>
-        public int MaxSpriteLevel
-        {
-            get
-            {
-                return 2 * RES.TotalValue;
-            }
-        }
+        public int MaxSpriteLevel => 2 * RES.TotalValue;
 
         /// <summary>
         /// Amount of Power Points for Mystic Adepts.
         /// </summary>
         public int MysticAdeptPowerPoints
         {
-            get
-            {
-                return _intMAGAdept;
-            }
-            set
-            {
-                _intMAGAdept = value;
-            }
+            get => _intMAGAdept;
+            set => _intMAGAdept = value;
         }
 
         /// <summary>
@@ -5371,14 +4924,8 @@ namespace Chummer
         /// </summary>
         public string MagicTradition
         {
-            get
-            {
-                return _strMagicTradition;
-            }
-            set
-            {
-                _strMagicTradition = value;
-            }
+            get => _strMagicTradition;
+            set => _strMagicTradition = value;
         }
 
         /// <summary>
@@ -5394,10 +4941,7 @@ namespace Chummer
                 }
                 return _strTraditionDrain;
             }
-            set
-            {
-                _strTraditionDrain = value;
-            }
+            set => _strTraditionDrain = value;
         }
 
         /// <summary>
@@ -5405,14 +4949,8 @@ namespace Chummer
         /// </summary>
         public string TraditionName
         {
-            get
-            {
-                return _strTraditionName;
-            }
-            set
-            {
-                _strTraditionName = value;
-            }
+            get => _strTraditionName;
+            set => _strTraditionName = value;
         }
 
         /// <summary>
@@ -5420,14 +4958,8 @@ namespace Chummer
         /// </summary>
         public string SpiritCombat
         {
-            get
-            {
-                return _strSpiritCombat;
-            }
-            set
-            {
-                _strSpiritCombat = value;
-            }
+            get => _strSpiritCombat;
+            set => _strSpiritCombat = value;
         }
 
         /// <summary>
@@ -5435,14 +4967,8 @@ namespace Chummer
         /// </summary>
         public string SpiritDetection
         {
-            get
-            {
-                return _strSpiritDetection;
-            }
-            set
-            {
-                _strSpiritDetection = value;
-            }
+            get => _strSpiritDetection;
+            set => _strSpiritDetection = value;
         }
 
         /// <summary>
@@ -5450,14 +4976,8 @@ namespace Chummer
         /// </summary>
         public string SpiritHealth
         {
-            get
-            {
-                return _strSpiritHealth;
-            }
-            set
-            {
-                _strSpiritHealth = value;
-            }
+            get => _strSpiritHealth;
+            set => _strSpiritHealth = value;
         }
 
         /// <summary>
@@ -5465,14 +4985,8 @@ namespace Chummer
         /// </summary>
         public string SpiritIllusion
         {
-            get
-            {
-                return _strSpiritIllusion;
-            }
-            set
-            {
-                _strSpiritIllusion = value;
-            }
+            get => _strSpiritIllusion;
+            set => _strSpiritIllusion = value;
         }
 
         /// <summary>
@@ -5480,14 +4994,8 @@ namespace Chummer
         /// </summary>
         public string SpiritManipulation
         {
-            get
-            {
-                return _strSpiritManipulation;
-            }
-            set
-            {
-                _strSpiritManipulation = value;
-            }
+            get => _strSpiritManipulation;
+            set => _strSpiritManipulation = value;
         }
 
         /// <summary>
@@ -5495,14 +5003,8 @@ namespace Chummer
         /// </summary>
         public string TechnomancerStream
         {
-            get
-            {
-                return _strTechnomancerStream;
-            }
-            set
-            {
-                _strTechnomancerStream = value;
-            }
+            get => _strTechnomancerStream;
+            set => _strTechnomancerStream = value;
         }
 
         /// <summary>
@@ -5510,14 +5012,8 @@ namespace Chummer
         /// </summary>
         public string TechnomancerFading
         {
-            get
-            {
-                return _strTechnomancerFading;
-            }
-            set
-            {
-                _strTechnomancerFading = value;
-            }
+            get => _strTechnomancerFading;
+            set => _strTechnomancerFading = value;
         }
 
         /// <summary>
@@ -5525,14 +5021,8 @@ namespace Chummer
         /// </summary>
         public int InitiateGrade
         {
-            get
-            {
-                return _intInitiateGrade;
-            }
-            set
-            {
-                _intInitiateGrade = value;
-            }
+            get => _intInitiateGrade;
+            set => _intInitiateGrade = value;
         }
 
         /// <summary>
@@ -5540,35 +5030,26 @@ namespace Chummer
         /// </summary>
         public bool RESEnabled
         {
-            get
-            {
-                return _blnRESEnabled;
-            }
+            get => _blnRESEnabled;
             set
             {
                 bool blnOldValue = _blnRESEnabled;
                 _blnRESEnabled = value;
-                if (_blnRESEnabled)
-                    TechnomancerStream = "Default";
-                else
-                    TechnomancerStream = string.Empty;
+                TechnomancerStream = _blnRESEnabled ? "Default" : string.Empty;
                 ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)
                     RESEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
-                }
+        }
 
         /// <summary>
         /// Is the DEP CharacterAttribute enabled?
         /// </summary>
         public bool DEPEnabled
         {
-            get
-                {
-                return _blnDEPEnabled;
-                }
+            get => _blnDEPEnabled;
             set
             {
                 bool blnOldValue = _blnDEPEnabled;
@@ -5585,14 +5066,8 @@ namespace Chummer
         /// </summary>
         public int SubmersionGrade
         {
-            get
-            {
-                return _intSubmersionGrade;
-            }
-            set
-            {
-                _intSubmersionGrade = value;
-            }
+            get => _intSubmersionGrade;
+            set => _intSubmersionGrade = value;
         }
 
         /// <summary>
@@ -5600,14 +5075,8 @@ namespace Chummer
         /// </summary>
         public bool GroupMember
         {
-            get
-            {
-                return _blnGroupMember;
-            }
-            set
-            {
-                _blnGroupMember = value;
-            }
+            get => _blnGroupMember;
+            set => _blnGroupMember = value;
         }
 
         /// <summary>
@@ -5615,14 +5084,8 @@ namespace Chummer
         /// </summary>
         public string GroupName
         {
-            get
-            {
-                return _strGroupName;
-            }
-            set
-            {
-                _strGroupName = value;
-            }
+            get => _strGroupName;
+            set => _strGroupName = value;
         }
 
         /// <summary>
@@ -5630,26 +5093,14 @@ namespace Chummer
         /// </summary>
         public string GroupNotes
         {
-            get
-            {
-                return _strGroupNotes;
-            }
-            set
-            {
-                _strGroupNotes = value;
-            }
+            get => _strGroupNotes;
+            set => _strGroupNotes = value;
         }
 
         /// <summary>
         /// Essence the character had when the first gained access to MAG/RES.
         /// </summary>
-        public decimal EssenceAtSpecialStart
-        {
-            get
-            {
-                return _decEssenceAtSpecialStart;
-            }
-        }
+        public decimal EssenceAtSpecialStart => _decEssenceAtSpecialStart;
 
         private decimal _decCachedEssence = decimal.MinValue;
         public void ResetCachedEssence()
@@ -5741,52 +5192,26 @@ namespace Chummer
         /// <summary>
         /// Character's maximum Essence.
         /// </summary>
-        public decimal EssenceMaximum
-        {
-            get
-            {
-                return Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
-            }
-        }
-        
+        public decimal EssenceMaximum => Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Character's total Essence Loss penalty for RES or DEP.
         /// </summary>
-        public int EssencePenalty
-        {
-            get
-            {
-                // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
-                return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
-            }
-        }
-        
+        public int EssencePenalty => decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
+
         /// <summary>
         /// Character's total Essence Loss penalty for MAG.
         /// </summary>
-        public int EssencePenaltyMAG
-        {
-            get
-            {
-                // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
-                return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
-            }
-        }
+        public int EssencePenaltyMAG => decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
 
-#region Initiative
+        #region Initiative
 #region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
-        public string Initiative
-        {
-            get
-            {
-                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-                    .Replace("{0}", InitiativeValue.ToString())
-                    .Replace("{1}", InitiativeDice.ToString());
-            }
-        }
+        public string Initiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
+            .Replace("{0}", InitiativeValue.ToString())
+            .Replace("{1}", InitiativeDice.ToString());
 
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
@@ -5824,15 +5249,9 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative.
         /// </summary>
-        public string AstralInitiative
-        {
-            get
-            {
-                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-                    .Replace("{0}", AstralInitiativeValue.ToString())
-                    .Replace("{1}", AstralInitiativeDice.ToString());
-            }
-        }
+        public string AstralInitiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
+            .Replace("{0}", AstralInitiativeValue.ToString())
+            .Replace("{1}", AstralInitiativeDice.ToString());
 
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -5844,40 +5263,22 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative Value.
         /// </summary>
-        public int AstralInitiativeValue
-        {
-            get
-            {
-                return (INT.TotalValue * 2) + WoundModifiers;
-            }
-        }
+        public int AstralInitiativeValue => (INT.TotalValue * 2) + WoundModifiers;
 
         /// <summary>
         /// Astral Initiative Dice.
         /// </summary>
-        public int AstralInitiativeDice
-        {
-            get
-            {
-                //TODO: Global option assignation
-                return 3;
-            }
-        }
-#endregion
+        public int AstralInitiativeDice => 3;
+
+        #endregion
 #region Matrix
 #region AR
         /// <summary>
         /// Formatted AR Matrix Initiative.
         /// </summary>
-        public string MatrixInitiative
-        {
-            get
-            {
-                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-                        .Replace("{0}", MatrixInitiativeValue.ToString())
-                        .Replace("{1}", MatrixInitiativeDice.ToString());
-            }
-        }
+        public string MatrixInitiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
+            .Replace("{0}", MatrixInitiativeValue.ToString())
+            .Replace("{1}", MatrixInitiativeDice.ToString());
 
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -6062,103 +5463,50 @@ namespace Chummer
         /// <summary>
         /// Character's total Spell Resistance from qualities and metatype properties.
         /// </summary>
-        public int SpellResistance
-        {
-            get
-            {
-                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance);
-            }
-        }
-#endregion
+        public int SpellResistance => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance);
+
+        #endregion
 
 #region Special CharacterAttribute Tests
         /// <summary>
         /// Composure (WIL + CHA).
         /// </summary>
-        public int Composure
-        {
-            get
-            {
-                return WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
-            }
-        }
+        public int Composure => WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
 
         /// <summary>
         /// Judge Intentions (INT + CHA).
         /// </summary>
-        public int JudgeIntentions
-        {
-            get
-            {
-                return INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
-            }
-        }
+        public int JudgeIntentions => INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
 
         /// <summary>
         /// Judge Intentions Resist (CHA + WIL).
         /// </summary>
-        public int JudgeIntentionsResist
-        {
-            get
-            {
-                return CHA.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
-            }
-        }
+        public int JudgeIntentionsResist => CHA.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
 
         /// <summary>
         /// Lifting and Carrying (STR + BOD).
         /// </summary>
-        public int LiftAndCarry
-        {
-            get
-            {
-                return STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
-            }
-        }
+        public int LiftAndCarry => STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
 
         /// <summary>
         /// Memory (LOG + WIL).
         /// </summary>
-        public int Memory
-        {
-            get
-            {
-                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
-            }
-        }
+        public int Memory => LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
 
         /// <summary>
         /// Resist test to Fatigue damage (BOD + WIL).
         /// </summary>
-        public int FatigueResist
-        {
-            get
-            {
-                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist);
-            }
-        }
+        public int FatigueResist => BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist);
 
         /// <summary>
         /// Resist test to Radiation damage (BOD + WIL).
         /// </summary>
-        public int RadiationResist
-        {
-            get
-            {
-                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist);
-            }
-        }
+        public int RadiationResist => BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist);
 
         /// <summary>
         /// Resist test to Sonic Attacks damage (WIL).
         /// </summary>
-        public int SonicResist
-        {
-            get
-            {
-                return WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist);
-            }
-        }
+        public int SonicResist => WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist);
 
         /// <summary>
         /// Resist test to Contact-vector Toxins (BOD + WIL).
@@ -6245,46 +5593,22 @@ namespace Chummer
         /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
         /// </summary>
-        public int PhysiologicalAddictionResistFirstTime
-        {
-            get
-            {
-                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime);
-            }
-        }
+        public int PhysiologicalAddictionResistFirstTime => BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime);
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
         /// </summary>
-        public int PsychologicalAddictionResistFirstTime
-        {
-            get
-            {
-                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime);
-            }
-        }
+        public int PsychologicalAddictionResistFirstTime => LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime);
 
         /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
         /// </summary>
-        public int PhysiologicalAddictionResistAlreadyAddicted
-        {
-            get
-            {
-                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted);
-            }
-        }
+        public int PhysiologicalAddictionResistAlreadyAddicted => BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted);
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
         /// </summary>
-        public int PsychologicalAddictionResistAlreadyAddicted
-        {
-            get
-            {
-                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted);
-            }
-        }
+        public int PsychologicalAddictionResistAlreadyAddicted => LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted);
 
         /// <summary>
         /// Dicepool for natural recovery from Stun CM box damage (BOD + WIL).
@@ -6336,13 +5660,7 @@ namespace Chummer
         /// <summary>
         /// Character's total amount of Street Cred (earned + GM awarded).
         /// </summary>
-        public int TotalStreetCred
-        {
-            get
-            {
-                return Math.Max(CalculatedStreetCred + StreetCred + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred), 0);
-            }
-        }
+        public int TotalStreetCred => Math.Max(CalculatedStreetCred + StreetCred + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred), 0);
 
         /// <summary>
         /// Street Cred Tooltip.
@@ -6376,13 +5694,7 @@ namespace Chummer
         /// <summary>
         /// Character's total amount of Notoriety (earned + GM awarded - burnt Street Cred).
         /// </summary>
-        public int TotalNotoriety
-        {
-            get
-            {
-                return CalculatedNotoriety + Notoriety - (BurntStreetCred / 2);
-            }
-        }
+        public int TotalNotoriety => CalculatedNotoriety + Notoriety - (BurntStreetCred / 2);
 
         /// <summary>
         /// Tooltip to use for Notoriety total.
@@ -6468,123 +5780,57 @@ namespace Chummer
         /// <summary>
         /// Improvements.
         /// </summary>
-        public ObservableCollection<Improvement> Improvements
-        {
-            get
-            {
-                return _lstImprovements;
-            }
-        }
+        public ObservableCollection<Improvement> Improvements => _lstImprovements;
 
         /// <summary>
         /// Gear.
         /// </summary>
-        public IList<MentorSpirit> MentorSpirits
-        {
-            get
-            {
-                return _lstMentorSpirits;
-            }
-        }
+        public IList<MentorSpirit> MentorSpirits => _lstMentorSpirits;
 
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
-        public ObservableCollection<Contact> Contacts
-        {
-            get
-            {
-                return _lstContacts;
-            }
-        }
+        public ObservableCollection<Contact> Contacts => _lstContacts;
 
         /// <summary>
         /// Spirits and Sprites.
         /// </summary>
-        public ObservableCollection<Spirit> Spirits
-        {
-            get
-            {
-                return _lstSpirits;
-            }
-        }
+        public ObservableCollection<Spirit> Spirits => _lstSpirits;
 
         /// <summary>
         /// Magician Spells.
         /// </summary>
-        public ObservableCollection<Spell> Spells
-        {
-            get
-            {
-                return _lstSpells;
-            }
-        }
+        public ObservableCollection<Spell> Spells => _lstSpells;
 
         /// <summary>
         /// Foci.
         /// </summary>
-        public IList<Focus> Foci
-        {
-            get
-            {
-                return _lstFoci;
-            }
-        }
+        public IList<Focus> Foci => _lstFoci;
 
         /// <summary>
         /// Stacked Foci.
         /// </summary>
-        public IList<StackedFocus> StackedFoci
-        {
-            get
-            {
-                return _lstStackedFoci;
-            }
-        }
+        public IList<StackedFocus> StackedFoci => _lstStackedFoci;
 
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public CachedBindingList<Power> Powers
-        {
-            get
-            {
-                return _lstPowers;
-            }
-        }
+        public CachedBindingList<Power> Powers => _lstPowers;
 
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
-        public ObservableCollection<ComplexForm> ComplexForms
-        {
-            get
-            {
-                return _lstComplexForms;
-            }
-        }
+        public ObservableCollection<ComplexForm> ComplexForms => _lstComplexForms;
 
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
-        public ObservableCollection<AIProgram> AIPrograms
-        {
-            get
-            {
-                return _lstAIPrograms;
-            }
-        }
+        public ObservableCollection<AIProgram> AIPrograms => _lstAIPrograms;
 
         /// <summary>
         /// Martial Arts.
         /// </summary>
-        public ObservableCollection<MartialArt> MartialArts
-        {
-            get
-            {
-                return _lstMartialArts;
-            }
-        }
+        public ObservableCollection<MartialArt> MartialArts => _lstMartialArts;
 
 #if LEGACY
         /// <summary>
@@ -6602,156 +5848,72 @@ namespace Chummer
         /// <summary>
         /// Limit Modifiers.
         /// </summary>
-        public ObservableCollection<LimitModifier> LimitModifiers
-        {
-            get
-            {
-                return _lstLimitModifiers;
-            }
-        }
+        public ObservableCollection<LimitModifier> LimitModifiers => _lstLimitModifiers;
 
         /// <summary>
         /// Armor.
         /// </summary>
-        public ObservableCollection<Armor> Armor
-        {
-            get
-            {
-                return _lstArmor;
-            }
-        }
+        public ObservableCollection<Armor> Armor => _lstArmor;
 
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
-        public ObservableCollection<Cyberware> Cyberware
-        {
-            get
-            {
-                return _lstCyberware;
-            }
-        }
+        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons
-        {
-            get
-            {
-                return _lstWeapons;
-            }
-        }
+        public ObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Lifestyles.
         /// </summary>
-        public ObservableCollection<Lifestyle> Lifestyles
-        {
-            get
-            {
-                return _lstLifestyles;
-            }
-        }
+        public ObservableCollection<Lifestyle> Lifestyles => _lstLifestyles;
 
         /// <summary>
         /// Gear.
         /// </summary>
-        public ObservableCollection<Gear> Gear
-        {
-            get
-            {
-                return _lstGear;
-            }
-        }
+        public ObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Vehicles.
         /// </summary>
-        public ObservableCollection<Vehicle> Vehicles
-        {
-            get
-            {
-                return _lstVehicles;
-            }
-        }
+        public ObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
-        public ObservableCollection<Metamagic> Metamagics
-        {
-            get
-            {
-                return _lstMetamagics;
-            }
-        }
+        public ObservableCollection<Metamagic> Metamagics => _lstMetamagics;
 
         /// <summary>
         /// Enhancements.
         /// </summary>
-        public ObservableCollection<Enhancement> Enhancements
-        {
-            get
-            {
-                return _lstEnhancements;
-            }
-        }
+        public ObservableCollection<Enhancement> Enhancements => _lstEnhancements;
 
         /// <summary>
         /// Arts.
         /// </summary>
-        public ObservableCollection<Art> Arts
-        {
-            get
-            {
-                return _lstArts;
-            }
-        }
+        public ObservableCollection<Art> Arts => _lstArts;
 
         /// <summary>
         /// Critter Powers.
         /// </summary>
-        public ObservableCollection<CritterPower> CritterPowers
-        {
-            get
-            {
-                return _lstCritterPowers;
-            }
-        }
+        public ObservableCollection<CritterPower> CritterPowers => _lstCritterPowers;
 
         /// <summary>
         /// Initiation and Submersion Grades.
         /// </summary>
-        public ObservableCollection<InitiationGrade> InitiationGrades
-        {
-            get
-            {
-                return _lstInitiationGrades;
-            }
-        }
+        public ObservableCollection<InitiationGrade> InitiationGrades => _lstInitiationGrades;
 
         /// <summary>
         /// Expenses (Karma and Nuyen).
         /// </summary>
-        public ObservableCollection<ExpenseLogEntry> ExpenseEntries
-        {
-            get
-            {
-                return _lstExpenseLog;
-            }
-        }
+        public ObservableCollection<ExpenseLogEntry> ExpenseEntries => _lstExpenseLog;
 
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public ObservableCollection<Quality> Qualities
-        {
-            get
-            {
-                return _lstQualities;
-            }
-        }
+        public ObservableCollection<Quality> Qualities => _lstQualities;
 
         /// <summary>
         /// Life modules
@@ -6764,80 +5926,39 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public ObservableCollection<string> GearLocations
-        {
-            get
-            {
-                return _lstGearLocations;
-            }
-        }
+        public ObservableCollection<string> GearLocations => _lstGearLocations;
 
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public ObservableCollection<string> ArmorLocations
-        {
-            get
-            {
-                return _lstArmorLocations;
-            }
-        }
+        public ObservableCollection<string> ArmorLocations => _lstArmorLocations;
 
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public ObservableCollection<string> VehicleLocations
-        {
-            get
-            {
-                return _lstVehicleLocations;
-            }
-        }
+        public ObservableCollection<string> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public ObservableCollection<string> WeaponLocations
-        {
-            get
-            {
-                return _lstWeaponLocations;
-            }
-        }
+        public ObservableCollection<string> WeaponLocations => _lstWeaponLocations;
 
         /// <summary>
         /// Improvement Groups.
         /// </summary>
-        public ObservableCollection<string> ImprovementGroups
-        {
-            get
-            {
-                return _lstImprovementGroups;
-            }
-        }
+        public ObservableCollection<string> ImprovementGroups => _lstImprovementGroups;
 
         /// <summary>
         /// Calendar.
         /// </summary>
-        public BindingList<CalendarWeek> Calendar
-        {
-            get
-            {
-                return _lstCalendar;
-            }
-        }
+        public BindingList<CalendarWeek> Calendar => _lstCalendar;
 
         /// <summary>
         /// List of internal IDs that need their improvements re-applied.
         /// </summary>
-        public IList<string> InternalIdsNeedingReapplyImprovements
-        {
-            get
-            {
-                return _lstInternalIdsNeedingReapplyImprovements;
-            }
-        }
-#endregion
+        public IList<string> InternalIdsNeedingReapplyImprovements => _lstInternalIdsNeedingReapplyImprovements;
+
+        #endregion
 
 #region Armor Properties
         /// <summary>
@@ -6902,11 +6023,7 @@ namespace Chummer
                         {
                             if (objMod.Name == "Custom Fit (Stack)")
                             {
-                                blnDoAdd = false;
-                                if (objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest))
-                                {
-                                    blnDoAdd = true;
-                                }
+                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
                                 break;
                             }
                         }
@@ -6927,79 +6044,37 @@ namespace Chummer
         /// <summary>
         /// The Character's total Armor Rating.
         /// </summary>
-        public int TotalArmorRating
-        {
-            get
-            {
-                return ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
-            }
-        }
+        public int TotalArmorRating => ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
 
         /// <summary>
         /// The Character's total Armor Rating against Fire attacks.
         /// </summary>
-        public int TotalFireArmorRating
-        {
-            get
-            {
-                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
-            }
-        }
+        public int TotalFireArmorRating => TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
 
         /// <summary>
         /// The Character's total Armor Rating against Cold attacks.
         /// </summary>
-        public int TotalColdArmorRating
-        {
-            get
-            {
-                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
-            }
-        }
+        public int TotalColdArmorRating => TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
 
         /// <summary>
         /// The Character's total Armor Rating against Electricity attacks.
         /// </summary>
-        public int TotalElectricityArmorRating
-        {
-            get
-            {
-                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor);
-            }
-        }
+        public int TotalElectricityArmorRating => TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor);
 
         /// <summary>
         /// The Character's total Armor Rating against Acid attacks.
         /// </summary>
-        public int TotalAcidArmorRating
-        {
-            get
-            {
-                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
-            }
-        }
+        public int TotalAcidArmorRating => TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
 
         /// <summary>
         /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
         /// </summary>
-        public int TotalFallingArmorRating
-        {
-            get
-            {
-                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
-            }
-        }
+        public int TotalFallingArmorRating => TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
 
         /// <summary>
         /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
         /// </summary>
-        public int TotalBonusDodgeRating
-        {
-            get
-            {
-                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
-            }
-        }
+        public int TotalBonusDodgeRating => ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
 
         /// <summary>
         /// Armor Encumbrance modifier from Armor.
@@ -7056,11 +6131,7 @@ namespace Chummer
                         {
                             if (objMod.Name == "Custom Fit (Stack)")
                             {
-                                blnDoAdd = false;
-                                if (objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest))
-                                {
-                                    blnDoAdd = true;
-                                }
+                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
                                 break;
                             }
                         }
@@ -7214,10 +6285,7 @@ namespace Chummer
         /// </summary>
         public CharacterBuildMethod BuildMethod
         {
-            get
-            {
-                return _objBuildMethod;
-            }
+            get => _objBuildMethod;
             set
             {
                 if (value != _objBuildMethod)
@@ -7228,24 +6296,15 @@ namespace Chummer
             }
         }
 
-        public bool BuildMethodHasSkillPoints
-        {
-            get => BuildMethod == CharacterBuildMethod.Priority || BuildMethod == CharacterBuildMethod.SumtoTen;
-        }
+        public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority || BuildMethod == CharacterBuildMethod.SumtoTen;
 
         /// <summary>
         /// Number of Build Points that are used to create the character.
         /// </summary>
         public int BuildPoints
         {
-            get
-            {
-                return _intBuildPoints;
-            }
-            set
-            {
-                _intBuildPoints = value;
-            }
+            get => _intBuildPoints;
+            set => _intBuildPoints = value;
         }
 
         /// <summary>
@@ -7253,28 +6312,16 @@ namespace Chummer
         /// </summary>
         public int SumtoTen
         {
-            get
-            {
-                return _intSumtoTen;
-            }
-            set
-            {
-                _intSumtoTen = value;
-            }
+            get => _intSumtoTen;
+            set => _intSumtoTen = value;
         }
         /// <summary>
         /// Amount of Karma that is used to create the character.
         /// </summary>
         public int BuildKarma
         {
-            get
-            {
-                return _intBuildKarma;
-            }
-            set
-            {
-                _intBuildKarma = value;
-            }
+            get => _intBuildKarma;
+            set => _intBuildKarma = value;
         }
 
         /// <summary>
@@ -7282,14 +6329,8 @@ namespace Chummer
         /// </summary>
         public decimal Nuyen
         {
-            get
-            {
-                return _decNuyen;
-            }
-            set
-            {
-                _decNuyen = value;
-            }
+            get => _decNuyen;
+            set => _decNuyen = value;
         }
 
         /// <summary>
@@ -7297,14 +6338,8 @@ namespace Chummer
         /// </summary>
         public decimal StartingNuyen
         {
-            get
-            {
-                return _decStartingNuyen;
-            }
-            set
-            {
-                _decStartingNuyen = value;
-            }
+            get => _decStartingNuyen;
+            set => _decStartingNuyen = value;
         }
 
         /// <summary>
@@ -7312,14 +6347,8 @@ namespace Chummer
         /// </summary>
         public decimal NuyenBP
         {
-            get
-            {
-                return _decNuyenBP;
-            }
-            set
-            {
-                _decNuyenBP = value;
-            }
+            get => _decNuyenBP;
+            set => _decNuyenBP = value;
         }
 
         /// <summary>
@@ -7327,14 +6356,8 @@ namespace Chummer
         /// </summary>
         public int AdeptWayDiscount
         {
-            get
-            {
-                return _intAdeptWayDiscount;
-            }
-            set
-            {
-                _intAdeptWayDiscount = value;
-            }
+            get => _intAdeptWayDiscount;
+            set => _intAdeptWayDiscount = value;
         }
 
         /// <summary>
@@ -7360,22 +6383,13 @@ namespace Chummer
                     return Math.Max(_decNuyenMaximumBP, decImprovement);
                 }
             }
-            set
-            {
-                _decNuyenMaximumBP = value;
-            }
+            set => _decNuyenMaximumBP = value;
         }
 
         /// <summary>
         /// The calculated Astral Limit.
         /// </summary>
-        public int LimitAstral
-        {
-            get
-            {
-                return Math.Max(LimitMental, LimitSocial);
-            }
-        }
+        public int LimitAstral => Math.Max(LimitMental, LimitSocial);
 
         /// <summary>
         /// The calculated Physical Limit.
@@ -7462,14 +6476,8 @@ namespace Chummer
         /// </summary>
         public string Metatype
         {
-            get
-            {
-                return _strMetatype;
-            }
-            set
-            {
-                _strMetatype = value;
-            }
+            get => _strMetatype;
+            set => _strMetatype = value;
         }
 
         /// <summary>
@@ -7477,14 +6485,8 @@ namespace Chummer
         /// </summary>
         public string Metavariant
         {
-            get
-            {
-                return _strMetavariant;
-            }
-            set
-            {
-                _strMetavariant = value;
-            }
+            get => _strMetavariant;
+            set => _strMetavariant = value;
         }
 
         /// <summary>
@@ -7492,14 +6494,8 @@ namespace Chummer
         /// </summary>
         public string MetatypeCategory
         {
-            get
-            {
-                return _strMetatypeCategory;
-            }
-            set
-            {
-                _strMetatypeCategory = value;
-            }
+            get => _strMetatypeCategory;
+            set => _strMetatypeCategory = value;
         }
 
         public int LimbCount(string strLimbSlot = "")
@@ -7554,10 +6550,7 @@ namespace Chummer
         /// </summary>
         public string Movement
         {
-            set
-            {
-                _strMovement = value;
-            }
+            set => _strMovement = value;
         }
 
         /// <summary>
@@ -7566,26 +6559,17 @@ namespace Chummer
         /// </summary>
         private int WalkingRate(string strType = "Ground")
         {
-            string[] strReturn;
-            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
-            {
-                strReturn = _strWalk.Split('/');
-            }
-            else
-            {
-                strReturn = _strWalkAlt.Split('/');
-            }
-            
-
             int intTmp = 0;
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType))
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType))
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
                 {
                     intTmp = Math.Max(intTmp, objImprovement.Value);
                 }
                 return intTmp;
             }
+
+            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strWalk.Split('/') : _strWalkAlt.Split('/');
             
             switch (strType)
             {
@@ -7611,22 +6595,18 @@ namespace Chummer
         /// </summary>
         private int RunningRate(string strType = "Ground")
         {
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType))
+            int intTmp = 0;
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
-                return imp.Value;
-            }
-            string[] strReturn;
-            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
-            {
-                strReturn = _strRun.Split('/');
-            }
-            else
-            {
-                strReturn = _strRunAlt.Split('/');
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
+                {
+                    intTmp = Math.Max(intTmp, objImprovement.Value);
+                }
+                return intTmp;
             }
 
-            int intTmp = 0;
+            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strRun.Split('/') : _strRunAlt.Split('/');
+            
             switch (strType)
             {
                 case "Fly":
@@ -7651,22 +6631,18 @@ namespace Chummer
         /// </summary>
         private decimal SprintingRate(string strType = "Ground")
         {
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
+            decimal decTmp = 0;
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
-                return imp.Value;
-            }
-            string[] strReturn;
-            if (AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
-            {
-                strReturn = _strSprint.Split('/');
-            }
-            else
-            {
-                strReturn = _strSprintAlt.Split('/');
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
+                {
+                    decTmp = Math.Max(decTmp, objImprovement.Value);
+                }
+                return decTmp;
             }
 
-            decimal decTmp = 0;
+            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strSprint.Split('/') : _strSprintAlt.Split('/');
+            
             switch (strType)
             {
             case "Fly":
@@ -7814,14 +6790,8 @@ namespace Chummer
         /// </summary>
         public int MetatypeBP
         {
-            get
-            {
-                return _intMetatypeBP;
-            }
-            set
-            {
-                _intMetatypeBP = value;
-            }
+            get => _intMetatypeBP;
+            set => _intMetatypeBP = value;
         }
 
         /// <summary>
@@ -7860,10 +6830,7 @@ namespace Chummer
         /// </summary>
         public bool AdeptEnabled
         {
-            get
-            {
-                return _blnAdeptEnabled;
-            }
+            get => _blnAdeptEnabled;
             set
             {
                 if (_blnAdeptEnabled != value)
@@ -7879,10 +6846,7 @@ namespace Chummer
         /// </summary>
         public bool MagicianEnabled
         {
-            get
-            {
-                return _blnMagicianEnabled;
-            }
+            get => _blnMagicianEnabled;
             set
             {
                 if (_blnMagicianEnabled != value)
@@ -7898,10 +6862,7 @@ namespace Chummer
         /// </summary>
         public bool TechnomancerEnabled
         {
-            get
-            {
-                return _blnTechnomancerEnabled;
-            }
+            get => _blnTechnomancerEnabled;
             set
             {
                 if (_blnTechnomancerEnabled != value)
@@ -7917,10 +6878,7 @@ namespace Chummer
         /// </summary>
         public bool AdvancedProgramsEnabled
         {
-            get
-            {
-                return _blnAdvancedProgramsEnabled;
-            }
+            get => _blnAdvancedProgramsEnabled;
             set
             {
                 if (_blnAdvancedProgramsEnabled != value)
@@ -7936,10 +6894,7 @@ namespace Chummer
         /// </summary>
         public bool CyberwareDisabled
         {
-            get
-            {
-                return _blnCyberwareDisabled;
-            }
+            get => _blnCyberwareDisabled;
             set
             {
                 if (_blnCyberwareDisabled != value)
@@ -7955,10 +6910,7 @@ namespace Chummer
         /// </summary>
         public bool InitiationEnabled
         {
-            get
-            {
-                return _blnInitiationEnabled;
-            }
+            get => _blnInitiationEnabled;
             set
             {
                 if (_blnInitiationEnabled != value)
@@ -7974,10 +6926,7 @@ namespace Chummer
         /// </summary>
         public bool CritterEnabled
         {
-            get
-            {
-                return _blnCritterEnabled;
-            }
+            get => _blnCritterEnabled;
             set
             {
                 if (_blnCritterEnabled != value)
@@ -7993,14 +6942,8 @@ namespace Chummer
         /// </summary>
         public bool BlackMarketDiscount
         {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-            set
-            {
-                _blnBlackMarketDiscount = value;
-            }
+            get => _blnBlackMarketDiscount;
+            set => _blnBlackMarketDiscount = value;
         }
 
         /// <summary>
@@ -8008,10 +6951,7 @@ namespace Chummer
         /// </summary>
         public decimal PrototypeTranshuman
         {
-            get
-            {
-                return _decPrototypeTranshuman;
-            }
+            get => _decPrototypeTranshuman;
             set
             {
                 if (value <= 0)
@@ -8032,14 +6972,8 @@ namespace Chummer
         /// </summary>
         public bool FriendsInHighPlaces
         {
-            get
-            {
-                return _blnFriendsInHighPlaces;
-            }
-            set
-            {
-                _blnFriendsInHighPlaces = value;
-            }
+            get => _blnFriendsInHighPlaces;
+            set => _blnFriendsInHighPlaces = value;
         }
 
         /// <summary>
@@ -8047,10 +6981,7 @@ namespace Chummer
         /// </summary>
         public bool ExCon
         {
-            get
-            {
-                return _blnExCon;
-            }
+            get => _blnExCon;
             set
             {
                 if (_blnExCon != value)
@@ -8065,14 +6996,8 @@ namespace Chummer
         /// </summary>
         public int TrustFund
         {
-            get
-            {
-                return _intTrustFund;
-            }
-            set
-            {
-                _intTrustFund = value;
-            }
+            get => _intTrustFund;
+            set => _intTrustFund = value;
         }
 
         /// <summary>
@@ -8080,10 +7005,7 @@ namespace Chummer
         /// </summary>
         public bool RestrictedGear
         {
-            get
-            {
-                return _blnRestrictedGear;
-            }
+            get => _blnRestrictedGear;
             set
             {
                 if (_blnRestrictedGear != value)
@@ -8098,24 +7020,15 @@ namespace Chummer
         /// </summary>
         public bool Overclocker
         {
-            get
-            {
-                return _blnOverclocker;
-            }
-            set
-            {
-                _blnOverclocker = value;
-            }
+            get => _blnOverclocker;
+            set => _blnOverclocker = value;
         }
         /// <summary>
         /// Whether or not MadeMan is enabled.
         /// </summary>
         public bool MadeMan
         {
-            get
-            {
-                return _blnMadeMan;
-            }
+            get => _blnMadeMan;
             set
             {
                 if (_blnMadeMan != value)
@@ -8130,24 +7043,15 @@ namespace Chummer
         /// </summary>
         public bool Fame
         {
-            get
-            {
-                return _blnFame;
-            }
-            set
-            {
-                _blnFame = value;
-            }
+            get => _blnFame;
+            set => _blnFame = value;
         }
         /// <summary>
         /// Whether or not BornRich is enabled.
         /// </summary>
         public bool BornRich
         {
-            get
-            {
-                return _blnBornRich;
-            }
+            get => _blnBornRich;
             set
             {
                 if (_blnBornRich != value)
@@ -8162,14 +7066,8 @@ namespace Chummer
         /// </summary>
         public bool Erased
         {
-            get
-            {
-                return _blnErased;
-            }
-            set
-            {
-                _blnErased = value;
-            }
+            get => _blnErased;
+            set => _blnErased = value;
         }
         /// <summary>
         /// Convert a string to a CharacterBuildMethod.
@@ -8295,14 +7193,9 @@ namespace Chummer
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
         /// </summary>
-        public IList<Character> LinkedCharacters
-        {
-            get
-            {
-                return _lstLinkedCharacters;
-            }
-        }
-#endregion
+        public IList<Character> LinkedCharacters => _lstLinkedCharacters;
+
+        #endregion
 
 #region Old Quality Conversion Code
         /// <summary>
@@ -8955,7 +7848,7 @@ namespace Chummer
                     _initPasses = Convert.ToInt32(InitiativeDice);
                 return _initPasses;
             }
-            set { _initPasses = value; }
+            set => _initPasses = value;
         }
         private int _initPasses = int.MinValue;
 
@@ -8968,10 +7861,7 @@ namespace Chummer
         /// <summary>
         /// The current name and initiative of the character
         /// </summary>
-        public string DisplayInit
-        {
-            get { return Name + " : " + InitRoll.ToString(); }
-        }
+        public string DisplayInit => Name + " : " + InitRoll.ToString();
 
         /// <summary>
         /// The initial Initiative of the character
@@ -9020,50 +7910,24 @@ namespace Chummer
         /// <summary>
         /// Push a value that will be used instad of dialog instead in next <selecttext />
         /// </summary>
-        public Stack<string> Pushtext
-        {
-            get
-            {
-                return _pushtext.Value;
-            }
-        }
+        public Stack<string> Pushtext => _pushtext.Value;
 
         /// <summary>
         /// The Active Commlink of the character. Returns null if home node is not a commlink.
         /// </summary>
-        public IHasMatrixAttributes ActiveCommlink
-        {
-            get
-            {
-                return _objActiveCommlink;
-            }
-            set
-            {
-                _objActiveCommlink = value;
-            }
-        }
+        public IHasMatrixAttributes ActiveCommlink { get; set; }
 
         /// <summary>
         /// Home Node. Returns null if home node is not set to any item.
         /// </summary>
-        public IHasMatrixAttributes HomeNode
-        {
-            get
-            {
-                return _objHomeNode;
-            }
-            set
-            {
-                _objHomeNode = value;
-            }
-        }
+        public IHasMatrixAttributes HomeNode { get; set; }
 
         public SkillsSection SkillsSection { get; }
 
         public int RedlinerBonus
         {
-            get { return _intRedlinerBonus; }
-            set { _intRedlinerBonus = value; }
+            get => _intRedlinerBonus;
+            set => _intRedlinerBonus = value;
         }
 
         /// <summary>
@@ -9104,14 +7968,7 @@ namespace Chummer
                 intCount += objCyberware.GetCyberlimbCount("skull", "torso");
             }
             intCount = Math.Min(intCount / 2, 2);
-            if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
-            {
-                RedlinerBonus = intCount;
-            }
-            else
-            {
-                RedlinerBonus = 0;
-            }
+            RedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI") ? intCount : 0;
 
             for (int i = 0; i < lstSeekerAttributes.Count; i++)
             {
@@ -9146,29 +8003,17 @@ namespace Chummer
             return intOldRedlinerBonus == RedlinerBonus;
         }
 
-        public Version LastSavedVersion
-        {
-            get { return _verSavedVersion; }
-        }
+        public Version LastSavedVersion => _verSavedVersion;
 
         /// <summary>
         /// Is the character a mystic adept (MagicianEnabled && AdeptEnabled)? Used for databinding properties.
         /// </summary>
-        public bool IsMysticAdept
-        {
-            get { return AdeptEnabled && MagicianEnabled; }
-        }
+        public bool IsMysticAdept => AdeptEnabled && MagicianEnabled;
 
         /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled
         /// </summary>
-        public bool CanAffordCareerPP
-        {
-            get
-            {
-                return Options.MysAdeptAllowPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
-            }
-        }
+        public bool CanAffordCareerPP => Options.MysAdeptAllowPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
 
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode. 

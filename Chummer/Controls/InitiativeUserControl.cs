@@ -31,8 +31,8 @@ namespace Chummer
         /// </summary>
         public event EventHandler CurrentCharacterChanged
         {
-            add { chkBoxChummer.SelectedValueChanged += value; }
-            remove { chkBoxChummer.SelectedValueChanged -= value; }
+            add => chkBoxChummer.SelectedValueChanged += value;
+            remove => chkBoxChummer.SelectedValueChanged -= value;
         }
         #endregion
 
@@ -395,7 +395,7 @@ namespace Chummer
         /// <summary>
         /// The current character in the chain of initiatives
         /// </summary>
-        public Character CurrentCharacter { get { return characters[index]; } }
+        public Character CurrentCharacter => characters[index];
 
         /// <summary>
         /// Add's the token to the initiative chain

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,61 +43,48 @@ namespace Chummer
             //Little bit of data required for following steps
             XmlDocument xdoc = XmlManager.Load("lifemodules.xml", strLanguage);
 
-            if (xdoc != null)
+            //Generate list of all life modules (xml, we don't save required data to quality) this character has
+            List<XmlNode> modules = new List<XmlNode>();
+
+            foreach (Quality quality in _objCharacter.Qualities)
             {
-                //Generate list of all life modules (xml, we don't save required data to quality) this character has
-                List<XmlNode> modules = new List<XmlNode>();
-
-                foreach (Quality quality in _objCharacter.Qualities)
+                if (quality.Type == QualityType.LifeModule)
                 {
-                    if (quality.Type == QualityType.LifeModule)
-                    {
-                        modules.Add(Quality.GetNodeOverrideable(quality.QualityId, xdoc));
-                    }
+                    modules.Add(Quality.GetNodeOverrideable(quality.QualityId, xdoc));
                 }
-
-                //Sort the list (Crude way, but have to do)
-                for (int i = 0; i < modules.Count; i++)
-                {
-                    string stageName = string.Empty;
-                    if (i <= 4)
-                    {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]").InnerText;
-                    }
-                    else
-                    {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"5\"]").InnerText;
-                    }
-                    int j;
-                    for (j = i; j < modules.Count; j++)
-                    {
-                        if (modules[j]["stage"] != null && modules[j]["stage"].InnerText == stageName)
-                            break;
-                    }
-                    if (j != i && j < modules.Count)
-                    {
-                        XmlNode tmp = modules[i];
-                        modules[i] = modules[j];
-                        modules[j] = tmp;
-                    }
-                }
-
-                string[] story = new string[modules.Count];
-                object storyLock = new object();
-                //Actually "write" the story
-                Parallel.For(0, modules.Count, i =>
-                {
-                    XmlNode objStoryModule = modules[i];
-                    StringBuilder objModuleString = new StringBuilder();
-                    Write(objModuleString, objStoryModule["story"].InnerText, 5, xdoc);
-                    lock (storyLock)
-                        story[i] = objModuleString.ToString();
-                });
-
-                return string.Join(Environment.NewLine + Environment.NewLine, story);
             }
 
-            return string.Empty;
+            //Sort the list (Crude way, but have to do)
+            for (int i = 0; i < modules.Count; i++)
+            {
+                string stageName = xdoc.SelectSingleNode(i <= 4 ? "chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]" : "chummer/stages/stage[@order = \"5\"]")?.InnerText;
+                int j;
+                for (j = i; j < modules.Count; j++)
+                {
+                    if (modules[j]["stage"] != null && modules[j]["stage"].InnerText == stageName)
+                        break;
+                }
+                if (j != i && j < modules.Count)
+                {
+                    XmlNode tmp = modules[i];
+                    modules[i] = modules[j];
+                    modules[j] = tmp;
+                }
+            }
+
+            string[] story = new string[modules.Count];
+            object storyLock = new object();
+            //Actually "write" the story
+            Parallel.For(0, modules.Count, i =>
+            {
+                XmlNode objStoryModule = modules[i];
+                StringBuilder objModuleString = new StringBuilder();
+                Write(objModuleString, objStoryModule["story"].InnerText, 5, xdoc);
+                lock (storyLock)
+                    story[i] = objModuleString.ToString();
+            });
+
+            return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
         
         private void Write(StringBuilder story, string innerText, int levels, XmlDocument xmlDoc)
@@ -202,79 +189,76 @@ namespace Chummer
             
             string searchString = "/chummer/storybuilder/macros/" + macroName;
 
-            if (xmlDoc != null)
+            XmlNode userMacro = xmlDoc?.SelectSingleNode(searchString);
+
+            if (userMacro != null)
             {
-                XmlNode userMacro = xmlDoc.SelectSingleNode(searchString);
-
-                if (userMacro != null)
+                if (userMacro.FirstChild != null)
                 {
-                    if (userMacro.FirstChild != null)
+                    //Already defined, no need to do anything fancy
+                    if (!persistenceDictionary.TryGetValue(macroPool, out string selected))
                     {
-                        //Already defined, no need to do anything fancy
-                        if (!persistenceDictionary.TryGetValue(macroPool, out string selected))
+                        if (userMacro.FirstChild.Name == "random")
                         {
-                            if (userMacro.FirstChild.Name == "random")
+                            //Any node not named 
+                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                            if (possible != null && possible.Count > 0)
                             {
-                                //Any node not named 
-                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                                if (possible != null && possible.Count > 0)
+                                if (possible.Count > 1)
                                 {
-                                    if (possible.Count > 1)
+                                    do
                                     {
-                                        do
-                                        {
-                                            _intModuloTemp = _objRandom.Next();
-                                        }
-                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                        _intModuloTemp = _objRandom.Next();
                                     }
-                                    else
-                                        _intModuloTemp = 1;
-                                    selected = possible[_intModuloTemp % possible.Count].Name;
+                                    while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
                                 }
-                            }
-                            else if (userMacro.FirstChild.Name == "persistent")
-                            {
-                                //Any node not named 
-                                XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
-                                if (possible != null && possible.Count > 0)
-                                {
-                                    if (possible.Count > 1)
-                                    {
-                                        do
-                                        {
-                                            _intModuloTemp = _objRandom.Next();
-                                        }
-                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
-                                    }
-                                    else
-                                        _intModuloTemp = 1;
-                                    selected = possible[_intModuloTemp % possible.Count].Name;
-                                    persistenceDictionary.Add(macroPool, selected);
-                                }
-                            }
-                            else
-                            {
-                                return string.Format("(Formating error in  $DOLLAR{0} )", macroName);
+                                else
+                                    _intModuloTemp = 1;
+                                selected = possible[_intModuloTemp % possible.Count].Name;
                             }
                         }
-
-                        if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)
+                        else if (userMacro.FirstChild.Name == "persistent")
                         {
-                            return userMacro.FirstChild[selected].InnerText;
-                        }
-                        else if (userMacro.FirstChild["default"] != null)
-                        {
-                            return userMacro.FirstChild["default"].InnerText;
+                            //Any node not named 
+                            XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
+                            if (possible != null && possible.Count > 0)
+                            {
+                                if (possible.Count > 1)
+                                {
+                                    do
+                                    {
+                                        _intModuloTemp = _objRandom.Next();
+                                    }
+                                    while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                }
+                                else
+                                    _intModuloTemp = 1;
+                                selected = possible[_intModuloTemp % possible.Count].Name;
+                                persistenceDictionary.Add(macroPool, selected);
+                            }
                         }
                         else
                         {
-                            return string.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
+                            return string.Format("(Formating error in  $DOLLAR{0} )", macroName);
                         }
+                    }
+
+                    if (!string.IsNullOrEmpty(selected) && userMacro.FirstChild[selected] != null)
+                    {
+                        return userMacro.FirstChild[selected].InnerText;
+                    }
+                    else if (userMacro.FirstChild["default"] != null)
+                    {
+                        return userMacro.FirstChild["default"].InnerText;
                     }
                     else
                     {
-                        return userMacro.InnerText;
+                        return string.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
                     }
+                }
+                else
+                {
+                    return userMacro.InnerText;
                 }
             }
             return string.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));

@@ -314,49 +314,25 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons
-		{
-			get
-			{
-				return _lstWeapons;
-			}
-		}
+        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Identifier of the WeaponMount's Size in the data files.
         /// </summary>
-        public string SourceId
-        {
-            get
-            {
-                return _strSourceId;
-            }
-        }
+        public string SourceId => _strSourceId;
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -375,14 +351,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
@@ -390,14 +360,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string WeaponMountCategories
         {
-            set
-            {
-                _strWeaponMountCategories = value;
-            }
-            get
-            {
-                return _strWeaponMountCategories;
-            }
+            set => _strWeaponMountCategories = value;
+            get => _strWeaponMountCategories;
         }
 
         /// <summary>
@@ -405,14 +369,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Limit
         {
-            get
-            {
-                return _strLimit;
-            }
-            set
-            {
-                _strLimit = value;
-            }
+            get => _strLimit;
+            set => _strLimit = value;
         }
 
         /// <summary>
@@ -420,14 +378,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Slots
         {
-            get
-            {
-                return _intSlots;
-            }
-            set
-            {
-                _intSlots = value;
-            }
+            get => _intSlots;
+            set => _intSlots = value;
         }
 
         /// <summary>
@@ -435,14 +387,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                return _strCost;
-            }
-            set
-            {
-                _strCost = value;
-            }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -450,14 +396,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal Markup
         {
-            get
-            {
-                return _decMarkup;
-            }
-            set
-            {
-                _decMarkup = value;
-            }
+            get => _decMarkup;
+            set => _decMarkup = value;
         }
 
         /// <summary>
@@ -465,14 +405,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -480,14 +414,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -506,14 +434,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool IncludedInVehicle
         {
-            get
-            {
-                return _blnIncludeInVehicle;
-            }
-            set
-            {
-                _blnIncludeInVehicle = value;
-            }
+            get => _blnIncludeInVehicle;
+            set => _blnIncludeInVehicle = value;
         }
 
         /// <summary>
@@ -521,14 +443,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Installed
         {
-            get
-            {
-                return _blnInstalled;
-            }
-            set
-            {
-                _blnInstalled = value;
-            }
+            get => _blnInstalled;
+            set => _blnInstalled = value;
         }
 
         /// <summary>
@@ -536,14 +452,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -551,14 +461,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -566,14 +470,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool DiscountCost
         {
-            get
-            {
-                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
-            }
-            set
-            {
-                _blnDiscountCost = value;
-            }
+            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            set => _blnDiscountCost = value;
         }
 
         /// <summary>
@@ -702,10 +600,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public TaggedObservableCollection<VehicleMod> Mods
-        {
-            get => _lstMods;
-        }
+        public TaggedObservableCollection<VehicleMod> Mods => _lstMods;
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

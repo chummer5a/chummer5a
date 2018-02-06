@@ -450,67 +450,34 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Name of Weapon that was selected in the dialogue.
         /// </summary>
-        public string SelectedWeapon
-        {
-            get
-            {
-                return _strSelectedWeapon;
-            }
-        }
+        public string SelectedWeapon => _strSelectedWeapon;
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Only the provided Weapon Categories should be shown in the list.
         /// </summary>
         public string LimitToCategories
         {
-            set
-            {
-                _strLimitToCategories = value.Split(',');
-            }
+            set => _strLimitToCategories = value.Split(',');
         }
 
         public bool Underbarrel { get; set; }

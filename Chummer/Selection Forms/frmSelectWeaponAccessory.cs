@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
  using System.Globalization;
  using System.Linq;
@@ -269,35 +269,17 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of Accessory that was selected in the dialogue.
         /// </summary>
-        public string SelectedAccessory
-        {
-            get
-            {
-                return _strSelectedAccessory;
-            }
-        }
+        public string SelectedAccessory => _strSelectedAccessory;
 
         /// <summary>
         /// Mount that was selected in the dialogue.
         /// </summary>
-        public Tuple<string, string> SelectedMount
-        {
-            get
-            {
-                return new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
-            }
-        }
+        public Tuple<string, string> SelectedMount => new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
 
         /// <summary>
         /// Rating of the Accessory.
@@ -349,35 +331,18 @@ namespace Chummer
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
+
         #endregion
 
         #region Methods
@@ -391,8 +356,7 @@ namespace Chummer
                     cboExtraMount.SelectedIndex = 0;
                 else
                     cboMount.SelectedIndex = 0;
-                while ((cboMount.SelectedItem.ToString() != "None") && (cboExtraMount.SelectedItem.ToString() != "None")
-                    && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
+                while (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None" && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 {
                     if (boolChangeExtraMountFirst)
                         cboExtraMount.SelectedIndex += 1;
@@ -488,14 +452,7 @@ namespace Chummer
                     }
                 }
             }
-            if (cboMount.Items.Count <= 1)
-            {
-                cboMount.Enabled = false;
-            }
-            else
-            {
-                cboMount.Enabled = true;
-            }
+            cboMount.Enabled = cboMount.Items.Count > 1;
             cboMount.SelectedIndex = 0;
 
             List<string> strExtraMounts = new List<string>();
@@ -524,14 +481,7 @@ namespace Chummer
                     }
                 }
             }
-            if (cboExtraMount.Items.Count <= 1)
-            {
-                cboExtraMount.Enabled = false;
-            }
-            else
-            {
-                cboExtraMount.Enabled = true;
-            }
+            cboExtraMount.Enabled = cboExtraMount.Items.Count > 1;
             cboExtraMount.SelectedIndex = 0;
             if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
                 && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())

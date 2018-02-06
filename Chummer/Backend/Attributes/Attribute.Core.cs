@@ -174,21 +174,18 @@ namespace Chummer.Backend.Attributes
 
         #region Properties
 
-        public Character CharacterObject
-        {
-            get { return _objCharacter; }
-        }
+        public Character CharacterObject => _objCharacter;
 
-	    public AttributeCategory Category
+        public AttributeCategory Category
 	    {
-		    get { return _enumCategory; }
-			set { _enumCategory = value; }
-		}
+		    get => _enumCategory;
+            set => _enumCategory = value;
+        }
 
 		public AttributeCategory MetatypeCategory
 		{
-			get { return _enumMetatypeCategory; }
-			set { _enumMetatypeCategory = value; }
+			get => _enumMetatypeCategory;
+		    set => _enumMetatypeCategory = value;
 		}
 
 		/// <summary>
@@ -199,7 +196,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMin;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev);
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Minimum;
@@ -224,7 +221,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMax;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev);
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Maximum;
@@ -246,10 +243,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int MetatypeAugmentedMaximum
         {
-            get
-            {
-                return _intMetatypeAugMax;
-            }
+            get => _intMetatypeAugMax;
             set
             {
                 if (value != _intMetatypeAugMax)
@@ -265,10 +259,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int Base
         {
-            get
-            {
-                return _intBase;
-            }
+            get => _intBase;
             set
             {
                 if (value != _intBase)
@@ -282,31 +273,16 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Total Value of Base Points as used by internal methods
         /// </summary>
-        public int TotalBase
-        {
-            get
-            {
-                return Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
-            }
-        }
+        public int TotalBase => Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
 
-        public int FreeBase
-        {
-            get
-            {
-                return Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
-            }
-        }
+        public int FreeBase => Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
 
         /// <summary>
         /// Current karma value of the CharacterAttribute.
         /// </summary>
         public int Karma
         {
-            get
-            {
-                return _intKarma;
-            }
+            get => _intKarma;
             set
             {
                 if (value != _intKarma)
@@ -320,13 +296,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
         /// </summary>
-        public int Value
-        {
-            get
-            {
-                return Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
-            }
-        }
+        public int Value => Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
 
         /// <summary>
         /// Total Maximum value of the CharacterAttribute before essence modifiers are applied.
@@ -375,13 +345,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
-        public string DisplayValue
-        {
-            get
-            {
-                return HasModifiers ? $"{Value} ({TotalValue})" : $"{Value}";
-            }
-        }
+        public string DisplayValue => HasModifiers ? $"{Value} ({TotalValue})" : $"{Value}";
 
         /// <summary>
         /// Augmentation modifier value for the CharacterAttribute.
@@ -389,10 +353,7 @@ namespace Chummer.Backend.Attributes
         /// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
         public int AugmentModifier
         {
-            get
-            {
-                return _intAugModifier;
-            }
+            get => _intAugModifier;
             set
             {
                 if (value != _intAugModifier)
@@ -407,13 +368,7 @@ namespace Chummer.Backend.Attributes
         /// The CharacterAttribute's total value including augmentations.
         /// </summary>
         /// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
-        public int Augmented
-        {
-            get
-            {
-                return Value + AugmentModifier;
-            }
-        }
+        public int Augmented => Value + AugmentModifier;
 
         private int _intCachedAttributeModifiers = int.MinValue;
         /// <summary>
@@ -784,21 +739,12 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
-        public int TotalValue
-        {
-            get { return CalculatedTotalValue(); }
-        }
+        public int TotalValue => CalculatedTotalValue();
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
         /// </summary>
-        public int RawMinimum
-        {
-            get
-            {
-                return MetatypeMinimum + MinimumModifiers;
-            }
-        }
+        public int RawMinimum => MetatypeMinimum + MinimumModifiers;
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
@@ -871,13 +817,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// CharacterAttribute abbreviation.
         /// </summary>
-        public string Abbrev
-        {
-            get
-            {
-                return _strAbbrev;
-            }
-        }
+        public string Abbrev => _strAbbrev;
 
         public string DisplayNameShort(string strLanguage)
         {
@@ -895,13 +835,7 @@ namespace Chummer.Backend.Attributes
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
-        public string DisplayNameFormatted
-        {
-            get
-            {
-                return GetDisplayNameFormatted(GlobalOptions.Language);
-            }
-        }
+        public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalOptions.Language);
 
         public string GetDisplayNameFormatted(string strLanguage)
         {
@@ -914,35 +848,18 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Is it possible to place points in Base or is it prevented by their build method?
         /// </summary>
-        public bool BaseUnlocked
-        {
-            get
-            {
-                return _objCharacter.BuildMethodHasSkillPoints;
-            }
-        }
+        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints;
 
         /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
-        public string MetatypeLimits
-        {
-            get
-            {
-                return string.Format("{0} / {1} ({2})", MetatypeMinimum, MetatypeMaximum, MetatypeAugmentedMaximum);
-            }
-        }
+        public string MetatypeLimits => string.Format("{0} / {1} ({2})", MetatypeMinimum, MetatypeMaximum, MetatypeAugmentedMaximum);
 
         /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
-        public string AugmentedMetatypeLimits
-        {
-            get
-            {
-                return string.Format("{0} / {1} ({2})", TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
-            }
-        }
+        public string AugmentedMetatypeLimits => string.Format("{0} / {1} ({2})", TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
+
         #endregion
 
         #region Methods
@@ -959,13 +876,7 @@ namespace Chummer.Backend.Attributes
             MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
         }
 
-        public string UpgradeToolTip
-        {
-            get
-            {
-                return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
-            }
-        }
+        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
 
         /// <summary>
         /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
@@ -1123,14 +1034,7 @@ namespace Chummer.Backend.Attributes
                         {
                             strCyberlimb.Append("\n");
                             strCyberlimb.Append(objCyberware.DisplayName(GlobalOptions.Language) + " (");
-                            if (Abbrev == "AGI")
-                            {
-                                strCyberlimb.Append(objCyberware.TotalAgility.ToString());
-                            }
-                            else
-                            {
-                                strCyberlimb.Append(objCyberware.TotalStrength.ToString());
-                            }
+                            strCyberlimb.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString() : objCyberware.TotalStrength.ToString());
                             strCyberlimb.Append(')');
                         }
                     }
@@ -1331,10 +1235,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public bool CanUpgradeCareer
-        {
-            get { return _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value; }
-        }
+        public bool CanUpgradeCareer => _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
 
         // Caching the value prevents calling the event multiple times. 
         private bool _oldUpgrade;
@@ -1413,25 +1314,13 @@ namespace Chummer.Backend.Attributes
                                 new ReverseTree<string>(nameof(TotalMaximum)),
                                 new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
 
-        public string UpgradeKarmaCostString
-        {
-            get
-            {
-               return LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language).Replace("{0}", Abbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost.ToString()));
-            }
-        }
+        public string UpgradeKarmaCostString => LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language).Replace("{0}", Abbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost.ToString()));
 
         /// <summary>
         /// Translated abbreviation of the attribute.
         /// </summary>
-        public string DisplayAbbrev
-        {
-            get
-            {
-                return GetDisplayAbbrev(GlobalOptions.Language);
-            }
-        }
-        
+        public string DisplayAbbrev => GetDisplayAbbrev(GlobalOptions.Language);
+
         public string GetDisplayAbbrev(string strLanguage)
         {
             if (Abbrev == "MAGAdept")

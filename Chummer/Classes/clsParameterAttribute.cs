@@ -85,15 +85,9 @@ namespace Chummer
             
         }
 
-        public Gear Gear
-        {
-            get { return _gear; }
-        }
+        public Gear Gear => _gear;
 
-        public string AttributeString
-        {
-            get { return _attribute; }
-        }
+        public string AttributeString => _attribute;
 
         public double AttributeDouble
         {
@@ -126,11 +120,6 @@ namespace Chummer
             }
         }
 
-        public int AttributeInt
-        {
-            get { return (int) AttributeDouble; }
-        }
-
-
+        public int AttributeInt => (int) AttributeDouble;
     }
 }

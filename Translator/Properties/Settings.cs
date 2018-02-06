@@ -10,15 +10,9 @@ namespace Translator.Properties
 	{
 		private static readonly Settings defaultInstance;
 
-		public static Settings Default
-		{
-			get
-			{
-				return defaultInstance;
-			}
-		}
+		public static Settings Default => defaultInstance;
 
-		static Settings()
+	    static Settings()
 		{
 			defaultInstance = (Settings)Synchronized(new Settings());
 		}

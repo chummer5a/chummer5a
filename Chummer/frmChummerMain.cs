@@ -473,13 +473,7 @@ namespace Chummer
 
         private frmPrintMultiple _frmPrintMultipleCharacters;
 
-        public frmPrintMultiple PrintMultipleCharactersForm
-        {
-            get
-            {
-                return _frmPrintMultipleCharacters;
-            }
-        }
+        public frmPrintMultiple PrintMultipleCharactersForm => _frmPrintMultipleCharacters;
 
         private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
@@ -637,10 +631,7 @@ namespace Chummer
                 }
             }
             // Don't show the tab control if there is only one window open.
-            if (tabForms.TabCount > 1)
-                tabForms.Visible = true;
-            else
-                tabForms.Visible = false;
+            tabForms.Visible = tabForms.TabCount > 1;
         }
 
         private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
@@ -828,10 +819,7 @@ namespace Chummer
         private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.All;
-            else
-                e.Effect = DragDropEffects.None;
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
         }
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
@@ -1260,26 +1248,15 @@ namespace Chummer
         /// </summary>
         public frmDiceRoller RollerWindow
         {
-            get
-            {
-                return _frmRoller;
-            }
-            set
-            {
-                _frmRoller = value;
-            }
+            get => _frmRoller;
+            set => _frmRoller = value;
         }
 
-        public ObservableCollection<Character> OpenCharacters
-        {
-            get { return _lstCharacters; }
-        }
+        public ObservableCollection<Character> OpenCharacters => _lstCharacters;
 
-        public IList<CharacterShared> OpenCharacterForms
-        {
-            get { return _lstOpenCharacterForms; }
-        }
-#endregion
+        public IList<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
+
+        #endregion
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {

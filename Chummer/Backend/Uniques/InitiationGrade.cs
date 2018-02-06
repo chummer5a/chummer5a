@@ -182,25 +182,19 @@ namespace Chummer
         {
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
             strReturn.Append(' ');
-            strReturn.Append(_intGrade.ToString());
+            strReturn.Append(Grade.ToString());
             if (Group || Ordeal)
             {
                 strReturn.Append(" (");
                 if (Group)
                 {
-                    if (_blnTechnomancer)
-                        strReturn.Append(LanguageManager.GetString("String_Network", strLanguage));
-                    else
-                        strReturn.Append(LanguageManager.GetString("String_Group", strLanguage));
+                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
                         strReturn.Append(", ");
                 }
                 if (Ordeal)
                 {
-                    if (Technomancer)
-                        strReturn.Append(LanguageManager.GetString("String_Task", strLanguage));
-                    else
-                        strReturn.Append(LanguageManager.GetString("String_Ordeal", strLanguage));
+                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
                         strReturn.Append(", ");
                 }

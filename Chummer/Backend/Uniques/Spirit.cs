@@ -605,15 +605,9 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
 
-        public Character LinkedCharacter
-        {
-            get => _objLinkedCharacter;
-        }
+        public Character LinkedCharacter => _objLinkedCharacter;
 
-        public bool NoLinkedCharacter
-        {
-            get => _objLinkedCharacter == null;
-        }
+        public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
         public void RefreshLinkedCharacter(bool blnShowError)
         {
@@ -644,10 +638,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5"))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    if (objOpenCharacter != null)
-                        _objLinkedCharacter = objOpenCharacter;
-                    else
-                        _objLinkedCharacter = Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
                 }

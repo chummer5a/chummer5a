@@ -379,13 +379,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Only items that grant Capacity should be shown.
@@ -418,10 +412,7 @@ namespace Chummer
         /// </summary>
         public bool ShowArmorCapacityOnly
         {
-            set
-            {
-                _blnShowArmorCapacityOnly = value;
-            }
+            set => _blnShowArmorCapacityOnly = value;
         }
 
         /// <summary>
@@ -429,37 +420,19 @@ namespace Chummer
         /// </summary>
         public string SelectedGear
         {
-            get
-            {
-                return _strSelectedGear;
-            }
-            set
-            {
-                _strSelectedGear = value;
-            }
+            get => _strSelectedGear;
+            set => _strSelectedGear = value;
         }
 
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating
-        {
-            get
-            {
-                return _intSelectedRating;
-            }
-        }
+        public int SelectedRating => _intSelectedRating;
 
         /// <summary>
         /// Quantity that was selected in the dialogue.
         /// </summary>
-        public decimal SelectedQty
-        {
-            get
-            {
-                return _decSelectedQty;
-            }
-        }
+        public decimal SelectedQty => _decSelectedQty;
 
         /// <summary>
         /// Set the maximum Capacity the piece of Gear is allowed to be.
@@ -478,59 +451,29 @@ namespace Chummer
         /// </summary>
         public string AllowedCategories
         {
-            get
-            {
-                return _strAllowedCategories;
-            }
-            set
-            {
-                _strAllowedCategories = value;
-            }
+            get => _strAllowedCategories;
+            set => _strAllowedCategories = value;
         }
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Whether or not the item's cost should be cut in half for being a Do It Yourself component/upgrade.
         /// </summary>
-        public bool DoItYourself
-        {
-            get
-            {
-                return chkDoItYourself.Checked;
-            }
-        }
+        public bool DoItYourself => chkDoItYourself.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Whether or not the Gear should stack with others if possible.
         /// </summary>
-        public bool Stack
-        {
-            get
-            {
-                return chkStack.Checked;
-            }
-        }
+        public bool Stack => chkStack.Checked;
 
         /// <summary>
         /// Whether or not the Stack Checkbox should be shown (default true).
@@ -550,33 +493,18 @@ namespace Chummer
         /// </summary>
         public CapacityStyle CapacityDisplayStyle
         {
-            set
-            {
-                _eCapacityStyle = value;
-            }
+            set => _eCapacityStyle = value;
         }
 
         /// <summary>
         /// Whether or not a Grenade is Aerodynamic.
         /// </summary>
-        public bool Aerodynamic
-        {
-            get
-            {
-                return chkAerodynamic.Checked;
-            }
-        }
+        public bool Aerodynamic => chkAerodynamic.Checked;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Default text string to filter by.
@@ -890,10 +818,7 @@ namespace Chummer
                         if (strCapacityText.StartsWith("FixedValues("))
                         {
                             string[] strValues = strCapacityText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                            if (strValues.Length >= decimal.ToInt32(nudRating.Value))
-                                lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
-                            else
-                                lblCapacity.Text = "0";
+                            lblCapacity.Text = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                         }
                         else
                         {
@@ -953,10 +878,7 @@ namespace Chummer
                     }
                 }
 
-                if (nudRating.Minimum == nudRating.Maximum)
-                    nudRating.Enabled = false;
-                else
-                    nudRating.Enabled = true;
+                nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
             }
             else
             {
@@ -1054,7 +976,7 @@ namespace Chummer
                 if (!blnDoUIUpdate ||
                     ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))))
+                    SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter.Nuyen, decCostMultiplier)))))
                 {
                     string strDisplayName = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
 

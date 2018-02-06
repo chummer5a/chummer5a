@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,22 +41,16 @@ namespace Chummer
         private void frmSelectSkillCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Skill Categories found in the Skills file.
-            XmlNodeList objXmlCategoryList;
             List<ListItem> lstCategory = new List<ListItem>();
-            if (!string.IsNullOrEmpty(_strForceCategory))
-            {
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
-            }
-            else
-            {
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            }
-
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
-                string strInnerText = objXmlCategory.InnerText;
-                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes["translate"]?.InnerText ?? strInnerText));
-            }
+            using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
+                ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                : _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (objXmlCategoryList != null)
+                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    {
+                        string strInnerText = objXmlCategory.InnerText;
+                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -81,23 +75,14 @@ namespace Chummer
         /// <summary>
         /// Weapon Category that was selected in the dialogue.
         /// </summary>
-        public string SelectedCategory
-        {
-            get
-            {
-                return _strSelectedCategory;
-            }
-        }
+        public string SelectedCategory => _strSelectedCategory;
 
         /// <summary>
         /// Description to show in the window.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -105,10 +90,7 @@ namespace Chummer
         /// </summary>
         public string OnlyCategory
         {
-            set
-            {
-                _strForceCategory = value;
-            }
+            set => _strForceCategory = value;
         }
         #endregion
     }

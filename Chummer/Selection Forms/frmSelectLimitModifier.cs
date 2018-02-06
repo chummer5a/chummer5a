@@ -67,14 +67,8 @@ namespace Chummer
         /// </summary>
         public string SelectedName
         {
-            get
-            {
-                return _strReturnName;
-            }
-            set
-            {
-                txtName.Text = value;
-            }
+            get => _strReturnName;
+            set => txtName.Text = value;
         }
 
         /// <summary>
@@ -82,14 +76,8 @@ namespace Chummer
         /// </summary>
         public string SelectedCondition
         {
-            get
-            {
-                return _strCondition;
-            }
-            set
-            {
-                txtCondition.Text = value;
-            }
+            get => _strCondition;
+            set => txtCondition.Text = value;
         }
 
         /// <summary>
@@ -97,14 +85,8 @@ namespace Chummer
         /// </summary>
         public int SelectedBonus
         {
-            get
-            {
-                return _intBonus;
-            }
-            set
-            {
-                nudBonus.Value = value;
-            }
+            get => _intBonus;
+            set => nudBonus.Value = value;
         }
 
         #endregion

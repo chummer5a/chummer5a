@@ -88,10 +88,7 @@ namespace Chummer
 
                 return _subject;
             }
-            set
-            {
-                _subject = value;
-            }
+            set => _subject = value;
         }
 
         public CrashReportData(Guid repordGuid)

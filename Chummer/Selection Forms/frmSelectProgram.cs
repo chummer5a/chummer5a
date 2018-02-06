@@ -155,24 +155,13 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Program that was selected in the dialogue.
         /// </summary>
-        public string SelectedComplexForm
-        {
-            get
-            {
-                return _strSelectedComplexForm;
-            }
-        }
+        public string SelectedComplexForm => _strSelectedComplexForm;
+
         #endregion
 
         #region Methods

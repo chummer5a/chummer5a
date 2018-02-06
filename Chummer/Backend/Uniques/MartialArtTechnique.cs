@@ -134,10 +134,7 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set
-            {
-                _strName = value;
-            }
+            set => _strName = value;
         }
 
         /// <summary>

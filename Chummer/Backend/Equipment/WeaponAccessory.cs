@@ -366,23 +366,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -397,42 +388,24 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AmmoSlots
         {
-            get
-            {
-                return _intAmmoSlots;
-            }
-            set
-            {
-                _intAmmoSlots = value;
-            }
+            get => _intAmmoSlots;
+            set => _intAmmoSlots = value;
         }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
         /// </summary>
         public string Damage
         {
-            get
-            {
-                return _strDamage;
-            }
-            set
-            {
-                _strDamage = value;
-            }
+            get => _strDamage;
+            set => _strDamage = value;
         }
         /// <summary>
         /// The Accessory replaces the weapon's damage value.
         /// </summary>
         public string DamageReplacement
         {
-            get
-            {
-                return _strDamageReplace;
-            }
-            set
-            {
-                _strDamageReplace = value;
-            }
+            get => _strDamageReplace;
+            set => _strDamageReplace = value;
         }
 
         /// <summary>
@@ -440,14 +413,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DamageType
         {
-            get
-            {
-                return _strDamageType;
-            }
-            set
-            {
-                _strDamageType = value;
-            }
+            get => _strDamageType;
+            set => _strDamageType = value;
         }
 
         /// <summary>
@@ -455,26 +422,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AP
         {
-            get
-            {
-                return _strAP;
-            }
-            set
-            {
-                _strAP = value;
-            }
+            get => _strAP;
+            set => _strAP = value;
         }
 
         /// <summary>
         /// Whether the Accessory only grants a Recoil Bonus while deployed.
         /// </summary>
-        public bool RCDeployable
-        {
-            get
-            {
-                return _blnDeployable;
-            }
-        }
+        public bool RCDeployable => _blnDeployable;
 
         /// <summary>
         /// Accuracy.
@@ -495,14 +450,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string APReplacement
         {
-            get
-            {
-                return _strAPReplace;
-            }
-            set
-            {
-                _strAPReplace = value;
-            }
+            get => _strAPReplace;
+            set => _strAPReplace = value;
         }
 
         /// <summary>
@@ -510,14 +459,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string FireMode
         {
-            get
-            {
-                return _strFireMode;
-            }
-            set
-            {
-                _strFireMode = value;
-            }
+            get => _strFireMode;
+            set => _strFireMode = value;
         }
 
         /// <summary>
@@ -525,14 +468,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string FireModeReplacement
         {
-            get
-            {
-                return _strFireModeReplace;
-            }
-            set
-            {
-                _strFireModeReplace = value;
-            }
+            get => _strFireModeReplace;
+            set => _strFireModeReplace = value;
         }
 
         /// <summary>
@@ -566,14 +503,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Mount
         {
-            get
-            {
-                return _strMount;
-            }
-            set
-            {
-                _strMount = value;
-            }
+            get => _strMount;
+            set => _strMount = value;
         }
         
         /// <summary>
@@ -581,14 +512,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ExtraMount
         {
-            get
-            {
-                return _strExtraMount;
-            }
-            set
-            {
-                _strExtraMount = value;
-            }
+            get => _strExtraMount;
+            set => _strExtraMount = value;
         }
 
         /// <summary>
@@ -596,40 +521,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string RC
         {
-            get
-            {
-                return _strRC;
-            }
-            set
-            {
-                _strRC = value;
-            }
+            get => _strRC;
+            set => _strRC = value;
         }
 
         /// <summary>
         /// Recoil Group.
         /// </summary>
-        public int RCGroup
-        {
-            get
-            {
-                return _intRCGroup;
-            }
-        }
+        public int RCGroup => _intRCGroup;
 
         /// <summary>
         /// Concealability.
         /// </summary>
         public string Concealability
         {
-            get
-            {
-                return _strConceal;
-            }
-            set
-            {
-                _strConceal = value;
-            }
+            get => _strConceal;
+            set => _strConceal = value;
         }
 
         public int TotalConcealability
@@ -664,14 +571,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-            }
+            get => _intRating;
+            set => _intRating = value;
         }
 
         /// <summary>
@@ -679,14 +580,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -702,10 +597,7 @@ namespace Chummer.Backend.Equipment
                 else
                     return _strCost;
             }
-            set
-            {
-                _strCost = value;
-            }
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -713,14 +605,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -739,14 +625,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool IncludedInWeapon
         {
-            get
-            {
-                return _blnIncludedInWeapon;
-            }
-            set
-            {
-                _blnIncludedInWeapon = value;
-            }
+            get => _blnIncludedInWeapon;
+            set => _blnIncludedInWeapon = value;
         }
 
         /// <summary>
@@ -754,14 +634,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Installed
         {
-            get
-            {
-                return _blnInstalled;
-            }
-            set
-            {
-                _blnInstalled = value;
-            }
+            get => _blnInstalled;
+            set => _blnInstalled = value;
         }
 
         /// <summary>
@@ -769,14 +643,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -854,40 +722,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode AllowGear
         {
-            get
-            {
-                return _nodAllowGear;
-            }
-            set
-            {
-                _nodAllowGear = value;
-            }
+            get => _nodAllowGear;
+            set => _nodAllowGear = value;
         }
 
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear
-        {
-            get
-            {
-                return _lstGear;
-            }
-        }
-        
+        public TaggedObservableCollection<Gear> Gear => _lstGear;
+
         /// <summary>
         /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
-            get
-            {
-                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
-            }
-            set
-            {
-                _blnDiscountCost = value;
-            }
+            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            set => _blnDiscountCost = value;
         }
 
         /// <summary>
@@ -895,14 +745,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Weapon Parent
         {
-            get
-            {
-                return _objParent;
-            }
-            set
-            {
-                _objParent = value;
-            }
+            get => _objParent;
+            set => _objParent = value;
         }
 
         /// <summary>
@@ -955,27 +799,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private string DicePoolString
-        {
-            get
-            {
-                return _strDicePool;
-            }
-        }
+        private string DicePoolString => _strDicePool;
 
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified percent.
         /// </summary>
         public int AmmoBonus
         {
-            get
-            {
-                return _intAmmoBonus;
-            }
-            set
-            {
-                _intAmmoBonus = value;
-            }
+            get => _intAmmoBonus;
+            set => _intAmmoBonus = value;
         }
 
         /// <summary>
@@ -983,14 +815,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AmmoReplace
         {
-            get
-            {
-                return _strAmmoReplace;
-            }
-            set
-            {
-                _strAmmoReplace = value;
-            }
+            get => _strAmmoReplace;
+            set => _strAmmoReplace = value;
         }
 
         /// <summary>
@@ -998,14 +824,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AccessoryCostMultiplier
         {
-            get
-            {
-                return _intAccessoryCostMultiplier;
-            }
-            set
-            {
-                _intAccessoryCostMultiplier = value;
-            }
+            get => _intAccessoryCostMultiplier;
+            set => _intAccessoryCostMultiplier = value;
         }
 
         /// <summary>
@@ -1013,62 +833,32 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AddMode
         {
-            get
-            {
-                return _strAddMode;
-            }
-            set
-            {
-                _strAddMode = value;
-            }
+            get => _strAddMode;
+            set => _strAddMode = value;
         }
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.
         /// </summary>
-        public int FullBurst
-        {
-            get
-            {
-                return _intFullBurst;
-            }
-        }
+        public int FullBurst => _intFullBurst;
 
         /// <summary>
         /// Number of rounds consumed by Suppressive Fire.
         /// </summary>
-        public int Suppressive
-        {
-            get
-            {
-                return _intSuppressive;
-            }
-        }
+        public int Suppressive => _intSuppressive;
 
         /// <summary>
         /// Range bonus granted by the Accessory.
         /// </summary>
-        public int RangeBonus
-        {
-            get
-            {
-                return _intRangeBonus;
-            }
-        }
+        public int RangeBonus => _intRangeBonus;
 
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
         
         /// <summary>
@@ -1076,14 +866,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool BlackMarketDiscount
         {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-            set
-            {
-                _blnBlackMarketDiscount = value;
-            }
+            get => _blnBlackMarketDiscount;
+            set => _blnBlackMarketDiscount = value;
         }
         
         private XmlNode _objCachedMyXmlNode;

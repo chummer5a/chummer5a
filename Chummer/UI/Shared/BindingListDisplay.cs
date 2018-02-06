@@ -76,13 +76,7 @@ namespace Chummer.UI.Shared
         /// <summary>
         /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public BindingList<TType> Contents
-        {
-            get
-            {
-                return _contents;
-            }
-        }
+        public BindingList<TType> Contents => _contents;
 
         private void LoadRange(int min, int max)
         {

@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -263,13 +263,8 @@ namespace Chummer
             /// <summary>
             /// Contact object this is linked to.
             /// </summary>
-        public Contact ContactObject
-        {
-            get
-            {
-                return _objContact;
-            }
-        }
+        public Contact ContactObject => _objContact;
+
         #endregion
     }
 }

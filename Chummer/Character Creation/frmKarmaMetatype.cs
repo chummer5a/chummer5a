@@ -752,10 +752,7 @@ namespace Chummer
                     strbldQualities.Append('\n');
                 }
 
-                if (strbldQualities.Length == 0)
-                    lblQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                else
-                    lblQualities.Text = strbldQualities.ToString();
+                lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();
 
                 lblBP.Text = objXmlMetavariant["karma"].InnerText;
             }
@@ -844,10 +841,7 @@ namespace Chummer
                     strbldQualities.Append('\n');
                 }
 
-                if (strbldQualities.Length == 0)
-                    lblQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                else
-                    lblQualities.Text = strbldQualities.ToString();
+                lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();
 
                 lblBP.Text = objXmlMetatype["karma"].InnerText;
             }

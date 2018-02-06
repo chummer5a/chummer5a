@@ -80,34 +80,19 @@ namespace Chummer
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
-        public string SelectedLimit
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedLimit => _strReturnValue;
 
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
-        public string SelectedDisplayLimit
-        {
-            get
-            {
-                return _strSelectedDisplayLimit;
-            }
-        }
+        public string SelectedDisplayLimit => _strSelectedDisplayLimit;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
         #endregion
     }

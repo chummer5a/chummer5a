@@ -105,14 +105,8 @@ namespace Chummer
         /// </summary>
         public static frmChummerMain MainForm
         {
-            get
-            {
-                return s_FrmMainForm;
-            }
-            set
-            {
-                s_FrmMainForm = value;
-            }
+            get => s_FrmMainForm;
+            set => s_FrmMainForm = value;
         }
 
         static readonly ExceptionHeatMap s_Heatmap = new ExceptionHeatMap();
@@ -134,9 +128,6 @@ namespace Chummer
             Environment.CurrentDirectory = Application.StartupPath;
         }
 
-        public static Mutex GlobalChummerMutex
-        {
-            get { return s_MutexGlobal; }
-        }
+        public static Mutex GlobalChummerMutex => s_MutexGlobal;
     }
 }

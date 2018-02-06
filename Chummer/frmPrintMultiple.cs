@@ -137,21 +137,9 @@ namespace Chummer
 
         private frmViewer _frmPrintView;
 
-        public frmViewer PrintViewForm
-        {
-            get
-            {
-                return _frmPrintView;
-            }
-        }
+        public frmViewer PrintViewForm => _frmPrintView;
 
-        public IList<Character> CharacterList
-        {
-            get
-            {
-                return _lstCharacters;
-            }
-        }
+        public IList<Character> CharacterList => _lstCharacters;
 
         private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
         {

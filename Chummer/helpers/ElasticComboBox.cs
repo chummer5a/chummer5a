@@ -46,19 +46,15 @@ namespace Chummer
 
         public ElasticComboBox(ToolTip objToolTip) : base()
         {
-            _tt = objToolTip;
-            if (_tt == null)
+            _tt = objToolTip ?? new ToolTip
             {
-                _tt = new ToolTip
-                {
-                    AutoPopDelay = 1500,
-                    InitialDelay = 400,
-                    UseAnimation = true,
-                    UseFading = true,
-                    Active = true
-                };
-            }
-            
+                AutoPopDelay = 1500,
+                InitialDelay = 400,
+                UseAnimation = true,
+                UseFading = true,
+                Active = true
+            };
+
             MouseEnter += Label_MouseEnter;
             MouseLeave += Label_MouseLeave;
 
@@ -79,7 +75,7 @@ namespace Chummer
 
         public new object DataSource
         {
-            get { return base.DataSource; }
+            get => base.DataSource;
             set
             {
                 if (base.DataSource != value)
@@ -91,7 +87,7 @@ namespace Chummer
         }
         public new string DisplayMember
         {
-            get { return base.DisplayMember; }
+            get => base.DisplayMember;
             set
             {
                 if (base.DisplayMember != value)
@@ -103,7 +99,7 @@ namespace Chummer
         }
         public new string ValueMember
         {
-            get { return base.ValueMember; }
+            get => base.ValueMember;
             set
             {
                 if (base.ValueMember != value)
@@ -119,7 +115,9 @@ namespace Chummer
             float fltMaxItemWidth = Width;
             foreach (var objItem in Items)
             {
-                string strItemText = ((ListItem)objItem).Name;
+                string strItemText = string.Empty;
+                if (objItem is ListItem objListItem)
+                    strItemText = objListItem.Name;
                 if (string.IsNullOrEmpty(strItemText))
                     strItemText = GetItemText(objItem);
                 float fltLoopItemWidth = _objGraphics.MeasureString(strItemText, Font).Width;

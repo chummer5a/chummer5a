@@ -202,90 +202,43 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of Vehicle that was selected in the dialogue.
         /// </summary>
-        public string SelectedVehicle
-        {
-            get
-            {
-                return _strSelectedVehicle;
-            }
-        }
+        public string SelectedVehicle => _strSelectedVehicle;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool UsedVehicle
-        {
-            get
-            {
-                return _blnUsedVehicle;
-            }
-        }
+        public bool UsedVehicle => _blnUsedVehicle;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Cost of the Vehicle's cost by when it is used.
         /// </summary>
-        public decimal UsedCost
-        {
-            get
-            {
-                return _decUsedCost;
-            }
-        }
+        public decimal UsedCost => _decUsedCost;
 
         /// <summary>
         /// Vehicle's Aavailability when it is used.
         /// </summary>
-        public string UsedAvail
-        {
-            get
-            {
-                return _strUsedAvail;
-            }
-        }
+        public string UsedAvail => _strUsedAvail;
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
+
         #endregion
 
         #region Methods

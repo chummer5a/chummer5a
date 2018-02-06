@@ -32,13 +32,7 @@ namespace Chummer
             _strLanguage = strLanguage;
         }
 
-        public string Language
-        {
-            get
-            {
-                return _strLanguage;
-            }
-        }
+        public string Language => _strLanguage;
 
         public void Add(T orginal, T translated)
         {

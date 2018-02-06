@@ -333,11 +333,9 @@ namespace Chummer.Classes
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
-            if (!string.IsNullOrEmpty(_strFriendlyName))
-                frmPickSkillGroup.Description =
-                    LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-            else
-                frmPickSkillGroup.Description = LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language);
+            frmPickSkillGroup.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                ? LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language);
 
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
@@ -584,11 +582,9 @@ namespace Chummer.Classes
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
-            if (!string.IsNullOrEmpty(_strFriendlyName))
-                frmPickSkillGroup.Description =
-                    LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-            else
-                frmPickSkillGroup.Description = LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language);
+            frmPickSkillGroup.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                ? LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language);
 
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
@@ -685,10 +681,9 @@ namespace Chummer.Classes
 
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
+                frmPickAttribute.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
                 frmPickAttribute.ShowDialog();
 
@@ -783,11 +778,9 @@ namespace Chummer.Classes
 
             // Display the Select Attribute window and record which Skill was selected.
             frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
-            if (!string.IsNullOrEmpty(_strFriendlyName))
-                frmPickAttribute.Description =
-                    LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-            else
-                frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
+            frmPickAttribute.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
             Log.Info("selectattribute = " + bonusNode.OuterXml);
 
@@ -879,10 +872,9 @@ namespace Chummer.Classes
 
             // Display the Select Limit window and record which Limit was selected.
             frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray());
-            if (!string.IsNullOrEmpty(_strFriendlyName))
-                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-            else
-                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language);
+            frmPickLimit.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                ? LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language);
 
             frmPickLimit.ShowDialog();
 
@@ -1009,11 +1001,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickAttribute.Description =
-                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
+                frmPickAttribute.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
                 frmPickAttribute.ShowDialog();
 
@@ -1130,11 +1120,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickAttribute.Description =
-                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
+                frmPickAttribute.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
                 frmPickAttribute.ShowDialog();
 
@@ -1856,11 +1844,9 @@ namespace Chummer.Classes
                 }
 
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickAttribute.Description =
-                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
+                frmPickAttribute.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
                 Log.Info("attributelevel = " + bonusNode.OuterXml);
 
@@ -2157,10 +2143,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2176,10 +2159,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2195,10 +2175,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2214,10 +2191,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2233,10 +2207,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2252,10 +2223,7 @@ namespace Chummer.Classes
                 if (strBonus.StartsWith("FixedValues("))
                 {
                     string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (strValues.Length >= _intRating)
-                        strBonus = strValues[_intRating - 1];
-                    else
-                        strBonus = strValues[strValues.Length - 1];
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
@@ -2349,11 +2317,7 @@ namespace Chummer.Classes
                 strBonus = _intRating.ToString();
             }
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
-            int intBonus = 0;
-            if (strBonus == "Rating")
-                intBonus = _intRating;
-            else
-                intBonus = Convert.ToInt32(strBonus);
+            int intBonus = strBonus == "Rating" ? _intRating : Convert.ToInt32(strBonus);
             string strName = _strFriendlyName;
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strLimit, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
@@ -3014,11 +2978,9 @@ namespace Chummer.Classes
                     LimitToSkill = "Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat"
                 };
 
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickCategory.Description =
-                        LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language);
+                frmPickCategory.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language);
 
                 Log.Info("_strForcedValue = " + ForcedValue);
 
@@ -3085,11 +3047,9 @@ namespace Chummer.Classes
 
                 frmPickCategory.GeneralItems = lstGeneralItems;
 
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickCategory.Description =
-                        LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language);
+                frmPickCategory.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language);
 
                 Log.Info("_strForcedValue = " + ForcedValue);
 

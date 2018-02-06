@@ -165,8 +165,8 @@ namespace Chummer
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionStart
         {
-            get { return _textbox.SelectionStart; }
-            set { _textbox.SelectionStart = value; }
+            get => _textbox.SelectionStart;
+            set => _textbox.SelectionStart = value;
         }
 
 
@@ -174,8 +174,8 @@ namespace Chummer
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionLength
         {
-            get { return _textbox.SelectionLength; }
-            set { _textbox.SelectionLength = value; }
+            get => _textbox.SelectionLength;
+            set => _textbox.SelectionLength = value;
         }
 
 
@@ -183,8 +183,8 @@ namespace Chummer
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedText
         {
-            get { return _textbox.SelectedText; }
-            set { _textbox.SelectedText = value; }
+            get => _textbox.SelectedText;
+            set => _textbox.SelectedText = value;
         }
 
 
@@ -193,8 +193,8 @@ namespace Chummer
         [Description("Enables MouseWheel only under certain conditions.")]
         public InterceptMouseWheelMode InterceptMouseWheel
         {
-            get { return _interceptMouseWheel; }
-            set { _interceptMouseWheel = value; }
+            get => _interceptMouseWheel;
+            set => _interceptMouseWheel = value;
         }
 
         private InterceptMouseWheelMode _interceptMouseWheel = InterceptMouseWheelMode.Always;
@@ -217,7 +217,7 @@ namespace Chummer
         [Description("Set UpDownButtons visibility mode.")]
         public ShowUpDownButtonsMode ShowUpDownButtons
         {
-            get { return _showUpDownButtons; }
+            get => _showUpDownButtons;
             set
             {
                 _showUpDownButtons = value;
@@ -251,8 +251,8 @@ namespace Chummer
         [Description("Indicates the amount to increment or decrement with the use of the mouse wheel.")]
         public int MouseIncrement
         {
-            get { return _intMouseIncrement; }
-            set { _intMouseIncrement = value; }
+            get => _intMouseIncrement;
+            set => _intMouseIncrement = value;
         }
 
         /// <summary>
@@ -264,8 +264,8 @@ namespace Chummer
         [Description("If set, incrementing value will cause it to restart from Minimum when Maximum is reached (and viceversa).")]
         public bool WrapValue
         {
-            get { return _wrapValue; }
-            set { _wrapValue = value; }
+            get => _wrapValue;
+            set => _wrapValue = value;
         }
         private bool _wrapValue;
 

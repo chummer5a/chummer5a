@@ -31,8 +31,8 @@ namespace ChummerDataViewer.Model
 
 		public CrashReportProcessingProgress Progress
 		{
-			get { return _progress; }
-			private set
+			get => _progress;
+		    private set
 			{
 				_progress = value; 
 				ProgressChanged?.Invoke(this, EventArgs.Empty);

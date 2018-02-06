@@ -63,12 +63,8 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            if (_objSpirit.EntityType == SpiritType.Spirit)
-                nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpiritForce), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-            else
-                nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpriteLevel), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+            nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, _objSpirit.EntityType == SpiritType.Spirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             nudServices.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.ServicesOwed), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
@@ -81,10 +77,7 @@ namespace Chummer
                     DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
-                if (!string.IsNullOrEmpty(_objSpirit.FileName))
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
-                else
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_LinkSpirit", GlobalOptions.Language));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
@@ -96,10 +89,7 @@ namespace Chummer
                 chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
-                if (!string.IsNullOrEmpty(_objSpirit.FileName))
-                    tipTooltip.SetToolTip(imgLink, "Open the linked Sprite save file.");
-                else
-                    tipTooltip.SetToolTip(imgLink, "Link this Sprite to a Chummer save file.");
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
@@ -216,10 +206,7 @@ namespace Chummer
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                if (_objSpirit.EntityType ==  SpiritType.Spirit)
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_LinkSpirit", GlobalOptions.Language));
-                else
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_LinkSprite", GlobalOptions.Language));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(@Application.StartupPath);
@@ -246,10 +233,7 @@ namespace Chummer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 _objSpirit.FileName = openFileDialog.FileName;
-                if (_objSpirit.EntityType == SpiritType.Spirit)
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
-                else
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile", GlobalOptions.Language));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
                 ContactDetailChanged?.Invoke(this, e);
             }
         }
@@ -313,13 +297,8 @@ namespace Chummer
         /// <summary>
         /// Spirit object this is linked to.
         /// </summary>
-        public Spirit SpiritObject
-        {
-            get
-            {
-                return _objSpirit;
-            }
-        }
+        public Spirit SpiritObject => _objSpirit;
+
         #endregion
 
         #region Methods
@@ -336,7 +315,7 @@ namespace Chummer
             XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
-            foreach (Improvement improvement in _objSpirit.CharacterObject.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpiritCategory))
+            foreach (Improvement improvement in _objSpirit.CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
             {
                 lstLimitCategories.Add(improvement.ImprovedName);
             }
@@ -420,7 +399,7 @@ namespace Chummer
                 // Add any additional Sprites the character has Access to through Sprite Link.
                 foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite && objImprovement.Enabled)
                     {
                         XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]");
                         lstCritters.Add(new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));

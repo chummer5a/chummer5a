@@ -200,12 +200,8 @@ namespace Chummer.Backend.Attributes
 		public CharacterAttrib GetAttributeByName(string abbrev)
 		{
             bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
-            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute);
-            if (objReturn == null)
-			{
-                objReturn = SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
-            }
-			return objReturn;
+            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
+		    return objReturn;
 		}
 
 		public BindingSource GetAttributeBindingByName(string abbrev)

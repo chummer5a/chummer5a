@@ -34,13 +34,7 @@ namespace Chummer.Backend.Skills
             node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
-        public override bool AllowDelete
-        {
-            get
-            {
-                return !CharacterObject.Created;
-            }
-        }
+        public override bool AllowDelete => !CharacterObject.Created;
 
         public override int CurrentSpCost()
         {
@@ -56,13 +50,7 @@ namespace Chummer.Backend.Skills
             return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
         }
 
-        public override bool IsExoticSkill
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool IsExoticSkill => true;
 
         /// <summary>
         /// Called during save to allow derived classes to save additional infomation required to rebuild state
@@ -75,10 +63,7 @@ namespace Chummer.Backend.Skills
 
         public string Specific
         {
-            get
-            {
-                return _strSpecific;
-            }
+            get => _strSpecific;
             set
             {
                 _strSpecific = value;

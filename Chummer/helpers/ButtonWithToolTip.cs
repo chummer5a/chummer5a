@@ -28,10 +28,7 @@ namespace Chummer
         private string _strToolTipText = string.Empty;
         public string TooltipText
         {
-            get
-            {
-                return _strToolTipText;
-            }
+            get => _strToolTipText;
             set
             {
                 if (_strToolTipText != value)
@@ -47,18 +44,14 @@ namespace Chummer
 
         public ButtonWithToolTip(ToolTip objToolTip) : base()
         {
-            _tt = objToolTip;
-            if (_tt == null)
+            _tt = objToolTip ?? new ToolTip
             {
-                _tt = new ToolTip
-                {
-                    AutoPopDelay = 1500,
-                    InitialDelay = 400,
-                    UseAnimation = true,
-                    UseFading = true,
-                    Active = true
-                };
-            }
+                AutoPopDelay = 1500,
+                InitialDelay = 400,
+                UseAnimation = true,
+                UseFading = true,
+                Active = true
+            };
 
             MouseEnter += Label_MouseEnter;
             MouseLeave += Label_MouseLeave;

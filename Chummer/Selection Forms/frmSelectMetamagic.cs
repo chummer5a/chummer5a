@@ -129,13 +129,8 @@ namespace Chummer
         /// <summary>
         /// Id of Metamagic that was selected in the dialogue.
         /// </summary>
-        public string SelectedMetamagic
-        {
-            get
-            {
-                return _strSelectedMetamagic;
-            }
-        }
+        public string SelectedMetamagic => _strSelectedMetamagic;
+
         #endregion
 
         #region Methods

@@ -51,7 +51,7 @@ namespace Chummer
         private bool _blnRequestCharacterUpdate;
         private frmViewer _frmPrintView;
 
-        public CharacterShared(Character objCharacter)
+        protected CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
@@ -89,7 +89,7 @@ namespace Chummer
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
-        public CharacterShared()
+        protected CharacterShared()
         {
         }
 
@@ -141,11 +141,11 @@ namespace Chummer
             }
         }
 
-        public Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
+        protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
-        public void AutoSaveCharacter()
+        protected void AutoSaveCharacter()
         {
             Cursor = Cursors.WaitCursor;
             string strAutosavePath = Path.Combine(Application.StartupPath, "saves", "autosave");
@@ -271,22 +271,22 @@ namespace Chummer
                 StringBuilder objSocial = new StringBuilder(
                     $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence.ToString(GlobalOptions.CultureInfo)}] / 3");
 
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
-                    objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit
-                    || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit
-                    || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
-                    switch (objLoopImprovement.ImproveType)
+                    if (objLoopImprovement.Enabled)
                     {
-                        case Improvement.ImprovementType.PhysicalLimit:
-                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                            break;
-                        case Improvement.ImprovementType.MentalLimit:
-                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                            break;
-                        case Improvement.ImprovementType.SocialLimit:
-                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                            break;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.PhysicalLimit:
+                                objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                                break;
+                            case Improvement.ImprovementType.MentalLimit:
+                                objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                                break;
+                            case Improvement.ImprovementType.SocialLimit:
+                                objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                                break;
+                        }
                     }
                 }
 
@@ -6186,10 +6186,7 @@ namespace Chummer
 
         public bool IsDirty
         {
-            get
-            {
-                return _blnIsDirty;
-            }
+            get => _blnIsDirty;
             set
             {
                 if (_blnIsDirty != value)
@@ -6218,14 +6215,8 @@ namespace Chummer
 
         public bool IsCharacterUpdateRequested
         {
-            get
-            {
-                return _blnRequestCharacterUpdate;
-            }
-            set
-            {
-                _blnRequestCharacterUpdate = value;
-            }
+            get => _blnRequestCharacterUpdate;
+            set => _blnRequestCharacterUpdate = value;
         }
 
         public Character CharacterObject => _objCharacter;
@@ -6241,7 +6232,7 @@ namespace Chummer
             UpdateWindowTitle(false);
         }
 
-        public virtual string FormMode => string.Empty;
+        protected virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {
@@ -6368,14 +6359,8 @@ namespace Chummer
         /// </summary>
         public frmViewer PrintWindow
         {
-            get
-            {
-                return _frmPrintView;
-            }
-            set
-            {
-                _frmPrintView = value;
-            }
+            get => _frmPrintView;
+            set => _frmPrintView = value;
         }
 
         public void DoPrint()
@@ -6411,7 +6396,7 @@ namespace Chummer
         /// <param name="attributeText"></param>
         /// <param name="valueText"></param>
         /// <param name="tooltip"></param>
-        public void CalculateTraditionDrain(string strDrain, Improvement.ImprovementType drain, Label attributeText = null, Label valueText = null, ToolTip tooltip = null)
+        protected void CalculateTraditionDrain(string strDrain, Improvement.ImprovementType drain, Label attributeText = null, Label valueText = null, ToolTip tooltip = null)
         {
             if (string.IsNullOrWhiteSpace(strDrain) || (attributeText == null && valueText == null && tooltip == null))
                 return;

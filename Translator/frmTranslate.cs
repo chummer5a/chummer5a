@@ -708,29 +708,12 @@ namespace Translator
         #endregion
 
         #region Properties
-        public string Language
-        {
-            get
-            {
-                return _strLanguage;
-            }
-        }
+        public string Language => _strLanguage;
 
-        public string Code
-        {
-            get
-            {
-                return _strCode;
-            }
-        }
+        public string Code => _strCode;
 
-        public string ApplicationPath
-        {
-            get
-            {
-                return _strPath;
-            }
-        }
+        public string ApplicationPath => _strPath;
+
         #endregion
     }
 }

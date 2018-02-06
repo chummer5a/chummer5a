@@ -133,6 +133,7 @@ Application Changes:
 - Fixed various memory leaks that would occur whenever a character and/or a form were closed.
 - Added localization support to the About screen, file dialog filters, the JSON export dialog, karma and nuyen chart axes, and the application title.
 - Fixed an issue where weapon mounts would not get printed with vehicles. Fixes #2426.
+- Fixed an issues caused by the equipping or unequipping armor, armor mods, gear, or cyberware completely removing linked bonuses instead of just disabling them.
 
 Data Changes:
 

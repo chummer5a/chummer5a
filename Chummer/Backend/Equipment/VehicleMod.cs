@@ -285,9 +285,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             xmlChildrenNode = objNode["cyberwares"];
-            if (xmlChildrenNode != null)
-            {
-                XmlNodeList xmlNodeList = xmlChildrenNode.SelectNodes("cyberware");
+            using (XmlNodeList xmlNodeList = xmlChildrenNode?.SelectNodes("cyberware"))
                 if (xmlNodeList != null)
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
@@ -298,7 +296,6 @@ namespace Chummer.Backend.Equipment
                         objCyberware.Load(nodChild, blnCopy);
                         _lstCyberware.Add(objCyberware);
                     }
-            }
 
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
@@ -430,10 +427,7 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => _intRating;
-            set
-            {
-                _intRating = Math.Max(0, value);
-            }
+            set => _intRating = Math.Max(0, value);
         }
 
         /// <summary>

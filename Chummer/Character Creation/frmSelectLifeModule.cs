@@ -187,10 +187,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode
-        {
-            get { return Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language)); }
-        }
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {

@@ -129,23 +129,14 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of the Program the Option will be added to.
         /// </summary>
         public string ProgramName
         {
-            set
-            {
-                _strProgramName = value;
-            }
+            set => _strProgramName = value;
         }
 
         /// <summary>
@@ -153,33 +144,19 @@ namespace Chummer
         /// </summary>
         public string ProgramCategory
         {
-            set
-            {
-                _strProgramCategory = value;
-            }
+            set => _strProgramCategory = value;
         }
 
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public IList<string> ProgramTags
-        {
-            get
-            {
-                return _lstTags;
-            }
-        }
+        public IList<string> ProgramTags => _lstTags;
 
         /// <summary>
         /// Program Option that was selected in the dialogue.
         /// </summary>
-        public string SelectedOption
-        {
-            get
-            {
-                return _strSelectedOption;
-            }
-        }
+        public string SelectedOption => _strSelectedOption;
+
         #endregion
 
         #region Methods

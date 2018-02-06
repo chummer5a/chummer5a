@@ -285,10 +285,7 @@ namespace Chummer
         /// </summary>
         public string OnlyCategory
         {
-            set
-            {
-                _strIncludeCategory = value;
-            }
+            set => _strIncludeCategory = value;
         }
 
         /// <summary>
@@ -317,10 +314,7 @@ namespace Chummer
         /// </summary>
         public string ExcludeCategory
         {
-            set
-            {
-                _strExcludeCategory = value;
-            }
+            set => _strExcludeCategory = value;
         }
 
         /// <summary>
@@ -328,10 +322,7 @@ namespace Chummer
         /// </summary>
         public string OnlySkillGroup
         {
-            set
-            {
-                _strIncludeSkillGroup = value;
-            }
+            set => _strIncludeSkillGroup = value;
         }
 
         /// <summary>
@@ -339,10 +330,7 @@ namespace Chummer
         /// </summary>
         public string OnlySkill
         {
-            set
-            {
-                _strForceSkill = value;
-            }
+            set => _strForceSkill = value;
         }
 
         /// <summary>
@@ -350,10 +338,7 @@ namespace Chummer
         /// </summary>
         public string ExcludeSkillGroup
         {
-            set
-            {
-                _strExcludeSkillGroup = value;
-            }
+            set => _strExcludeSkillGroup = value;
         }
 
         /// <summary>
@@ -361,32 +346,20 @@ namespace Chummer
         /// </summary>
         public string LimitToSkill
         {
-            set
-            {
-                _strLimitToSkill = value;
-            }
+            set => _strLimitToSkill = value;
         }
 
         /// <summary>
         /// Skill that was selected in the dialogue.
         /// </summary>
-        public string SelectedSkill
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedSkill => _strReturnValue;
 
         /// <summary>
         /// Description to show in the window.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -394,10 +367,7 @@ namespace Chummer
         /// </summary>
         public bool ShowKnowledgeSkills
         {
-            set
-            {
-                _blnKnowledgeSkill = value;
-            }
+            set => _blnKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -405,10 +375,7 @@ namespace Chummer
         /// </summary>
         public int MinimumRating
         {
-            set
-            {
-                _intMinimumRating = value;
-            }
+            set => _intMinimumRating = value;
         }
 
         /// <summary>
@@ -416,10 +383,7 @@ namespace Chummer
         /// </summary>
         public int MaximumRating
         {
-            set
-            {
-                _intMaximumRating = value;
-            }
+            set => _intMaximumRating = value;
         }
         #endregion
 

@@ -126,14 +126,7 @@ namespace Chummer
         
         private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSpec.SelectedValue?.ToString() == "Custom")
-            {
-                cboSpec.DropDownStyle = ComboBoxStyle.DropDown;
-            }
-            else
-            {
-                cboSpec.DropDownStyle = ComboBoxStyle.DropDownList;
-            }
+            cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
         }
         #endregion
 
@@ -173,14 +166,8 @@ namespace Chummer
         /// </summary>
         public bool BuyWithKarma
         {
-            get
-            {
-                return chkKarma.Checked;
-            }
-            set
-            {
-                chkKarma.Checked = value;
-            }
+            get => chkKarma.Checked;
+            set => chkKarma.Checked = value;
         }
         #endregion
 

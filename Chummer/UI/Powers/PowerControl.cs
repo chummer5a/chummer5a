@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
  using System.ComponentModel;
  using System.Drawing;
  using System.Linq;
@@ -159,14 +159,8 @@ namespace Chummer
         /// </summary>
         public Power PowerObject
         {
-            get
-            {
-                return _objPower;
-            }
-            set
-            {
-                _objPower = value;
-            }
+            get => _objPower;
+            set => _objPower = value;
         }
 
         /// <summary>
@@ -174,14 +168,8 @@ namespace Chummer
         /// </summary>
         public string PowerName
         {
-            get
-            {
-                return _objPower.Name;
-            }
-            set
-            {
-                _objPower.Name = value;
-            }
+            get => _objPower.Name;
+            set => _objPower.Name = value;
         }
 
         /// <summary>
@@ -189,14 +177,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _objPower.Extra;
-            }
-            set
-            {
-                _objPower.Extra = value;
-            }
+            get => _objPower.Extra;
+            set => _objPower.Extra = value;
         }
 
         #endregion

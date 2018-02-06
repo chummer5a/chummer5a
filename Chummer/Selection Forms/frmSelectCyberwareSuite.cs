@@ -132,33 +132,19 @@ namespace Chummer
         /// </summary>
         public decimal CharacterESSMultiplier
         {
-            set
-            {
-                _decCharacterESSModifier = value;
-            }
+            set => _decCharacterESSModifier = value;
         }
 
         /// <summary>
         /// Name of Suite that was selected in the dialogue.
         /// </summary>
-        public string SelectedSuite
-        {
-            get
-            {
-                return _strSelectedSuite;
-            }
-        }
+        public string SelectedSuite => _strSelectedSuite;
 
         /// <summary>
         /// Total cost of the Cyberware Suite. This is done to make it easier to obtain the actual cost in Career Mode.
         /// </summary>
-        public decimal TotalCost
-        {
-            get
-            {
-                return _decCost;
-            }
-        }
+        public decimal TotalCost => _decCost;
+
         #endregion
 
         #region Methods

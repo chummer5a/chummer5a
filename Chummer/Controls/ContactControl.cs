@@ -342,13 +342,7 @@ namespace Chummer
         /// <summary>
         /// Contact object this is linked to.
         /// </summary>
-        public Contact ContactObject
-        {
-            get
-            {
-                return _objContact;
-            }
-        }
+        public Contact ContactObject => _objContact;
 
         public bool Expanded
         {

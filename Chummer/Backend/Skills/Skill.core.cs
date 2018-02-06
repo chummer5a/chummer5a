@@ -33,36 +33,27 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Base for internal use. No calling into other classes, making recursive loops impossible
         /// </summary>
-        internal int Ibase
-        {
-            get { return _intBase + FreeBase; }
-        }
+        internal int Ibase => _intBase + FreeBase;
 
         /// <summary>
         /// Karma for internal use. No calling into other classes, making recursive loops impossible
         /// </summary>
-        internal int Ikarma
-        {
-            get { return _intKarma + FreeKarma; }
-        }
+        internal int Ikarma => _intKarma + FreeKarma;
 
         /// <summary>
         /// How many points REALLY are in _base. Better that subclasses calculating Base - FreeBase()
         /// </summary>
-        protected int BasePoints { get { return _intBase; } }
+        protected int BasePoints => _intBase;
 
         /// <summary>
         /// How many points REALLY are in _karma Better htan subclasses calculating Karma - FreeKarma()
         /// </summary>
-        protected int KarmaPoints { get { return _intKarma; } }
+        protected int KarmaPoints => _intKarma;
 
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked
-        {
-            get { return _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0); }
-        }
+        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0);
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interprentation of the rules
@@ -171,13 +162,7 @@ namespace Chummer.Backend.Skills
         /// Levels in this skill. Read only. You probably want to increase
         /// Karma instead
         /// </summary>
-        public int Rating
-        {
-            get
-            {
-                return Math.Max(CyberwareRating, TotalBaseRating);
-            }
-        }
+        public int Rating => Math.Max(CyberwareRating, TotalBaseRating);
 
         /// <summary>
         /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
@@ -199,20 +184,14 @@ namespace Chummer.Backend.Skills
         /// or other overrides for skill Rating. Read only, you probably want to 
         /// increase Karma instead.
         /// </summary>
-        public int LearnedRating
-        {
-            get { return Karma + Base; }
-        }
+        public int LearnedRating => Karma + Base;
 
         /// <summary>
         /// Is the specialization bought with karma. During career mode this is undefined
         /// </summary>
         public bool BuyWithKarma
         {
-            get
-            {
-                return _blnBuyWithKarma;
-            }
+            get => _blnBuyWithKarma;
             set
             {
                 _blnBuyWithKarma = (value || ForceBuyWithKarma()) && !UnForceBuyWithKarma();
@@ -262,7 +241,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.ReflexRecorderOptimization))
+                if (!CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                     return -1;
                 
                 Cyberware ware = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == s_GuiReflexRecorderId);
@@ -278,23 +257,12 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int PoolModifiers
-        {
-            get {
-                return Bonus(false);
-            }
-        }
+        public int PoolModifiers => Bonus(false);
 
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int RatingModifiers
-        {
-            get
-            {
-                return Bonus(true);
-            }
-        }
+        public int RatingModifiers => Bonus(true);
 
         protected int Bonus(bool blnAddToRating)
         {
@@ -359,13 +327,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int WoundModifier
-        {
-            get
-            {
-                return Math.Min(0, ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ConditionMonitor));
-            }
-        }
+        public int WoundModifier => Math.Min(0, ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ConditionMonitor));
 
         /// <summary>
         /// How much Sp this costs. Price during career mode is undefined

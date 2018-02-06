@@ -34,12 +34,9 @@ namespace Chummer
 	    private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
 
-        public WeaponMount WeaponMount
-        {
-            get => _objMount;
-        }
+        public WeaponMount WeaponMount => _objMount;
 
-        public frmCreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
+	    public frmCreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
 		{
             _xmlDoc = XmlManager.Load("vehicles.xml");
 		    _objVehicle = objVehicle;
@@ -641,31 +638,28 @@ namespace Chummer
         private void cmdDeleteMod_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treMods.SelectedNode;
-            if (objSelectedNode != null)
+            string strSelectedId = objSelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId) && strSelectedId.IsGuid())
             {
-                string strSelectedId = objSelectedNode.Tag.ToString();
-                if (!string.IsNullOrEmpty(strSelectedId) && strSelectedId.IsGuid())
+                VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
+                if (objMod != null && !objMod.IncludedInVehicle)
                 {
-                    VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
-                    if (objMod != null && !objMod.IncludedInVehicle)
-                    {
-                        if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                            return;
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                        return;
 
-                        _lstMods.Remove(objMod);
-                        foreach (Weapon objLoopWeapon in objMod.Weapons)
-                        {
-                            objLoopWeapon.DeleteWeapon();
-                        }
-                        foreach (Cyberware objLoopCyberware in objMod.Cyberware)
-                        {
-                            objLoopCyberware.DeleteCyberware();
-                        }
-                        TreeNode objParentNode = objSelectedNode.Parent;
-                        objSelectedNode.Remove();
-                        if (objParentNode.Nodes.Count == 0)
-                            objParentNode.Remove();
+                    _lstMods.Remove(objMod);
+                    foreach (Weapon objLoopWeapon in objMod.Weapons)
+                    {
+                        objLoopWeapon.DeleteWeapon();
                     }
+                    foreach (Cyberware objLoopCyberware in objMod.Cyberware)
+                    {
+                        objLoopCyberware.DeleteCyberware();
+                    }
+                    TreeNode objParentNode = objSelectedNode.Parent;
+                    objSelectedNode.Remove();
+                    if (objParentNode.Nodes.Count == 0)
+                        objParentNode.Remove();
                 }
             }
         }

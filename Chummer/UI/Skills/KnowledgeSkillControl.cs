@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
         {
             _skill = skill;
             InitializeComponent();
-
+            
             //Display
             lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -111,6 +111,8 @@ namespace Chummer.UI.Skills
 
             if (skill.ForcedName)
             {
+                DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
+
                 nudKarma.Visible = false;
                 nudSkill.Visible = false;
                 cboSkill.Enabled = false;

@@ -180,10 +180,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int Rating
-        {
-            get { return Karma + Base; }
-        }
+        public int Rating => Karma + Base;
 
         private int _intCachedFreeBase = int.MinValue;
         public int FreeBase
@@ -209,13 +206,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int RatingMaximum
-        {
-            get
-            {
-                return (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6);
-            }
-        }
+        public int RatingMaximum => (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6);
 
         public void Upgrade()
         {
@@ -367,14 +358,11 @@ namespace Chummer.Backend.Skills
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
 
-        public Character CharacterObject
-        {
-            get { return _objCharacter; }
-        }
+        public Character CharacterObject => _objCharacter;
 
         public string Name
         {
-            get { return _strGroupName; }
+            get => _strGroupName;
             set
             {
                 if (value != _strGroupName)
@@ -386,13 +374,7 @@ namespace Chummer.Backend.Skills
             }
         }
         
-        public string DisplayName
-        {
-            get
-            {
-                return DisplayNameMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayNameMethod(string strLanguage)
         {
@@ -430,8 +412,8 @@ namespace Chummer.Backend.Skills
         }
 
         private Guid _guidId = Guid.NewGuid();
-        public Guid Id { get => _guidId; }
-        public string InternalId { get => _guidId.ToString("D"); }
+        public Guid Id => _guidId;
+        public string InternalId => _guidId.ToString("D");
 
         #region HasWhateverSkills
         public bool HasCombatSkills
@@ -670,13 +652,8 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public IList<Skill> SkillList
-        {
-            get
-            {
-                return _lstAffectedSkills;
-            }
-        }
+        public IList<Skill> SkillList => _lstAffectedSkills;
+
         #endregion
     }
 }

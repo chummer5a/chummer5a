@@ -145,13 +145,8 @@ namespace Chummer
         /// <summary>
         /// Name of Metamagic that was selected in the dialogue.
         /// </summary>
-        public string SelectedItem
-        {
-            get
-            {
-                return _strSelectedItem;
-            }
-        }
+        public string SelectedItem => _strSelectedItem;
+
         #endregion
 
         #region Methods

@@ -229,8 +229,7 @@ namespace Chummer
             if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
             {
                 XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
-                if (objNewNode != null)
-                    objNewNode.TryGetField("id", Guid.TryParse, out _sourceID);
+                objNewNode?.TryGetField("id", Guid.TryParse, out _sourceID);
             }
         }
 
@@ -350,13 +349,7 @@ namespace Chummer
         /// <summary>
         /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
         /// </summary>
-        public string SourceID
-        {
-            get
-            {
-                return _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
-            }
-        }
+        public string SourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -376,13 +369,8 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
 
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
+
         #endregion
     }
 }

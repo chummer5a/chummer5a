@@ -500,20 +500,14 @@ namespace Chummer
         /// <summary>
         /// Set the window's Mode to Cyberware or Bioware.
         /// </summary>
-        private Mode WindowMode
-        {
-            get
-            {
-                return _objMode;
-            }
-        }
+        private Mode WindowMode => _objMode;
 
         /// <summary>
         /// Set the maximum Capacity the piece of Cyberware is allowed to be.
         /// </summary>
         public decimal MaximumCapacity
         {
-            get { return _decMaximumCapacity; }
+            get => _decMaximumCapacity;
             set
             {
                 _decMaximumCapacity = value;
@@ -526,10 +520,7 @@ namespace Chummer
         /// </summary>
         public string Subsystems
         {
-            set
-            {
-                _strSubsystems = value;
-            }
+            set => _strSubsystems = value;
         }
 
         /// <summary>
@@ -537,10 +528,7 @@ namespace Chummer
         /// </summary>
         public string DisallowedMounts
         {
-            set
-            {
-                _strDisallowedMounts = value;
-            }
+            set => _strDisallowedMounts = value;
         }
 
         /// <summary>
@@ -548,10 +536,7 @@ namespace Chummer
         /// </summary>
         public string HasModularMounts
         {
-            set
-            {
-                _strHasModularMounts = value;
-            }
+            set => _strHasModularMounts = value;
         }
 
         /// <summary>
@@ -1009,8 +994,8 @@ namespace Chummer
                 {
                     strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
                     strMinRating = strMinRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
-                    strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
                     try
                     {
                         intMinRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMinRating));
@@ -1022,8 +1007,8 @@ namespace Chummer
 
                     strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
                     strMaxRating = strMaxRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
-                    strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
                     try
                     {
                         intMaxRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMaxRating));

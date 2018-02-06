@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 ﻿using System.Linq;
 ﻿using System.Windows.Forms;
 
@@ -66,14 +66,8 @@ namespace Chummer
         /// </summary>
         public string SelectedValue
         {
-            get
-            {
-                return _strReturnValue;
-            }
-            set
-            {
-                txtValue.Text = value;
-            }
+            get => _strReturnValue;
+            set => txtValue.Text = value;
         }
 
         /// <summary>
@@ -81,10 +75,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         public bool PreventXPathErrors { get; internal set; }

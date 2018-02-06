@@ -272,13 +272,7 @@ namespace Chummer
         /// <summary>
         /// Quality that was selected in the dialogue.
         /// </summary>
-        public string SelectedQuality
-        {
-            get
-            {
-                return _strSelectedQuality;
-            }
-        }
+        public string SelectedQuality => _strSelectedQuality;
 
         /// <summary>
         /// Forcefully add a Category to the list.
@@ -305,24 +299,13 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Whether or not the item has no cost.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFree.Checked;
-            }
-        }
+        public bool FreeCost => chkFree.Checked;
+
         #endregion
 
         #region Methods

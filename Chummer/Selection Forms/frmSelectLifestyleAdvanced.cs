@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ using System.Collections.Generic;
   using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-﻿﻿using Chummer.Backend.Equipment;
+ ﻿using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -300,13 +300,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Lifestyle that was created in the dialogue.
@@ -318,14 +312,8 @@ namespace Chummer
         /// </summary>
         public LifestyleType StyleType
         {
-            get
-            {
-                return _eType;
-            }
-            set
-            {
-                _eType = value;
-            }
+            get => _eType;
+            set => _eType = value;
         }
         #endregion
 

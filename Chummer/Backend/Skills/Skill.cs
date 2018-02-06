@@ -102,7 +102,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteStartElement("skill");
 
             int intRating = PoolOtherAttribute(AttributeObject.TotalValue);
-            int intSpecRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition))
+            int intSpecRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? intRating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
                    CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired")
@@ -431,15 +431,9 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The total, general pourpose dice pool for this skill
         /// </summary>
-        public int Pool
-        {
-            get { return PoolOtherAttribute(AttributeObject.TotalValue); }
-        }
+        public int Pool => PoolOtherAttribute(AttributeObject.TotalValue);
 
-        public bool Leveled
-        {
-            get { return Rating > 0; }
-        }
+        public bool Leveled => Rating > 0;
 
         public bool CanHaveSpecs
         {
@@ -450,22 +444,13 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public Character CharacterObject
-        {
-            get { return _objCharacter; }
-        }
+        public Character CharacterObject => _objCharacter;
 
         //TODO change to the acctual characterattribute object
         /// <summary>
         /// The Abbreviation of the linke attribute. Not the object due legacy
         /// </summary>
-        public string Attribute
-        {
-            get
-            {
-                return AttributeObject.Abbrev;
-            }
-        }
+        public string Attribute => AttributeObject.Abbrev;
 
         /// <summary>
         /// The translated abbreviation of the linked attribute.
@@ -475,21 +460,18 @@ namespace Chummer.Backend.Skills
             return LanguageManager.GetString($"String_Attribute{AttributeObject.Abbrev}Short", strLanguage);
         }
 
-        public string DisplayAttribute
-        {
-            get
-            {
-                return DisplayAttributeMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
 
         private bool _blnOldEnable = true; //For OnPropertyChanged
 
+        private bool _blnEnabled = true;
         //TODO handle aspected/adepts who cannot (always) get magic skills
         public bool Enabled
         {
             get
             {
+                if (!_blnEnabled)
+                    return false;
                 if (Name.Contains("Flight"))
                 {
                     string strFlyString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
@@ -518,19 +500,22 @@ namespace Chummer.Backend.Skills
                     return AttributeObject.Value != 0;
                 }
             }
+            set
+            {
+                if (_blnEnabled != value)
+                {
+                    _blnEnabled = value;
+                    OnPropertyChanged(nameof(Enabled));
+                    _blnOldEnable = Enabled;
+                }
+            }
         }
 
         private bool _blnOldUpgrade;
 
-        public bool CanUpgradeCareer
-        {
-            get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > TotalBaseRating; }
-        }
+        public bool CanUpgradeCareer => CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > TotalBaseRating;
 
-        public virtual bool AllowDelete
-        {
-            get { return false; }
-        }
+        public virtual bool AllowDelete => false;
 
         public bool Default
         {
@@ -538,25 +523,16 @@ namespace Chummer.Backend.Skills
             {
                 return _blnDefault && !RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault).Any();
             }
-            set
-            {
-                _blnDefault = value;
-            }
+            set => _blnDefault = value;
         }
 
-        public virtual bool IsExoticSkill
-        {
-            get { return false; }
-        }
+        public virtual bool IsExoticSkill => false;
 
-        public virtual bool IsKnowledgeSkill
-        {
-            get { return false; }
-        }
+        public virtual bool IsKnowledgeSkill => false;
 
         public string Name
         {
-            get { return _strName; }
+            get => _strName;
             set
             {
                 if (value != _strName)
@@ -599,20 +575,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string SkillGroup
-        {
-            get { return _strGroup; }
-        }
+        public string SkillGroup => _strGroup;
 
-        public virtual string SkillCategory
-        {
-            get { return _strCategory; }
-        }
+        public virtual string SkillCategory => _strCategory;
 
-        public IReadOnlyList<ListItem> CGLSpecializations
-        {
-            get { return SuggestedSpecializations; }
-        }
+        public IReadOnlyList<ListItem> CGLSpecializations => SuggestedSpecializations;
 
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)
@@ -627,13 +594,7 @@ namespace Chummer.Backend.Skills
             return strReturn;
         }
 
-        public string DisplaySpecialization
-        {
-            get
-            {
-                return DisplaySpecializationMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplaySpecialization => DisplaySpecializationMethod(GlobalOptions.Language);
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specizalizations even if the rules say it is possible?
@@ -691,7 +652,7 @@ namespace Chummer.Backend.Skills
 
         public bool HasSpecialization(string strSpecialization)
         {
-            return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition));
+            return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
         }
 
         public string PoolToolTip
@@ -742,14 +703,9 @@ namespace Chummer.Backend.Skills
 
                 if (Default && !Leveled)
                 {
-                    if (DefaultModifier == 0)
-                    {
-                        s.Append(" Reflex Recorder Optimization ");
-                    }
-                    else
-                    {
-                        s.Append($" - {LanguageManager.GetString("Tip_Skill_Defaulting", GlobalOptions.Language)} (1)");
-                    }
+                    s.Append(DefaultModifier == 0
+                        ? ' ' + CharacterObject.GetObjectName(CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled), GlobalOptions.Language) + ' '
+                        : $" - {LanguageManager.GetString("Tip_Skill_Defaulting", GlobalOptions.Language)} (1)");
                 }
 
                 foreach (Improvement source in lstRelevantImprovements.Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
@@ -804,7 +760,7 @@ namespace Chummer.Backend.Skills
                     bool blnHaveSpec = false;
 
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
-                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == y.Name && string.IsNullOrEmpty(objImprovement.Condition))))
+                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == y.Name && string.IsNullOrEmpty(objImprovement.Condition) && objImprovement.Enabled)))
                     {
                         intBasePool += 2;
                         blnHaveSpec = true;
@@ -847,13 +803,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string UpgradeToolTip
-        {
-            get
-            {
-                return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost());
-            }
-        }
+        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost());
 
         public string AddSpecToolTip
         {
@@ -909,14 +859,8 @@ namespace Chummer.Backend.Skills
 
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         public SkillGroup SkillGroupObject { get; }
@@ -938,11 +882,8 @@ namespace Chummer.Backend.Skills
 
         #region Calculations
 
-        public int AttributeModifiers
-        {
-            get { return AttributeObject.TotalValue; }
-        }
-        
+        public int AttributeModifiers => AttributeObject.TotalValue;
+
         public string DisplayNameMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
@@ -951,13 +892,7 @@ namespace Chummer.Backend.Skills
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
-        public string DisplayName
-        {
-            get
-            {
-                return DisplayNameMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayCategory(string strLanguage)
         {
@@ -969,19 +904,13 @@ namespace Chummer.Backend.Skills
             return strReturn ?? SkillCategory;
         }
 
-        public virtual string DisplayPool
-        {
-            get
-            {
-                return DisplayOtherAttribue(AttributeObject.TotalValue);
-            }
-        }
+        public virtual string DisplayPool => DisplayOtherAttribue(AttributeObject.TotalValue);
 
         public string DisplayOtherAttribue(int attributeValue)
         {
             int pool = PoolOtherAttribute(attributeValue);
 
-            if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition)))
+            if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled))
             {
                 return pool.ToString();
             }
@@ -1003,18 +932,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private int _cachedWareRating = int.MinValue;
-        public int CachedWareRating
-        {
-            get
-            {
-                return _cachedWareRating;
-            }
-            set
-            {
-                _cachedWareRating = value;
-            }
-        }
+        public int CachedWareRating { get; set; } = int.MinValue;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -1184,7 +1102,7 @@ namespace Chummer.Backend.Skills
         {
             _intCachedFreeBase = int.MinValue;
             _intCachedFreeKarma = int.MinValue;
-            _cachedWareRating = int.MinValue;
+            CachedWareRating = int.MinValue;
             if (improvements.Any(imp => imp.ImprovedName == Name &&
                 (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.SkillBase ||
                 imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects)))

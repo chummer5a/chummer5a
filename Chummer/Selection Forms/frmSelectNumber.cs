@@ -56,14 +56,8 @@ namespace Chummer
         /// </summary>
         public decimal SelectedValue
         {
-            get
-            {
-                return _decReturnValue;
-            }
-            set
-            {
-                nudNumber.Value = value;
-            }
+            get => _decReturnValue;
+            set => nudNumber.Value = value;
         }
 
         /// <summary>
@@ -71,10 +65,7 @@ namespace Chummer
         /// </summary>
         public decimal Minimum
         {
-            set
-            {
-                nudNumber.Minimum = value;
-            }
+            set => nudNumber.Minimum = value;
         }
 
         /// <summary>
@@ -82,10 +73,7 @@ namespace Chummer
         /// </summary>
         public decimal Maximum
         {
-            set
-            {
-                nudNumber.Maximum = value;
-            }
+            set => nudNumber.Maximum = value;
         }
 
         /// <summary>
@@ -93,10 +81,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>

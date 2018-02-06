@@ -83,11 +83,8 @@ namespace Chummer.Backend.Skills
                     }
         } 
 
-        public override bool AllowDelete
-        {
-            get { return true; } //TODO LM
-        }
-        
+        public override bool AllowDelete => true;
+
         private string _strType = string.Empty;
         public bool ForcedName { get; }
 
@@ -104,10 +101,7 @@ namespace Chummer.Backend.Skills
 
         public string WriteableName
         {
-            get
-            {
-                return DisplayName;
-            }
+            get => DisplayName;
             set
             {
                 if (ForcedName)
@@ -178,10 +172,7 @@ namespace Chummer.Backend.Skills
             return false;
         }
 
-        public override string SkillCategory
-        {
-            get { return Type; }
-        }
+        public override string SkillCategory => Type;
 
         public override string DisplayPool
         {
@@ -227,7 +218,7 @@ namespace Chummer.Backend.Skills
 
         public string Type
         {
-            get { return _strType; }
+            get => _strType;
             set
             {
                 if (value != _strType)
@@ -440,9 +431,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override bool IsKnowledgeSkill
-        {
-            get { return true; }
-        }
+        public override bool IsKnowledgeSkill => true;
     }
 }

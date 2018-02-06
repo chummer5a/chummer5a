@@ -123,23 +123,14 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Armor's Cost.
         /// </summary>
         public decimal ArmorCost
         {
-            set
-            {
-                _decArmorCost = value;
-            }
+            set => _decArmorCost = value;
         }
 
         /// <summary>
@@ -147,105 +138,57 @@ namespace Chummer
         /// </summary>
         public decimal ArmorCapacity
         {
-            set
-            {
-                _decArmorCapacity = value;
-            }
+            set => _decArmorCapacity = value;
         }
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Name of Accessory that was selected in the dialogue.
         /// </summary>
-        public string SelectedArmorMod
-        {
-            get
-            {
-                return _strSelectedArmorMod;
-            }
-        }
+        public string SelectedArmorMod => _strSelectedArmorMod;
 
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating
-        {
-            get
-            {
-                return decimal.ToInt32(nudRating.Value);
-            }
-        }
+        public int SelectedRating => decimal.ToInt32(nudRating.Value);
 
         /// <summary>
         /// Categories that the Armor allows to be used.
         /// </summary>
         public string AllowedCategories
         {
-            get
-            {
-                return _strAllowedCategories;
-            }
-            set
-            {
-                _strAllowedCategories = value;
-            }
+            get => _strAllowedCategories;
+            set => _strAllowedCategories = value;
         }
 
         /// <summary>
         /// Whether or not the General category should be included.
         /// </summary>
         public bool ExcludeGeneralCategory {
-            get
-            {
-                return _blnExcludeGeneralCategory;
-            }
-            set
-            {
-                _blnExcludeGeneralCategory = value;
-            }
+            get => _blnExcludeGeneralCategory;
+            set => _blnExcludeGeneralCategory = value;
         }
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Capacity display style.
         /// </summary>
         public CapacityStyle CapacityDisplayStyle
         {
-            set
-            {
-                _eCapacityStyle = value;
-            }
+            set => _eCapacityStyle = value;
         }
         #endregion
 

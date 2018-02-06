@@ -201,10 +201,7 @@ namespace Chummer
         /// </summary>
         public string ForcedMentor
         {
-            set
-            {
-                _strForceMentor = value;
-            }
+            set => _strForceMentor = value;
         }
 
         /// <summary>

@@ -45,14 +45,8 @@ namespace Chummer
         /// </summary>
         public int Threshold 
         {
-            get
-            {
-                return decimal.ToInt32(nudThreshold.Value);
-            }
-            set
-            {
-                nudThreshold.Value = value;
-            }
+            get => decimal.ToInt32(nudThreshold.Value);
+            set => nudThreshold.Value = value;
         }
 
         /// <summary>
@@ -60,14 +54,8 @@ namespace Chummer
         /// </summary>
         public int Gremlins 
         {
-            get
-            {
-                return decimal.ToInt32(nudGremlins.Value);
-            }
-            set
-            {
-                nudGremlins.Value = value;
-            }
+            get => decimal.ToInt32(nudGremlins.Value);
+            set => nudGremlins.Value = value;
         }
 
         /// <summary>
@@ -75,14 +63,8 @@ namespace Chummer
         /// </summary>
         public int NumberOfDice 
         {
-            get
-            {
-                return decimal.ToInt32(nudDice.Value);
-            }
-            set
-            {
-                nudDice.Value = value;
-            }
+            get => decimal.ToInt32(nudDice.Value);
+            set => nudDice.Value = value;
         }
 
         /// <summary>
@@ -118,14 +100,8 @@ namespace Chummer
         /// </summary>
         public int Limit 
         {
-            get
-            {
-                return decimal.ToInt32(nudLimit.Value);
-            }
-            set
-            {
-                nudLimit.Value = value;
-            }
+            get => decimal.ToInt32(nudLimit.Value);
+            set => nudLimit.Value = value;
         }
 
         #endregion

@@ -88,10 +88,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get { return _guiID.ToString("D"); }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Skill Specialization's name.
@@ -127,7 +124,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Name
         {
-            get { return _strName; }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -141,10 +138,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is this a forced specialization or player entered
         /// </summary>
-        public bool Free
-        {
-            get { return _strFree; }
-        }
+        public bool Free => _strFree;
 
         #endregion
     }

@@ -39,14 +39,8 @@ namespace Chummer
         private static Version s_VersionCachedGitVersion;
         public static Version CachedGitVersion
         {
-            get
-            {
-                return s_VersionCachedGitVersion;
-            }
-            set
-            {
-                s_VersionCachedGitVersion = value;
-            }
+            get => s_VersionCachedGitVersion;
+            set => s_VersionCachedGitVersion = value;
         }
 
         public static int GitUpdateAvailable()

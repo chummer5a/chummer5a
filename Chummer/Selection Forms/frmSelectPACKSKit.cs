@@ -969,35 +969,18 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of Kit that was selected in the dialogue.
         /// </summary>
-        public string SelectedKit
-        {
-            get
-            {
-                return _strSelectedKit;
-            }
-        }
+        public string SelectedKit => _strSelectedKit;
 
         /// <summary>
         /// Category that was selected in the dialogue.
         /// </summary>
-        public static string SelectedCategory
-        {
-            get
-            {
-                return s_StrSelectCategory;
-            }
-        }
+        public static string SelectedCategory => s_StrSelectCategory;
+
         #endregion
 
         #region Methods
@@ -1017,14 +1000,12 @@ namespace Chummer
 
         private void WriteGear(XmlDocument objXmlItemDocument, XmlNode objXmlGear, TreeNode objParent)
         {
-            XmlNode objNode;
             XmlNode xmlNameNode = objXmlGear["name"];
             string strName = xmlNameNode.InnerText;
             string strCategory = objXmlGear["category"]?.InnerText;
-            if (!string.IsNullOrEmpty(strCategory))
-                objNode = objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + strName + "\" and category = \"" + strCategory + "\"]");
-            else
-                objNode = objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + strName + "\"]");
+            XmlNode objNode = !string.IsNullOrEmpty(strCategory)
+                ? objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + strName + "\" and category = \"" + strCategory + "\"]")
+                : objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + strName + "\"]");
 
             if (objNode != null)
             {

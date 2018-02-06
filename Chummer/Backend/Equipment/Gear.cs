@@ -770,6 +770,59 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.UniqueName == InternalId))
+            {
+                bool blnAddImprovement = true;
+                // If this is a Focus which is not bonded, don't do anything.
+                if (Category != "Stacked Focus")
+                {
+                    if (Category.EndsWith("Foci"))
+                        blnAddImprovement = Bonded;
+
+                    if (blnAddImprovement)
+                    {
+                        if (!string.IsNullOrEmpty(Extra))
+                            ImprovementManager.ForcedValue = Extra;
+                        if (Bonus != null)
+                        {
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            Extra = ImprovementManager.SelectedValue;
+                        }
+                        if (WirelessOn && WirelessBonus != null)
+                        {
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                        }
+                    }
+                }
+                else
+                {
+                    // Stacked Foci need to be handled a little differently.
+                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                    {
+                        if (objStack.GearId == InternalId && objStack.Bonded)
+                        {
+                            foreach (Gear objFociGear in objStack.Gear)
+                            {
+                                if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                    ImprovementManager.ForcedValue = objFociGear.Extra;
+                                if (objFociGear.Bonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating,
+                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    objFociGear.Extra = ImprovementManager.SelectedValue;
+                                }
+                                if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, Rating,
+                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                }
+                            }
+                        }
+                    }
+                }
+                ChangeEquippedStatus(false);
+            }
             
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
                 GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
@@ -936,30 +989,16 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-        }
-        public string SourceID
-        {
-            get
-            {
-                return _SourceGuid;
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
+
+        public string SourceID => _SourceGuid;
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
         /// </summary>
         public string WeaponID
         {
-            get
-            {
-                return _guiWeaponID.ToString("D");
-            }
+            get => _guiWeaponID.ToString("D");
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
@@ -972,14 +1011,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -987,14 +1020,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode WirelessBonus
         {
-            get
-            {
-                return _nodWirelessBonus;
-            }
-            set
-            {
-                _nodWirelessBonus = value;
-            }
+            get => _nodWirelessBonus;
+            set => _nodWirelessBonus = value;
         }
 
         /// <summary>
@@ -1002,36 +1029,21 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode WeaponBonus
         {
-            get
-            {
-                return _nodWeaponBonus;
-            }
-            set
-            {
-                _nodWeaponBonus = value;
-            }
+            get => _nodWeaponBonus;
+            set => _nodWeaponBonus = value;
         }
 
         /// <summary>
         /// Character to which the gear is assigned.
         /// </summary>
-        public Character CharacterObject
-        {
-            get
-            {
-                return _objCharacter;
-            }
-        }
+        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -1045,14 +1057,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string GearName
         {
-            get
-            {
-                return _strGearName;
-            }
-            set
-            {
-                _strGearName = value;
-            }
+            get => _strGearName;
+            set => _strGearName = value;
         }
 
         /// <summary>
@@ -1071,10 +1077,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
+            get => _strCategory;
             set
             {
                 if (_strCategory != value)
@@ -1088,14 +1091,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Capacity
         {
-            get
-            {
-                return _strCapacity;
-            }
-            set
-            {
-                _strCapacity = value;
-            }
+            get => _strCapacity;
+            set => _strCapacity = value;
         }
 
         /// <summary>
@@ -1103,14 +1100,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ArmorCapacity
         {
-            get
-            {
-                return _strArmorCapacity;
-            }
-            set
-            {
-                _strArmorCapacity = value;
-            }
+            get => _strArmorCapacity;
+            set => _strArmorCapacity = value;
         }
 
         /// <summary>
@@ -1118,14 +1109,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int MinRating
         {
-            get
-            {
-                return Math.Min(MaxRating, _intMinRating);
-            }
-            set
-            {
-                _intMinRating = Math.Min(MaxRating, value);
-            }
+            get => Math.Min(MaxRating, _intMinRating);
+            set => _intMinRating = Math.Min(MaxRating, value);
         }
 
         /// <summary>
@@ -1133,14 +1118,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int MaxRating
         {
-            get
-            {
-                return _intMaxRating;
-            }
-            set
-            {
-                _intMaxRating = value;
-            }
+            get => _intMaxRating;
+            set => _intMaxRating = value;
         }
 
         /// <summary>
@@ -1157,14 +1136,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal Quantity
         {
-            get
-            {
-                return _decQty;
-            }
-            set
-            {
-                _decQty = value;
-            }
+            get => _decQty;
+            set => _decQty = value;
         }
 
         /// <summary>
@@ -1172,14 +1145,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -1187,14 +1154,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal CostFor
         {
-            get
-            {
-                return _decCostFor;
-            }
-            set
-            {
-                _decCostFor = value;
-            }
+            get => _decCostFor;
+            set => _decCostFor = value;
         }
         
         /// <summary>
@@ -1202,14 +1163,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                return _strCost;
-            }
-            set
-            {
-                _strCost = value;
-            }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -1217,14 +1172,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-            }
+            get => _strExtra;
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -1232,14 +1181,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Bonded
         {
-            get
-            {
-                return _blnBonded;
-            }
-            set
-            {
-                _blnBonded = value;
-            }
+            get => _blnBonded;
+            set => _blnBonded = value;
         }
 
         /// <summary>
@@ -1247,14 +1190,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Equipped
         {
-            get
-            {
-                return _blnEquipped;
-            }
-            set
-            {
-                _blnEquipped = value;
-            }
+            get => _blnEquipped;
+            set => _blnEquipped = value;
         }
 
         /// <summary>
@@ -1262,14 +1199,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool WirelessOn
         {
-            get
-            {
-                return _blnWirelessOn;
-            }
-            set
-            {
-                _blnWirelessOn = value;
-            }
+            get => _blnWirelessOn;
+            set => _blnWirelessOn = value;
         }
 
         /// <summary>
@@ -1277,14 +1208,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -1292,14 +1217,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Page
         {
-            get
-            {
-                return _strPage;
-            }
-            set
-            {
-                _strPage = value;
-            }
+            get => _strPage;
+            set => _strPage = value;
         }
 
         public string DisplayPage(string strLanguage)
@@ -1315,14 +1234,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CanFormPersona
         {
-            get
-            {
-                return _strCanFormPersona;
-            }
-            set
-            {
-                _strCanFormPersona = value;
-            }
+            get => _strCanFormPersona;
+            set => _strCanFormPersona = value;
         }
 
         public bool IsCommlink
@@ -1336,27 +1249,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
-        public TaggedObservableCollection<Gear> Children
-        {
-            get
-            {
-                return _objChildren;
-            }
-        }
+        public TaggedObservableCollection<Gear> Children => _objChildren;
 
         /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -1364,14 +1265,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DeviceRating
         {
-            get
-            {
-                return _strDeviceRating;
-            }
-            set
-            {
-                _strDeviceRating = value;
-            }
+            get => _strDeviceRating;
+            set => _strDeviceRating = value;
         }
 
         /// <summary>
@@ -1392,10 +1287,7 @@ namespace Chummer.Backend.Equipment
                 switch (strAttributeName)
                 {
                     case "Device Rating":
-                        if (IsCommlink)
-                            strExpression = "2";
-                        else
-                            strExpression = "0";
+                        strExpression = IsCommlink ? "2" : "0";
                         break;
                     case "Program Limit":
                         if (IsCommlink)
@@ -1519,33 +1411,21 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Location
         {
-            get
-            {
-                return _strLocation;
-            }
-            set
-            {
-                _strLocation = value;
-            }
+            get => _strLocation;
+            set => _strLocation = value;
         }
 
         /// <summary>
         /// Whether or not the Gear qualifies as a Program in the printout XML.
         /// </summary>
-        public bool IsProgram
-        {
-            get
-            {
-                return Category == "ARE Programs" ||
-                    Category.StartsWith("Autosofts") ||
-                    Category == "Data Software" ||
-                    Category == "Malware" ||
-                    Category == "Matrix Programs" ||
-                    Category == "Tactical AR Software" ||
-                    Category == "Telematics Infrastructure Software" ||
-                    Category == "Sensor Software";
-            }
-        }
+        public bool IsProgram => Category == "ARE Programs" ||
+                                 Category.StartsWith("Autosofts") ||
+                                 Category == "Data Software" ||
+                                 Category == "Malware" ||
+                                 Category == "Matrix Programs" ||
+                                 Category == "Tactical AR Software" ||
+                                 Category == "Telematics Infrastructure Software" ||
+                                 Category == "Sensor Software";
 
         /// <summary>
         /// Whether or not the Gear has the Ergonomic Program Option.
@@ -1568,14 +1448,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int ChildCostMultiplier
         {
-            get
-            {
-                return _intChildCostMultiplier;
-            }
-            set
-            {
-                _intChildCostMultiplier = value;
-            }
+            get => _intChildCostMultiplier;
+            set => _intChildCostMultiplier = value;
         }
 
         /// <summary>
@@ -1583,14 +1457,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int ChildAvailModifier
         {
-            get
-            {
-                return _intChildAvailModifier;
-            }
-            set
-            {
-                _intChildAvailModifier = value;
-            }
+            get => _intChildAvailModifier;
+            set => _intChildAvailModifier = value;
         }
 
         /// <summary>
@@ -1598,14 +1466,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Gear Parent
         {
-            get
-            {
-                return _objParent;
-            }
-            set
-            {
-                _objParent = value;
-            }
+            get => _objParent;
+            set => _objParent = value;
         }
 
         /// <summary>
@@ -1613,14 +1475,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool DiscountCost
         {
-            get
-            {
-                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
-            }
-            set
-            {
-                _blnDiscountCost = value;
-            }
+            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            set => _blnDiscountCost = value;
         }
 
         /// <summary>
@@ -1628,14 +1484,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Attack
         {
-            get
-            {
-                return _strAttack;
-            }
-            set
-            {
-                _strAttack = value;
-            }
+            get => _strAttack;
+            set => _strAttack = value;
         }
 
         /// <summary>
@@ -1643,14 +1493,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Sleaze
         {
-            get
-            {
-                return _strSleaze;
-            }
-            set
-            {
-                _strSleaze = value;
-            }
+            get => _strSleaze;
+            set => _strSleaze = value;
         }
 
         /// <summary>
@@ -1658,14 +1502,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DataProcessing
         {
-            get
-            {
-                return _strDataProcessing;
-            }
-            set
-            {
-                _strDataProcessing = value;
-            }
+            get => _strDataProcessing;
+            set => _strDataProcessing = value;
         }
 
         /// <summary>
@@ -1673,14 +1511,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Firewall
         {
-            get
-            {
-                return _strFirewall;
-            }
-            set
-            {
-                _strFirewall = value;
-            }
+            get => _strFirewall;
+            set => _strFirewall = value;
         }
 
         /// <summary>
@@ -1688,14 +1520,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModAttack
         {
-            get
-            {
-                return _strModAttack;
-            }
-            set
-            {
-                _strModAttack = value;
-            }
+            get => _strModAttack;
+            set => _strModAttack = value;
         }
 
         /// <summary>
@@ -1703,14 +1529,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModSleaze
         {
-            get
-            {
-                return _strModSleaze;
-            }
-            set
-            {
-                _strModSleaze = value;
-            }
+            get => _strModSleaze;
+            set => _strModSleaze = value;
         }
 
         /// <summary>
@@ -1718,14 +1538,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModDataProcessing
         {
-            get
-            {
-                return _strModDataProcessing;
-            }
-            set
-            {
-                _strModDataProcessing = value;
-            }
+            get => _strModDataProcessing;
+            set => _strModDataProcessing = value;
         }
 
         /// <summary>
@@ -1733,14 +1547,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModFirewall
         {
-            get
-            {
-                return _strModFirewall;
-            }
-            set
-            {
-                _strModFirewall = value;
-            }
+            get => _strModFirewall;
+            set => _strModFirewall = value;
         }
 
         /// <summary>
@@ -1748,14 +1556,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AttributeArray
         {
-            get
-            {
-                return _strAttributeArray;
-            }
-            set
-            {
-                _strAttributeArray = value;
-            }
+            get => _strAttributeArray;
+            set => _strAttributeArray = value;
         }
 
         /// <summary>
@@ -1763,37 +1565,19 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModAttributeArray
         {
-            get
-            {
-                return _strModAttributeArray;
-            }
-            set
-            {
-                _strModAttributeArray = value;
-            }
+            get => _strModAttributeArray;
+            set => _strModAttributeArray = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
-        {
-            get
-            {
-                return Children.Cast<IHasMatrixAttributes>().ToList();
-            }
-        }
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.
         /// </summary>
         public string ProgramLimit
         {
-            get
-            {
-                return _strProgramLimit;
-            }
-            set
-            {
-                _strProgramLimit = value;
-            }
+            get => _strProgramLimit;
+            set => _strProgramLimit = value;
         }
 
         /// <summary>
@@ -1807,10 +1591,7 @@ namespace Chummer.Backend.Equipment
                     return string.Empty;
                 return _strOverclocked;
             }
-            set
-            {
-                _strOverclocked = value;
-            }
+            set => _strOverclocked = value;
         }
 
         /// <summary>
@@ -1818,40 +1599,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool CanSwapAttributes
         {
-            get
-            {
-                return _blnCanSwapAttributes;
-            }
-            set
-            {
-                _blnCanSwapAttributes = value;
-            }
+            get => _blnCanSwapAttributes;
+            set => _blnCanSwapAttributes = value;
         }
 
         /// <summary>
         /// Whether or not the Gear is included in its parent item when purchased (currently applies to Armor only).
         /// </summary>
-        public bool IncludedInParent
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(ParentID);
-            }
-        }
+        public bool IncludedInParent => !string.IsNullOrEmpty(ParentID);
 
         /// <summary>
         /// ID of the object that added this cyberware (if any).
         /// </summary>
         public string ParentID
         {
-            get
-            {
-                return _strParentID;
-            }
-            set
-            {
-                _strParentID = value;
-            }
+            get => _strParentID;
+            set => _strParentID = value;
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -2127,14 +1890,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Gear itself.
         /// </summary>
-        public decimal CalculatedCost
-        {
-            get
-            {
-                // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
-                return (OwnCostPreMultipliers * Quantity) / CostFor;
-            }
-        }
+        public decimal CalculatedCost => (OwnCostPreMultipliers * Quantity) / CostFor;
 
         /// <summary>
         /// Total cost of the Gear and its accessories.
@@ -2172,14 +1928,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public decimal OwnCost
-        {
-            get
-            {
-                // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
-                return (OwnCostPreMultipliers * Parent?.ChildCostMultiplier ?? 1) / CostFor;
-            }
-        }
+        public decimal OwnCost => (OwnCostPreMultipliers * Parent?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
@@ -2197,10 +1946,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                if (strCapacity.Contains('['))
-                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                else
-                    strCapacity = "0";
+                strCapacity = strCapacity.Contains('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
                 return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
@@ -2221,10 +1967,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                if (strCapacity.Contains('['))
-                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                else
-                    strCapacity = "0";
+                strCapacity = strCapacity.Contains('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
                 return Convert.ToInt32(strCapacity);
             }
         }
@@ -2266,10 +2009,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                            if (strCapacity.Contains('['))
-                                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            else
-                                strCapacity = "0";
+                            strCapacity = strCapacity.Contains('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
                             decimal decLoop = (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
                             lock (decCapacityLock)
                                 decCapacity -= decLoop;
@@ -2376,39 +2116,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Range.
         /// </summary>
-        public int WeaponBonusRange
-        {
-            get
-            {
-                return Convert.ToInt32(_nodWeaponBonus?["rangebonus"]?.InnerText);
-            }
-        }
+        public int WeaponBonusRange => Convert.ToInt32(_nodWeaponBonus?["rangebonus"]?.InnerText);
 
 
         /// <summary>
         /// Base Matrix Boxes.
         /// </summary>
-        public int BaseMatrixBoxes
-        {
-            get
-            {
-                return 8;
-            }
-        }
+        public int BaseMatrixBoxes => 8;
 
         /// <summary>
         /// Bonus Matrix Boxes.
         /// </summary>
         public int BonusMatrixBoxes
         {
-            get
-            {
-                return _intMatrixCMBonus;
-            }
-            set
-            {
-                _intMatrixCMBonus = value;
-            }
+            get => _intMatrixCMBonus;
+            set => _intMatrixCMBonus = value;
         }
 
         /// <summary>
@@ -2433,27 +2155,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Matrix Condition Monitor boxes.
         /// </summary>
-        public int MatrixCM
-        {
-            get
-            {
-                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
-            }
-        }
+        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
 
         /// <summary>
         /// Matrix Condition Monitor boxes filled.
         /// </summary>
         public int MatrixCMFilled
         {
-            get
-            {
-                return _intMatrixCMFilled;
-            }
-            set
-            {
-                _intMatrixCMFilled = value;
-            }
+            get => _intMatrixCMFilled;
+            set => _intMatrixCMFilled = value;
         }
         #endregion
 
@@ -2479,72 +2189,21 @@ namespace Chummer.Backend.Equipment
             if (blnEquipped)
             {
                 // Add any Improvements from the Gear.
-                if (Bonus != null || (WirelessOn && WirelessBonus != null))
+                if (Category != "Stacked Focus")
                 {
-                    bool blnAddImprovement = true;
-                    // If this is a Focus which is not bonded, don't do anything.
-                    if (Category != "Stacked Focus")
+                    if (!Category.EndsWith("Foci") || Bonded)
                     {
-                        if (Category.EndsWith("Foci"))
-                            blnAddImprovement = Bonded;
-
-                        if (blnAddImprovement)
-                        {
-                            if (!string.IsNullOrEmpty(Extra))
-                                ImprovementManager.ForcedValue = Extra;
-                            if (Bonus != null)
-                            {
-                                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
-                                {
-                                    // Clear created improvements
-                                    ChangeEquippedStatus(false);
-                                    return;
-                                }
-                                Extra = ImprovementManager.SelectedValue;
-                            }
-                            if (WirelessOn && WirelessBonus != null)
-                            {
-                                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
-                                {
-                                    // Clear created improvements
-                                    ChangeEquippedStatus(false);
-                                    return;
-                                }
-                            }
-                        }
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToList());
                     }
-                    else
+                }
+                else
+                {
+                    // Stacked Foci need to be handled a little differently.
+                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
                     {
-                        // Stacked Foci need to be handled a little differently.
-                        foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                        if (objStack.GearId == InternalId && objStack.Bonded)
                         {
-                            if (objStack.GearId == InternalId && objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    if (objFociGear.Bonus != null)
-                                    {
-                                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
-                                        {
-                                            // Clear created improvements
-                                            ChangeEquippedStatus(false);
-                                            return;
-                                        }
-                                        objFociGear.Extra = ImprovementManager.SelectedValue;
-                                    }
-                                    if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
-                                    {
-                                        if (ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objStack.InternalId, objFociGear.WirelessBonus, false, Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
-                                        {
-                                            // Clear created improvements
-                                            ChangeEquippedStatus(false);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
+                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToList());
                         }
                     }
                 }
@@ -2552,19 +2211,16 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Remove any Improvements from the Gear.
-                if (Bonus != null || (WirelessOn && WirelessBonus != null))
+                if (Category != "Stacked Focus")
+                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToList());
+                else
                 {
-                    if (Category != "Stacked Focus")
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
-                    else
+                    // Stacked Foci need to be handled a little differetnly.
+                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
                     {
-                        // Stacked Foci need to be handled a little differetnly.
-                        foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                        if (objStack.GearId == InternalId)
                         {
-                            if (objStack.GearId == InternalId)
-                            {
-                                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                            }
+                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToList());
                         }
                     }
                 }

@@ -69,7 +69,7 @@ namespace Chummer
             //in Career Mode. Create mode manages itself.
             int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
             int intFreeTouchOnlySpells = 0;
-            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
             {
                 if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
                 {
@@ -108,7 +108,7 @@ namespace Chummer
             // Populate the Category list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             HashSet<string> limit = new HashSet<string>();
-            foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpellCategory))
+            foreach (Improvement improvement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpellCategory && x.Enabled))
             {
                 limit.Add(improvement.ImprovedName);
             }
@@ -282,56 +282,29 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Whether or not a Limited version of the Spell was selected.
         /// </summary>
-        public bool Limited
-        {
-            get
-            {
-                return chkLimited.Checked;
-            }
-        }
+        public bool Limited => chkLimited.Checked;
 
         /// <summary>
         /// Whether or not an Extended version of the Spell was selected.
         /// </summary>
-        public bool Extended
-        {
-            get
-            {
-                return chkExtended.Checked;
-            }
-        }
+        public bool Extended => chkExtended.Checked;
 
         /// <summary>
         /// Whether or not a Alchemical version of the Spell was selected.
         /// </summary>
-        public bool Alchemical
-        {
-            get
-            {
-                return chkAlchemical.Checked;
-            }
-        }
+        public bool Alchemical => chkAlchemical.Checked;
 
         /// <summary>
         /// Limit the Spell list to a particular Category.
         /// </summary>
         public string LimitCategory
         {
-            set
-            {
-                _strLimitCategory = value;
-            }
+            set => _strLimitCategory = value;
         }
 
         /// <summary>
@@ -339,34 +312,18 @@ namespace Chummer
         /// </summary>
         public string ForceSpellName
         {
-            set
-            {
-                _strForceSpell = value;
-            }
+            set => _strForceSpell = value;
         }
 
         /// <summary>
         /// Spell that was selected in the dialogue.
         /// </summary>
-        public string SelectedSpell
-        {
-            get
-            {
-                return _strSelectedSpell;
-            }
-        }
+        public string SelectedSpell => _strSelectedSpell;
 
         public bool IgnoreRequirements
         {
-            get
-            {
-                return _blnIgnoreRequirements;
-            }
-            set
-            {
-                _blnIgnoreRequirements = value;
-            }
-
+            get => _blnIgnoreRequirements;
+            set => _blnIgnoreRequirements = value;
         }
 
         public bool FreeBonus { get; set; }
@@ -420,7 +377,7 @@ namespace Chummer
                         continue;
                 }
                 HashSet<string> limit = new HashSet<string>();
-                foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor))
+                foreach (Improvement improvement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor && x.Enabled))
                 {
                     limit.Add(improvement.ImprovedName);
                 }
