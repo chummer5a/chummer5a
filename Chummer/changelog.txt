@@ -205,6 +205,7 @@ New Strings:
 - String_Currently_Installed_Version
 - String_Latest_Version
 - Button_Export_SaveJsonAs
+- String_Unknown
 
 Changed Strings:
 

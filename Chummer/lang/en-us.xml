@@ -74,6 +74,10 @@
       <text>Error</text>
     </string>
     <string>
+      <key>String_Unknown</key>
+      <text>Unknown</text>
+    </string>
+    <string>
       <key>String_Search</key>
       <text>Search:</text>
     </string>

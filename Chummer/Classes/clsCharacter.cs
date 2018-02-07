@@ -7890,11 +7890,11 @@ namespace Chummer
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if (objXmlBook != null)
                 {
-                    strReturn += objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? "Unknown book! ";
+                    strReturn += objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 }
                 else
                 {
-                    strReturn += "Unknown book! ";
+                    strReturn += LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 }
                 strReturn += $" ({objXmlBook?["altcode"]?.InnerText ?? strBook})";
             }

@@ -310,7 +310,7 @@ namespace Chummer
 
             string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strBuildMethod))
-                strBuildMethod = "Unknown build method";
+                strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             if (Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
