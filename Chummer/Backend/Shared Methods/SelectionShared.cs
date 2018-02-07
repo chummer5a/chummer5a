@@ -982,7 +982,7 @@ namespace Chummer
             if (strAvailExpr[0] == '+')
                 return true;
 
-            strAvailExpr = strAvailExpr.TrimEnd('F', 'R');
+            strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
             int intAvail = intAvailModifier;
             try
             {
