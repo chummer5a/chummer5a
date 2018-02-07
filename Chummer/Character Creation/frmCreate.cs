@@ -14802,9 +14802,7 @@ namespace Chummer
                         }
                     }
 
-                    string strFileName = CharacterObject.FileName;
-                    string[] strParts = strFileName.Split(Path.DirectorySeparatorChar);
-                    string strNewName = strParts[strParts.Length - 1].Replace(".chum5", " (" + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Language) + ").chum5");
+                    string strNewName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
                     if (string.IsNullOrEmpty(strNewName))
                     {
                         strNewName = CharacterObject.Alias;
@@ -14814,8 +14812,8 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strNewName))
                                 strNewName = Guid.NewGuid().ToString("N");
                         }
-                        strNewName += " (" + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Language) + ").chum5";
                     }
+                    strNewName += " (" + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Language) + ").chum5";
 
                     strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
 
