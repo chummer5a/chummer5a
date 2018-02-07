@@ -214,27 +214,23 @@ namespace Chummer
         /// <param name="strFile"></param>
         private TreeNode CacheCharacter(string strFile)
         {
-            if (!File.Exists(strFile))
-                return null;
-            XDocument xmlSource;
+            CharacterCache objCache = new CharacterCache();
+            string strErrorText = string.Empty;
+            XElement xmlSourceNode;
             // If we run into any problems loading the character cache, fail out early.
             try
             {
                 using (StreamReader objStreamReader = new StreamReader(strFile, true))
                 {
-                    xmlSource = XDocument.Load(objStreamReader);
+                    xmlSourceNode = XDocument.Load(objStreamReader).Element("character");
                 }
             }
-            catch (IOException)
+            catch (Exception ex)
             {
-                return null;
+                xmlSourceNode = null;
+                strErrorText = ex.ToString();
             }
-            catch (XmlException)
-            {
-                return null;
-            }
-            CharacterCache objCache = new CharacterCache();
-            XElement xmlSourceNode = xmlSource.Element("character");
+
             if (xmlSourceNode != null)
             {
                 objCache.Description = xmlSourceNode.Element("description")?.Value;
@@ -269,6 +265,10 @@ namespace Chummer
                     }
                 }
             }
+            else
+            {
+                objCache.ErrorText = strErrorText;
+            }
             objCache.FilePath = strFile;
             objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             TreeNode objNode = new TreeNode
@@ -278,6 +278,12 @@ namespace Chummer
                 ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'),
                 Tag = strFile
             };
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                objNode.ForeColor = Color.Red;
+                objNode.ToolTipText += "\n\n" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":\n" + objCache.ErrorText;
+            }
+
             _lstCharacterCache.TryAdd(strFile, objCache);
             return objNode;
         }
@@ -289,6 +295,11 @@ namespace Chummer
         /// <returns></returns>
         private static string CalculatedName(CharacterCache objCache)
         {
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                return Path.GetFileNameWithoutExtension(objCache.FileName) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+            }
+
             string strName = objCache.CharacterAlias;
             if (string.IsNullOrEmpty(strName))
             {
@@ -296,6 +307,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strName))
                     strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
+
             string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = "Unknown build method";
@@ -407,7 +419,7 @@ namespace Chummer
             if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
                 string strFile = objSelectedNode.Tag.ToString();
-                if (!string.IsNullOrEmpty(strFile))
+                if (!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     Cursor = Cursors.WaitCursor;
@@ -415,8 +427,7 @@ namespace Chummer
                     {
                         objOpenCharacter = Program.MainForm.LoadCharacter(strFile);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
-                        if (_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache))
-                            objSelectedNode.Text = CalculatedName(objCache);
+                        objSelectedNode.Text = CalculatedName(objCache);
                     }
                     Cursor = Cursors.Default;
                 }
@@ -538,6 +549,7 @@ namespace Chummer
         {
             internal string FilePath { get; set; }
             internal string FileName { get; set; }
+            internal string ErrorText { get; set; }
             internal string Description { get; set; }
             internal string Background { get; set; }
             internal string GameNotes { get; set; }
