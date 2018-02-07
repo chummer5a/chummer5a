@@ -156,12 +156,12 @@ namespace Translator
         {
             if (txtLanguageCode.TextLength != 2)
             {
-                MessageBox.Show("You must provide a two characters for the language code.");
+                MessageBox.Show("You must provide a two-character language code.");
                 return;
             }
             if (txtRegionCode.TextLength != 2)
             {
-                MessageBox.Show("You must provide a two character for the region code.");
+                MessageBox.Show("You must provide a two-character region code.");
                 return;
             }
             string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
