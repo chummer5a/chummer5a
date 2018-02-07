@@ -134,6 +134,7 @@ Application Changes:
 - Added localization support to the About screen, file dialog filters, the JSON export dialog, karma and nuyen chart axes, and the application title.
 - Fixed an issue where weapon mounts would not get printed with vehicles. Fixes #2426.
 - Fixed an issues caused by the equipping or unequipping armor, armor mods, gear, or cyberware completely removing linked bonuses instead of just disabling them.
+- Fixed an issue where non-quality bonuses that add qualities or contacts would not properly get removed if the parent item was removed. Existing characters affected by this bug will need to Re-Apply Improvements. Fixes #2460.
 
 Data Changes:
 

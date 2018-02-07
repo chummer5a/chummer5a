@@ -1700,8 +1700,7 @@ namespace Chummer.Classes
             if (nodSelect["forceloyalty"] != null)
             {
                 objSelectedContact.ForceLoyalty = true;
-                CreateImprovement(objSelectedContact.GUID, Improvement.ImprovementSource.Quality, SourceName,
-                    Improvement.ImprovementType.ContactForceLoyalty, objSelectedContact.GUID);
+                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceLoyalty, objSelectedContact.GUID);
             }
             if (nodSelect["loyalty"] != null)
             {
@@ -1741,8 +1740,7 @@ namespace Chummer.Classes
             };
             _objCharacter.Contacts.Add(contact);
 
-            CreateImprovement(contact.GUID, Improvement.ImprovementSource.Quality, SourceName,
-                Improvement.ImprovementType.AddContact, contact.GUID);
+            CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.GUID);
         }
 
         // Affect a Specific CharacterAttribute.
@@ -4851,8 +4849,7 @@ namespace Chummer.Classes
                 if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName))
                 {
                     _objCharacter.SkillsSection.AddSkills(skills, strName);
-                    CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, SourceName,
-                        Improvement.ImprovementType.SpecialSkills, _strUnique);
+                    CreateImprovement(skills.ToString(), _objImprovementSource, SourceName,  Improvement.ImprovementType.SpecialSkills, _strUnique);
                 }
             }
             else
@@ -4887,7 +4884,7 @@ namespace Chummer.Classes
                     _objCharacter.Qualities.Add(objAddQuality);
                     foreach (Weapon objWeapon in lstWeapons)
                         _objCharacter.Weapons.Add(objWeapon);
-                    CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
                 }
                 else
                 {
@@ -4978,14 +4975,14 @@ namespace Chummer.Classes
                     discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                     _objCharacter.Qualities.Add(discountQuality);
                     objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
-                    CreateImprovement(discountQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
                 }
             }
 
             _objCharacter.Qualities.Add(objAddQuality);
             foreach (Weapon objWeapon in lstWeapons)
                 _objCharacter.Weapons.Add(objWeapon);
-            CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+            CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
         }
 
         public void addskillspecialization(XmlNode bonusNode)

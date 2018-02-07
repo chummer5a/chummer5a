@@ -1470,7 +1470,7 @@ namespace Chummer
                 _lstCyberware.Add(objCyberware);
                 // Legacy shim
                 if ((objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)) ||
-                    (objCyberware.PairBonus != null && Improvements.All(x => x.SourceName != objCyberware.InternalId + "Pair")))
+                    (objCyberware.PairBonus?.HasChildNodes == true && Improvements.All(x => x.SourceName != objCyberware.InternalId + "Pair")))
                 {
                     XmlNode objNode = objCyberware.GetNode();
                     if (objNode != null)
