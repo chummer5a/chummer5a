@@ -49,8 +49,7 @@ namespace Chummer
         }
 
         /// Create an Enhancement from an XmlNode.
-        /// <param name="objXmlEnhancementNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Enhancement is being added to.</param>
+        /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource)
         {

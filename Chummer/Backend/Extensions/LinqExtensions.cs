@@ -218,9 +218,12 @@ namespace Chummer
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
             T objReturn = objParentList.LastOrDefault();
-            T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
-            if (objTemp?.Equals(default(T)) == false)
-                return objTemp;
+            if (funcGetChildrenMethod(objReturn).Any())
+            {
+                T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
+                if (objTemp?.Equals(default(T)) == false)
+                    return objTemp;
+            }
             return objReturn;
         }
 

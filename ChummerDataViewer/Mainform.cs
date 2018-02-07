@@ -95,13 +95,15 @@ namespace ChummerDataViewer
 		{
 			object o = cboBuild.SelectedItem;
 			cboBuild.Items.Clear();
-			cboBuild.Items.AddRange(PersistentState.Database.GetAllBuildTypes().ToArray());
+            foreach (string strBuildType in PersistentState.Database.GetAllBuildTypes())
+			    cboBuild.Items.Add(strBuildType);
 
 			if (o != null) cboBuild.SelectedItem = o;
 
 			o = cboVersion.SelectedItem;
 			cboVersion.Items.Clear();
-			cboVersion.Items.AddRange(PersistentState.Database.GetAllVersions().OrderByDescending(v => v).ToArray());
+		    foreach (Version objVersionType in PersistentState.Database.GetAllVersions().OrderByDescending(v => v))
+                cboVersion.Items.Add(objVersionType);
 
 			if (o != null) cboVersion.SelectedItem = o;
 

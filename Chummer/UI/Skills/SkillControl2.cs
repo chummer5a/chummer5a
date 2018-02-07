@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;

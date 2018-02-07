@@ -228,8 +228,8 @@ namespace Chummer
             if (objThis == null)
                 return false;
             
-            string strTemp = string.Empty;
-            Action<string> funcAttributePropertySetter = null;
+            string strTemp;
+            Action<string> funcAttributePropertySetter;
 
             if (cboChangedAttributeCBO == cboAttack)
             {

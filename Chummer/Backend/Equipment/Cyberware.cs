@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
     {
         private Guid _guiSourceID = Guid.Empty;
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strLimbSlot = string.Empty;
@@ -226,7 +226,7 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (_strCost.StartsWith("Variable("))
             {
-                decimal decMin = 0.0m;
+                decimal decMin;
                 decimal decMax = decimal.MaxValue;
                 string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                 if (strCost.Contains('-'))
@@ -453,100 +453,108 @@ namespace Chummer.Backend.Equipment
         private void CreateChildren(XmlNode objParentNode, Grade objGrade, List<Weapon> lstWeapons, List<Vehicle> objVehicles, bool blnCreateImprovements = true)
         {
             // If we've just added a new base item, see if there are any subsystems that should automatically be added.
-            if (objParentNode.InnerXml.Contains("<subsystems>"))
+            XmlNode xmlSubsystemsNode = objParentNode["subsystems"];
+            if (xmlSubsystemsNode != null)
             {
                 // Load Cyberware subsystems first
-                XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml");
-                XmlNodeList objXmlSubSystemNameList = objParentNode.SelectNodes("subsystems/cyberware");
-
-                foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
-                {
-                    XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"].InnerText + "\"]");
-
-                    if (objXmlSubsystem != null)
+                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
+                    if (objXmlSubSystemNameList?.Count > 0)
                     {
-                        Cyberware objSubsystem = new Cyberware(_objCharacter);
-                        int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                        objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                        objSubsystem.ParentID = InternalId;
-                        objSubsystem.Cost = "0";
-                        // If the <subsystem> tag itself contains extra children, add those, too
-                        objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
+                        XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml");
+                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        {
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"]?.InnerText + "\"]");
 
-                        _lstChildren.Add(objSubsystem);
+                            if (objXmlSubsystem != null)
+                            {
+                                Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
+                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                objSubsystem.ParentID = InternalId;
+                                objSubsystem.Cost = "0";
+                                // If the <subsystem> tag itself contains extra children, add those, too
+                                objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
+
+                                _lstChildren.Add(objSubsystem);
+                            }
+                        }
                     }
-                }
 
                 // Load bioware subsystems next
-                objXmlDocument = XmlManager.Load("bioware.xml");
-                objXmlSubSystemNameList = objParentNode.SelectNodes("subsystems/bioware");
-
-                foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
-                {
-                    XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlSubsystemNode["name"].InnerText + "\"]");
-
-                    if (objXmlSubsystem != null)
+                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                    if (objXmlSubSystemNameList?.Count > 0)
                     {
-                        Cyberware objSubsystem = new Cyberware(_objCharacter);
-                        int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                        objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                        objSubsystem.ParentID = InternalId;
-                        objSubsystem.Cost = "0";
-                        // If the <subsystem> tag itself contains extra children, add those, too
-                        objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
+                        XmlDocument objXmlDocument = XmlManager.Load("bioware.xml");
+                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        {
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlSubsystemNode["name"]?.InnerText + "\"]");
 
-                        _lstChildren.Add(objSubsystem);
+                            if (objXmlSubsystem != null)
+                            {
+                                Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
+                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                objSubsystem.ParentID = InternalId;
+                                objSubsystem.Cost = "0";
+                                // If the <subsystem> tag itself contains extra children, add those, too
+                                objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
+
+                                _lstChildren.Add(objSubsystem);
+                            }
+                        }
                     }
-                }
             }
 
             // Check to see if there are any child elements.
             XmlNode xmlGearsNode = objParentNode["gears"];
             if (xmlGearsNode != null)
             {
-                // Open the Gear XML file and locate the selected piece.
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-
                 // Create Gear using whatever information we're given.
-                foreach (XmlNode objXmlChild in xmlGearsNode.SelectNodes("usegear"))
-                {
-                    XmlNode xmlNameNode = objXmlChild["name"];
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlNameNode.InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
-                    if (objXmlGear != null)
+                using (XmlNodeList xmlGearList = xmlGearsNode.SelectNodes("usegear"))
+                    if (xmlGearList?.Count > 0)
                     {
-                        XmlAttributeCollection xmlNameAttributes = xmlNameNode.Attributes;
-                        int intChildRating = 0;
-                        decimal decChildQty = 1;
-                        string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
-                        string strChildForcePage = objXmlChild["page"]?.InnerText ?? string.Empty;
-                        string strChildForceValue = xmlNameAttributes["select"]?.InnerText ?? string.Empty;
-                        bool blnStartCollapsed = xmlNameAttributes["startcollapsed"]?.InnerText == bool.TrueString;
-                        if (objXmlChild["rating"] != null)
-                            intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-                        if (xmlNameAttributes["qty"] != null)
-                            decChildQty = Convert.ToDecimal(xmlNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                        // Create the new piece of Gear.
-                        List<Weapon> objChildWeapons = new List<Weapon>();
+                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                        foreach (XmlNode objXmlChild in xmlGearList)
+                        {
+                            XmlNode xmlNameNode = objXmlChild["name"];
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlNameNode?.InnerText + "\" and category = \"" + objXmlChild["category"]?.InnerText + "\"]");
+                            if (objXmlGear != null)
+                            {
+                                XmlAttributeCollection xmlNameAttributes = xmlNameNode?.Attributes;
+                                int intChildRating = 0;
+                                decimal decChildQty = 1;
+                                string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
+                                string strChildForcePage = objXmlChild["page"]?.InnerText ?? string.Empty;
+                                string strChildForceValue = xmlNameAttributes?["select"]?.InnerText ?? string.Empty;
+                                if (objXmlChild["rating"] != null)
+                                    intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
+                                if (xmlNameAttributes?["qty"] != null)
+                                    decChildQty = Convert.ToDecimal(xmlNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+                                // Create the new piece of Gear.
+                                List<Weapon> objChildWeapons = new List<Weapon>();
 
-                        Gear objChild = new Gear(_objCharacter);
-                        objChild.Create(objXmlGear, intChildRating, objChildWeapons, strChildForceValue, blnCreateImprovements);
-                        objChild.Quantity = decChildQty;
+                                Gear objChild = new Gear(_objCharacter);
+                                objChild.Create(objXmlGear, intChildRating, objChildWeapons, strChildForceValue, blnCreateImprovements);
+                                objChild.Quantity = decChildQty;
 
-                        objChild.Cost = "0";
-                        objChild.ParentID = InternalId;
-                        if (!string.IsNullOrEmpty(strChildForceSource))
-                            objChild.Source = strChildForceSource;
-                        if (!string.IsNullOrEmpty(strChildForcePage))
-                            objChild.Page = strChildForcePage;
-                        if (objXmlChild["capacity"] != null)
-                            objChild.Capacity = '[' + objXmlChild["capacity"].InnerText + ']';
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objWeapon in objChildWeapons)
-                            lstWeapons.Add(objWeapon);
+                                objChild.Cost = "0";
+                                objChild.ParentID = InternalId;
+                                if (!string.IsNullOrEmpty(strChildForceSource))
+                                    objChild.Source = strChildForceSource;
+                                if (!string.IsNullOrEmpty(strChildForcePage))
+                                    objChild.Page = strChildForcePage;
+                                if (objXmlChild["capacity"] != null)
+                                    objChild.Capacity = '[' + objXmlChild["capacity"].InnerText + ']';
+                                // Create any Weapons that came with this Gear.
+                                foreach (Weapon objWeapon in objChildWeapons)
+                                    lstWeapons.Add(objWeapon);
 
-                        _lstGear.Add(objChild);
+                                _lstGear.Add(objChild);
+                            }
+                        }
                     }
-                }
             }
         }
 
@@ -733,8 +741,10 @@ namespace Chummer.Backend.Equipment
             }
             if (xmlPairIncludeNode != null)
             {
-                foreach (XmlNode xmlNameNode in xmlPairIncludeNode.SelectNodes("name"))
-                    _lstIncludeInPairBonus.Add(xmlNameNode.InnerText);
+                using (XmlNodeList xmlNameList = xmlPairIncludeNode.SelectNodes("name"))
+                    if (xmlNameList != null)
+                        foreach (XmlNode xmlNameNode in xmlNameList)
+                            _lstIncludeInPairBonus.Add(xmlNameNode.InnerText);
             }
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
@@ -745,7 +755,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Sweep
             if (_strForceGrade != "None" && (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions") || _strCategory.StartsWith("Genemods")))
             {
-                _strForceGrade = GetNode()?["forcegrade"].InnerText;
+                _strForceGrade = GetNode()?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
                     _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
             }
@@ -2195,10 +2205,7 @@ namespace Chummer.Backend.Equipment
                         // If the child cost starts with "*", multiply the item's base cost.
                         if (objChild.Cost.StartsWith('*'))
                         {
-                            decimal decPluginCost = 0;
-                            string strMultiplier = objChild.Cost;
-                            strMultiplier = strMultiplier.TrimStart('*');
-                            decPluginCost = decCost * (Convert.ToDecimal(strMultiplier, GlobalOptions.InvariantCultureInfo) - 1);
+                            decimal decPluginCost = decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'), GlobalOptions.InvariantCultureInfo) - 1);
 
                             if (objChild.DiscountCost)
                                 decPluginCost *= 0.9m;
@@ -2692,7 +2699,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Cast<IHasMatrixAttributes>().Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
 
@@ -2700,8 +2707,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        /// <param name="objGear">Gear to delete.</param>
-        /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
         public decimal DeleteCyberware()
         {
             decimal decReturn = 0;
@@ -2849,7 +2854,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build up the Tree for the current piece of Cyberware and all of its children.
         /// </summary>
-        /// <param name="objParentNode">TreeNode to append to.</param>
         /// <param name="cmsCyberware">ContextMenuStrip that the new Cyberware TreeNodes should use.</param>
         /// <param name="cmsGear">ContextMenuStrip that the new Gear TreeNodes should use.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsCyberware, ContextMenuStrip cmsGear)

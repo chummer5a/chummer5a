@@ -344,13 +344,13 @@ namespace Chummer
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
                 }
 
-                strReturn = objMetatypeNode["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode?["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
                 if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                 {
-                    objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
 
-                    string strMetatypeTranslate = objMetatypeNode["translate"]?.InnerText;
+                    string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
                     strReturn += !string.IsNullOrEmpty(strMetatypeTranslate) ? " (" + strMetatypeTranslate + ')' : " (" + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
                 }
             }
@@ -741,7 +741,6 @@ namespace Chummer
                     {
                         Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.DeleteCharacter();
-                        _objOldLinkedCharacter = null;
                     }
                 }
                 if (_objLinkedCharacter != null)

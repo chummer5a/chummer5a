@@ -203,8 +203,7 @@ namespace Chummer
                 }
                 if (!blnRequirementsMet)
                     return;
-
-                blnRequirementsMet = true;
+                
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
@@ -220,8 +219,7 @@ namespace Chummer
                 }
                 if (!blnRequirementsMet)
                     return;
-
-                blnRequirementsMet = true;
+                
                 strStringToCheck = xmlSelectedVisibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {

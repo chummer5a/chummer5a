@@ -308,7 +308,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
+            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))

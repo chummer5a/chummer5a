@@ -663,7 +663,7 @@ namespace Chummer
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
                 if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                 {
-                    objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                 }
             }
 

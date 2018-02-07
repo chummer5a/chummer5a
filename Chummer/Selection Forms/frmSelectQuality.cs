@@ -117,7 +117,7 @@ namespace Chummer
                     string strKarma = xmlQuality["karma"]?.InnerText ?? string.Empty;
                     if (strKarma.StartsWith("Variable("))
                     {
-                        int intMin = 0;
+                        int intMin;
                         int intMax = int.MaxValue;
                         string strCost = strKarma.TrimStart("Variable(", true).TrimEnd(')');
                         if (strCost.Contains('-'))

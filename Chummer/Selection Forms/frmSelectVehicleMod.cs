@@ -416,10 +416,9 @@ namespace Chummer
         private void AcceptForm()
         {
             string strSelectedId = lstMod.SelectedValue?.ToString();
-            XmlNode xmlVehicleMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                xmlVehicleMod = _objXmlDocument.SelectSingleNode("/chummer/" + (VehicleMountMods ? "weaponmountmods" : "mods") + "/mod[id = \"" + strSelectedId + "\"]");
+                XmlNode xmlVehicleMod = _objXmlDocument.SelectSingleNode("/chummer/" + (VehicleMountMods ? "weaponmountmods" : "mods") + "/mod[id = \"" + strSelectedId + "\"]");
                 if (xmlVehicleMod != null)
                 {
                     _strSelectedMod = strSelectedId;
@@ -597,7 +596,7 @@ namespace Chummer
                         else
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-                        decItemCost = decMin;
+                        strCost = decMin.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                     else if (strCost.StartsWith("FixedValues("))
                     {

@@ -7702,7 +7702,7 @@ namespace Translator
                         if (xmlAttribute.Name != "translated")
                             xmlSubItem.Attributes.RemoveAt(i);
                     }
-                    if (xmlDataSubItemsList?.SelectSingleNode(strSubItem + "[name = \"" + xmlSubItem["name"]?.InnerText + "\"]") == null)
+                    if (xmlDataSubItemsList.SelectSingleNode(strSubItem + "[name = \"" + xmlSubItem["name"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
                                 {

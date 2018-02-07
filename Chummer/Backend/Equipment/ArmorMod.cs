@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode
     {
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strArmorCapacity = "[0]";
@@ -70,7 +70,6 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the selected ArmorMod.</param>
         /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
-        /// <param name="objWeaponNodes">List of Weapon Nodes that are created by the Armor.</param>
         /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false)
         {
@@ -108,7 +107,7 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipSelectForms)
                 {
-                    decimal decMin = decimal.MinValue;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     if (intHyphenIndex != -1)
                     {
@@ -157,29 +156,32 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add any Gear that comes with the Armor.
-            if (objXmlArmorNode["gears"] != null)
+            XmlNode xmlChildrenNode = objXmlArmorNode["gears"];
+            if (xmlChildrenNode != null)
             {
                 XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                foreach (XmlNode objXmlArmorGear in objXmlArmorNode.SelectNodes("gears/usegear"))
-                {
-                    intRating = 0;
-                    string strForceValue = string.Empty;
-                    objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
-                    objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
+                using (XmlNodeList xmlUseGearList = xmlChildrenNode.SelectNodes("usegear"))
+                    if (xmlUseGearList != null)
+                        foreach (XmlNode objXmlArmorGear in xmlUseGearList)
+                        {
+                            intRating = 0;
+                            string strForceValue = string.Empty;
+                            objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
+                            objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
 
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
-                    Gear objGear = new Gear(_objCharacter);
-                    
-                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+                            Gear objGear = new Gear(_objCharacter);
 
-                    objGear.Capacity = "[0]";
-                    objGear.ArmorCapacity = "[0]";
-                    objGear.Cost = "0";
-                    objGear.MaxRating = objGear.Rating;
-                    objGear.MinRating = objGear.Rating;
-                    objGear.ParentID = InternalId;
-                    _lstGear.Add(objGear);
-                }
+                            objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
+
+                            objGear.Capacity = "[0]";
+                            objGear.ArmorCapacity = "[0]";
+                            objGear.Cost = "0";
+                            objGear.MaxRating = objGear.Rating;
+                            objGear.MinRating = objGear.Rating;
+                            objGear.ParentID = InternalId;
+                            _lstGear.Add(objGear);
+                        }
             }
 
             // Add Weapons if applicable.
@@ -188,20 +190,22 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
-                {
-                    string strLoopID = objXmlAddWeapon.InnerText;
-                    XmlNode objXmlWeapon = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                using (XmlNodeList xmlAddWeaponList = objXmlArmorNode.SelectNodes("addweapon"))
+                    if (xmlAddWeaponList != null)
+                        foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
+                        {
+                            string strLoopID = objXmlAddWeapon.InnerText;
+                            XmlNode objXmlWeapon = strLoopID.IsGuid()
+                                ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                                : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                     
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
-                    objGearWeapon.ParentID = InternalId;
-                    lstWeapons.Add(objGearWeapon);
+                            Weapon objGearWeapon = new Weapon(_objCharacter);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
+                            objGearWeapon.ParentID = InternalId;
+                            lstWeapons.Add(objGearWeapon);
 
-                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
-                }
+                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                        }
             }
         }
 
@@ -260,7 +264,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether or not we are copying an existing node.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy || !Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+            if (blnCopy || !Guid.TryParse(objNode["guid"]?.InnerText, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
@@ -291,15 +295,17 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
-            if (objNode.InnerXml.Contains("gears"))
+            XmlNode xmlChildrenNode = objNode["gears"];
+            if (xmlChildrenNode != null)
             {
-                XmlNodeList nodGears = objNode.SelectNodes("gears/gear");
-                foreach (XmlNode nodGear in nodGears)
-                {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Load(nodGear, blnCopy);
-                    _lstGear.Add(objGear);
-                }
+                using (XmlNodeList nodGears = xmlChildrenNode.SelectNodes("gear"))
+                    if (nodGears != null)
+                        foreach (XmlNode nodGear in nodGears)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            objGear.Load(nodGear, blnCopy);
+                            _lstGear.Add(objGear);
+                        }
             }
         }
 
@@ -726,13 +732,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCapacity = 0;
+                decimal decCapacity;
                 string strMyCapacity = CalculatedGearCapacity;
                 // Get the Gear base Capacity.
-                if (strMyCapacity.Contains("/["))
+                int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
+                if (intPos != -1)
                 {
                     // If this is a multiple-capacity item, use only the first half.
-                    int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
                     strMyCapacity = strMyCapacity.Substring(0, intPos);
                     decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
                 }
@@ -746,8 +752,8 @@ namespace Chummer.Backend.Equipment
                     if (strCapacity.Contains("/["))
                     {
                         // If this is a multiple-capacity item, use only the second half.
-                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        strCapacity = strCapacity.Substring(intPos + 1);
+                        int intLoopPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                        strCapacity = strCapacity.Substring(intLoopPos + 1);
                     }
 
                     // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
@@ -813,7 +819,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReturn = 0.0m;
+                decimal decReturn;
                 string strCostExpr = Cost;
                 if (strCostExpr.StartsWith("FixedValues("))
                 {
@@ -861,8 +867,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
         /// </summary>
-        /// <param name="objCharacter">Parent character.</param>
-        /// <param name="objArmorMod">Armor Mod to delete.</param>
         public decimal DeleteArmorMod()
         {
             decimal decReturn = 0.0m;

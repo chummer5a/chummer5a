@@ -18,13 +18,15 @@
  */
  using System;
 using System.Collections;
-using System.Windows.Forms;
+ using System.Diagnostics;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
     /// <summary>
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
+    [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
     public struct ListItem
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);

@@ -39,14 +39,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-
-            GlobalOptions.MRUChanged += PopulateCharacterList;
-            treCharacterList.ItemDrag += treCharacterList_ItemDrag;
-            treCharacterList.DragEnter += treCharacterList_DragEnter;
-            treCharacterList.DragDrop += treCharacterList_DragDrop;
-            treCharacterList.DragOver += treCharacterList_DragOver;
-            LoadCharacters();
-            MoveControls();
+            
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsRoster
             };
@@ -63,7 +56,28 @@ namespace Chummer
             }
         }
 
-        public void PopulateCharacterList()
+        private void frmCharacterRoster_Load(object sender, EventArgs e)
+        {
+            GlobalOptions.MRUChanged += PopulateCharacterList;
+            treCharacterList.ItemDrag += treCharacterList_ItemDrag;
+            treCharacterList.DragEnter += treCharacterList_DragEnter;
+            treCharacterList.DragDrop += treCharacterList_DragDrop;
+            treCharacterList.DragOver += treCharacterList_DragOver;
+
+            LoadCharacters();
+            MoveControls();
+        }
+
+        private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            GlobalOptions.MRUChanged -= PopulateCharacterList;
+            treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
+            treCharacterList.DragEnter -= treCharacterList_DragEnter;
+            treCharacterList.DragDrop -= treCharacterList_DragDrop;
+            treCharacterList.DragOver -= treCharacterList_DragOver;
+        }
+
+        public void PopulateCharacterList(object sender, EventArgs e)
         {
             SuspendLayout();
             //TODO: Cheaper way to do this than rebuilding the list every time?
@@ -471,12 +485,12 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
-                                GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru", false);
-                                GlobalOptions.AddToMRUList(objCache.FilePath);
+                                GlobalOptions.RemoveFromMRUList(sender, objCache.FilePath, "stickymru", false);
+                                GlobalOptions.AddToMRUList(sender, objCache.FilePath);
                                 break;
                             case "Favourite":
-                                GlobalOptions.RemoveFromMRUList(objCache.FilePath, "mru", false);
-                                GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
+                                GlobalOptions.RemoveFromMRUList(sender, objCache.FilePath, "mru", false);
+                                GlobalOptions.AddToMRUList(sender, objCache.FilePath, "stickymru");
                                 break;
                         }
                     }
@@ -496,8 +510,8 @@ namespace Chummer
                 string strFile = objSender.Tag.ToString();
                 if (!string.IsNullOrEmpty(strFile))
                 {
-                    GlobalOptions.RemoveFromMRUList(strFile, "mru", false);
-                    GlobalOptions.RemoveFromMRUList(strFile, "stickymru");
+                    GlobalOptions.RemoveFromMRUList(objSender, strFile, "mru", false);
+                    GlobalOptions.RemoveFromMRUList(objSender, strFile, "stickymru");
                 }
                 objSender.Remove();
             }
@@ -568,15 +582,15 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.RemoveFromMRUList(objCache.FilePath, "mru", false);
-                        GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
+                        GlobalOptions.RemoveFromMRUList(sender, objCache.FilePath, "mru", false);
+                        GlobalOptions.AddToMRUList(sender, objCache.FilePath, "stickymru");
                         break;
                     case "Favourite":
-                        GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru", false);
-                        GlobalOptions.AddToMRUList(objCache.FilePath);
+                        GlobalOptions.RemoveFromMRUList(sender, objCache.FilePath, "stickymru", false);
+                        GlobalOptions.AddToMRUList(sender, objCache.FilePath);
                         break;
                     case "Watch":
-                        GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
+                        GlobalOptions.AddToMRUList(sender, objCache.FilePath, "stickymru");
                         break;
                 }
                 treCharacterList.SelectedNode = t;
@@ -624,7 +638,7 @@ namespace Chummer
             {
                 Program.MainForm.OpenCharacters.Remove(objOpenCharacter);
                 Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
-                Program.MainForm.CharacterRoster.PopulateCharacterList();
+                Program.MainForm.CharacterRoster.PopulateCharacterList(this, EventArgs.Empty);
                 objOpenCharacter.DeleteCharacter();
             }
             Cursor = Cursors.Default;

@@ -78,10 +78,9 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
-        /// <param name="intMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0)
         {
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
@@ -92,10 +91,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
             _intRating = intRating;
-            if (objXmlMod["downgrade"] != null)
-            {
-                _blnDowngrade = true;
-            }
+            _blnDowngrade = objXmlMod?["downgrade"] != null;
             if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -1133,10 +1129,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
-        /// <param name="treArmor">Armor TreeView.</param>
-        /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
-        /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
-        /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
             TreeNode objNode = new TreeNode

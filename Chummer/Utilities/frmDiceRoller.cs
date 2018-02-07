@@ -65,10 +65,9 @@ namespace Chummer
             List<int> lstRandom = new List<int>();
             int intHitCount = 0;
             int intGlitchCount = 0;
-            int intGlitchThreshold = 0;
             int intGlitchMin = 1;
 
-            intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            int intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -82,7 +81,7 @@ namespace Chummer
             {
                 if (chkRuleOf6.Checked)
                 {
-                    int intResult = 0;
+                    int intResult;
                     do
                     {
                         do
@@ -212,7 +211,7 @@ namespace Chummer
             }
 
             int intKeepSum = 0;
-            int intResult = 0;
+            int intResult;
             // Remove everything that is not a hit
             for (int i = _lstResults.Count - 1; i >= 0; --i)
             {
@@ -229,9 +228,7 @@ namespace Chummer
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
-            int intGlitchThreshold = 0;
-
-            intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            int intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -246,7 +243,6 @@ namespace Chummer
             {
                 if (chkRuleOf6.Checked)
                 {
-                    intResult = 0;
                     do
                     {
                         do

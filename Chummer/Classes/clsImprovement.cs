@@ -2169,7 +2169,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
+                            objCharacter.SkillsSection.RemoveSkills((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);

@@ -37,10 +37,9 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private string[] _strLimitToCategories = new string[0];
+        private HashSet<string> _strLimitToCategories = new HashSet<string>();
         private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
-        private XmlNodeList _objXmlCategoryList;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
@@ -84,26 +83,18 @@ namespace Chummer
             }
 
             // Populate the Weapon Category list.
-            if (_strLimitToCategories.Length > 0)
-            {
+            
                 // Populate the Category list.
-                foreach (XmlNode objXmlCategory in _objXmlDocument.SelectNodes("/chummer/categories/category"))
-                {
-                    string strInnerText = objXmlCategory.InnerText;
-                    if (_strLimitToCategories.Contains(strInnerText))
-                        _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
-            else
-            {
-                _objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-
-                foreach (XmlNode objXmlCategory in _objXmlCategoryList)
-                {
-                    string strInnerText = objXmlCategory.InnerText;
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
+                using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                    if (xmlCategoryList != null)
+                    {
+                        foreach (XmlNode objXmlCategory in xmlCategoryList)
+                        {
+                            string strInnerText = objXmlCategory.InnerText;
+                            if (_strLimitToCategories.Count == 0 || _strLimitToCategories.Contains(strInnerText))
+                                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
+                    }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -477,7 +468,7 @@ namespace Chummer
         /// </summary>
         public string LimitToCategories
         {
-            set => _strLimitToCategories = value.Split(',');
+            set => _strLimitToCategories = new HashSet<string>(value.Split(','));
         }
 
         public bool Underbarrel { get; set; }
@@ -494,13 +485,14 @@ namespace Chummer
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
-                if (_strLimitToCategories.Length > 0)
+                if (_strLimitToCategories.Count > 0)
                 {
-                    objCategoryFilter.Append("category = \"" + _strLimitToCategories[0] + '\"');
-                    for (int i = 1; i < _strLimitToCategories.Length; ++i)
+                    foreach (string strLoopCategory in _strLimitToCategories)
                     {
-                        objCategoryFilter.Append(" or category = \"" + _strLimitToCategories[i] + '\"');
+                        objCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
                     }
+
+                    objCategoryFilter.Length -= 4;
                 }
                 else
                 {

@@ -298,13 +298,12 @@ namespace Chummer
 
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
-                bool blnAdd = true;
                 if (chkLimitList.Checked)
                 {
                     string strRequire = objXmlProgram["require"]?.InnerText;
                     if (!string.IsNullOrEmpty(strRequire))
                     {
-                        blnAdd = false;
+                        bool blnAdd = false;
                         foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
                         {
                             if (objAIProgram.Name == strRequire)
@@ -321,7 +320,7 @@ namespace Chummer
                 // If this is a critter with Optional Programs, see if this Program is allowed.
                 if (xmlCritterOptionalPrograms?.Count > 0)
                 {
-                    blnAdd = false;
+                    bool blnAdd = false;
                     foreach (XmlNode objXmlForm in xmlCritterOptionalPrograms)
                     {
                         if (objXmlForm.InnerText == strName)

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Error     ");
+            writeLog(new[]{info},file, method, line, "Error     ");
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Warning   ");
+            writeLog(new[]{info},file, method, line, "Warning   ");
         }
 
         /// <summary>

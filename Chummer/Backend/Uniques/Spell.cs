@@ -105,7 +105,7 @@ namespace Chummer
             if (_blnLimited && _strDV.StartsWith('F'))
             {
                 string strDV = _strDV;
-                int intPos = 0;
+                int intPos;
                 if (strDV.Contains('-'))
                 {
                     intPos = strDV.IndexOf('-') + 1;
@@ -425,19 +425,13 @@ namespace Chummer
         /// </summary>
         public string DisplayType(string strLanguage)
         {
-            string strReturn = string.Empty;
-
             switch (Type)
             {
                 case "M":
-                    strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellTypeMana", strLanguage);
                 default:
-                    strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -474,7 +468,7 @@ namespace Chummer
                 for (int i = 1; i <= intMAG * 2; i++)
                 {
                     // Calculate the Spell's Drain for the current Force.
-                    object xprResult = null;
+                    object xprResult;
                     try
                     {
                         xprResult = CommonFunctions.EvaluateInvariantXPath(DV.Replace("F", i.ToString()).Replace("/", " div "));
@@ -550,22 +544,15 @@ namespace Chummer
         /// </summary>
         public string DisplayDamage(string strLanguage)
         {
-            string strReturn = string.Empty;
-
             switch (Damage)
             {
                 case "P":
-                    strReturn = LanguageManager.GetString("String_DamagePhysical", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_DamagePhysical", strLanguage);
                 case "S":
-                    strReturn = LanguageManager.GetString("String_DamageStun", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_DamageStun", strLanguage);
                 default:
-                    strReturn = LanguageManager.GetString("String_None", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_None", strLanguage);
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -582,28 +569,19 @@ namespace Chummer
         /// </summary>
         public string DisplayDuration(string strLanguage)
         {
-            string strReturn = string.Empty;
-
             switch (Duration)
             {
                 case "P":
-                    strReturn = LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
                 case "S":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
                 case "I":
-                    strReturn = LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
                 case "Special":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                 default:
-                    strReturn = LanguageManager.GetString("String_None", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_None", strLanguage);
             }
-
-            return strReturn;
         }
 
         /// <summary>

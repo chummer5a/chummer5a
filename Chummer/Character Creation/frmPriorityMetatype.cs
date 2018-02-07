@@ -1079,7 +1079,7 @@ namespace Chummer
 
                 lblSpecial.Text = intSpecialAttribPoints.ToString();
 
-                string strQuality = string.Empty;
+                string strQuality;
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metavariant's Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/*/quality"))

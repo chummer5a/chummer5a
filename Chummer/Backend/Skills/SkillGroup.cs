@@ -28,7 +28,7 @@ using System.Globalization;
 
 namespace Chummer.Backend.Skills
 {
-    [DebuggerDisplay("{_groupName}")]
+    [DebuggerDisplay("{_strGroupName} {_intSkillFromSp} {_intSkillFromKarma}")]
     public class SkillGroup : INotifyPropertyChanged, IHasInternalId, IHasName
     {
         #region Core calculations

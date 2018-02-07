@@ -113,8 +113,7 @@ namespace Chummer
                     e.Cancel = true;
                     return;
                 }
-                Character objCharacter = lstCharacters[i];
-                objCharacter = new Character
+                lstCharacters[i] = new Character
                 {
                     FileName = treCharacters.Nodes[i].Tag.ToString()
                 };

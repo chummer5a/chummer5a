@@ -839,7 +839,7 @@ namespace Chummer
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
                 Program.MainForm.OpenCharacterForms.Remove(this);
-                Program.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
+                Program.MainForm.CharacterRoster.PopulateCharacterList(this, EventArgs.Empty); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -5562,7 +5562,7 @@ namespace Chummer
                         decMinimumAmount = 0.01m;
                     }
 
-                    decimal decMove = 0;
+                    decimal decMove;
                     if (objSelectedGear.Quantity == decMinimumAmount)
                         decMove = decMinimumAmount;
                     else
@@ -6171,7 +6171,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
+            RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"));
 
             CharacterObject.Qualities.Remove(objSelectedQuality);
             return true;
@@ -15922,7 +15922,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
             {
-                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
 
                 strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
 
@@ -16304,7 +16304,7 @@ namespace Chummer
             int intCMThreshold = CharacterObject.CMThreshold;
             int intPhysicalCMPenalty = 0;
             int intStunCMPenalty = 0;
-            int intCMPenalty = 0;
+            int intCMPenalty;
 
             // Hide any unused Physical CM boxes.
             foreach (CheckBox objPhysicalCM in panPhysicalCM.Controls.OfType<CheckBox>())

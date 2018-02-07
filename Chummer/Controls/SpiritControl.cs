@@ -475,7 +475,6 @@ namespace Chummer
             else
             {
                 objCharacter.DeleteCharacter();
-                objCharacter = null;
                 return;
             }
 
@@ -644,13 +643,11 @@ namespace Chummer
             {
                 Cursor = Cursors.Default;
                 objCharacter.DeleteCharacter();
-                objCharacter = null;
                 return;
             }
 
             string strOpenFile = objCharacter.FileName;
             objCharacter.DeleteCharacter();
-            objCharacter = null;
 
             // Link the newly-created Critter to the Spirit.
             _objSpirit.FileName = strOpenFile;

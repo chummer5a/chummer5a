@@ -182,7 +182,7 @@ namespace Chummer
                 string strKarmaNodeTest = objKarmaNode.InnerText;
                 if (strKarmaNodeTest.StartsWith("Variable("))
                 {
-                    decimal decMin = 0.0m;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     string strCost = strKarmaNodeTest.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
@@ -242,28 +242,25 @@ namespace Chummer
                 XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
-                if (objXmlWeaponDocument != null)
+                foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
                 {
-                    foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
-                    {
-                        string strLoopID = objXmlAddWeapon.InnerText;
-                        XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                    string strLoopID = objXmlAddWeapon.InnerText;
+                    XmlNode objXmlWeapon = strLoopID.IsGuid()
+                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
-                        Weapon objGearWeapon = new Weapon(_objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                        objGearWeapon.ParentID = InternalId;
-                        lstWeapons.Add(objGearWeapon);
+                    Weapon objGearWeapon = new Weapon(_objCharacter);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
+                    objGearWeapon.ParentID = InternalId;
+                    lstWeapons.Add(objGearWeapon);
 
-                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
-                    }
+                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                 }
             }
 
             if (objXmlQuality.InnerXml.Contains("<naturalweapons>"))
             {
-                foreach (XmlNode objXmlNaturalWeapon in objXmlQuality["naturalweapons"].SelectNodes("naturalweapon"))
+                foreach (XmlNode objXmlNaturalWeapon in objXmlQuality.SelectNodes("naturalweapons/naturalweapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter);
                     if (objXmlNaturalWeapon["name"] != null)
@@ -824,11 +821,11 @@ namespace Chummer
         /// THIS IS A WIP AND ONLY CHECKS QUALITIES. REQUIRED POWERS, METATYPES AND OTHERS WON'T BE CHECKED
         /// </summary>
         /// <param name="objCharacter">The Character</param>
-        /// <param name="XmlQuality">The XmlNode describing the quality</param>
+        /// <param name="xmlQuality">The XmlNode describing the quality</param>
         /// <returns>Is the Quality valid on said Character</returns>
-        public static bool IsValid(Character objCharacter, XmlNode objXmlQuality)
+        public static bool IsValid(Character objCharacter, XmlNode xmlQuality)
         {
-            return IsValid(objCharacter, objXmlQuality, out QualityFailureReason q, out List<Quality> q2);
+            return IsValid(objCharacter, xmlQuality, out QualityFailureReason q, out List<Quality> q2);
         }
 
         /// <summary>

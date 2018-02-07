@@ -104,12 +104,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
-        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
+        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
-            Guid.TryParse(objXmlLifestyleQuality["id"].InnerText, out _SourceGuid);
+            Guid.TryParse(objXmlLifestyleQuality["id"]?.InnerText, out _SourceGuid);
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -251,10 +250,12 @@ namespace Chummer.Backend.Equipment
                 if (objLifestyleQualityNode == null)
                 {
                     List<ListItem> lstQualities = new List<ListItem>();
-                    foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/qualities/quality"))
-                    {
-                        lstQualities.Add(new ListItem(objNode["id"].InnerText, objNode["translate"]?.InnerText ?? objNode["name"].InnerText));
-                    }
+                    using (XmlNodeList xmlQualityList = objXmlDocument.SelectNodes("/chummer/qualities/quality"))
+                        if (xmlQualityList != null)
+                            foreach (XmlNode xmlNode in xmlQualityList)
+                            {
+                                lstQualities.Add(new ListItem(xmlNode["id"]?.InnerText, xmlNode["translate"]?.InnerText ?? xmlNode["name"]?.InnerText));
+                            }
                     frmSelectItem frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
@@ -307,9 +308,7 @@ namespace Chummer.Backend.Equipment
             string strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml", strLanguageToPrint);
-
-                XmlNode objNode = objXmlDocument?.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
+                XmlNode objNode = XmlManager.Load("lifestyles.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);

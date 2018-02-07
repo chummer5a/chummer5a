@@ -22,7 +22,7 @@ namespace CrashHandler
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		public Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged { get; set; }
+	    public event Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -212,7 +212,7 @@ namespace CrashHandler
 		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
-            bool ret = false;
+            bool ret;
             _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
             using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
 			{
@@ -292,7 +292,7 @@ namespace CrashHandler
 
 		private byte[] GetZip()
 		{
-            byte[] objReturn = null;
+            byte[] objReturn;
             MemoryStream mem = new MemoryStream();
             // archive.Dispose() should call mem.Dispose()
             using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))

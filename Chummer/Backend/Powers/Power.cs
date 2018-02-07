@@ -37,6 +37,7 @@ namespace Chummer
     {
         private Guid _guiID;
         private Guid _sourceID = Guid.Empty;
+        private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strPointsPerLevel = "0";
@@ -71,7 +72,7 @@ namespace Chummer
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("id", _sourceID.ToString("D"));
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
             objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
@@ -109,8 +110,8 @@ namespace Chummer
 
         public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
-            Name = objNode["name"].InnerText;
-            Guid.TryParse(objNode["id"].InnerText, out _sourceID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            Guid.TryParse(objNode["id"]?.InnerText, out _sourceID);
             _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
@@ -134,13 +135,15 @@ namespace Chummer
             XmlNode nodEnhancements = objNode["enhancements"];
             if (nodEnhancements != null)
             {
-                foreach (XmlNode nodEnhancement in nodEnhancements.SelectNodes("enhancement"))
-                {
-                    Enhancement objEnhancement = new Enhancement(CharacterObject);
-                    objEnhancement.Load(nodEnhancement);
-                    objEnhancement.Parent = this;
-                    Enhancements.Add(objEnhancement);
-                }
+                using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
+                    if (xmlEnhancementList != null)
+                        foreach (XmlNode nodEnhancement in xmlEnhancementList)
+                        {
+                            Enhancement objEnhancement = new Enhancement(CharacterObject);
+                            objEnhancement.Load(nodEnhancement);
+                            objEnhancement.Parent = this;
+                            Enhancements.Add(objEnhancement);
+                        }
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
@@ -150,7 +153,7 @@ namespace Chummer
                 if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     ImprovementManager.ForcedValue = strOldForce;
-                    this.Deleting = true;
+                    Deleting = true;
                     CharacterObject.Powers.Remove(this);
                     OnPropertyChanged(nameof(TotalRating));
                     return false;
@@ -173,8 +176,8 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            Name = objNode["name"].InnerText;
+            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             string strId = objNode["id"]?.InnerText;
             if (!string.IsNullOrEmpty(strId) && Guid.TryParse(strId, out _sourceID))
             {
@@ -291,7 +294,11 @@ namespace Chummer
         /// <summary>
         /// Power's name.
         /// </summary>
-        public string Name { get; set; } = string.Empty;
+        public string Name
+        {
+            get => _strName;
+            set => _strName = value;
+        }
 
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
@@ -453,7 +460,7 @@ namespace Chummer
                     return 0;
                 }
 
-                decimal decReturn = 0;
+                decimal decReturn;
                 if (FreeLevels * PointsPerLevel >= FreePoints)
                 {
                     decReturn = Rating * PointsPerLevel;
@@ -678,22 +685,7 @@ namespace Chummer
                 }
                 if (!blnReturn && _nodAdeptWayRequirements != null)
                 {
-                    foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
-                    {
-                        string strExtra = objNode.Attributes?["extra"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strExtra))
-                        {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && objQuality.Extra == strExtra);
-                            if (blnReturn)
-                                break;
-                        }
-                        else
-                        {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
-                            if (blnReturn)
-                                break;
-                        }
-                    }
+                    blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
                 }
                 if (!blnReturn && DiscountedAdeptWay)
                 {

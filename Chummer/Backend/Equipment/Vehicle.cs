@@ -32,7 +32,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes
     {
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private int _intHandling;
@@ -645,8 +645,8 @@ namespace Chummer.Backend.Equipment
                 if (strTemp.Contains('/'))
                 {
                     string[] lstSpeeds = strTemp.Split('/');
-                    _intSpeed = Convert.ToInt32(strTemp[0]);
-                    _intOffroadSpeed = Convert.ToInt32(strTemp[1]);
+                    _intSpeed = Convert.ToInt32(lstSpeeds[0]);
+                    _intOffroadSpeed = Convert.ToInt32(lstSpeeds[1]);
                 }
                 else
                 {
@@ -711,8 +711,6 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
                 foreach (XmlNode nodChild in nodChildren)
                 {
-                    string strChildCategory = nodChild["category"].InnerText;
-
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
                     _lstGear.Add(objGear);
@@ -1557,7 +1555,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter = (char)0;
+                char chrFirstCharacter;
                 // First check for mods that overwrite the seat value
                 int intTotalSeats = Seats;
                 foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
@@ -1569,7 +1567,7 @@ namespace Chummer.Backend.Equipment
                         objBonusNode = objMod.WirelessBonus;
                     if (objBonusNode != null)
                     {
-                        chrFirstCharacter = objBonusNode["seats"].InnerText[0];
+                        chrFirstCharacter = objBonusNode["seats"]?.InnerText[0] ?? '0';
                         if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                         {
                             intTotalSeats = Math.Max(Convert.ToInt32(objBonusNode["seats"].InnerText.Replace("Rating", objMod.Rating.ToString())), intTotalSeats);
@@ -1583,7 +1581,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<seats>"))
                     {
-                        chrFirstCharacter = objMod.Bonus["seats"].InnerText[0];
+                        chrFirstCharacter = objMod.Bonus["seats"]?.InnerText[0] ?? '0';
                         if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                         {
                             // If the bonus is determined by the existing seat number, evaluate the expression.
@@ -1592,7 +1590,7 @@ namespace Chummer.Backend.Equipment
                     }
                     if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<seats>"))
                     {
-                        chrFirstCharacter = objMod.WirelessBonus["seats"].InnerText[0];
+                        chrFirstCharacter = objMod.WirelessBonus["seats"]?.InnerText[0] ?? '0';
                         if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                         {
                             // If the bonus is determined by the existing seat number, evaluate the expression.
@@ -1612,7 +1610,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter = (char)0;
+                char chrFirstCharacter;
                 int intTotalSpeed = Speed;
                 int intBaseOffroadSpeed = OffroadSpeed;
                 int intTotalArmor = 0;
@@ -1754,7 +1752,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter = (char)0;
+                char chrFirstCharacter;
                 int intTotalAccel = Accel;
                 int intBaseOffroadAccel = OffroadAccel;
                 int intTotalArmor = 0;
@@ -1950,7 +1948,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter = (char)0;
+                char chrFirstCharacter;
                 int intBaseHandling = Handling;
                 int intBaseOffroadHandling = OffroadHandling;
                 int intTotalArmor = 0;
@@ -2638,7 +2636,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Cast<IHasMatrixAttributes>().Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
 
@@ -2725,8 +2723,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a Vehicle to the TreeView.
         /// </summary>
-        /// <param name="objVehicle">Vehicle to add.</param>
-        /// <param name="treVehicles">Vehicle TreeView.</param>
         /// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
         /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
         /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
@@ -2817,7 +2813,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
         /// </summary>
-        /// <param name="objVehicle">Vehicle to modify.</param>
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>
         public void ChangeVehicleSensor(TreeView treVehicles, bool blnIncrease, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
@@ -2940,11 +2935,11 @@ namespace Chummer.Backend.Equipment
                     if (lstChildrenWithMatrixAttributes.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                     {
                         int intTotalChildrenValue = 0;
-                        foreach (Gear loopGear in lstChildrenWithMatrixAttributes)
+                        foreach (IHasMatrixAttributes objChild in lstChildrenWithMatrixAttributes)
                         {
-                            if (loopGear.Equipped)
+                            if ((objChild is Gear objGear && objGear.Equipped) || (objChild is Weapon objWeapon && objWeapon.Installed))
                             {
-                                intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
+                                intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
                             }
                         }
                         objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));

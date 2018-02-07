@@ -226,28 +226,23 @@ namespace Chummer
                     //Sort based on integer value of key
                     Stages.Sort((x, y) =>
                     {
-                        int yint = 0;
                         if (int.TryParse(x.Value.ToString(), out int xint))
                         {
-                            if (int.TryParse(y.Value.ToString(), out yint))
+                            if (int.TryParse(y.Value.ToString(), out int yint))
                             {
                                 return xint - yint;
                             }
-                            else
-                            {
-                                return 1;
-                            }
+
+                            return 1;
                         }
                         else
                         {
-                            if (int.TryParse(y.Value.ToString(), out yint))
+                            if (int.TryParse(y.Value.ToString(), out int yint))
                             {
                                 return -1;
                             }
-                            else
-                            {
-                                return 0;
-                            }
+
+                            return 0;
                         }
                     });
 

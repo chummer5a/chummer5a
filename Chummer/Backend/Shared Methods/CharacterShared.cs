@@ -6615,7 +6615,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                GlobalOptions.AddToMRUList(_objCharacter.FileName, "mru", true, true);
+                GlobalOptions.AddToMRUList(this, _objCharacter.FileName, "mru", true, true);
                 IsDirty = false;
                 Cursor = Cursors.Default;
 

@@ -169,12 +169,12 @@ namespace Chummer
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string strAttribute in new string[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
+                foreach (string strAttribute in new[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
                 {
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                     {
-                        int intValue = 1;
+                        int intValue;
                         try
                         {
                             intValue = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString())));
@@ -239,7 +239,7 @@ namespace Chummer
                     objWriter.WriteStartElement("skills");
                     foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                     {
-                        string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value;
+                        string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
                         if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
                             intAttrValue = _intForce;
                         int intDicepool = intAttrValue + _intForce;
@@ -651,7 +651,6 @@ namespace Chummer
                     {
                         Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.DeleteCharacter();
-                        _objOldLinkedCharacter = null;
                     }
                 }
                 if (_objLinkedCharacter != null)

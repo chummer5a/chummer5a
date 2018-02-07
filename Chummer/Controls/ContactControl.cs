@@ -408,55 +408,85 @@ namespace Chummer
             {
                 ListItem.Blank
             };
+            
+            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+            if (xmlContactsBaseNode != null)
+            {
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstCategories.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
 
-            XmlDocument objXmlDocument = XmlManager.Load("contacts.xml");
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/contacts/contact"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstCategories.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("sexes/sex"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstSexes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstAges.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("personallives/personallife"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstPersonalLives.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("types/type"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstTypes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("preferredpayments/preferredpayment"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstPreferredPayments.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("hobbiesvices/hobbyvice"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstHobbiesVices.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
             }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/sexes/sex"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstSexes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/ages/age"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstAges.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/personallives/personallife"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstPersonalLives.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/types/type"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstTypes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/preferredpayments/preferredpayment"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstPreferredPayments.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/hobbiesvices/hobbyvice"))
-            {
-                string strName = objXmlNode.InnerText;
-                lstHobbiesVices.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-            }
-            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
-            {
-                string strName = xmlMetatypeNode["name"].InnerText;
-                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
-                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
-                {
-                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
-                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
-                }
-            }
+
+            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+                if (xmlMetatypeList != null)
+                    foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
+                    {
+                        string strName = xmlMetatypeNode["name"]?.InnerText;
+                        string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                        lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                        XmlNodeList xmlMetavariantList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
+                        if (xmlMetavariantList != null)
+                        {
+                            foreach (XmlNode objXmlMetavariantNode in xmlMetavariantList)
+                            {
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
+                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                            }
+                        }
+                    }
 
             lstCategories.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
@@ -562,7 +592,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves

@@ -54,11 +54,10 @@ namespace Chummer
         }
 
         /// Create a Skill Limit Modifier from an XmlNode.
-        /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
+        /// <param name="objXmlLimitModifierNode">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlLimitModifierNode)
         {
-            _strName = objXmlLimitModifierNode["name"].InnerText;
+            _strName = objXmlLimitModifierNode["name"]?.InnerText ?? string.Empty;
 
             if (objXmlLimitModifierNode["bonus"] != null)
             {
@@ -210,7 +209,7 @@ namespace Chummer
         {
             get
             {
-                string strBonus = string.Empty;
+                string strBonus;
                 if (_intBonus > 0)
                     strBonus = '+' + _intBonus.ToString();
                 else

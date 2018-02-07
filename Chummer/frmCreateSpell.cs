@@ -599,7 +599,7 @@ namespace Chummer
                 }
             }
 
-            string strBase = string.Empty;
+            string strBase;
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.

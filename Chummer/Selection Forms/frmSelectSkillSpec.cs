@@ -54,7 +54,7 @@ namespace Chummer
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;
             }
-            XmlNode xmlParentSkill = null;
+            XmlNode xmlParentSkill;
             if (Mode == "Knowledge")
                 xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]") ??
                     _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");

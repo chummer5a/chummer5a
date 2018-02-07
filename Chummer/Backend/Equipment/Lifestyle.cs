@@ -125,7 +125,6 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlLifestyle">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         public void Create(XmlNode objXmlLifestyle)
         {
             objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strBaseLifestyle);
@@ -250,13 +249,14 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
                     List<ListItem> lstQualities = new List<ListItem>();
-                    foreach (XmlNode xmlLifestyle in objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle"))
-                    {
-                        string strName = xmlLifestyle["name"].InnerText;
-                        lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
-                    }
+                    using (XmlNodeList xmlLifestyleList = XmlManager.Load("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
+                        if (xmlLifestyleList != null)
+                            foreach (XmlNode xmlLifestyle in xmlLifestyleList)
+                            {
+                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                                lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
+                            }
                     frmSelectItem frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
@@ -283,20 +283,24 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
             // Lifestyle Qualities
-            foreach (XmlNode xmlQuality in objNode.SelectNodes("lifestylequalities/lifestylequality"))
-            {
-                var objQuality = new LifestyleQuality(_objCharacter);
-                objQuality.Load(xmlQuality, this);
-                _lstLifestyleQualities.Add(objQuality);
-            }
+            using (XmlNodeList xmlQualityList = objNode.SelectNodes("lifestylequalities/lifestylequality"))
+                if (xmlQualityList != null)
+                    foreach (XmlNode xmlQuality in xmlQualityList)
+                    {
+                        var objQuality = new LifestyleQuality(_objCharacter);
+                        objQuality.Load(xmlQuality, this);
+                        _lstLifestyleQualities.Add(objQuality);
+                    }
 
             // Free Grids provided by the Lifestyle
-            foreach (XmlNode xmlQuality in objNode.SelectNodes("freegrids/lifestylequality"))
-            {
-                var objQuality = new LifestyleQuality(_objCharacter);
-                objQuality.Load(xmlQuality, this);
-                FreeGrids.Add(objQuality);
-            }
+            using (XmlNodeList xmlQualityList = objNode.SelectNodes("freegrids/lifestylequality"))
+                if (xmlQualityList != null)
+                    foreach (XmlNode xmlQuality in xmlQualityList)
+                    {
+                        var objQuality = new LifestyleQuality(_objCharacter);
+                        objQuality.Load(xmlQuality, this);
+                        FreeGrids.Add(objQuality);
+                    }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 

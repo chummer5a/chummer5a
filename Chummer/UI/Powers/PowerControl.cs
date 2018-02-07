@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ namespace Chummer
 
         private void PowerControl_Load(object sender, EventArgs e)
         {
-            this.Width = cmdDelete.Left + cmdDelete.Width;
+            Width = cmdDelete.Left + cmdDelete.Width;
             cmdDelete.Enabled = PowerObject.FreeLevels == 0;
         }
 
@@ -213,7 +213,7 @@ namespace Chummer
                 }
                 cmdDelete.Left = imgNotes.Left + imgNotes.Width + 6;
 
-                if (cmdDelete.Left + cmdDelete.Width > this.Width)
+                if (cmdDelete.Left + cmdDelete.Width > Width)
                 {
                     lblPowerName.Font = new Font(lblPowerName.Font.FontFamily.Name, lblPowerName.Font.Size - 0.25f);
                     nudRating.Font = lblPowerName.Font;

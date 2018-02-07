@@ -49,7 +49,7 @@ namespace Chummer
 
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
-        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlProgramNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))

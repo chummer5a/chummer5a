@@ -190,7 +190,6 @@ namespace Chummer
             }
 
             objCharacter.DeleteCharacter();
-            objCharacter = null;
         }
 
         private void TestWeapons()
@@ -316,7 +315,6 @@ namespace Chummer
             }
 
             objCharacter.DeleteCharacter();
-            objCharacter = null;
         }
 
         private void TestArmor()
@@ -479,7 +477,6 @@ namespace Chummer
             }
 
             objCharacter.DeleteCharacter();
-            objCharacter = null;
         }
 
         private void TestCyberware(string strFile)
@@ -575,7 +572,6 @@ namespace Chummer
             }
 
             objCharacter.DeleteCharacter();
-            objCharacter = null;
         }
 
         private void TestQuality()
@@ -896,7 +892,6 @@ namespace Chummer
                 }
 
                 objCharacter.DeleteCharacter();
-                objCharacter = null;
             }
         }
 

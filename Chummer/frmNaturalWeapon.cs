@@ -132,7 +132,7 @@ namespace Chummer
             strDamage += cboDVType.SelectedValue.ToString();
 
             // Create the AP value.
-            string strAP = string.Empty;
+            string strAP;
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)

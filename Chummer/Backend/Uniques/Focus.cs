@@ -61,8 +61,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            _strName = objNode["name"].InnerText;
-            _intRating = Convert.ToInt32(objNode["rating"].InnerText);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
         }
         #endregion

@@ -600,12 +600,7 @@ namespace Chummer
                 }
             }
         }
-
-        private void BindEvents(ContactControl objContactControl)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If there are unsaved changes to the character, as the user if they would like to save their changes.
@@ -633,7 +628,7 @@ namespace Chummer
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
                 Program.MainForm.OpenCharacterForms.Remove(this);
-                Program.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
+                Program.MainForm.CharacterRoster.PopulateCharacterList(this, EventArgs.Empty); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -11107,10 +11102,9 @@ namespace Chummer
             string karma = LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             string of = LanguageManager.GetString("String_Of", GlobalOptions.Language);
             string def = $"0 {karma}";
-            string strTemp = string.Empty;
             //Update Skill Labels
             //Active skills
-            strTemp = def;
+            string strTemp = def;
             int intActiveSkillPointsMaximum = CharacterObject.SkillsSection.SkillPointsMaximum;
             if (intActiveSkillPointsMaximum > 0)
             {
@@ -13985,6 +13979,7 @@ namespace Chummer
                                           LanguageManager.GetString("String_TechniquesCount", GlobalOptions.Language));
             }
 
+            /*
             // Check if the character has gone over limits from optional rules
             int intContactPointsUsed = 0;
             int intGroupContacts = 0;
@@ -14022,8 +14017,9 @@ namespace Chummer
 
             intContactPointsUsed += Math.Max(0, intHighPlaces - (CharacterObject.CHA.TotalValue * 4));
 
-            //if (intContactPointsUsed > _objCharacter.ContactPoints)
-            //    strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + ' ' + LanguageManager.GetString("String_Contacts"));
+            if (intContactPointsUsed > _objCharacter.ContactPoints)
+                strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + ' ' + LanguageManager.GetString("String_Contacts"));
+            */
 
             // Calculate the BP used by Enemies. These are added to the BP since they are technically
             // a Negative Quality.
@@ -14039,7 +14035,7 @@ namespace Chummer
             // Calculate the BP used by Positive Qualities.
             int intPointsUsed = CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
             // Group contacts are counted as positive qualities
-            intPointsUsed += intGroupContacts;
+            intPointsUsed += CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free).Sum(x => x.ContactPoints);
 
             // Deduct the amount for free Qualities.
             intPointsUsed -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities);
@@ -14054,19 +14050,8 @@ namespace Chummer
             }
 
             // Deduct the amount for free Qualities.
-            intPointsUsed -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
             intNegativePoints -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
-            // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
-            if (CharacterObjectOptions.ExceedPositiveQualitiesCostDoubled)
-            {
-                int intPositiveQualityExcess = intPointsUsed - CharacterObject.GameplayOptionQualityLimit;
-                if (intPositiveQualityExcess > 0)
-                {
-                    intPointsUsed += intPositiveQualityExcess;
-                }
-            }
-
+            
             // if positive points > 25
             if (intPositivePointsUsed > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
             {
@@ -14085,16 +14070,6 @@ namespace Chummer
                               LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language)
                                   .Replace("{0}", (CharacterObject.GameplayOptionQualityLimit).ToString());
                 blnValid = false;
-            }
-
-            // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-            if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
-            {
-                int intNegativeQualityLimit = -CharacterObject.GameplayOptionQualityLimit;
-                if (intNegativePoints < intNegativeQualityLimit)
-                {
-                    intNegativePoints = intNegativeQualityLimit;
-                }
             }
 
             if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7 && !x.Free))

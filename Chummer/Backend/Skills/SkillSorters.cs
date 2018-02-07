@@ -98,22 +98,15 @@ namespace Chummer.Backend.Skills
         /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
         public int Compare(Skill x, Skill y)
         {
-            if (x.SkillGroupObject != null)
+            if (x?.SkillGroupObject != null)
             {
-                if (y.SkillGroupObject != null)
+                if (y?.SkillGroupObject != null)
                 {
                     return y.SkillGroupObject.Rating.CompareTo(x.SkillGroupObject.Rating);
                 }
-                else
-                {
-                    return -1;
-                }
+                return -1;
             }
-            else if (y.SkillGroupObject != null)
-            {
-                return 1;
-            }
-            return 0;
+            return y?.SkillGroupObject != null ? 1 : 0;
         }
     }
 }

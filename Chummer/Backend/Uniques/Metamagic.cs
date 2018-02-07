@@ -51,7 +51,6 @@ namespace Chummer
 
         /// Create a Metamagic from an XmlNode.
         /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource, string strForcedValue = "")
         {

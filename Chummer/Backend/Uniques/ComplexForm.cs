@@ -50,7 +50,7 @@ namespace Chummer
 
         /// Create a Complex Form from an XmlNode.
         /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
-        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlComplexFormNode, string strExtra = "")
         {
             if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))

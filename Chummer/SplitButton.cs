@@ -46,10 +46,6 @@ public class SplitButton : Button
 
     TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
 
-    public SplitButton() : base()
-    {
-    }
-
     /*
     public sealed override bool AutoSize
     {

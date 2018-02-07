@@ -156,7 +156,8 @@ namespace Chummer
         private static readonly CultureInfo s_ObjInvariantCultureInfo = CultureInfo.InvariantCulture;
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
-        public static Action MRUChanged { get; set; }
+        public static string ErrorMessage { get; } = string.Empty;
+        public static event EventHandler MRUChanged;
 
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
@@ -182,9 +183,6 @@ namespace Chummer
         private static string _strOmaeUserName = string.Empty;
         private static string _strOmaePassword = string.Empty;
         private static bool _blnOmaeAutoLogin;
-
-        private static XmlDocument _objXmlClipboard = new XmlDocument();
-        private static ClipboardContentType _objClipboardContentType;
 
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
@@ -297,11 +295,6 @@ namespace Chummer
             if (Utils.IsRunningInVisualStudio)
                 return;
 
-            _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            if (_objBaseChummerKey == null)
-                return;
-            _objBaseChummerKey.CreateSubKey("Sourcebook");
-
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
@@ -309,12 +302,33 @@ namespace Chummer
                 {
                     Directory.CreateDirectory(settingsDirectoryPath);
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                    string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", Language, false);
+                    if (string.IsNullOrEmpty(strMessage))
+                        strMessage = ex.ToString();
+                    ErrorMessage += strMessage;
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage += ex.ToString();
                 }
             }
 
+            try
+            {
+                _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+            }
+            catch (Exception ex)
+            {
+                if (!string.IsNullOrEmpty(ErrorMessage))
+                    ErrorMessage += "\n\n";
+                ErrorMessage += ex.ToString();
+            }
+            if (_objBaseChummerKey == null)
+                return;
+            _objBaseChummerKey.CreateSubKey("Sourcebook");
+            
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
@@ -636,20 +650,12 @@ namespace Chummer
         /// <summary>
         /// Clipboard.
         /// </summary>
-        public static XmlDocument Clipboard
-        {
-            get => _objXmlClipboard;
-            set => _objXmlClipboard = value;
-        }
+        public static XmlDocument Clipboard { get; set; } = new XmlDocument();
 
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public static ClipboardContentType ClipboardContentType
-        {
-            get => _objClipboardContentType;
-            set => _objClipboardContentType = value;
-        }
+        public static ClipboardContentType ClipboardContentType { get; set; }
 
         /// <summary>
         /// Default character sheet to use when printing.
@@ -758,7 +764,7 @@ namespace Chummer
         /// Add a file to the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to add.</param>
-        public static void AddToMRUList(string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false, int intIndex = 0)
+        public static void AddToMRUList(object sender, string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false, int intIndex = 0)
         {
             if (string.IsNullOrEmpty(strFile))
                 return;
@@ -772,7 +778,7 @@ namespace Chummer
                 if (strStickyFiles.Contains(strFile))
                 {
                     if (blnForceDoMRUChanged && blnDoMRUChanged)
-                        MRUChanged?.Invoke();
+                        MRUChanged?.Invoke(null, EventArgs.Empty);
                     return;
                 }
             }
@@ -784,7 +790,7 @@ namespace Chummer
                 if (intOldIndex == intIndex)
                 {
                     if (blnForceDoMRUChanged && blnDoMRUChanged)
-                        MRUChanged?.Invoke();
+                        MRUChanged?.Invoke(sender, EventArgs.Empty);
                     return;
                 }
                 strFiles.RemoveAt(intOldIndex);
@@ -803,14 +809,14 @@ namespace Chummer
                 _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
             }
             if (blnDoMRUChanged)
-                MRUChanged?.Invoke();
+                MRUChanged?.Invoke(sender, EventArgs.Empty);
         }
 
         /// <summary>
         /// Remove a file from the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to remove.</param>
-        public static void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false)
+        public static void RemoveFromMRUList(object sender, [NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false)
         {
             List<string> strFiles = ReadMRUList(strMRUType);
 
@@ -826,17 +832,17 @@ namespace Chummer
                         _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
                 }
                 if (blnDoMRUChanged)
-                    MRUChanged?.Invoke();
+                    MRUChanged?.Invoke(sender, EventArgs.Empty);
             }
             else if (blnForceDoMRUChanged && blnDoMRUChanged)
-                MRUChanged?.Invoke();
+                MRUChanged?.Invoke(sender, EventArgs.Empty);
         }
 
         /// <summary>
         /// Add a list of files to the beginning of the most recently used characters.
         /// </summary>
         /// <param name="lstFilesToAdd">Names of the files to add (files added in reverse order).</param>
-        public static void AddToMRUList(IEnumerable<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        public static void AddToMRUList(object sender, IEnumerable<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
         {
             bool blnAnyChange = false;
             List<string> strFiles = ReadMRUList(strMRUType);
@@ -870,7 +876,7 @@ namespace Chummer
                     _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
                 }
                 if (blnDoMRUChanged)
-                    MRUChanged?.Invoke();
+                    MRUChanged?.Invoke(sender, EventArgs.Empty);
             }
         }
 
@@ -878,7 +884,7 @@ namespace Chummer
         /// Remove a list of files from the most recently used characters.
         /// </summary>
         /// <param name="lstFilesToRemove">Names of the files to remove.</param>
-        public static void RemoveFromMRUList(IEnumerable<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        public static void RemoveFromMRUList(object sender, IEnumerable<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
         {
             List<string> strFiles = ReadMRUList(strMRUType);
             bool blnAnyChange = false;
@@ -900,7 +906,7 @@ namespace Chummer
                         _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
                 }
                 if (blnDoMRUChanged)
-                    MRUChanged?.Invoke();
+                    MRUChanged?.Invoke(sender, EventArgs.Empty);
             }
         }
 

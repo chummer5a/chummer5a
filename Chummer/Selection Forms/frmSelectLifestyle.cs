@@ -394,8 +394,7 @@ namespace Chummer
 
         private void MoveControls()
         {
-            int intLeft = 0;
-            intLeft = Math.Max(lblLifestyleNameLabel.Left + lblLifestyleNameLabel.Width, lblLifestyles.Left + lblLifestyles.Width);
+            int intLeft = Math.Max(lblLifestyleNameLabel.Left + lblLifestyleNameLabel.Width, lblLifestyles.Left + lblLifestyles.Width);
 
             txtLifestyleName.Left = intLeft + 6;
             cboLifestyle.Left = intLeft + 6;

@@ -70,8 +70,6 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         public void Create(XmlNode objXmlMod, decimal decMarkup = 0)
         {
@@ -86,7 +84,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
-            _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+            objXmlMod.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!string.IsNullOrEmpty(_strCost))
             {
                 if (_strCost.StartsWith("Variable("))
@@ -677,8 +675,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a Weapon Mount to the TreeView
         /// </summary>
-        /// <param name="objWeaponMount">WeaponMount that we're creating.</param>
-        /// <param name="parentNode">Parent treenode to add to.</param>
         /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapons</param>
         /// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessories</param>
         /// <param name="cmsVehicleWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Gear</param>
@@ -738,7 +734,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Create a Weapon Mount Option from an XmlNode, returns true if creation was successful.
         /// </summary>
-        /// <param name="id">String guid of the object.</param>
+        /// <param name="objXmlMod">XmlNode of the option.</param>
         public bool Create(XmlNode objXmlMod)
         {
             if (objXmlMod == null)

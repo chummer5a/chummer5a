@@ -91,7 +91,7 @@ namespace Chummer
             }
 
             // Populate the MRU list.
-            PopulateMRUToolstripMenu();
+            PopulateMRUToolstripMenu(this, EventArgs.Empty);
 
             Program.MainForm = this;
 
@@ -571,8 +571,8 @@ namespace Chummer
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
-                GlobalOptions.RemoveFromMRUList(strFileName, "mru", false);
-                GlobalOptions.AddToMRUList(strFileName, "stickymru");
+                GlobalOptions.RemoveFromMRUList(sender, strFileName, "mru", false);
+                GlobalOptions.AddToMRUList(sender, strFileName, "stickymru");
             }
         }
 
@@ -591,8 +591,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.RemoveFromMRUList(strFileName, "stickymru", false);
-                GlobalOptions.AddToMRUList(strFileName);
+                GlobalOptions.RemoveFromMRUList(sender, strFileName, "stickymru", false);
+                GlobalOptions.AddToMRUList(sender, strFileName);
             }
         }
 
@@ -1010,7 +1010,7 @@ namespace Chummer
                 }
 
                 if (blnIncludeInMRU)
-                    GlobalOptions.AddToMRUList(objCharacter.FileName);
+                    GlobalOptions.AddToMRUList(this, objCharacter.FileName);
                 
                 UpdateCharacterTabTitle(objCharacter, EventArgs.Empty);
 
@@ -1102,7 +1102,7 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMRUToolstripMenu()
+        public void PopulateMRUToolstripMenu(object sender, EventArgs e)
         {
             List<string> strStickyMRUList = GlobalOptions.ReadMRUList("stickymru");
             List<string> strMRUList = GlobalOptions.ReadMRUList();
@@ -1214,7 +1214,7 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            GlobalOptions.RemoveFromMRUList(GlobalOptions.ReadMRUList());
+            GlobalOptions.RemoveFromMRUList(this, GlobalOptions.ReadMRUList());
         }
 
         private void mnuRestart_Click(object sender, EventArgs e)

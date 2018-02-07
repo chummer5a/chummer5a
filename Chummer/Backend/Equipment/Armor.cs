@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     public class Armor : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _sourceID = Guid.Empty;
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private Guid _guiWeaponID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
@@ -113,7 +113,7 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipSelectForms)
                 {
-                    decimal decMin = decimal.MinValue;
+                    decimal decMin;
                     decimal decMax = decimal.MaxValue;
                     if (intHyphenIndex != -1)
                     {
@@ -161,55 +161,59 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlArmorNode.InnerXml.Contains("<selectmodsfromcategory>") && !blnSkipSelectForms)
+            if (!blnSkipSelectForms)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
-
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlCategoryNode in objXmlArmorNode["selectmodsfromcategory"])
+                XmlNode xmlSelectModesFromCategory = objXmlArmorNode["selectmodsfromcategory"];
+                if (xmlSelectModesFromCategory != null)
                 {
-                    frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter)
+                    XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+
+                    // More than one Weapon can be added, so loop through all occurrences.
+                    foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
-                        AllowedCategories = objXmlCategoryNode.InnerText,
-                        ExcludeGeneralCategory = true
-                    };
-                    frmPickArmorMod.ShowDialog();
-
-                    if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Locate the selected piece.
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
-
-                    if (objXmlMod != null)
-                    {
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
-
-                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
-                        objMod.Parent = this;
-                        objMod.IncludedInArmor = true;
-                        objMod.ArmorCapacity = "[0]";
-                        objMod.Cost = "0";
-                        objMod.MaximumRating = objMod.Rating;
-                        _lstArmorMods.Add(objMod);
-                    }
-                    else
-                    {
-                        ArmorMod objMod = new ArmorMod(_objCharacter)
+                        frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter)
                         {
-                            Name = _strName,
-                            Category = "Features",
-                            Avail = "0",
-                            Source = _strSource,
-                            Page = _strPage,
-                            Parent = this,
-                            IncludedInArmor = true,
-                            ArmorCapacity = "[0]",
-                            Cost = "0",
-                            Rating = 0,
-                            MaximumRating = 0
+                            AllowedCategories = objXmlCategoryNode.InnerText,
+                            ExcludeGeneralCategory = true
                         };
-                        _lstArmorMods.Add(objMod);
+                        frmPickArmorMod.ShowDialog();
+
+                        if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                            return;
+
+                        // Locate the selected piece.
+                        XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+
+                        if (objXmlMod != null)
+                        {
+                            ArmorMod objMod = new ArmorMod(_objCharacter);
+
+                            objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
+                            objMod.Parent = this;
+                            objMod.IncludedInArmor = true;
+                            objMod.ArmorCapacity = "[0]";
+                            objMod.Cost = "0";
+                            objMod.MaximumRating = objMod.Rating;
+                            _lstArmorMods.Add(objMod);
+                        }
+                        else
+                        {
+                            ArmorMod objMod = new ArmorMod(_objCharacter)
+                            {
+                                Name = _strName,
+                                Category = "Features",
+                                Avail = "0",
+                                Source = _strSource,
+                                Page = _strPage,
+                                Parent = this,
+                                IncludedInArmor = true,
+                                ArmorCapacity = "[0]",
+                                Cost = "0",
+                                Rating = 0,
+                                MaximumRating = 0
+                            };
+                            _lstArmorMods.Add(objMod);
+                        }
                     }
                 }
             }
@@ -376,7 +380,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (!Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+                if (!Guid.TryParse(objNode["guid"]?.InnerText, out _guiID))
                     _guiID = Guid.NewGuid();
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             }
@@ -388,7 +392,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode objArmorNode = GetNode();
                 if (objArmorNode != null)
                 {
-                    Guid.TryParse(objArmorNode["id"].InnerText, out _sourceID);
+                    Guid.TryParse(objArmorNode["id"]?.InnerText, out _sourceID);
                 }
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -412,26 +416,30 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = _nodWirelessBonus != null;
-            if (objNode.InnerXml.Contains("armormods"))
+            XmlNode xmlChildrenNode = objNode["armormods"];
+            if (xmlChildrenNode != null)
             {
-                XmlNodeList nodMods = objNode.SelectNodes("armormods/armormod");
-                foreach (XmlNode nodMod in nodMods)
-                {
-                    ArmorMod objMod = new ArmorMod(_objCharacter);
-                    objMod.Load(nodMod, blnCopy);
-                    objMod.Parent = this;
-                    _lstArmorMods.Add(objMod);
-                }
+                using (XmlNodeList nodMods = xmlChildrenNode.SelectNodes("armormod"))
+                    if (nodMods != null)
+                        foreach (XmlNode nodMod in nodMods)
+                        {
+                            ArmorMod objMod = new ArmorMod(_objCharacter);
+                            objMod.Load(nodMod, blnCopy);
+                            objMod.Parent = this;
+                            _lstArmorMods.Add(objMod);
+                        }
             }
-            if (objNode.InnerXml.Contains("gears"))
+            xmlChildrenNode = objNode["gears"];
+            if (xmlChildrenNode != null)
             {
-                XmlNodeList nodGears = objNode.SelectNodes("gears/gear");
-                foreach (XmlNode nodGear in nodGears)
-                {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Load(nodGear, blnCopy);
-                    _lstGear.Add(objGear);
-                }
+                using (XmlNodeList nodGears = xmlChildrenNode.SelectNodes("gear"))
+                    if (nodGears != null)
+                        foreach (XmlNode nodGear in nodGears)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            objGear.Load(nodGear, blnCopy);
+                            _lstGear.Add(objGear);
+                        }
             }
         }
 
@@ -690,7 +698,7 @@ namespace Chummer.Backend.Equipment
 
             if (blnUseRating)
             {
-                decimal decTotalCost = 0.0m;
+                decimal decTotalCost;
                 // If the cost is determined by the Rating, evaluate the expression.
                 if (strReturn.Contains("Rating"))
                 {
@@ -902,7 +910,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decTotalCost = 0.0m;
+                decimal decTotalCost;
                 // If the cost is determined by the Rating, evaluate the expression.
                 string strCostExpression = Cost;
                 if (strCostExpression.Contains("Rating"))
@@ -1264,8 +1272,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
         /// </summary>
-        /// <param name="objArmor">Armor to delete</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         public decimal DeleteArmor()
         {
             decimal decReturn = 0.0m;
@@ -1332,7 +1338,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
-        /// <param name="treArmor">Armor TreeView.</param>
         /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
         /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
         /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>

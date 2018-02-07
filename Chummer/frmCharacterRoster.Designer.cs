@@ -501,6 +501,8 @@ namespace Chummer
             this.MinimumSize = new System.Drawing.Size(586, 585);
             this.Name = "frmCharacterRoster";
             this.Text = "Character Roster";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCharacterRoster_FormClosing);
+            this.Load += new System.EventHandler(this.frmCharacterRoster_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tabCharacterText.ResumeLayout(false);
             this.panCharacterBio.ResumeLayout(false);

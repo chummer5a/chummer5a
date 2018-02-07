@@ -426,7 +426,7 @@ namespace Chummer
         public void UpdateUpDownButtonsVisibility()
         {
             // test new state
-            bool newVisible = false;
+            bool newVisible;
             switch (_showUpDownButtons)
             {
                 case ShowUpDownButtonsMode.WhenMouseOver:

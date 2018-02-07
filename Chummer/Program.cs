@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
  using System.Runtime;
  using System.Threading;
-﻿using System.Windows.Forms;
+ using System.Windows.Forms;
 ﻿using Chummer.Backend;
 
 [assembly: CLSCompliant(true)]
@@ -74,8 +74,6 @@ namespace Chummer
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 sw.TaskEnd("languagefreestartup");
 #if !DEBUG
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
@@ -91,6 +89,21 @@ namespace Chummer
                 sw.TaskEnd("Startup");
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
+                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                {
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                {
+                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Make sure the default language has been loaded before attempting to open the Main Form.
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
                 s_FrmMainForm = new frmChummerMain();
                 Application.Run(s_FrmMainForm);

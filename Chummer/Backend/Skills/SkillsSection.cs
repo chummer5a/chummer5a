@@ -30,7 +30,6 @@ namespace Chummer.Backend.Skills
     public class SkillsSection : INotifyPropertyChanged
     {
         private readonly Character _objCharacter;
-        private readonly Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
         private readonly Dictionary<Guid, Skill> _dicSkillBackups = new Dictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
@@ -49,7 +48,6 @@ namespace Chummer.Backend.Skills
             _objCharacter.INT.PropertyChanged -= KnoChanged;
             
             _objCharacter.SkillImprovementEvent -= CharacterOnImprovementEvent;
-            _skillValueBackup.Clear();
             _dicSkillBackups.Clear();
         }
 

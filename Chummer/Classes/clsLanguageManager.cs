@@ -53,7 +53,7 @@ namespace Chummer
 
             public override bool Equals(object obj)
             {
-                return Key.Equals(obj.ToString());
+                return Key.Equals(obj?.ToString());
             }
 
             public override int GetHashCode()
@@ -71,7 +71,7 @@ namespace Chummer
         {
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
             public XmlDocument DataDocument { get; } = new XmlDocument();
-            public string ErrorMessage { get; private set; } = string.Empty;
+            public string ErrorMessage { get; } = string.Empty;
             public bool ErrorAlreadyShown { get; set; }
 
             public LanguageData(string strLanguage)
@@ -103,20 +103,28 @@ namespace Chummer
 
                         if (objLanguageDocument != null)
                         {
-                            foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                            {
-                                // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
-                                // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                                string strKey = objNode["key"]?.InnerText;
-                                string strText = objNode["text"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                            using (XmlNodeList xmlStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                                if (xmlStringList != null)
                                 {
-                                    if (TranslatedStrings.ContainsKey(strKey))
-                                        TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
-                                    else
-                                        TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                    foreach (XmlNode objNode in xmlStringList)
+                                    {
+                                        // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                        // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                        string strKey = objNode["key"]?.InnerText;
+                                        string strText = objNode["text"]?.InnerText;
+                                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                        {
+                                            if (TranslatedStrings.ContainsKey(strKey))
+                                                TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                            else
+                                                TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                        }
+                                    }
                                 }
-                            }
+                                else
+                                {
+                                    ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".\n";
+                                }
                         }
                         else
                         {
@@ -125,7 +133,6 @@ namespace Chummer
                     }
                     catch (Exception ex)
                     {
-                        objLanguageDocument = null;
                         ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + ".\n";
                     }
                 }
@@ -174,6 +181,7 @@ namespace Chummer
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
+        public static string ManagerErrorMessage { get; } = string.Empty;
 
         #region Constructor
         static LanguageManager()
@@ -193,27 +201,39 @@ namespace Chummer
                     }
                     catch (IOException ex)
                     {
-                        MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded: " + ex.ToString() + ".", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\n" + ex.ToString();
                     }
                     catch (XmlException ex)
                     {
-                        MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded: " + ex.ToString() + ".", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\n" + ex.ToString();
                     }
-                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+
+                    if (string.IsNullOrEmpty(ManagerErrorMessage))
                     {
-                        string strKey = objNode["key"]?.InnerText;
-                        string strText = objNode["text"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
-                        {
-                            if (s_DictionaryEnglishStrings.ContainsKey(strKey))
-                                Utils.BreakIfDebug();
+                        using (XmlNodeList xmlStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                            if (xmlStringList != null)
+                            {
+                                foreach (XmlNode objNode in xmlStringList)
+                                {
+                                    string strKey = objNode["key"]?.InnerText;
+                                    string strText = objNode["text"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                    {
+                                        if (s_DictionaryEnglishStrings.ContainsKey(strKey))
+                                            Utils.BreakIfDebug();
+                                        else
+                                            s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                    }
+                                }
+                            }
                             else
-                                s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n", "\n"));
-                        }
+                            {
+                                ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\nNo strings found in file.";
+                            }
                     }
                 }
                 else
-                    MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\nFile " + strFilePath + " does not exist or cannot be found.";
             }
         }
         #endregion
@@ -283,7 +303,7 @@ namespace Chummer
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
             foreach (Control objChild in objParent.Controls)
             {
-                if (objChild as Label != null || objChild as Button != null || objChild as CheckBox != null)
+                if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
@@ -407,8 +427,7 @@ namespace Chummer
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
-        /// <param name="strKey">Key to retrieve.</param>
-        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        /// <param name="strLanguage">Language whose document should be retrieved.</param>
         public static XmlDocument GetDataDocument(string strLanguage)
         {
             if (LoadLanguage(strLanguage) && s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
@@ -497,7 +516,7 @@ namespace Chummer
                     // Check for strings that are in the English file but not in the selected language file.
                     foreach (LanguageString objString in lstEnglish)
                     {
-                        if (!lstLanguage.Any(objItem => objItem.Key == objString.Key))
+                        if (lstLanguage.All(objItem => objItem.Key != objString.Key))
                             objMissingMessage.Append("\nMissing String: " + objString.Key);
                     }
                 },
@@ -506,7 +525,7 @@ namespace Chummer
                     // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                     foreach (LanguageString objString in lstLanguage)
                     {
-                        if (!lstEnglish.Any(objItem => objItem.Key == objString.Key))
+                        if (lstEnglish.All(objItem => objItem.Key != objString.Key))
                             objUnusedMessage.Append("\nUnused String: " + objString.Key);
                     }
                 }
@@ -521,73 +540,73 @@ namespace Chummer
         private static readonly Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>[] s_LstXPathsToSearch =
         {
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("weapons.xml", "/chummer/categories/category",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("spells.xml", "/chummer/categories/category",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("programs.xml", "/chummer/categories/category",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/skills/skill/specs/spec",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/knowledgeskills/skill/specs/spec",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/skillgroups/name",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/categories/category",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("licenses.xml", "/chummer/licenses/license",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/contacts/contact",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/sexes/sex",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/ages/age",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/personallives/personallife",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/types/type",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/preferredpayments/preferredpayment",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/hobbiesvices/hobbyvice",
-                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+                x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("weapons.xml", "/chummer/weapons/weapon",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/skills/skill",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("mentors.xml", "/chummer/mentors/mentor",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("mentors.xml", "/chummer/mentors/mentor/choices/choice",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("armor.xml", "/chummer/armors/armor",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("armor.xml", "/chummer/mods/mod",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("spells.xml", "/chummer/spells/spell",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("programs.xml", "/chummer/programs/program",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("powers.xml", "/chummer/powers/power",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("metamagic.xml", "/chummer/metamagics/metamagic",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("echoes.xml", "/chummer/echoes/echo",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("metatypes.xml", "/chummer/metatypes/metatype",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("metatypes.xml", "/chummer/metatypes/metatype/metavariants/metavariant",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("cyberware.xml", "/chummer/cyberwares/cyberware",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("critterpowers.xml", "/chummer/powers/power",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("qualities.xml", "/chummer/qualities/quality",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("ranges.xml", "/chummer/ranges/range",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
-                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
         };
 
         /// <summary>
@@ -665,20 +684,22 @@ namespace Chummer
                         Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
-                            {
-                                if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
-                                {
-                                    string strTranslate = objXPathPair.Item4(objNode);
-                                    if (!string.IsNullOrEmpty(strTranslate))
+                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                                if (xmlNodeList != null)
+                                    foreach (XmlNode objNode in xmlNodeList)
                                     {
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
-                                        state.Stop();
-                                        break;
+                                        if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
+                                        {
+                                            string strTranslate = objXPathPair.Item4(objNode);
+                                            if (!string.IsNullOrEmpty(strTranslate))
+                                            {
+                                                lock (strReturnLock)
+                                                    strReturn = strTranslate;
+                                                state.Stop();
+                                                break;
+                                            }
+                                        }
                                     }
-                                }
-                            }
                         });
                         break;
                 }
@@ -708,71 +729,88 @@ namespace Chummer
                 {
                     return "BOD";
                 }
-                else if (strExtra == GetString("String_AttributeAGIShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeAGIShort", strFromLanguage))
                 {
                     return "AGI";
                 }
-                else if (strExtra == GetString("String_AttributeREAShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeREAShort", strFromLanguage))
                 {
                     return "REA";
                 }
-                else if (strExtra == GetString("String_AttributeSTRShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeSTRShort", strFromLanguage))
                 {
                     return "STR";
                 }
-                else if (strExtra == GetString("String_AttributeCHAShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeCHAShort", strFromLanguage))
                 {
                     return "CHA";
                 }
-                else if (strExtra == GetString("String_AttributeINTShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeINTShort", strFromLanguage))
                 {
                     return "INT";
                 }
-                else if (strExtra == GetString("String_AttributeLOGShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeLOGShort", strFromLanguage))
                 {
                     return "LOG";
                 }
-                else if (strExtra == GetString("String_AttributeWILShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeWILShort", strFromLanguage))
                 {
                     return "WIL";
                 }
-                else if (strExtra == GetString("String_AttributeEDGShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeEDGShort", strFromLanguage))
                 {
                     return "EDG";
                 }
-                else if(strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
+
+                if(strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
                 {
                     return "MAG";
                 }
-                else if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
+
+                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
                 {
                     return "MAGAdept";
                 }
-                else if (strExtra == GetString("String_AttributeRESShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeRESShort", strFromLanguage))
                 {
                     return "RES";
                 }
-                else if (strExtra == GetString("String_AttributeDEPShort", strFromLanguage))
+
+                if (strExtra == GetString("String_AttributeDEPShort", strFromLanguage))
                 {
                     return "DEP";
                 }
-                else if (strExtra == GetString("Node_Physical", strFromLanguage))
+
+                if (strExtra == GetString("Node_Physical", strFromLanguage))
                 {
                     return "Physical";
                 }
-                else if (strExtra == GetString("Node_Mental", strFromLanguage))
+
+                if (strExtra == GetString("Node_Mental", strFromLanguage))
                 {
                     return "Mental";
                 }
-                else if (strExtra == GetString("Node_Social", strFromLanguage))
+
+                if (strExtra == GetString("Node_Social", strFromLanguage))
                 {
                     return "Social";
                 }
-                else if (strExtra == GetString("String_Improvement_SideLeft", strFromLanguage))
+
+                if (strExtra == GetString("String_Improvement_SideLeft", strFromLanguage))
                 {
                     return "Left";
                 }
-                else if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
+
+                if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
                 {
                     return "Right";
                 }
@@ -783,20 +821,22 @@ namespace Chummer
                 Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
                 {
                     Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                    foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
-                    {
-                        if (objXPathPair.Item4(objNode) == strExtraNoQuotes)
-                        {
-                            string strOriginal = objXPathPair.Item3(objNode);
-                            if (!string.IsNullOrEmpty(strOriginal))
+                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                        if (xmlNodeList != null)
+                            foreach (XmlNode xmlNode in xmlNodeList)
                             {
-                                lock (strReturnLock)
-                                    strReturn = strOriginal;
-                                state.Stop();
-                                break;
+                                if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
+                                {
+                                    string strOriginal = objXPathPair.Item3(xmlNode);
+                                    if (!string.IsNullOrEmpty(strOriginal))
+                                    {
+                                        lock (strReturnLock)
+                                            strReturn = strOriginal;
+                                        state.Stop();
+                                        break;
+                                    }
+                                }
                             }
-                        }
-                    }
                 });
             }
 

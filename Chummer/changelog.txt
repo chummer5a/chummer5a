@@ -135,6 +135,8 @@ Application Changes:
 - Fixed an issue where weapon mounts would not get printed with vehicles. Fixes #2426.
 - Fixed an issues caused by the equipping or unequipping armor, armor mods, gear, or cyberware completely removing linked bonuses instead of just disabling them.
 - Fixed an issue where non-quality bonuses that add qualities or contacts would not properly get removed if the parent item was removed. Existing characters affected by this bug will need to Re-Apply Improvements. Fixes #2460.
+- Fixed an issue where getting an error in a static constructor that would display a warning would cause Chummer5 to silently crash in the background. Fixes #2453.
+- Fixed an issue where closing the character roster would continue to cause it to update in the background when a character is changed.
 
 Data Changes:
 

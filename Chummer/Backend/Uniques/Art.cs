@@ -49,7 +49,6 @@ namespace Chummer
 
         /// Create an Art from an XmlNode.
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource)
         {

@@ -134,8 +134,6 @@ namespace Chummer
             XmlNode objXmlPack = _objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + strIdentifiers[0] + "\" and category = \"" + strIdentifiers[1] + "\"]");
             cmdDelete.Visible = strIdentifiers[1] == "Custom";
 
-            XmlDocument objXmlItemDocument = null;
-
             XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
             XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
@@ -144,6 +142,7 @@ namespace Chummer
                 if (objXmlItem["hide"] != null)
                     continue;
                 TreeNode objParent = new TreeNode();
+                XmlDocument objXmlItemDocument;
                 switch (objXmlItem.Name)
                 {
                     case "attributes":
