@@ -446,7 +446,7 @@ namespace Chummer.Backend.Equipment
             if (blnCreateChildren)
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
 
-            if (string.IsNullOrEmpty(_strPlugsIntoModularMount))
+            if (!string.IsNullOrEmpty(_strPlugsIntoModularMount))
                 ChangeModularEquip(false);
         }
 
