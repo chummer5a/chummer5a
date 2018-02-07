@@ -84,9 +84,9 @@ namespace Chummer.UI.Skills
 
                 cboSpec.Visible = false;
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                
                 lblCareerSpec.Visible = true;
+                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
 
@@ -268,9 +268,6 @@ namespace Chummer.UI.Skills
             if (selectForm.DialogResult != DialogResult.OK) return;
 
             _skill.AddSpecialization(selectForm.SelectedItem);
-
-            //TODO turn this into a databinding, but i don't care enough right now
-            lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName(GlobalOptions.Language)));
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;

@@ -60,7 +60,6 @@ namespace Chummer.Backend.Skills
         } //Attribute this skill primarily depends on
         private readonly Character _objCharacter; //The Character (parent) to this skill
         private readonly string _strCategory = string.Empty; //Name of the skill category it belongs to
-        private readonly string _strGroup = string.Empty; //Name of the skill group this skill belongs to (remove?)
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(); //List of suggested specializations for this skill
@@ -417,7 +416,7 @@ namespace Chummer.Backend.Skills
 
             if (!string.IsNullOrEmpty(strGroup))
             {
-                _strGroup = strGroup;
+                SkillGroup = strGroup;
                 SkillGroupObject = Skills.SkillGroup.Get(this);
                 if (SkillGroupObject != null)
                 {
@@ -575,7 +574,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string SkillGroup => _strGroup;
+        public string SkillGroup { get; } = string.Empty;
 
         public virtual string SkillCategory => _strCategory;
 
@@ -584,12 +583,12 @@ namespace Chummer.Backend.Skills
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)
         {
-            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
-                return strReturn;
+            if (!_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+            {
+                strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
 
-            strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
-
-            _cachedStringSpec.Add(strLanguage, strReturn);
+                _cachedStringSpec.Add(strLanguage, strReturn);
+            }
 
             return strReturn;
         }

@@ -2083,7 +2083,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = 0;
+                decimal decCost;
                 string strCostExpression = Cost;
 
                 if (strCostExpression.StartsWith("FixedValues("))

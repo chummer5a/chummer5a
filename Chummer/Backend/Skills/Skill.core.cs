@@ -297,7 +297,7 @@ namespace Chummer.Backend.Skills
                                 }
                                 break;
                             case Improvement.ImprovementType.SkillGroup:
-                                if (objImprovement.ImprovedName == _strGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                                if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.SkillCategory:

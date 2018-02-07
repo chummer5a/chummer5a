@@ -214,11 +214,9 @@ namespace Chummer
 
         private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
-            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-            if (GlobalOptions.PreferNightlyBuilds)
-            {
-                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
-            }
+            string strUpdateLocation = GlobalOptions.PreferNightlyBuilds
+                ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
+                : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
             HttpWebRequest request;
             try
             {
@@ -309,7 +307,7 @@ namespace Chummer
                 return;
             }
 
-            string[] stringSeparators = new string[] { "," };
+            string[] stringSeparators = { "," };
             string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             if (_workerVersionUpdateChecker.CancellationPending)

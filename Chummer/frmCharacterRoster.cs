@@ -47,8 +47,7 @@ namespace Chummer
             treCharacterList.DragOver += treCharacterList_DragOver;
             LoadCharacters();
             MoveControls();
-            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
-            {
+            ContextMenuStrip[] lstCMSToTranslate = {
                 cmsRoster
             };
 

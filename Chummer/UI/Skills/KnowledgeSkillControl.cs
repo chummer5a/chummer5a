@@ -63,7 +63,8 @@ namespace Chummer.UI.Skills
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 lblSpec.Visible = true;
-                lblSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
+                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+
                 cboSkill.Visible = false;
                 chkKarma.Visible = false;
                 cboSpec.Visible = false;
@@ -75,7 +76,6 @@ namespace Chummer.UI.Skills
                 btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
                     DataSourceUpdateMode.OnPropertyChanged);
-                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
             {
@@ -216,10 +216,7 @@ namespace Chummer.UI.Skills
             if (selectForm.DialogResult != DialogResult.OK) return;
 
             _skill.AddSpecialization(selectForm.SelectedItem);
-
-            //TODO turn this into a databinding, but i don't care enough right now
-            lblSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.Name));
-
+            
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
         }

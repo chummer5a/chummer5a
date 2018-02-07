@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -142,11 +142,10 @@ namespace Chummer
             bool blnChummerVersionGotten = true;
             {
                 LatestVersion = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-                if (_blnPreferNightly)
-                {
-                    strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
-                }
+                string strUpdateLocation = _blnPreferNightly
+                    ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
+                    : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+
                 HttpWebRequest request = null;
                 try
                 {
@@ -218,7 +217,7 @@ namespace Chummer
                             return;
                         }
 
-                        string[] stringSeparators = new string[] { "," };
+                        string[] stringSeparators = { "," };
 
                         if (_workerConnectionLoader.CancellationPending)
                         {

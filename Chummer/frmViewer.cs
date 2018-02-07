@@ -92,8 +92,7 @@ namespace Chummer
 
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
-            {
+            ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
             };
