@@ -124,8 +124,10 @@ namespace Chummer.Backend.Attributes
 					_intKarma = i;
 				}
 			}
+
+            int intCreateKarma = 0;
             // Shim for that one time karma was split into career and create values
-            if (objNode.TryGetField("createkarma", out int intCreateKarma))
+            if (objNode.TryGetInt32FieldQuickly("createkarma", ref intCreateKarma))
             {
                 _intKarma += intCreateKarma;
             }

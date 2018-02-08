@@ -196,7 +196,7 @@ namespace Chummer
             }
             Extra = objNode["extra"]?.InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
-            objNode.TryGetField("action", out _strAction);
+            objNode.TryGetStringFieldQuickly("action", ref _strAction);
             _strAdeptWayDiscount = objNode["adeptway"]?.InnerText;
             if (string.IsNullOrEmpty(_strAdeptWayDiscount))
             {

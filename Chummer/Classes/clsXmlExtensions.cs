@@ -134,10 +134,10 @@ namespace Chummer
         {
             if (parser != null)
             {
-                string fieldValue = node?[field]?.InnerText;
-                if (!string.IsNullOrEmpty(fieldValue))
+                XmlNode xmlField = node?[field];
+                if (xmlField != null)
                 {
-                    return parser(fieldValue, out read);
+                    return parser(xmlField.InnerText, out read);
                 }
             }
 
@@ -383,7 +383,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
         {
-
             XmlElement objField = node[field];
             if (objField != null)
             {
@@ -471,6 +470,26 @@ namespace Chummer
                 if (double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
                 {
                     read = dblTmp;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Like TryGetField for float, but taking advantage of float.TryParse... boo, no TryParse interface! :(
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
+        {
+            XmlElement objField = node[field];
+            if (objField != null)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalOptions.InvariantCultureInfo;
+                if (float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+                {
+                    read = fltTmp;
                     return true;
                 }
             }
