@@ -19668,10 +19668,10 @@ namespace Chummer
             lblArmorCapacity.Left = lblArmorCapacityLabel.Left + intWidth + 6;
             lblArmorSource.Left = lblArmorSourceLabel.Left + intWidth + 6;
 
-            lblArmorAvailLabel.Left = lblArmorRating.Left + lblArmorRating.Width + 6;
+            lblArmorAvailLabel.Left = lblArmorRating.Left + Math.Max(lblArmorRating.Width, 50) + 6;
             lblArmorAvail.Left = lblArmorAvailLabel.Left + lblArmorAvailLabel.Width + 6;
 
-            lblArmorCostLabel.Left = lblArmorAvail.Left + lblArmorAvail.Width + 6;
+            lblArmorCostLabel.Left = lblArmorAvail.Left + Math.Max(lblArmorAvail.Width, 50) + 6;
             lblArmorCost.Left = lblArmorCostLabel.Left + lblArmorCostLabel.Width + 6;
 
             cmdArmorIncrease.Left = lblArmorValue.Left + 45;
