@@ -16124,11 +16124,11 @@ namespace Chummer
             nudArmorRating.Left = lblArmorRatingLabel.Left + intWidth + 6;
             lblArmorCapacity.Left = lblArmorCapacityLabel.Left + intWidth + 6;
             lblArmorSource.Left = lblArmorSourceLabel.Left + intWidth + 6;
-
-            lblArmorAvailLabel.Left = nudArmorRating.Left + nudArmorRating.Width + 6;
+            
+            lblArmorAvailLabel.Left = nudArmorRating.Left + Math.Max(nudArmorRating.Width, 50) + 6;
             lblArmorAvail.Left = lblArmorAvailLabel.Left + lblArmorAvailLabel.Width + 6;
 
-            lblArmorCostLabel.Left = lblArmorAvail.Left + lblArmorAvail.Width + 6;
+            lblArmorCostLabel.Left = lblArmorAvail.Left + Math.Max(lblArmorAvail.Width, 50) + 6;
             lblArmorCost.Left = lblArmorCostLabel.Left + lblArmorCostLabel.Width + 6;
 
             lblArmorAttackLabel.Left = lblArmorDeviceRating.Left + lblArmorDeviceRating.Width + 20;
