@@ -3382,7 +3382,7 @@ namespace Chummer
                                 {
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
                                         objParent.Remove();
                                 }
                             }
@@ -3400,7 +3400,7 @@ namespace Chummer
                                 {
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
-                                    if (objParent.Level == 0)
+                                    if (objParent != null && objParent.Level == 0)
                                         lstOldParentNodes.Add(objParent);
                                 }
                             }
