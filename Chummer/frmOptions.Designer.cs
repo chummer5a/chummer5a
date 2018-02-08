@@ -1497,7 +1497,7 @@ namespace Chummer
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(553, 544);
+            this.tabPage2.Size = new System.Drawing.Size(553, 538);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Tag = "Tab_Options_Character";
             this.tabPage2.Text = "Character and Printing";
@@ -1728,7 +1728,7 @@ namespace Chummer
             this.tabPage1.Controls.Add(this.chkEnforceCapacity);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(553, 544);
+            this.tabPage1.Size = new System.Drawing.Size(553, 538);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Tag = "Tab_Options_Miscellaneous";
             this.tabPage1.Text = "Miscellaneous";
@@ -1855,7 +1855,7 @@ namespace Chummer
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(553, 544);
+            this.tabPage3.Size = new System.Drawing.Size(553, 538);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Github Issues";
             // 
@@ -3157,7 +3157,7 @@ namespace Chummer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(686, 54);
+            this.label3.Location = new System.Drawing.Point(730, 54);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 13);
             this.label3.TabIndex = 13;
@@ -3166,7 +3166,7 @@ namespace Chummer
             // nudKnowledgeMultiplier
             // 
             this.nudKnowledgeMultiplier.Enabled = false;
-            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(704, 50);
+            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(748, 52);
             this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -3192,17 +3192,17 @@ namespace Chummer
             this.chkKnowledgeMultiplier.AutoSize = true;
             this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(458, 53);
             this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
-            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(231, 17);
+            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(259, 17);
             this.chkKnowledgeMultiplier.TabIndex = 12;
             this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
-            this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
+            this.chkKnowledgeMultiplier.Text = "Override Knowledge Points (INT + LOG) Multiplier";
             this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
             this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(686, 4);
+            this.label2.Location = new System.Drawing.Point(730, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 13);
             this.label2.TabIndex = 10;
@@ -3211,7 +3211,7 @@ namespace Chummer
             // nudContactMultiplier
             // 
             this.nudContactMultiplier.Enabled = false;
-            this.nudContactMultiplier.Location = new System.Drawing.Point(704, 0);
+            this.nudContactMultiplier.Location = new System.Drawing.Point(748, 2);
             this.nudContactMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -3237,10 +3237,10 @@ namespace Chummer
             this.chkContactMultiplier.AutoSize = true;
             this.chkContactMultiplier.Location = new System.Drawing.Point(458, 3);
             this.chkContactMultiplier.Name = "chkContactMultiplier";
-            this.chkContactMultiplier.Size = new System.Drawing.Size(179, 17);
+            this.chkContactMultiplier.Size = new System.Drawing.Size(228, 17);
             this.chkContactMultiplier.TabIndex = 9;
             this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
-            this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
+            this.chkContactMultiplier.Text = "Override Contact Points Charisma Multiplier";
             this.chkContactMultiplier.UseVisualStyleBackColor = true;
             this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
             // 

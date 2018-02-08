@@ -236,6 +236,8 @@ Changed Strings:
 - Tab_DecreaseLifestyleMonths
 - String_Up_To_Date
 - String_Update_Available
+- Checkbox_Options_KnowledgeMultiplier
+- Checkbox_Options_ContactMultiplier
 
 Removed Strings:
 

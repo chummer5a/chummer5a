@@ -6726,11 +6726,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Free Knowledge Points equal to (INT+LOG)</text>
+      <text>Override Knowledge Points (INT + LOG) Multiplier</text>
     </string>
     <string>
       <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Free Contact Points equal to Charisma</text>
+      <text>Override Contact Points Charisma Multiplier</text>
     </string>
     <string>
       <key>Checkbox_Options_ContactPoints</key>
