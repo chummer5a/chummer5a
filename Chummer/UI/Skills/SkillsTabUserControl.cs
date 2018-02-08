@@ -88,7 +88,10 @@ namespace Chummer.UI.Skills
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
             else
+            {
                 _objCharacter = new Character();
+                Utils.BreakIfDebug();
+            }
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
             Stopwatch parts = Stopwatch.StartNew();

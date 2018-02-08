@@ -202,20 +202,7 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-            // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
-            if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
-                tabCharacterTabs.TabPages.Remove(tabMagician);
-            if (!CharacterObject.AdeptEnabled)
-                tabCharacterTabs.TabPages.Remove(tabAdept);
-            if (!CharacterObject.TechnomancerEnabled)
-                tabCharacterTabs.TabPages.Remove(tabTechnomancer);
-            if (!CharacterObject.AdvancedProgramsEnabled)
-                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
-            if (CharacterObject.CyberwareDisabled)
-                tabCharacterTabs.TabPages.Remove(tabCyberware);
-            if (!CharacterObject.CritterEnabled)
-                tabCharacterTabs.TabPages.Remove(tabCritter);
-
+            
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
             // Remove the Improvements Tab.
@@ -621,6 +608,20 @@ namespace Chummer
 
             tabSkillsUc.RealLoad();
             tabPowerUc.RealLoad();
+
+            // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
+            if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
+                tabCharacterTabs.TabPages.Remove(tabMagician);
+            if (!CharacterObject.AdeptEnabled)
+                tabCharacterTabs.TabPages.Remove(tabAdept);
+            if (!CharacterObject.TechnomancerEnabled)
+                tabCharacterTabs.TabPages.Remove(tabTechnomancer);
+            if (!CharacterObject.AdvancedProgramsEnabled)
+                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            if (CharacterObject.CyberwareDisabled)
+                tabCharacterTabs.TabPages.Remove(tabCyberware);
+            if (!CharacterObject.CritterEnabled)
+                tabCharacterTabs.TabPages.Remove(tabCritter);
 
             // Set the visibility of the Armor Degradation buttons.
             cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -16276,12 +16277,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.Commit(CharacterObject);
             }
-
-            if (CharacterObject.AdeptEnabled)
-            {
-                tabPowerUc.MissingDatabindingsWorkaround();
-            }
-
+            
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
