@@ -78,6 +78,10 @@
       <text>Unknown</text>
     </string>
     <string>
+      <key>String_D6</key>
+      <text>D6</text>
+    </string>
+    <string>
       <key>String_Search</key>
       <text>Search:</text>
     </string>
@@ -2025,7 +2029,7 @@
     </string>
     <string>
       <key>Message_ComplexFormLimitCareer</key>
-      <text>Your number of Complex Forms cannot exceed your RES x 2 score.</text>
+      <text>Your number of Complex Forms cannot exceed your RES × 2 score.</text>
     </string>        
     <string>
       <key>Message_ComplexFormLimit</key>
@@ -4027,7 +4031,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) x {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {1} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {1} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -5205,7 +5209,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- Region Other Info Tab -->
     <string>
       <key>Tip_CalculatedMovement</key>
-      <text>Walking: AGI X 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI X 4 ({2} MPCT) / ({3} KPH)</text>
+      <text>Walking: AGI × 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI × 4 ({2} MPCT) / ({3} KPH)</text>
     </string>
     <string>
       <key>Label_OtherPhysicalCM</key>
@@ -5325,7 +5329,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_OtherAstralInitiative</key>
-      <text>Astral Initiative is calculated as INT x 2.</text>
+      <text>Astral Initiative is calculated as INT × 2.</text>
     </string>
     <string>
       <key>Tip_OtherAstralInitiativePasses</key>
@@ -6874,27 +6878,27 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_Options_NewRating</key>
-      <text>x New Rating</text>
+      <text>× New Rating</text>
     </string>
     <string>
       <key>Label_Options_NewRatingPlus</key>
-      <text>x New Rating) +</text>
+      <text>× New Rating) +</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>
-      <text>x Karma Cost</text>
+      <text>× Karma Cost</text>
     </string>
     <string>
       <key>Label_Options_Rating</key>
-      <text>x Rating</text>
+      <text>× Rating</text>
     </string>
     <string>
       <key>Label_Options_Force</key>
-      <text>x Force</text>
+      <text>× Force</text>
     </string>
     <string>
       <key>Label_Options_ServicesOwed</key>
-      <text>x Services Owed</text>
+      <text>× Services Owed</text>
     </string>
     <string>
       <key>Label_Options_PerKarma</key>
@@ -6902,7 +6906,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_Options_ConnectionLoyalty</key>
-      <text> x (Connection + Loyalty)</text>
+      <text> × (Connection + Loyalty)</text>
     </string>
     <string>
       <key>Label_Options_Maximum</key>
@@ -7122,7 +7126,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
-      <text>Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is higher</text>
+      <text>Limit Skills to 20 dice or 2 × (Natural Attribute + Skill Rating), whichever is higher</text>
     </string>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
@@ -7134,7 +7138,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
-      <text>Free Contact Points: CHA x</text>
+      <text>Free Contact Points: CHA ×</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsBP</key>
@@ -7387,10 +7391,26 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>MessageTitle_Options_CloseForms</key>
       <text>Close Forms</text>
-    </string>        
+    </string>
+    <string>
+      <key>Message_Options_SettingsName</key>
+      <text>You must give your settings file a name.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_SettingsName</key>
+      <text>Chummer Settings</text>
+    </string> 
     <string>
       <key>Message_Options_RestoreDefaults</key>
       <text>This will reset the totals on this tab back to their default value. Are you sure you want to do this?</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ValidationResults</key>
+      <text>Validation Results</text>
+    </string> 
+    <string>
+      <key>Message_Options_ValidationResults</key>
+      <text>Results were written to {0}.</text>
     </string>
     <string>
       <key>MessageTitle_Options_RestoreDefaults</key>
@@ -8297,7 +8317,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>
-      <text>Extended range Spells have a range of (Force x MAG x 10) meters but have their DV increased by +2.</text>
+      <text>Extended range Spells have a range of (Force × MAG × 10) meters but have their DV increased by +2.</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Text Window -->

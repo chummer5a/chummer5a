@@ -60,7 +60,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName),
+                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language),
                         Tag = strFileName
                     };
                     treCharacters.Nodes.Add(objNode);
@@ -103,7 +103,10 @@ namespace Chummer
 
         private void DoPrint(object sender, DoWorkEventArgs e)
         {
-            Action funcIncreaseProgress = new Action(() => prgProgress.Value += 1);
+            void FuncIncreaseProgress()
+            {
+                prgProgress.Value += 1;
+            }
 
             Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
             for (int i = 0; i < lstCharacters.Length; ++i)
@@ -125,7 +128,7 @@ namespace Chummer
                 if (_workerPrinter.CancellationPending)
                     throw new OperationCanceledException();
                 objCharacter.Load();
-                prgProgress.Invoke(funcIncreaseProgress);
+                prgProgress.Invoke((Action) FuncIncreaseProgress);
             });
 
             if (_workerPrinter.CancellationPending)

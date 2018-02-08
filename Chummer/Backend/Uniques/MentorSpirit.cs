@@ -68,7 +68,7 @@ namespace Chummer
             xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
             if (!xmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
-            if (xmlMentor["id"] != null && Guid.TryParse(xmlMentor["id"].InnerText, out Guid guiTemp))
+            if (xmlMentor.TryGetField("id", Guid.TryParse, out Guid guiTemp))
                 _sourceID = guiTemp;
 
             // Build the list of advantages gained through the Mentor Spirit.
@@ -237,7 +237,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, int intRating, string strLanguageToPrint)
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("mentorspirit");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));

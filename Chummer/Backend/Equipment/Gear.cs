@@ -644,9 +644,10 @@ namespace Chummer.Backend.Equipment
         /// Load the Gear from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
                 _objCachedMyXmlNode = null;
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -920,6 +921,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("gear");
@@ -1305,8 +1308,6 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(strExpression))
                             strExpression = "0";
                         break;
-                    case "Attack":
-                    case "Sleaze":
                     default:
                         strExpression = "0";
                         break;
@@ -2417,6 +2418,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build up the Tree for the current piece of Gear's children.
         /// </summary>
+        /// <param name="objParentNode">Parent node to which to append children gear.</param>
         /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
         public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
         {

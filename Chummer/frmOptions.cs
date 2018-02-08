@@ -71,7 +71,10 @@ namespace Chummer
             // Make sure the current Setting has a name.
             if (string.IsNullOrWhiteSpace(txtSettingName.Text))
             {
-                MessageBox.Show("You must give your Settings a name.", "Chummer Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string text = LanguageManager.GetString("Message_Options_SettingsName", _strSelectedLanguage);
+                string caption = LanguageManager.GetString("MessageTitle_Options_SettingsName", _strSelectedLanguage);
+
+                MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
                 return;
             }
@@ -327,7 +330,8 @@ namespace Chummer
             XmlManager.Verify(strSelectedLanguage, lstBooks);
 
             string strFilePath = Path.Combine(Application.StartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-            MessageBox.Show("Results were written to " + strFilePath, "Validation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
+                LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             Cursor = Cursors.Default;
         }
 

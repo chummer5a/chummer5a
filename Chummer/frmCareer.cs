@@ -1521,7 +1521,7 @@ namespace Chummer
             CharacterObject.MAG.MetatypeMaximum = 1;
 
             // Add the Cyberzombie Lifestyle if it is not already taken.
-            if (!CharacterObject.Lifestyles.Any(x => x.BaseLifestyle == "Cyberzombie Lifestyle Addition"))
+            if (CharacterObject.Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
             {
                 XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
@@ -1541,7 +1541,7 @@ namespace Chummer
             CharacterObject.CritterEnabled = true;
 
             // Gain the Dual Natured Critter Power if it does not yet exist.
-            if (!CharacterObject.CritterPowers.Any(x => x.Name == "Dual Natured"))
+            if (CharacterObject.CritterPowers.All(x => x.Name != "Dual Natured"))
             {
                 XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
@@ -3249,11 +3249,14 @@ namespace Chummer
             Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
             Control destination = panContacts.GetChildAtPoint(mousePosition);
 
-            int indexDestination = panContacts.Controls.IndexOf(destination);
-            if (panContacts.Controls.IndexOf(source) < indexDestination)
-                indexDestination--;
+            if (destination != null)
+            {
+                int indexDestination = panContacts.Controls.IndexOf(destination);
+                if (panContacts.Controls.IndexOf(source) < indexDestination)
+                    indexDestination--;
 
-            panContacts.Controls.SetChildIndex(source, indexDestination);
+                panContacts.Controls.SetChildIndex(source, indexDestination);
+            }
 
             foreach (ContactControl objControl in panContacts.Controls)
             {
@@ -21107,7 +21110,6 @@ namespace Chummer
                 blnAddAgain = frmPickProgram.AddAgain;
 
                 XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
-                bool boolIsAdvancedProgram = objXmlProgram["category"].InnerText == "Advanced Programs";
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
@@ -21123,13 +21125,14 @@ namespace Chummer
                 }
                 
                 AIProgram objProgram = new AIProgram(CharacterObject);
-                objProgram.Create(objXmlProgram, boolIsAdvancedProgram, strExtra);
+                objProgram.Create(objXmlProgram, strExtra);
                 if (objProgram.InternalId.IsEmptyGuid())
                 {
                     frmPickProgram.Dispose();
                     continue;
                 }
 
+                bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
                 if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString())))
                 {
                     frmPickProgram.Dispose();

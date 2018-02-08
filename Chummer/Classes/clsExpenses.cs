@@ -308,7 +308,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
@@ -328,6 +328,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print numbers.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)

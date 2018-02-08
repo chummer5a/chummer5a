@@ -44,7 +44,7 @@ namespace Chummer
 
         public ElasticComboBox() : this(null) { }
 
-        public ElasticComboBox(ToolTip objToolTip) : base()
+        public ElasticComboBox(ToolTip objToolTip)
         {
             _tt = objToolTip ?? new ToolTip
             {

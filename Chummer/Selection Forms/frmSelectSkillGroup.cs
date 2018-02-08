@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,31 +46,27 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strForceValue))
             {
                 // Build the list of Skill Groups found in the Skills file.
-                XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name");
-                foreach (XmlNode objXmlSkill in objXmlSkillList)
-                {
-                    bool blnAdd = true;
-                    if (!string.IsNullOrEmpty(_strExcludeCategory))
-                    {
-                        blnAdd = false;
-                        string[] strExcludes = _strExcludeCategory.Split(',');
-                        string strExclude = string.Empty;
-                        for (int i = 0; i <= strExcludes.Length - 1; i++)
-                            strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
-                        // Remove the trailing " and ";
-                        strExclude = strExclude.Substring(0, strExclude.Length - 5);
+                using (XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name"))
+                    if (objXmlSkillList != null)
+                        foreach (XmlNode objXmlSkill in objXmlSkillList)
+                        {
+                            if (!string.IsNullOrEmpty(_strExcludeCategory))
+                            {
+                                string[] strExcludes = _strExcludeCategory.Split(',');
+                                string strExclude = string.Empty;
+                                for (int i = 0; i <= strExcludes.Length - 1; i++)
+                                    strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
+                                // Remove the trailing " and ";
+                                strExclude = strExclude.Substring(0, strExclude.Length - 5);
 
-                        XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
-                        if (objXmlNodeList != null)
-                            blnAdd = objXmlNodeList.Count > 0;
-                    }
+                                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
+                                if (objXmlNodeList == null || objXmlNodeList.Count == 0)
+                                    continue;
+                            }
 
-                    if (blnAdd)
-                    {
-                        string strInnerText = objXmlSkill.InnerText;
-                        lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
-                }
+                            string strInnerText = objXmlSkill.InnerText;
+                            lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
             }
             else
             {

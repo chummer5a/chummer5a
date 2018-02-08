@@ -3338,7 +3338,7 @@
     </string>
 		<string>
 			<key>Label_MugshotDimensions</key>
-			<text>210 x 310像素</text>
+			<text>210 × 310像素</text>
 		</string>
 		<string>
 			<key>Checkbox_Created</key>
@@ -4494,27 +4494,27 @@
 		</string>
 		<string>
 			<key>Label_Options_NewRating</key>
-			<text>x 新等级</text>
+			<text>× 新等级</text>
 		</string>
 		<string>
 			<key>Label_Options_NewRatingPlus</key>
-			<text>x 新等级）+</text>
+			<text>× 新等级）+</text>
 		</string>
 		<string>
 			<key>Label_Options_BPCost</key>
-			<text>x 业力消耗</text>
+			<text>× 业力消耗</text>
 		</string>
 		<string>
 			<key>Label_Options_Rating</key>
-			<text>x 等级</text>
+			<text>× 等级</text>
 		</string>
 		<string>
 			<key>Label_Options_Force</key>
-			<text>x 强度</text>
+			<text>× 强度</text>
 		</string>
 		<string>
 			<key>Label_Options_ServicesOwed</key>
-			<text>x 服务数</text>
+			<text>× 服务数</text>
 		</string>
 		<string>
 			<key>Label_Options_PerKarma</key>
@@ -4522,7 +4522,7 @@
 		</string>
 		<string>
 			<key>Label_Options_ConnectionLoyalty</key>
-			<text>x （联系+忠诚）</text>
+			<text>× （联系+忠诚）</text>
 		</string>
 		<string>
 			<key>Label_Options_Maximum</key>
@@ -4690,7 +4690,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
-			<text>免费人脉业力：魅力 x</text>
+			<text>免费人脉业力：魅力 ×</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
@@ -5558,7 +5558,7 @@
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Extended range Spells have a range of (Force x MAG x 10) meters but have their DV increased by +2.</text>
+			<text>Extended range Spells have a range of (Force × MAG × 10) meters but have their DV increased by +2.</text>
 		</string>
 		<!-- Select Text Window -->
 		<string>

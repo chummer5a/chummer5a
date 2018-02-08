@@ -975,6 +975,7 @@ namespace Chummer
         /// Open the correct windows for a list of characters (not thread-safe).
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMRU">Added the opened characters to the Most Recently Used list.</param>
         public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMRU = true)
         {
             if (lstCharacters == null)

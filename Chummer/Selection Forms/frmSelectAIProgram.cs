@@ -32,7 +32,7 @@ namespace Chummer
 
         private bool _blnLoading = true;
         private bool _blnAddAgain;
-        private readonly bool _blnAdvancedProgramAllowed = true;
+        private readonly bool _blnAdvancedProgramAllowed;
         private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
@@ -55,20 +55,21 @@ namespace Chummer
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlNodeList)
-            {
-                string strInnerText = objXmlCategory.InnerText;
-                if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
-                    continue;
-                if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
-                    continue;
-                // Make sure it is not already in the Category list.
-                if (!_lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
-                {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
+            using (XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (objXmlNodeList != null)
+                    foreach (XmlNode objXmlCategory in objXmlNodeList)
+                    {
+                        string strInnerText = objXmlCategory.InnerText;
+                        if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
+                            continue;
+                        if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
+                            continue;
+                        // Make sure it is not already in the Category list.
+                        if (_lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                        {
+                            _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
+                    }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)

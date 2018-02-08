@@ -67,7 +67,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetInt32FieldQuickly("year", ref _intYear);
             objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -77,6 +77,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print numbers.</param>
+        /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("week");

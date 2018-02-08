@@ -1386,7 +1386,7 @@ namespace Chummer
             CharacterObject.MAG.Base = 1;
             
             // Add the Cyberzombie Lifestyle if it is not already taken.
-            if (!CharacterObject.Lifestyles.Any(x => x.BaseLifestyle == "Cyberzombie Lifestyle Addition"))
+            if (CharacterObject.Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
             {
                 XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
@@ -1406,7 +1406,7 @@ namespace Chummer
             CharacterObject.CritterEnabled = true;
 
             // Gain the Dual Natured Critter Power if it does not yet exist.
-            if (!CharacterObject.CritterPowers.Any(x => x.Name == "Dual Natured"))
+            if (CharacterObject.CritterPowers.All(x => x.Name != "Dual Natured"))
             {
                 XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
@@ -3078,7 +3078,7 @@ namespace Chummer
                 }
 
                 AIProgram objProgram = new AIProgram(CharacterObject);
-                objProgram.Create(objXmlProgram, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra);
+                objProgram.Create(objXmlProgram, strExtra);
                 if (objProgram.InternalId.IsEmptyGuid())
                 {
                     frmPickProgram.Dispose();
@@ -10745,9 +10745,9 @@ namespace Chummer
                 intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
                 if (blnDoUIUpdate)
                 {
-                    tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intSpellPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
-                    tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intRitualPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
-                    tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intPrepPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    tipTooltip.SetToolTip(lblSpellsBP, $"{spells} × {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intSpellPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} × {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intRitualPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} × {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intPrepPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
                     if (limit + limitMod > 0)
                     {
                         lblBuildPrepsBP.Text =
@@ -11441,7 +11441,7 @@ namespace Chummer
             if (CharacterObject.MAGEnabled)
             {
                 lblAstralINI.Text = CharacterObject.AstralInitiative;
-                strInit = $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeValues["INT"]}) x 2";
+                strInit = $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeValues["INT"]}) × 2";
                 if (intINTAttributeModifiers > 0)
                     strInit += $"{strModifiers} ({intINTAttributeModifiers})";
                 tipTooltip.SetToolTip(lblAstralINI, strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.AstralInitiativeDice.ToString()));
@@ -13192,7 +13192,7 @@ namespace Chummer
 
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + "D6 x " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + " × " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
             lblLifestyleSource.Text = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language) + ' ' + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
@@ -15120,7 +15120,7 @@ namespace Chummer
                     if (objXmlProgramNode != null)
                     {
                         AIProgram objProgram = new AIProgram(CharacterObject);
-                        objProgram.Create(objXmlProgramNode, objXmlProgram["category"]?.InnerText == "Advanced Programs");
+                        objProgram.Create(objXmlProgramNode);
 
                         CharacterObject.AIPrograms.Add(objProgram);
                     }

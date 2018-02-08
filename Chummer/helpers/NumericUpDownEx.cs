@@ -31,8 +31,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
-using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace Chummer
 {
@@ -50,21 +48,21 @@ namespace Chummer
         /// <summary>
         /// object creator
         /// </summary>
-        public NumericUpDownEx() : base()
+        public NumericUpDownEx()
         {
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
-            _upDownButtons = base.Controls[0];
+            _upDownButtons = Controls[0];
             if (_upDownButtons == null || _upDownButtons.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownButtons")
             {
-                throw new ArgumentNullException(this.GetType().FullName, "Can't find internal UpDown buttons field.");
+                throw new ArgumentNullException(GetType().FullName, "Can't find internal UpDown buttons field.");
             }
             // Get a reference to the underlying TextBox field.
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
-            _textbox = base.Controls[1] as TextBox;
+            _textbox = Controls[1] as TextBox;
             if (_textbox == null || _textbox.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownEdit")
             {
-                throw new ArgumentNullException(this.GetType().FullName, "Can't find internal TextBox field.");
+                throw new ArgumentNullException(GetType().FullName, "Can't find internal TextBox field.");
             }
             // add handlers (MouseEnter and MouseLeave events of NumericUpDown
             // are not working properly)
@@ -87,11 +85,11 @@ namespace Chummer
             base.Dispose(disposing);
         }
 
-        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             if (_upDownButtons.Visible == false)
             {
-                e.Graphics.Clear(this.BackColor);
+                e.Graphics.Clear(BackColor);
             }
             base.OnPaint(e);
         }
@@ -112,7 +110,7 @@ namespace Chummer
         /// <summary>
         /// WndProc override to kill WN_MOUSEWHEEL message
         /// </summary>
-        protected override void WndProc(ref System.Windows.Forms.Message m)
+        protected override void WndProc(ref Message m)
         {
             const int WM_MOUSEWHEEL = 0x20a;
 
@@ -239,7 +237,7 @@ namespace Chummer
             /// <summary>UpDownButtons are visible when control has focus or mouse is over it</summary>
             WhenFocusOrMouseOver,
             /// <summary>UpDownButtons are never visible</summary>
-            Never,
+            Never
         }
 
         /// <summary>
@@ -275,7 +273,7 @@ namespace Chummer
         #region Text selection
 
         // select all the text on focus enter
-        protected override void OnGotFocus(System.EventArgs e)
+        protected override void OnGotFocus(EventArgs e)
         {
             _haveFocus = true;
             if (AutoSelect)
@@ -306,7 +304,7 @@ namespace Chummer
 
         // MouseUp will kill the SelectAll made on GotFocus.
         // Will restore it, but only if user have not made a partial text selection.
-        protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs mevent)
+        protected override void OnMouseUp(MouseEventArgs mevent)
         {
             if (AutoSelect && _textbox.SelectionLength == 0)
             {
@@ -335,7 +333,7 @@ namespace Chummer
         private bool _haveFocus;
 
         // this handler is called at each mouse Enter/Leave movement
-        private void _mouseEnterLeave(object sender, System.EventArgs e)
+        private void _mouseEnterLeave(object sender, EventArgs e)
         {
             Rectangle cr = RectangleToScreen(ClientRectangle);
             Point mp = MousePosition;
@@ -374,7 +372,7 @@ namespace Chummer
         // raises the two new events
         public override void DownButton()
         {
-            if (base.ReadOnly) return;
+            if (ReadOnly) return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueDecrement?.Invoke(this, e);
             if (e.Cancel) return;
@@ -390,7 +388,7 @@ namespace Chummer
         }
         public override void UpButton()
         {
-            if (base.ReadOnly) return;
+            if (ReadOnly) return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueIncrement?.Invoke(this, e);
             if (e.Cancel) return;
@@ -411,9 +409,9 @@ namespace Chummer
                 hme.Handled = true;
 
             if (e.Delta > 0)
-                this.Value = Math.Min(this.Value + this.MouseIncrement, this.Maximum);
+                Value = Math.Min(Value + MouseIncrement, Maximum);
             else if (e.Delta < 0)
-                this.Value = Math.Max(this.Value - this.MouseIncrement, this.Minimum);
+                Value = Math.Max(Value - MouseIncrement, Minimum);
         }
         #endregion
 
@@ -451,15 +449,15 @@ namespace Chummer
             {
                 if (newVisible)
                 {
-                    _textbox.Width = this.ClientRectangle.Width - _upDownButtons.Width;
+                    _textbox.Width = ClientRectangle.Width - _upDownButtons.Width;
                 }
                 else
                 {
-                    _textbox.Width = this.ClientRectangle.Width;
+                    _textbox.Width = ClientRectangle.Width;
                 }
                 _upDownButtons.Visible = newVisible;
                 OnTextBoxResize(_textbox, EventArgs.Empty);
-                this.Invalidate();
+                Invalidate();
             }
 
         }
@@ -468,7 +466,7 @@ namespace Chummer
         /// <summary>
         /// Custom textbox size management
         /// </summary>
-        protected override void OnTextBoxResize(object source, System.EventArgs e)
+        protected override void OnTextBoxResize(object source, EventArgs e)
         {
             if (_textbox == null)
                 return;
@@ -482,11 +480,11 @@ namespace Chummer
                 // custom management
 
                 // change position if RTL
-                bool fixPos = this.RightToLeft == RightToLeft.Yes ^ this.UpDownAlign == LeftRightAlignment.Left;
+                bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
                 if (_mouseOver)
                 {
-                    _textbox.Width = this.ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
+                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
                     if (fixPos)
                         _textbox.Location = new Point(16, _textbox.Location.Y);
                 }
@@ -494,7 +492,7 @@ namespace Chummer
                 {
                     if (fixPos)
                         _textbox.Location = new Point(2, _textbox.Location.Y);
-                    _textbox.Width = this.ClientSize.Width - _textbox.Left - 2;
+                    _textbox.Width = ClientSize.Width - _textbox.Left - 2;
                 }
 
             }

@@ -2487,7 +2487,7 @@
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Charaktere erhalten (INT + LOG) x 3 freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten je 2 BP. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
+			<text>Charaktere erhalten (INT + LOG) × 3 freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten je 2 BP. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
 		</string>
 		<string>
 			<key>Skill_SortAlphabetical</key>
@@ -3297,7 +3297,7 @@
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiative</key>
-			<text>Die Astrale Initiative errechnet sich durch INT x 2.</text>
+			<text>Die Astrale Initiative errechnet sich durch INT × 2.</text>
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiativePasses</key>
@@ -3305,11 +3305,11 @@
 		</string>
 		<string>
 			<key>Tip_OtherBallisticArmor</key>
-			<text>Nur der höchste Wert der Ballistischen Panzerung wird benutzt. Wenn der Wert aller Panzerungsteile über KON x 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
+			<text>Nur der höchste Wert der Ballistischen Panzerung wird benutzt. Wenn der Wert aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
 		</string>
 		<string>
 			<key>Tip_OtherImpactArmor</key>
-			<text>Nur der höchste Wert der Stoßpanzerung wird benutzt. Wenn der aller Panzerungsteile über KON x 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
+			<text>Nur der höchste Wert der Stoßpanzerung wird benutzt. Wenn der aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
 		</string>
 		<string>
 			<key>Tip_OtherEssence</key>
@@ -4265,23 +4265,23 @@
 		</string>
 		<string>
 			<key>Label_Options_NewRating</key>
-			<text>x neuer Wert</text>
+			<text>× neuer Wert</text>
 		</string>
 		<string>
 			<key>Label_Options_NewRatingPlus</key>
-			<text>x neuer Wert) +</text>
+			<text>× neuer Wert) +</text>
 		</string>
 		<string>
 			<key>Label_Options_BPCost</key>
-			<text>x GP Kosten</text>
+			<text>× GP Kosten</text>
 		</string>
 		<string>
 			<key>Label_Options_Rating</key>
-			<text>x Stufe</text>
+			<text>× Stufe</text>
 		</string>
 		<string>
 			<key>Label_Options_ServicesOwed</key>
-			<text>x geschuldete Dienste</text>
+			<text>× geschuldete Dienste</text>
 		</string>
 		<string>
 			<key>Label_Options_PerKarma</key>
@@ -4289,7 +4289,7 @@
 		</string>
 		<string>
 			<key>Label_Options_ConnectionLoyalty</key>
-			<text>x (Connection + Loyalität)</text>
+			<text>× (Connection + Loyalität)</text>
 		</string>
 		<string>
 			<key>Label_Options_Maximum</key>
@@ -4381,7 +4381,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_LimitSkills</key>
-			<text>Begrenze Würfelpools auf 20 Würfel oder 2 x (natürliches Attribut + Fertigkeitswert) (SR4 83).</text>
+			<text>Begrenze Würfelpools auf 20 Würfel oder 2 × (natürliches Attribut + Fertigkeitswert) (SR4 83).</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
@@ -4401,7 +4401,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
-			<text>Freie Connection-Punkte: CHA x </text>
+			<text>Freie Connection-Punkte: CHA ×</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
@@ -5237,7 +5237,7 @@
 		</string>
 		<string>
 			<key>Label_Options_Force</key>
-			<text>x Kraftstufe</text>
+			<text>× Kraftstufe</text>
 		</string>
 		<string>
 			<key>Label_Options_AnchoringFocus</key>
@@ -6666,7 +6666,7 @@
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft x MAG x 10) Metern aber einen um +2 erhöten Entzugswert.</text>
+			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft × MAG × 10) Metern aber einen um +2 erhöten Entzugswert.</text>
 		</string>
 		<string>
 			<key>String_BuyWithKarma</key>

@@ -75,6 +75,7 @@ namespace Chummer
         /// <param name="strName">The name of the modifier.</param>
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
+        /// <param name="strCondition">Condition when the limit modifier is to be activated.</param>
         public void Create(string strName, int intBonus, string strLimit, string strCondition)
         {
             _strName = strName;
@@ -118,6 +119,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("limitmodifier");

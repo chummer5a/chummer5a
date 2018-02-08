@@ -128,6 +128,7 @@ namespace Chummer
         /// Gets a Matrix Attribute string based on its name
         /// </summary>
         /// <param name="strAttributeName">Name of the Matrix Attribute</param>
+        /// <param name="objThis">Object whose Matrix Attribute to get.</param>
         /// <returns></returns>
         public static string GetMatrixAttributeString(this IHasMatrixAttributes objThis, string strAttributeName)
         {

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -388,7 +388,7 @@ namespace Chummer
             //This needs a handler for translations, will fix later.
             if (strBaseLifestyle == "Bolt Hole")
             {
-                if (!_objLifestyle.LifestyleQualities.Any(x => x.Name == "Not a Home"))
+                if (_objLifestyle.LifestyleQualities.All(x => x.Name != "Not a Home"))
                 {
                     XmlNode xmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Not a Home\"]");
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);

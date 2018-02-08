@@ -432,7 +432,7 @@
             <xsl:text> </xsl:text>
             <xsl:value-of select="rating"/>
           </xsl:if>
-          <xsl:if test="qty > 1">  x<xsl:value-of select="qty"/></xsl:if>
+          <xsl:if test="qty > 1"> ×<xsl:value-of select="qty"/></xsl:if>
           <xsl:if test="children/gear">
             (<xsl:for-each select="children/gear">
               <xsl:sort select="name"/>

@@ -56,7 +56,7 @@ namespace Chummer
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") x " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") × " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
                 + " = " + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion

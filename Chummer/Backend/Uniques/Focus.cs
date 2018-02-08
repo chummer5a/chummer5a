@@ -60,10 +60,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
+            objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
         }
         #endregion
 

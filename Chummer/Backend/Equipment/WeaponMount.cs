@@ -226,7 +226,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode xmlWeaponMountOptionNode in xmlChildrenNode.SelectNodes("weaponmountoption"))
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                    objWeaponMountOption.Load(xmlWeaponMountOptionNode, Parent);
+                    objWeaponMountOption.Load(xmlWeaponMountOptionNode);
                     WeaponMountOptions.Add(objWeaponMountOption);
                 }
             }
@@ -249,11 +249,13 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
         }
 
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
 			objWriter.WriteStartElement("mod");
 			objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
@@ -821,11 +823,10 @@ namespace Chummer.Backend.Equipment
         /// Load the Weapon Mount Option from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="objVehicle">Vehicle that the mod is attached to.</param>
-        public void Load(XmlNode objNode, Vehicle objVehicle)
+        public void Load(XmlNode objNode)
         {
             _objCachedMyXmlNode = null;
-            Guid.TryParse(objNode["id"].InnerText, out _sourceID);
+            objNode.TryGetField("id", Guid.TryParse, out _sourceID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);

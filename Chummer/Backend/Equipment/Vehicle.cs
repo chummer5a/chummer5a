@@ -569,6 +569,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Vehicle from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether or not we are copying an existing vehicle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy)
@@ -578,7 +579,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (!Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
                 bool blnIsHomeNode = false;
                 if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
@@ -777,6 +778,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("vehicle");
@@ -2919,8 +2922,6 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(strExpression))
                             return Pilot;
                         break;
-                    case "Attack":
-                    case "Sleaze":
                     default:
                         return 0;
                 }

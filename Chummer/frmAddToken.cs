@@ -98,7 +98,6 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Random objRandom = MersenneTwister.SfmtRandom.Create();
             if (_character != null)
             {
                 _character.InitialInit = (int)nudInitStart.Value;

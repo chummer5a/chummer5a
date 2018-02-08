@@ -1856,7 +1856,7 @@
     </string>
     <string>
       <key>Message_ComplexFormLimitCareer</key>
-      <text>Seu número de Formas Complexas não pode exceder seu valor de RES x 2.</text>
+      <text>Seu número de Formas Complexas não pode exceder seu valor de RES × 2.</text>
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
@@ -3768,7 +3768,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Personagens recebem (INT + LOG) x {0} pontos gratuitos para gastar em Perícias de Conhecimento gerais incluindo Idiomas. Pontos adicionais de Perícias de Conhecimento custam {1} Carma cada. Um Idioma com Nível 0 é considerado o seu Idioma Nativo.</text>
+      <text>Personagens recebem (INT + LOG) × {0} pontos gratuitos para gastar em Perícias de Conhecimento gerais incluindo Idiomas. Pontos adicionais de Perícias de Conhecimento custam {1} Carma cada. Um Idioma com Nível 0 é considerado o seu Idioma Nativo.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -4864,7 +4864,7 @@
     <!-- Region Other Info Tab -->
     <string>
       <key>Tip_CalculatedMovement</key>
-      <text>Andar: AGI X 2 ({0} m/TC) / ({1} km/h)\nCorrer: AGI X 4 ({2} m/TC) / ({3} km/h)</text>
+      <text>Andar: AGI × 2 ({0} m/TC) / ({1} km/h)\nCorrer: AGI × 4 ({2} m/TC) / ({3} km/h)</text>
     </string>
     <string>
       <key>Label_OtherPhysicalCM</key>
@@ -4984,7 +4984,7 @@
     </string>
     <string>
       <key>Tip_OtherAstralInitiative</key>
-      <text>A Iniciativa Astral é calculada como INT x 2.</text>
+      <text>A Iniciativa Astral é calculada como INT × 2.</text>
     </string>
     <string>
       <key>Tip_OtherAstralInitiativePasses</key>
@@ -6453,23 +6453,23 @@
     </string>
     <string>
       <key>Label_Options_NewRating</key>
-      <text>x Novo Nível</text>
+      <text>× Novo Nível</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>
-      <text>x Custo de Carma</text>
+      <text>× Custo de Carma</text>
     </string>
     <string>
       <key>Label_Options_Rating</key>
-      <text>x Nível</text>
+      <text>× Nível</text>
     </string>
     <string>
       <key>Label_Options_Force</key>
-      <text>x Poder</text>
+      <text>× Poder</text>
     </string>
     <string>
       <key>Label_Options_ServicesOwed</key>
-      <text>x Serviços Devidos</text>
+      <text>× Serviços Devidos</text>
     </string>
     <string>
       <key>Label_Options_PerKarma</key>
@@ -6477,7 +6477,7 @@
     </string>
     <string>
       <key>Label_Options_ConnectionLoyalty</key>
-      <text> x (Conexão + Lealdade)</text>
+      <text> × (Conexão + Lealdade)</text>
     </string>
     <string>
       <key>Label_Options_Maximum</key>
@@ -6697,7 +6697,7 @@
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
-      <text>Limitar Perícias até 20 dados ou 2 x (Atributo Natural + Nível de Perícia), o maior</text>
+      <text>Limitar Perícias até 20 dados ou 2 × (Atributo Natural + Nível de Perícia), o maior</text>
     </string>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
@@ -6709,7 +6709,7 @@
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
-      <text>Pontos de Contato gratuitos: CAR x</text>
+      <text>Pontos de Contato gratuitos: CAR ×</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsBP</key>
@@ -7808,7 +7808,7 @@
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>
-      <text>Feitiços de alcance estendido têm um alcance de {Poder x MAG x 10) metros, mas tem seu VD aumentado em +2.</text>
+      <text>Feitiços de alcance estendido têm um alcance de {Poder × MAG × 10) metros, mas tem seu VD aumentado em +2.</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Text Window -->
@@ -8554,7 +8554,7 @@
     </string>
     <string>
       <key>Label_Options_NewRatingPlus</key>
-      <text>x Novo Nível) +</text>
+      <text>× Novo Nível) +</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>

@@ -68,15 +68,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
             _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
-            foreach (XmlNode nodGear in objNode.SelectNodes("gears/gear"))
-            {
-                Gear objGear = new Gear(_objCharacter);
-                objGear.Load(nodGear);
-                _lstGear.Add(objGear);
-            }
+            using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+                if (nodGearList != null)
+                    foreach (XmlNode nodGear in nodGearList)
+                    {
+                        Gear objGear = new Gear(_objCharacter);
+                        objGear.Load(nodGear);
+                        _lstGear.Add(objGear);
+                    }
         }
         #endregion
 

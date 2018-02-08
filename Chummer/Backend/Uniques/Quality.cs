@@ -230,66 +230,66 @@ namespace Chummer
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
             }
 
-            if (objXmlQuality["id"] != null && Guid.TryParse(objXmlQuality["id"].InnerText, out Guid guiTemp))
+            if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
             {
                 _guiQualityId = guiTemp;
                 _objCachedMyXmlNode = null;
             }
 
             // Add Weapons if applicable.
-            if (objXmlQuality.InnerXml.Contains("<addweapon>"))
-            {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
+            // More than one Weapon can be added, so loop through all occurrences.
+            using (XmlNodeList xmlAddWeaponList = objXmlQuality.SelectNodes("addweapon"))
+                if (xmlAddWeaponList?.Count > 0)
                 {
-                    string strLoopID = objXmlAddWeapon.InnerText;
-                    XmlNode objXmlWeapon = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                    foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
+                    {
+                        string strLoopID = objXmlAddWeapon.InnerText;
+                        XmlNode objXmlWeapon = strLoopID.IsGuid()
+                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                    objGearWeapon.ParentID = InternalId;
-                    lstWeapons.Add(objGearWeapon);
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
+                        objGearWeapon.ParentID = InternalId;
+                        lstWeapons.Add(objGearWeapon);
 
-                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                    }
                 }
-            }
 
-            if (objXmlQuality.InnerXml.Contains("<naturalweapons>"))
-            {
-                foreach (XmlNode objXmlNaturalWeapon in objXmlQuality.SelectNodes("naturalweapons/naturalweapon"))
-                {
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    if (objXmlNaturalWeapon["name"] != null)
-                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
-                    objWeapon.WeaponType = "Melee";
-                    if (objXmlNaturalWeapon["reach"] != null)
-                        objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-                    if (objXmlNaturalWeapon["accuracy"] != null)
-                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
-                    if (objXmlNaturalWeapon["damage"] != null)
-                        objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
-                    if (objXmlNaturalWeapon["ap"] != null)
-                        objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
-                    objWeapon.Mode = "0";
-                    objWeapon.RC = "0";
-                    objWeapon.Concealability = 0;
-                    objWeapon.Avail = "0";
-                    objWeapon.Cost = "0";
-                    if (objXmlNaturalWeapon["useskill"] != null)
-                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-                    if (objXmlNaturalWeapon["source"] != null)
-                        objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-                    if (objXmlNaturalWeapon["page"] != null)
-                        objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+            using (XmlNodeList xmlNaturalWeaponList = objXmlQuality.SelectNodes("naturalweapons/naturalweapon"))
+                if (xmlNaturalWeaponList?.Count > 0)
+                    foreach (XmlNode objXmlNaturalWeapon in xmlNaturalWeaponList)
+                    {
+                        Weapon objWeapon = new Weapon(_objCharacter);
+                        if (objXmlNaturalWeapon["name"] != null)
+                            objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+                        objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
+                        objWeapon.WeaponType = "Melee";
+                        if (objXmlNaturalWeapon["reach"] != null)
+                            objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+                        if (objXmlNaturalWeapon["accuracy"] != null)
+                            objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
+                        if (objXmlNaturalWeapon["damage"] != null)
+                            objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
+                        if (objXmlNaturalWeapon["ap"] != null)
+                            objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
+                        objWeapon.Mode = "0";
+                        objWeapon.RC = "0";
+                        objWeapon.Concealability = 0;
+                        objWeapon.Avail = "0";
+                        objWeapon.Cost = "0";
+                        if (objXmlNaturalWeapon["useskill"] != null)
+                            objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+                        if (objXmlNaturalWeapon["source"] != null)
+                            objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+                        if (objXmlNaturalWeapon["page"] != null)
+                            objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
 
-                    _objCharacter.Weapons.Add(objWeapon);
-                }
-            }
+                        _objCharacter.Weapons.Add(objWeapon);
+                    }
+
             _nodDiscounts = objXmlQuality["costdiscount"];
             // If the item grants a bonus, pass the information to the Improvement Manager.
             _nodBonus = objXmlQuality["bonus"];
@@ -452,6 +452,9 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="intRating">Pre-calculated rating of the quality for printing.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (_blnPrint)
@@ -865,10 +868,12 @@ namespace Chummer
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> lstRequired = new HashSet<string>();
-                    foreach (XmlNode node in xmlOneOfNode.SelectNodes("quality"))
-                    {
-                        lstRequired.Add(node.InnerText);
-                    }
+                    using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                        if (xmlNodeList != null)
+                            foreach (XmlNode node in xmlNodeList)
+                            {
+                                lstRequired.Add(node.InnerText);
+                            }
 
                     if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
                     {
@@ -876,14 +881,16 @@ namespace Chummer
                     }
 
                     reason |= QualityFailureReason.MetatypeRequired;
-                    foreach (XmlNode objNode in xmlOneOfNode.SelectNodes("metatype"))
-                    {
-                        if (objNode.InnerText == objCharacter.Metatype)
-                        {
-                            reason &= ~QualityFailureReason.MetatypeRequired;
-                            break;
-                        }
-                    }
+                    using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("metatype"))
+                        if (xmlNodeList != null)
+                            foreach (XmlNode objNode in xmlNodeList)
+                            {
+                                if (objNode.InnerText == objCharacter.Metatype)
+                                {
+                                    reason &= ~QualityFailureReason.MetatypeRequired;
+                                    break;
+                                }
+                            }
                 }
                 XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
                 if (xmlAllOfNode != null)
@@ -894,14 +901,16 @@ namespace Chummer
                     {
                         lstRequired.Add(objQuality.Name);
                     }
-                    foreach (XmlNode node in xmlAllOfNode.SelectNodes("quality"))
-                    {
-                        if (!lstRequired.Contains(node.InnerText))
-                        {
-                            reason |= QualityFailureReason.RequiredMultiple;
-                            break;
-                        }
-                    }
+                    using (XmlNodeList xmlNodeList = xmlAllOfNode.SelectNodes("quality"))
+                        if (xmlNodeList != null)
+                            foreach (XmlNode node in xmlNodeList)
+                            {
+                                if (!lstRequired.Contains(node.InnerText))
+                                {
+                                    reason |= QualityFailureReason.RequiredMultiple;
+                                    break;
+                                }
+                            }
                 }
             }
 
@@ -913,10 +922,12 @@ namespace Chummer
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> qualityForbidden = new HashSet<string>();
-                    foreach (XmlNode node in xmlOneOfNode.SelectNodes("quality"))
-                    {
-                        qualityForbidden.Add(node.InnerText);
-                    }
+                    using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                        if (xmlNodeList != null)
+                            foreach (XmlNode node in xmlNodeList)
+                            {
+                                qualityForbidden.Add(node.InnerText);
+                            }
 
                     foreach (Quality quality in objCharacter.Qualities)
                     {
@@ -936,6 +947,7 @@ namespace Chummer
         /// This method builds a xmlNode upwards adding/overriding elements
         /// </summary>
         /// <param name="id">ID of the node</param>
+        /// <param name="xmlDoc">XmlDocument containing the object with which to override this quality.</param>
         /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
         public static XmlNode GetNodeOverrideable(string id, XmlDocument xmlDoc)
         {
@@ -945,29 +957,27 @@ namespace Chummer
         private static XmlNode GetNodeOverrideable(XmlNode n)
         {
             XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
-            if (workNode != null)
+
+            XmlNode parentNode = n.SelectSingleNode("../..");
+            if (parentNode?["id"] != null)
             {
-                XmlNode parentNode = n.SelectSingleNode("../..");
-                if (parentNode?["id"] != null)
+                XmlNode sourceNode = GetNodeOverrideable(parentNode);
+                if (sourceNode != null)
                 {
-                    XmlNode sourceNode = GetNodeOverrideable(parentNode);
-                    if (sourceNode != null)
+                    foreach (XmlNode node in sourceNode.ChildNodes)
                     {
-                        foreach (XmlNode node in sourceNode.ChildNodes)
+                        if (workNode[node.LocalName] == null && node.LocalName != "versions")
                         {
-                            if (workNode[node.LocalName] == null && node.LocalName != "versions")
+                            workNode.AppendChild(node.Clone());
+                        }
+                        else if (node.LocalName == "bonus")
+                        {
+                            XmlNode xmlBonusNode = workNode["bonus"];
+                            if (xmlBonusNode != null)
                             {
-                                workNode.AppendChild(node.Clone());
-                            }
-                            else if (node.LocalName == "bonus")
-                            {
-                                XmlNode xmlBonusNode = workNode["bonus"];
-                                if (xmlBonusNode != null)
+                                foreach (XmlNode childNode in node.ChildNodes)
                                 {
-                                    foreach (XmlNode childNode in node.ChildNodes)
-                                    {
-                                        xmlBonusNode.AppendChild(childNode.Clone());
-                                    }
+                                    xmlBonusNode.AppendChild(childNode.Clone());
                                 }
                             }
                         }

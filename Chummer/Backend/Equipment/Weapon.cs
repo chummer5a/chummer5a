@@ -124,6 +124,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
         /// <param name="lstWeapons">List of child Weapons to generate.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
         public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false)
         {
             if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
@@ -484,6 +486,7 @@ namespace Chummer.Backend.Equipment
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing weapon?</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy)
@@ -555,7 +558,7 @@ namespace Chummer.Backend.Equipment
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
-                    Guid.TryParse(objNewOsmiumMaceNode["id"].InnerText, out _sourceID);
+                    objNewOsmiumMaceNode.TryGetField("id", Guid.TryParse, out _sourceID);
                     _objCachedMyXmlNode = objNewOsmiumMaceNode;
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -610,30 +613,35 @@ namespace Chummer.Backend.Equipment
                 _strAmmo = "1";
             }
 
-            if (objNode.InnerXml.Contains("<accessories>"))
+            XmlNode xmlAccessoriesNode = objNode["accessories"];
+            if (xmlAccessoriesNode != null)
             {
-                XmlNodeList nodChildren = objNode.SelectNodes("accessories/accessory");
-                foreach (XmlNode nodChild in nodChildren)
-                {
-                    WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                    objAccessory.Load(nodChild, blnCopy);
-                    objAccessory.Parent = this;
-                    _lstAccessories.Add(objAccessory);
-                }
+                using (XmlNodeList nodChildren = xmlAccessoriesNode.SelectNodes("accessory"))
+                    if (nodChildren != null)
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                            objAccessory.Load(nodChild, blnCopy);
+                            objAccessory.Parent = this;
+                            _lstAccessories.Add(objAccessory);
+                        }
             }
 
-            if (objNode.InnerXml.Contains("<underbarrel>"))
+            XmlNode xmlUnderbarrelNode = objNode["underbarrel"];
+            if (xmlUnderbarrelNode != null)
             {
-                foreach (XmlNode nodWeapon in objNode.SelectNodes("underbarrel/weapon"))
-                {
-                    Weapon objUnderbarrel = new Weapon(_objCharacter)
-                    {
-                        ParentVehicle = ParentVehicle
-                    };
-                    objUnderbarrel.Load(nodWeapon, blnCopy);
-                    objUnderbarrel.Parent = this;
-                    _lstUnderbarrel.Add(objUnderbarrel);
-                }
+                using (XmlNodeList nodChildren = xmlUnderbarrelNode.SelectNodes("weapon"))
+                    if (nodChildren != null)
+                        foreach (XmlNode nodWeapon in nodChildren)
+                        {
+                            Weapon objUnderbarrel = new Weapon(_objCharacter)
+                            {
+                                ParentVehicle = ParentVehicle
+                            };
+                            objUnderbarrel.Load(nodWeapon, blnCopy);
+                            objUnderbarrel.Parent = this;
+                            _lstUnderbarrel.Add(objUnderbarrel);
+                        }
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -690,6 +698,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             // Find the piece of Gear that created this item if applicable
@@ -839,6 +849,7 @@ namespace Chummer.Backend.Equipment
         /// Get the name of Ammo from the character or Vehicle.
         /// </summary>
         /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
+        /// <param name="strLanguage">Language in which to display ammo name.</param>
         private string GetAmmoName(Guid guiAmmo, string strLanguage)
         {
             if (guiAmmo == Guid.Empty)
@@ -2921,6 +2932,7 @@ namespace Chummer.Backend.Equipment
         /// Evalulate and return the requested Range for the Weapon.
         /// </summary>
         /// <param name="strFindRange">Range node to use.</param>
+        /// <param name="blnUseAlternateRange">Use alternate range instead of the weapon's main range.</param>
         private int GetRange(string strFindRange, bool blnUseAlternateRange)
         {
             string strRangeCategory = Category;
@@ -4294,8 +4306,6 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(strExpression))
                             strExpression = "2";
                         break;
-                    case "Attack":
-                    case "Sleaze":
                     default:
                         strExpression = "0";
                         break;

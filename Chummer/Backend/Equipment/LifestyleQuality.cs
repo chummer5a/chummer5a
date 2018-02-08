@@ -104,11 +104,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
+        /// <param name="objParentLifestyle">Lifestyle object to which the LifestyleQuality will be added.</param>
         /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
-            Guid.TryParse(objXmlLifestyleQuality["id"]?.InnerText, out _SourceGuid);
+            objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _SourceGuid);
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -193,6 +194,7 @@ namespace Chummer.Backend.Equipment
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
         public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
         {
             ParentLifestyle = objParentLifestyle;
@@ -296,6 +298,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (!_blnPrint) return;

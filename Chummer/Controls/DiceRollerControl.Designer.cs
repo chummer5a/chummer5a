@@ -230,6 +230,7 @@ namespace Chummer
             this.lblD6.Size = new System.Drawing.Size(22, 25);
             this.lblD6.TabIndex = 54;
             this.lblD6.Text = "D6";
+            this.lblD6.Tag = "String_D6";
             this.lblD6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // chkRushJob

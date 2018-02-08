@@ -7250,56 +7250,60 @@ namespace Chummer
                 if (objXmlMetatype != null)
                 {
                     // Positive Qualities.
-                    foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
-                    {
-                        bool blnFound = false;
-                        // See if the Quality already exists in the character.
-                        foreach (Quality objCharacterQuality in _lstQualities)
-                        {
-                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                    using (XmlNodeList xmlMetatypeQualityList = objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                        if (xmlMetatypeQualityList != null)
+                            foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                             {
-                                blnFound = true;
-                                break;
+                                bool blnFound = false;
+                                // See if the Quality already exists in the character.
+                                foreach (Quality objCharacterQuality in _lstQualities)
+                                {
+                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+
+                                // If the Quality was not found, create it.
+                                if (!blnFound)
+                                {
+                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    Quality objQuality = new Quality(this);
+
+                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                    _lstQualities.Add(objQuality);
+                                }
                             }
-                        }
-
-                        // If the Quality was not found, create it.
-                        if (!blnFound)
-                        {
-                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                            Quality objQuality = new Quality(this);
-
-                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                            _lstQualities.Add(objQuality);
-                        }
-                    }
 
                     // Negative Qualities.
-                    foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
-                    {
-                        bool blnFound = false;
-                        // See if the Quality already exists in the character.
-                        foreach (Quality objCharacterQuality in _lstQualities)
-                        {
-                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                    using (XmlNodeList xmlMetatypeQualityList = objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                        if (xmlMetatypeQualityList != null)
+                            foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                             {
-                                blnFound = true;
-                                break;
+                                bool blnFound = false;
+                                // See if the Quality already exists in the character.
+                                foreach (Quality objCharacterQuality in _lstQualities)
+                                {
+                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                    {
+                                        blnFound = true;
+                                        break;
+                                    }
+                                }
+
+                                // If the Quality was not found, create it.
+                                if (!blnFound)
+                                {
+                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    Quality objQuality = new Quality(this);
+
+                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                    _lstQualities.Add(objQuality);
+                                }
                             }
-                        }
-
-                        // If the Quality was not found, create it.
-                        if (!blnFound)
-                        {
-                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                            Quality objQuality = new Quality(this);
-
-                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                            _lstQualities.Add(objQuality);
-                        }
-                    }
 
                     // Do it all over again for Metavariants.
                     if (!string.IsNullOrEmpty(_strMetavariant))
@@ -7309,56 +7313,60 @@ namespace Chummer
                         if (objXmlMetatype != null)
                         {
                             // Positive Qualities.
-                            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
-                            {
-                                bool blnFound = false;
-                                // See if the Quality already exists in the character.
-                                foreach (Quality objCharacterQuality in _lstQualities)
-                                {
-                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                            using (XmlNodeList xmlMetatypeQualityList = objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                                if (xmlMetatypeQualityList != null)
+                                    foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                                     {
-                                        blnFound = true;
-                                        break;
+                                        bool blnFound = false;
+                                        // See if the Quality already exists in the character.
+                                        foreach (Quality objCharacterQuality in _lstQualities)
+                                        {
+                                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                            {
+                                                blnFound = true;
+                                                break;
+                                            }
+                                        }
+
+                                        // If the Quality was not found, create it.
+                                        if (!blnFound)
+                                        {
+                                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                            Quality objQuality = new Quality(this);
+
+                                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                            _lstQualities.Add(objQuality);
+                                        }
                                     }
-                                }
-
-                                // If the Quality was not found, create it.
-                                if (!blnFound)
-                                {
-                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                                    Quality objQuality = new Quality(this);
-
-                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                                    _lstQualities.Add(objQuality);
-                                }
-                            }
 
                             // Negative Qualities.
-                            foreach (XmlNode objXmlMetatypeQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
-                            {
-                                bool blnFound = false;
-                                // See if the Quality already exists in the character.
-                                foreach (Quality objCharacterQuality in _lstQualities)
-                                {
-                                    if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                            using (XmlNodeList xmlMetatypeQualityList = objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                                if (xmlMetatypeQualityList != null)
+                                    foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                                     {
-                                        blnFound = true;
-                                        break;
+                                        bool blnFound = false;
+                                        // See if the Quality already exists in the character.
+                                        foreach (Quality objCharacterQuality in _lstQualities)
+                                        {
+                                            if (objCharacterQuality.Name == objXmlMetatypeQuality.InnerText)
+                                            {
+                                                blnFound = true;
+                                                break;
+                                            }
+                                        }
+
+                                        // If the Quality was not found, create it.
+                                        if (!blnFound)
+                                        {
+                                            string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                            Quality objQuality = new Quality(this);
+
+                                            XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
+                                            _lstQualities.Add(objQuality);
+                                        }
                                     }
-                                }
-
-                                // If the Quality was not found, create it.
-                                if (!blnFound)
-                                {
-                                    string strForceValue = objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                                    Quality objQuality = new Quality(this);
-
-                                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
-                                    _lstQualities.Add(objQuality);
-                                }
-                            }
                         }
                     }
                 }
@@ -7813,7 +7821,7 @@ namespace Chummer
                 for (int i = 0; i < intRanks; ++i)
                 {
                     Quality objQuality = new Quality(this);
-                    if (i == 0 && Guid.TryParse(xmlOldQuality["guid"]?.InnerText, out Guid guidOld))
+                    if (i == 0 && xmlOldQuality.TryGetField("guid", Guid.TryParse, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
                     objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons, xmlOldQuality["extra"]?.InnerText);

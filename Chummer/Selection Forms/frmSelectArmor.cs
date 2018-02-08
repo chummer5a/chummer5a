@@ -427,7 +427,7 @@ namespace Chummer
                                 }
                             }
 
-                            lstArmors.Add(new ListItem(objXmlArmor["id"].InnerText, strDisplayName));
+                            lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
                         }
                     }
                     lstArmors.Sort(CompareListItems.CompareNames);

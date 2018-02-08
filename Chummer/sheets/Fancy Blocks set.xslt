@@ -939,7 +939,7 @@
                 <xsl:value-of select="name" />
                 <xsl:if test="extra!=''"> (<xsl:value-of select="extra" />)</xsl:if>
                 <xsl:if test="qty &gt; 1">
-                  <xsl:text> x</xsl:text><xsl:value-of select="qty" />
+                  <xsl:text> ×</xsl:text><xsl:value-of select="qty" />
                 </xsl:if>
                 <xsl:call-template name="print_source_page" />
                 <xsl:call-template name="print_notes" />
@@ -1434,7 +1434,7 @@
     <tr>
       <td>
         <xsl:value-of select="name" />
-        <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
+        <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
         <xsl:call-template name="print_source_page" />
       </td>
       <td><xsl:value-of select="devicerating" /></td>
@@ -2010,7 +2010,7 @@
                 [<xsl:value-of select="$lang.Permanent"/>]
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="$lang.Cost"/>: <xsl:value-of select="cost" /><xsl:value-of select="$lang.NuyenSymbol"/> (<xsl:value-of select="totalmonthlycost" /><xsl:value-of select="$lang.NuyenSymbol"/>) x<xsl:value-of select="months" /> = <xsl:value-of select="totalcost" /><xsl:value-of select="$lang.NuyenSymbol"/>;
+                <xsl:value-of select="$lang.Cost"/>: <xsl:value-of select="cost" /><xsl:value-of select="$lang.NuyenSymbol"/> (<xsl:value-of select="totalmonthlycost" /><xsl:value-of select="$lang.NuyenSymbol"/>) × <xsl:value-of select="months" /> = <xsl:value-of select="totalcost" /><xsl:value-of select="$lang.NuyenSymbol"/>;
               </xsl:otherwise>
             </xsl:choose>
             <br />
@@ -2190,7 +2190,7 @@
         <xsl:text> [R</xsl:text><xsl:value-of select="rating" />]
       </xsl:if>
       <xsl:if test="qty and qty &gt; 1">
-        <xsl:text> x</xsl:text><xsl:value-of select="qty" />
+        <xsl:text> ×</xsl:text><xsl:value-of select="qty" />
       </xsl:if>
       <xsl:call-template name="print_source_page" />
       <xsl:if test="extra!='' and $is_long_extra">

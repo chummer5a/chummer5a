@@ -50,7 +50,8 @@ namespace Chummer
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
+        /// <param name="boolCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
+        public void Create(XmlNode objXmlProgramNode, string strExtra = "", bool boolCanDelete = true)
         {
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -62,7 +63,9 @@ namespace Chummer
             if (!objXmlProgramNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
-            _boolIsAdvancedProgram = boolIsAdvancedProgram;
+            string strCategory = string.Empty;
+            if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
+                _boolIsAdvancedProgram = strCategory == "Advanced Programs";
         }
 
         /// <summary>
@@ -105,6 +108,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("aiprogram");

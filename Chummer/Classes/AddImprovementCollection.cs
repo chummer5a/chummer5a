@@ -1557,7 +1557,7 @@ namespace Chummer.Classes
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(xmlProgram, xmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(xmlProgram, strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
@@ -1634,7 +1634,7 @@ namespace Chummer.Classes
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(xmlProgram, xmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(xmlProgram, strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 

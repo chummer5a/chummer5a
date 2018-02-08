@@ -1400,7 +1400,7 @@ namespace Chummer
                         lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
                     }
 
-                    string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
+                    string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString();
                     bool blnOldInitializing = _blnInitializing;
                     _blnInitializing = true;
                     cboMetavariant.BeginUpdate();
@@ -1571,12 +1571,12 @@ namespace Chummer
 
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                string strInnerText = objXmlCategory.InnerText ?? string.Empty;
+                string strInnerText = objXmlCategory.InnerText;
 
                 // Make sure the Category isn't in the exclusion list.
                 if (!lstRemoveCategory.Contains(strInnerText) &&
                     // Also make sure it is not already in the Category list.
-                    !lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
+                    lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                 {
                     lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
@@ -1613,7 +1613,7 @@ namespace Chummer
             return XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
         }
 
-        private static XmlNodeList GetMagicalSkillList(XmlNodeList objNodeList = null)
+        private static XmlNodeList GetMagicalSkillList()
         {
             return XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");
         }

@@ -27,7 +27,6 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
-        private readonly bool _blnUseCurrentValues;
         private readonly string _strDefaultOption = "Standard";
         int intQualityLimits;
         decimal decNuyenBP;
@@ -37,7 +36,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            _blnUseCurrentValues = blnUseCurrentValues;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -66,16 +64,16 @@ namespace Chummer
 
             // Populate the Gameplay Options list.
             XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-            XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption");
-
             List<ListItem> lstGameplayOptions = new List<ListItem>();
-            foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
-            {
-                string strName = objXmlGameplayOption["name"].InnerText;
-                if (objXmlGameplayOption["default"]?.InnerText == bool.TrueString)
-                    _strDefaultOption = strName;
-                lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
-            }
+            using (XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption"))
+                if (objXmlGameplayOptionList != null)
+                    foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
+                    {
+                        string strName = objXmlGameplayOption["name"]?.InnerText;
+                        if (objXmlGameplayOption["default"]?.InnerText == bool.TrueString)
+                            _strDefaultOption = strName;
+                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
+                    }
 
             cboGamePlay.BeginUpdate();
             cboGamePlay.ValueMember = "Value";
@@ -106,8 +104,8 @@ namespace Chummer
             else
             {
                 XmlNode objXmlSelectedGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
-                intQualityLimits = Convert.ToInt32(objXmlSelectedGameplayOption["karma"].InnerText);
-                decNuyenBP = Convert.ToDecimal(objXmlSelectedGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+                objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref intQualityLimits);
+                objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decNuyenBP);
             }
         }
 
@@ -138,13 +136,19 @@ namespace Chummer
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
-                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                    _objCharacter.BannedWareGrades.Add(xmlNode.InnerText);
+                using (XmlNodeList xmlBannedGradesList = xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                    if (xmlBannedGradesList != null)
+                        foreach (XmlNode xmlNode in xmlBannedGradesList)
+                            _objCharacter.BannedWareGrades.Add(xmlNode.InnerText);
 
-                if (!_objCharacter.Options.FreeContactsMultiplierEnabled)
-                    _objCharacter.ContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
-                _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
-                _objCharacter.MaxNuyen = Convert.ToInt32(xmlGameplayOption["maxnuyen"].InnerText);
+                int intTemp = 0;
+                if (!_objCharacter.Options.FreeContactsMultiplierEnabled && xmlGameplayOption.TryGetInt32FieldQuickly("contactmultiplier", ref intTemp))
+                    _objCharacter.ContactMultiplier = intTemp;
+                if (xmlGameplayOption.TryGetInt32FieldQuickly("karma", ref intTemp))
+                    _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = intTemp;
+                decimal decTemp = 0;
+                if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
+                    _objCharacter.MaxNuyen = decTemp;
             }
 
             _objCharacter.BuildPoints = 0;
@@ -195,9 +199,6 @@ namespace Chummer
                     nudSumtoTen.Visible = true;
                     lblSumToX.Visible = true;
                     break;
-                case "Priority":
-                default:
-                    break;
             }
         }
 
@@ -214,9 +215,11 @@ namespace Chummer
             XmlNode objXmlGameplayOption = objXmlDocumentGameplayOption.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
             if (objXmlGameplayOption != null)
             {
-                nudMaxAvail.Value = Convert.ToInt32(objXmlGameplayOption["maxavailability"].InnerText);
-                intQualityLimits = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
-                decNuyenBP = Convert.ToDecimal(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+                int intTemp = 0;
+                if (objXmlGameplayOption.TryGetInt32FieldQuickly("maxavailability", ref intTemp))
+                    nudMaxAvail.Value = intTemp;
+                objXmlGameplayOption.TryGetInt32FieldQuickly("karma", ref intQualityLimits);
+                objXmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decNuyenBP);
             }
         }
         #endregion

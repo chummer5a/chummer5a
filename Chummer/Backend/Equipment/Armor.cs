@@ -380,20 +380,17 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (!Guid.TryParse(objNode["guid"]?.InnerText, out _guiID))
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            if (objNode["sourceid"] == null || !Guid.TryParse(objNode["sourceid"].InnerText, out _sourceID))
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID))
             {
                 XmlNode objArmorNode = GetNode();
-                if (objArmorNode != null)
-                {
-                    Guid.TryParse(objArmorNode["id"]?.InnerText, out _sourceID);
-                }
+                objArmorNode?.TryGetField("id", Guid.TryParse, out _sourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
@@ -447,6 +444,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("armor");

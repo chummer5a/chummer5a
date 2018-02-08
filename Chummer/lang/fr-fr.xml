@@ -1550,7 +1550,7 @@
     </string>
     <string>
       <key>Message_FocusMaximumForce</key>
-      <text>La Puissance totale de tous les Foci liés ne peut pas excéder 5 x MAG.</text>
+      <text>La Puissance totale de tous les Foci liés ne peut pas excéder 5 × MAG.</text>
     </string>
     <string>
       <key>Message_FocusMaximumNumber</key>
@@ -2829,7 +2829,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Les personnages reçoivent (INT + LOG) x 3 points gratuits à dépenser dans des Compétences de connaissance génériques et des langues. Les points de Compétence de connaissance additionels coûtent 2 PC chaque. Une langue d'indice 0 est considérée comme votre langue maternelle.</text>
+      <text>Les personnages reçoivent (INT + LOG) × 3 points gratuits à dépenser dans des Compétences de connaissance génériques et des langues. Les points de Compétence de connaissance additionels coûtent 2 PC chaque. Une langue d'indice 0 est considérée comme votre langue maternelle.</text>
     </string>
     <!-- Martial Arts Tab -->
     <string>
@@ -3792,7 +3792,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_OtherAstralInitiative</key>
-      <text>L'Initiative astrale est calculée avec INT x 2.</text>
+      <text>L'Initiative astrale est calculée avec INT × 2.</text>
     </string>
     <string>
       <key>Tip_OtherAstralInitiativePasses</key>
@@ -3800,11 +3800,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_OtherBallisticArmor</key>
-      <text>Seule la plus grande des valeurs d'Armure Balistique est utilisée pour determiner votre indice d'Armure Balistique.\nSi le total des valeurs d'Armure Balistique de toute les pièces portées dépasse CON x 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
+      <text>Seule la plus grande des valeurs d'Armure Balistique est utilisée pour determiner votre indice d'Armure Balistique.\nSi le total des valeurs d'Armure Balistique de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
     </string>
     <string>
       <key>Tip_OtherImpactArmor</key>
-      <text>Seule la plus grande des valeurs d'Armure d'Impact est utilisée pour determiner votre indice d'Armure d'Impact.\nSi le total des valeurs d'Armure d'Impact de toute les pièces portées dépasse CON x 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
+      <text>Seule la plus grande des valeurs d'Armure d'Impact est utilisée pour determiner votre indice d'Armure d'Impact.\nSi le total des valeurs d'Armure d'Impact de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
     </string>
     <string>
       <key>Tip_OtherEssence</key>
@@ -5085,27 +5085,27 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_Options_NewRating</key>
-      <text>x nouvel Indice</text>
+      <text>× nouvel Indice</text>
     </string>
     <string>
       <key>Label_Options_NewRatingPlus</key>
-      <text>x nouvel Indice) +</text>
+      <text>× nouvel Indice) +</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>
-      <text>x coût en PC</text>
+      <text>× coût en PC</text>
     </string>
     <string>
       <key>Label_Options_Rating</key>
-      <text>x Indice</text>
+      <text>× Indice</text>
     </string>
     <string>
       <key>Label_Options_Force</key>
-      <text>x Force</text>
+      <text>× Force</text>
     </string>
     <string>
       <key>Label_Options_ServicesOwed</key>
-      <text>x nombre de Services dûs</text>
+      <text>× nombre de Services dûs</text>
     </string>
     <string>
       <key>Label_Options_PerKarma</key>
@@ -5113,7 +5113,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_Options_ConnectionLoyalty</key>
-      <text> x (Influence + Loyauté)</text>
+      <text> × (Influence + Loyauté)</text>
     </string>
     <string>
       <key>Label_Options_Maximum</key>
@@ -5277,7 +5277,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
-      <text>Limiter les compétences au plus grand de 20 dés ou de 2 x (Attribut Naturel + Indice de Comp) (SR4A, 61)</text>
+      <text>Limiter les compétences au plus grand de 20 dés ou de 2 × (Attribut Naturel + Indice de Comp) (SR4A, 61)</text>
     </string>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
@@ -5289,7 +5289,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
-      <text>Pts Contact gratuits : CHR x</text>
+      <text>Pts Contact gratuits : CHR ×</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsBP</key>
@@ -6905,7 +6905,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>
-      <text>Les sorts à portée étendue ont pour rayon (Puissnace x MAG x 10) metres mais ont leur drain augmenté de +2.</text>
+      <text>Les sorts à portée étendue ont pour rayon (Puissnace × MAG × 10) metres mais ont leur drain augmenté de +2.</text>
     </string>
     <string>
       <key>String_CustomItem_SelectText</key>

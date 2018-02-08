@@ -46,7 +46,6 @@ namespace Chummer
 
         /// Create a Martial Art Technique from an XmlNode.
         /// <param name="xmlTechniqueDataNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         public void Create(XmlNode xmlTechniqueDataNode)
         {
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("id", ref _strSourceId))
@@ -62,7 +61,6 @@ namespace Chummer
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
-                    return;
                 }
             }
         }
@@ -109,6 +107,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialarttechnique");

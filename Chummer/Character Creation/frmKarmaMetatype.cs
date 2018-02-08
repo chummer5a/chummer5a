@@ -56,20 +56,25 @@ namespace Chummer
 
             // Create a list of Categories.
             XmlNode xmlMetatypesNode = _xmlDocument.SelectSingleNode("/chummer/metatypes");
-            HashSet<string> lstAlreadyProcessed = new HashSet<string>();
-            foreach (XmlNode objXmlCategory in _xmlDocument.SelectNodes("/chummer/categories/category"))
+            if (xmlMetatypesNode != null)
             {
-                string strInnerText = objXmlCategory.InnerText;
-                if (!lstAlreadyProcessed.Contains(strInnerText))
-                {
-                    lstAlreadyProcessed.Add(strInnerText);
-                    if (null != xmlMetatypesNode.SelectSingleNode("metatype[category = \"" + strInnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
-                    {
-                        lstCategories.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
-                }
+                HashSet<string> lstAlreadyProcessed = new HashSet<string>();
+                using (XmlNodeList xmlCategoryList = _xmlDocument.SelectNodes("/chummer/categories/category"))
+                    if (xmlCategoryList != null)
+                        foreach (XmlNode objXmlCategory in xmlCategoryList)
+                        {
+                            string strInnerText = objXmlCategory.InnerText;
+                            if (!lstAlreadyProcessed.Contains(strInnerText))
+                            {
+                                lstAlreadyProcessed.Add(strInnerText);
+                                if (null != xmlMetatypesNode.SelectSingleNode("metatype[category = \"" + strInnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                                {
+                                    lstCategories.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                                }
+                            }
+                        }
             }
-            
+
             lstCategories.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -187,7 +192,13 @@ namespace Chummer
                     strSelectedMetavariant = "Human";
 
                 XmlNode objXmlMetatype = _xmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-                XmlNode objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                if (objXmlMetatype == null)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Cursor = Cursors.Default;
+                    return;
+                }
+                XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                 int intForce = 0;
                 if (nudForce.Visible)
                     intForce = decimal.ToInt32(nudForce.Value);
@@ -211,7 +222,7 @@ namespace Chummer
                 }*/
 
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
-
+                
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits(ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
                 _objCharacter.AGI.AssignLimits(ExpressionToString(charNode["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["agimax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["agiaug"]?.InnerText, intForce, intMaxModifier));
@@ -244,16 +255,18 @@ namespace Chummer
 
                 List<Weapon> lstWeapons = new List<Weapon>();
                 // Create the Qualities that come with the Metatype.
-                foreach (XmlNode objXmlQualityItem in charNode.SelectNodes("qualities/*/quality"))
-                {
-                    XmlNode objXmlQuality = _xmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                    Quality objQuality = new Quality(_objCharacter);
-                    string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
-                    QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                    objQuality.ContributeToLimit = false;
-                    _objCharacter.Qualities.Add(objQuality);
-                }
+                using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
+                    if (xmlQualityList != null)
+                        foreach (XmlNode objXmlQualityItem in xmlQualityList)
+                        {
+                            XmlNode objXmlQuality = _xmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                            Quality objQuality = new Quality(_objCharacter);
+                            string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
+                            QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
+                            objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                            objQuality.ContributeToLimit = false;
+                            _objCharacter.Qualities.Add(objQuality);
+                        }
 
                 //Load any critter powers the character has. 
                 XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
@@ -438,7 +451,7 @@ namespace Chummer
                     string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
                     if (!string.IsNullOrEmpty(strRating))
                     {
-                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(x => x.Name == xmlSkill.InnerText))
+                        if (_objCharacter.SkillsSection.KnowledgeSkills.All(x => x.Name != xmlSkill.InnerText))
                         {
                             XmlNode objXmlSkillNode = xmlSkillDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + xmlSkill.InnerText + "\"]");
                             if (objXmlSkillNode != null)
@@ -500,7 +513,7 @@ namespace Chummer
                 XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml");
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
-                    XmlNode xmlAIProgramData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + xmlAIProgram.InnerText + "\"]");
+                    XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + xmlAIProgram.InnerText + "\"]");
                     if (xmlAIProgramData == null)
                         continue;
 
@@ -521,7 +534,7 @@ namespace Chummer
                     }
 
                     AIProgram objAIProgram = new AIProgram(_objCharacter);
-                    objAIProgram.Create(xmlAIProgram, xmlAIProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                    objAIProgram.Create(xmlAIProgram, strExtra, false);
                     if (objAIProgram.InternalId.IsEmptyGuid())
                         continue;
 
@@ -535,12 +548,10 @@ namespace Chummer
                 XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
-                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear.InnerText + "\"]");
+                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear["name"].InnerText + "\" and category = \"" + xmlGear["category"].InnerText + "\"]");
                     if (xmlGearData == null)
                         continue;
                     
-                    string strCategory = xmlGear["category"]?.InnerText ?? string.Empty;
-
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
                         intRating = Convert.ToInt32(xmlGear["rating"].InnerText);
@@ -855,23 +866,25 @@ namespace Chummer
         private void PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-            // Don't attempt to do anything if nothing is selected.
+            XmlNode objXmlMetatype = null;
             if (!string.IsNullOrEmpty(strSelectedMetatype))
+                objXmlMetatype = _xmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+            // Don't attempt to do anything if nothing is selected.
+            if (objXmlMetatype != null)
             {
-                XmlNode objXmlMetatype = _xmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
                     new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
                 };
 
                 // Retrieve the list of Metavariants for the selected Metatype.
-                XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
-                foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
-                {
-                    string strName = objXmlMetavariant["name"].InnerText;
-                    lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
-                }
+                using (XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]"))
+                    if (objXmlMetavariantList != null)
+                        foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
+                        {
+                            string strName = objXmlMetavariant["name"]?.InnerText;
+                            lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
+                        }
 
                 bool blnOldLoading = _blnLoading;
                 string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.Metavariant;
@@ -894,7 +907,7 @@ namespace Chummer
                 cboMetavariant.EndUpdate();
 
                 // If the Metatype has Force enabled, show the Force NUD.
-                string strEssMax = objXmlMetatype["essmax"]?.InnerText;
+                string strEssMax = objXmlMetatype["essmax"]?.InnerText ?? string.Empty;
                 if (objXmlMetatype["forcecreature"] != null || (!string.IsNullOrEmpty(strEssMax) && strEssMax.Contains("D6")))
                 {
                     lblForceLabel.Visible = true;
@@ -953,11 +966,13 @@ namespace Chummer
             {
                 List<ListItem> lstMetatypeItems = new List<ListItem>();
 
-                foreach (XmlNode objXmlMetatype in _xmlDocument.SelectNodes("/chummer/metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
-                {
-                    string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
-                    lstMetatypeItems.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
-                }
+                using (XmlNodeList xmlMetatypeList = _xmlDocument.SelectNodes("/chummer/metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
+                    if (xmlMetatypeList != null)
+                        foreach (XmlNode objXmlMetatype in xmlMetatypeList)
+                        {
+                            string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
+                            lstMetatypeItems.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
+                        }
 
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
 
@@ -973,7 +988,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                        lstMetatypes_SelectedIndexChanged(null, null);
+                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);   
                     else
                         lstMetatypes.SelectedValue = strOldSelected;
                 }

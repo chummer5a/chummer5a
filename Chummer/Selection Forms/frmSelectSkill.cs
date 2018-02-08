@@ -36,7 +36,7 @@ namespace Chummer
         private string _strLimitToSkill = string.Empty;
         private string _strLimitToCategories = string.Empty;
         private string _strForceSkill = string.Empty;
-        private readonly string _strSourceName = string.Empty;
+        private readonly string _strSourceName;
         private bool _blnKnowledgeSkill;
         private int _intMinimumRating;
         private int _intMaximumRating = int.MaxValue;
@@ -295,17 +295,24 @@ namespace Chummer
         {
             set
             {
-                StringBuilder objLimitToCategories = new StringBuilder();
-                foreach (XmlNode objNode in value?.SelectNodes("category"))
+                using (XmlNodeList xmlCategoryList = value?.SelectNodes("category"))
                 {
-                    objLimitToCategories.Append("category = ");
-                    objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
-                    objLimitToCategories.Append(" or ");
+                    if (xmlCategoryList != null)
+                    {
+                        StringBuilder objLimitToCategories = new StringBuilder();
+                        foreach (XmlNode objNode in xmlCategoryList)
+                        {
+                            objLimitToCategories.Append("category = ");
+                            objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
+                            objLimitToCategories.Append(" or ");
+                        }
+
+                        // Remove the last " or "
+                        if (objLimitToCategories.Length > 0)
+                            objLimitToCategories.Length -= 4;
+                        _strLimitToCategories = objLimitToCategories.ToString();
+                    }
                 }
-                // Remove the last " or "
-                if (objLimitToCategories.Length > 0)
-                    objLimitToCategories.Length -= 4;
-                _strLimitToCategories = objLimitToCategories.ToString();
             }
         }
 

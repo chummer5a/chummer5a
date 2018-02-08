@@ -111,7 +111,7 @@ namespace Chummer
         public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            Guid.TryParse(objNode["id"]?.InnerText, out _sourceID);
+            objNode.TryGetField("id", Guid.TryParse, out _sourceID);
             _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
@@ -176,10 +176,9 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"]?.InnerText, out _guiID);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            string strId = objNode["id"]?.InnerText;
-            if (!string.IsNullOrEmpty(strId) && Guid.TryParse(strId, out _sourceID))
+            if (objNode.TryGetField("id", Guid.TryParse, out _sourceID))
             {
                 _objCachedMyXmlNode = null;
             }
@@ -189,8 +188,8 @@ namespace Chummer
                 if (strPowerName.Contains('('))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                XmlNode xmlPowerId = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/id");
-                if (xmlPowerId != null && Guid.TryParse(xmlPowerId.InnerText, out _sourceID))
+                XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
+                if (xmlPower.TryGetField("id", Guid.TryParse, out _sourceID))
                 {
                     _objCachedMyXmlNode = null;
                 }
@@ -256,6 +255,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("power");
@@ -746,7 +747,7 @@ namespace Chummer
         {
             StringBuilder strbldModifier = new StringBuilder("Rating (");
             strbldModifier.Append(Rating);
-            strbldModifier.Append(" x ");
+            strbldModifier.Append(" × ");
             strbldModifier.Append(PointsPerLevel);
             strbldModifier.Append(')');
             foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))

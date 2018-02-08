@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ namespace Chummer
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text += ' ' + dice.ToString() + "D6: ";
+            lblDice.Text += ' ' + dice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ": ";
             nudDiceResult.Maximum = dice * 6;
             nudDiceResult.Minimum = dice;
             MoveControls();

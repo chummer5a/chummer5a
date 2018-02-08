@@ -60,7 +60,7 @@ namespace Chummer.Backend.Skills
         /// <param name="objParent">Parent skill to which the specialization belongs</param>
         public static SkillSpecialization Load(XmlNode xmlNode, Skill objParent)
         {
-            if (!Guid.TryParse(xmlNode["guid"]?.InnerText, out Guid guiTemp))
+            if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
             return new SkillSpecialization(xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, objParent)

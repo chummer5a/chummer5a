@@ -29,7 +29,6 @@ namespace Chummer.UI.Attributes
         public delegate void ValueChangedHandler(object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
         private readonly CharacterAttrib _objAttribute;
-        private readonly object sender;
         private decimal _oldBase;
         private decimal _oldKarma;
         private readonly Character _objCharacter;
@@ -76,12 +75,7 @@ namespace Chummer.UI.Attributes
                 cmdBurnEdge.Visible = false;
             }
         }
-
-        public AttributeControl(object sender)
-        {
-            this.sender = sender;
-        }
-
+        
 		public void ResetBinding(CharacterAttrib attrib)
 		{
 			_dataSource.DataSource = attrib;

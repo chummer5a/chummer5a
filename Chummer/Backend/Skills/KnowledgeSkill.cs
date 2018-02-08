@@ -156,10 +156,7 @@ namespace Chummer.Backend.Skills
                                  xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
             if (xmlNewNode != null)
             {
-                if (xmlNewNode["id"] != null && Guid.TryParse(xmlNewNode["id"].InnerText, out Guid guidTemp))
-                    SkillId = guidTemp;
-                else
-                    SkillId = Guid.Empty;
+                SkillId = xmlNewNode.TryGetField("id", Guid.TryParse, out Guid guidTemp) ? guidTemp : Guid.Empty;
                 string strCategory = xmlNewNode["category"]?.InnerText;
                 if (!string.IsNullOrEmpty(strCategory))
                     Type = strCategory;
@@ -409,16 +406,16 @@ namespace Chummer.Backend.Skills
             string strTemp = Name;
             if (xmlNode.TryGetStringFieldQuickly("name", ref strTemp))
                 Name = strTemp;
-            if (xmlNode["id"] != null && Guid.TryParse(xmlNode["id"].InnerText, out Guid guiTemp))
+            if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
                 SkillId = guiTemp;
-            else if (xmlNode["suid"] != null && Guid.TryParse(xmlNode["suid"].InnerText, out Guid guiTemp2))
+            else if (xmlNode.TryGetField("suid", Guid.TryParse, out Guid guiTemp2))
                 SkillId = guiTemp2;
 
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
                 XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
-                if (objDataNode?["id"] != null && Guid.TryParse(objDataNode["id"].InnerText, out Guid guidTemp))
+                if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }
 

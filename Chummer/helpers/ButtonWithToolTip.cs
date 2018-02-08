@@ -42,7 +42,7 @@ namespace Chummer
 
         public ButtonWithToolTip() : this(null) { }
 
-        public ButtonWithToolTip(ToolTip objToolTip) : base()
+        public ButtonWithToolTip(ToolTip objToolTip)
         {
             _tt = objToolTip ?? new ToolTip
             {

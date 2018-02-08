@@ -40,7 +40,7 @@
       <category>Mundane</category>
       <type>M</type>
       <action>Simple</action>
-      <range>MAG x 50</range>
+      <range>MAG × 50</range>
       <duration>Always</duration>
       <source>SG</source>
       <page>198</page>
@@ -1511,7 +1511,7 @@
       <type>File</type>
       <action>Special</action>
       <range />
-      <duration>F x 10 Combat Turns</duration>
+      <duration>F × 10 Combat Turns</duration>
       <source>SR5</source>
       <page>257</page>
     </power>

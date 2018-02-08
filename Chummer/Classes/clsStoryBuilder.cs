@@ -79,7 +79,7 @@ namespace Chummer
             {
                 XmlNode objStoryModule = modules[i];
                 StringBuilder objModuleString = new StringBuilder();
-                Write(objModuleString, objStoryModule["story"].InnerText, 5, xdoc);
+                Write(objModuleString, objStoryModule["story"]?.InnerText ?? string.Empty, 5, xdoc);
                 lock (storyLock)
                     story[i] = objModuleString.ToString();
             });

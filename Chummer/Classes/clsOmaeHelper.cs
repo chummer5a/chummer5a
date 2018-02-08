@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -128,10 +128,9 @@ namespace Chummer
         /// <param name="objStream">MemoryStream to read.</param>
         public static XmlDocument XmlDocumentFromStream(MemoryStream objStream)
         {
-            string strXml = string.Empty;
             objStream.Position = 0;
             StreamReader objReader = new StreamReader(objStream);
-            strXml = objReader.ReadToEnd();
+            string strXml = objReader.ReadToEnd();
 
             XmlDocument objXmlDocument = new XmlDocument();
             objXmlDocument.LoadXml(strXml);
@@ -180,7 +179,7 @@ namespace Chummer
         /// </summary>
         public static byte[] Compress(byte[] raw)
         {
-            byte[] arrReturn = null;
+            byte[] arrReturn;
             MemoryStream memory = new MemoryStream();
             // gzip.Dispose() should call memory.Dispose()
             using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
@@ -204,7 +203,7 @@ namespace Chummer
                 byte[] buffer = new byte[size];
                 using (MemoryStream memory = new MemoryStream())
                 {
-                    int count = 0;
+                    int count;
                     do
                     {
                         count = stream.Read(buffer, 0, size);

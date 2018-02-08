@@ -130,13 +130,15 @@ namespace Chummer
         /// <param name="read"></param>
         /// <param name="onError"></param>
         /// <returns></returns>
-        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read,
-            T onError = default(T))
+        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default(T))
         {
-            string fieldValue = node[field]?.InnerText;
-            if (parser != null && fieldValue != null)
+            if (parser != null)
             {
-                return parser(fieldValue, out read);
+                string fieldValue = node?[field]?.InnerText;
+                if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    return parser(fieldValue, out read);
+                }
             }
 
             read = onError;

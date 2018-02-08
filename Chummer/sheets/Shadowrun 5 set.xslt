@@ -3158,7 +3158,7 @@
       <xsl:if test="extra != '' and $xtra = 'A'">
         (<xsl:value-of select="extra"/>)
       </xsl:if>
-      <xsl:if test="qty != 1"> x<xsl:value-of select="qty"/></xsl:if>
+      <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:choose>
         <xsl:when test="children/gear">
           <xsl:text> </xsl:text>
@@ -3213,8 +3213,7 @@
           <xsl:if test="extra != '' and $xtra = 'A'">
             (<xsl:value-of select="extra"/>)
           </xsl:if>
-          <xsl:if test="qty != 1">
-            x<xsl:value-of select="qty"/>
+          <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/>
           </xsl:if>
           <xsl:choose>
             <xsl:when test="children/gear">

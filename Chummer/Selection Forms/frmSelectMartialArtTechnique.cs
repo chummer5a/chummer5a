@@ -57,7 +57,7 @@ namespace Chummer
                 foreach (XmlNode xmlTechnique in xmlMartialArtNode.SelectNodes("techniques/technique"))
                 {
                     string strTechniqueName = xmlTechnique.InnerText;
-                    if (!_objMartialArt.Techniques.Any(x => x.Name == strTechniqueName))
+                    if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
                     {
                         setAllowedTechniques.Add(strTechniqueName);
                     }

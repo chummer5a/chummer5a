@@ -138,6 +138,7 @@ Application Changes:
 - Fixed an issue where getting an error in a static constructor that would display a warning would cause Chummer5 to silently crash in the background. Fixes #2453.
 - Fixed an issue where closing the character roster would continue to cause it to update in the background when a character is changed.
 - If the character roster encounters an issue when trying to load a character's file, it will now add an entry to the character roster indicating the error it encountered instead of silently not adding the character's file to the roster.
+- Fixed an issue where the possession method selection box could never be enabled when creating a new critter.
 
 Data Changes:
 
@@ -206,6 +207,11 @@ New Strings:
 - String_Latest_Version
 - Button_Export_SaveJsonAs
 - String_Unknown
+- String_D6
+- Message_Options_SettingsName
+- MessageTitle_Options_SettingsName
+- Message_Options_ValidationResults
+- MessageTitle_Options_ValidationResults
 
 Changed Strings:
 

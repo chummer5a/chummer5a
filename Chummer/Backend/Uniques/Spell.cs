@@ -68,6 +68,8 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
+        /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
+        /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             if (objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -208,6 +210,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print numbers.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("spell");

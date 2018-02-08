@@ -84,7 +84,7 @@ namespace Chummer
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
                 string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                if (string.IsNullOrEmpty(strGrade) && (!lstGrades.Any(x => x.Name == strGrade) ||
+                if (string.IsNullOrEmpty(strGrade) && (lstGrades.All(x => x.Name != strGrade) ||
                     _objCharacter.Improvements.Any(x => ((_objSource == Improvement.ImprovementSource.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                     && strGrade.Contains(x.ImprovedName) && x.Enabled)))
                     continue;

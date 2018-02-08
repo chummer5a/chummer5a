@@ -553,7 +553,7 @@
       </required>
       <bonus>
         <critterpowers>
-          <power select="Self-Only x 3">Movement</power>
+          <power select="Self-Only × 3">Movement</power>
         </critterpowers>  
       </bonus>
       <source>SR5</source>

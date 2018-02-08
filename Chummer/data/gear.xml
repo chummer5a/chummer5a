@@ -13501,7 +13501,7 @@
       <source>CF</source>
       <page>153</page>
       <avail>+4F</avail>
-      <cost>Rating x 200</cost>
+      <cost>Rating * 200</cost>
       <required>
         <geardetails>
           <name>Altskin</name>
@@ -15315,7 +15315,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 10000</cost>
+      <cost>(Rating) * 10000</cost>
     </gear>
     <gear>
       <id>b852dbe0-50fa-418f-b67a-69d144a7c586</id>
@@ -15325,7 +15325,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 100</cost>
+      <cost>(Rating) * 100</cost>
     </gear>
     <gear>
       <id>e427a6d4-2e52-4cc4-ac6d-74da8584bc30</id>
@@ -15335,7 +15335,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 5000</cost>
+      <cost>(Rating) * 5000</cost>
     </gear>
     <gear>
       <id>e155d77e-3430-45b6-bd10-a717597793e8</id>
@@ -15345,7 +15345,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>eea34a5e-1ca6-4e45-8e12-b6ccb24029dd</id>
@@ -15386,7 +15386,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 200</cost>
+      <cost>(Rating) * 200</cost>
     </gear>
     <gear>
       <id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
@@ -15396,7 +15396,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)+1</avail>
-      <cost>(Rating) x 300</cost>
+      <cost>(Rating) * 300</cost>
     </gear>
     <gear>
       <id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
@@ -15406,7 +15406,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)+2</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>26402dc8-911c-471f-a818-0d997662fd60</id>
@@ -15416,7 +15416,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1500</cost>
+      <cost>(Rating) * 1500</cost>
     </gear>
     <gear>
       <id>8098a4d0-2636-48d8-bc99-ccddf22ee736</id>
@@ -15426,7 +15426,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 100</cost>
+      <cost>(Rating) * 100</cost>
     </gear>
     <gear>
       <id>f6ec312f-a265-4a1c-b729-d18281c998f2</id>
@@ -15436,7 +15436,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)F</avail>
-      <cost>(Rating) x 10000</cost>
+      <cost>(Rating) * 10000</cost>
     </gear>
     <gear>
       <id>2f252f42-0cad-4c31-ab10-5147feaa159f</id>
@@ -15476,7 +15476,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 200</cost>
+      <cost>(Rating) * 200</cost>
     </gear>
     <gear>
       <id>e3b53939-a0c8-4c73-8d1e-0e19c9abd968</id>
@@ -15486,7 +15486,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>f89f5119-3a1f-45ec-9119-0c687294e5e2</id>
@@ -15496,7 +15496,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
@@ -15506,7 +15506,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 2000</cost>
+      <cost>(Rating) * 2000</cost>
     </gear>
     <gear>
       <id>89dfc727-9313-4830-8bd7-929d5b0d2771</id>
@@ -15516,7 +15516,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 3000</cost>
+      <cost>(Rating) * 3000</cost>
     </gear>
     <gear>
       <id>80588ca3-1fd2-4c44-9c7a-b6a8dfda02ec</id>
@@ -15526,7 +15526,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 500</cost>
+      <cost>(Rating) * 500</cost>
     </gear>
     <gear>
       <id>8bcb9d5b-51a1-4ab2-a7b8-c5afe69f3832</id>
@@ -15536,7 +15536,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 1500</cost>
+      <cost>(Rating) * 1500</cost>
     </gear>
     <gear>
       <id>c589f3ce-f181-4fc3-a344-455798913188</id>

@@ -32,7 +32,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode
     {
-        private Guid _guiID = Guid.Empty;
+        private Guid _guiID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
@@ -83,9 +83,11 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Weapon Accessory from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
+        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
         public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             if (objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName))
@@ -164,48 +166,50 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
 
             // Add any Gear that comes with the Weapon Accessory.
-            if (objXmlAccessory["gears"] != null && blnCreateChildren)
+            XmlNode xmlGearsNode = objXmlAccessory["gears"];
+            if (xmlGearsNode != null && blnCreateChildren)
             {
                 XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                foreach (XmlNode objXmlAccessoryGear in objXmlAccessory.SelectNodes("gears/usegear"))
-                {
-                    XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                    XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
-                    int intGearRating = 0;
-                    decimal decGearQty = 1;
-                    string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                    string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                    string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
-                    bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == bool.TrueString;
-                    bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                    bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == bool.FalseString ? false : blnCreateImprovements;
-                    if (objXmlAccessoryGear["rating"] != null)
-                        intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                    if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                        decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+                using (XmlNodeList xmlGearsList = xmlGearsNode.SelectNodes("usegear"))
+                    if (xmlGearsList != null)
+                        foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
+                        {
+                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName?.Attributes;
+                            int intGearRating = 0;
+                            decimal decGearQty = 1;
+                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                            string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
+                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                            bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString && blnCreateImprovements;
+                            if (objXmlAccessoryGear["rating"] != null)
+                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
+                            if (objXmlAccessoryGearNameAttributes?["qty"] != null)
+                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
-                    Gear objGear = new Gear(_objCharacter);
-                    
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName?.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
+                            Gear objGear = new Gear(_objCharacter);
 
-                    objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                            List<Weapon> lstWeapons = new List<Weapon>();
 
-                    objGear.Quantity = decGearQty;
-                    objGear.Cost = "0";
-                    objGear.MinRating = intGearRating;
-                    objGear.MaxRating = intGearRating;
-                    objGear.ParentID = InternalId;
-                    if (!string.IsNullOrEmpty(strChildForceSource))
-                        objGear.Source = strChildForceSource;
-                    if (!string.IsNullOrEmpty(strChildForcePage))
-                        objGear.Page = strChildForcePage;
-                    _lstGear.Add(objGear);
+                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
-                    // Change the Capacity of the child if necessary.
-                    if (objXmlAccessoryGear["capacity"] != null)
-                        objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
-                }
+                            objGear.Quantity = decGearQty;
+                            objGear.Cost = "0";
+                            objGear.MinRating = intGearRating;
+                            objGear.MaxRating = intGearRating;
+                            objGear.ParentID = InternalId;
+                            if (!string.IsNullOrEmpty(strChildForceSource))
+                                objGear.Source = strChildForceSource;
+                            if (!string.IsNullOrEmpty(strChildForcePage))
+                                objGear.Page = strChildForcePage;
+                            _lstGear.Add(objGear);
+
+                            // Change the Capacity of the child if necessary.
+                            if (objXmlAccessoryGear["capacity"] != null)
+                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                        }
             }
         }
 
@@ -272,7 +276,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether another node is being copied.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy || !Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
@@ -299,15 +303,17 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
 
-            if (objNode.InnerXml.Contains("<gears>"))
+            XmlNode xmlGearsNode = objNode["gears"];
+            if (xmlGearsNode != null)
             {
-                XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
-                foreach (XmlNode nodChild in nodChildren)
-                {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Load(nodChild, blnCopy);
-                    _lstGear.Add(objGear);
-                }
+                using (XmlNodeList nodChildren = xmlGearsNode.SelectNodes("gear"))
+                    if (nodChildren != null)
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            objGear.Load(nodChild, blnCopy);
+                            _lstGear.Add(objGear);
+                        }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -332,6 +338,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("accessory");

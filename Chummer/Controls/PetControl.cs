@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -220,18 +220,22 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
-            {
-                string strName = xmlMetatypeNode["name"].InnerText;
-                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
-                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
-                {
-                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
-                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
-                }
-            }
+            using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
+                if (xmlMetatypesList != null)
+                    foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)
+                    {
+                        string strName = xmlMetatypeNode["name"]?.InnerText;
+                        string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                        lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                        XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
+                        if (xmlMetavariantsList != null)
+                            foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
+                            {
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
+                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                            }
+                    }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);
 
@@ -248,7 +252,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves

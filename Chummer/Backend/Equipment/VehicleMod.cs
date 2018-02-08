@@ -101,13 +101,16 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlMod.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             // Add Subsytem information if applicable.
-            if (objXmlMod.InnerXml.Contains("subsystems"))
+            XmlNode xmlSubsystemsNode = objXmlMod?["subsystems"];
+            if (xmlSubsystemsNode != null)
             {
                 StringBuilder objSubsystem = new StringBuilder();
-                foreach (XmlNode objXmlSubsystem in objXmlMod.SelectNodes("subsystems/subsystem"))
-                {
-                    objSubsystem.Append(objXmlSubsystem.InnerText + ",");
-                }
+                using (XmlNodeList xmlSubsystemList = xmlSubsystemsNode.SelectNodes("subsystem"))
+                    if (xmlSubsystemList != null)
+                        foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
+                        {
+                            objSubsystem.Append(objXmlSubsystem.InnerText + ",");
+                        }
                 // Remove last ","
                 if (objSubsystem.Length > 0)
                     objSubsystem.Length -= 1;
@@ -115,7 +118,7 @@ namespace Chummer.Backend.Equipment
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 
-            _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+            _strCost = objXmlMod?["cost"]?.InnerText ?? string.Empty;
             // Check for a Variable Cost.
             if (_strCost.StartsWith("Variable("))
             {
@@ -154,8 +157,8 @@ namespace Chummer.Backend.Equipment
 
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
-            _nodBonus = objXmlMod["bonus"];
-            _nodWirelessBonus = objXmlMod["wirelessbonus"];
+            _nodBonus = objXmlMod?["bonus"];
+            _nodWirelessBonus = objXmlMod?["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
         }
 
@@ -268,18 +271,18 @@ namespace Chummer.Backend.Equipment
             }
 
             XmlNode xmlChildrenNode = objNode["weapons"];
-            if (xmlChildrenNode != null)
-            {
-                foreach (XmlNode nodChild in xmlChildrenNode.SelectNodes("weapon"))
-                {
-                    Weapon objWeapon = new Weapon(_objCharacter)
+            using (XmlNodeList xmlNodeList = xmlChildrenNode?.SelectNodes("weapon"))
+                if (xmlNodeList != null)
+                    foreach (XmlNode nodChild in xmlNodeList)
                     {
-                        ParentVehicle = Parent
-                    };
-                    objWeapon.Load(nodChild, blnCopy);
-                    _lstVehicleWeapons.Add(objWeapon);
-                }
-            }
+                        Weapon objWeapon = new Weapon(_objCharacter)
+                        {
+                            ParentVehicle = Parent
+                        };
+                        objWeapon.Load(nodChild, blnCopy);
+                        _lstVehicleWeapons.Add(objWeapon);
+                    }
+
             xmlChildrenNode = objNode["cyberwares"];
             using (XmlNodeList xmlNodeList = xmlChildrenNode?.SelectNodes("cyberware"))
                 if (xmlNodeList != null)
@@ -306,6 +309,8 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("mod");

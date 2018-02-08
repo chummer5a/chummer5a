@@ -159,9 +159,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public static Skill Load(Character objCharacter, XmlNode xmlSkillNode)
         {
-            if (xmlSkillNode?["suid"] == null) return null;
-
-            if (!Guid.TryParse(xmlSkillNode["suid"].InnerText, out Guid suid))
+            if (!xmlSkillNode.TryGetField("suid", Guid.TryParse, out Guid suid))
             {
                 return null;
             }
@@ -223,8 +221,7 @@ namespace Chummer.Backend.Skills
                     skill = knoSkill;
                 }
             }
-            XmlElement xmlGuidElement = xmlSkillNode["guid"];
-            if (xmlGuidElement != null && Guid.TryParse(xmlGuidElement.InnerText, out Guid guiTemp))
+            if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 skill.Id = guiTemp;
 
             xmlSkillNode.TryGetInt32FieldQuickly("karma", ref skill._intKarma);
@@ -394,11 +391,11 @@ namespace Chummer.Backend.Skills
             Default = xmlNode["default"]?.InnerText == bool.TrueString;
             Source = xmlNode["source"]?.InnerText;
             Page = xmlNode["page"]?.InnerText;
-            if (xmlNode["id"] != null && Guid.TryParse(xmlNode["id"].InnerText, out Guid guiTemp))
+            if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
                 SkillId = guiTemp;
-            else if (xmlNode["suid"] != null && Guid.TryParse(xmlNode["suid"].InnerText, out guiTemp))
+            else if (xmlNode.TryGetField("suid", Guid.TryParse, out guiTemp))
                 SkillId = guiTemp;
-            if (xmlNode["guid"] != null && Guid.TryParse(xmlNode["guid"].InnerText, out guiTemp))
+            if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 Id = guiTemp;
             
             XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
