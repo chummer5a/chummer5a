@@ -20,8 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Text;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -32,7 +32,8 @@ namespace Chummer
         private bool _blnLoading = true;
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _xmlBaseQualityDataNode;
+        private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
@@ -47,17 +48,25 @@ namespace Chummer
 
             MoveControls();
             // Load the Quality information.
-            _objXmlDocument = XmlManager.Load("qualities.xml");
+            _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
+
+            string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
+            if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
+            {
+                strMetatypeXPath += "\"]/metavariants/metavariant[name = \"" + _objCharacter.Metavariant;
+            }
+            strMetatypeXPath += "\"]/qualityrestriction";
+            _xmlMetatypeQualityRestrictionNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath) ??
+                                                 XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath);
         }
 
         private void frmSelectQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
+            foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.Select("categories/category"))
             {
-                string strInnerText = objXmlCategory.InnerText;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                string strInnerText = objXmlCategory.Value;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
 
             if (_lstCategory.Count > 0)
@@ -101,20 +110,20 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            XmlNode xmlQuality = null;
+            XPathNavigator xmlQuality = null;
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
             {
-                xmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQuality + "\"]");
+                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
             }
 
             if (xmlQuality != null)
             {
                 if (chkFree.Checked)
-                    lblBP.Text = "0";
+                    lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
                 else
                 {
-                    string strKarma = xmlQuality["karma"]?.InnerText ?? string.Empty;
+                    string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
                     if (strKarma.StartsWith("Variable("))
                     {
                         int intMin;
@@ -140,7 +149,7 @@ namespace Chummer
 
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
-                            string strDoubleCostCareer = xmlQuality["doublecareer"]?.InnerText;
+                            string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer == bool.TrueString)
                             {
                                 intBP *= 2;
@@ -150,8 +159,8 @@ namespace Chummer
                     }
                 }
 
-                string strSource = xmlQuality["source"].InnerText;
-                string strPage = xmlQuality["altpage"]?.InnerText ?? xmlQuality["page"].InnerText;
+                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
                 tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
@@ -317,7 +326,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             StringBuilder strFilter = new StringBuilder("(");
             strFilter.Append(_objCharacter.Options.BookXPath());
             strFilter.Append(')');
@@ -375,32 +384,21 @@ namespace Chummer
             {
                 strFilter.Append(strSearch);
             }
-
-            string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
-            if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-            {
-                strMetatypeXPath += "\"]/metavariants/metavariant[name = \"" + _objCharacter.Metavariant;
-            }
-            strMetatypeXPath += "\"]/qualityrestriction";
-            XmlNode objXmlMetatypeQualityRestriction = XmlManager.Load("metatypes.xml").SelectSingleNode(strMetatypeXPath) ?? XmlManager.Load("critters.xml").SelectSingleNode(strMetatypeXPath);
-
+            
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLower();
             List <ListItem> lstQuality = new List<ListItem>();
-            foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]"))
+            foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + strFilter + "]"))
             {
-                string strLoopName = objXmlQuality["name"]?.InnerText;
+                string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strLoopName))
                 {
-                    if (objXmlMetatypeQualityRestriction != null)
+                    if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = \"" + strLoopName + "\"]") == null)
                     {
-                        if (objXmlMetatypeQualityRestriction.SelectSingleNode(strCategoryLower + "/quality[. = \"" + strLoopName + "\"]") == null)
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, IgnoreQuality))
                     {
-                        lstQuality.Add(new ListItem(objXmlQuality["id"].InnerText, objXmlQuality["translate"]?.InnerText ?? strLoopName));
+                        lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
                     }
                 }
             }
@@ -429,9 +427,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedQuality))
                 return;
 
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQuality + "\"]");
+            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
             
-            if (!objNode.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
+            if (objNode == null || !objNode.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
                 return;
 
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
@@ -446,12 +444,10 @@ namespace Chummer
                 case "Changeling (Class III SURGE)":
                     _objCharacter.MetageneticLimit = 30;
                     break;
-                default:
-                    break;
             }
 
             _strSelectedQuality = strSelectedQuality;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
         }
 

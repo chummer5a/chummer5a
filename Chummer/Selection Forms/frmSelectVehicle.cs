@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -37,7 +37,7 @@ namespace Chummer
         private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _xmlBaseVehicleDataNode;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
@@ -55,8 +55,8 @@ namespace Chummer
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Vehicle information.
-            _objXmlDocument = XmlManager.Load("vehicles.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
+            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
         }
 
         private void frmSelectVehicle_Load(object sender, EventArgs e)
@@ -73,11 +73,10 @@ namespace Chummer
             }
 
             // Populate the Vehicle Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
+            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
             {
-                string strInnerText = objXmlCategory.InnerText;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                string strInnerText = objXmlCategory.Value;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
@@ -248,11 +247,11 @@ namespace Chummer
         private void UpdateSelectedVehicle()
         {
             string strSelectedId = lstVehicle.SelectedValue?.ToString();
-            XmlNode objXmlVehicle = null;
+            XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected Vehicle.
-                objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+                objXmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = \"" + strSelectedId + "\"]");
             }
             if (objXmlVehicle == null)
             {
@@ -276,16 +275,16 @@ namespace Chummer
             if (chkUsedVehicle.Checked)
                 decCostModifier -= (nudUsedVehicleDiscount.Value / 100.0m);
 
-            lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
-            lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
-            lblVehicleSpeed.Text = objXmlVehicle["speed"]?.InnerText;
-            lblVehiclePilot.Text = objXmlVehicle["pilot"]?.InnerText;
-            lblVehicleBody.Text = objXmlVehicle["body"]?.InnerText;
-            lblVehicleArmor.Text = objXmlVehicle["armor"]?.InnerText;
-            lblVehicleSeats.Text = objXmlVehicle["seats"]?.InnerText;
-            lblVehicleSensor.Text = objXmlVehicle["sensor"]?.InnerText;
+            lblVehicleHandling.Text = objXmlVehicle.SelectSingleNode("handling")?.Value;
+            lblVehicleAccel.Text = objXmlVehicle.SelectSingleNode("accel")?.Value;
+            lblVehicleSpeed.Text = objXmlVehicle.SelectSingleNode("speed")?.Value;
+            lblVehiclePilot.Text = objXmlVehicle.SelectSingleNode("pilot")?.Value;
+            lblVehicleBody.Text = objXmlVehicle.SelectSingleNode("body")?.Value;
+            lblVehicleArmor.Text = objXmlVehicle.SelectSingleNode("armor")?.Value;
+            lblVehicleSeats.Text = objXmlVehicle.SelectSingleNode("seats")?.Value;
+            lblVehicleSensor.Text = objXmlVehicle.SelectSingleNode("sensor")?.Value;
 
-            string strAvail = objXmlVehicle["avail"]?.InnerText ?? string.Empty;
+            string strAvail = objXmlVehicle.SelectSingleNode("avail")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 string strSuffix = string.Empty;
@@ -309,11 +308,11 @@ namespace Chummer
             }
             lblVehicleAvail.Text = strAvail;
 
-            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle["category"]?.InnerText);
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
-            string strCost = objXmlVehicle["cost"]?.InnerText ?? string.Empty;
-            if (strCost.StartsWith("Variable") == true)
+            string strCost = objXmlVehicle.SelectSingleNode("cost")?.Value ?? string.Empty;
+            if (strCost.StartsWith("Variable"))
             {
                 lblVehicleCost.Text = strCost.TrimStart("Variable(", true).TrimEnd(')');
                 lblTest.Text = string.Empty;
@@ -343,8 +342,8 @@ namespace Chummer
             }
 
 
-            string strSource = objXmlVehicle["source"].InnerText;
-            string strPage = objXmlVehicle["altpage"]?.InnerText ?? objXmlVehicle["page"].InnerText;
+            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
             tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
@@ -372,21 +371,21 @@ namespace Chummer
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
-            BuildVehicleList(_objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strFilter + ']'));
+            BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle[" + strFilter + ']'));
         }
 
-        private void BuildVehicleList(XmlNodeList objXmlVehicleList)
+        private void BuildVehicleList(XPathNodeIterator objXmlVehicleList)
         {
             List<ListItem> lstVehicles = new List<ListItem>();
-            foreach (XmlNode objXmlVehicle in objXmlVehicleList)
+            foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
                 if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
                 {
-                    string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? objXmlVehicle["name"]?.InnerText;
+                    string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
-                        string strCategory = objXmlVehicle["category"]?.InnerText;
+                        string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
                         if (!string.IsNullOrEmpty(strCategory))
                         {
                             ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
@@ -396,7 +395,7 @@ namespace Chummer
                             }
                         }
                     }
-                    lstVehicles.Add(new ListItem(objXmlVehicle["id"].InnerText, strDisplayname));
+                    lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayname));
                 }
             }
             lstVehicles.Sort(CompareListItems.CompareNames);
@@ -414,17 +413,17 @@ namespace Chummer
         private void AcceptForm()
         {
             string strSelectedId = lstVehicle.SelectedValue?.ToString();
-            XmlNode xmlVehicle = null;
+            XPathNavigator xmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                xmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+                xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = \"" + strSelectedId + "\"]");
             }
             if (xmlVehicle == null)
                 return;
 
             if (chkUsedVehicle.Checked)
             {
-                decimal decCost = Convert.ToDecimal(xmlVehicle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                decimal decCost = Convert.ToDecimal(xmlVehicle.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
                 decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
 
                 _blnUsedVehicle = true;
@@ -433,7 +432,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle["category"]?.InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
             _strSelectedVehicle = strSelectedId;
             _decMarkup = nudMarkup.Value;
 
