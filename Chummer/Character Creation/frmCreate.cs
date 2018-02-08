@@ -235,19 +235,7 @@ namespace Chummer
             tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Language);
             lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             nudNuyen.Value = CharacterObject.NuyenBP;
-            // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
-            if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
-                tabCharacterTabs.TabPages.Remove(tabMagician);
-            if (!CharacterObject.AdeptEnabled)
-                tabCharacterTabs.TabPages.Remove(tabAdept);
-            if (!CharacterObject.TechnomancerEnabled)
-                tabCharacterTabs.TabPages.Remove(tabTechnomancer);
-            if (!CharacterObject.AdvancedProgramsEnabled)
-                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
-            if (CharacterObject.CyberwareDisabled)
-                tabCharacterTabs.TabPages.Remove(tabCyberware);
-            if (!CharacterObject.CritterEnabled)
-                tabCharacterTabs.TabPages.Remove(tabCritter);
+            
             if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled)
             {
                 lblSpirits.Visible = false;
@@ -559,6 +547,20 @@ namespace Chummer
 
             tabSkillUc.RealLoad();
             tabPowerUc.RealLoad();
+
+            // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
+            if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
+                tabCharacterTabs.TabPages.Remove(tabMagician);
+            if (!CharacterObject.AdeptEnabled)
+                tabCharacterTabs.TabPages.Remove(tabAdept);
+            if (!CharacterObject.TechnomancerEnabled)
+                tabCharacterTabs.TabPages.Remove(tabTechnomancer);
+            if (!CharacterObject.AdvancedProgramsEnabled)
+                tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+            if (CharacterObject.CyberwareDisabled)
+                tabCharacterTabs.TabPages.Remove(tabCyberware);
+            if (!CharacterObject.CritterEnabled)
+                tabCharacterTabs.TabPages.Remove(tabCritter);
 
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
@@ -11366,12 +11368,7 @@ namespace Chummer
             // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
             if (CharacterObject.DEPEnabled)
                 CharacterObject.EDG.MetatypeMaximum = CharacterObject.DEP.Value;
-
-            if (CharacterObject.AdeptEnabled)
-            {
-                tabPowerUc.MissingDatabindingsWorkaround();
-            }
-
+            
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
@@ -11406,6 +11403,11 @@ namespace Chummer
                 Spirit objLoopSpirit = objSpiritControl.SpiritObject;
                 objLoopSpirit.Force = CharacterObject.MaxSpriteLevel;
                 objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
+            }
+
+            if (CharacterObject.AdeptEnabled)
+            {
+                tabPowerUc.MissingDatabindingsWorkaround();
             }
 
             // Update the Drain CharacterAttribute Value.

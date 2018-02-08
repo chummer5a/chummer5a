@@ -74,7 +74,10 @@ namespace Chummer.UI.Powers
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
             else
+            {
+                Utils.BreakIfDebug();
                 _objCharacter = new Character();
+            }
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
             Stopwatch parts = Stopwatch.StartNew();
@@ -249,7 +252,9 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', PowerPointsRemaining, PowerPointsTotal);
+            int intPowerPointsTotal = PowerPointsTotal;
+            decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
+            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
             lblDiscountLabel.Visible = _objCharacter.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
         }
 
@@ -273,14 +278,6 @@ namespace Chummer.UI.Powers
                 intMAG += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
                 return Math.Max(intMAG, 0);
-            }
-        }
-
-        private decimal PowerPointsRemaining
-        {
-            get
-            {
-                return PowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             }
         }
     }
