@@ -1671,6 +1671,7 @@ namespace Chummer
             bool blnMAGEnabled = CharacterObject.MAGEnabled;
             bool blnRESEnabled = CharacterObject.RESEnabled;
             bool blnDEPEnabled = CharacterObject.DEPEnabled;
+            decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
 
             _blnReapplyImprovements = true;
 
@@ -2145,12 +2146,23 @@ namespace Chummer
 
             // If the status of any Character Event flags has changed, manually trigger those events.
             if (blnMAGEnabled != CharacterObject.MAGEnabled)
+            {
+                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
                 objCharacter_MAGEnabledChanged(this, EventArgs.Empty);
+            }
+
             if (blnRESEnabled != CharacterObject.RESEnabled)
+            {
+                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
                 objCharacter_RESEnabledChanged(this, EventArgs.Empty);
+            }
+
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
+            {
+                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
                 objCharacter_DEPEnabledChanged(this, EventArgs.Empty);
-            
+            }
+
             IsCharacterUpdateRequested = true;
             // Immediately call character update because it re-applies essence loss improvements
             UpdateCharacterInfo();

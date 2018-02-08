@@ -140,6 +140,7 @@ Application Changes:
 - If the character roster encounters an issue when trying to load a character's file, it will now add an entry to the character roster indicating the error it encountered instead of silently not adding the character's file to the roster.
 - Fixed an issue where the possession method selection box could never be enabled when creating a new critter.
 - Changed quality adding logic so that variable karma costs are no longer supported, but adding a quality with a karma cost in career mode won't prematurely add the quality before the character confirms that they wish to buy the selected quality.
+- Fixed an issue where using Reapply Improvements on a character who has less Essence than their metatype maximum could potentially increase the amount of special attribute points they would lose to Essence loss.
 
 Data Changes:
 

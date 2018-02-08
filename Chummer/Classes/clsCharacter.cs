@@ -4891,16 +4891,23 @@ namespace Chummer
             get => _blnMAGEnabled;
             set
             {
-                bool blnOldValue = _blnMAGEnabled;
-                _blnMAGEnabled = value;
-                if (value && Created)
+                if (_blnMAGEnabled != value)
                 {
-                    ResetCachedEssence();
-                    _decEssenceAtSpecialStart = Essence;
-                }
-
-                if (blnOldValue != value)
+                    _blnMAGEnabled = value;
+                    if (value)
+                    {
+                        if (Created)
+                        {
+                            ResetCachedEssence();
+                            EssenceAtSpecialStart = Essence;
+                        }
+                        else
+                        {
+                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                        }
+                    }
                     MAGEnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -5037,18 +5044,28 @@ namespace Chummer
             get => _blnRESEnabled;
             set
             {
-                bool blnOldValue = _blnRESEnabled;
-                _blnRESEnabled = value;
-                TechnomancerStream = _blnRESEnabled ? "Default" : string.Empty;
-                ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
-                if (value && Created)
+                if (_blnRESEnabled != value)
                 {
-                    ResetCachedEssence();
-                    _decEssenceAtSpecialStart = Essence;
-                }
+                    _blnRESEnabled = value;
+                    if (value)
+                    {
+                        if (Created)
+                        {
+                            ResetCachedEssence();
+                            EssenceAtSpecialStart = Essence;
+                        }
+                        else
+                        {
+                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                        }
+                        TechnomancerStream = "Default";
+                    }
+                    else
+                        TechnomancerStream = string.Empty;
 
-                if (blnOldValue != value)
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
                     RESEnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -5060,16 +5077,23 @@ namespace Chummer
             get => _blnDEPEnabled;
             set
             {
-                bool blnOldValue = _blnDEPEnabled;
-                _blnDEPEnabled = value;
-                if (value && Created)
+                if (_blnDEPEnabled != value)
                 {
-                    ResetCachedEssence();
-                    _decEssenceAtSpecialStart = Essence;
-                }
-
-                if (blnOldValue != value)
+                    _blnDEPEnabled = value;
+                    if (value)
+                    {
+                        if (Created)
+                        {
+                            ResetCachedEssence();
+                            EssenceAtSpecialStart = Essence;
+                        }
+                        else
+                        {
+                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                        }
+                    }
                     DEPEnabledChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -5112,7 +5136,11 @@ namespace Chummer
         /// <summary>
         /// Essence the character had when the first gained access to MAG/RES.
         /// </summary>
-        public decimal EssenceAtSpecialStart => _decEssenceAtSpecialStart;
+        public decimal EssenceAtSpecialStart
+        {
+            get => _decEssenceAtSpecialStart;
+            set => _decEssenceAtSpecialStart = value;
+        }
 
         private decimal _decCachedEssence = decimal.MinValue;
         public void ResetCachedEssence()
