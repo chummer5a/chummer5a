@@ -969,8 +969,35 @@ namespace Chummer
             if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
                 return true;
             // Avail.
+
+            XmlNode objAvailNode = objXmlGear["avail"];
+            if (objAvailNode == null)
+            {
+                int intHighestAvailNode = 0;
+                foreach (XmlNode objLoopNode in objXmlGear.ChildNodes)
+                {
+                    if (objLoopNode.NodeType == XmlNodeType.Element && objLoopNode.Name.StartsWith("avail"))
+                    {
+                        string strLoopCostString = objLoopNode.Name.Substring(5);
+                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        {
+                            intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
+                        }
+                    }
+                }
+                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
+                for (int i = intRating; i <= intHighestAvailNode; ++i)
+                {
+                    XmlNode objLoopNode = objXmlGear["avail" + i.ToString(GlobalOptions.InvariantCultureInfo)];
+                    if (objLoopNode != null)
+                    {
+                        objAvailNode = objLoopNode;
+                        break;
+                    }
+                }
+            }
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvailExpr = objXmlGear["avail"]?.InnerText ?? string.Empty;
+            string strAvailExpr = objAvailNode?.InnerText ?? string.Empty;
             if (strAvailExpr.StartsWith("FixedValues("))
             {
                 string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
@@ -979,7 +1006,8 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strAvailExpr))
                 return true;
-            if (strAvailExpr[0] == '+')
+            char chrFirstAvailChar = strAvailExpr[0];
+            if (chrFirstAvailChar == '+' || chrFirstAvailChar == '-')
                 return true;
 
             strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
@@ -1016,38 +1044,147 @@ namespace Chummer
                 }
                 objCostNode = objXmlGear["cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo)];
             }
-            if (objCostNode != null)
+            string strCost = objCostNode?.InnerText;
+            if (!string.IsNullOrEmpty(strCost))
             {
+                if (strCost.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1,0)];
+                }
+                else if (strCost.StartsWith("Variable"))
+                {
+                    strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
                 try
                 {
-                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCostNode.InnerText.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
                 }
                 catch (XPathException)
                 {
-                    if (decimal.TryParse(objCostNode.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
+                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                     {
                         decCost = decTemp;
                     }
                 }
+            }
+            return decMaxNuyen >= decCost * decCostMultiplier;
+        }
 
-                if (objCostNode.InnerText.StartsWith("FixedValues("))
+        public static bool CheckAvailRestriction(XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
+        {
+            if (objXmlGear == null)
+                return false;
+            //TODO: Better handler for restricted gear
+            if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+                return true;
+            // Avail.
+
+            XPathNavigator objAvailNode = objXmlGear.SelectSingleNode("avail");
+            if (objAvailNode == null)
+            {
+                int intHighestAvailNode = 0;
+                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
-                    string[] strValues = objCostNode.InnerText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    decCost = Convert.ToDecimal(strValues[0].Trim('[', ']'), GlobalOptions.InvariantCultureInfo);
-                }
-                else if (objCostNode.InnerText.StartsWith("Variable"))
-                {
-                    decimal decMin;
-                    string strCost = objCostNode.InnerText.TrimStart("Variable(", true).TrimEnd(')');
-                    if (strCost.Contains('-'))
+                    if (objLoopNode.Name.StartsWith("avail"))
                     {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        string strLoopCostString = objLoopNode.Name.Substring(5);
+                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        {
+                            intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
+                        }
                     }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                }
+                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
+                for (int i = intRating; i <= intHighestAvailNode; ++i)
+                {
+                    XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("avail" + i.ToString(GlobalOptions.InvariantCultureInfo));
+                    if (objLoopNode != null)
+                    {
+                        objAvailNode = objLoopNode;
+                        break;
+                    }
+                }
+            }
 
-                    decCost = decMin;
+            // If avail contains "F" or "R", remove it from the string so we can use the expression.
+            string strAvailExpr = objAvailNode?.Value ?? string.Empty;
+            if (strAvailExpr.StartsWith("FixedValues("))
+            {
+                string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
+            }
+
+            if (string.IsNullOrEmpty(strAvailExpr))
+                return true;
+            char chrFirstAvailChar = strAvailExpr[0];
+            if (chrFirstAvailChar == '+' || chrFirstAvailChar == '-')
+                return true;
+
+            strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
+            int intAvail = intAvailModifier;
+            try
+            {
+                intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))));
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+            }
+            return intAvail <= objCharacter.MaximumAvailability;
+        }
+
+        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        {
+            // Cost.
+            decimal decCost = 0.0m;
+            XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
+            int intRating = 1;
+            if (objCostNode == null)
+            {
+                intRating = int.MaxValue;
+                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                {
+                    if (objLoopNode.Name.StartsWith("cost"))
+                    {
+                        string strLoopCostString = objLoopNode.Name.Substring(4);
+                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        {
+                            intRating = Math.Min(intRating, intTmp);
+                        }
+                    }
+                }
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            string strCost = objCostNode?.Value;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                if (strCost.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+                else if (strCost.StartsWith("Variable"))
+                {
+                    strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
+                try
+                {
+                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
+                }
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
+                    {
+                        decCost = decTemp;
+                    }
                 }
             }
             return decMaxNuyen >= decCost * decCostMultiplier;

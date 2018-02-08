@@ -33,6 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -3749,9 +3750,39 @@ namespace Chummer
             }
             return setBlackMarketMaps;
         }
-#endregion
 
-#region UI Methods
+        /// <summary>
+        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
+        /// </summary>
+        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlBaseChummerNode)
+        {
+            HashSet<string> setBlackMarketMaps = new HashSet<string>();
+            // Character has no Black Market discount qualities. Fail out early. 
+            if (BlackMarketDiscount && xmlBaseChummerNode != null)
+            {
+                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
+                HashSet<string> setNames = new HashSet<string>();
+                foreach (Improvement objImprovement in Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && objImprovement.Enabled)
+                        setNames.Add(objImprovement.ImprovedName);
+                }
+                
+                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+                foreach (XPathNavigator xmlCategoryNode in xmlBaseChummerNode.Select("categories/category"))
+                {
+                    string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
+                    if (!string.IsNullOrEmpty(strBlackMarketAttribute) && strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                    {
+                        setBlackMarketMaps.Add(xmlCategoryNode.Value);
+                    }
+                }
+            }
+            return setBlackMarketMaps;
+        }
+        #endregion
+
+        #region UI Methods
 
         /// <summary>
         /// Verify that the user wants to delete an item.

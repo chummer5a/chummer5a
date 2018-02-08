@@ -8180,10 +8180,9 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear)
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
                 {
                     //frmPickGear.ShowNegativeCapacityOnly = true;
-                    AllowedCategories = strCategories
                 };
 
                 frmPickGear.ShowDialog(this);
@@ -11666,11 +11665,10 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode());
                 string strCategories = string.Empty;
                 foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
-                frmPickGear.AllowedCategories = strCategories;
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode(), strCategories);
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11789,10 +11787,9 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear)
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
                 {
                     //frmPickGear.ShowNegativeCapacityOnly = true;
-                    AllowedCategories = strCategories
                 };
 
                 frmPickGear.ShowDialog(this);
@@ -11896,11 +11893,10 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode());
                 string strCategories = string.Empty;
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
-                frmPickGear.AllowedCategories = strCategories;
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12013,10 +12009,9 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear)
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
                 {
                     //frmPickGear.ShowNegativeCapacityOnly = true;
-                    AllowedCategories = strCategories
                 };
 
                 frmPickGear.ShowDialog(this);
@@ -12240,10 +12235,9 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear)
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
                 {
                     //frmPickGear.ShowNegativeCapacityOnly = true;
-                    AllowedCategories = strCategories
                 };
 
                 frmPickGear.ShowDialog(this);
@@ -12349,11 +12343,10 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode());
                 string strCategories = string.Empty;
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
-                frmPickGear.AllowedCategories = strCategories;
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -18074,19 +18067,21 @@ namespace Chummer
             XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.GetNode();
 
             Cursor = Cursors.WaitCursor;
-            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
+
+            string strCategories = string.Empty;
+            if (blnAmmoOnly)
+                strCategories = "Ammunition";
+            else if (!blnNullParent && objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
+            {
+                foreach (XmlNode objXmlCategory in objXmlGear?.SelectNodes("addoncategory"))
+                    strCategories += objXmlCategory.InnerText + ",";
+                // Remove the trailing comma.
+                strCategories = strCategories.Substring(0, strCategories.Length - 1);
+            }
+
+            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear, strCategories);
             if (!blnNullParent)
             {
-                if (objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
-                {
-                    string strCategories = string.Empty;
-                    foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
-                        strCategories += objXmlCategory.InnerText + ",";
-                    // Remove the trailing comma.
-                    strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                    frmPickGear.AllowedCategories = strCategories;
-                }
-
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                 if (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
                 {
@@ -18111,7 +18106,6 @@ namespace Chummer
 
             if (blnAmmoOnly)
             {
-                frmPickGear.AllowedCategories = "Ammunition";
                 frmPickGear.SelectedGear = objSelectedGear.SourceID;
             }
 
@@ -18294,7 +18288,18 @@ namespace Chummer
             XmlNode objXmlParent = objXmlGear ?? (objSelectedMod != null ? objSelectedMod.GetNode() : objSelectedArmor.GetNode());
 
             Cursor = Cursors.WaitCursor;
-            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlParent)
+
+            string strCategories = string.Empty;
+
+            if (nodParentNode != null && objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
+            {
+                foreach (XmlNode objXmlCategory in objXmlGear?.SelectNodes("addoncategory"))
+                    strCategories += objXmlCategory.InnerText + ",";
+                // Remove the trailing comma.
+                strCategories = strCategories.Substring(0, strCategories.Length - 1);
+            }
+
+            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlParent, strCategories)
             {
                 EnableStack = false,
                 ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
@@ -18302,17 +18307,6 @@ namespace Chummer
             };
             if (nodParentNode != null)
             {
-                if (objXmlParent?.InnerXml.Contains("<addoncategory>") == true)
-                {
-                    string strCategories = string.Empty;
-                    foreach (XmlNode objXmlCategory in objXmlParent.SelectNodes("addoncategory"))
-                        strCategories += objXmlCategory.InnerText + ",";
-                    // Remove the trailing comma.
-                    if (strCategories.Length > 0)
-                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                    frmPickGear.AllowedCategories = strCategories;
-                }
-
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                 if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/[")))
                 {
@@ -21541,7 +21535,7 @@ namespace Chummer
             CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
             CharacterObject.AttributeSection.ResetBindings();
 
-            MakeDirtyWithCharacterUpdate();
+            MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
         }
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)

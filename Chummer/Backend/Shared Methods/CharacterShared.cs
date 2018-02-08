@@ -6523,21 +6523,12 @@ namespace Chummer
                 }
             }
         }
-
-        public void MakeDirtyWithCharacterUpdate()
-        {
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
-        }
-
-        public void MakeDirtyWithCharacterUpdate(object sender)
-        {
-            MakeDirtyWithCharacterUpdate();
-        }
-
+        
         public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
         {
-            MakeDirtyWithCharacterUpdate();
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         public bool IsCharacterUpdateRequested { get; set; }
