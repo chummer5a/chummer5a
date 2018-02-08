@@ -7433,7 +7433,10 @@ namespace Chummer
 
                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
                 
-                VehicleMod objMod = new VehicleMod(CharacterObject);
+                VehicleMod objMod = new VehicleMod(CharacterObject)
+                {
+                    DiscountCost = frmPickVehicleMod.BlackMarketDiscount
+                };
                 objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, objVehicle, frmPickVehicleMod.Markup);
                 // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
                 if (objMod.Name.StartsWith("Armor"))

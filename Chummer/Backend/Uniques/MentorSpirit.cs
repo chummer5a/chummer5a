@@ -58,7 +58,7 @@ namespace Chummer
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="blnMentorMask">Whether the Mentor's Mask is enabled.</param>
-        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
         {
             _blnMentorMask = blnMentorMask;
             _eMentorType = eMentorType;
@@ -100,7 +100,7 @@ namespace Chummer
             {
                 _strExtra = strForceValue;
             }
-            _nodChoice1 = objXmlChoice1;
+            _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice1 + "\"]/bonus");
             if (_nodChoice1 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;
@@ -122,7 +122,7 @@ namespace Chummer
             {
                 _strExtra = strForceValueChoice1;
             }
-            _nodChoice2 = objXmlChoice2;
+            _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice2 + "\"]/bonus");
             if (_nodChoice2 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;

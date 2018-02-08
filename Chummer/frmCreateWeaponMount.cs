@@ -531,7 +531,10 @@ namespace Chummer
                 XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
-                VehicleMod objMod = new VehicleMod(_objCharacter);
+                VehicleMod objMod = new VehicleMod(_objCharacter)
+                {
+                    DiscountCost = frmPickVehicleMod.BlackMarketDiscount
+                };
                 objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
                 // Check the item's Cost and make sure the character can afford it.
                 decimal decOriginalCost = _objVehicle.TotalCost;

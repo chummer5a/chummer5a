@@ -3122,10 +3122,9 @@ namespace Chummer.Classes
             {
                 throw new AbortedException();
             }
-
-            XmlDocument doc = XmlManager.Load("mentors.xml");
-            XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
-            SelectedValue = mentorDoc["name"].InnerText;
+            
+            XmlNode xmlMentor = XmlManager.Load("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+            SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
             string strHoldValue = SelectedValue;
             if (_blnConcatSelectedValue)
@@ -3137,7 +3136,7 @@ namespace Chummer.Classes
             string strForce = ForcedValue;
             MentorSpirit objMentor = new MentorSpirit(_objCharacter);
             _objCharacter.MentorSpirits.Add(objMentor);
-            objMentor.Create(mentorDoc, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, string.Empty, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
+            objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
 
             ForcedValue = strForce;
             SelectedValue = strHoldValue;
@@ -3163,9 +3162,8 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
             
-            XmlDocument doc = XmlManager.Load("paragons.xml");
-            XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
-            SelectedValue = mentorDoc["name"].InnerText;
+            XmlNode xmlMentor = XmlManager.Load("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+            SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
             string strHoldValue = SelectedValue;
             if (_blnConcatSelectedValue)
@@ -3177,7 +3175,7 @@ namespace Chummer.Classes
             string strForce = ForcedValue;
             MentorSpirit objMentor = new MentorSpirit(_objCharacter);
             _objCharacter.MentorSpirits.Add(objMentor);
-            objMentor.Create(mentorDoc, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
+            objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
 
             ForcedValue = strForce;
             SelectedValue = strHoldValue;
