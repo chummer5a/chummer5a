@@ -384,7 +384,6 @@ namespace Chummer.UI.Skills
                 btnAttribute.Left = lblName.Right + 2;
                 cboSelectAttribute.Left = lblName.Right + 2;
                 lblCareerRating.Left = cboSelectAttribute.Right + 2;
-                lblCareerSpec.Left = lblCareerRating.Right + 2;
             }
             else
             {
