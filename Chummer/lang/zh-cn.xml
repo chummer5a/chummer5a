@@ -3526,10 +3526,6 @@
 			<text>启蒙/深潜</text>
 		</string>
 		<string>
-			<key>Label_SummaryManeuvers</key>
-			<text>武技</text>
-		</string>
-		<string>
 			<key>Tip_BuildSpecialAttributes</key>
 			<text>特殊属性为极限、魔法和共鸣。</text>
 		</string>
@@ -3544,10 +3540,6 @@
 		<string>
 			<key>Tip_BuildFoci</key>
 			<text>联结法器需要每强度{0}点业力。</text>
-		</string>
-		<string>
-			<key>Tip_BuildManeuvers</key>
-			<text>每个武技需要{0}点业力。</text>
 		</string>
 		<!-- Other Info Tab -->
 		<string>

@@ -141,6 +141,7 @@ Application Changes:
 - Fixed an issue where the possession method selection box could never be enabled when creating a new critter.
 - Changed quality adding logic so that variable karma costs are no longer supported, but adding a quality with a karma cost in career mode won't prematurely add the quality before the character confirms that they wish to buy the selected quality.
 - Fixed an issue where using Reapply Improvements on a character who has less Essence than their metatype maximum could potentially increase the amount of special attribute points they would lose to Essence loss.
+- Fixed an issue where karma expenditures on martial arts at chargen would not get displayed in the sidebar.
 
 Data Changes:
 
@@ -251,6 +252,8 @@ Removed Strings:
 - Title_SelectMartialArtAdvantage
 - Label_LifestyleMonths
 - String_No_Update_Found
+- Label_SummaryManeuvers
+- Tip_BuildManeuvers
 
 Build 197
 

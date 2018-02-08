@@ -3658,10 +3658,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Initiation ou submersion</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>Manoeuvres d'arts martiaux</text>
-    </string>
-    <string>
       <key>Tip_BuildSpecialAttributes</key>
       <text>Les attributs spéciaux sont Charisme, Magie et Résonance.</text>
     </string>
@@ -3676,10 +3672,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Tip_BuildFoci</key>
       <text>Chaque Focus lié coûte un nombre de Points de création égal à sa Puissance.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>Chaque manoeuvre d'art martial coûte 2 Points de création.</text>
     </string>
     <!-- Other Info Tab -->
     <string>

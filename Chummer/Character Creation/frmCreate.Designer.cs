@@ -89,7 +89,7 @@ namespace Chummer
             this.lblStreetCred = new System.Windows.Forms.Label();
             this.chkCharacterCreated = new System.Windows.Forms.CheckBox();
             this.lblBuildFoci = new System.Windows.Forms.Label();
-            this.lblBuildManeuvers = new System.Windows.Forms.Label();
+            this.lblBuildMartialArts = new System.Windows.Forms.Label();
             this.lblBuildNuyen = new System.Windows.Forms.Label();
             this.lblBuildEnemies = new System.Windows.Forms.Label();
             this.lblBuildComplexForms = new System.Windows.Forms.Label();
@@ -813,6 +813,7 @@ namespace Chummer
             this.lblPBuildSpecial = new System.Windows.Forms.Label();
             this.lblSummaryMetatype = new System.Windows.Forms.Label();
             this.lblInitiationBP = new System.Windows.Forms.Label();
+            this.lblMartialArtsBP = new System.Windows.Forms.Label();
             this.lblBuildPrepsBP = new System.Windows.Forms.Label();
             this.lblBuildInitiation = new System.Windows.Forms.Label();
             this.lblFociBP = new System.Windows.Forms.Label();
@@ -1272,16 +1273,15 @@ namespace Chummer
             this.lblBuildFoci.Text = "Foci";
             this.tipTooltip.SetToolTip(this.lblBuildFoci, "Each bonded Focus costs a number of BP equal to its Force.");
             // 
-            // lblBuildManeuvers
+            // lblBuildMartialArts
             // 
-            this.lblBuildManeuvers.AutoSize = true;
-            this.lblBuildManeuvers.Location = new System.Drawing.Point(3, 380);
-            this.lblBuildManeuvers.Name = "lblBuildManeuvers";
-            this.lblBuildManeuvers.Size = new System.Drawing.Size(85, 13);
-            this.lblBuildManeuvers.TabIndex = 79;
-            this.lblBuildManeuvers.Tag = "Label_SummaryManeuvers";
-            this.lblBuildManeuvers.Text = "M.A. Maneuvers";
-            this.tipTooltip.SetToolTip(this.lblBuildManeuvers, "Each Martial Art Maneuver costs 2 BP.");
+            this.lblBuildMartialArts.AutoSize = true;
+            this.lblBuildMartialArts.Location = new System.Drawing.Point(3, 380);
+            this.lblBuildMartialArts.Name = "lblBuildMartialArts";
+            this.lblBuildMartialArts.Size = new System.Drawing.Size(85, 13);
+            this.lblBuildMartialArts.TabIndex = 79;
+            this.lblBuildMartialArts.Tag = "Tab_MartialArts";
+            this.lblBuildMartialArts.Text = "Martial Arts";
             // 
             // lblBuildNuyen
             // 
@@ -9273,7 +9273,8 @@ namespace Chummer
             this.tlpKarmaSummary.Controls.Add(this.lblPBuildSpecial, 1, 2);
             this.tlpKarmaSummary.Controls.Add(this.lblSummaryMetatype, 0, 0);
             this.tlpKarmaSummary.Controls.Add(this.lblInitiationBP, 1, 18);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildManeuvers, 0, 19);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildMartialArts, 0, 19);
+            this.tlpKarmaSummary.Controls.Add(this.lblMartialArtsBP, 1, 19);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBP, 1, 12);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildInitiation, 0, 18);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBPLabel, 0, 12);
@@ -9399,6 +9400,15 @@ namespace Chummer
             this.lblInitiationBP.Size = new System.Drawing.Size(30, 13);
             this.lblInitiationBP.TabIndex = 82;
             this.lblInitiationBP.Text = "0 BP";
+            // 
+            // lblMartialArtsBP
+            // 
+            this.lblMartialArtsBP.AutoSize = true;
+            this.lblMartialArtsBP.Location = new System.Drawing.Point(115, 380);
+            this.lblMartialArtsBP.Name = "lblMartialArtsBP";
+            this.lblMartialArtsBP.Size = new System.Drawing.Size(30, 13);
+            this.lblMartialArtsBP.TabIndex = 82;
+            this.lblMartialArtsBP.Text = "0 BP";
             // 
             // lblBuildPrepsBP
             // 
@@ -10628,7 +10638,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripStatusLabel tssNuyenRemaining;
         private System.Windows.Forms.Label lblGearDeviceRating;
         private System.Windows.Forms.Label lblGearDeviceRatingLabel;
-        private System.Windows.Forms.Label lblBuildManeuvers;
+        private System.Windows.Forms.Label lblBuildMartialArts;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAddModification;
         private System.Windows.Forms.Label lblBuildFoci;
         private System.Windows.Forms.Label lblFociBP;
@@ -10660,6 +10670,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabInitiation;
         private System.Windows.Forms.Button cmdAddMetamagic;
         private System.Windows.Forms.Label lblInitiationBP;
+        private System.Windows.Forms.Label lblMartialArtsBP;
         private System.Windows.Forms.Label lblBuildInitiation;
         private System.Windows.Forms.Label lblWeaponSlots;
         private System.Windows.Forms.Label lblWeaponSlotsLabel;

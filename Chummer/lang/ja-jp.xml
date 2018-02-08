@@ -3675,10 +3675,6 @@
       <text>イニシエーションﾝ</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>格闘動作</text>
-    </string>
-    <string>
       <key>Tip_BuildSpecialAttributes</key>
       <text>特殊能力値は【エッジ】, 【魔力】, 【共振力】です.</text>
     </string>
@@ -3693,10 +3689,6 @@
     <string>
       <key>Tip_BuildFoci</key>
       <text>収束具の結合には, 【フォース】1点につき {0} BP必要です.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>格闘動作は1つにつき {0} BP必要です.</text>
     </string>
     <!-- Other Info Tab -->
     <string>

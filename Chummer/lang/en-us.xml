@@ -4085,7 +4085,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_SelectedMartialArts</key>
-      <text>Selected Martial Arts</text>
+      <text>Martial Arts</text>
     </string>
     <string>
       <key>Node_SelectedManeuvers</key>
@@ -4095,7 +4095,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- Region Spells Tab -->
     <string>
       <key>Label_SelectedSpells</key>
-      <text>Selected Spells</text>
+      <text>Spells</text>
     </string>
     <string>
       <key>Label_Spirits</key>
@@ -5098,10 +5098,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Initiation/Submersion</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>M.A. Maneuvers</text>
-    </string>
-    <string>
       <key>Label_SummaryAINormalPrograms</key>
       <text>Normal Programs</text>
     </string>
@@ -5200,10 +5196,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Tip_BuildFoci</key>
       <text>Each bonded Focus costs {0} Karma per point of Force.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>Each Martial Art Maneuver costs {0} Karma.</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->

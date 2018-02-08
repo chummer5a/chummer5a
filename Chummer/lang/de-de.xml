@@ -3168,10 +3168,6 @@
 			<text>Initiation/Wandlung</text>
 		</string>
 		<string>
-			<key>Label_SummaryManeuvers</key>
-			<text>Kampfkunstmanöver</text>
-		</string>
-		<string>
 			<key>Tip_BuildSpecialAttributes</key>
 			<text>Spezialattribute sind EDG, MAG und RES.</text>
 		</string>
@@ -3186,10 +3182,6 @@
 		<string>
 			<key>Tip_BuildFoci</key>
 			<text>Jeder gebundene Fokus kostet GP in Höhe seiner Kraftstufe.</text>
-		</string>
-		<string>
-			<key>Tip_BuildManeuvers</key>
-			<text>Jedes Kampfkunstmanöver kostet 2 BP.</text>
 		</string>
 		<string>
 			<key>Label_OtherPhysicalCM</key>

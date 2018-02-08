@@ -10602,13 +10602,38 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Include the BP used by Martial Arts.
             int intMartialArtsPoints = 0;
+            StringBuilder strMartialArtsBPToolTip = new StringBuilder();
             foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
             {
                 if (!objMartialArt.IsQuality)
                 {
-                    intMartialArtsPoints += objMartialArt.Rating * objMartialArt.Cost * CharacterObjectOptions.KarmaQuality;
-                    // Add in the Techniques
-                    intMartialArtsPoints += (Math.Max(objMartialArt.Techniques.Count - 1, 0) * 5) * CharacterObjectOptions.KarmaQuality;
+                    int intLoopCost = objMartialArt.Rating * objMartialArt.Cost * CharacterObjectOptions.KarmaQuality;
+                    intMartialArtsPoints += intLoopCost;
+
+                    if (blnDoUIUpdate)
+                    {
+                        if (strMartialArtsBPToolTip.Length > 0)
+                            strMartialArtsBPToolTip.Append("\n + ");
+                        strMartialArtsBPToolTip.Append(objMartialArt.DisplayName(GlobalOptions.Language) + " (" + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+
+                        bool blnIsFirst = true;
+                        foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                        {
+                            if (blnIsFirst)
+                            {
+                                blnIsFirst = false;
+                                continue;
+                            }
+
+                            intLoopCost = 5 * CharacterObjectOptions.KarmaQuality;
+                            intMartialArtsPoints += intLoopCost;
+
+                            strMartialArtsBPToolTip.Append("\n + " + objTechnique.DisplayName(GlobalOptions.Language) + " (" + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+                        }
+                    }
+                    else
+                        // Add in the Techniques
+                        intMartialArtsPoints += (Math.Max(objMartialArt.Techniques.Count - 1, 0) * 5) * CharacterObjectOptions.KarmaQuality;
                 }
             }
             intKarmaPointsRemain -= intMartialArtsPoints;
@@ -11042,6 +11067,9 @@ namespace Chummer
                 lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
 
                 tabSkillUc.MissingDatabindingsWorkaround();
+                
+                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + ' ' + strPoints;
+                tipTooltip.SetToolTip(lblMartialArtsBP, strMartialArtsBPToolTip.ToString());
 
                 lblNuyenBP.Text = nudNuyen.Value.ToString(GlobalOptions.CultureInfo) + ' ' + strPoints;
 
@@ -15880,7 +15908,6 @@ namespace Chummer
             tipTooltip.SetToolTip(lblBuildSpirits, LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSpirit.ToString()));
             tipTooltip.SetToolTip(lblBuildSprites, LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSpirit.ToString()));
             tipTooltip.SetToolTip(lblBuildComplexForms, LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPComplexForm.ToString()));
-            tipTooltip.SetToolTip(lblBuildManeuvers, LanguageManager.GetString("Tip_BuildManeuvers", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPMartialArtManeuver.ToString()));
             // Other Info Tab.
             tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.GetString("Tip_OtherCMPhysical", GlobalOptions.Language));
             tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.GetString("Tip_OtherCMStun", GlobalOptions.Language));

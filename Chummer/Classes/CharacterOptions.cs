@@ -212,6 +212,10 @@ namespace Chummer
         public CharacterOptions(Character character)
         {
             _character = character;
+
+            if (Utils.IsRunningInVisualStudio)
+                return;
+
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
