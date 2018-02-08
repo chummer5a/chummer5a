@@ -175,45 +175,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
             if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
-            // Check for a Variable Cost.
-            XmlNode objKarmaNode = objXmlQuality["karma"];
-            if (objKarmaNode != null)
-            {
-                string strKarmaNodeTest = objKarmaNode.InnerText;
-                if (strKarmaNodeTest.StartsWith("Variable("))
-                {
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    string strCost = strKarmaNodeTest.TrimStart("Variable(", true).TrimEnd(')');
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                    if (decMin != 0 || decMax != decimal.MaxValue)
-                    {
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(0))
-                        {
-                            if (decMax > 1000000)
-                                decMax = 1000000;
-                            frmPickNumber.Minimum = decMin;
-                            frmPickNumber.Maximum = decMax;
-                            frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
-                            frmPickNumber.AllowCancel = false;
-                            frmPickNumber.ShowDialog();
-                            _intBP = decimal.ToInt32(frmPickNumber.SelectedValue);
-                        }
-                    }
-                }
-                else
-                {
-                    _intBP = Convert.ToInt32(strKarmaNodeTest);
-                }
-            }
+            objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
             _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
             _eQualitySource = objQualitySource;
             objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);

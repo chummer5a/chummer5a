@@ -4894,8 +4894,12 @@ namespace Chummer
                 bool blnOldValue = _blnMAGEnabled;
                 _blnMAGEnabled = value;
                 if (value && Created)
+                {
+                    ResetCachedEssence();
                     _decEssenceAtSpecialStart = Essence;
-                    if (blnOldValue != value)
+                }
+
+                if (blnOldValue != value)
                     MAGEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -5038,8 +5042,12 @@ namespace Chummer
                 TechnomancerStream = _blnRESEnabled ? "Default" : string.Empty;
                 ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
                 if (value && Created)
+                {
+                    ResetCachedEssence();
                     _decEssenceAtSpecialStart = Essence;
-                    if (blnOldValue != value)
+                }
+
+                if (blnOldValue != value)
                     RESEnabledChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -5055,7 +5063,11 @@ namespace Chummer
                 bool blnOldValue = _blnDEPEnabled;
                 _blnDEPEnabled = value;
                 if (value && Created)
+                {
+                    ResetCachedEssence();
                     _decEssenceAtSpecialStart = Essence;
+                }
+
                 if (blnOldValue != value)
                     DEPEnabledChanged?.Invoke(this, EventArgs.Empty);
             }

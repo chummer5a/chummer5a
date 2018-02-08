@@ -2988,8 +2988,63 @@
     </quality>
     <quality>
       <id>c15df7f5-2108-4be2-9500-86045221be0a</id>
-      <name>Rank</name>
-      <karma>Variable(5-30)</karma>
+      <name>Rank (Neither Military nor Law Enforcement) I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>53bd1804-1029-4ebe-9464-a82d91be5dd9</id>
+      <name>Rank (Neither Military nor Law Enforcement) II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>fe414583-aa74-4a50-8132-27887ec341d6</id>
+      <name>Rank (Neither Military nor Law Enforcement) III</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>49a9c3a8-538a-4d4e-a4e8-8bf837687d25</id>
+      <name>Rank (Military or Law Enforcement) I</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>6ccdc691-30cb-40f0-a283-6321703b018f</id>
+      <name>Rank (Military or Law Enforcement) II</name>
+      <karma>25</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>aa9fbb62-1c5c-4c4f-acfd-34880cf61600</id>
+      <name>Rank (Military or Law Enforcement) III</name>
+      <karma>30</karma>
       <category>Positive</category>
       <bonus>
         <selecttext />

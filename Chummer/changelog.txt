@@ -139,6 +139,7 @@ Application Changes:
 - Fixed an issue where closing the character roster would continue to cause it to update in the background when a character is changed.
 - If the character roster encounters an issue when trying to load a character's file, it will now add an entry to the character roster indicating the error it encountered instead of silently not adding the character's file to the roster.
 - Fixed an issue where the possession method selection box could never be enabled when creating a new critter.
+- Changed quality adding logic so that variable karma costs are no longer supported, but adding a quality with a karma cost in career mode won't prematurely add the quality before the character confirms that they wish to buy the selected quality.
 
 Data Changes:
 
@@ -159,6 +160,7 @@ Data Changes:
 - Added a customdata entry for German Commlink App prices.
 - Fixed incorrect priority values for the Falconine and Canine shifter metatypes at Priority C.
 - Fixed incorrect available mod slots for most of the drones from Rigger 5.
+- Entries for the Rank quality have been split up based on karma cost.
 
 New Strings:
 

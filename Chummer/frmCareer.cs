@@ -5751,8 +5751,69 @@ namespace Chummer
                     break;
                 }
                 blnAddAgain = frmPickQuality.AddAgain;
+                bool blnFreeCost = frmPickQuality.FreeCost;
 
                 XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPickQuality.SelectedQuality + "\"]");
+                frmPickQuality.Dispose();
+                if (objXmlQuality == null)
+                    continue;
+
+                QualityType eQualityType = QualityType.Positive;
+                string strTemp = string.Empty;
+                if (objXmlQuality.TryGetStringFieldQuickly("category", ref strTemp))
+                    eQualityType = Quality.ConvertToQualityType(strTemp);
+
+                // Positive Metagenetic Qualities are free if you're a Changeling.
+                if (CharacterObject.MetageneticLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
+                    blnFreeCost = true;
+                // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" && CharacterObject.Qualities.Any(x => x.Name == "The Beast's Way" || x.Name == "The Spiritual Way"))
+                    blnFreeCost = true;
+
+                int intQualityBP = 0;
+                if (!blnFreeCost)
+                {
+                    objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
+                    XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
+                    if (xmlDiscountNode != null && xmlDiscountNode.RequirementsMet(CharacterObject))
+                    {
+                        int intTemp = 0;
+                        xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                        switch (eQualityType)
+                        {
+                            case QualityType.Positive:
+                                intQualityBP += intTemp;
+                                break;
+                            case QualityType.Negative:
+                                intQualityBP -= intTemp;
+                                break;
+                        }
+                    }
+                }
+
+                int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
+                if (!CharacterObjectOptions.DontDoubleQualityPurchases && objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
+                    intKarmaCost *= 2;
+
+                // Make sure the character has enough Karma to pay for the Quality.
+                if (eQualityType == QualityType.Positive)
+                {
+                    if (!blnFreeCost)
+                    {
+                        if (intKarmaCost > CharacterObject.Karma)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            continue;
+                        }
+
+                        string strDisplayName = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                        if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", strDisplayName)
+                            .Replace("{1}", intKarmaCost.ToString())))
+                            continue;
+                    }
+                }
+                else if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_AddNegativeQuality", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    continue;
 
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objQuality = new Quality(CharacterObject);
@@ -5762,34 +5823,13 @@ namespace Chummer
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                    frmPickQuality.Dispose();
                     continue;
                 }
-
-                if (frmPickQuality.FreeCost)
-                    objQuality.BP = 0;
-
-                bool blnAddItem = true;
-                int intKarmaCost = objQuality.BP * CharacterObjectOptions.KarmaQuality;
-                if (!CharacterObjectOptions.DontDoubleQualityPurchases && objQuality.DoubleCost)
-                    intKarmaCost *= 2;
-
+                
                 // Make sure the character has enough Karma to pay for the Quality.
                 if (objQuality.Type == QualityType.Positive)
                 {
-                    if (intKarmaCost > CharacterObject.Karma)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        blnAddItem = false;
-                    }
-
-                    if (blnAddItem && !frmPickQuality.FreeCost && objQuality.ContributeToBP)
-                    {
-                        if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", intKarmaCost.ToString())))
-                            blnAddItem = false;
-                    }
-
-                    if (blnAddItem && objQuality.ContributeToBP)
+                    if (objQuality.ContributeToBP)
                     {
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -5804,42 +5844,27 @@ namespace Chummer
                 }
                 else
                 {
-                    if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_AddNegativeQuality", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                        blnAddItem = false;
+                    // Create a Karma Expense for the Negative Quality.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
-                    if (blnAddItem)
-                    {
-                        // Create a Karma Expense for the Negative Quality.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                    objExpense.Undo = objUndo;
                 }
 
-                if (blnAddItem)
+                CharacterObject.Qualities.Add(objQuality);
+
+                // Add any created Weapons to the character.
+                foreach (Weapon objWeapon in lstWeapons)
                 {
-                    CharacterObject.Qualities.Add(objQuality);
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
+                    CharacterObject.Weapons.Add(objWeapon);
                 }
-                else
-                {
-                    // Remove the Improvements created by the Create method.
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                }
-                frmPickQuality.Dispose();
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
             while (blnAddAgain);
         }
@@ -6210,13 +6235,76 @@ namespace Chummer
             if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
             {
                 int intCurrentLevels = objSelectedQuality.Levels;
-
-                bool blnRequireUpdate = false;
+                
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
+                    {
+                        UpdateQualityLevelValue(objSelectedQuality);
+                        break;
+                    }
+
+                    if (objXmlSelectedQuality == null)
+                    {
+                        UpdateQualityLevelValue(objSelectedQuality);
+                        break;
+                    }
+
+                    bool blnFreeCost = objSelectedQuality.BP == 0 || !objSelectedQuality.ContributeToBP;
+
+                    QualityType eQualityType = objSelectedQuality.Type;
+
+                    int intQualityBP = 0;
+                    if (!blnFreeCost)
+                    {
+                        objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
+                        XmlNode xmlDiscountNode = objXmlSelectedQuality["costdiscount"];
+                        if (xmlDiscountNode != null && xmlDiscountNode.RequirementsMet(CharacterObject))
+                        {
+                            int intTemp = 0;
+                            xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                            switch (eQualityType)
+                            {
+                                case QualityType.Positive:
+                                    intQualityBP += intTemp;
+                                    break;
+                                case QualityType.Negative:
+                                    intQualityBP -= intTemp;
+                                    break;
+                            }
+                        }
+                    }
+
+                    int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
+                    if (!CharacterObjectOptions.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                        intKarmaCost *= 2;
+
+                    // Make sure the character has enough Karma to pay for the Quality.
+                    if (eQualityType == QualityType.Positive)
+                    {
+                        if (!blnFreeCost)
+                        {
+                            if (intKarmaCost > CharacterObject.Karma)
+                            {
+                                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                {
+                                    UpdateQualityLevelValue(objSelectedQuality);
+                                    break;
+                                }
+                            }
+
+                            string strDisplayName = objXmlSelectedQuality["translate"]?.InnerText ?? objXmlSelectedQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                            if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", strDisplayName)
+                                .Replace("{1}", intKarmaCost.ToString())))
+                            {
+                                UpdateQualityLevelValue(objSelectedQuality);
+                                break;
+                            }
+                        }
+                    }
+                    else if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_AddNegativeQuality", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
@@ -6236,68 +6324,44 @@ namespace Chummer
 
                     objQuality.BP = objSelectedQuality.BP;
                     objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
-
-                    bool blnAddItem = false;
-                    int intKarmaCost = objQuality.BP * CharacterObjectOptions.KarmaQuality;
-                    if (!CharacterObjectOptions.DontDoubleQualityPurchases && objQuality.DoubleCost)
-                        intKarmaCost *= 2;
-
+                    
                     // Make sure the character has enough Karma to pay for the Quality.
                     if (objQuality.Type == QualityType.Positive)
                     {
-                        if (intKarmaCost > CharacterObject.Karma)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else if (objQuality.ContributeToBP && (objQuality.BP == 0 || CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", intKarmaCost.ToString()))))
-                        {
-                            // Create the Karma expense.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= intKarmaCost;
+                        // Create the Karma expense.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Karma -= intKarmaCost;
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                            objExpense.Undo = objUndo;
-                            blnAddItem = true;
-                        }
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                        objExpense.Undo = objUndo;
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_AddNegativeQuality", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            // Create a Karma Expense for the Negative Quality.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        // Create a Karma Expense for the Negative Quality.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                            objExpense.Undo = objUndo;
-                            blnAddItem = true;
-                        }
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                        objExpense.Undo = objUndo;
                     }
+                    
+                    // Add the Quality to the appropriate parent node.
+                    CharacterObject.Qualities.Add(objQuality);
 
-                    if (blnAddItem)
+                    // Add any created Weapons to the character.
+                    foreach (Weapon objWeapon in lstWeapons)
                     {
-                        blnRequireUpdate = true;
-                        // Add the Quality to the appropriate parent node.
-                        CharacterObject.Qualities.Add(objQuality);
+                        CharacterObject.Weapons.Add(objWeapon);
+                    }
 
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            CharacterObject.Weapons.Add(objWeapon);
-                        }
-                    }
-                    else
-                    {
-                        // Remove the Improvements created by the Create method.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        UpdateQualityLevelValue(objSelectedQuality);
-                        break;
-                    }
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
                 // Removing a level
                 for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
@@ -6305,11 +6369,15 @@ namespace Chummer
                     Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.QualityId == objSelectedQuality.QualityId && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
                     if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
                     {
-                        blnRequireUpdate = true;
+                        IsCharacterUpdateRequested = true;
+
+                        IsDirty = true;
                     }
                     else if (RemoveQuality(objSelectedQuality, false, false))
                     {
-                        blnRequireUpdate = true;
+                        IsCharacterUpdateRequested = true;
+
+                        IsDirty = true;
                         break;
                     }
                     else
@@ -6317,13 +6385,6 @@ namespace Chummer
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
-                }
-
-                if (blnRequireUpdate)
-                {
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
         }
@@ -16028,11 +16089,14 @@ namespace Chummer
 
             // Reduce a character's MAG and RES from Essence Loss.
             int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
-            int intReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
-            decimal decESSMag = CharacterObject.Essence + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
+            decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
+            int intMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
+            int intMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESS));
+            decimal decESSMag = CharacterObject.EssenceAtSpecialStart + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
             if (!CharacterObjectOptions.DontRoundEssenceInternally)
                 decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
-            int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
+            int intMagMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
+            int intMagMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESSMag));
             
             // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
             int intExtraRESBurn = Math.Max(0, Math.Max(CharacterObject.RES.Base + CharacterObject.RES.FreeBase + CharacterObject.RES.RawMinimum + CharacterObject.RES.AttributeValueModifiers, CharacterObject.RES.TotalMinimum) + CharacterObject.RES.Karma - CharacterObject.RES.TotalMaximum);
@@ -16069,24 +16133,24 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
             
             // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
-            int intRESMaximumReduction = intReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
-            int intDEPMaximumReduction = intReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
-            int intMAGMaximumReduction = intMagReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
-            int intMAGAdeptMaximumReduction = intMagReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
+            int intRESMaximumReduction = intMaxReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
+            int intDEPMaximumReduction = intMaxReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
+            int intMAGMaximumReduction = intMagMaxReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
+            int intMAGAdeptMaximumReduction = intMagMaxReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
 
             // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-            if (intReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
+            if (intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
             {
                 if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
                 {
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
                 }
                 else
                 {
-                    int intRESMinimumReduction = intRESMaximumReduction;
-                    int intDEPMinimumReduction = intDEPMaximumReduction;
+                    int intRESMinimumReduction = intMinReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
+                    int intDEPMinimumReduction = intMinReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
                     if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
                     {
                         intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
@@ -16107,20 +16171,20 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intDEPMaximumReduction);
                 }
             }
-            if (intMagReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+            if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
             {
                 if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
                 {
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
                     if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
                 }
                 else
                 {
-                    int intMAGMinimumReduction = intMAGMaximumReduction;
-                    int intMAGAdeptMinimumReduction = intMAGAdeptMaximumReduction;
+                    int intMAGMinimumReduction = intMagMinReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
+                    int intMAGAdeptMinimumReduction = intMagMinReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
                     if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
                     {
                         intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
@@ -16162,7 +16226,7 @@ namespace Chummer
                 if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                 {
                     if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAG.TotalMaximum))
+                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
                     {
                         CharacterObject.MAG.Base = CharacterObject.MAGAdept.Base;
                         CharacterObject.MAG.Karma = CharacterObject.MAGAdept.Karma;
@@ -16178,7 +16242,7 @@ namespace Chummer
                         CharacterObject.MagicianEnabled = false;
                     }
                     if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAGAdept.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAGAdept.TotalMaximum))
+                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAGAdept.TotalMaximum))
                     {
                         CharacterObject.MAGAdept.Base = 0;
                         CharacterObject.MAGAdept.Karma = 0;
@@ -16192,7 +16256,7 @@ namespace Chummer
                         CharacterObject.MAGEnabled = false;
                 }
                 else if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAG.TotalMaximum))
+                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
                 {
                     CharacterObject.MAG.Base = 0;
                     CharacterObject.MAG.Karma = 0;
@@ -16205,7 +16269,7 @@ namespace Chummer
                     CharacterObject.MAGEnabled = false;
                 }
             }
-            if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue || intReduction >= CharacterObject.RES.TotalMaximum))
+            if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue || intMaxReduction >= CharacterObject.RES.TotalMaximum))
             {
                 CharacterObject.RES.Base = 0;
                 CharacterObject.RES.Karma = 0;
