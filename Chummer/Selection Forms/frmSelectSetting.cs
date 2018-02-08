@@ -19,7 +19,8 @@
  using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -47,7 +48,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument();
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFileName, true))
+                    using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
                     {
                         objXmlDocument.Load(objStreamReader);
                     }

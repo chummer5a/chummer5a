@@ -22,10 +22,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
+using System.Xml.XPath;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer
@@ -216,13 +217,15 @@ namespace Chummer
         {
             CharacterCache objCache = new CharacterCache();
             string strErrorText = string.Empty;
-            XElement xmlSourceNode;
+            XPathNavigator xmlSourceNode;
             // If we run into any problems loading the character cache, fail out early.
             try
             {
-                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                 {
-                    xmlSourceNode = XDocument.Load(objStreamReader).Element("character");
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.Load(objStreamReader);
+                    xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
                 }
             }
             catch (Exception ex)
@@ -233,35 +236,47 @@ namespace Chummer
 
             if (xmlSourceNode != null)
             {
-                objCache.Description = xmlSourceNode.Element("description")?.Value;
-                objCache.BuildMethod = xmlSourceNode.Element("buildmethod")?.Value;
-                objCache.Background = xmlSourceNode.Element("background")?.Value;
-                objCache.CharacterNotes = xmlSourceNode.Element("notes")?.Value;
-                objCache.GameNotes = xmlSourceNode.Element("gamenotes")?.Value;
-                objCache.Concept = xmlSourceNode.Element("concept")?.Value;
-                objCache.Karma = xmlSourceNode.Element("totalkarma")?.Value;
-                objCache.Metatype = xmlSourceNode.Element("metatype")?.Value;
-                objCache.Metavariant = xmlSourceNode.Element("metavariant")?.Value;
-                objCache.PlayerName = xmlSourceNode.Element("playername")?.Value;
-                objCache.CharacterName = xmlSourceNode.Element("name")?.Value;
-                objCache.CharacterAlias = xmlSourceNode.Element("alias")?.Value;
-                objCache.Created = xmlSourceNode.Element("created")?.Value == bool.TrueString;
-                objCache.Essence = xmlSourceNode.Element("totaless")?.Value;
-                string strSettings = xmlSourceNode.Element("settings")?.Value ?? string.Empty;
+                objCache.Description = xmlSourceNode.SelectSingleNode("description")?.Value;
+                objCache.BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
+                objCache.Background = xmlSourceNode.SelectSingleNode("background")?.Value;
+                objCache.CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
+                objCache.GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
+                objCache.Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
+                objCache.Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
+                objCache.Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
+                objCache.Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
+                objCache.PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
+                objCache.CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
+                objCache.CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
+                objCache.Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
+                objCache.Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
+                string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
                 objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
-                string strMugshotBase64 = xmlSourceNode.Element("mugshot")?.Value;
+                string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
                     objCache.Mugshot = strMugshotBase64.ToImage();
                 }
                 else
                 {
-                    XElement xmlMainMugshotIndex = xmlSourceNode.Element("mainmugshotindex");
+                    XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
                     if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
                     {
-                        XElement[] xmlMugshots = xmlSourceNode.Element("mugshots")?.Elements("mugshot").ToArray();
-                        if (xmlMugshots != null && intMainMugshotIndex < xmlMugshots.Length)
-                            objCache.Mugshot = xmlMugshots[intMainMugshotIndex].Value.ToImage();
+                        XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
+                        if (xmlMugshotList.Count > intMainMugshotIndex)
+                        {
+                            int intIndex = 0;
+                            foreach (XPathNavigator xmlMugshot in xmlMugshotList)
+                            {
+                                if (intMainMugshotIndex == intIndex)
+                                {
+                                    objCache.Mugshot = xmlMugshot.Value.ToImage();
+                                    break;
+                                }
+
+                                intIndex += 1;
+                            }
+                        }
                     }
                 }
             }

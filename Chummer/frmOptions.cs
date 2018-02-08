@@ -1249,7 +1249,7 @@ namespace Chummer
                 
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                     {
                         xmlDocument.Load(objStreamReader);
                     }
@@ -1279,7 +1279,7 @@ namespace Chummer
                     XmlDocument xmlDocument = new XmlDocument();
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         {
                             xmlDocument.Load(objStreamReader);
                         }
@@ -1323,7 +1323,7 @@ namespace Chummer
 
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                     {
                         xmlDocument.Load(objStreamReader);
                     }
@@ -1380,7 +1380,7 @@ namespace Chummer
 
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                     {
                         xmlDocument.Load(objStreamReader);
                     }
@@ -1598,7 +1598,7 @@ namespace Chummer
             string strFilePath = "Insert local file here";
             System.Collections.Specialized.NameValueCollection Data    = new System.Collections.Specialized.NameValueCollection();
             string line;
-            using (StreamReader sr = new StreamReader(strFilePath))
+            using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
                 line = sr.ReadToEnd();
             }
@@ -1625,7 +1625,7 @@ namespace Chummer
             try
             {
                 ms = new MemoryStream(bytes);
-                using (StreamReader reader = new StreamReader(ms))
+                using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
                 {
                     response = reader.ReadToEnd();
                 }

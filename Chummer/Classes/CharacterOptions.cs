@@ -617,7 +617,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                     {
                         objXmlDocument.Load(objStreamReader);
                     }
@@ -646,7 +646,7 @@ namespace Chummer
                     strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         {
                             objXmlDocument.Load(objStreamReader);
                         }

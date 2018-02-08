@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.IO;
  using System.Linq;
+ using System.Text;
  using System.Windows.Forms;
 using System.Xml;
 
@@ -382,7 +383,7 @@ namespace Chummer
             objStream.Position = 0;
 
             // Read it back in as an XmlDocument.
-            StreamReader objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
             XmlDocument objBonusXml = new XmlDocument();
             strXml = objReader.ReadToEnd();
             objBonusXml.LoadXml(strXml);

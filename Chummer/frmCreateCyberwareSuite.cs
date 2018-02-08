@@ -74,13 +74,12 @@ namespace Chummer
 
             // See if a Suite with this name already exists for the Custom category. This is done without the XmlManager since we need to check each file individually.
             XmlDocument objXmlDocument = new XmlDocument();
-            XmlNodeList objXmlSuiteList;
             string strCustomPath = Path.Combine(Application.StartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_" + _strType + ".xml"))
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                     {
                         objXmlDocument.Load(objStreamReader);
                     }
@@ -95,8 +94,8 @@ namespace Chummer
                     MessageBox.Show(ex.ToString());
                     return;
                 }
-                objXmlSuiteList = objXmlDocument.SelectNodes("/chummer/suites/suite[name = \"" + txtName.Text + "\"]");
-                if (objXmlSuiteList.Count > 0)
+                XmlNodeList objXmlSuiteList = objXmlDocument.SelectNodes("/chummer/suites/suite[name = \"" + txtName.Text + "\"]");
+                if (objXmlSuiteList?.Count > 0)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language).Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -112,7 +111,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strPath, true))
+                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                     {
                         objXmlCurrentDocument.Load(objStreamReader);
                     }

@@ -196,7 +196,7 @@ namespace Chummer
                             return;
                         }
                         // Open the stream using a StreamReader for easy access.
-                        StreamReader reader = new StreamReader(dataStream);
+                        StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
                         // Read the content.
 
                         if (_workerConnectionLoader.CancellationPending)

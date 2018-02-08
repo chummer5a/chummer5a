@@ -2006,7 +2006,7 @@ namespace Chummer
                     objWriter.Flush();
 
                     // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream);
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                     objStream.Position = 0;
                     XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2052,7 +2052,7 @@ namespace Chummer
                         objWriter.Flush();
 
                         // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream);
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                         objStream.Position = 0;
                         XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2110,7 +2110,7 @@ namespace Chummer
                         objWriter.Flush();
 
                         // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream);
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                         objStream.Position = 0;
                         XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2162,7 +2162,7 @@ namespace Chummer
                         objWriter.Flush();
 
                         // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream);
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                         objStream.Position = 0;
                         XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2219,7 +2219,7 @@ namespace Chummer
                         objWriter.Flush();
 
                         // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream);
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                         objStream.Position = 0;
                         XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2281,7 +2281,7 @@ namespace Chummer
                     objWriter.Flush();
 
                     // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream);
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                     objStream.Position = 0;
                     XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2327,7 +2327,7 @@ namespace Chummer
                     objWriter.Flush();
 
                     // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream);
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                     objStream.Position = 0;
                     XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2383,7 +2383,7 @@ namespace Chummer
                         objWriter.Flush();
 
                         // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream);
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                         objStream.Position = 0;
                         XmlDocument objCharacterXML = new XmlDocument();
 
@@ -2433,7 +2433,7 @@ namespace Chummer
                                 objWriter.Flush();
 
                                 // Read the stream.
-                                StreamReader objReader = new StreamReader(objStream);
+                                StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                                 objStream.Position = 0;
                                 XmlDocument objCharacterXML = new XmlDocument();
 

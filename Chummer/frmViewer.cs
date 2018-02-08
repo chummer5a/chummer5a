@@ -339,7 +339,7 @@ namespace Chummer
                 objWriter.Flush();
 
                 // Read the stream.
-                StreamReader objReader = new StreamReader(objStream);
+                StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                 objStream.Position = 0;
                 XmlDocument objCharacterXml = new XmlDocument();
 
@@ -432,7 +432,7 @@ namespace Chummer
                 // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
                 // Read in the resulting code and pass it to the browser.
                 
-                StreamReader objReader = new StreamReader(objStream);
+                StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                 string strOutput = objReader.ReadToEnd();
                 File.WriteAllText(_strName, strOutput);
                 string curDir = Directory.GetCurrentDirectory();
@@ -616,7 +616,7 @@ namespace Chummer
 
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, true))
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                     {
                         xmlDocument.Load(objStreamReader);
                     }

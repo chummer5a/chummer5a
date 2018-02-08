@@ -43,7 +43,7 @@ namespace Chummer
             try
             {
                 string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-                report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
+                report.AddData("chummerlog.txt", new StreamReader(strFile, Encoding.UTF8, true).BaseStream);
             }
             catch(Exception ex)
             {
@@ -59,7 +59,7 @@ namespace Chummer
             try
             {
                 string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
+                report.AddData("default.xml", new StreamReader(strFilePath, Encoding.UTF8, true).BaseStream);
             }
             catch (Exception ex)
             {

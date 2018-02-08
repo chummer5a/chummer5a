@@ -6172,7 +6172,7 @@ namespace Chummer
             XmlDocument xmlDoc = new XmlDocument();
             try
             {
-                using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, true))
+                using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
                 {
                     xmlDoc.Load(objStreamReader);
                 }

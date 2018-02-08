@@ -131,7 +131,7 @@ namespace Chummer
             string strLine;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
-            StreamReader objFile = new StreamReader(exportSheetPath);
+            StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
             while ((strLine = objFile.ReadLine()) != null)
             {
                 if (strLine.StartsWith("<!-- ext:"))
@@ -170,7 +170,7 @@ namespace Chummer
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.
-            StreamReader objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
             rtbText.Text = objReader.ReadToEnd();
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))

@@ -129,7 +129,7 @@ namespace Chummer
         public static XmlDocument XmlDocumentFromStream(MemoryStream objStream)
         {
             objStream.Position = 0;
-            StreamReader objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
             string strXml = objReader.ReadToEnd();
 
             XmlDocument objXmlDocument = new XmlDocument();

@@ -935,7 +935,7 @@ namespace Chummer
             XmlDocument objXmlDocument = new XmlDocument();
             if (!File.Exists(_strFileName))
                 return false;
-            using (StreamReader sr = new StreamReader(_strFileName, true))
+            using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
             {
                 try
                 {

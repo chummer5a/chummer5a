@@ -85,7 +85,7 @@ namespace Chummer
                         string strExtraMessage = string.Empty;
                         try
                         {
-                            using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                            using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                             {
                                 objLanguageDocument.Load(objStreamReader);
                             }
@@ -149,7 +149,7 @@ namespace Chummer
                     {
                         try
                         {
-                            using (StreamReader objStreamReader = new StreamReader(strDataPath, true))
+                            using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
                             {
                                 DataDocument.Load(objStreamReader);
                             }
@@ -194,7 +194,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         {
                             objEnglishDocument.Load(objStreamReader);
                         }
@@ -454,7 +454,7 @@ namespace Chummer
 
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         {
                             objEnglishDocument.Load(objStreamReader);
                         }
@@ -484,7 +484,7 @@ namespace Chummer
 
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strLangPath, true))
+                        using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
                         {
                             objLanguageDocument.Load(objStreamReader);
                         }

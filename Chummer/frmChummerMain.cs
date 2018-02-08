@@ -38,6 +38,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Net;
+using System.Text;
 
 namespace Chummer
 {
@@ -286,7 +287,7 @@ namespace Chummer
             }
             
             // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
+            StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
 
             if (_workerVersionUpdateChecker.CancellationPending)
             {
@@ -1041,7 +1042,7 @@ namespace Chummer
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 //StreamReader is used to prevent encoding errors
-                using (StreamReader sr = new StreamReader(strFileName, true))
+                using (StreamReader sr = new StreamReader(strFileName, Encoding.UTF8, true))
                 {
                     try
                     {

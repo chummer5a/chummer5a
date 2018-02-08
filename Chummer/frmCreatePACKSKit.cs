@@ -69,7 +69,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                     {
                         objXmlDocument.Load(objStreamReader);
                     }
@@ -101,7 +101,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strPath, true))
+                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                     {
                         objXmlCurrentDocument.Load(objStreamReader);
                     }

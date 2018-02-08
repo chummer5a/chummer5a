@@ -144,7 +144,7 @@ namespace Chummer
                 // Load the base file and retrieve all of the child nodes.
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strPath, true))
+                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                     {
                         objXmlFile.Load(objStreamReader);
                     }
@@ -173,7 +173,7 @@ namespace Chummer
                         {
                             try
                             {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                                 {
                                     objXmlFile.Load(objStreamReader);
                                 }
@@ -223,7 +223,7 @@ namespace Chummer
                         {
                             try
                             {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                                 {
                                     objXmlFile.Load(objStreamReader);
                                 }
@@ -281,7 +281,7 @@ namespace Chummer
                         {
                             try
                             {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                                 {
                                     objXmlFile.Load(objStreamReader);
                                 }
@@ -353,7 +353,7 @@ namespace Chummer
                     {
                         try
                         {
-                            using (StreamReader objStreamReader = new StreamReader(strFile, true))
+                            using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                             {
                                 objXmlFile.Load(objStreamReader);
                             }
@@ -810,7 +810,7 @@ namespace Chummer
 
             try
             {
-                using (StreamReader objStreamReader = new StreamReader(strFilePath, true))
+                using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                 {
                     objLanguageDoc.Load(objStreamReader);
                 }
