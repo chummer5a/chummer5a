@@ -706,6 +706,8 @@ namespace Chummer.Backend.Skills
                     return " and category = 'Resonance Active'";
                 case FilterOptions.Name:
                     return $" and name = '{strName}'";
+                case FilterOptions.XPath:
+                    return $" and ({strName})";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
             }
@@ -725,6 +727,7 @@ namespace Chummer.Backend.Skills
             Technomancer,
             Spellcasting,
             Name,
+            XPath,
         }
 
         internal void ForceProperyChangedNotificationAll(string strName)

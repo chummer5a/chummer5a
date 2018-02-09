@@ -147,6 +147,7 @@ Application Changes:
 - Both the Recent Characters and Favorite Characters lists in the character roster can now be sorted alphabetically. Part of #2074.
 - Characters no longer lose their position in the Most Recently Used list if they are added to the Favorite Characters list.
 - Added an option to limit an item so that it can only be taken in career mode (this is done with the <careeronly> tag).
+- Added support to the <unlockskills> bonus to use XPath filters to select which skills to unlock instead of being beholden to built-in filter enumerators.
 
 Data Changes:
 
