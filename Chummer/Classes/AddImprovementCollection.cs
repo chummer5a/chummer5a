@@ -1583,7 +1583,8 @@ namespace Chummer.Classes
                 objNewGear.SetActiveCommlink(_objCharacter, true);
             }
 
-            objNewGear.Cost = "0";
+            if (bonusNode["fullcost"] == null)
+                objNewGear.Cost = "0";
             // Create any Weapons that came with this Gear.
             foreach (Weapon objWeapon in lstWeapons)
                 _objCharacter.Weapons.Add(objWeapon);
