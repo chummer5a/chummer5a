@@ -94,6 +94,7 @@
   <xsl:variable name="lang.Eyes"      select="'Eyes'"/>
   <xsl:variable name="lang.Falling"    select="'Falling'"/>
   <xsl:variable name="lang.Fatigue"      select="'Fatigue'"/>
+  <xsl:variable name="lang.Fettered"      select="'Fettered'"/>
   <xsl:variable name="lang.Fire"    select="'Fire'"/>
   <xsl:variable name="lang.Firewall"    select="'Firewall'"/>
   <xsl:variable name="lang.Fly"      select="'Fly'"/>
@@ -146,7 +147,6 @@
   <xsl:variable name="lang.Mode"      select="'Mode'"/>
   <xsl:variable name="lang.Model"      select="'Model'"/>
   <xsl:variable name="lang.Modifications"  select="'Modifications'"/>
-  <xsl:variable name="lang.Modifiers"    select="'Modifiers'"/>
   <xsl:variable name="lang.Month"      select="'Month'"/>
   <xsl:variable name="lang.Months"    select="'Months'"/>
   <xsl:variable name="lang.Movement"    select="'Movement'"/>
@@ -157,11 +157,11 @@
   <xsl:variable name="lang.Notes"      select="'Notes'"/>
   <xsl:variable name="lang.Notoriety"    select="'Notoriety'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
-  <xsl:variable name="lang.Other"      select="'Other'"/>
   <xsl:variable name="lang.OVR"      select="'OVR&#160;'"/>
   <xsl:variable name="lang.Pathogen"    select="'Pathogen'"/>
   <xsl:variable name="lang.Permanent"    select="'Permanent'"/>
   <xsl:variable name="lang.Persona"    select="'Persona'"/>
+  <xsl:variable name="lang.Pets"      select="'Pets'"/>
   <xsl:variable name="lang.Physical"    select="'Physical'"/>
   <xsl:variable name="lang.Physiological"  select="'Physiological'"/>
   <xsl:variable name="lang.Pilot"      select="'Pilot'"/>
@@ -290,6 +290,7 @@
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'No Notes to list'"/>
   <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'No Vehicles to list'"/>
   <xsl:variable name="lang.OptionalPowers"    select="'Optional Powers'"/>
+  <xsl:variable name="lang.OtherArmor"      select="'Other Armor'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Other Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxins and Pathogens'"/>
@@ -312,6 +313,7 @@
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.StunTrack"    select="'Stun Damage Track'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Submersion Grade'"/>
+  <xsl:variable name="lang.TotalArmor"  select="'Total of equipped single highest armor and accessories'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unnamed Character'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Body'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Vehicle Cost'"/>

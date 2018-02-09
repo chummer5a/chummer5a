@@ -3,7 +3,7 @@
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:variable name="lang"  select="'de'"/>
-  <xsl:variable name="locale"  select="'de'"/>
+  <xsl:variable name="locale"  select="'de-de'"/>
 
   <!-- individual words -->
   <xsl:variable name="lang.Acceleration"  select="'Beschleunigung'"/>
@@ -94,6 +94,7 @@
   <xsl:variable name="lang.Eyes"      select="'Augenfarbe'"/>
   <xsl:variable name="lang.Falling"    select="'Fall'"/>
   <xsl:variable name="lang.Fatigue"      select="'Erschöpfung'"/>
+  <xsl:variable name="lang.Fettered"      select="'Gefesselt'"/>
   <xsl:variable name="lang.Fire"    select="'Feuer'"/>
   <xsl:variable name="lang.Firewall"    select="'Firewall'"/>
   <xsl:variable name="lang.Fly"      select="'Fliegen'"/>
@@ -146,7 +147,6 @@
   <xsl:variable name="lang.Mode"      select="'Modus'"/>
   <xsl:variable name="lang.Model"      select="'Model'"/>
   <xsl:variable name="lang.Modifications"  select="'Modifikationen'"/>
-  <xsl:variable name="lang.Modifiers"    select="'Modifikatoren'"/>
   <xsl:variable name="lang.Month"      select="'Monat'"/>
   <xsl:variable name="lang.Months"    select="'Monate'"/>
   <xsl:variable name="lang.Movement"    select="'Bewegung'"/>
@@ -157,11 +157,11 @@
   <xsl:variable name="lang.Notes"      select="'Notizen'"/>
   <xsl:variable name="lang.Notoriety"    select="'Schlechter Ruf'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
-  <xsl:variable name="lang.Other"      select="'Andere'"/>
   <xsl:variable name="lang.OVR"      select="'ÜbS&#160;'"/>
   <xsl:variable name="lang.Pathogen"    select="'Pathogen'"/>
   <xsl:variable name="lang.Permanent"    select="'Permanent'"/>
   <xsl:variable name="lang.Persona"    select="'Persona'"/>
+  <xsl:variable name="lang.Pets"      select="'Haustiere'"/>
   <xsl:variable name="lang.Physical"    select="'Körperlich'"/>
   <xsl:variable name="lang.Physiological"  select="'Körperlich'"/>
   <xsl:variable name="lang.Pilot"      select="'Pilot'"/>
@@ -239,7 +239,7 @@
   <xsl:variable name="lang.VR"      select="'VR'"/>
   <xsl:variable name="lang.W"        select="'W'"/>
   <xsl:variable name="lang.Walk"      select="'Gehen'"/>
-  <xsl:variable name="lang.Weaknesses"    select="'Weaknesses'"/>
+  <xsl:variable name="lang.Weaknesses"    select="'Schwächen'"/>
   <xsl:variable name="lang.Weapon"    select="'Waffe'"/>
   <xsl:variable name="lang.Weapons"    select="'Waffen'"/>
   <xsl:variable name="lang.Week"      select="'Woche'"/>
@@ -290,6 +290,7 @@
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'Keine Notizen zur Liste'"/>
   <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'Keine Fahrzeuge zur Liste'"/>
   <xsl:variable name="lang.OptionalPowers"    select="'Optional Powers'"/>
+  <xsl:variable name="lang.OtherArmor"      select="'Andere Panzerung'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>
   <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxine und Pathogene'"/>
@@ -312,6 +313,7 @@
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.StunTrack"    select="'Geistige Schadensleiste'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Wandlungsgrad'"/>
+  <xsl:variable name="lang.TotalArmor"  select="'Insgesamt ausgestattete höchste Rüstung und Zubehör'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'unbenannter Charakter'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Rumpf'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Fahrzeugkosten'"/>
