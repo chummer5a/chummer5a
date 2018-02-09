@@ -18,12 +18,13 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Globalization;
+ using System.Collections.ObjectModel;
+ using System.Collections.Specialized;
+ using System.Globalization;
 using System.IO;
  using System.Linq;
  using System.Xml;
 using System.Windows.Forms;
- using Chummer.Annotations;
  using Microsoft.Win32;
 using iTextSharp.text.pdf;
 
@@ -157,7 +158,10 @@ namespace Chummer
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
-        public static event EventHandler MRUChanged;
+        public static event TextEventHandler MRUChanged;
+        public const int MaxMruSize = 10;
+        private static readonly MostRecentlyUsedCollection<string> _lstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
+        private static readonly MostRecentlyUsedCollection<string> _lstFavoritedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
 
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
@@ -506,6 +510,30 @@ namespace Chummer
                     }
                 }
             }
+
+            for (int i = 1; i <= MaxMruSize; i++)
+            {
+                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString());
+                if (objLoopValue != null)
+                {
+                    string strFileName = objLoopValue.ToString();
+                    if (File.Exists(strFileName) && !_lstFavoritedCharacters.Contains(strFileName))
+                        _lstFavoritedCharacters.Add(strFileName);
+                }
+            }
+            _lstFavoritedCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
+
+            for (int i = 1; i <= MaxMruSize; i++)
+            {
+                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString());
+                if (objLoopValue != null)
+                {
+                    string strFileName = objLoopValue.ToString();
+                    if (File.Exists(strFileName) && !_lstMostRecentlyUsedCharacters.Contains(strFileName))
+                        _lstMostRecentlyUsedCharacters.Add(strFileName);
+                }
+            }
+            _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
         }
         #endregion
 
@@ -787,175 +815,190 @@ namespace Chummer
         #endregion
 
         #region MRU Methods
-        /// <summary>
-        /// Add a file to the most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to add.</param>
-        public static void AddToMRUList(object sender, string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false, int intIndex = 0)
+        private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(strFile))
-                return;
-
-            List<string> strFiles = ReadMRUList(strMRUType);
-
-            // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.
-            if (strMRUType == "mru")
+            switch (e.Action)
             {
-                List<string> strStickyFiles = ReadMRUList("stickymru");
-                if (strStickyFiles.Contains(strFile))
+                case NotifyCollectionChangedAction.Add:
                 {
-                    if (blnForceDoMRUChanged && blnDoMRUChanged)
-                        MRUChanged?.Invoke(null, EventArgs.Empty);
-                    return;
+                    for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                    {
+                        if (i <= _lstFavoritedCharacters.Count)
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                        else
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                    }
+
+                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                    break;
                 }
-            }
-            int i = intIndex;
-            // Make sure the file does not already exist in the MRU list.
-            int intOldIndex = strFiles.IndexOf(strFile);
-            if (intOldIndex != -1)
-            {
-                if (intOldIndex == intIndex)
+                case NotifyCollectionChangedAction.Remove:
                 {
-                    if (blnForceDoMRUChanged && blnDoMRUChanged)
-                        MRUChanged?.Invoke(sender, EventArgs.Empty);
-                    return;
+                    for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                    {
+                        if (i <= _lstFavoritedCharacters.Count)
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                        else
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                    }
+                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                    break;
                 }
-                strFiles.RemoveAt(intOldIndex);
-                if (i > intOldIndex)
-                    i = intOldIndex;
-            }
-
-            strFiles.Insert(intIndex, strFile);
-
-            if (strFiles.Count > 10)
-                strFiles.RemoveRange(10, strFiles.Count - 10);
-
-            foreach (string strItem in strFiles)
-            {
-                i++;
-                _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
-            }
-            if (blnDoMRUChanged)
-                MRUChanged?.Invoke(sender, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Remove a file from the most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to remove.</param>
-        public static void RemoveFromMRUList(object sender, [NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false)
-        {
-            List<string> strFiles = ReadMRUList(strMRUType);
-
-            int intFileIndex = strFiles.IndexOf(strFile);
-            if (intFileIndex != -1)
-            {
-                strFiles.RemoveAt(intFileIndex);
-                for (int i = intFileIndex; i < 10; i++)
+                case NotifyCollectionChangedAction.Replace:
                 {
-                    if (i < strFiles.Count)
-                        _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                    string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                    if (!string.IsNullOrEmpty(strNewFile))
+                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
                     else
-                        _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                        }
+                    }
+
+                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                    break;
                 }
-                if (blnDoMRUChanged)
-                    MRUChanged?.Invoke(sender, EventArgs.Empty);
-            }
-            else if (blnForceDoMRUChanged && blnDoMRUChanged)
-                MRUChanged?.Invoke(sender, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Add a list of files to the beginning of the most recently used characters.
-        /// </summary>
-        /// <param name="lstFilesToAdd">Names of the files to add (files added in reverse order).</param>
-        public static void AddToMRUList(object sender, IEnumerable<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
-        {
-            bool blnAnyChange = false;
-            List<string> strFiles = ReadMRUList(strMRUType);
-            List<string> strStickyFiles = strMRUType == "mru" ? ReadMRUList("stickymru") : null;
-            foreach (string strFile in lstFilesToAdd)
-            {
-                if (string.IsNullOrEmpty(strFile))
-                    continue;
-                // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.
-                if (strStickyFiles?.Contains(strFile) == true)
-                    continue;
-
-                blnAnyChange = true;
-
-                // Make sure the file does not already exist in the MRU list.
-                if (strFiles.Contains(strFile))
-                    strFiles.Remove(strFile);
-
-                strFiles.Insert(0, strFile);
-            }
-
-            if (strFiles.Count > 10)
-                strFiles.RemoveRange(10, strFiles.Count - 10);
-
-            if (blnAnyChange)
-            {
-                int i = 0;
-                foreach (string strItem in strFiles)
+                case NotifyCollectionChangedAction.Move:
                 {
-                    i++;
-                    _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
-                }
-                if (blnDoMRUChanged)
-                    MRUChanged?.Invoke(sender, EventArgs.Empty);
-            }
-        }
+                    int intOldStartingIndex = e.OldStartingIndex;
+                    int intNewStartingIndex = e.NewStartingIndex;
+                    if (intOldStartingIndex == intNewStartingIndex)
+                        break;
 
-        /// <summary>
-        /// Remove a list of files from the most recently used characters.
-        /// </summary>
-        /// <param name="lstFilesToRemove">Names of the files to remove.</param>
-        public static void RemoveFromMRUList(object sender, IEnumerable<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
-        {
-            List<string> strFiles = ReadMRUList(strMRUType);
-            bool blnAnyChange = false;
-            foreach (string strFile in lstFilesToRemove)
-            {
-                if (strFiles.Contains(strFile))
-                {
-                    strFiles.Remove(strFile);
-                    blnAnyChange = true;
-                }
-            }
-            if (blnAnyChange)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    if (i < strFiles.Count)
-                        _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                    int intUpdateFrom;
+                    int intUpdateTo;
+                    if (intOldStartingIndex > intNewStartingIndex)
+                    {
+                        intUpdateFrom = intNewStartingIndex;
+                        intUpdateTo = intOldStartingIndex;
+                    }
                     else
-                        _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
+                    {
+                        intUpdateFrom = intOldStartingIndex;
+                        intUpdateTo = intNewStartingIndex;
+                    }
+
+                    for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                    {
+                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(), _lstFavoritedCharacters[i]);
+                    }
+                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                    break;
                 }
-                if (blnDoMRUChanged)
-                    MRUChanged?.Invoke(sender, EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        /// Retrieve the list of most recently used characters.
-        /// </summary>
-        public static List<string> ReadMRUList(string strMRUType = "mru")
-        {
-            List<string> lstFiles = new List<string>(10);
-
-            for (int i = 1; i <= 10; i++)
-            {
-                object objLoopValue = _objBaseChummerKey.GetValue(strMRUType + i.ToString());
-                if (objLoopValue != null)
+                case NotifyCollectionChangedAction.Reset:
                 {
-                    string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !lstFiles.Contains(strFileName))
-                        lstFiles.Add(strFileName);
+                    for (int i = 1; i <= MaxMruSize; ++i)
+                    {
+                        if (i <= _lstFavoritedCharacters.Count)
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                        else
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                    }
+                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                    break;
                 }
             }
-            return lstFiles;
         }
+
+        private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                        {
+                            _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
+                        }
+                        else
+                        {
+                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                    _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                else
+                                    _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                            }
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
+                            break;
+
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
+                        }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(), _lstMostRecentlyUsedCharacters[i]);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+            }
+        }
+
+        public static ObservableCollection<string> FavoritedCharacters => _lstFavoritedCharacters;
+
+        public static ObservableCollection<string> MostRecentlyUsedCharacters => _lstMostRecentlyUsedCharacters;
         #endregion
 
     }

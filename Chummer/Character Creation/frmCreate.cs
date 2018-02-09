@@ -630,7 +630,6 @@ namespace Chummer
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
                 Program.MainForm.OpenCharacterForms.Remove(this);
-                Program.MainForm.CharacterRoster.PopulateCharacterList(this, EventArgs.Empty); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 

@@ -143,6 +143,9 @@ Application Changes:
 - Fixed an issue where using Reapply Improvements on a character who has less Essence than their metatype maximum could potentially increase the amount of special attribute points they would lose to Essence loss.
 - Fixed an issue where karma expenditures on martial arts at chargen would not get displayed in the sidebar.
 - The karma value calculator will now also display the value that should be used when comparing a priority-based character to if it were built with Point Buy (i.e. without karma value from contact points and knowledge points).
+- Chummer5 will now live-update the watch folder node in the character roster if the underlying folder's contents are changed in any way.
+- Both the Recent Characters and Favorite Characters lists in the character roster can now be sorted alphabetically. Part of #2074.
+- Characters no longer lose their position in the Most Recently Used list if they are added to the Favorite Characters list.
 
 Data Changes:
 

@@ -31,7 +31,7 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public event EventHandler ContactDetailChanged;
+        public event TextEventHandler ContactDetailChanged;
         public event EventHandler DeleteContact;
 
         #region Control Events

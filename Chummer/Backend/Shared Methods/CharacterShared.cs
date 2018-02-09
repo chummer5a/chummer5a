@@ -6062,7 +6062,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        protected void EnemyChanged(object sender, EventArgs e)
+        protected void EnemyChanged(object sender, TextEventArgs e)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
@@ -6098,17 +6098,14 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = ((ContactControl)sender).ContactObject;
                 int intTotal = (intEnemyMax * -1) - intBPUsed;
-                if (e is TextEventArgs objTextArgument)
+                switch (e.Text)
                 {
-                    switch (objTextArgument.Text)
-                    {
-                        case "Connection":
-                            objSenderContact.Connection -= intTotal;
-                            break;
-                        case "Loyalty":
-                            objSenderContact.Loyalty -= intTotal;
-                            break;
-                    }
+                    case "Connection":
+                        objSenderContact.Connection -= intTotal;
+                        break;
+                    case "Loyalty":
+                        objSenderContact.Loyalty -= intTotal;
+                        break;
                 }
                 return;
             }
@@ -6119,19 +6116,16 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = ((ContactControl)sender).ContactObject;
-                    if (e is TextEventArgs objTextArgument)
+                    switch (e.Text)
                     {
-                        switch (objTextArgument.Text)
-                        {
-                            case "Connection":
-                                objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                               CharacterObjectOptions.KarmaQuality);
-                                break;
-                            case "Loyalty":
-                                objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                        case "Connection":
+                            objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
                                                             CharacterObjectOptions.KarmaQuality);
-                                break;
-                        }
+                            break;
+                        case "Loyalty":
+                            objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                                                         CharacterObjectOptions.KarmaQuality);
+                            break;
                     }
                 }
             }
@@ -6606,7 +6600,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                GlobalOptions.AddToMRUList(this, _objCharacter.FileName, "mru", true, true);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                 IsDirty = false;
                 Cursor = Cursors.Default;
 

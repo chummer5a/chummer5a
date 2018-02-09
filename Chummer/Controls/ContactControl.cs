@@ -33,7 +33,7 @@ namespace Chummer
         //private readonly int _intFullHeight = 156;
 
         // Events.
-        public event EventHandler ContactDetailChanged;
+        public event TextEventHandler ContactDetailChanged;
         public event EventHandler DeleteContact;
 
         #region Control Events
@@ -176,7 +176,7 @@ namespace Chummer
         private void cboPersonalLife_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, e);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
         }
 
         private void cboType_TextChanged(object sender, EventArgs e)

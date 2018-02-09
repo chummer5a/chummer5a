@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Runtime.InteropServices;
 
 namespace Chummer
 {
@@ -31,4 +32,7 @@ namespace Chummer
 
         public string Text => _strText;
     }
+
+    [ComVisible(true)]
+    public delegate void TextEventHandler(object sender, TextEventArgs e);
 }

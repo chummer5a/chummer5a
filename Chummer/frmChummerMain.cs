@@ -50,7 +50,7 @@ namespace Chummer
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private readonly ObservableCollection<Character> _lstCharacters = new ObservableCollection<Character>();
-        private readonly List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
+        private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
@@ -92,7 +92,7 @@ namespace Chummer
             }
 
             // Populate the MRU list.
-            PopulateMRUToolstripMenu(this, EventArgs.Empty);
+            PopulateMRUToolstripMenu(this, null);
 
             Program.MainForm = this;
 
@@ -149,6 +149,7 @@ namespace Chummer
             };
 
             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
+            _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
@@ -182,6 +183,18 @@ namespace Chummer
 
             CharacterRoster.WindowState = FormWindowState.Maximized;
             CharacterRoster.Show();
+        }
+
+        private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (CharacterRoster != null)
+            {
+                if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
+                    CharacterRoster.RefreshNodes();
+                else
+                // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
+                    CharacterRoster.PopulateCharacterList(this, new TextEventArgs("mru"));
+            }
         }
 
         private void LstCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -571,9 +584,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-
-                GlobalOptions.RemoveFromMRUList(sender, strFileName, "mru", false);
-                GlobalOptions.AddToMRUList(sender, strFileName, "stickymru");
+                
+                GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
 
@@ -592,8 +604,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.RemoveFromMRUList(sender, strFileName, "stickymru", false);
-                GlobalOptions.AddToMRUList(sender, strFileName);
+                GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
 
@@ -1011,8 +1023,8 @@ namespace Chummer
                     frmCharacter.Show();
                 }
 
-                if (blnIncludeInMRU)
-                    GlobalOptions.AddToMRUList(this, objCharacter.FileName);
+                if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
                 
                 UpdateCharacterTabTitle(objCharacter, EventArgs.Empty);
 
@@ -1104,85 +1116,135 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMRUToolstripMenu(object sender, EventArgs e)
+        public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
         {
-            List<string> strStickyMRUList = GlobalOptions.ReadMRUList("stickymru");
-            List<string> strMRUList = GlobalOptions.ReadMRUList();
+            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
-            for (int i = 0; i < 10; i++)
+            SuspendLayout();
+            mnuFileMRUSeparator.Visible = strStickyMRUList.Count > 0 || strMRUList.Count > 0;
+
+            if (e?.Text != "mru")
             {
-                ToolStripMenuItem objStickyItem;
-                ToolStripMenuItem objItem;
-                switch (i)
+                for (int i = 0; i < GlobalOptions.MaxMruSize; ++i)
                 {
-                    case 0:
-                        objStickyItem = mnuStickyMRU0;
-                        objItem = mnuMRU0;
-                        break;
-                    case 1:
-                        objStickyItem = mnuStickyMRU1;
-                        objItem = mnuMRU1;
-                        break;
-                    case 2:
-                        objStickyItem = mnuStickyMRU2;
-                        objItem = mnuMRU2;
-                        break;
-                    case 3:
-                        objStickyItem = mnuStickyMRU3;
-                        objItem = mnuMRU3;
-                        break;
-                    case 4:
-                        objStickyItem = mnuStickyMRU4;
-                        objItem = mnuMRU4;
-                        break;
-                    case 5:
-                        objStickyItem = mnuStickyMRU5;
-                        objItem = mnuMRU5;
-                        break;
-                    case 6:
-                        objStickyItem = mnuStickyMRU6;
-                        objItem = mnuMRU6;
-                        break;
-                    case 7:
-                        objStickyItem = mnuStickyMRU7;
-                        objItem = mnuMRU7;
-                        break;
-                    case 8:
-                        objStickyItem = mnuStickyMRU8;
-                        objItem = mnuMRU8;
-                        break;
-                    case 9:
-                        objStickyItem = mnuStickyMRU9;
-                        objItem = mnuMRU9;
-                        break;
-                    default:
-                        continue;
-                }
+                    ToolStripMenuItem objItem;
+                    switch (i)
+                    {
+                        case 0:
+                            objItem = mnuStickyMRU0;
+                            break;
+                        case 1:
+                            objItem = mnuStickyMRU1;
+                            break;
+                        case 2:
+                            objItem = mnuStickyMRU2;
+                            break;
+                        case 3:
+                            objItem = mnuStickyMRU3;
+                            break;
+                        case 4:
+                            objItem = mnuStickyMRU4;
+                            break;
+                        case 5:
+                            objItem = mnuStickyMRU5;
+                            break;
+                        case 6:
+                            objItem = mnuStickyMRU6;
+                            break;
+                        case 7:
+                            objItem = mnuStickyMRU7;
+                            break;
+                        case 8:
+                            objItem = mnuStickyMRU8;
+                            break;
+                        case 9:
+                            objItem = mnuStickyMRU9;
+                            break;
+                        default:
+                            continue;
+                    }
 
-                if (i < strStickyMRUList.Count)
-                {
-                    objStickyItem.Visible = true;
-                    objStickyItem.Text = strStickyMRUList[i];
-                    mnuFileMRUSeparator.Visible = true;
-                }
-                else
-                {
-                    objStickyItem.Visible = false;
-                }
-                if (i < strMRUList.Count)
-                {
-                    objItem.Visible = true;
-                    if (i == 9)
-                        objItem.Text = "1&0 " + strMRUList[i];
+                    if (i < strStickyMRUList.Count)
+                    {
+                        objItem.Visible = true;
+                        objItem.Text = strStickyMRUList[i];
+                    }
                     else
-                        objItem.Text = '&' + (i + 1).ToString() + ' ' + strMRUList[i];
-                    mnuFileMRUSeparator.Visible = true;
-                }
-                else
-                {
-                    objItem.Visible = false;
+                    {
+                        objItem.Visible = false;
+                    }
                 }
             }
+
+            mnuMRU0.Visible = false;
+            mnuMRU1.Visible = false;
+            mnuMRU2.Visible = false;
+            mnuMRU3.Visible = false;
+            mnuMRU4.Visible = false;
+            mnuMRU5.Visible = false;
+            mnuMRU6.Visible = false;
+            mnuMRU7.Visible = false;
+            mnuMRU8.Visible = false;
+            mnuMRU9.Visible = false;
+
+            int i2 = 0;
+            for (int i = 0; i < GlobalOptions.MaxMruSize; ++i)
+            {
+                if (i2 < strMRUList.Count && i < strMRUList.Count)
+                {
+                    string strFile = strMRUList[i];
+                    if (!strStickyMRUList.Contains(strFile))
+                    {
+                        ToolStripMenuItem objItem;
+                        switch (i2)
+                        {
+                            case 0:
+                                objItem = mnuMRU0;
+                                break;
+                            case 1:
+                                objItem = mnuMRU1;
+                                break;
+                            case 2:
+                                objItem = mnuMRU2;
+                                break;
+                            case 3:
+                                objItem = mnuMRU3;
+                                break;
+                            case 4:
+                                objItem = mnuMRU4;
+                                break;
+                            case 5:
+                                objItem = mnuMRU5;
+                                break;
+                            case 6:
+                                objItem = mnuMRU6;
+                                break;
+                            case 7:
+                                objItem = mnuMRU7;
+                                break;
+                            case 8:
+                                objItem = mnuMRU8;
+                                break;
+                            case 9:
+                                objItem = mnuMRU9;
+                                break;
+                            default:
+                                continue;
+                        }
+
+                        objItem.Visible = true;
+                        if (i2 == 9)
+                            objItem.Text = "1&0 " + strFile;
+                        else
+                            objItem.Text = '&' + (i + 1).ToString() + ' ' + strFile;
+                        
+                        ++i2;
+                    }
+                }
+            }
+
+            ResumeLayout();
         }
 
         private void objCareer_DiceRollerOpened(object sender)
@@ -1216,7 +1278,7 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            GlobalOptions.RemoveFromMRUList(this, GlobalOptions.ReadMRUList());
+            GlobalOptions.MostRecentlyUsedCharacters.Clear();
         }
 
         private void mnuRestart_Click(object sender, EventArgs e)
@@ -1254,7 +1316,7 @@ namespace Chummer
 
         public ObservableCollection<Character> OpenCharacters => _lstCharacters;
 
-        public IList<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
+        public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 
         #endregion
 

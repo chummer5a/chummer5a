@@ -405,7 +405,6 @@ namespace Chummer
             // 
             // tsSort
             // 
-            this.tsSort.Enabled = false;
             this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
             this.tsSort.Name = "tsSort";
             this.tsSort.Size = new System.Drawing.Size(177, 22);
