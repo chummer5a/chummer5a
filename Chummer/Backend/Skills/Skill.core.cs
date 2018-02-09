@@ -53,7 +53,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0);
+        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!_objCharacter.Options.StrictSkillGroupsInCreateMode && _objCharacter.Options.UsePointsOnBrokenGroups));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interprentation of the rules
@@ -81,8 +81,9 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject?.Base > 0)
                 {
-                    _intBase = 0;
-                    return SkillGroupObject.Base;
+                    if (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups)
+                        _intBase = 0;
+                    return SkillGroupObject.Base + _intBase + FreeBase;
                 }
                 else
                 {
@@ -91,7 +92,8 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                if (SkillGroupObject != null && SkillGroupObject.Base != 0) return;
+                if (SkillGroupObject != null && SkillGroupObject.Base != 0 && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups))
+                    return;
 
                 int intMax = 0;
                 int intOld = _intBase; // old value, don't fire too many events...

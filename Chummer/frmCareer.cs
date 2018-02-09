@@ -668,7 +668,7 @@ namespace Chummer
 
         private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshPowerCollectionBeforeRemove(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            RefreshPowerCollectionBeforeRemove(treMetamagic, e);
         }
 
         private void PowersListChanged(object sender, ListChangedEventArgs e)
@@ -21138,7 +21138,7 @@ namespace Chummer
 
         private void tssLimitModifierEdit_Click(object sender, EventArgs e)
         {
-            UpdateLimitModifier(treLimit, cmsLimitModifier);
+            UpdateLimitModifier(treLimit);
         }
 
         private void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)

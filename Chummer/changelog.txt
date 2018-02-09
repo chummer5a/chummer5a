@@ -142,6 +142,7 @@ Application Changes:
 - Changed quality adding logic so that variable karma costs are no longer supported, but adding a quality with a karma cost in career mode won't prematurely add the quality before the character confirms that they wish to buy the selected quality.
 - Fixed an issue where using Reapply Improvements on a character who has less Essence than their metatype maximum could potentially increase the amount of special attribute points they would lose to Essence loss.
 - Fixed an issue where karma expenditures on martial arts at chargen would not get displayed in the sidebar.
+- The karma value calculator will now also display the value that should be used when comparing a priority-based character to if it were built with Point Buy (i.e. without karma value from contact points and knowledge points).
 
 Data Changes:
 
@@ -216,6 +217,7 @@ New Strings:
 - MessageTitle_Options_SettingsName
 - Message_Options_ValidationResults
 - MessageTitle_Options_ValidationResults
+- String_TotalComparisonWithPointBuy
 
 Changed Strings:
 
@@ -238,6 +240,12 @@ Changed Strings:
 - String_Update_Available
 - Checkbox_Options_KnowledgeMultiplier
 - Checkbox_Options_ContactMultiplier
+- Message_MetagenicQualitiesSubtractingKarma
+- Message_ExtraKarma
+- Message_NoExtraKarma
+- Tip_SkillsSkillGroups
+- Tip_SkillsActiveSkills
+- Tip_SkillsKnowledgeSkills
 
 Removed Strings:
 
@@ -256,6 +264,8 @@ Removed Strings:
 - String_No_Update_Found
 - Label_SummaryManeuvers
 - Tip_BuildManeuvers
+- Tip_OptionsExceptionalAttribute
+- Tip_BuildFoci
 
 Build 197
 

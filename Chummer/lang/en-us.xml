@@ -2497,7 +2497,7 @@
     </string>
     <string>
       <key>Message_MetagenicQualitiesSubtractingKarma</key>
-      <text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}.\nIs it okay to spend these points?</text>
+      <text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}.\nIs it okay to spend this karma?</text>
     </string>        
     <string>
       <key>MessageTitle_Invalid</key>
@@ -2505,7 +2505,7 @@
     </string>
     <string>
       <key>Message_ExtraKarma</key>
-      <text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra points?</text>
+      <text>You have {0} Karma remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose this extra Karma?</text>
     </string>
     <string>
       <key>MessageTitle_ExtraPoints</key>
@@ -2517,7 +2517,7 @@
     </string>
     <string>
       <key>Message_NoExtraKarma</key>
-      <text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
+      <text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
     </string>    
     <string>
       <key>Message_SumtoTen</key>
@@ -3896,10 +3896,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Allows characters in Career mode to purchase Positive Qualities at their normal price instead of doubling them.</text>
     </string>
     <string>
-      <key>Tip_OptionsExceptionalAttribute</key>
-      <text>Allows Attribute Points to be spent on the bonus point granted by the Exceptional Attributes quality.</text>
-    </string>
-    <string>
       <key>Tip_OptionsExceptionalNotMaxed</key>
       <text>Allows two attributes to be at the metatype maximum rather than one if one of those attributes is improved by Exceptional Attribute.</text>
     </string>
@@ -4023,15 +4019,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_SkillsSkillGroups</key>
-      <text>Skill Groups cost {0} Karma per point.</text>
+      <text>Skill Groups cost {0} Karma per new rating.</text>
     </string>
     <string>
       <key>Tip_SkillsActiveSkills</key>
-      <text>Skills cost {0} Karma per point and {1} Karma for a Specialization. Characters may have up to 1 Active Skill at Rating 6 or two at Rating 5. The rest must be at Rating 4 or lower.</text>
+      <text>Skills cost {0} Karma per new rating and {1} Karma for a Specialization.</text>
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {1} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating. A Language with a Rating of 0 is considered to be your Native Language.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -5192,10 +5188,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Tip_LifeModule_Warning</key>
       <text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
-    </string>
-    <string>
-      <key>Tip_BuildFoci</key>
-      <text>Each bonded Focus costs {0} Karma per point of Force.</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
@@ -8954,6 +8946,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	<string>
       <key>String_Total</key>
       <text>Total</text>
+    </string>
+    <string>
+      <key>String_TotalComparisonWithPointBuy</key>
+      <text>Total (For Comparison with Point Buy)</text>
     </string>
 	<string>
       <key>String_FreeSpells</key>

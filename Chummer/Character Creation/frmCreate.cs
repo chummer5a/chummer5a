@@ -10811,6 +10811,7 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Foci.
             int intFociPointsUsed = 0;
+            StringBuilder strFociPointsTooltip = new StringBuilder();
             foreach (Focus objFocus in CharacterObject.Foci)
             {
                 Gear objFocusGear = CharacterObject.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objFocus.GearId);
@@ -10901,9 +10902,18 @@ namespace Chummer
                     else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
                         intKarmaMultiplier += objLoopImprovement.Value;
                 }
-                intKarmaPointsRemain -= objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
-                intFociPointsUsed += objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
+
+                int intLoopCost = objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
+                intFociPointsUsed += intLoopCost;
+
+                if (blnDoUIUpdate)
+                {
+                    if (strFociPointsTooltip.Length > 0)
+                        strFociPointsTooltip.Append("\n + ");
+                    strFociPointsTooltip.Append(objFocusGear.DisplayName(GlobalOptions.Language) + " (" + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+                }
             }
+            intKarmaPointsRemain -= intFociPointsUsed;
 
             // Calculate the BP used by Stacked Foci.
             foreach (StackedFocus objFocus in CharacterObject.StackedFoci)
@@ -10913,6 +10923,13 @@ namespace Chummer
                     int intBindingCost = objFocus.BindingCost;
                     intKarmaPointsRemain -= intBindingCost;
                     intFociPointsUsed += intBindingCost;
+
+                    if (blnDoUIUpdate)
+                    {
+                        if (strFociPointsTooltip.Length > 0)
+                            strFociPointsTooltip.Append("\n + ");
+                        strFociPointsTooltip.Append(objFocus.Name(GlobalOptions.Language) + " (" + intBindingCost.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
                 }
             }
 
@@ -11072,11 +11089,12 @@ namespace Chummer
                 tabSkillUc.MissingDatabindingsWorkaround();
                 
                 lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + ' ' + strPoints;
-                tipTooltip.SetToolTip(lblMartialArtsBP, strMartialArtsBPToolTip.ToString());
+                tipTooltip.SetToolTip(lblBuildMartialArts, strMartialArtsBPToolTip.ToString());
 
                 lblNuyenBP.Text = nudNuyen.Value.ToString(GlobalOptions.CultureInfo) + ' ' + strPoints;
-
+                
                 lblFociBP.Text = string.Format("{0} " + strPoints, intFociPointsUsed);
+                tipTooltip.SetToolTip(lblBuildFoci, strFociPointsTooltip.ToString());
 
                 lblSpiritsBP.Text = string.Format("{0} " + strPoints, intSpiritPointsUsed);
 
@@ -15900,17 +15918,16 @@ namespace Chummer
             tipTooltip.SetToolTip(lblBuildPrimaryAttributes, LanguageManager.GetString("Tip_CommonAttributes", GlobalOptions.Language));
             tipTooltip.SetToolTip(lblBuildPositiveQualities, LanguageManager.GetString("Tip_BuildPositiveQualities", GlobalOptions.Language));
             tipTooltip.SetToolTip(lblBuildNegativeQualities, LanguageManager.GetString("Tip_BuildNegativeQualities", GlobalOptions.Language));
-            tipTooltip.SetToolTip(lblBuildContacts, LanguageManager.GetString("Tip_CommonContacts", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPContact.ToString()));
+            tipTooltip.SetToolTip(lblBuildContacts, LanguageManager.GetString("Tip_CommonContacts", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaContact.ToString()));
             tipTooltip.SetToolTip(lblBuildEnemies, LanguageManager.GetString("Tip_CommonEnemies", GlobalOptions.Language));
             tipTooltip.SetToolTip(lblBuildNuyen, LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.NuyenPerBP.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥'));
-            tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.GetString("Tip_SkillsSkillGroups", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSkillGroup.ToString()));
-            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.GetString("Tip_SkillsActiveSkills", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaSpecialization.ToString()).Replace("{1}", CharacterObjectOptions.BPActiveSkillSpecialization.ToString()));
-            tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.GetString("Tip_SkillsKnowledgeSkills", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.FreeKnowledgeMultiplier.ToString()).Replace("{1}", CharacterObjectOptions.BPKnowledgeSkill.ToString()));
-            tipTooltip.SetToolTip(lblBuildSpells, LanguageManager.GetString("Tip_SpellsSelectedSpells", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSpell.ToString()));
-            tipTooltip.SetToolTip(lblBuildFoci, LanguageManager.GetString("Tip_BuildFoci", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPFocus.ToString()));
-            tipTooltip.SetToolTip(lblBuildSpirits, LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSpirit.ToString()));
-            tipTooltip.SetToolTip(lblBuildSprites, LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPSpirit.ToString()));
-            tipTooltip.SetToolTip(lblBuildComplexForms, LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.BPComplexForm.ToString()));
+            tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.GetString("Tip_SkillsSkillGroups", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaImproveSkillGroup.ToString()));
+            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.GetString("Tip_SkillsActiveSkills", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaImproveActiveSkill.ToString()).Replace("{1}", CharacterObjectOptions.KarmaSpecialization.ToString()));
+            tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.GetString("Tip_SkillsKnowledgeSkills", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.FreeKnowledgeMultiplier.ToString()).Replace("{1}", CharacterObjectOptions.KarmaImproveKnowledgeSkill.ToString()));
+            tipTooltip.SetToolTip(lblBuildSpells, LanguageManager.GetString("Tip_SpellsSelectedSpells", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaSpell.ToString()));
+            tipTooltip.SetToolTip(lblBuildSpirits, LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaSpirit.ToString()));
+            tipTooltip.SetToolTip(lblBuildSprites, LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaSpirit.ToString()));
+            tipTooltip.SetToolTip(lblBuildComplexForms, LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Language).Replace("{0}", CharacterObjectOptions.KarmaNewComplexForm.ToString()));
             // Other Info Tab.
             tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.GetString("Tip_OtherCMPhysical", GlobalOptions.Language));
             tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.GetString("Tip_OtherCMStun", GlobalOptions.Language));
@@ -17252,7 +17269,7 @@ namespace Chummer
 
         private void tssLimitModifierEdit_Click(object sender, EventArgs e)
         {
-            UpdateLimitModifier(treLimit, cmsLimitModifier);
+            UpdateLimitModifier(treLimit);
         }
 
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
@@ -17277,7 +17294,7 @@ namespace Chummer
 
         private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshPowerCollectionBeforeRemove(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            RefreshPowerCollectionBeforeRemove(treMetamagic, e);
         }
 
         private void PowersListChanged(object sender, ListChangedEventArgs e)

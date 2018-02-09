@@ -149,17 +149,18 @@ namespace Chummer.UI.Attributes
                 if (intValue >= intTotalMaximum && intTotalMaximum != 0)
                 {
                     bool blnAttributeListContainsThisAbbrev = false;
-                    bool blnAnyOtherAttributeAtMax = false;
+                    int intNumOtherAttributeAtMax = 0;
+                    int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
                     foreach (CharacterAttrib objLoopAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
                         if (objLoopAttrib.Abbrev == AttributeName)
                             blnAttributeListContainsThisAbbrev = true;
                         else if (objLoopAttrib.AtMetatypeMaximum)
-                            blnAnyOtherAttributeAtMax = true;
-                        if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                            intNumOtherAttributeAtMax += 1;
+                        if (intNumOtherAttributeAtMax > intMaxOtherAttributesAtMax && blnAttributeListContainsThisAbbrev)
                             break;
                     }
-                    if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                    if (intNumOtherAttributeAtMax > intMaxOtherAttributesAtMax && blnAttributeListContainsThisAbbrev)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
                             LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,

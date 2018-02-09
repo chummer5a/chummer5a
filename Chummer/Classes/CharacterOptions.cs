@@ -34,23 +34,17 @@ namespace Chummer
 
         // Settings.
         private bool _blnAllow2ndMaxAttribute;
-        private bool _blnAllowAttributePointsOnExceptional;
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
-        private bool _blnAllowExceedAttributeBP;
         private bool _blnAllowHigherStackedFoci;
         private bool _blnAllowInitiationInCreateMode;
         private bool _blnAllowObsolescentUpgrade;
         private bool _blnAllowSkillDiceRolling;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
-        private bool _blnAlternateArmorEncumbrance;
-        private bool _blnAlternateComplexFormCost;
-        private bool _blnAlternateMatrixAttribute;
         private bool _blnAlternateMetatypeAttributeKarma;
         private bool _blnArmorDegradation;
-        private bool _blnArmorSuitCapacity;
         private bool _blnStrictSkillGroupsInCreateMode;
         private bool _blnAllowPointBuySpecializationsOnKarmaSkills;
         private bool _blnCalculateCommlinkResponse = true;
@@ -76,7 +70,6 @@ namespace Chummer
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
         private bool _blnMaximumArmorModifications;
-        private bool _blnMayBuyQualities;
         private bool _blnMetatypeCostsKarma = true;
         private bool _blnMoreLethalGameplay;
         private bool _blnMultiplyForbiddenCost;
@@ -87,14 +80,10 @@ namespace Chummer
         private bool _blnPrintNotes;
         private bool _blnPrintSkillsWithZeroRating = true;
         private bool _blnRestrictRecoil = true;
-        private bool _blnSkillDefaultingIncludesModifiers;
-        private bool _blnSpecialAttributeKarmaLimit;
         private bool _blnSpecialKarmaCostBasedOnShownValue;
         private bool _blnSpiritForceBasedOnTotalMAG;
-        private bool _blnStrengthAffectsRecoil;
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
-        private bool _blnUseContactPoints;
         private bool _blnUsePointsOnBrokenGroups;
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
@@ -124,23 +113,7 @@ namespace Chummer
         
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
-
-        // BP variables.
-        private int _intBPActiveSkill = 4;
-        private int _intBPActiveSkillSpecialization = 2;
-        private int _intBPAttributeMax = 15;
-        private int _intBPComplexForm = 1;
-        private int _intBPComplexFormOption = 1;
-        private int _intBPContact = 1;
-        private int _intBPFocus = 1;
-        private int _intBPKnowledgeSkill = 2;
-        private int _intBPMartialArt = 5;
-        private int _intBPMartialArtManeuver = 2;
-        private int _intBPSkillGroup = 10;
-        private int _intBPSpell = 3;
-        private int _intBPSpirit = 1;
-        private int _intBPAttribute = 10;
-
+        
         // Karma variables.
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
@@ -277,8 +250,6 @@ namespace Chummer
             objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString());
             // <spiritforcebasedontotalmag />
             objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString());
-            // <skilldefaultingincludesmodifiers />
-            objWriter.WriteElementString("skilldefaultingincludesmodifiers", _blnSkillDefaultingIncludesModifiers.ToString());
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
             // <printfreeexpenses />
@@ -303,8 +274,6 @@ namespace Chummer
             objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString());
             // <allow2ndmaxattribute />
             objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString());
-            // <allowattributepointsonexceptional />
-            objWriter.WriteElementString("allowattributepointsonexceptional", _blnAllowAttributePointsOnExceptional.ToString());
             // <freekarmacontactsmultiplier />
             objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString());
             // <freekarmaknowledgemultiplier />
@@ -327,8 +296,6 @@ namespace Chummer
             objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
             // <ignorearmorencumbrance />
             objWriter.WriteElementString("ignorearmorencumbrance", _blnIgnoreArmorEncumbrance.ToString());
-            // <alternatearmorencumbrance />
-            objWriter.WriteElementString("alternatearmorencumbrance", _blnAlternateArmorEncumbrance.ToString());
             // <esslossreducesmaximumonly />
             objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString());
             // <allowskillregrouping />
@@ -343,12 +310,8 @@ namespace Chummer
             objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
             // <allowcyberwareessdiscounts />
             objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString());
-            // <strengthaffectsrecoil />
-            objWriter.WriteElementString("strengthaffectsrecoil", _blnStrengthAffectsRecoil.ToString());
             // <maximumarmormodifications />
             objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString());
-            // <armorsuitcapacity />
-            objWriter.WriteElementString("armorsuitcapacity", _blnArmorSuitCapacity.ToString());
             // <armordegredation />
             objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString());
             // <specialkarmacostbasedonshownvalue />
@@ -387,24 +350,14 @@ namespace Chummer
             objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString());
             // <restrictrecoil />
             objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString());
-            // <allowexceedattributebp />
-            objWriter.WriteElementString("allowexceedattributebp", _blnAllowExceedAttributeBP.ToString());
             // <unrestrictednuyen />
             objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString());
             // <calculatecommlinkresponse />
             objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString());
             // <allowhigherstackedfoci />
             objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString());
-            // <alternatecomplexformcost />
-            objWriter.WriteElementString("alternatecomplexformcost", _blnAlternateComplexFormCost.ToString());
-            // <alternatematrixattribute />
-            objWriter.WriteElementString("alternatematrixattribute", _blnAlternateMatrixAttribute.ToString());
             // <alloweditpartofbaseweapon />
             objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString());
-            // <maybuyqualities />
-            objWriter.WriteElementString("maybuyqualities", _blnMayBuyQualities.ToString());
-            // <usecontactpoints />
-            objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
             // <breakskillgroupsincreatemode />
             objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
             // <allowpointbuyspecializationsonkarmaskills />
@@ -429,8 +382,6 @@ namespace Chummer
             objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString());
             // <freespiritpowerpointsmag />
             objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString());
-            // <specialattributekarmalimit />
-            objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
             // <allowhoverincrement />
             objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
             // <searchincategoryonly />
@@ -445,38 +396,6 @@ namespace Chummer
             objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
             // <usecalculatedpublicawareness />
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
-            // <bpcost>
-            objWriter.WriteStartElement("bpcost");
-            // <bpattribute />
-            objWriter.WriteElementString("bpattribute", _intBPAttribute.ToString());
-            // <bpattributemax />
-            objWriter.WriteElementString("bpattributemax", _intBPAttributeMax.ToString());
-            // <bpcontact />
-            objWriter.WriteElementString("bpcontact", _intBPContact.ToString());
-            // <bpmartialart />
-            objWriter.WriteElementString("bpmartialart", _intBPMartialArt.ToString());
-            // <bpmartialartmaneuver />
-            objWriter.WriteElementString("bpmartialartmaneuver", _intBPMartialArtManeuver.ToString());
-            // <bpskillgroup />
-            objWriter.WriteElementString("bpskillgroup", _intBPSkillGroup.ToString());
-            // <bpactiveskill />
-            objWriter.WriteElementString("bpactiveskill", _intBPActiveSkill.ToString());
-            // <bpactiveskillspecialization />
-            objWriter.WriteElementString("bpactiveskillspecialization", _intBPActiveSkillSpecialization.ToString());
-            // <bpknowledgeskill />
-            objWriter.WriteElementString("bpknowledgeskill", _intBPKnowledgeSkill.ToString());
-            // <bpspell />
-            objWriter.WriteElementString("bpspell", _intBPSpell.ToString());
-            // <bpfocus />
-            objWriter.WriteElementString("bpfocus", _intBPFocus.ToString());
-            // <bpspirit />
-            objWriter.WriteElementString("bpspirit", _intBPSpirit.ToString());
-            // <bpcomplexform />
-            objWriter.WriteElementString("bpcomplexform", _intBPComplexForm.ToString());
-            // <bpcomplexformoption />
-            objWriter.WriteElementString("bpcomplexformoption", _intBPComplexFormOption.ToString());
-            // </bpcost>
-            objWriter.WriteEndElement();
 
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
@@ -685,8 +604,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
             // Spirit Force Based on Total MAG.
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
-            // Skill Defaulting Includes Modifers.
-            objXmlNode.TryGetBoolFieldQuickly("skilldefaultingincludesmodifiers", ref _blnSkillDefaultingIncludesModifiers);
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
             // Print Free Expenses.
@@ -711,8 +628,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
             // Allow a 2nd Max Attribute
             objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
-            // Allow using Attribute Points with Exceptional Attribute
-            objXmlNode.TryGetBoolFieldQuickly("allowattributepointsonexceptional", ref _blnAllowAttributePointsOnExceptional);
             // Free Contacts Multiplier
             objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
             // Free Contacts use Total Value instead of Value
@@ -734,8 +649,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("ignorearmorencumbrance", ref _blnIgnoreArmorEncumbrance);
-            // Alternate Armor Encumbrance (BOD+STR)
-            objXmlNode.TryGetBoolFieldQuickly("alternatearmorencumbrance", ref _blnAlternateArmorEncumbrance);
             // Essence Loss Reduces Maximum Only.
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
@@ -752,12 +665,8 @@ namespace Chummer
             objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
             // Allow Cyberware Essence Cost Discounts.
             objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
-            // Strength Affects Recoil.
-            objXmlNode.TryGetBoolFieldQuickly("strengthaffectsrecoil", ref _blnStrengthAffectsRecoil);
             // Use Maximum Armor Modifications.
             objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
-            // Use Armor Suit Capacity.
-            objXmlNode.TryGetBoolFieldQuickly("armorsuitcapacity", ref _blnArmorSuitCapacity);
             // Allow Armor Degredation.
             objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
             // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
@@ -800,24 +709,14 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
             // Whether or not Recoil modifiers are restricted (AR 148).
             objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-            // Whether or not characters can exceed putting 50% of their points into Attributes.
-            objXmlNode.TryGetBoolFieldQuickly("allowexceedattributebp", ref _blnAllowExceedAttributeBP);
             // Whether or not character are not restricted to the number of points they can invest in Nuyen.
             objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
             // Whether or not a Commlink's Response should be calculated based on the number of programms it has running.
             objXmlNode.TryGetBoolFieldQuickly("calculatecommlinkresponse", ref _blnCalculateCommlinkResponse);
             // Whether or not Stacked Foci can go a combined Force higher than 6.
             objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-            // Whether or not Complex Forms are treated as Spell for BP/Karma costs.
-            objXmlNode.TryGetBoolFieldQuickly("alternatecomplexformcost", ref _blnAlternateComplexFormCost);
-            // Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-            objXmlNode.TryGetBoolFieldQuickly("alternatematrixattribute", ref _blnAlternateMatrixAttribute);
             // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
             objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-            // Whether or not the user may buy qualities.
-            objXmlNode.TryGetBoolFieldQuickly("maybuyqualities", ref _blnMayBuyQualities);
-            // Whether or not contact points are used instead of fixed contacts.
-            objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
             objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
             // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
@@ -840,8 +739,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
             // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
             objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-            // House rule: Whether or not Special Attributes count towards the maximum 50% Karma allowed for Attributes during karma gen.
-            objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
             // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
             objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
             // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
@@ -852,27 +749,7 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-
-            objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
-            // Attempt to populate the BP vlaues.
-            if (objXmlNode != null)
-            {
-                objXmlNode.TryGetInt32FieldQuickly("bpattribute", ref _intBPAttribute);
-                objXmlNode.TryGetInt32FieldQuickly("bpattributemax", ref _intBPAttributeMax);
-                objXmlNode.TryGetInt32FieldQuickly("bpcontact", ref _intBPContact);
-                objXmlNode.TryGetInt32FieldQuickly("bpmartialart", ref _intBPMartialArt);
-                objXmlNode.TryGetInt32FieldQuickly("bpmartialartmaneuver", ref _intBPMartialArtManeuver);
-                objXmlNode.TryGetInt32FieldQuickly("bpskillgroup", ref _intBPSkillGroup);
-                objXmlNode.TryGetInt32FieldQuickly("bpactiveskill", ref _intBPActiveSkill);
-                objXmlNode.TryGetInt32FieldQuickly("bpactiveskillspecialization", ref _intBPActiveSkillSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("bpknowledgeskill", ref _intBPKnowledgeSkill);
-                objXmlNode.TryGetInt32FieldQuickly("bpspell", ref _intBPSpell);
-                objXmlNode.TryGetInt32FieldQuickly("bpfocus", ref _intBPFocus);
-                objXmlNode.TryGetInt32FieldQuickly("bpspirit", ref _intBPSpirit);
-                objXmlNode.TryGetInt32FieldQuickly("bpcomplexform", ref _intBPComplexForm);
-                objXmlNode.TryGetInt32FieldQuickly("bpcomplexformoption", ref _intBPComplexFormOption);
-            }
-
+            
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -978,7 +855,8 @@ namespace Chummer
             GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
             // Skill Defaulting Includes Modifers.
-            GlobalOptions.LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers", string.Empty, true);
+            bool blnTemp = false;
+            GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
             // Print Expenses.
             GlobalOptions.LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses", string.Empty, true);
@@ -1162,15 +1040,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Defaulting on a Skill should include any Modifiers.
-        /// </summary>
-        public bool SkillDefaultingIncludesModifiers
-        {
-            get => _blnSkillDefaultingIncludesModifiers;
-            set => _blnSkillDefaultingIncludesModifiers = value;
-        }
-
-        /// <summary>
         /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public bool PrintExpenses
@@ -1288,15 +1157,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to allow using Attribute points on the bonus point from Exceptional Attribute
-        /// </summary>
-        public bool AllowAttributePointsOnExceptional
-        {
-            get => _blnAllowAttributePointsOnExceptional;
-            set => _blnAllowAttributePointsOnExceptional = value;
-        }
-
-        /// <summary>
         /// The CHA multiplier to be used with the Free Contacts Option.
         /// </summary>
         public int FreeContactsMultiplier
@@ -1383,15 +1243,6 @@ namespace Chummer
         {
             get => _blnIgnoreArmorEncumbrance;
             set => _blnIgnoreArmorEncumbrance = value;
-        }
-
-        /// <summary>
-        /// House Rule: Alternate Armor Encumbrance (BOD+STR) instead of (BOD*2).
-        /// </summary>
-        public bool AlternateArmorEncumbrance
-        {
-            get => _blnAlternateArmorEncumbrance;
-            set => _blnAlternateArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1493,16 +1344,7 @@ namespace Chummer
             get => _blnAllowCyberwareESSDiscounts;
             set => _blnAllowCyberwareESSDiscounts = value;
         }
-
-        /// <summary>
-        /// Whether or not a character's Strength affects Weapon Recoil.
-        /// </summary>
-        public bool StrengthAffectsRecoil
-        {
-            get => _blnStrengthAffectsRecoil;
-            set => _blnStrengthAffectsRecoil = value;
-        }
-
+        
         /// <summary>
         /// Whether or not Maximum Armor Modifications is in use.
         /// </summary>
@@ -1510,15 +1352,6 @@ namespace Chummer
         {
             get => _blnMaximumArmorModifications;
             set => _blnMaximumArmorModifications = value;
-        }
-
-        /// <summary>
-        /// Whether or not Armor Suit Capacity is in use.
-        /// </summary>
-        public bool ArmorSuitCapacity
-        {
-            get => _blnArmorSuitCapacity;
-            set => _blnArmorSuitCapacity = value;
         }
 
         /// <summary>
@@ -1664,16 +1497,7 @@ namespace Chummer
             get => _blnRestrictRecoil;
             set => _blnRestrictRecoil = value;
         }
-
-        /// <summary>
-        /// Whether or not characters can exceed putting 50% of their points into Attributes.
-        /// </summary>
-        public bool AllowExceedAttributeBP
-        {
-            get => _blnAllowExceedAttributeBP;
-            set => _blnAllowExceedAttributeBP = value;
-        }
-
+        
         /// <summary>
         /// Whether or not characters are unresicted in the number of points they can invest in Nuyen.
         /// </summary>
@@ -1702,48 +1526,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Coplex Forms have the same BP/Karma cost as Spells.
-        /// </summary>
-        public bool AlternateComplexFormCost
-        {
-            get => _blnAlternateComplexFormCost;
-            set => _blnAlternateComplexFormCost = value;
-        }
-
-        /// <summary>
-        /// Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-        /// </summary>
-        public bool AlternateMatrixAttribute
-        {
-            get => _blnAlternateMatrixAttribute;
-            set => _blnAlternateMatrixAttribute = value;
-        }
-
-        /// <summary>
         /// Whether or not the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
         /// </summary>
         public bool AllowEditPartOfBaseWeapon
         {
             get => _blnAllowEditPartOfBaseWeapon;
             set => _blnAllowEditPartOfBaseWeapon = value;
-        }
-
-        /// <summary>
-        /// Whether or not the user can buy qualities.
-        /// </summary>
-        public bool MayBuyQualities
-        {
-            get => _blnMayBuyQualities;
-            set => _blnMayBuyQualities = value;
-        }
-
-        /// <summary>
-        /// Whether or not to use contact points instead of fixed contacts.
-        /// </summary>
-        public bool UseContactPoints
-        {
-            get => _blnUseContactPoints;
-            set => _blnUseContactPoints = value;
         }
 
         /// <summary>
@@ -1853,145 +1641,8 @@ namespace Chummer
             get => _blnFreeSpiritPowerPointsMAG;
             set => _blnFreeSpiritPowerPointsMAG = value;
         }
-
-        /// <summary>
-        /// House rule: Whether or not Special Attributes count towards the max 50% karma spent on Attributes.
-        /// </summary>
-        public bool SpecialAttributeKarmaLimit
-        {
-            get => _blnSpecialAttributeKarmaLimit;
-            set => _blnSpecialAttributeKarmaLimit = value;
-        }
         #endregion
-
-        #region BP
-        /// <summary>
-        /// BP cost for each Attribute = this value.
-        /// </summary>
-        public int BPAttribute
-        {
-            get => _intBPAttribute;
-            set => _intBPAttribute = value;
-        }
-
-        /// <summary>
-        /// BP cost to raise an Attribute to its Metatype Maximum = this value.
-        /// </summary>
-        public int BPAttributeMax
-        {
-            get => _intBPAttributeMax;
-            set => _intBPAttributeMax = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Loyalty, Connection, and Group point = this value.
-        /// </summary>
-        public int BPContact
-        {
-            get => _intBPContact;
-            set => _intBPContact = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Martial Arts Rating = this value.
-        /// </summary>
-        public int BPMartialArt
-        {
-            get => _intBPMartialArt;
-            set => _intBPMartialArt = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Martial Art Maneuver = this value.
-        /// </summary>
-        public int BPMartialArtManeuver
-        {
-            get => _intBPMartialArtManeuver;
-            set => _intBPMartialArtManeuver = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Skill Group Rating = this value.
-        /// </summary>
-        public int BPSkillGroup
-        {
-            get => _intBPSkillGroup;
-            set => _intBPSkillGroup = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Active Skill Rating = this value.
-        /// </summary>
-        public int BPActiveSkill
-        {
-            get => _intBPActiveSkill;
-            set => _intBPActiveSkill = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Active Skill Specialization = this value.
-        /// </summary>
-        public int BPActiveSkillSpecialization
-        {
-            get => _intBPActiveSkillSpecialization;
-            set => _intBPActiveSkillSpecialization = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Knowledge Skill Rating = this value.
-        /// </summary>
-        public int BPKnowledgeSkill
-        {
-            get => _intBPKnowledgeSkill;
-            set => _intBPKnowledgeSkill = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Spell = this value.
-        /// </summary>
-        public int BPSpell
-        {
-            get => _intBPSpell;
-            set => _intBPSpell = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Rating of Foci.
-        /// </summary>
-        public int BPFocus
-        {
-            get => _intBPFocus;
-            set => _intBPFocus = value;
-        }
-
-        /// <summary>
-        /// BP cost for each service a Sprit owes = this value.
-        /// </summary>
-        public int BPSpirit
-        {
-            get => _intBPSpirit;
-            set => _intBPSpirit = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Complex Form Rating = this value.
-        /// </summary>
-        public int BPComplexForm
-        {
-            get => _intBPComplexForm;
-            set => _intBPComplexForm = value;
-        }
-
-        /// <summary>
-        /// BP cost for each Complex Form Option Rating = this value.
-        /// </summary>
-        public int BPComplexFormOption
-        {
-            get => _intBPComplexFormOption;
-            set => _intBPComplexFormOption = value;
-        }
-        #endregion
-
+        
         #region Karma
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
@@ -2482,7 +2133,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// 
+        /// Last folder from which a mugshot was added
         /// </summary>
         public string RecentImageFolder
         {

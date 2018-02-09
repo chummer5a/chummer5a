@@ -103,7 +103,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled || _lstAffectedSkills.Count == 0)
                     return false;
-                return _objCharacter.BuildMethodHasSkillPoints && !_lstAffectedSkills.Any(x => x.Ibase > 0);
+                return _objCharacter.BuildMethodHasSkillPoints && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups) && !_lstAffectedSkills.Any(x => x.Ibase > 0);
             }
         }
 

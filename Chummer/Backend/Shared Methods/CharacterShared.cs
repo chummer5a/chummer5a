@@ -234,15 +234,18 @@ namespace Chummer
 
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance);
-            // Create the Armor Encumbrance Improvements.
-            int intEncumbrance = _objCharacter.ArmorEncumbrance;
-            if (intEncumbrance < 0)
+            if (!_objCharacter.Options.IgnoreArmorEncumbrance)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
-                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
-                ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
-                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
-                ImprovementManager.Commit(_objCharacter);
+                // Create the Armor Encumbrance Improvements.
+                int intEncumbrance = _objCharacter.ArmorEncumbrance;
+                if (intEncumbrance < 0)
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
+                        Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
+                    ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
+                        Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
+                    ImprovementManager.Commit(_objCharacter);
+                }
             }
         }
 
@@ -302,8 +305,7 @@ namespace Chummer
         /// Edit and update a Limit Modifier.
         /// </summary>
         /// <param name="treLimit"></param>
-        /// <param name="cmsLimitModifier"></param>
-        protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
+        protected void UpdateLimitModifier(TreeView treLimit)
         {
             if (treLimit.SelectedNode.Level > 0)
             {
@@ -1545,7 +1547,7 @@ namespace Chummer
             }
         }
 
-        protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, RemovingOldEventArgs removingOldEventArgs)
+        protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
             if (removingOldEventArgs.OldObject is Power objPower)
             {
@@ -6470,12 +6472,12 @@ namespace Chummer
         /// </summary>
         /// <param name="picMugshot"></param>
         /// <param name="intCurrentMugshotIndexInList"></param>
-        protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
+        protected void UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
             if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || _objCharacter.Mugshots[intCurrentMugshotIndexInList] == null)
             {
                 picMugshot.Image = null;
-                return false;
+                return;
             }
 
             Image imgMugshot = _objCharacter.Mugshots[intCurrentMugshotIndexInList];
@@ -6485,8 +6487,6 @@ namespace Chummer
             else
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             picMugshot.Image = imgMugshot;
-
-            return true;
         }
 
         /// <summary>
