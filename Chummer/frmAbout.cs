@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -129,12 +129,7 @@ namespace Chummer
             textBoxContributors.Text += "\n\r\n\r\n\r" + string.Join("\n\r\n\r", Properties.Contributors.Usernames) + "\n\r\n\r/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
         }
-
-        private void cmdDonate_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LG855DVUT8FDU");
-        }
-
+        
         private void txt_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -145,11 +140,6 @@ namespace Chummer
                 e.SuppressKeyPress = true;
                 (sender as TextBox)?.SelectAll();
             }
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
         }
 
         private void tableLayoutPanel_Paint(object sender, PaintEventArgs e)

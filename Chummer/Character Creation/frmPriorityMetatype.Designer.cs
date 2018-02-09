@@ -251,6 +251,7 @@ namespace Chummer
             this.chkPossessionBased.Text = "Summoned by Possess-based Tradition";
             this.chkPossessionBased.UseVisualStyleBackColor = true;
             this.chkPossessionBased.Visible = false;
+            this.chkPossessionBased.CheckedChanged += new System.EventHandler(chkPossessionBased_CheckedChanged);
             // 
             // nudForce
             // 

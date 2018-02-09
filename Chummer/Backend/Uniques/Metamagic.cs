@@ -52,6 +52,7 @@ namespace Chummer
         /// Create a Metamagic from an XmlNode.
         /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
         /// <param name="objSource">Source of the Improvement.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource, string strForcedValue = "")
         {
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))

@@ -278,6 +278,7 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage)
         {
@@ -385,7 +386,8 @@ namespace Chummer
         /// <summary>
         /// Loads the proper language from the language file for every menu item recursively
         /// </summary>
-        /// <param name="tssItem"></param>
+        /// <param name="tssItem">Given ToolStripItem to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
         public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
         {
             string strControlTag = tssItem.Tag?.ToString();
@@ -403,6 +405,7 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="strLanguage">Language in from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
@@ -470,10 +473,12 @@ namespace Chummer
 
                     if (objEnglishDocument != null)
                     {
-                        foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
-                        {
-                            lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
-                        }
+                        using (XmlNodeList xmlEnglishStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                            if (xmlEnglishStringList != null)
+                                foreach (XmlNode objNode in xmlEnglishStringList)
+                                {
+                                    lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                                }
                     }
                 },
                 () =>
@@ -500,10 +505,12 @@ namespace Chummer
 
                     if (objLanguageDocument != null)
                     {
-                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                        {
-                            lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
-                        }
+                        using (XmlNodeList xmlLanguageStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                            if (xmlLanguageStringList != null)
+                                foreach (XmlNode objNode in xmlLanguageStringList)
+                                {
+                                    lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                                }
                     }
                 }
             );
@@ -613,6 +620,7 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
             string strReturn = string.Empty;
@@ -716,6 +724,7 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
         public static string ReverseTranslateExtra(string strExtra, string strFromLanguage)
         {
             // If no original could be found, just use whatever we were passed.

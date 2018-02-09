@@ -104,14 +104,13 @@ namespace Chummer
 
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("licenses.xml");
-                    XmlNodeList objXmlList = objXmlDocument.SelectNodes("/chummer/licenses/license");
-
-                    foreach (XmlNode objNode in objXmlList)
-                    {
-                        string strInnerText = objNode.InnerText;
-                        lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
+                    using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                        if (objXmlList != null)
+                            foreach (XmlNode objNode in objXmlList)
+                            {
+                                string strInnerText = objNode.InnerText;
+                                lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
+                            }
                 }
                 else
                 {
@@ -270,26 +269,6 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AcceptForm();
-        }
-
-        private void cboAmmo_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (ListItem objItem in ((ComboBox)sender).Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
-                {
-                    intWidth = intNewWidth;
-                }
-            }
-            objSender.DropDownWidth = intWidth;
         }
         #endregion
 

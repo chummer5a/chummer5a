@@ -135,10 +135,13 @@ namespace Chummer
                             cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
-                        string[] keys = cv.GetValueNames();
-                        report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
-                        report.AppendLine();
-                        cv.Close();
+                        if (cv != null)
+                        {
+                            string[] keys = cv.GetValueNames();
+                            report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
+                            report.AppendLine();
+                            cv.Close();
+                        }
                     }
                 }
 
@@ -147,8 +150,10 @@ namespace Chummer
 
                 report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             }
-            finally
+            catch (Exception ex)
             {
+                report.AppendLine();
+                report.AppendFormat("CrashHandlerException={0}", ex);
             }
             return report.ToString();
         }

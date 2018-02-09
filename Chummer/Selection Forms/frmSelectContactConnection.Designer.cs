@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectContactConnection
     {
@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboMembership = new System.Windows.Forms.ComboBox();
+            this.cboMembership = new ElasticComboBox();
             this.lblMembershipLabel = new System.Windows.Forms.Label();
-            this.cboAreaOfInfluence = new System.Windows.Forms.ComboBox();
+            this.cboAreaOfInfluence = new ElasticComboBox();
             this.lblAreaOfInfluenceLabel = new System.Windows.Forms.Label();
-            this.cboMagicalResources = new System.Windows.Forms.ComboBox();
+            this.cboMagicalResources = new ElasticComboBox();
             this.lblMagicalResourcesLabel = new System.Windows.Forms.Label();
-            this.cboMatrixResources = new System.Windows.Forms.ComboBox();
+            this.cboMatrixResources = new ElasticComboBox();
             this.lblMatrixResourcesLabel = new System.Windows.Forms.Label();
             this.lblTotalConnectionModifierLabel = new System.Windows.Forms.Label();
             this.lblTotalConnectionModifier = new System.Windows.Forms.Label();
@@ -54,7 +54,6 @@
             this.cboMembership.Name = "cboMembership";
             this.cboMembership.Size = new System.Drawing.Size(198, 21);
             this.cboMembership.TabIndex = 3;
-            this.cboMembership.DropDown += new System.EventHandler(this.cboField_DropDown);
             this.cboMembership.SelectedIndexChanged += new System.EventHandler(this.cboMembership_SelectedIndexChanged);
             // 
             // lblMembershipLabel
@@ -75,7 +74,6 @@
             this.cboAreaOfInfluence.Name = "cboAreaOfInfluence";
             this.cboAreaOfInfluence.Size = new System.Drawing.Size(198, 21);
             this.cboAreaOfInfluence.TabIndex = 5;
-            this.cboAreaOfInfluence.DropDown += new System.EventHandler(this.cboField_DropDown);
             this.cboAreaOfInfluence.SelectedIndexChanged += new System.EventHandler(this.cboAreaOfInfluence_SelectedIndexChanged);
             // 
             // lblAreaOfInfluenceLabel
@@ -96,7 +94,6 @@
             this.cboMagicalResources.Name = "cboMagicalResources";
             this.cboMagicalResources.Size = new System.Drawing.Size(198, 21);
             this.cboMagicalResources.TabIndex = 7;
-            this.cboMagicalResources.DropDown += new System.EventHandler(this.cboField_DropDown);
             this.cboMagicalResources.SelectedIndexChanged += new System.EventHandler(this.cboMagicalResources_SelectedIndexChanged);
             // 
             // lblMagicalResourcesLabel
@@ -117,7 +114,6 @@
             this.cboMatrixResources.Name = "cboMatrixResources";
             this.cboMatrixResources.Size = new System.Drawing.Size(198, 21);
             this.cboMatrixResources.TabIndex = 9;
-            this.cboMatrixResources.DropDown += new System.EventHandler(this.cboField_DropDown);
             this.cboMatrixResources.SelectedIndexChanged += new System.EventHandler(this.cboMatrixResources_SelectedIndexChanged);
             // 
             // lblMatrixResourcesLabel
@@ -252,13 +248,13 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboMembership;
+        private ElasticComboBox cboMembership;
         private System.Windows.Forms.Label lblMembershipLabel;
-        private System.Windows.Forms.ComboBox cboAreaOfInfluence;
+        private ElasticComboBox cboAreaOfInfluence;
         private System.Windows.Forms.Label lblAreaOfInfluenceLabel;
-        private System.Windows.Forms.ComboBox cboMagicalResources;
+        private ElasticComboBox cboMagicalResources;
         private System.Windows.Forms.Label lblMagicalResourcesLabel;
-        private System.Windows.Forms.ComboBox cboMatrixResources;
+        private ElasticComboBox cboMatrixResources;
         private System.Windows.Forms.Label lblMatrixResourcesLabel;
         private System.Windows.Forms.Label lblTotalConnectionModifierLabel;
         private System.Windows.Forms.Label lblTotalConnectionModifier;

@@ -19,15 +19,15 @@
  using System;
 using System.Collections.Generic;
  using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
     public sealed partial class frmSelectBuildMethod : Form
     {
         private readonly Character _objCharacter;
-        private readonly CharacterOptions _objOptions;
         private readonly string _strDefaultOption = "Standard";
+        private readonly XPathNavigator _xmlGameplayOptionsDataGameplayOptionsNode; 
         int intQualityLimits;
         decimal decNuyenBP;
 
@@ -35,9 +35,10 @@ namespace Chummer
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter;
-            _objOptions = _objCharacter.Options;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
+            _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml").GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>
@@ -56,24 +57,27 @@ namespace Chummer
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
             cboBuildMethod.DataSource = lstBuildMethod;
-            cboBuildMethod.SelectedValue = _objOptions.BuildMethod;
+            cboBuildMethod.SelectedValue = _objCharacter.Options.BuildMethod;
             cboBuildMethod.EndUpdate();
 
-            nudKarma.Value = _objOptions.BuildPoints;
-            nudMaxAvail.Value = _objOptions.Availability;
+            nudKarma.Value = _objCharacter.Options.BuildPoints;
+            nudMaxAvail.Value = _objCharacter.Options.Availability;
 
             // Populate the Gameplay Options list.
-            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
             List<ListItem> lstGameplayOptions = new List<ListItem>();
-            using (XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption"))
-                if (objXmlGameplayOptionList != null)
-                    foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
+            if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
+            {
+                foreach (XPathNavigator objXmlGameplayOption in _xmlGameplayOptionsDataGameplayOptionsNode.Select("gameplayoption"))
+                {
+                    string strName = objXmlGameplayOption.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
                     {
-                        string strName = objXmlGameplayOption["name"]?.InnerText;
-                        if (objXmlGameplayOption["default"]?.InnerText == bool.TrueString)
+                        if (objXmlGameplayOption.SelectSingleNode("default")?.Value == bool.TrueString)
                             _strDefaultOption = strName;
-                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
+                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
                     }
+                }
+            }
 
             cboGamePlay.BeginUpdate();
             cboGamePlay.ValueMember = "Value";
@@ -101,9 +105,9 @@ namespace Chummer
                 nudMaxAvail.Value = objCharacter.MaximumAvailability;
                 nudSumtoTen.Value = objCharacter.SumtoTen;
             }
-            else
+            else if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
-                XmlNode objXmlSelectedGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref intQualityLimits);
                 objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decNuyenBP);
             }
@@ -132,14 +136,12 @@ namespace Chummer
                     break;
             }
 
-            XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
-                using (XmlNodeList xmlBannedGradesList = xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                    if (xmlBannedGradesList != null)
-                        foreach (XmlNode xmlNode in xmlBannedGradesList)
-                            _objCharacter.BannedWareGrades.Add(xmlNode.InnerText);
+                foreach (XPathNavigator xmlNode in xmlGameplayOption.Select("bannedwaregrades/grade"))
+                            _objCharacter.BannedWareGrades.Add(xmlNode.Value);
 
                 int intTemp = 0;
                 if (!_objCharacter.Options.FreeContactsMultiplierEnabled && xmlGameplayOption.TryGetInt32FieldQuickly("contactmultiplier", ref intTemp))
@@ -180,7 +182,7 @@ namespace Chummer
             switch (strSelectedBuildMethod)
             {
                 case "Karma":
-                    nudKarma.Value = _objOptions.BuildMethod == "Karma" ? _objOptions.BuildPoints : 800;
+                    nudKarma.Value = _objCharacter.Options.BuildMethod == "Karma" ? _objCharacter.Options.BuildPoints : 800;
                     lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
@@ -211,8 +213,7 @@ namespace Chummer
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load the Priority information.
-            XmlDocument objXmlDocumentGameplayOption = XmlManager.Load("gameplayoptions.xml");
-            XmlNode objXmlGameplayOption = objXmlDocumentGameplayOption.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
             if (objXmlGameplayOption != null)
             {
                 int intTemp = 0;

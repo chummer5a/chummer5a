@@ -106,6 +106,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which the LifestyleQuality will be added.</param>
         /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
+        /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
@@ -130,25 +131,31 @@ namespace Chummer.Backend.Equipment
             string strAllowedFreeLifestyles = string.Empty;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
                 _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
-            if (strExtra.Contains('('))
+            _strExtra = strExtra;
+            int intParenthesesIndex = _strExtra.IndexOf('(');
+            if (intParenthesesIndex != -1)
             {
-                _strExtra = strExtra.Split('(')[1].TrimEnd(')');
+                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEnd(')') : string.Empty;
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
             XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
             if (xmlBonus != null)
             {
+                string strOldFoced = ImprovementManager.ForcedValue;
+                if (!string.IsNullOrEmpty(_strExtra))
+                    ImprovementManager.ForcedValue = _strExtra;
                 if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
+                    ImprovementManager.ForcedValue = strOldFoced;
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
-                    //objNode.Text += " (" + objImprovementManager.SelectedValue + ')';
                 }
+                ImprovementManager.ForcedValue = strOldFoced;
             }
 
             // Built-In Qualities appear as grey text to show that they cannot be removed.

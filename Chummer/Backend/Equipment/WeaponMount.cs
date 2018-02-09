@@ -209,40 +209,46 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlChildrenNode = objNode["weapons"];
             if (xmlChildrenNode != null)
 			{
-                foreach (XmlNode xmlWeaponNode in xmlChildrenNode.SelectNodes("weapon"))
-                {
-                    Weapon objWeapon = new Weapon(_objCharacter)
-                    {
-                        ParentVehicle = Parent,
-                        ParentMount = this
-                    };
-                    objWeapon.Load(xmlWeaponNode, blnCopy);
-                    _lstWeapons.Add(objWeapon);
-                }
+                using (XmlNodeList xmlWeaponList = xmlChildrenNode.SelectNodes("weapon"))
+                    if (xmlWeaponList != null)
+                        foreach (XmlNode xmlWeaponNode in xmlWeaponList)
+                        {
+                            Weapon objWeapon = new Weapon(_objCharacter)
+                            {
+                                ParentVehicle = Parent,
+                                ParentMount = this
+                            };
+                            objWeapon.Load(xmlWeaponNode, blnCopy);
+                            _lstWeapons.Add(objWeapon);
+                        }
             }
             xmlChildrenNode = objNode["weaponmountoptions"];
             if (xmlChildrenNode != null)
             {
-                foreach (XmlNode xmlWeaponMountOptionNode in xmlChildrenNode.SelectNodes("weaponmountoption"))
-                {
-                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                    objWeaponMountOption.Load(xmlWeaponMountOptionNode);
-                    WeaponMountOptions.Add(objWeaponMountOption);
-                }
+                using (XmlNodeList xmlWeaponMountOptionList = xmlChildrenNode.SelectNodes("weaponmountoption"))
+                    if (xmlWeaponMountOptionList != null)
+                        foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionList)
+                        {
+                            WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                            objWeaponMountOption.Load(xmlWeaponMountOptionNode);
+                            WeaponMountOptions.Add(objWeaponMountOption);
+                        }
             }
             xmlChildrenNode = objNode["mods"];
             if (xmlChildrenNode != null)
             {
-		        foreach (XmlNode xmlModNode in xmlChildrenNode.SelectNodes("mod"))
-		        {
-                    VehicleMod objMod = new VehicleMod(_objCharacter)
-                    {
-                        Parent = Parent,
-                        WeaponMountParent = this
-                    };
-                    objMod.Load(xmlModNode);
-		            _lstMods.Add(objMod);
-		        }
+                using (XmlNodeList xmlModList = xmlChildrenNode.SelectNodes("mod"))
+                    if (xmlModList != null)
+                        foreach (XmlNode xmlModNode in xmlModList)
+		                {
+                            VehicleMod objMod = new VehicleMod(_objCharacter)
+                            {
+                                Parent = Parent,
+                                WeaponMountParent = this
+                            };
+                            objMod.Load(xmlModNode);
+		                    _lstMods.Add(objMod);
+		                }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -290,23 +296,35 @@ namespace Chummer.Backend.Equipment
         {
             XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
             WeaponMount objMount = this;
-            XmlNode xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["size"].InnerText}\" and category = \"Size\"]");
-            objMount.Create(xmlDataNode);
+            XmlNode xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["size"]?.InnerText}\" and category = \"Size\"]");
+            if (xmlDataNode != null)
+            {
+                objMount.Create(xmlDataNode);
+                
+                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"]?.InnerText}\" and category = \"Flexibility\"]");
+                if (xmlDataNode != null)
+                {
+                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                    objWeaponMountOption.Create(xmlDataNode);
+                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                }
 
-            WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"].InnerText}\" and category = \"Flexibility\"]");
-            objWeaponMountOption.Create(xmlDataNode);
-            objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["control"]?.InnerText}\" and category = \"Control\"]");
+                if (xmlDataNode != null)
+                {
+                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                    objWeaponMountOption.Create(xmlDataNode);
+                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                }
 
-            objWeaponMountOption = new WeaponMountOption(_objCharacter);
-            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["control"].InnerText}\" and category = \"Control\"]");
-            objWeaponMountOption.Create(xmlDataNode);
-            objMount.WeaponMountOptions.Add(objWeaponMountOption);
-
-            objWeaponMountOption = new WeaponMountOption(_objCharacter);
-            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["visibility"].InnerText}\" and category = \"Visibility\"]");
-            objWeaponMountOption.Create(xmlDataNode);
-            objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["visibility"]?.InnerText}\" and category = \"Visibility\"]");
+                if (xmlDataNode != null)
+                {
+                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                    objWeaponMountOption.Create(xmlDataNode);
+                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                }
+            }
         }
         #endregion
 

@@ -244,27 +244,28 @@ namespace Chummer.Backend.Equipment
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
-                    XmlNodeList objXmlModList = xmlMods.SelectNodes("name");
-                    foreach (XmlNode objXmlVehicleMod in objXmlModList)
-                    {
-                        XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
-                        if (objXmlMod != null)
-                        {
-                            VehicleMod objMod = new VehicleMod(_objCharacter);
-                            int intRating = 0;
+                    using (XmlNodeList objXmlModList = xmlMods.SelectNodes("name"))
+                        if (objXmlModList != null)
+                            foreach (XmlNode objXmlVehicleMod in objXmlModList)
+                            {
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
+                                if (objXmlMod != null)
+                                {
+                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    int intRating = 0;
 
-                            if (objXmlVehicleMod.Attributes["rating"] != null)
-                                int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
+                                    if (objXmlVehicleMod.Attributes["rating"] != null)
+                                        int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
 
-                            if (objXmlVehicleMod.Attributes["select"] != null)
-                                objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
+                                    if (objXmlVehicleMod.Attributes["select"] != null)
+                                        objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
 
-                            objMod.Create(objXmlMod, intRating, this);
-                            objMod.IncludedInVehicle = true;
+                                    objMod.Create(objXmlMod, intRating, this);
+                                    objMod.IncludedInVehicle = true;
 
-                            _lstVehicleMods.Add(objMod);
-                        }
-                    }
+                                    _lstVehicleMods.Add(objMod);
+                                }
+                            }
                     XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
                     if (objAddSlotsNode != null)
                         int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
@@ -1250,15 +1251,19 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!objMod.IncludedInVehicle && objMod.Installed)
                     {
-                        if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<sensor>"))
+                        string strSensor = objMod.Bonus?["sensor"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString()).FastEscape('+'), out int intTemp))
                         {
-                            string strSensor = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).FastEscape('+');
-                            intSensor = Math.Max(Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo), intSensor);
+                            intSensor = Math.Max(intTemp, intSensor);
                         }
-                        if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<sensor>"))
+
+                        if (objMod.WirelessOn)
                         {
-                            string strSensor = objMod.WirelessBonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).FastEscape('+');
-                            intSensor = Math.Max(Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo), intSensor);
+                            strSensor = objMod.WirelessBonus?["sensor"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString()).FastEscape('+'), out int intTemp2))
+                            {
+                                intSensor = Math.Max(intTemp2, intSensor);
+                            }
                         }
                     }
                 }
@@ -1563,17 +1568,13 @@ namespace Chummer.Backend.Equipment
                 int intTotalSeats = Seats;
                 foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
-                    XmlNode objBonusNode = null;
-                    if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<seats>"))
-                        objBonusNode = objMod.Bonus;
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<seats>"))
-                        objBonusNode = objMod.WirelessBonus;
-                    if (objBonusNode != null)
+                    string strBonusSeats = objMod.WirelessOn ? objMod.WirelessBonus?["seats"]?.InnerText ?? objMod.Bonus?["seats"]?.InnerText : objMod.Bonus?["seats"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonusSeats))
                     {
-                        chrFirstCharacter = objBonusNode["seats"]?.InnerText[0] ?? '0';
+                        chrFirstCharacter = strBonusSeats[0];
                         if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                         {
-                            intTotalSeats = Math.Max(Convert.ToInt32(objBonusNode["seats"].InnerText.Replace("Rating", objMod.Rating.ToString())), intTotalSeats);
+                            intTotalSeats = Math.Max(Convert.ToInt32(strBonusSeats.Replace("Rating", objMod.Rating.ToString())), intTotalSeats);
                         }
                     }
                 }
@@ -1582,22 +1583,30 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusSeats = 0;
                 foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
-                    if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<seats>"))
+                    string strBonusSeats = objMod.Bonus?["seats"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonusSeats))
                     {
-                        chrFirstCharacter = objMod.Bonus["seats"]?.InnerText[0] ?? '0';
+                        chrFirstCharacter = strBonusSeats[0];
                         if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                         {
                             // If the bonus is determined by the existing seat number, evaluate the expression.
-                            intTotalBonusSeats += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objMod.Bonus["seats"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())), GlobalOptions.InvariantCultureInfo);
+                            intTotalBonusSeats += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())), GlobalOptions.InvariantCultureInfo);
                         }
                     }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<seats>"))
+
+                    if (objMod.WirelessOn)
                     {
-                        chrFirstCharacter = objMod.WirelessBonus["seats"]?.InnerText[0] ?? '0';
-                        if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
+                        strBonusSeats = objMod.WirelessBonus?["seats"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strBonusSeats))
                         {
-                            // If the bonus is determined by the existing seat number, evaluate the expression.
-                            intTotalBonusSeats += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objMod.WirelessBonus["seats"].InnerText.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())), GlobalOptions.InvariantCultureInfo);
+                            chrFirstCharacter = strBonusSeats[0];
+                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
+                            {
+                                // If the bonus is determined by the existing seat number, evaluate the expression.
+                                intTotalBonusSeats += Convert.ToInt32(
+                                    CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())),
+                                    GlobalOptions.InvariantCultureInfo);
+                            }
                         }
                     }
                 }
