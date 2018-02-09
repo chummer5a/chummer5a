@@ -19261,13 +19261,13 @@ namespace Chummer
             lstKarma.ContextMenuStrip = null;
             lstNuyen.ContextMenuStrip = null;
             //Find the first karma/nuyen entry
-            DateTime KarmaFirst = DateTime.MaxValue;
-            DateTime NuyenFirst = DateTime.MaxValue;
+            DateTime KarmaFirst = DateTime.MinValue;
+            DateTime NuyenFirst = DateTime.MinValue;
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
-                    if (objExpense.Date.CompareTo(KarmaFirst) < 0)
+                    if (KarmaFirst == DateTime.MinValue || objExpense.Date.CompareTo(KarmaFirst) < 0)
                         KarmaFirst = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
@@ -19300,7 +19300,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (objExpense.Date.CompareTo(NuyenFirst) < 0)
+                    if (NuyenFirst == DateTime.MinValue || objExpense.Date.CompareTo(NuyenFirst) < 0)
                         NuyenFirst = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
@@ -19376,14 +19376,14 @@ namespace Chummer
             objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
             objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEnd(':');
             objKarmaChartArea.AxisX.Minimum = 0;
-            objKarmaChartArea.AxisX.Maximum = (DateTime.Now.Date - KarmaFirst.Date).TotalDays;
+            objKarmaChartArea.AxisX.Maximum = (DateTime.Now - KarmaFirst).TotalDays;
 
             // Configure the Nuyen chart.
             ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
             objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
             objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEnd(':');
             objNuyenChartArea.AxisX.Minimum = 0;
-            objNuyenChartArea.AxisX.Maximum = (DateTime.Now.Date - NuyenFirst.Date).TotalDays;
+            objNuyenChartArea.AxisX.Maximum = (DateTime.Now - NuyenFirst).TotalDays;
             
             double dblKarmaValue = 0;
             double dblNuyenValue = 0;
