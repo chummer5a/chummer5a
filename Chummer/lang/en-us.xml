@@ -7944,8 +7944,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>You cannot select this {0} because your character has already been created.</text>
     </string>
 	<string>
-      <key>MessageTitle_SelectGeneric_PriorityRestriction</key>
+      <key>Message_SelectGeneric_PriorityRestriction</key>
       <text>You cannot select this {0} because your character's build method does not allow you to buy this {0}.</text>
+    </string>
+    <string>
+      <key>Message_SelectGeneric_CareerOnlyRestriction</key>
+      <text>You cannot select this {0} because your character has not been created yet.</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Nexus Window -->

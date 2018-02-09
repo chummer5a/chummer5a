@@ -8573,7 +8573,7 @@
       <text>Você não pode selecionar este {0} porque seu personagem já foi criado.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectGeneric_PriorityRestriction</key>
+      <key>Message_SelectGeneric_PriorityRestriction</key>
       <text>Você não pode selecionar este {0} porque o método de criação do seu personagem não permite que você compre este {0}.</text>
     </string>
     <string>

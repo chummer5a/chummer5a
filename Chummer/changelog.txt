@@ -146,6 +146,7 @@ Application Changes:
 - Chummer5 will now live-update the watch folder node in the character roster if the underlying folder's contents are changed in any way.
 - Both the Recent Characters and Favorite Characters lists in the character roster can now be sorted alphabetically. Part of #2074.
 - Characters no longer lose their position in the Most Recently Used list if they are added to the Favorite Characters list.
+- Added an option to limit an item so that it can only be taken in career mode (this is done with the <careeronly> tag).
 
 Data Changes:
 
@@ -221,6 +222,7 @@ New Strings:
 - Message_Options_ValidationResults
 - MessageTitle_Options_ValidationResults
 - String_TotalComparisonWithPointBuy
+- Message_SelectGeneric_CareerOnlyRestriction
 
 Changed Strings:
 
@@ -269,6 +271,7 @@ Removed Strings:
 - Tip_BuildManeuvers
 - Tip_OptionsExceptionalAttribute
 - Tip_BuildFoci
+- MessageTitle_SelectGeneric_PriorityRestriction
 
 Build 197
 

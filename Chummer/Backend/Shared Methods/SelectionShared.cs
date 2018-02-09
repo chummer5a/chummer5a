@@ -64,17 +64,30 @@ namespace Chummer
                 }
             }
             // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            else
             {
-                if (xmlNode["onlyprioritygiven"] != null)
+                if (xmlNode["careeronly"] != null)
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                             LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
+                }
+                if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                {
+                    if (xmlNode["onlyprioritygiven"] != null)
+                    {
+                        if (blnShowMessage)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        return false;
+                    }
                 }
             }
             if (!blnIgnoreLimit)
@@ -1055,17 +1068,30 @@ namespace Chummer
                 }
             }
             // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            else
             {
-                if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
+                if (xmlNode.SelectSingleNode("careeronly") != null)
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                             LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
+                }
+                if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                {
+                    if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
+                    {
+                        if (blnShowMessage)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        return false;
+                    }
                 }
             }
             if (!blnIgnoreLimit)

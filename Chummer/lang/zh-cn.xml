@@ -8373,7 +8373,7 @@
 			<text>你无法选择{0}，因为你已经创建了角色。</text>
 		</string>
 		<string>
-			<key>MessageTitle_SelectGeneric_PriorityRestriction</key>
+			<key>Message_SelectGeneric_PriorityRestriction</key>
 			<text>你无法选择{0}，因为你角色的创建方式不允许你购买{0}。</text>
 		</string>
 		<string>
