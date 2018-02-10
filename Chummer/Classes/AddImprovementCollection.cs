@@ -4639,8 +4639,7 @@ namespace Chummer.Classes
         {
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
-            XmlDocument doc = XmlManager.Load("options.xml");
-            XmlNodeList nodeList = doc.SelectNodes("/chummer/options/blackmarketpipelinecategories/category");
+            XmlNodeList nodeList = XmlManager.Load("options.xml").SelectNodes("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
             if (nodeList != null)
             {

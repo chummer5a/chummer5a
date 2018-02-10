@@ -8214,21 +8214,15 @@
 				<name>4 (2 arms, 2 legs)</name>
 				<translate>4（2臂、2腿）</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
-			<limb>
+      <limb>
 				<name>5 (2 arms, 2 legs, skull)</name>
 				<translate>5（2臂、2腿、头盖骨）</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
-			<limb>
+      <limb>
 				<name>5 (2 arms, 2 legs, torso)</name>
 				<translate>5（2臂、2腿、躯干）</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
-			<limb>
+      <limb>
 				<name>6 (2 arms, 2 legs, torso, skull)</name>
 				<translate>6（2臂、2腿、躯干、头盖骨）</translate>
 			</limb>
