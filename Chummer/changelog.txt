@@ -155,6 +155,7 @@ Application Changes:
 - Fixed an issue where characters with old versions of leveled qualities would get bonuses applied twice after those qualities were converted to the new system for leveled qualities.
 - Fixed a crash that occurred when loading old characters with too many priority points allocated to an attribute.
 - Fixed an issue where limited spells would get their drain values reduced twice, once at creation and once when their drain value would be fetched. Fixes #2474.
+- Fixed an issue where ammo and modes would not be translated correctly in the Browse tab of the weapon selection screen. Fixes #2481.
 
 Data Changes:
 
