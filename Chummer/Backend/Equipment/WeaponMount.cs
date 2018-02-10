@@ -542,16 +542,16 @@ namespace Chummer.Backend.Equipment
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                objAvail.CheapReplace("Vehicle Cost", strAvail, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objAvail.CheapReplace(strAvail, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                objAvail.CheapReplace("Body", strAvail, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                objAvail.CheapReplace("Speed", strAvail, () => Parent?.Speed.ToString() ?? "0");
-                objAvail.CheapReplace("Acceleration", strAvail, () => Parent?.Accel.ToString() ?? "0");
-                objAvail.CheapReplace("Handling", strAvail, () => Parent?.Handling.ToString() ?? "0");
+                objAvail.CheapReplace(strAvail, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objAvail.CheapReplace(strAvail, "Speed", () => Parent?.Speed.ToString() ?? "0");
+                objAvail.CheapReplace(strAvail, "Acceleration", () => Parent?.Accel.ToString() ?? "0");
+                objAvail.CheapReplace(strAvail, "Handling", () => Parent?.Handling.ToString() ?? "0");
                 try
                 {
                     intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
@@ -621,16 +621,16 @@ namespace Chummer.Backend.Equipment
                 StringBuilder objCost = new StringBuilder(strCost);
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCost, () => objLoopAttribute.TotalValue.ToString());
-                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCost, () => objLoopAttribute.TotalBase.ToString());
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                objCost.CheapReplace("Vehicle Cost", strCost, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCost, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                objCost.CheapReplace("Body", strCost, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                objCost.CheapReplace("Speed", strCost, () => Parent?.Speed.ToString() ?? "0");
-                objCost.CheapReplace("Acceleration", strCost, () => Parent?.Accel.ToString() ?? "0");
-                objCost.CheapReplace("Handling", strCost, () => Parent?.Handling.ToString() ?? "0");
+                objCost.CheapReplace(strCost, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objCost.CheapReplace(strCost, "Speed", () => Parent?.Speed.ToString() ?? "0");
+                objCost.CheapReplace(strCost, "Acceleration", () => Parent?.Accel.ToString() ?? "0");
+                objCost.CheapReplace(strCost, "Handling", () => Parent?.Handling.ToString() ?? "0");
                 decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
@@ -895,8 +895,8 @@ namespace Chummer.Backend.Equipment
                 StringBuilder objCost = new StringBuilder(strCost);
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCost, () => objLoopAttribute.TotalValue.ToString());
-                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCost, () => objLoopAttribute.TotalBase.ToString());
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
                 return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
@@ -973,8 +973,8 @@ namespace Chummer.Backend.Equipment
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
                 try

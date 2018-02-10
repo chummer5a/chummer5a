@@ -2127,8 +2127,8 @@ namespace Chummer.Backend.Equipment
 
                     foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                     {
-                        objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpression, () => objLoopAttribute.TotalValue.ToString());
-                        objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpression, () => objLoopAttribute.TotalBase.ToString());
+                        objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                        objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
 
                     decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo);
@@ -3557,7 +3557,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
 
                 if (blnCheckUnderbarrels && strAvail.Contains("{Children Avail}"))
                 {
@@ -3578,15 +3578,13 @@ namespace Chummer.Backend.Equipment
                                 chrLastAvailChar = 'R';
                         }
                     }
-                    strAvail = strAvail.Replace("{Children Avail}", intMaxChildAvail.ToString());
+                    objAvail.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }
-
-                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
-
+                
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
-                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
                 try
