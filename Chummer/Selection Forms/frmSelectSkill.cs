@@ -204,10 +204,16 @@ namespace Chummer
                     Dictionary<string, bool> dicSkillXmlFound = new Dictionary<string, bool>(strValue.Length);
                     foreach (string strLoop in strValue)
                     {
-                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating >= _intMinimumRating))
+                        // We only care about looking for skills if we're looking for a minimum or maximum rating. 
+                        if (_intMinimumRating > 0)
                         {
-                            continue;
+                            if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill =>
+                                objSkill.Name == strLoop && objSkill.Rating >= _intMinimumRating))
+                            {
+                                continue;
+                            }
                         }
+
                         if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating > _intMaximumRating))
                         {
                             continue;
