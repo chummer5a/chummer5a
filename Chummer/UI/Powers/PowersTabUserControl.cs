@@ -254,7 +254,7 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
             lblDiscountLabel.Visible = _objCharacter.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
         }
 
