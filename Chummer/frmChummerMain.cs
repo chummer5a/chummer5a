@@ -208,7 +208,7 @@ namespace Chummer
                             }
 
                             // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "sticymru" : "mru"));
+                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "stickymru" : "mru"));
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
@@ -236,7 +236,7 @@ namespace Chummer
                             }
 
                             // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "sticymru" : "mru"));
+                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "stickymru" : "mru"));
                         }
                         break;
                     case NotifyCollectionChangedAction.Reset:
