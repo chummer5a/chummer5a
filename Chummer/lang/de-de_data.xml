@@ -29121,7 +29121,7 @@
 				<specs>
 					<spec translate="Kampf">Combat</spec>
 					<spec translate="Wahrnehmung">Detection</spec>
-					<spec translate="Kelung">Health</spec>
+					<spec translate="Heilung">Health</spec>
 					<spec translate="Illusion">Illusion</spec>
 					<spec translate="Manipulation">Manipulation</spec>
 				</specs>
