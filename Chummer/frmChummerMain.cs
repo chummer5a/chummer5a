@@ -185,15 +185,64 @@ namespace Chummer
             CharacterRoster.Show();
         }
 
-        private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (CharacterRoster != null)
             {
-                if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
-                    CharacterRoster.RefreshNodes();
-                else
-                // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                    CharacterRoster.PopulateCharacterList(this, new TextEventArgs("mru"));
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        CharacterRoster.RefreshNodes();
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            bool blnRefreshSticky = false;
+                            foreach (CharacterShared objClosedForm in e.OldItems)
+                            {
+                                if (GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                {
+                                    blnRefreshSticky = true;
+                                    break;
+                                }
+                            }
+
+                            // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
+                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "sticymru" : "mru"));
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            bool blnRefreshSticky = false;
+                            foreach (CharacterShared objClosedForm in e.OldItems)
+                            {
+                                if (GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                {
+                                    blnRefreshSticky = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnRefreshSticky)
+                            {
+                                foreach (CharacterShared objNewForm in e.NewItems)
+                                {
+                                    if (GlobalOptions.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
+                                    {
+                                        blnRefreshSticky = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
+                            CharacterRoster.PopulateCharacterList(this, new TextEventArgs(blnRefreshSticky ? "sticymru" : "mru"));
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        CharacterRoster.PopulateCharacterList(this, null);
+                        break;
+                }
             }
         }
 
