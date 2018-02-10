@@ -670,7 +670,7 @@ namespace Chummer
                 // Create the Qualities that come with the Metatype.
                 foreach (XmlNode objXmlQualityItem in charNode.SelectNodes("qualities/*/quality"))
                 {
-                    XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                    XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
