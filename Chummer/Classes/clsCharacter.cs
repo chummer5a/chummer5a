@@ -7899,7 +7899,11 @@ namespace Chummer
                 {
                     Quality objQuality = new Quality(this);
                     if (i == 0 && xmlOldQuality.TryGetField("guid", Guid.TryParse, out Guid guidOld))
+                    {
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, guidOld.ToString());
                         objQuality.SetGUID(guidOld);
+                    }
+
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
                     objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons, xmlOldQuality["extra"]?.InnerText);
                     if (xmlOldQuality["bp"] != null && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
