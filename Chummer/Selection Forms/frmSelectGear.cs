@@ -503,6 +503,11 @@ namespace Chummer
         /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
+
+        /// <summary>
+        /// What prefixes is our gear allowed to have
+        /// </summary>
+        public List<string> ForceItemPrefixStrings { get; } = new List<string>();
         #endregion
 
         #region Methods
@@ -884,9 +889,9 @@ namespace Chummer
 
         private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder strFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                strFilter.Append(" and category = \"" + strCategory + '\"');
             else if (_setAllowedCategories.Count > 0)
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -897,19 +902,21 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')');
                 }
             }
             if (_blnShowArmorCapacityOnly)
-                strFilter += " and contains(armorcapacity, \"[\")";
+                strFilter.Append(" and contains(armorcapacity, \"[\")");
             else if (_blnShowPositiveCapacityOnly)
-                strFilter += " and not(contains(capacity, \"[\"))";
+                strFilter.Append(" and not(contains(capacity, \"[\"))");
             else if (_blnShowNegativeCapacityOnly)
-                strFilter += " and contains(capacity, \"[\")";
+                strFilter.Append(" and contains(capacity, \"[\")");
             if (_objParentNode == null)
-                strFilter += " and not(requireparent)";
+                strFilter.Append(" and not(requireparent)");
+            foreach (string strPrefix in ForceItemPrefixStrings)
+                strFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
 
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            strFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }

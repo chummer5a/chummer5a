@@ -156,6 +156,7 @@ Application Changes:
 - Fixed a crash that occurred when loading old characters with too many priority points allocated to an attribute.
 - Fixed an issue where limited spells would get their drain values reduced twice, once at creation and once when their drain value would be fetched. Fixes #2474.
 - Fixed an issue where ammo and modes would not be translated correctly in the Browse tab of the weapon selection screen. Fixes #2481.
+- Fixed an issue where buying ammo for ranged weapons and attempting to load specific ammo into bows, crossbows, and some exotic weapons would not work. Fixes #2476, fixes #2372.
 
 Data Changes:
 
