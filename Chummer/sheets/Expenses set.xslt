@@ -78,7 +78,7 @@
               </th>
             </tr>
             <xsl:call-template name="Expenses">
-              <xsl:with-param name="type" select="$lang.Karma"/>
+              <xsl:with-param name="type" select="'Karma'"/>
               <xsl:with-param name="sfx" select="'&#160;&#160;'"/>
             </xsl:call-template>
             <tr>
@@ -116,7 +116,7 @@
               </th>
             </tr>
             <xsl:call-template name="Expenses">
-              <xsl:with-param name="type" select="$lang.Nuyen"/>
+              <xsl:with-param name="type" select="'Nuyen'"/>
             </xsl:call-template>
             <tr>
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>

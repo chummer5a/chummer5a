@@ -5,6 +5,8 @@
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
+  <xsl:include href="xt.ComplexForms.xslt"/>
+  <xsl:include href="xt.CritterPowers.xslt"/>
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
   <xsl:include href="xt.Nothing2Show.xslt"/>
@@ -40,6 +42,9 @@
           html {
           height: 100%;
           margin: 0px;  /* this affects the margin on the html before sending to printer */
+          }
+          th {
+          text-align: center;
           }
           .upper {
           text-transform: uppercase;
@@ -102,6 +107,22 @@
           </xsl:call-template>
         </xsl:if>
 
+        <xsl:if test="complexforms/complexform/notes != ''">
+          <div id="ComplexFormsBlock">
+            <table><tr><td/></tr></table>
+            <xsl:call-template name="TableTitle">
+              <xsl:with-param name="name" select="$lang.ComplexForms"/>
+            </xsl:call-template>
+            <table class="tablestyle">
+              <xsl:call-template name="ComplexForms"/>
+            </table>
+          </div>
+          <xsl:call-template name="RowSummary">
+            <xsl:with-param name="text" select="$lang.ComplexForms"/>
+            <xsl:with-param name="blockname" select="'ComplexFormsBlock'"/>
+          </xsl:call-template>
+        </xsl:if>
+
         <xsl:if test="lifestyles/lifestyle/notes != ''">
           <div id="LifestyleBlock">
             <table><tr><td/></tr></table>
@@ -122,11 +143,29 @@
           <xsl:call-template name="notes"/>
         </xsl:if>
 
+        <xsl:if test="critterpowers/critterpower">
+          <div id="CritterBlock">
+            <table><tr><td/></tr></table>
+            <xsl:call-template name="TableTitle">
+              <xsl:with-param name="name" select="$lang.Critters"/>
+            </xsl:call-template>
+            <table class="tablestyle">
+              <xsl:call-template name="CritterPowers"/>
+            </table>
+          </div>
+          <xsl:call-template name="RowSummary">
+            <xsl:with-param name="text" select="$lang.Critters"/>
+            <xsl:with-param name="blockname" select="'CritterBlock'"/>
+          </xsl:call-template>
+        </xsl:if>
+
         <xsl:choose>
           <xsl:when test="qualities/quality/notes != ''"/>
           <xsl:when test="spells/spell/notes != ''"/>
+          <xsl:when test="complexforms/complexform/notes != ''"/>
           <xsl:when test="lifestyles/lifestyle/notes != ''"/>
           <xsl:when test="concat(concept,description,background,notes,gamenotes) !=''"/>
+          <xsl:when test="critterpowers/critterpower != ''"/>
           <xsl:otherwise>
             <xsl:call-template name="nothing2show">
               <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Notes"/>
