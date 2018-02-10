@@ -158,6 +158,7 @@ Application Changes:
 - Fixed an issue where ammo and modes would not be translated correctly in the Browse tab of the weapon selection screen. Fixes #2481.
 - Fixed an issue where buying ammo for ranged weapons and attempting to load specific ammo into bows, crossbows, and some exotic weapons would not work. Fixes #2476, fixes #2372.
 - Added the ability for improvements to add weapons via the <addweapon> bonus.
+- Altering custom data directory information in the options menu will now immediately apply those changes instead of requiring Chummer5a to restart (though the prompt will still appear just in case).
 
 Data Changes:
 

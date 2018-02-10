@@ -32,6 +32,7 @@ namespace Chummer
     public partial class frmOptions : Form
     {
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
+        private readonly IList<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfos;
         private bool _blnSkipRefresh;
         private bool _blnDirty;
         private bool _blnLoading = true;
@@ -43,6 +44,25 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
+
+            _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfo);
+            string strCustomDataRootPath = Path.Combine(Application.StartupPath, "customdata");
+            if (Directory.Exists(strCustomDataRootPath))
+            {
+                foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
+                {
+                    // Only add directories for which we don't already have entries loaded from registry
+                    if (_lstCustomDataDirectoryInfos.All(x => x.Path != strLoopDirectoryPath))
+                    {
+                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
+                        {
+                            Name = Path.GetFileName(strLoopDirectoryPath),
+                            Path = strLoopDirectoryPath
+                        };
+                        _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
+                    }
+                }
+            }
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
@@ -764,11 +784,11 @@ namespace Chummer
 
         private void PopulateCustomDataDirectoryTreeView()
         {
-            if (GlobalOptions.CustomDataDirectoryInfo.Count != treCustomDataDirectories.Nodes.Count)
+            if (_lstCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
             {
                 treCustomDataDirectories.Nodes.Clear();
 
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo)
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _lstCustomDataDirectoryInfos)
                 {
                     TreeNode objNode = new TreeNode
                     {
@@ -784,7 +804,7 @@ namespace Chummer
                 for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
-                    CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfo[i];
+                    CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
                     objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
@@ -998,10 +1018,14 @@ namespace Chummer
                 objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
 
                 // Save the SourcebookInfo.
-                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
-                    if (objSourceRegistry != null)
-                        foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
-                            objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
+                RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
+                if (objSourceRegistry != null)
+                {
+                    foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
+                        objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
+
+                    objSourceRegistry.Close();
+                }
 
                 // Save the Custom Data Directory Info.
                 if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
@@ -1009,9 +1033,9 @@ namespace Chummer
                 RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
                 if (objCustomDataDirectoryRegistry != null)
                 {
-                    for (int i = 0; i < GlobalOptions.CustomDataDirectoryInfo.Count; ++i)
+                    for (int i = 0; i < _lstCustomDataDirectoryInfos.Count; ++i)
                     {
-                        CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.CustomDataDirectoryInfo[i];
+                        CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos[i];
                         RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
                         if (objLoopKey != null)
                         {
@@ -1026,6 +1050,8 @@ namespace Chummer
                 }
 
                 objRegistry.Close();
+
+                GlobalOptions.RebuildCustomDataDirectoryInfoList();
             }
         }
 
@@ -1057,7 +1083,7 @@ namespace Chummer
 
             foreach (TreeNode objNode in treCustomDataDirectories.Nodes)
             {
-                CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
+                CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
                 if (objCustomDataDirectory != null)
                 {
                     if (objNode.Checked)
@@ -1714,13 +1740,13 @@ namespace Chummer
                             Path = dlgSelectFolder.SelectedPath
                         };
 
-                        if (GlobalOptions.CustomDataDirectoryInfo.Any(x => x.Name == objNewCustomDataDirectory.Name))
+                        if (_lstCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
                         {
                             MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage), LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
-                            GlobalOptions.CustomDataDirectoryInfo.Add(objNewCustomDataDirectory);
+                            _lstCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
                             PopulateCustomDataDirectoryTreeView();
                         }
                     }
@@ -1733,12 +1759,12 @@ namespace Chummer
             TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
             if (objSelectedCustomDataDirectory != null)
             {
-                CustomDataDirectoryInfo objInfoToRemove = GlobalOptions.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+                CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
                 if (objInfoToRemove != null)
                 {
                     if (objInfoToRemove.Enabled)
                         OptionsChanged(sender, e);
-                    GlobalOptions.CustomDataDirectoryInfo.Remove(objInfoToRemove);
+                    _lstCustomDataDirectoryInfos.Remove(objInfoToRemove);
                     PopulateCustomDataDirectoryTreeView();
                 }
             }
@@ -1749,7 +1775,7 @@ namespace Chummer
             TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
             if (objSelectedCustomDataDirectory != null)
             {
-                CustomDataDirectoryInfo objInfoToRename = GlobalOptions.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+                CustomDataDirectoryInfo objInfoToRename = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
                 if (objInfoToRename != null)
                 {
                     frmSelectText frmSelectCustomDirectoryName = new frmSelectText
@@ -1758,7 +1784,7 @@ namespace Chummer
                     };
                     if (frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
                     {
-                        if (GlobalOptions.CustomDataDirectoryInfo.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
+                        if (_lstCustomDataDirectoryInfos.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
                         {
                             MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage), LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
@@ -1778,22 +1804,21 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToRaise = null;
-                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
-                for(;intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
+                for(;intIndex < _lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {
-                    if (lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
+                    if (_lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
                     {
-                        objInfoToRaise = lstCustomDataDirectoryInfos.ElementAt(intIndex);
+                        objInfoToRaise = _lstCustomDataDirectoryInfos.ElementAt(intIndex);
                         break;
                     }
                 }
                 if (objInfoToRaise != null && intIndex > 0)
                 {
-                    CustomDataDirectoryInfo objTempInfo = GlobalOptions.CustomDataDirectoryInfo.ElementAt(intIndex - 1);
+                    CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex - 1);
                     bool blnOptionsChanged = objInfoToRaise.Enabled || objTempInfo.Enabled;
-                    GlobalOptions.CustomDataDirectoryInfo[intIndex - 1] = objInfoToRaise;
-                    GlobalOptions.CustomDataDirectoryInfo[intIndex] = objTempInfo;
+                    _lstCustomDataDirectoryInfos[intIndex - 1] = objInfoToRaise;
+                    _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
 
                     PopulateCustomDataDirectoryTreeView();
                     if (blnOptionsChanged)
@@ -1808,22 +1833,21 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToLower = null;
-                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
-                for (; intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
+                for (; intIndex < _lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {
-                    if (lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
+                    if (_lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
                     {
-                        objInfoToLower = lstCustomDataDirectoryInfos.ElementAt(intIndex);
+                        objInfoToLower = _lstCustomDataDirectoryInfos.ElementAt(intIndex);
                         break;
                     }
                 }
-                if (objInfoToLower != null && intIndex < lstCustomDataDirectoryInfos.Count - 1)
+                if (objInfoToLower != null && intIndex < _lstCustomDataDirectoryInfos.Count - 1)
                 {
-                    CustomDataDirectoryInfo objTempInfo = GlobalOptions.CustomDataDirectoryInfo.ElementAt(intIndex + 1);
+                    CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex + 1);
                     bool blnOptionsChanged = objInfoToLower.Enabled || objTempInfo.Enabled;
-                    GlobalOptions.CustomDataDirectoryInfo[intIndex + 1] = objInfoToLower;
-                    GlobalOptions.CustomDataDirectoryInfo[intIndex] = objTempInfo;
+                    _lstCustomDataDirectoryInfos[intIndex + 1] = objInfoToLower;
+                    _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
 
                     PopulateCustomDataDirectoryTreeView();
                     if (blnOptionsChanged)
