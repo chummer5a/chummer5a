@@ -150,6 +150,8 @@ Application Changes:
 - Added support to the <unlockskills> bonus to use XPath filters to select which skills to unlock instead of being beholden to built-in filter enumerators.
 - Added the ability for gear added through improvements to retain its original cost if a "fullcost" node is present as a child element.
 - Added the ability for equipment of all types to have costs and availabilities based on a character's attributes.
+- Fixed an issue where the house rule for attribute points getting spent after karma did nothing. Note that it will not affect attribute values when spending on special attributes with values lost from Essence loss (i.e. special attribute points will still be spent before Essence loss modifiers are applied, and karma will still be spent after Essence loss modifiers are applied), though it will still affect karma costs associated with them. Fixes #2472.
+- Fixed an issue where the house rule for metatypes using alternate attribute karma costs would not properly account for spent priority points.
 
 Data Changes:
 

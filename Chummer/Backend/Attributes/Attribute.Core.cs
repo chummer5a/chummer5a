@@ -159,7 +159,7 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
             objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
             objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
-			objWriter.WriteElementString("bp", CalculatedBP.ToString(objCulture));
+			objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
 			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
 			objWriter.WriteEndElement();
         }
@@ -1053,70 +1053,6 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        /// <summary>
-        /// Amount of BP/Karma spent on this CharacterAttribute.
-        /// </summary>
-        public int CalculatedBP
-        {
-            get
-            {
-                int intBP = 0;
-
-                if (Abbrev != "EDG" && Abbrev != "MAG" && Abbrev != "MAGAdept" && Abbrev != "RES" && Abbrev != "DEP")
-                {
-                    if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                    {
-                        // Weird house rule method that treats the Metatype's minimum as being 1 for the purpose of calculating Karma costs.
-                        for (int i = 1; i <= _objCharacter.GetAttribute(Abbrev).Value - _objCharacter.GetAttribute(Abbrev).TotalMinimum; i++)
-                            intBP += (i + 1) * _objCharacter.Options.KarmaAttribute;
-                    }
-                    else
-                    {
-                        // Karma calculation starts from the minimum score + 1 and steps through each up to the current score. At each step, the current number is multplied by the Karma Cost to
-                        // give us the cost of at each step.
-                        for (int i = _objCharacter.GetAttribute(Abbrev).TotalMinimum + 1; i <= _objCharacter.GetAttribute(Abbrev).Value; i++)
-                            intBP += i * _objCharacter.Options.KarmaAttribute;
-                    }
-                }
-                else
-                {
-                    // Find the character's Essence Loss. This applies unless the house rules to have ESS Loss only affect the Maximum of the CharacterAttribute and/or have ESS Loss not decrease karma costs are turned on.
-                    int intEssenceLoss = 0;
-                    if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
-                    {
-                        if (Abbrev == "MAG" || Abbrev == "MAGAdept")
-                            intEssenceLoss = _objCharacter.EssencePenaltyMAG;
-                        else
-                            intEssenceLoss = _objCharacter.EssencePenalty;
-                    }
-
-                    // Don't apply the ESS loss penalty to EDG.
-                    int intUseEssenceLoss = intEssenceLoss;
-                    if (Abbrev == "EDG")
-                        intUseEssenceLoss = 0;
-
-                    // If the character has an ESS penalty, the minimum needs to be bumped up by 1 so that the cost calculation is correct.
-                    int intMinModifier = 0;
-                    if (intUseEssenceLoss > 0)
-                        intMinModifier = 1;
-
-                    if (_objCharacter.GetAttribute(Abbrev).TotalMinimum == 0 && _objCharacter.GetAttribute(Abbrev).TotalMaximum == 0)
-                    {
-                        intBP += 0;
-                    }
-                    else
-                    {
-                        // Karma calculation starts from the minimum score + 1 and steps through each up to the current score. At each step, the current number is multplied by the Karma Cost to
-                        // give us the cost of at each step.
-                        for (int i = _objCharacter.GetAttribute(Abbrev).TotalMinimum + 1 + intMinModifier; i <= _objCharacter.GetAttribute(Abbrev).Value + intUseEssenceLoss; ++i)
-                            intBP += i * _objCharacter.Options.KarmaAttribute;
-                    }
-                }
-
-                return intBP;
-            }
-        }
-
         public int SpentPriorityPoints
         {
             get
@@ -1206,10 +1142,20 @@ namespace Chummer.Backend.Attributes
                     return 0;
 
                 int intValue = Value;
-                int intRawTotalBase = TotalBase;
+                int intRawTotalBase = _objCharacter.Options.ReverseAttributePriorityOrder ? Math.Max(FreeBase + RawMinimum, TotalMinimum) : TotalBase;
                 int intTotalBase = intRawTotalBase;
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                    intTotalBase = 1;
+                {
+                    int intHumanMinimum = _objCharacter.Options.ReverseAttributePriorityOrder ? FreeBase + 1 + MinimumModifiers : Base + FreeBase + 1 + MinimumModifiers;
+                    if (intHumanMinimum < 1)
+                    {
+                        if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                            intHumanMinimum = 0;
+                        else
+                            intHumanMinimum = 1;
+                    }
+                    intTotalBase = intHumanMinimum;
+                }
 
                 // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
                 // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
