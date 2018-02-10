@@ -61,7 +61,7 @@
       </xs:element>
       <xs:element name="addesstophysicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="addesstostuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="addgear" minOccurs="0" maxOccurs="1">
+      <xs:element name="addgear" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -72,7 +72,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="addlimb" minOccurs="0" maxOccurs="1">
+      <xs:element name="addlimb" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="limbslot" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -97,13 +97,21 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="addspell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="addware" minOccurs="0" maxOccurs="1">
+      <xs:element name="addware" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="grade" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="addweapon" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="fullcost" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>

@@ -775,6 +775,9 @@
       </required>
       <bonus>
         <selecttext />
+        <addweapon>
+          <name>Elemental Body</name>
+        </addweapon>
       </bonus>
     </power>
     <power>
