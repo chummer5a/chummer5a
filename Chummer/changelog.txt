@@ -154,6 +154,7 @@ Application Changes:
 - Fixed an issue where the house rule for metatypes using alternate attribute karma costs would not properly account for spent priority points.
 - Fixed an issue where characters with old versions of leveled qualities would get bonuses applied twice after those qualities were converted to the new system for leveled qualities.
 - Fixed a crash that occurred when loading old characters with too many priority points allocated to an attribute.
+- Fixed an issue where limited spells would get their drain values reduced twice, once at creation and once when their drain value would be fetched. Fixes #2474.
 
 Data Changes:
 

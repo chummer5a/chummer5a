@@ -103,38 +103,7 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-
-            if (_blnLimited && _strDV.StartsWith('F'))
-            {
-                string strDV = _strDV;
-                int intPos;
-                if (strDV.Contains('-'))
-                {
-                    intPos = strDV.IndexOf('-') + 1;
-                    string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Substring(0, intPos);
-                    int.TryParse(strAfter, out int intAfter);
-                    intAfter += 2;
-                    strDV += intAfter.ToString();
-                }
-                else if (strDV.Contains('+'))
-                {
-                    intPos = strDV.IndexOf('+');
-                    string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Substring(0, intPos);
-                    int.TryParse(strAfter, out int intAfter);
-                    intAfter -= 2;
-                    if (intAfter > 0)
-                        strDV += '+' + intAfter.ToString();
-                    else if (intAfter < 0)
-                        strDV += intAfter.ToString();
-                }
-                else
-                {
-                    strDV += "-2";
-                }
-                _strDV = strDV;
-            }
+            
             /*
             if (_strNotes == string.Empty)
             {
@@ -194,7 +163,10 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
-            objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited);
+            if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version("5.197.30"))
+            {
+                GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
+            }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
             objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
