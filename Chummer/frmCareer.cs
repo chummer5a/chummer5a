@@ -482,65 +482,6 @@ namespace Chummer
             cboVehicleWeaponFiringMode.DataSource = lstFireModes;
             cboVehicleWeaponFiringMode.EndUpdate();
 
-            //TODO: Do we really need this?
-            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition) && CharacterObject.MagicTradition != "None")
-            {
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
-                if (objXmlTradition != null)
-                {
-                    lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-                    string strDrainAtt = CharacterObject.TraditionDrain;
-
-                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                    }
-                    string strDrain = objDrain.ToString();
-                    if (string.IsNullOrEmpty(strDrain))
-                    {
-                        strDrain = "0";
-                    }
-
-                    // Add any Improvements for Drain Resistance.
-                    int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-                    lblDrainAttributesValue.Text = intDrain.ToString();
-                }
-            }
-
-            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream) && CharacterObject.TechnomancerStream != "None")
-            {
-                XmlNode objXmlTradition = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.TechnomancerStream + "\"]");
-                if (objXmlTradition != null)
-                {
-                    lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
-
-                    // Update the Fading CharacterAttribute Value.
-                    string strDrainAtt = CharacterObject.TechnomancerFading;
-
-                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                    }
-                    string strFading = objDrain.ToString();
-                    if (string.IsNullOrEmpty(strFading))
-                    {
-                        strFading = "0";
-                    }
-                    int intFading = 0;
-                    try
-                    {
-                        intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
-                    }
-                    catch (XPathException) { }
-                    intFading += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FadingResistance);
-                    lblFadingAttributesValue.Text = intFading.ToString();
-                }
-            }
-
             _blnLoading = false;
 
             // Select the Magician's Tradition.
@@ -9848,64 +9789,6 @@ namespace Chummer
             CharacterObject.Karma -= decimal.ToInt32(objEntry.Amount);
             CharacterObject.ExpenseEntries.Remove(objEntry);
             
-            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition) && CharacterObject.MagicTradition != "None")
-            {
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
-                if (objXmlTradition != null)
-                {
-                    lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-                    string strDrainAtt = CharacterObject.TraditionDrain;
-
-                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                    }
-                    string strDrain = objDrain.ToString();
-                    if (string.IsNullOrEmpty(strDrain))
-                    {
-                        strDrain = "0";
-                    }
-
-                    // Add any Improvements for Drain Resistance.
-                    int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-                    lblDrainAttributesValue.Text = intDrain.ToString();
-                }
-            }
-
-            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream) && CharacterObject.TechnomancerStream != "None")
-            {
-                XmlNode objXmlTradition = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.TechnomancerStream + "\"]");
-                if (objXmlTradition != null)
-                {
-                    lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
-
-                    // Update the Fading CharacterAttribute Value.
-                    string strDrainAtt = CharacterObject.TechnomancerFading;
-
-                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                    }
-                    string strFading = objDrain.ToString();
-                    if (string.IsNullOrEmpty(strFading))
-                    {
-                        strFading = "0";
-                    }
-                    int intFading = 0;
-                    try
-                    {
-                        intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
-                    }
-                    catch (XPathException) { }
-                    intFading += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FadingResistance);
-                    lblFadingAttributesValue.Text = intFading.ToString();
-                }
-            }
-
             _blnLoading = false;
 
             // Select the Magician's Tradition.
@@ -14713,6 +14596,7 @@ namespace Chummer
                 CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
                 CharacterObject.TraditionDrain = objXmlTradition["drain"]?.InnerText;
             }
+            lblDrainAttributes.Text = CharacterObject.TraditionDrain;
 
             IsCharacterUpdateRequested = true;
 

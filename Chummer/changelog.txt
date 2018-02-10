@@ -153,6 +153,7 @@ Application Changes:
 - Fixed an issue where the house rule for attribute points getting spent after karma did nothing. Note that it will not affect attribute values when spending on special attributes with values lost from Essence loss (i.e. special attribute points will still be spent before Essence loss modifiers are applied, and karma will still be spent after Essence loss modifiers are applied), though it will still affect karma costs associated with them. Fixes #2472.
 - Fixed an issue where the house rule for metatypes using alternate attribute karma costs would not properly account for spent priority points.
 - Fixed an issue where characters with old versions of leveled qualities would get bonuses applied twice after those qualities were converted to the new system for leveled qualities.
+- Fixed a crash that occurred when loading old characters with too many priority points allocated to an attribute.
 
 Data Changes:
 

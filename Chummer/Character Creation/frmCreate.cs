@@ -9821,6 +9821,8 @@ namespace Chummer
                 CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
                 CharacterObject.TraditionDrain = objXmlTradition["drain"]?.InnerText;
             }
+            lblDrainAttributes.Text = CharacterObject.TraditionDrain;
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -9832,6 +9834,7 @@ namespace Chummer
                 return;
 
             CharacterObject.TraditionDrain = cboDrain.SelectedValue.ToString();
+            lblDrainAttributes.Text = CharacterObject.TraditionDrain;
 
             IsCharacterUpdateRequested = true;
 

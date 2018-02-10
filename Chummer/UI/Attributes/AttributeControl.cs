@@ -58,6 +58,9 @@ namespace Chummer.UI.Attributes
             }
             else
             {
+                while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
+                    _objAttribute.Base -= 1;
+
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.Base), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
