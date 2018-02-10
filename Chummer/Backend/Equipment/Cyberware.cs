@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -277,6 +278,7 @@ namespace Chummer.Backend.Equipment
                     };
                     objGearWeapon.Create(objXmlWeapon, lstWeapons);
                     objGearWeapon.ParentID = InternalId;
+                    objGearWeapon.Cost = "0";
                     lstWeapons.Add(objGearWeapon);
 
                     Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
@@ -1714,14 +1716,19 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                objAvail.CheapReplace("MinRating", () => MinRating.ToString());
+                objAvail.Replace("Rating", Rating.ToString());
 
-                strAvail = strAvail.CheapReplace("MinRating", () => MinRating.ToString());
-                strAvail = strAvail.Replace("Rating", Rating.ToString());
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
 
                 try
                 {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {
@@ -2093,7 +2100,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost;
                 string strCostExpression = Cost;
 
                 if (strCostExpression.StartsWith("FixedValues("))
@@ -2102,7 +2108,7 @@ namespace Chummer.Backend.Equipment
                     strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
-                string strParentCost = string.Empty;
+                string strParentCost = "0";
                 decimal decTotalParentGearCost = 0;
                 if (_objParent != null)
                 {
@@ -2134,34 +2140,21 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                if (strCostExpression.Contains("Rating") || strCostExpression.Contains("MinRating") || strCostExpression.Contains("Parent Cost") || strCostExpression.Contains("Gear Cost") || strCostExpression.Contains("Children Cost"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    if (string.IsNullOrEmpty(strParentCost))
-                        strParentCost = "0";
-                    strCostExpression = strCostExpression.Replace("Parent Cost", strParentCost);
-                    strCostExpression = strCostExpression.Replace("Parent Gear Cost", decTotalParentGearCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCostExpression = strCostExpression.Replace("Gear Cost", decTotalGearCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCostExpression = strCostExpression.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCostExpression = strCostExpression.CheapReplace("MinRating", () => MinRating.ToString());
-                    strCostExpression = strCostExpression.Replace("Rating", Rating.ToString());
+                StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
+                objCost.Replace("Parent Cost", strParentCost);
+                objCost.Replace("Parent Gear Cost", decTotalParentGearCost.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.CheapReplace("MinRating", () => MinRating.ToString());
+                objCost.Replace("Rating", Rating.ToString());
 
-                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCostExpression).ToString(), GlobalOptions.InvariantCultureInfo);
-                }
-                else
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    // Just a straight cost, so return the value.
-                    try
-                    {
-                        decCost = Convert.ToDecimal(strCostExpression, GlobalOptions.InvariantCultureInfo);
-                    }
-                    catch (FormatException)
-                    {
-                        decCost = 0;
-                    }
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpression, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpression, () => objLoopAttribute.TotalBase.ToString());
                 }
-
-                return decCost;
+                
+                return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo);
             }
         }
 

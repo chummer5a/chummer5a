@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -536,11 +537,24 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
 
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                objAvail.CheapReplace("Vehicle Cost", strAvail, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objAvail.CheapReplace("Body", strAvail, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objAvail.CheapReplace("Speed", strAvail, () => Parent?.Speed.ToString() ?? "0");
+                objAvail.CheapReplace("Acceleration", strAvail, () => Parent?.Accel.ToString() ?? "0");
+                objAvail.CheapReplace("Handling", strAvail, () => Parent?.Handling.ToString() ?? "0");
                 try
                 {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {
@@ -603,7 +617,21 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                decimal decReturn = Convert.ToDecimal(Cost, GlobalOptions.InvariantCultureInfo);
+                string strCost = Cost;
+                StringBuilder objCost = new StringBuilder(strCost);
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCost, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCost, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                objCost.CheapReplace("Vehicle Cost", strCost, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objCost.CheapReplace("Body", strCost, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objCost.CheapReplace("Speed", strCost, () => Parent?.Speed.ToString() ?? "0");
+                objCost.CheapReplace("Acceleration", strCost, () => Parent?.Accel.ToString() ?? "0");
+                objCost.CheapReplace("Handling", strCost, () => Parent?.Handling.ToString() ?? "0");
+                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -855,10 +883,25 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Properties
+
         /// <summary>
         /// The cost of just the WeaponMountOption itself.
         /// </summary>
-        public decimal Cost => Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+        public decimal Cost
+        {
+            get
+            {
+                string strCost = _strCost;
+                StringBuilder objCost = new StringBuilder(strCost);
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCost, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCost, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+            }
+        }
 
         /// <summary>
         /// Slots consumed by the WeaponMountOption.
@@ -925,9 +968,22 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
 
-                intAvail += Convert.ToInt32(strAvail);
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                try
+                {
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
+                }
+                catch (XPathException)
+                {
+                }
             }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);

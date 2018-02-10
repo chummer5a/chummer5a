@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -278,6 +279,7 @@ namespace Chummer.Backend.Equipment
                             Weapon objGearWeapon = new Weapon(_objCharacter);
                             objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
                             objGearWeapon.ParentID = InternalId;
+                            objGearWeapon.Cost = "0";
                             lstWeapons.Add(objGearWeapon);
 
                             Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
@@ -1677,14 +1679,19 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                objAvail.CheapReplace("MinRating", () => MinRating.ToString());
+                objAvail.Replace("Rating", Rating.ToString());
 
-                strAvail = strAvail.CheapReplace("MinRating", () => MinRating.ToString());
-                strAvail = strAvail.Replace("Rating", Rating.ToString());
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
 
                 try
                 {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {
@@ -1877,6 +1884,12 @@ namespace Chummer.Backend.Equipment
                 objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", decParentCost.ToString(GlobalOptions.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpression, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpression, () => objLoopAttribute.TotalBase.ToString());
+                }
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);

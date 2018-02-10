@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -656,24 +657,27 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                objAvail.Replace("Rating", Rating.ToString());
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
 
                 // If the availability is determined by the Rating, evaluate the expression.
+                objAvail.CheapReplace("Vehicle Cost", strAvail, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objAvail.CheapReplace("Body", strAvail, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objAvail.CheapReplace("Speed", strAvail, () => Parent?.Speed.ToString() ?? "0");
+                objAvail.CheapReplace("Acceleration", strAvail, () => Parent?.Accel.ToString() ?? "0");
+                objAvail.CheapReplace("Handling", strAvail, () => Parent?.Handling.ToString() ?? "0");
 
-                string strAvailExpr = strAvail.Replace("Rating", Rating.ToString());
-                if (Parent != null)
-                {
-                    strAvailExpr = strAvailExpr.CheapReplace("Vehicle Cost",
-                        () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                    strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
-                    strAvailExpr = strAvailExpr.Replace("Acceleration", Parent.Accel.ToString());
-                    strAvailExpr = strAvailExpr.Replace("Handling", Parent.Handling.ToString());
-                }
                 try
                 {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr));
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {
@@ -882,25 +886,30 @@ namespace Chummer.Backend.Equipment
         public decimal TotalCostInMountCreation(int intSlots)
         {
             // If the cost is determined by the Rating, evaluate the expression.
-            string strCostExpression = _strCost;
-            if (strCostExpression.StartsWith("FixedValues("))
+            string strCostExpr = Cost;
+            if (strCostExpr.StartsWith("FixedValues("))
             {
-                string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                string[] strValues = strCostExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
             }
-            string strCost = strCostExpression.Replace("Rating", Rating.ToString());
-            if (Parent != null)
+
+            StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
+            objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+
+            foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
             {
-                strCost = strCost.CheapReplace("Vehicle Cost",
-                    () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
-                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                strCost = strCost.Replace("Speed", Parent.Speed.ToString());
-                strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
-                strCost = strCost.Replace("Handling", Parent.Handling.ToString());
+                objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpr, () => objLoopAttribute.TotalValue.ToString());
+                objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpr, () => objLoopAttribute.TotalBase.ToString());
             }
-            strCost = strCost.CheapReplace("Slots", () => intSlots.ToString());
-            decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+
+            objCost.CheapReplace("Vehicle Cost", strCostExpr, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+            // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+            objCost.CheapReplace("Body", strCostExpr, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+            objCost.CheapReplace("Speed", strCostExpr, () => Parent?.Speed.ToString() ?? "0");
+            objCost.CheapReplace("Acceleration", strCostExpr, () => Parent?.Accel.ToString() ?? "0");
+            objCost.CheapReplace("Handling", strCostExpr, () => Parent?.Handling.ToString() ?? "0");
+            objCost.Replace("Slots", intSlots.ToString());
+            decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
 
             if (DiscountCost)
                 decReturn *= 0.9m;
@@ -933,25 +942,30 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                string strCostExpression = _strCost;
-                if (strCostExpression.StartsWith("FixedValues("))
+                string strCostExpr = Cost;
+                if (strCostExpr.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                    string[] strValues = strCostExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                string strCost = strCostExpression.Replace("Rating", Rating.ToString());
-                if (Parent != null)
+
+                StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
+                objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    strCost = strCost.CheapReplace("Vehicle Cost",
-                        () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                    strCost = strCost.Replace("Speed", Parent.Speed.ToString());
-                    strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
-                    strCost = strCost.Replace("Handling", Parent.Handling.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpr, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpr, () => objLoopAttribute.TotalBase.ToString());
                 }
-                strCost = strCost.CheapReplace("Slots", () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
-                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+
+                objCost.CheapReplace("Vehicle Cost", strCostExpr, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objCost.CheapReplace("Body", strCostExpr, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objCost.CheapReplace("Speed", strCostExpr, () => Parent?.Speed.ToString() ?? "0");
+                objCost.CheapReplace("Acceleration", strCostExpr, () => Parent?.Accel.ToString() ?? "0");
+                objCost.CheapReplace("Handling", strCostExpr, () => Parent?.Handling.ToString() ?? "0");
+                objCost.CheapReplace("Slots", strCostExpr, () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
+                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -973,25 +987,29 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                // If the slots is determined by the Rating, evaluate the expression.
                 string strSlotsExpression = Slots;
                 if (strSlotsExpression.StartsWith("FixedValues("))
                 {
                     string[] strValues = strSlotsExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    strSlotsExpression = (strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)]);
+                    strSlotsExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                string strSlots = strSlotsExpression.Replace("Rating", Rating.ToString());
-                if (Parent != null)
+
+                StringBuilder objSlots = new StringBuilder(strSlotsExpression.TrimStart('+'));
+                objSlots.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    strSlots = strSlots.CheapReplace("Vehicle Cost",
-                        () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                    strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());
-                    strSlots = strSlots.Replace("Acceleration", Parent.Accel.ToString());
-                    strSlots = strSlots.Replace("Handling", Parent.Handling.ToString());
+                    objSlots.CheapReplace(objLoopAttribute.Abbrev, strSlotsExpression, () => objLoopAttribute.TotalValue.ToString());
+                    objSlots.CheapReplace(objLoopAttribute.Abbrev + "Base", strSlotsExpression, () => objLoopAttribute.TotalBase.ToString());
                 }
-                return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSlots));
+                objSlots.CheapReplace("Vehicle Cost", strSlotsExpression, () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objSlots.CheapReplace("Body", strSlotsExpression, () => Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                objSlots.CheapReplace("Speed", strSlotsExpression, () => Parent?.Speed.ToString() ?? "0");
+                objSlots.CheapReplace("Acceleration", strSlotsExpression, () => Parent?.Accel.ToString() ?? "0");
+                objSlots.CheapReplace("Handling", strSlotsExpression, () => Parent?.Handling.ToString() ?? "0");
+
+                return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objSlots.ToString()));
             }
         }
 

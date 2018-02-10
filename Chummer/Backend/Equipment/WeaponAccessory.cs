@@ -21,9 +21,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -687,13 +689,19 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
 
-                strAvail = strAvail.Replace("Rating", Rating.ToString());
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                objAvail.Replace("Rating", Rating.ToString());
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
 
                 try
                 {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {
@@ -781,10 +789,24 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCost = Cost
-                    .CheapReplace("Weapon Cost", () => _objParent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
-                    .Replace("Rating", Rating.ToString());
-                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
+                string strCostExpr = Cost;
+                if (strCostExpr.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCostExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
+                objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.CheapReplace("Weapon Cost", strCostExpr, () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalOptions.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpr, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpr, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo) * Parent.CostMultiplier;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;

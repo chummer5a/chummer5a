@@ -251,6 +251,7 @@ namespace Chummer.Backend.Equipment
                     if (!AllowAccessory)
                         objUnderbarrelWeapon.AllowAccessory = false;
                     objUnderbarrelWeapon.ParentID = InternalId;
+                    objUnderbarrelWeapon.Cost = "0";
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.Parent = this;
                     objUnderbarrelWeapon.ParentVehicle = ParentVehicle;
@@ -381,6 +382,7 @@ namespace Chummer.Backend.Equipment
                 };
                 objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost);
                 objSubWeapon.ParentID = InternalId;
+                objSubWeapon.Cost = "0";
                 lstWeapons.Add(objSubWeapon);
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
@@ -2115,11 +2117,22 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
-                if (Cyberware || Category == "Gear" || !string.IsNullOrEmpty(ParentID))
+                if (Cyberware || Category == "Gear")
                     return 0;
                 else
                 {
-                    decimal decReturn = Convert.ToDecimal(Cost);
+                    string strCostExpression = Cost;
+
+                    StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
+
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        objCost.CheapReplace(objLoopAttribute.Abbrev, strCostExpression, () => objLoopAttribute.TotalValue.ToString());
+                        objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCostExpression, () => objLoopAttribute.TotalBase.ToString());
+                    }
+
+                    decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo);
+                    
                     if (DiscountCost)
                         decReturn *= 0.9m;
                     return decReturn;
@@ -3568,9 +3581,17 @@ namespace Chummer.Backend.Equipment
                     strAvail = strAvail.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }
 
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
+
                 try
                 {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
                 }
                 catch (XPathException)
                 {

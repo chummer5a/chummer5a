@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
@@ -391,6 +393,7 @@ namespace Chummer.Backend.Equipment
                         objWeapon.ParentVehicle = this;
                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
                         objWeapon.ParentID = InternalId;
+                        objWeapon.Cost = "0";
 
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
@@ -1157,9 +1160,22 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
 
-                intAvail = Convert.ToInt32(strAvail);
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev, strAvail, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(objLoopAttribute.Abbrev + "Base", strAvail, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                try
+                {
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
+                }
+                catch (XPathException)
+                {
+                }
             }
 
             foreach (VehicleMod objChild in Mods)
@@ -1545,7 +1561,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = Convert.ToDecimal(Cost, GlobalOptions.InvariantCultureInfo);
+                string strCost = Cost;
+                StringBuilder objCost = new StringBuilder(strCost);
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(objLoopAttribute.Abbrev, strCost, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(objLoopAttribute.Abbrev + "Base", strCost, () => objLoopAttribute.TotalBase.ToString());
+                }
+
+                decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+
                 if (BlackMarketDiscount)
                     decCost *= 0.9m;
 

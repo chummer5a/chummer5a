@@ -149,6 +149,7 @@ Application Changes:
 - Added an option to limit an item so that it can only be taken in career mode (this is done with the <careeronly> tag).
 - Added support to the <unlockskills> bonus to use XPath filters to select which skills to unlock instead of being beholden to built-in filter enumerators.
 - Added the ability for gear added through improvements to retain its original cost if a "fullcost" node is present as a child element.
+- Added the ability for equipment of all types to have costs and availabilities based on a character's attributes.
 
 Data Changes:
 

@@ -214,6 +214,7 @@ namespace Chummer
                         Weapon objGearWeapon = new Weapon(_objCharacter);
                         objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
+                        objGearWeapon.Cost = "0";
                         lstWeapons.Add(objGearWeapon);
 
                         Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
