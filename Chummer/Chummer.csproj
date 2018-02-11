@@ -182,6 +182,8 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\Stories\Story.cs" />
+    <Compile Include="Backend\Stories\StoryModule.cs" />
     <Compile Include="Backend\Uniques\AIProgram.cs" />
     <Compile Include="Backend\Uniques\Art.cs" />
     <Compile Include="Backend\Uniques\CalendarWeek.cs" />

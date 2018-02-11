@@ -4319,7 +4319,44 @@ namespace Chummer
         public string Sex
         {
             get => _strSex;
-            set => _strSex = value;
+            set
+            {
+                if (_strSex != value)
+                {
+                    _strSex = value;
+                    _strCharacterGrammaticGender = string.Empty;
+                }
+            }
+        }
+
+        private string _strCharacterGrammaticGender = string.Empty;
+        public string CharacterGrammaticGender
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_strCharacterGrammaticGender))
+                    return _strCharacterGrammaticGender;
+                switch (LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language).ToLower())
+                {
+                    case "m":
+                    case "male":
+                    case "man":
+                    case "boy":
+                    case "lord":
+                    case "gentleman":
+                    case "guy":
+                        return _strCharacterGrammaticGender = "male";
+                    case "f":
+                    case "female":
+                    case "woman":
+                    case "girl":
+                    case "lady":
+                    case "gal":
+                        return _strCharacterGrammaticGender = "female";
+                    default:
+                        return _strCharacterGrammaticGender = "neutral";
+                }
+            }
         }
 
         /// <summary>

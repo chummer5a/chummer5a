@@ -29,7 +29,7 @@ namespace Chummer
     {
         private readonly Dictionary<string, string> persistenceDictionary = new Dictionary<string, string>();
         private readonly Character _objCharacter;
-        readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp;
         public StoryBuilder(Character objCharacter)
         {
