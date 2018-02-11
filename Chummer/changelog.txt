@@ -176,6 +176,8 @@ Data Changes:
 - Fixed incorrect priority values for the Falconine and Canine shifter metatypes at Priority C.
 - Fixed incorrect available mod slots for most of the drones from Rigger 5.
 - Entries for the Rank quality have been split up based on karma cost.
+- Human Bovine shifters now properly have the Uneducated quality.
+- All shifters have had their Uneducated quality updated to be removable with Karma.
 
 New Strings:
 
