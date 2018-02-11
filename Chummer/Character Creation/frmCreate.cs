@@ -10687,7 +10687,9 @@ namespace Chummer
                 int preps = CharacterObject.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus);
 
                 // Each spell costs KarmaSpell.
-                int spellCost = CharacterObject.SpellKarmaCost;
+                int spellCost = CharacterObject.SpellKarmaCost("Spells");
+                int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
+                int prepCost = CharacterObject.SpellKarmaCost("Preparations");
                 int limit = CharacterObject.SpellLimit;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
@@ -10759,10 +10761,13 @@ namespace Chummer
                         break;
                     }
                 }
-                intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps) * (spellCost);
+                intKarmaPointsRemain -= Math.Max(0, spells) * (spellCost);
+                intKarmaPointsRemain -= Math.Max(0, rituals) * (ritualCost);
+                intKarmaPointsRemain -= Math.Max(0, preps) * (prepCost);
+
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
-                intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
-                intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
+                intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (ritualCost), 0);
+                intPrepPointsUsed += Math.Max(Math.Max(0, preps) * prepCost, 0);
                 if (blnDoUIUpdate)
                 {
                     tipTooltip.SetToolTip(lblSpellsBP, $"{spells} × {spellCost} + {LanguageManager.GetString("String_Karma", GlobalOptions.Language)} = {intSpellPointsUsed} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");

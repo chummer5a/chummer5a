@@ -13407,7 +13407,7 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <freespells skill="Spellcasting" />
-        <newspellkarmacost>-1</newspellkarmacost>
+        <newspellkarmacost type="Spells">-1</newspellkarmacost>
       </bonus>
       <required>
         <allof>

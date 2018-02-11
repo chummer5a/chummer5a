@@ -159,6 +159,7 @@ Application Changes:
 - Fixed an issue where buying ammo for ranged weapons and attempting to load specific ammo into bows, crossbows, and some exotic weapons would not work. Fixes #2476, fixes #2372.
 - Added the ability for improvements to add weapons via the <addweapon> bonus.
 - Altering custom data directory information in the options menu will now immediately apply those changes instead of requiring Chummer5a to restart (though the prompt will still appear just in case).
+- Adjusted the NewSpellKarmaCost improvement to support restrictions based on spell type.
 
 Data Changes:
 
@@ -183,6 +184,7 @@ Data Changes:
 - The Elemental Body power now adds a weapon entry for Elemental Body. Existing characters with Elemental Body will need to re-apply improvements in order for it to show up. Fixes #1918.
 - Human Bovine shifters now properly have the Uneducated quality.
 - All shifters have had their Uneducated quality updated to be removable with Karma.
+- Dedicated Spellslinger quality now only discounts Spells, excluding Enchantments, Rituals and Preparations.
 
 New Strings:
 

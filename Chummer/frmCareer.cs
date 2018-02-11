@@ -3249,7 +3249,7 @@ namespace Chummer
 
             do
             {
-                int intSpellKarmaCost = CharacterObject.SpellKarmaCost;
+                int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
                 // Make sure the character has enough Karma before letting them select a Spell.
                 if (CharacterObject.Karma < intSpellKarmaCost)
                 {
@@ -3271,10 +3271,23 @@ namespace Chummer
 
                 Spell objSpell = new Spell(CharacterObject);
                 objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+                if (objSpell.Alchemical)
+                {
+                    intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
+                }
+                else if (objSpell.Category == "Rituals")
+                {
+                    intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
+                }
                 if (objSpell.InternalId.IsEmptyGuid())
                 {
                     frmPickSpell.Dispose();
                     continue;
+                }
+                if (CharacterObject.Karma < intSpellKarmaCost)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
                 }
                 objSpell.FreeBonus = frmPickSpell.FreeBonus;
                 if (!objSpell.FreeBonus)
@@ -11383,7 +11396,7 @@ namespace Chummer
 
         private void tsCreateSpell_Click(object sender, EventArgs e)
         {
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost;
+            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
             // Make sure the character has enough Karma before letting them select a Spell.
             if (CharacterObject.Karma < intSpellKarmaCost)
             {
@@ -11399,7 +11412,19 @@ namespace Chummer
                 return;
 
             Spell objSpell = frmSpell.SelectedSpell;
-
+            if (objSpell.Alchemical)
+            {
+                intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
+            }
+            else if (objSpell.Category == "Rituals")
+            {
+                intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
+            }
+            if (CharacterObject.Karma < intSpellKarmaCost)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objSpell.DisplayName(GlobalOptions.Language)).Replace("{1}", intSpellKarmaCost.ToString())))
                 return;
 
@@ -20504,7 +20529,8 @@ namespace Chummer
                     blnPayWithKarma = true;
             }
 
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost;
+            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Enchantments");
+
             if (blnPayWithKarma && CharacterObject.Karma < intSpellKarmaCost)
             {
                 // Make sure the Karma expense would not put them over the limit.
@@ -20571,16 +20597,25 @@ namespace Chummer
             foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
             {
                 if (objMetamagic.Grade == intGrade)
+                {
                     blnPayWithKarma = true;
+                    break;
+                }
             }
 
-            foreach (Spell objSpell in CharacterObject.Spells)
+            if (!blnPayWithKarma)
             {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
+                foreach (Spell objSpell in CharacterObject.Spells)
+                {
+                    if (objSpell.Grade == intGrade)
+                    {
+                        blnPayWithKarma = true;
+                        break;
+                    }
+                }
             }
 
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost;
+            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
             if (blnPayWithKarma && CharacterObject.Karma < intSpellKarmaCost)
             {
                 // Make sure the Karma expense would not put them over the limit.

@@ -490,7 +490,15 @@
       <xs:element name="newaiprogramkarmacostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="newcomplexformkarmacost" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="newcomplexformkarmacostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="newspellkarmacost" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="newspellkarmacost" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="type" type="xs:integer" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="newspellkarmacostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="notoriety" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="nuyenamt" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -3626,7 +3626,7 @@ namespace Chummer
                 }
 
                 // Value from free spells
-                intTemp = SpellLimit * SpellKarmaCost;
+                intTemp = SpellLimit * SpellKarmaCost("Spells");
                 if (intTemp != 0)
                 {
                     strMessage += '\n' + LanguageManager.GetString("String_FreeSpells", strLanguage) + ": " + intTemp.ToString() + ' ' + strKarmaString;
@@ -4713,28 +4713,27 @@ namespace Chummer
             set => _intMaxAvail = value;
         }
 
-        public int SpellKarmaCost
+        public int SpellKarmaCost(string category = "")
         {
-            get
+            int intReturn = Options.KarmaSpell;
+
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in Improvements.Where(imp => (imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost ||
+                                                                                  imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier) &&
+                                                                                  imp.ImprovedName == category))
             {
-                int intReturn = Options.KarmaSpell;
-
-                decimal decMultiplier = 1.0m;
-                foreach (Improvement objLoopImprovement in Improvements)
+                if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
                 {
-                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
-                    {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
-                            intReturn += objLoopImprovement.Value;
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
-                    }
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
+                        intReturn += objLoopImprovement.Value;
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
-                if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
-
-                return Math.Max(intReturn, 0);
             }
+            if (decMultiplier != 1.0m)
+                intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+
+            return Math.Max(intReturn, 0);
         }
 
         public int ComplexFormKarmaCost
