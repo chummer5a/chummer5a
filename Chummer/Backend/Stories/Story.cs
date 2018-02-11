@@ -140,9 +140,12 @@ namespace Chummer
                     XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = \"" + strSelectedId + "\"]");
                     if (xmlNewPersistentNode != null)
                     {
-                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter);
+                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)
+                        {
+                            ParentStory = this,
+                            IsRandomlyGenerated = true
+                        };
                         objPersistentStoryModule.Create(xmlNewPersistentNode);
-                        objPersistentStoryModule.ParentStory = this;
                         PersistentModules.TryAdd(strFunction, objPersistentStoryModule);
                         return objPersistentStoryModule;
                     }
@@ -154,7 +157,16 @@ namespace Chummer
 
         public void GeneratePersistents(string strLanguage)
         {
-            _dicPersistentModules.Clear();
+            List<string> lstPersistentKeysToRemove = new List<string>();
+            foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
+            {
+                if (objPersistentModule.Value.IsRandomlyGenerated)
+                    lstPersistentKeysToRemove.Add(objPersistentModule.Key);
+            }
+
+            foreach (string strKey in lstPersistentKeysToRemove)
+                _dicPersistentModules.TryRemove(strKey, out StoryModule objDummy);
+
             Parallel.ForEach(Modules, x =>
             {
                 x.TestRunToGeneratePersistents(strLanguage);

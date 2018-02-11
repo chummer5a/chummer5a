@@ -549,6 +549,10 @@ namespace Chummer
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
 
+                    xmlLoopNode = objChild["alttexts"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
                     string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {

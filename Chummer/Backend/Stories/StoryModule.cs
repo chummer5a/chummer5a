@@ -43,6 +43,30 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        public void Create(XmlNode xmlStoryModuleDataNode)
+        {
+            xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
+            xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
+
+            XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
+            if (xmlTextsNode != null)
+            {
+                using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
+                    if (xmlChildrenList != null)
+                    {
+                        foreach (XmlNode xmlText in xmlChildrenList)
+                        {
+                            _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
+                            if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                                _strDefaultTextKey = xmlText.Name;
+                        }
+
+                        if (string.IsNullOrEmpty(_strDefaultTextKey))
+                            _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+                    }
+            }
+        }
+
         public void Create(XPathNavigator xmlStoryModuleDataNode)
         {
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
@@ -64,6 +88,11 @@ namespace Chummer
         }
 
         public Story ParentStory { get; set; }
+
+        /// <summary>
+        /// Was this story module generated randomly, likely due to a request for a random persistent module?
+        /// </summary>
+        public bool IsRandomlyGenerated { get; set; }
 
         public string Name
         {
