@@ -27,7 +27,7 @@ namespace Chummer
 {
     public sealed class StoryBuilder
     {
-        private readonly Dictionary<string, string> persistenceDictionary = new Dictionary<string, string>(); 
+        private readonly Dictionary<string, string> persistenceDictionary = new Dictionary<string, string>();
         private readonly Character _objCharacter;
         readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp;

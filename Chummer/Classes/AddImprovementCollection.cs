@@ -1599,6 +1599,56 @@ namespace Chummer.Classes
                 _strUnique);
         }
 
+        // Add a specific Gear to the Character.
+        public void addweapon(XmlNode bonusNode)
+        {
+            Log.Info("addweapon");
+
+            Log.Info("addweapon = " + bonusNode.OuterXml);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ')';
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Adding Weapon");
+            string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
+            XmlNode node = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]") ?? throw new AbortedException();
+
+            // Create the new piece of Gear.
+            List<Weapon> lstWeapons = new List<Weapon>();
+
+            Weapon objNewWeapon = new Weapon(_objCharacter);
+            objNewWeapon.Create(node, lstWeapons);
+
+            if (objNewWeapon.InternalId.IsEmptyGuid())
+                throw new AbortedException();
+
+            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+            if (_objCharacter.ActiveCommlink == null && objNewWeapon.IsCommlink)
+            {
+                objNewWeapon.SetActiveCommlink(_objCharacter, true);
+            }
+
+            if (bonusNode["fullcost"] == null)
+                objNewWeapon.Cost = "0";
+
+            // Create any Weapons that came with this Gear.
+            foreach (Weapon objWeapon in lstWeapons)
+                _objCharacter.Weapons.Add(objWeapon);
+
+            objNewWeapon.ParentID = SourceName;
+
+            _objCharacter.Weapons.Add(objNewWeapon);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objNewWeapon.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Weapon,
+                _strUnique);
+        }
+
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
         {
@@ -4639,8 +4689,7 @@ namespace Chummer.Classes
         {
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
-            XmlDocument doc = XmlManager.Load("options.xml");
-            XmlNodeList nodeList = doc.SelectNodes("/chummer/options/blackmarketpipelinecategories/category");
+            XmlNodeList nodeList = XmlManager.Load("options.xml").SelectNodes("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
             if (nodeList != null)
             {

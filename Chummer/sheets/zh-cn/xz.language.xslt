@@ -3,7 +3,7 @@
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:variable name="lang"  select="'zh'"/>
-  <xsl:variable name="locale"  select="'zh'"/>
+  <xsl:variable name="locale"  select="'zh-cn'"/>
 
   <!-- individual words -->
   <xsl:variable name="lang.Acceleration"  select="'加速'"/>
@@ -94,6 +94,7 @@
   <xsl:variable name="lang.Eyes"      select="'瞳色'"/>
   <xsl:variable name="lang.Falling"    select="'Falling'"/>
   <xsl:variable name="lang.Fatigue"      select="'Fatigue'"/>
+  <xsl:variable name="lang.Fettered"      select="'Fettered'"/>
   <xsl:variable name="lang.Fire"    select="'Fire'"/>
   <xsl:variable name="lang.Firewall"    select="'防火墙'"/>
   <xsl:variable name="lang.Fly"      select="'飞行'"/>
@@ -146,7 +147,6 @@
   <xsl:variable name="lang.Mode"      select="'模式'"/>
   <xsl:variable name="lang.Model"      select="'模块'"/>
   <xsl:variable name="lang.Modifications"  select="'改造'"/>
-  <xsl:variable name="lang.Modifiers"    select="'调整'"/>
   <xsl:variable name="lang.Month"      select="'月'"/>
   <xsl:variable name="lang.Months"    select="'月'"/>
   <xsl:variable name="lang.Movement"    select="'移动速度'"/>
@@ -157,11 +157,11 @@
   <xsl:variable name="lang.Notes"      select="'备注'"/>
   <xsl:variable name="lang.Notoriety"    select="'恶名'"/>
   <xsl:variable name="lang.Nuyen"      select="'新円'"/>
-  <xsl:variable name="lang.Other"      select="'其他'"/>
   <xsl:variable name="lang.OVR"      select="'溢&#160;'"/>
   <xsl:variable name="lang.Pathogen"    select="'Pathogen'"/>
   <xsl:variable name="lang.Permanent"    select="'永久法术'"/>
   <xsl:variable name="lang.Persona"    select="'化身'"/>
+  <xsl:variable name="lang.Pets"      select="'Pets'"/>
   <xsl:variable name="lang.Physical"    select="'物理'"/>
   <xsl:variable name="lang.Physiological"  select="'Physiological'"/>
   <xsl:variable name="lang.Pilot"      select="'自驾系统'"/>
@@ -290,6 +290,7 @@
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'No Notes to list'"/>
   <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'No Vehicles to list'"/>
   <xsl:variable name="lang.OptionalPowers"    select="'Optional Powers'"/>
+  <xsl:variable name="lang.OtherArmor"      select="'其他护甲'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxins and Pathogens'"/>
@@ -312,6 +313,7 @@
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.StunTrack"    select="'&#160;&#160;晕眩伤害'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'深潜阶层'"/>
+  <xsl:variable name="lang.TotalArmor"  select="'Total of equipped single highest armor and accessories'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'未命名角色'"/>
   <xsl:variable name="lang.VehicleBody"    select="'机体'"/>
   <xsl:variable name="lang.VehicleCost"    select="'载具售价'"/>

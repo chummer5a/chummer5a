@@ -7339,6 +7339,29 @@
     </weapon>
     <!--End Region -->
     <!--End Region -->
+    <!-- Region Street Grimoire -->
+    <weapon>
+      <id>f24167cc-3be9-4956-be8f-2b7c0554bb15</id>
+      <name>Elemental Body</name>
+      <category>Unarmed</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(MAG*2)P</damage>
+      <ap>-{MAG}*0.5</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>170</page>
+      <allowaccessory>False</allowaccessory>
+      <hide />
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <!-- End Region -->
     <!-- Region Chrome Flesh-->
     <!-- Region Chrome Flesh Cyber-Weapons -->
     <weapon>

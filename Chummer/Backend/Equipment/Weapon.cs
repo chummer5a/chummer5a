@@ -1073,6 +1073,59 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// What names can gear begin with to count as ammunition for this weapon
+        /// </summary>
+        public string[] AmmoPrefixStrings
+        {
+            get
+            {
+                if (Spec == "Flare Launcher" && Name == "Micro Flare Launcher")
+                    return new[] {"Micro Flares"};
+                if (Name.Contains("Net Gun XL"))
+                    return new[] {"XL Net Gun"};
+                if (Name.Contains("Net Gun"))
+                    return new[] {"Net Gun"};
+                if (Name == "Pepper Punch Pen")
+                    return new[] {"Pepper Punch"};
+                switch (AmmoCategory)
+                {
+                    case "Grenade Launchers":
+                        return new[] {"Minigrenade:"};
+                    case "Missile Launchers":
+                        return new[] {"Missile:", "Rocket:"};
+                    case "Mortar Launchers":
+                        return new[] {"Mortar Round:"};
+                    case "Bows":
+                        return new[] {"Arrow:"};
+                    case "Crossbows":
+                        if (Name.Contains("Harpoon"))
+                            return new[] {"Harpoon", "Bolt:"};
+                        return new[] {"Bolt:"};
+                    case "Flamethrowers":
+                        return new[] {"Ammo: Fuel"};
+                    case "Gear":
+                    {
+                        string strGearName = Name;
+                        if (!string.IsNullOrEmpty(ParentID))
+                        {
+                            Gear objParent = (_objCharacter.Gear.DeepFindById(ParentID) ??
+                                         _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
+                                         _objCharacter.Weapons.FindWeaponGear(ParentID) ??
+                                         _objCharacter.Armor.FindArmorGear(ParentID) ??
+                                         _objCharacter.Cyberware.FindCyberwareGear(ParentID));
+                            if (objParent != null)
+                                strGearName = objParent.Name;
+                        }
+
+                        return new[] {strGearName};
+                    }
+                }
+
+                return new[] {"Ammo:"};
+            }
+        }
+
+        /// <summary>
         /// The number of rounds remaining in the Weapon.
         /// </summary>
         public int AmmoRemaining

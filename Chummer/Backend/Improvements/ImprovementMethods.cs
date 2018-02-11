@@ -89,6 +89,8 @@ namespace Chummer
                     return objImprovementAdder.addcomplexform;
                 case "ADDGEAR":
                     return objImprovementAdder.addgear;
+                case "ADDWEAPON":
+                    return objImprovementAdder.addweapon;
                 case "SELECTAIPROGRAM":
                     return objImprovementAdder.selectaiprogram;
                 case "SELECTINHERENTAIPROGRAM":

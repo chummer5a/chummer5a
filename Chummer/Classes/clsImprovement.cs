@@ -130,7 +130,6 @@ namespace Chummer
             SkillsoftAccess,
             AddSprite,
             BlackMarketDiscount,
-            SelectWeapon,
             ComplexFormLimit,
             SpellLimit,
             QuickeningMetamagic,
@@ -151,15 +150,12 @@ namespace Chummer
             Erased,
             BornRich,
             Fame,
-            LightningReflexes,
             MadeMan,
             Overclocker,
             RestrictedGear,
-            TechSchool,
             TrustFund,
             ExCon,
             ContactMadeMan,
-            SelectArmor,
             Attributelevel,
             AddContact,
             Seeker,
@@ -212,6 +208,7 @@ namespace Chummer
             Spell,
             ComplexForm,
             Gear,
+            Weapon,
             MentorSpirit,
             Paragon,
             FreeSpellsSkill,
@@ -307,8 +304,6 @@ namespace Chummer
             Cyberware,
             Metavariant,
             Bioware,
-            Nanotech,
-            Genetech,
             ArmorEncumbrance,
             Gear,
             Spell,
@@ -1389,6 +1384,9 @@ namespace Chummer
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         objGear?.ChangeEquippedStatus(true);
                         break;
+                    case Improvement.ImprovementType.Weapon:
+                        // TODO: Re-equip Weapons;
+                        break;
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objSpell != null)
@@ -1719,6 +1717,9 @@ namespace Chummer
                     case Improvement.ImprovementType.Gear:
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         objGear?.ChangeEquippedStatus(false);
+                        break;
+                    case Improvement.ImprovementType.Weapon:
+                        // TODO: Unequip Weapons;
                         break;
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -2137,6 +2138,41 @@ namespace Chummer
                             decReturn += objGear.TotalCost;
                             objCharacter.Gear.Remove(objGear);
                         }
+                        break;
+                    case Improvement.ImprovementType.Weapon:
+                    {
+                        Vehicle objVehicle = null;
+                        WeaponMount objWeaponMount = null;
+                        VehicleMod objVehicleMod = null;
+                        Weapon objWeapon = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.ImprovedName) ??
+                                           objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out objVehicle, out objWeaponMount, out objVehicleMod);
+                        if (objWeapon != null)
+                        {
+                            decReturn += objWeapon.DeleteWeapon();
+                            decReturn += objWeapon.TotalCost;
+                            Weapon objParent = objWeapon.Parent;
+                            if (objParent != null)
+                            {
+                                objParent.Children.Remove(objWeapon);
+                                objParent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objVehicleMod != null)
+                            {
+                                objVehicleMod.Weapons.Remove(objWeapon);
+                            }
+                            else if (objWeaponMount != null)
+                            {
+                                objWeaponMount.Weapons.Remove(objWeapon);
+                            }
+                            else if (objVehicle != null)
+                            {
+                                objVehicle.Weapons.Remove(objWeapon);
+                                objVehicle.RefreshMatrixAttributeArray();
+                            }
+                            else
+                                objCharacter.Weapons.Remove(objWeapon);
+                        }
+                    }
                         break;
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);

@@ -23,8 +23,7 @@ namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(_lstUsernames);
-
+        public static ReadOnlyCollection<string> Usernames { get { return Array.AsReadOnly(_lstUsernames); } }
         private static readonly string[] _lstUsernames = {
             "Chummer 5 Is Alive<chummer5a>",
             "DelnarErsike",
@@ -32,13 +31,13 @@ namespace Chummer.Properties
             "Stefan Niewerth<OLStefan>",
             "skarsol",
             "Hauke<HaukeW>",
-            "HaikenEdge",
             "Holger Schlegel<holgerschlegel>",
-            "chummer78",
+            "HaikenEdge",
             "Luiz Borges<luizbgomide>",
+            "chummer78",
             "cfresquet",
-            "angelforest",
             "Youneko17",
+            "angelforest",
             "Ternega",
             "sethsatan",
             "MerGatto<MerGatto>",
@@ -53,9 +52,9 @@ namespace Chummer.Properties
             "AMDX9",
             "David Dashifen Kees<dashifen>",
             "Kadrack",
+            "Lochabar",
             "mudge6",
             "Richard Zang<richard-zang>",
-            "Claire<MachineMuse>",
         };
     }
 }

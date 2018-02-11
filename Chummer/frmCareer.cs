@@ -12724,33 +12724,13 @@ namespace Chummer
                         strAmmo = strAmmo.Substring(0, strAmmo.IndexOf('('));
                     lstCount.Add(strAmmo);
                 }
-
-                // Load ammo for flare guns
-                if (objWeapon.Spec == "Flare Launcher" && objWeapon.Name == "Micro Flare Launcher")
-                {
-                    lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Name == "Micro Flares" && x.Category == "Survival Gear" && x.Quantity > 0));
-                }
+                
                 // Find all of the Ammo for the current Weapon that the character is carrying.
-                if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
-                {
-                    // This is a standard Weapon, so consume traditional Ammunition.
-                    lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && (x.Extra == objWeapon.AmmoCategory || (objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == x.Name))));
-                }
-                else if (objWeapon.AmmoCategory == "Grenade Launchers")
-                {
-                    // Grenade Launchers can only use Grenades.
-                    lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && x.Name.StartsWith("Minigrenade:")));
-                }
-                else if (objWeapon.AmmoCategory == "Missile Launchers")
-                {
-                    // Missile Launchers can only use Missiles and Rockets.
-                    lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && (x.Name.StartsWith("Missile:") || x.Name.StartsWith("Rocket:"))));
-                }
-                else if (objWeapon.AmmoCategory == "Mortar Launchers")
-                {
-                    // Mortar Launchers can only use Mortars.
-                    lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && x.Name.StartsWith("Mortar Round:")));
-                }
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(objWeapon.AmmoPrefixStrings);
+                // This is a standard Weapon, so consume traditional Ammunition.
+                lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == objWeapon.AmmoCategory ||
+                                                                                                         string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                                                                                         objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == x.Name)));
 
                 // If the Weapon is allowed to use an External Source, put in an External Source item.
                 if (blnExternalSource)
@@ -13097,10 +13077,11 @@ namespace Chummer
             // Locate the selected Weapon.
             TreeNode objSelectedNode = treWeapons.SelectedNode;
             Weapon objWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
+            string[] lstAmmoPrefixStrings = objWeapon.AmmoPrefixStrings;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(string.Empty, true, null, objWeapon.AmmoCategory);
+                blnAddAgain = PickGear(string.Empty, true, null, string.Empty, lstAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -13743,55 +13724,15 @@ namespace Chummer
             }
 
             // Find all of the Ammo for the current Weapon that the character is carrying.
-            if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
+            HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(objWeapon.AmmoPrefixStrings);
+            foreach (Gear objAmmo in objVehicle.Gear)
             {
-                // This is a standard Weapon, so consume traditional Ammunition.
-                foreach (Gear objAmmo in objVehicle.Gear)
+                if (objAmmo.Quantity > 0)
                 {
-                    if (objAmmo.Quantity > 0)
-                    {
-                        if (objAmmo.Category == "Ammunition" && objAmmo.Extra == objWeapon.AmmoCategory)
-                            lstAmmo.Add(objAmmo);
-                    }
-                }
-            }
-            else
-            {
-                if (objWeapon.AmmoCategory == "Grenade Launchers")
-                {
-                    // Grenade Launchers can only use Grenades.
-                    foreach (Gear objAmmo in objVehicle.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && objAmmo.Name.StartsWith("Minigrenade:"))
-                                lstAmmo.Add(objAmmo);
-                        }
-                    }
-                }
-                if (objWeapon.AmmoCategory == "Missile Launchers")
-                {
-                    // Missile Launchers can only use Missiles and Rockets.
-                    foreach (Gear objAmmo in objVehicle.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && (objAmmo.Name.StartsWith("Missile:") || objAmmo.Name.StartsWith("Rocket:")))
-                                lstAmmo.Add(objAmmo);
-                        }
-                    }
-                }
-                if (objWeapon.AmmoCategory == "Mortar Launchers")
-                {
-                    // Mortar Launchers can only use Mortars.
-                    foreach (Gear objAmmo in objVehicle.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && objAmmo.Name.StartsWith("Mortar Round:"))
-                                lstAmmo.Add(objAmmo);
-                        }
-                    }
+                    if (objAmmo.Category == "Ammunition" && objAmmo.Extra == objWeapon.AmmoCategory ||
+                        string.IsNullOrEmpty(objAmmo.Extra) && setAmmoPrefixStringSet.Any(y => objAmmo.Name.StartsWith(y)) ||
+                        objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == objAmmo.Name)
+                        lstAmmo.Add(objAmmo);
                 }
             }
 
@@ -17937,7 +17878,7 @@ namespace Chummer
         /// <param name="blnAmmoOnly">Whether or not only Ammunition should be shown in the window.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name..</param>
-        private bool PickGear(string strSelectedId, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "")
+        private bool PickGear(string strSelectedId, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -17959,7 +17900,7 @@ namespace Chummer
                 strCategories = "Ammunition";
             else if (!blnNullParent && objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
             {
-                foreach (XmlNode objXmlCategory in objXmlGear?.SelectNodes("addoncategory"))
+                foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
                     strCategories += objXmlCategory.InnerText + ",";
                 // Remove the trailing comma.
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
@@ -17989,7 +17930,11 @@ namespace Chummer
             }
             
             frmPickGear.DefaultSearchText = strForceItemValue;
-
+            if (lstForceItemPrefixes != null)
+            {
+                foreach (string strPrefix in lstForceItemPrefixes)
+                    frmPickGear.ForceItemPrefixStrings.Add(strPrefix);
+            }
             if (blnAmmoOnly)
             {
                 frmPickGear.SelectedGear = objSelectedGear.SourceID;

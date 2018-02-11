@@ -65,6 +65,7 @@ namespace Chummer
         private static readonly HashSet<XmlReference> s_LstXmlDocuments = new HashSet<XmlReference>();
         private static readonly object s_LstXmlDocumentsLock = new object();
         private static readonly List<string> s_LstDataDirectories = new List<string>();
+        private static readonly HashSet<string> s_SetFilesWithCachedDocs = new HashSet<string>();
 
         #region Constructor
         static XmlManager()
@@ -75,10 +76,19 @@ namespace Chummer
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
         }
-
         #endregion
 
         #region Methods
+        public static void RebuildDataDirectoryInfo()
+        {
+            s_SetFilesWithCachedDocs.Clear();
+            s_LstDataDirectories.Clear();
+            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            {
+                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
+            }
+        }
 
         /// <summary>
         /// Load the selected XML file and its associated custom file.
@@ -105,6 +115,9 @@ namespace Chummer
                 Utils.BreakIfDebug();
                 return new XmlDocument();
             }
+
+            if (!s_SetFilesWithCachedDocs.Contains(strFileName))
+                blnLoadFile = true;
 
             DateTime datDate = File.GetLastWriteTime(strPath);
             if (string.IsNullOrEmpty(strLanguage))
@@ -326,6 +339,8 @@ namespace Chummer
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
                 else
                     objReference.XmlContent = objDoc;
+
+                s_SetFilesWithCachedDocs.Add(strFileName);
             }
             else
             {

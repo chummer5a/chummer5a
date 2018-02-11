@@ -66,6 +66,8 @@
         <td style="text-align: center"><xsl:value-of select="connection"/></td>
         <td style="text-align: center"><xsl:value-of select="loyalty"/></td>
       </tr>
+
+      <xsl:if test="$ProduceNotes">
       <xsl:if test="metatype != '' or sex != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
       <tr>
         <xsl:if test="position() mod 2 != 1">
@@ -148,7 +150,7 @@
       </tr>
       </xsl:if>
 
-      <xsl:if test="notes != '' and $ProduceNotes">
+      <xsl:if test="notes != ''">
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -160,6 +162,8 @@
           </td>
         </tr>
       </xsl:if>
+      </xsl:if>
+
       <xsl:call-template name="Xline">
         <xsl:with-param name="cntl" select="last()-position()"/>
         <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
@@ -177,6 +181,7 @@
         <xsl:when test="family">Family</xsl:when>
         <xsl:when test="group">Group</xsl:when>
   Note: if group is true connection is supplied as group(connection) -->
+        <xsl:when test="type='Pet'"><xsl:value-of select="$lang.Pets"/></xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$lang.Type"/>: <xsl:value-of select="type"/>
         </xsl:otherwise>
