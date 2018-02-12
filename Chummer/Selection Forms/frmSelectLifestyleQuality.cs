@@ -167,18 +167,9 @@ namespace Chummer
                 }
                 else
                 {
-                    string strCost = objXmlQuality["cost"].InnerText ?? string.Empty;
-                    if (!decimal.TryParse(strCost, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decCost))
-                    {
-                        try
-                        {
-                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
-                        }
-                        catch (XPathException)
-                        {
-                            decCost = 0.0m;
-                        }
-                    }
+                    string strCost = objXmlQuality["cost"]?.InnerText;
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                    decimal decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 lblCost.Visible = true;
@@ -673,8 +664,9 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-                                
-                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
+                                if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnOneOfMet = true;
                                 break;
                             case "skillgrouptotal":
@@ -925,8 +917,9 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-                                
-                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
+                                if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnFound = true;
                                 break;
                             case "skillgrouptotal":

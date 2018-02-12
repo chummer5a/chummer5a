@@ -43,19 +43,13 @@ namespace Chummer
         Lifestyle,
     }
 
-    public class SourcebookInfo : IDisposable
+    public sealed class SourcebookInfo : IDisposable
     {
-        string _strCode = string.Empty;
         string _strPath = string.Empty;
-        int _intOffset;
         PdfReader _objPdfReader;
 
         #region Properties
-        public string Code
-        {
-            get => _strCode;
-            set => _strCode = value;
-        }
+        public string Code { get; set; } = string.Empty;
 
         public string Path
         {
@@ -71,11 +65,7 @@ namespace Chummer
             }
         }
 
-        public int Offset
-        {
-            get => _intOffset;
-            set => _intOffset = value;
-        }
+        public int Offset { get; set; }
 
         internal PdfReader CachedPdfReader
         {
@@ -97,7 +87,7 @@ namespace Chummer
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -120,32 +110,39 @@ namespace Chummer
         #endregion
     }
 
-    public class CustomDataDirectoryInfo
+    public class CustomDataDirectoryInfo : IComparable
     {
-        private string _strName = string.Empty;
-        private string _strPath = string.Empty;
-        private bool _blnEnabled;
-
         #region Properties
 
-        public string Name
-        {
-            get => _strName;
-            set => _strName = value;
-        }
+        public string Name { get; set; } = string.Empty;
 
-        public string Path
-        {
-            get => _strPath;
-            set => _strPath = value;
-        }
+        public string Path { get; set; } = string.Empty;
 
-        public bool Enabled
-        {
-            get => _blnEnabled;
-            set => _blnEnabled = value;
-        }
+        public bool Enabled { get; set; }
+
         #endregion
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                return 1;
+            if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
+            {
+                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
+                if (intReturn == 0)
+                {
+                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
+                    if (intReturn == 0)
+                    {
+                        intReturn = Enabled == objOtherDirectoryInfo.Enabled ? 0 : (Enabled ? -1 : 1);
+                    }
+                }
+
+                return intReturn;
+            }
+
+            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
+        }
     }
 
     /// <summary>

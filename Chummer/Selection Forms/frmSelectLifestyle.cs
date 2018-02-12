@@ -101,18 +101,9 @@ namespace Chummer
                 }
                 else
                 {
-                    string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    if (!decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decCost))
-                    {
-                        try
-                        {
-                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
-                        }
-                        catch (XPathException)
-                        {
-                            decCost = 0.0m;
-                        }
-                    }
+                    string strCost = objXmlOption["cost"]?.InnerText;
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                    decimal decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}¥]";
                 }
                 treQualities.Nodes.Add(nodOption);
@@ -309,20 +300,12 @@ namespace Chummer
                     if (objNode.Checked)
                     {
                         XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
-                        if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
+                        string strCost = objXmlQuality?["cost"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strCost))
                         {
-                            if (!decimal.TryParse(objXmlQuality["cost"].InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decLoopCost))
-                            {
-                                try
-                                {
-                                    decLoopCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objXmlQuality["cost"].InnerText), GlobalOptions.InvariantCultureInfo);
-                                }
-                                catch (XPathException)
-                                {
-                                    decLoopCost = 0.0m;
-                                }
-                            }
-                            decCost += decLoopCost;
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                            if (blnIsSuccess)
+                                decCost += Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                         }
                     }
                 }

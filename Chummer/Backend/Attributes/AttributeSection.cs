@@ -152,28 +152,37 @@ namespace Chummer.Backend.Attributes
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
                 strAttributeLower = "mag";
-            int intMinValue;
-            int intMaxValue;
-            int intAugValue;
+            int intMinValue = 1;
+            int intMaxValue = 1;
+            int intAugValue = 1;
 
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                intMinValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                    out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intMinValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
             catch (XPathException) { intMinValue = 1; }
             catch (OverflowException) { intMinValue = 1; }
             catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                intMaxValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                    out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intMaxValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
             catch (XPathException) { intMaxValue = 1; }
             catch (OverflowException) { intMaxValue = 1; }
             catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                intAugValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                    out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAugValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
             catch (XPathException) { intAugValue = 1; }
             catch (OverflowException) { intAugValue = 1; }

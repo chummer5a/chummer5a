@@ -2672,7 +2672,7 @@ namespace Chummer
             this.treCustomDataDirectories.ShowRootLines = false;
             this.treCustomDataDirectories.Size = new System.Drawing.Size(791, 361);
             this.treCustomDataDirectories.TabIndex = 40;
-            this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
+            this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
             // 
             // cmdRemoveCustomDirectory
             // 

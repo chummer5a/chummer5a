@@ -10721,7 +10721,7 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <spec>Semi-Automatics</spec>
+      <spec>Revolvers</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -11402,7 +11402,7 @@
     <weapon>
       <id>5057a725-87eb-409b-8fd1-004b3e3d614f</id>
       <name>Steyr UCR Underbarrel Shotgun</name>
-      <category>Underbarrel Weapons</category>
+      <category>Shotguns</category>
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>

@@ -909,13 +909,9 @@ namespace Chummer
             int intValue = 1;
             string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
-            try
-            {
-                intValue = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce)));
-            }
-            catch (XPathException)
-            {
-            }
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+            if (blnIsSuccess)
+                intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             intValue += intOffset;
             if (intForce > 0)
             {

@@ -954,12 +954,13 @@ namespace Chummer
                 {
                     strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
-                
+
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                int intValue = Convert.ToInt32(Math.Floor((double)CommonFunctions.EvaluateInvariantXPath(strReturn)));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
+                int intValue = blnIsSuccess ? Convert.ToInt32(Math.Floor((double)objProcess)) : 0;
 
                 //Log.Exit("ValueToInt");
                 return intValue;

@@ -423,7 +423,9 @@ namespace Chummer
                 if (strMinRating?.Length > 0)
                 {
                     strMinRating = ReplaceStrings(strMinRating);
-                    intMinRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMinRating));
+                    object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
+                    if (blnTempIsSuccess)
+                        intMinRating = Convert.ToInt32(objTempProcess);
                 }
                 bool blnDisableRating = false;
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value.ToLower();
@@ -484,14 +486,9 @@ namespace Chummer
                 }
                 int.TryParse(strSlots, out int intExtraSlots);
                 strSlots = ReplaceStrings(strSlots, intExtraSlots);
-                try
-                {
-                    lblSlots.Text = CommonFunctions.EvaluateInvariantXPath(strSlots).ToString();
-                }
-                catch (XPathException)
-                {
-                    lblSlots.Text = strSlots;
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSlots, out bool blnIsSuccess);
+                lblSlots.Text = blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strSlots;
+
                 int.TryParse(lblSlots.Text, out intExtraSlots);
 
                 // Avail.
@@ -521,14 +518,10 @@ namespace Chummer
                     strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
-                try
-                {
-                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(ReplaceStrings(strAvailExpr))).ToString() + strSuffix;
-                }
-                catch (XPathException)
-                {
-                    lblAvail.Text = strAvailExpr + strSuffix;
-                }
+
+                strAvailExpr = ReplaceStrings(strAvailExpr);
+                objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out blnIsSuccess);
+                lblAvail.Text = (blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvailExpr) + strSuffix;
 
                 // Cost.
                 chkBlackMarketDiscount.Enabled = true;
@@ -574,7 +567,9 @@ namespace Chummer
                     }
                     strCost = ReplaceStrings(strCost, intExtraSlots);
 
-                    decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
+                    if (blnIsSuccess)
+                        decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                     decItemCost *= _intModMultiplier;
 
                     // Apply any markup.

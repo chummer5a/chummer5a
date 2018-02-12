@@ -504,14 +504,9 @@ namespace Chummer
                     strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
-                try
-                {
-                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))).ToString() + strSuffix;
-                }
-                catch (XPathException)
-                {
-                    lblAvail.Text = strAvail + strSuffix;
-                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvail.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)), out bool blnIsSuccess);
+                lblAvail.Text = blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvail + strSuffix;
             }
             else
                 lblAvail.Text = string.Empty;
@@ -546,14 +541,8 @@ namespace Chummer
                 }
                 else
                 {
-                    decimal decCost = 0.0m;
-                    try
-                    {
-                        decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
-                    }
-                    catch (XPathException)
-                    {
-                    }
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                    decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                     // Apply any markup.
                     decCost *= 1 + (nudMarkup.Value / 100.0m);

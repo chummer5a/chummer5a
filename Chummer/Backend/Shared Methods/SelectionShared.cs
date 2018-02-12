@@ -124,14 +124,9 @@ namespace Chummer
                     {
                         objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString());
                     }
-                    try
-                    {
-                        strLimitString = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString()).ToString();
-                    }
-                    catch (XPathException)
-                    {
-                        strLimitString = "1";
-                    }
+
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString(), out bool blnIsSuccess);
+                    strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
                     
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
                     IEnumerable<IHasName> objListToCheck = null;
@@ -407,7 +402,8 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                             strName = $"\n\t{strAttributes} {intNodeVal}";
-                        return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strValue)) >= intNodeVal;
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
+                        return (blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= intNodeVal;
                     }
                 case "careerkarma":
                     {
@@ -1025,13 +1021,10 @@ namespace Chummer
 
             strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
             int intAvail = intAvailModifier;
-            try
-            {
-                intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))));
-            }
-            catch (XPathException)
-            {
-            }
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+            if (blnIsSuccess)
+                intAvail += Convert.ToInt32(objProcess);
+
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
@@ -1128,14 +1121,9 @@ namespace Chummer
                     {
                         objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString());
                     }
-                    try
-                    {
-                        strLimitString = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString()).ToString();
-                    }
-                    catch (XPathException)
-                    {
-                        strLimitString = "1";
-                    }
+
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString(), out bool blnIsSuccess);
+                    strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
 
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
                     IEnumerable<IHasName> objListToCheck = null;
@@ -1409,7 +1397,8 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                             strName = $"\n\t{strAttributes} {intNodeVal}";
-                        return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strValue)) >= intNodeVal;
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
+                        return (blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= intNodeVal;
                     }
                 case "careerkarma":
                     {
@@ -2026,14 +2015,9 @@ namespace Chummer
 
             strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
             int intAvail = intAvailModifier;
-            try
-            {
-                intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))));
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-            }
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+            if (blnIsSuccess)
+                intAvail += Convert.ToInt32(objProcess);
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
@@ -2074,18 +2058,9 @@ namespace Chummer
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
 
-                try
-                {
-                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
-                }
-                catch (XPathException)
-                {
-                    Utils.BreakIfDebug();
-                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
-                    {
-                        decCost = decTemp;
-                    }
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
             }
             return decMaxNuyen >= decCost * decCostMultiplier;
         }

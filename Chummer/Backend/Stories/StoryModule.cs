@@ -322,15 +322,11 @@ namespace Chummer
                 }
                 case "$XPath":
                 {
-                    try
-                    {
-                        return CommonFunctions.EvaluateInvariantXPath(strArguments).ToString();
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        return objProcess.ToString();
+                    return LanguageManager.GetString("String_Unknown", strLanguage);
                     }
-                    catch (Exception)
-                    {
-                        return LanguageManager.GetString("String_Unknown", strLanguage);
-                    }
-                }
                 case "$Index":
                 {
                     string[] strArgumentsSplit = strArguments.Split('|');

@@ -6728,7 +6728,9 @@ namespace Chummer
             {
                 try
                 {
-                    intDrain = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objDrain.ToString())));
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objDrain.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        intDrain = Convert.ToInt32(Math.Ceiling((double)objProcess));
                 }
                 catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double

@@ -135,6 +135,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns whether a string contains only legal characters.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
+        /// <param name="achrChars">List of chars against which to check the string.</param>
+        /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return true;
+            int intLegalCharsLength = achrChars.Length;
+            if (intLegalCharsLength == 0)
+                return true;
+            for (int i = 0; i < intLength; ++i)
+            {
+                char chrLoop = strInput[i];
+                bool blnCharIsInList = false;
+                for (int j = 0; j < intLegalCharsLength; ++j)
+                {
+                    if (chrLoop == achrChars[j])
+                    {
+                        blnCharIsInList = true;
+                        break;
+                    }
+                }
+
+                if (blnCharIsInList != blnWhitelist)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Trims a substring out of a string if the string begins with it.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>

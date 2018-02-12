@@ -2599,6 +2599,16 @@
           <min>3</min>
           <condition>career</condition>
         </skillcategorykarmacost>
+        <skillcategorykarmacostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+          <condition>create</condition>
+        </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+          <condition>create</condition>
+        </skillcategoryspecializationkarmacostmultiplier>
         <skillcategorypointcostmultiplier>
           <name>Academic</name>
           <val>50</val>
@@ -13679,6 +13689,10 @@
         <oneof>
           <skill>
             <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
+          <skill>
+            <name>Spellcasting</name>
             <val>4</val>
             <spec>Illusion</spec>
           </skill>
@@ -13964,7 +13978,7 @@
           <group>
             <skill>
               <name>Alchemy</name>
-              <val>6</val>
+              <val>4</val>
             </skill>
             <tradition>Islam</tradition>
           </group>

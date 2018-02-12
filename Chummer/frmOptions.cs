@@ -784,6 +784,7 @@ namespace Chummer
 
         private void PopulateCustomDataDirectoryTreeView()
         {
+            object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
             if (_lstCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
             {
                 treCustomDataDirectories.Nodes.Clear();
@@ -810,6 +811,9 @@ namespace Chummer
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
             }
+
+            if (objOldSelected != null)
+                treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
         }
 
         /// <summary>
@@ -1028,25 +1032,41 @@ namespace Chummer
                 }
 
                 // Save the Custom Data Directory Info.
-                if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
-                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-                RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
-                if (objCustomDataDirectoryRegistry != null)
+                bool blnDoCustomDataDirectoryRefresh = _lstCustomDataDirectoryInfos.Count != GlobalOptions.CustomDataDirectoryInfo.Count;
+                if (!blnDoCustomDataDirectoryRefresh)
                 {
                     for (int i = 0; i < _lstCustomDataDirectoryInfos.Count; ++i)
                     {
-                        CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos[i];
-                        RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
-                        if (objLoopKey != null)
+                        if (_lstCustomDataDirectoryInfos[i].CompareTo(GlobalOptions.CustomDataDirectoryInfo[i]) != 0)
                         {
-                            objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
-                            objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
-                            objLoopKey.SetValue("LoadOrder", i);
-                            objLoopKey.Close();
+                            blnDoCustomDataDirectoryRefresh = true;
+                            break;
                         }
                     }
+                }
 
-                    objCustomDataDirectoryRegistry.Close();
+                if (blnDoCustomDataDirectoryRefresh)
+                {
+                    if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
+                        objRegistry.DeleteSubKeyTree("CustomDataDirectory");
+                    RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
+                    if (objCustomDataDirectoryRegistry != null)
+                    {
+                        for (int i = 0; i < _lstCustomDataDirectoryInfos.Count; ++i)
+                        {
+                            CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos[i];
+                            RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
+                            if (objLoopKey != null)
+                            {
+                                objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
+                                objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
+                                objLoopKey.SetValue("LoadOrder", i);
+                                objLoopKey.Close();
+                            }
+                        }
+
+                        objCustomDataDirectoryRegistry.Close();
+                    }
                 }
 
                 objRegistry.Close();
@@ -1718,7 +1738,7 @@ namespace Chummer
                     txtCharacterRosterPath.Text = dlgSelectFolder.SelectedPath;
             }
         }
-
+        
         private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
@@ -1876,6 +1896,20 @@ namespace Chummer
             if (!chkPrintFreeExpenses.Enabled)
                 chkPrintFreeExpenses.Checked = true;
             OptionsChanged(sender, e);
+        }
+
+        private void treCustomDataDirectories_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            TreeNode objNode = e.Node;
+            if (objNode != null)
+            {
+                CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
+                if (objInfoToRemove != null)
+                {
+                    objInfoToRemove.Enabled = objNode.Checked;
+                    OptionsChanged(sender, e);
+                }
+            }
         }
     }
 }
