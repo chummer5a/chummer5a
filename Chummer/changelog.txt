@@ -160,6 +160,7 @@ Application Changes:
 - Added the ability for improvements to add weapons via the <addweapon> bonus.
 - Altering custom data directory information in the options menu will now immediately apply those changes instead of requiring Chummer5a to restart (though the prompt will still appear just in case).
 - Adjusted the NewSpellKarmaCost improvement to support restrictions based on spell type.
+- If a custom XPath filter is specified in an amend node, the amend node will now only use that XPath filter to find its target(s) instead of using it in addition to any specified id or name node contents.
 
 Data Changes:
 
@@ -185,6 +186,13 @@ Data Changes:
 - Human Bovine shifters now properly have the Uneducated quality.
 - All shifters have had their Uneducated quality updated to be removable with Karma.
 - Dedicated Spellslinger quality now only discounts Spells, excluding Enchantments, Rituals and Preparations.
+- Cyber Submachine Gun (2050) is now properly classified as a Submachine Gun and not a Machine Pistol.
+- Removed the general Gymnastics bonus from the Monkey mentor spirit because the bonus is only given when Climbing is involved.
+- Wolpertinger Mentor Spirit will now properly add 2 dice to defense tests. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- Dolphin and Whale Mentor Spirits will now properly add 2 dice to Pilot Watercraft tests when that bonus is chosen. Characters who already have one of these mentor spirits will need to reapply improvements to see the bonus.
+- Horse Mentor Spirit will now properly add 2 dice to Pilot Ground Craft tests when that bonus is chosen. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- War Mentor Spirit will now properly discount Combat Active skills in career mode when improving to rating 3 or higher. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- Green Man Mentor Spirit will now properly add 2 dice to Negotiation. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
 
 New Strings:
 

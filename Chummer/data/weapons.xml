@@ -9110,7 +9110,7 @@
     <weapon>
       <id>b75bf551-8ad5-469a-a0ae-7cc4fa62a663</id>
       <name>Cyber Submachine Gun (2050)</name>
-      <category>Machine Pistols</category>
+      <category>Submachine Guns</category>
       <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
