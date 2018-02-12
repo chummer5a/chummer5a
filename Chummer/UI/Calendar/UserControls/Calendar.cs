@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -1373,7 +1374,7 @@ namespace Chummer
 
             if( span.Days < 1 || span.Days > MaximumViewDays )
             {
-                throw new Exception( "Days between ViewStart and ViewEnd should be between 1 and MaximumViewDays" );
+                //throw new Exception( "Days between ViewStart and ViewEnd should be between 1 and MaximumViewDays" );
             }
 
             if( span.Days > MaximumFullDays )
@@ -1397,24 +1398,7 @@ namespace Chummer
 
 
             //Weeks
-            if( DaysMode == CalendarDaysMode.Short )
-            {
-                List<CalendarWeek> weeks = new List<CalendarWeek>();
-
-                for( int i = 0; i < Days.Length; i++ )
-                {
-                    if( Days[i].Date.DayOfWeek == FirstDayOfWeek )
-                    {
-                        weeks.Add( new CalendarWeek( this, Days[i].Date ) );
-                    }
-                }
-
-                _weeks = weeks.ToArray();
-            }
-            else
-            {
-                _weeks = new CalendarWeek[] { };
-            }
+            _weeks = DaysMode == CalendarDaysMode.Short ? (from t in Days where t.Date.DayOfWeek == FirstDayOfWeek select new CalendarWeek(this, t.Date)).ToArray() : new CalendarWeek[] { };
 
             UpdateHighlights();
 

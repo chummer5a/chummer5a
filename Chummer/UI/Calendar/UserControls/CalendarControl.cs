@@ -34,6 +34,7 @@ namespace Chummer
         }
         public void AddRange(BindingList<CalendarItem> calendarObjects)
         {
+            if (calendarObjects.Count == 0) return;
             foreach (CalendarItem c in calendarObjects)
             {
                 c.Calendar = calendar1;
@@ -60,7 +61,8 @@ namespace Chummer
 
         private void calendar1_ItemCreated(object sender, CalendarItemCancelEventArgs e)
         {
-            CharacterObject.Calendar.Add(e.Item);
+            e.Item.InCharacter = InCharacter;
+            CharacterObject.PlayerCalendar.Add(e.Item);
             Items.Add(e.Item);
         }
 
@@ -163,15 +165,10 @@ namespace Chummer
             }
         }
 
-        private void calendar1_ItemDoubleClick(object sender, CalendarItemEventArgs e)
-        {
-            int num = (int)MessageBox.Show("Double click: " + e.Item.Text);
-        }
-
         private void calendar1_ItemDeleted(object sender, CalendarItemEventArgs e)
         {
             calendar1.Items.Remove(e.Item);
-            CharacterObject.Calendar.Remove(e.Item);
+            CharacterObject.PlayerCalendar.Remove(e.Item);
         }
 
         private void calendar1_DayHeaderClick(object sender, CalendarDayEventArgs e)

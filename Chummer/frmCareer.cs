@@ -170,8 +170,10 @@ namespace Chummer
                 SortColumn = 0,
                 Order = SortOrder.Descending
             };
+            calPlayer.CharacterObject = objCharacter;
             calCharacter.CharacterObject = objCharacter;
-            //calCharacter.AddRange(objCharacter.Calendar);
+            calCharacter.AddRange(objCharacter.CharacterCalendar);
+            calPlayer.AddRange(objCharacter.PlayerCalendar);
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
             SetTooltips();
             MoveControls();

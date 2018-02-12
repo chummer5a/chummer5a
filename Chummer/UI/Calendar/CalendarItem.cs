@@ -33,7 +33,7 @@ namespace Chummer
     /// <remarks>
     /// <para>CalendarItem provides a graphical representation of tasks within a date range.</para>
     /// </remarks>
-    public class CalendarItem
+    public sealed class CalendarItem
         : CalendarSelectableElement, IHasInternalId
     {
         #region Static
@@ -57,50 +57,14 @@ namespace Chummer
 
         #region Fields
 
-        private Rectangle[] _additionalBounds;
-
-        private Color _backgroundColor;
-        private Color _backgroundColorLighter;
-        private Color _borderColor;
-
         private DateTime _startDate;
         private DateTime _endDate;
 
-        private Color _foreColor;
-
-        private bool _locked;
-
         private TimeSpan _duration;
 
-        private Image _image;
-
-        private CalendarItemImageAlign _imageAlign;
-
-        private bool _isDragging;
-        private bool _isEditing;
-        private bool _isResizingStartDate;
-        private bool _isResizingEndDate;
-        private bool _isOnView;
-
-        private int _minuteStartTop;
-        private int _minuteEndTop;
-
-        private HatchStyle _pattern;
-
-        private Color _patternColor;
-
-        private List<CalendarTimeScaleUnit> _unitsPassing;
-
-        private List<CalendarDayTop> _topsPassing;
-
-        private object _tag;
-
-        private string _text;
-
-        private Font _font;
-
         private Guid _guiID;
-        private Calendar _calendar;
+        private bool _inCharacter;
+        private string _notes;
 
         #endregion
 
@@ -114,50 +78,29 @@ namespace Chummer
         /// <see cref="CalendarDaysMode.Short"/> mode, due to the duration of the item; e.g. when an all day item lasts several weeks, 
         /// one rectangle for week must be drawn to indicate the presence of the item.
         /// </remarks>
-        public virtual Rectangle[] AditionalBounds
-        {
-            get { return _additionalBounds; }
-            set { _additionalBounds = value; }
-        }
+        public Rectangle[] AditionalBounds { get; set; }
+
         public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Gets or sets the a background color for the object. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color BackgroundColor
-        {
-            get { return _backgroundColor; }
-            set { _backgroundColor = value; }
-        }
+        public Color BackgroundColor { get; set; }
 
         /// <summary>
         /// Gets or sets the lighter background color of the item
         /// </summary>
-        public Color BackgroundColorLighter
-        {
-            get { return _backgroundColorLighter; }
-            set { _backgroundColorLighter = value; }
-        }
+        public Color BackgroundColorLighter { get; set; }
 
         /// <summary>
         /// Gets or sets the bordercolor of the item. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color BorderColor
-        {
-            get { return _borderColor; }
-            set { _borderColor = value; }
-        }
+        public Color BorderColor { get; set; }
 
         /// <summary>
         /// Gets the StartDate of the item. Implemented
         /// </summary>
-        public override DateTime Date
-        {
-            get
-            {
-                return StartDate;
-            }
-        }
+        public override DateTime Date => StartDate;
 
         /// <summary>
         /// Gets the day on the <see cref="Calendar"/> where this item ends
@@ -175,15 +118,21 @@ namespace Chummer
                 {
                     return null;
                 }
-                else if (IsOpenEnd)
+
+                if (IsOpenEnd)
                 {
                     return Calendar.Days[Calendar.Days.Length - 1];
                 }
-                else
-                {
-                    return Calendar.FindDay(EndDate);
-                }
+
+                return Calendar.FindDay(EndDate);
             }
+        }
+
+        // ReSharper disable once ConvertToAutoProperty
+        public bool InCharacter
+        {
+            get => _inCharacter;
+            set => _inCharacter = value;
         }
 
         /// <summary>
@@ -202,14 +151,13 @@ namespace Chummer
                 {
                     return null;
                 }
-                else if (IsOpenStart)
+
+                if (IsOpenStart)
                 {
                     return Calendar.Days[0];
                 }
-                else
-                {
-                    return Calendar.FindDay(StartDate);
-                }
+
+                return Calendar.FindDay(StartDate);
             }
         }
 
@@ -233,7 +181,7 @@ namespace Chummer
         /// </summary>
         public DateTime EndDate
         {
-            get { return _endDate; }
+            get => _endDate;
             set
             {
                 _endDate = value;
@@ -245,7 +193,7 @@ namespace Chummer
         /// <summary>
         /// Gets the text of the end date
         /// </summary>
-        public virtual string EndDateText
+        public string EndDateText
         {
             get
             {
@@ -262,66 +210,39 @@ namespace Chummer
                     time = EndDate.ToString(Calendar.ItemsTimeFormat);
                 }
 
-                return string.Format("{0} {1}", date, time).Trim();
+                return $"{date} {time}".Trim();
             }
         }
 
         /// <summary>
         /// Gets or sets the forecolor of the item. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color ForeColor
-        {
-            get { return _foreColor; }
-            set
-            {
-                _foreColor = value;
-            }
-        }
+        public Color ForeColor { get; set; }
 
         /// <summary>
         /// Gets or sets an image for the item
         /// </summary>
-        public Image Image
-        {
-            get { return _image; }
-            set { _image = value; }
-        }
+        public Image Image { get; set; }
 
         /// <summary>
         /// Gets or sets the alignment of the image relative to the text
         /// </summary>
-        public CalendarItemImageAlign ImageAlign
-        {
-            get { return _imageAlign; }
-            set { _imageAlign = value; }
-        }
+        public CalendarItemImageAlign ImageAlign { get; set; }
 
         /// <summary>
         /// Gets a value indicating if the item is being dragged
         /// </summary>
-        public bool IsDragging
-        {
-            get { return _isDragging; }
-        }
+        public bool IsDragging { get; private set; }
 
         /// <summary>
         /// Gets a value indicating if the item is currently being edited by the user
         /// </summary>
-        public bool IsEditing
-        {
-            get { return _isEditing; }
-        }
+        public bool IsEditing { get; private set; }
 
         /// <summary>
         /// Gets a value indicating if the item goes on the DayTop area of the <see cref="CalendarDay"/>
         /// </summary>
-        public bool IsOnDayTop
-        {
-            get
-            {
-                return StartDate.Day != EndDate.AddSeconds(1).Day;
-            }
-        }
+        public bool IsOnDayTop => StartDate.Day != EndDate.AddSeconds(1).Day;
 
         /// <summary>
         /// Gets a value indicating if the item is currently on view.
@@ -329,10 +250,7 @@ namespace Chummer
         /// <remarks>
         /// The item may not be on view because of scrolling
         /// </remarks>
-        public bool IsOnView
-        {
-            get { return _isOnView; }
-        }
+        public bool IsOnView { get; private set; }
 
         /// <summary>
         /// Gets a value indicating if the item is on the range specified by <see cref="Calendar.ViewStart"/> and <see cref="Calendar.ViewEnd"/>
@@ -353,40 +271,22 @@ namespace Chummer
         /// <summary>
         /// Gets a value indicating if the item's <see cref="StartDate"/> is before the <see cref="Calendar.ViewStart"/> date.
         /// </summary>
-        public bool IsOpenStart
-        {
-            get
-            {
-                return StartDate.CompareTo(Calendar.Days[0].Date) < 0;
-            }
-        }
+        public bool IsOpenStart => StartDate.CompareTo(Calendar.Days[0].Date) < 0;
 
         /// <summary>
         /// Gets a value indicating if the item's <see cref="EndDate"/> is aftter the <see cref="Calendar.ViewEnd"/> date.
         /// </summary>
-        public bool IsOpenEnd
-        {
-            get
-            {
-                return EndDate.CompareTo(Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23, 59, 59))) > 0;
-            }
-        }
+        public bool IsOpenEnd => EndDate.CompareTo(Calendar.Days[Calendar.Days.Length - 1].Date.Add(new TimeSpan(23, 59, 59))) > 0;
 
         /// <summary>
         /// Gets a value indicating if item is being resized by the <see cref="StartDate"/>
         /// </summary>
-        public bool IsResizingStartDate
-        {
-            get { return _isResizingStartDate; }
-        }
+        public bool IsResizingStartDate { get; private set; }
 
         /// <summary>
         /// Gets a value indicating if item is being resized by the <see cref="EndDate"/>
         /// </summary>
-        public bool IsResizingEndDate
-        {
-            get { return _isResizingEndDate; }
-        }
+        public bool IsResizingEndDate { get; private set; }
 
         /// <summary>
         /// Gets a value indicating if this item is locked.
@@ -394,91 +294,54 @@ namespace Chummer
         /// <remarks>
         /// When an item is locked, the user can't drag it or change it's text
         /// </remarks>
-        public bool Locked
-        {
-            get { return _locked; }
-            set { _locked = value; }
-        }
+        public bool Locked { get; set; }
 
         /// <summary>
         /// Gets the top correspoinding to the ending minute
         /// </summary>
-        public int MinuteEndTop
-        {
-            get { return _minuteEndTop; }
-        }
+        public int MinuteEndTop { get; private set; }
 
         /// <summary>
         /// Gets the top corresponding to the starting minute
         /// </summary>
-        public int MinuteStartTop
-        {
-            get { return _minuteStartTop; }
-        }
+        public int MinuteStartTop { get; private set; }
 
         /// <summary>
         /// Gets or sets the units that this item passes by
         /// </summary>
-        internal List<CalendarTimeScaleUnit> UnitsPassing
-        {
-            get { return _unitsPassing; }
-            set { _unitsPassing = value; }
-        }
+        internal List<CalendarTimeScaleUnit> UnitsPassing { get; set; }
 
         /// <summary>
         /// Gets or sets the pattern style to use in the background of item.
         /// </summary>
-        public HatchStyle Pattern
-        {
-            get { return _pattern; }
-            set { _pattern = value; }
-        }
+        public HatchStyle Pattern { get; set; }
 
         /// <summary>
         /// Gets or sets the pattern's color
         /// </summary>
-        public Color PatternColor
-        {
-            get { return _patternColor; }
-            set { _patternColor = value; }
-        }
+        public Color PatternColor { get; set; }
 
         /// <summary>
         /// Gets the list of DayTops that this item passes thru
         /// </summary>
-        internal List<CalendarDayTop> TopsPassing
-        {
-            get { return _topsPassing; }
-        }
+        internal List<CalendarDayTop> TopsPassing { get; }
 
         /// <summary>
         /// Gets a value indicating if the item should show the time of the <see cref="StartDate"/>
         /// </summary>
-        public bool ShowStartTime
-        {
-            get
-            {
-                return IsOpenStart || ((this.IsOnDayTop || Calendar.DaysMode == CalendarDaysMode.Short) && !StartDate.TimeOfDay.Equals(new TimeSpan(0, 0, 0)));
-            }
-        }
+        public bool ShowStartTime => IsOpenStart || ((this.IsOnDayTop || Calendar.DaysMode == CalendarDaysMode.Short) && !StartDate.TimeOfDay.Equals(new TimeSpan(0, 0, 0)));
 
         /// <summary>
         /// Gets a value indicating if the item should show the time of the <see cref="EndDate"/>
         /// </summary>
-        public virtual bool ShowEndTime
-        {
-            get
-            {
-                return (IsOpenEnd ||
-                    ((this.IsOnDayTop || Calendar.DaysMode == CalendarDaysMode.Short) && !EndDate.TimeOfDay.Equals(new TimeSpan(23, 59, 59)))) &&
-                    !(Calendar.DaysMode == CalendarDaysMode.Short && StartDate.Date == EndDate.Date);
-            }
-        }
+        public bool ShowEndTime => (IsOpenEnd ||
+                                            ((this.IsOnDayTop || Calendar.DaysMode == CalendarDaysMode.Short) && !EndDate.TimeOfDay.Equals(new TimeSpan(23, 59, 59)))) &&
+                                           !(Calendar.DaysMode == CalendarDaysMode.Short && StartDate.Date == EndDate.Date);
 
         /// <summary>
         /// Gets the text of the start date
         /// </summary>
-        public virtual string StartDateText
+        public string StartDateText
         {
             get
             {
@@ -495,16 +358,16 @@ namespace Chummer
                     time = StartDate.ToString(Calendar.ItemsTimeFormat);
                 }
 
-                return string.Format("{0} {1}", date, time).Trim();
+                return $"{date} {time}".Trim();
             }
         }
 
         /// <summary>
         /// Gets or sets the start time of the item
         /// </summary>
-        public virtual DateTime StartDate
+        public DateTime StartDate
         {
-            get { return _startDate; }
+            get => _startDate;
             set
             {
                 _startDate = value;
@@ -516,19 +379,15 @@ namespace Chummer
         /// <summary>
         /// Gets or sets a tag object for the item
         /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
+        public object Tag { get; set; }
 
         /// <summary>
         /// Gets or sets the text of the item
         /// </summary>
-        public virtual string Text
+        public string Text
         {
-            get { return _text; }
-            set { _text = value; }
+            get => _notes;
+            set => _notes = value;
         }
 
         /// <summary>
@@ -537,17 +396,9 @@ namespace Chummer
         /// <value>
         /// The font.
         /// </value>
-        public Font Font
-        {
-            get { return _font; }
-            set { _font = value; }
-        }
+        public Font Font { get; set; }
 
-        public Calendar Calendar
-        {
-            get { return _calendar; }
-            set { _calendar = value; }
-        }
+        public Calendar Calendar { get; set; }
 
         #endregion
 
@@ -564,6 +415,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("datestart", StartDate.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("dateend", EndDate.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("incharacter", InCharacter.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("notes", Text);
             objWriter.WriteEndElement();
         }
@@ -662,7 +514,8 @@ namespace Chummer
                 EndDate = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
             }
 
-            Text = objNode["notes"].InnerText;
+            objNode.TryGetBoolFieldQuickly("incharacter", ref _inCharacter);
+            objNode.TryGetStringFieldQuickly("notes", ref _notes);
         }
 
         /// <summary>
@@ -685,18 +538,18 @@ namespace Chummer
         public CalendarItem(Calendar calendar = null)
             : base(calendar)
         {
-            _unitsPassing = new List<CalendarTimeScaleUnit>();
-            _topsPassing = new List<CalendarDayTop>();
-            _backgroundColor = Color.Empty;
-            _borderColor = Color.Empty;
-            _foreColor = Color.Empty;
-            _backgroundColorLighter = Color.Empty;
-            _imageAlign = CalendarItemImageAlign.West;
+            UnitsPassing = new List<CalendarTimeScaleUnit>();
+            TopsPassing = new List<CalendarDayTop>();
+            BackgroundColor = Color.Empty;
+            BorderColor = Color.Empty;
+            ForeColor = Color.Empty;
+            BackgroundColorLighter = Color.Empty;
+            ImageAlign = CalendarItemImageAlign.West;
             _guiID = new Guid();
             if (calendar == null) return;
-            _font = calendar.ItemsFont;
-            _backgroundColor = calendar.ItemsBackgroundColor;
-            _foreColor = calendar.ItemsForeColor;
+            Font = calendar.ItemsFont;
+            BackgroundColor = calendar.ItemsBackgroundColor;
+            ForeColor = calendar.ItemsForeColor;
         }
 
         /// <summary>
@@ -751,14 +604,7 @@ namespace Chummer
 
             int avg = (color.R + color.G + color.B) / 3;
 
-            if (avg > 255 / 2)
-            {
-                ForeColor = Color.Black;
-            }
-            else
-            {
-                ForeColor = Color.White;
-            }
+            ForeColor = avg > 255 / 2 ? Color.Black : Color.White;
         }
 
         /// <summary>
@@ -770,8 +616,7 @@ namespace Chummer
         /// </remarks>
         public IEnumerable<Rectangle> GetAllBounds()
         {
-            List<Rectangle> r = new List<Rectangle>(AditionalBounds == null ? new Rectangle[] { } : AditionalBounds);
-            r.Add(Bounds);
+            List<Rectangle> r = new List<Rectangle>(AditionalBounds ?? new Rectangle[] { }) {Bounds};
 
             r.Sort(CompareBounds);
 
@@ -805,10 +650,8 @@ namespace Chummer
             {
                 return Rectangle.FromLTRB(first.Left, first.Top, first.Left + margin, first.Bottom).Contains(point);
             }
-            else
-            {
-                return Rectangle.FromLTRB(first.Left, first.Top, first.Right, first.Top + margin).Contains(point);
-            }
+
+            return Rectangle.FromLTRB(first.Left, first.Top, first.Right, first.Top + margin).Contains(point);
         }
 
         /// <summary>
@@ -828,10 +671,8 @@ namespace Chummer
             {
                 return Rectangle.FromLTRB(last.Right - margin, last.Top, last.Right, last.Bottom).Contains(point);
             }
-            else
-            {
-                return Rectangle.FromLTRB(last.Left, last.Bottom - margin, last.Right, last.Bottom).Contains(point);
-            }
+
+            return Rectangle.FromLTRB(last.Left, last.Bottom - margin, last.Right, last.Bottom).Contains(point);
         }
 
         /// <summary>
@@ -864,7 +705,7 @@ namespace Chummer
         /// </returns>
         public override string ToString()
         {
-            return string.Format("{0} - {1}", StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            return $"{StartDate.ToShortTimeString()} - {EndDate.ToShortTimeString()}";
         }
 
         #endregion
@@ -885,7 +726,7 @@ namespace Chummer
             }
             else
             {
-                List<Rectangle> rs = new List<Rectangle>(AditionalBounds == null ? new Rectangle[] { } : AditionalBounds);
+                List<Rectangle> rs = new List<Rectangle>(AditionalBounds ?? new Rectangle[] { });
                 rs.Add(r);
                 AditionalBounds = rs.ToArray();
             }
@@ -973,7 +814,7 @@ namespace Chummer
         /// <param name="dragging">Value indicating if the item is currently being dragged</param>
         internal void SetIsDragging(bool dragging)
         {
-            _isDragging = dragging;
+            IsDragging = dragging;
         }
 
         /// <summary>
@@ -982,7 +823,7 @@ namespace Chummer
         /// <param name="editing">Value indicating if user is currently being editing</param>
         internal void SetIsEditing(bool editing)
         {
-            _isEditing = editing;
+            IsEditing = editing;
         }
 
         /// <summary>
@@ -991,7 +832,7 @@ namespace Chummer
         /// <param name="onView">Indicates if the item is currently on view</param>
         internal void SetIsOnView(bool onView)
         {
-            _isOnView = onView;
+            IsOnView = onView;
         }
 
         /// <summary>
@@ -1000,7 +841,7 @@ namespace Chummer
         /// <param name="resizing"></param>
         internal void SetIsResizingStartDate(bool resizing)
         {
-            _isResizingStartDate = resizing;
+            IsResizingStartDate = resizing;
         }
 
         /// <summary>
@@ -1009,7 +850,7 @@ namespace Chummer
         /// <param name="resizing"></param>
         internal void SetIsResizingEndDate(bool resizing)
         {
-            _isResizingEndDate = resizing;
+            IsResizingEndDate = resizing;
         }
 
         /// <summary>
@@ -1018,7 +859,7 @@ namespace Chummer
         /// <param name="top"></param>
         internal void SetMinuteStartTop(int top)
         {
-            _minuteStartTop = top;
+            MinuteStartTop = top;
         }
 
         /// <summary>
@@ -1027,7 +868,7 @@ namespace Chummer
         /// <param name="top"></param>
         internal void SetMinuteEndTop(int top)
         {
-            _minuteEndTop = top;
+            MinuteEndTop = top;
         }
 
         internal string DisplayName(string language)

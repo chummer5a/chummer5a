@@ -330,7 +330,6 @@ namespace Chummer
             this.calendar1.ItemCreated += new Chummer.Calendar.CalendarItemCancelEventHandler(this.calendar1_ItemCreated);
             this.calendar1.ItemDeleted += new Chummer.Calendar.CalendarItemEventHandler(this.calendar1_ItemDeleted);
             this.calendar1.ItemClick += new Chummer.Calendar.CalendarItemEventHandler(this.calendar1_ItemClick);
-            this.calendar1.ItemDoubleClick += new Chummer.Calendar.CalendarItemEventHandler(this.calendar1_ItemDoubleClick);
             this.calendar1.ItemMouseHover += new Chummer.Calendar.CalendarItemEventHandler(this.calendar1_ItemMouseHover);
             // 
             // monthView1

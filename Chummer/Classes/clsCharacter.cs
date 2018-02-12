@@ -241,7 +241,8 @@ namespace Chummer
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
-        private BindingList<CalendarItem> _lstCalendar = new BindingList<CalendarItem>();
+        private BindingList<CalendarItem> _lstPlayerCalendar = new BindingList<CalendarItem>();
+        private BindingList<CalendarItem> _lstCharacterCalendar = new BindingList<CalendarItem>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
         private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
@@ -880,7 +881,11 @@ namespace Chummer
 
             // <calendar>
             objWriter.WriteStartElement("calendar");
-            foreach (CalendarItem objWeek in _lstCalendar)
+            foreach (CalendarItem objWeek in _lstCharacterCalendar)
+            {
+                objWeek.Save(objWriter);
+            }
+            foreach (CalendarItem objWeek in _lstPlayerCalendar)
             {
                 objWeek.Save(objWriter);
             }
@@ -1900,7 +1905,8 @@ namespace Chummer
             {
                 CalendarItem objWeek = new CalendarItem();
                 objWeek.Load(objXmlWeek);
-                _lstCalendar.Add(objWeek);
+                if (objWeek.InCharacter) _lstCharacterCalendar.Add(objWeek);
+                else _lstPlayerCalendar.Add(objWeek);
             }
 
             Timekeeper.Finish("load_char_calendar");
@@ -2884,7 +2890,7 @@ namespace Chummer
             // <calendar>
             objWriter.WriteStartElement("calendar");
             //_lstCalendar.Sort();
-            foreach (CalendarItem objWeek in Calendar)
+            foreach (CalendarItem objWeek in PlayerCalendar)
                 objWeek.Print(objWriter, objCulture, Options.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
@@ -2990,7 +2996,8 @@ namespace Chummer
             _lstInitiationGrades.Clear();
             _lstQualities.Clear();
             _lstOldQualities.Clear();
-            _lstCalendar.Clear();
+            _lstPlayerCalendar.Clear();
+            _lstCharacterCalendar.Clear();
 
             SkillsSection.Reset();
             _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
@@ -6737,10 +6744,19 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public BindingList<CalendarItem> Calendar
+        public BindingList<CalendarItem> PlayerCalendar
         {
-            get => _lstCalendar;
-            set => _lstCalendar = value;
+            get => _lstPlayerCalendar;
+            set => _lstPlayerCalendar = value;
+        }
+
+        /// <summary>
+        /// Calendar.
+        /// </summary>
+        public BindingList<CalendarItem> CharacterCalendar
+        {
+            get => _lstCharacterCalendar;
+            set => _lstCharacterCalendar = value;
         }
 
         /// <summary>
