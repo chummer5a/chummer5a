@@ -22,6 +22,7 @@
   <cyberwares>
     <cyberware>
       <bonus>
+        <skillattribute amendoperation="remove" />
         <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Swimming'" >
           <name>Aquatics</name>
@@ -39,6 +40,30 @@
           <name>Sleight of Hand</name>
         </specificskill>
       </pairbonus>
+    </cyberware>
+    <cyberware>
+      <name>Neural Amplifiers (Limbic)</name>
+      <bonus>
+        <limitmodifier>
+          <condition>Only with Intuition Tests</condition>
+        </limitmodifier>
+        <specificattribute amendoperation="addnode">
+          <name>INT</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+    </cyberware>
+    <cyberware>
+      <name>Neural Amplifiers (Neocortical)</name>
+      <bonus>
+        <limitmodifier>
+          <condition>Only with Logic Tests</condition>
+        </limitmodifier>
+        <specificattribute amendoperation="addnode">
+          <name>LOG</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
     </cyberware>
   </cyberwares>
 </chummer>

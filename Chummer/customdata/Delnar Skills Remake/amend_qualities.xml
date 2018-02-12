@@ -49,9 +49,6 @@
         <specificskill xpathfilter="name = 'Negotiation'" >
           <name>Persuade</name>
         </specificskill>
-        <swapskillattribute xpathfilter="limittoskill = 'Etiquette'">
-          <limittoskill>Socialize</limittoskill>
-        </swapskillattribute>
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
         <unlockskills xpathfilter="text() = 'Adept' or text() = 'Aware' or text() = 'Explorer'" amendoperation="remove" />
@@ -233,15 +230,8 @@
         <physicalillusionresist>-2</physicalillusionresist>
       </bonus>
     </quality>
-    <quality>
-      <name>Master Debater</name>
-      <bonus>
-        <swapskillspecattribute xpathfilter="limittoskill = 'Negotiation'" amendoperation="remove" />
-        <swapskillattribute>
-          <attribute>LOG</attribute>
-          <limittoskill>Persuade</limittoskill>
-        </swapskillattribute>
-      </bonus>
+    <quality xpathfilter="bonus/swapskillattribute or bonus/swapskillspecattribute">
+      <hide />
     </quality>
     <quality>
       <name>Enchanter</name>

@@ -23,6 +23,7 @@
     <bioware>
       <bonus>
         <specificskill xpathfilter="name = 'Escape Artist' or name = 'Navigation' or name = 'Perception'" amendoperation="remove" />
+        <skillattribute amendoperation="remove" />
         <skillgroup xpathfilter="name = 'Athletics'">
           <name>Prowess</name>
         </skillgroup>
@@ -42,6 +43,24 @@
       <name>Synch</name>
       <bonus>
         <physicalillusionresist>1</physicalillusionresist>
+      </bonus>
+    </bioware>
+    <bioware>
+      <name>PuSHed</name>
+      <bonus>
+        <specificattribute amendoperation="addnode">
+          <name>LOG</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+    </bioware>
+    <bioware>
+      <name>Qualia</name>
+      <bonus>
+        <specificattribute amendoperation="addnode">
+          <name>INT</name>
+          <val>1</val>
+        </specificattribute>
       </bonus>
     </bioware>
   </biowares>
