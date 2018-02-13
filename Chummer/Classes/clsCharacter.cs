@@ -68,7 +68,7 @@ namespace Chummer
         private decimal _decNuyen;
         private decimal _decStartingNuyen;
         private int _intMaxAvail = 12;
-        private decimal _decEssenceAtSpecialStart = 6.0m;
+        private decimal _decEssenceAtSpecialStart = decimal.MinValue;
         private int _intSpecial;
         private int _intTotalSpecial;
         private int _intAttributes;
@@ -1234,6 +1234,9 @@ namespace Chummer
             objXmlCharacter.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
             objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
             objXmlCharacter.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
+            // Legacy shim
+            if (!_blnCreated && !_blnMAGEnabled && !_blnRESEnabled && !_blnDEPEnabled)
+                _decEssenceAtSpecialStart = decimal.MinValue;
             objXmlCharacter.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
             objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
             objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
@@ -4981,6 +4984,8 @@ namespace Chummer
                             EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
                     }
+                    else if (!Created && !RESEnabled && !DEPEnabled)
+                        EssenceAtSpecialStart = decimal.MinValue;
                     MAGEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -5136,7 +5141,11 @@ namespace Chummer
                         TechnomancerStream = "Default";
                     }
                     else
+                    {
+                        if (!Created && !DEPEnabled && !MAGEnabled)
+                            EssenceAtSpecialStart = decimal.MinValue;
                         TechnomancerStream = string.Empty;
+                    }
 
                     ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
                     RESEnabledChanged?.Invoke(this, EventArgs.Empty);
@@ -5167,6 +5176,8 @@ namespace Chummer
                             EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
                     }
+                    else if (!Created && !RESEnabled && !MAGEnabled)
+                        EssenceAtSpecialStart = decimal.MinValue;
                     DEPEnabledChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

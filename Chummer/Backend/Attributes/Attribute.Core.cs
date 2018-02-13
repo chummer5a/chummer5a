@@ -301,47 +301,52 @@ namespace Chummer.Backend.Attributes
         public int Value => Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
 
         /// <summary>
-        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied.
+        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
         /// </summary>
-        public int MaximumNoEssenceLoss
+        public int MaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
         {
-            get
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
             {
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
-                {
-                    return 1;
-                }
+                return 1;
+            }
 
-                int intRawMinimum = MetatypeMinimum;
-                int intRawMaximum = MetatypeMaximum;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+            int intRawMinimum = MetatypeMinimum;
+            int intRawMaximum = MetatypeMaximum;
+            int intMinimumLossFromEssence = 0;
+            int intMaximumLossFromEssence = 0;
+            foreach (Improvement objImprovement in _objCharacter.Improvements)
+            {
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                        (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") &&
-                        objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen &&
-                        objImprovement.Enabled)
+                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen)
                     {
                         intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
                         intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
                     }
-                }
-
-                int intTotalMinimum = intRawMinimum;
-                int intTotalMaximum = intRawMaximum;
-
-                if (intTotalMinimum < 1)
-                {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
-                        intTotalMinimum = 0;
                     else
-                        intTotalMinimum = 1;
+                    {
+                        intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
+                        intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
+                    }
                 }
-                if (intTotalMaximum < intTotalMinimum)
-                    intTotalMaximum = intTotalMinimum;
-
-                return intTotalMaximum;
             }
+
+            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? decimal.ToInt32(decimal.Ceiling(CharacterObject.EssenceAtSpecialStart)) - CharacterObject.ESS.MetatypeMaximum : 0;
+            int intTotalMinimum = intRawMinimum + Math.Max(intMinimumLossFromEssence, intMaxLossFromEssence);
+            int intTotalMaximum = intRawMaximum + Math.Max(intMaximumLossFromEssence, intMaxLossFromEssence);
+
+            if (intTotalMinimum < 1)
+            {
+                if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    intTotalMinimum = 0;
+                else
+                    intTotalMinimum = 1;
+            }
+            if (intTotalMaximum < intTotalMinimum)
+                intTotalMaximum = intTotalMinimum;
+
+            return intTotalMaximum;
         }
 
         /// <summary>

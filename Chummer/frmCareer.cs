@@ -15932,240 +15932,272 @@ namespace Chummer
             lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-
-            // Reduce a character's MAG and RES from Essence Loss.
-            int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
+            
             decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
-            int intMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
-            int intMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESS));
-            decimal decESSMag = CharacterObject.EssenceAtSpecialStart + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
-            if (!CharacterObjectOptions.DontRoundEssenceInternally)
-                decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
-            int intMagMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
-            int intMagMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESSMag));
-            
-            // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
-            int intExtraRESBurn = Math.Max(0, Math.Max(CharacterObject.RES.Base + CharacterObject.RES.FreeBase + CharacterObject.RES.RawMinimum + CharacterObject.RES.AttributeValueModifiers, CharacterObject.RES.TotalMinimum) + CharacterObject.RES.Karma - CharacterObject.RES.TotalMaximum);
-            int intExtraDEPBurn = Math.Max(0, Math.Max(CharacterObject.DEP.Base + CharacterObject.DEP.FreeBase + CharacterObject.DEP.RawMinimum + CharacterObject.DEP.AttributeValueModifiers, CharacterObject.DEP.TotalMinimum) + CharacterObject.DEP.Karma - CharacterObject.DEP.TotalMaximum);
-            int intExtraMAGBurn = Math.Max(0, Math.Max(CharacterObject.MAG.Base + CharacterObject.MAG.FreeBase + CharacterObject.MAG.RawMinimum + CharacterObject.MAG.AttributeValueModifiers, CharacterObject.MAG.TotalMinimum) + CharacterObject.MAG.Karma - CharacterObject.MAG.TotalMaximum);
-            int intExtraMAGAdeptBurn = Math.Max(0, Math.Max(CharacterObject.MAGAdept.Base + CharacterObject.MAGAdept.FreeBase + CharacterObject.MAGAdept.RawMinimum + CharacterObject.MAGAdept.AttributeValueModifiers, CharacterObject.MAGAdept.TotalMinimum) + CharacterObject.MAGAdept.Karma - CharacterObject.MAGAdept.TotalMaximum);
-            // Old values for minimum reduction from essence loss. These are used to determine if any karma needs to get burned.
-            int intOldRESCareerMinimumReduction = 0;
-            int intOldDEPCareerMinimumReduction = 0;
-            int intOldMAGCareerMinimumReduction = 0;
-            int intOldMAGAdeptCareerMinimumReduction = 0;
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            // Only perform essence loss calculations if we have any attributes enabled that could lose essence (set through EssenceAtSpecialStart)
+            if (decEssenceAtSpecialStart != decimal.MinValue)
             {
-                if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
-                {
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "RES":
-                            intOldRESCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                            break;
-                        case "DEP":
-                            intOldDEPCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                            break;
-                        case "MAG":
-                            intOldMAGCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                            break;
-                        case "MAGAdept":
-                            intOldMAGAdeptCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                            break;
-                    }
-                }
-            }
-            // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
-            
-            // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
-            int intRESMaximumReduction = intMaxReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
-            int intDEPMaximumReduction = intMaxReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
-            int intMAGMaximumReduction = intMagMaxReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
-            int intMAGAdeptMaximumReduction = intMagMaxReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
+                // Reduce a character's MAG and RES from Essence Loss.
+                int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
+                int intMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
+                int intMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESS));
+                decimal decESSMag = CharacterObject.EssenceAtSpecialStart + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
+                if (!CharacterObjectOptions.DontRoundEssenceInternally)
+                    decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
+                int intMagMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
+                int intMagMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESSMag));
 
-            // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-            if (intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
-            {
-                if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
+                // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
+                int intExtraRESBurn = Math.Max(0,
+                    Math.Max(CharacterObject.RES.Base + CharacterObject.RES.FreeBase + CharacterObject.RES.RawMinimum + CharacterObject.RES.AttributeValueModifiers, CharacterObject.RES.TotalMinimum) + CharacterObject.RES.Karma -
+                    CharacterObject.RES.TotalMaximum);
+                int intExtraDEPBurn = Math.Max(0,
+                    Math.Max(CharacterObject.DEP.Base + CharacterObject.DEP.FreeBase + CharacterObject.DEP.RawMinimum + CharacterObject.DEP.AttributeValueModifiers, CharacterObject.DEP.TotalMinimum) + CharacterObject.DEP.Karma -
+                    CharacterObject.DEP.TotalMaximum);
+                int intExtraMAGBurn = Math.Max(0,
+                    Math.Max(CharacterObject.MAG.Base + CharacterObject.MAG.FreeBase + CharacterObject.MAG.RawMinimum + CharacterObject.MAG.AttributeValueModifiers, CharacterObject.MAG.TotalMinimum) + CharacterObject.MAG.Karma -
+                    CharacterObject.MAG.TotalMaximum);
+                int intExtraMAGAdeptBurn = Math.Max(0,
+                    Math.Max(CharacterObject.MAGAdept.Base + CharacterObject.MAGAdept.FreeBase + CharacterObject.MAGAdept.RawMinimum + CharacterObject.MAGAdept.AttributeValueModifiers, CharacterObject.MAGAdept.TotalMinimum) +
+                    CharacterObject.MAGAdept.Karma - CharacterObject.MAGAdept.TotalMaximum);
+                // Old values for minimum reduction from essence loss. These are used to determine if any karma needs to get burned.
+                int intOldRESCareerMinimumReduction = 0;
+                int intOldDEPCareerMinimumReduction = 0;
+                int intOldMAGCareerMinimumReduction = 0;
+                int intOldMAGAdeptCareerMinimumReduction = 0;
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
-                }
-                else
-                {
-                    int intRESMinimumReduction = intMinReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
-                    int intDEPMinimumReduction = intMinReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
-                    if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
                     {
-                        intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
-                        intDEPMinimumReduction = Math.Max(0, intDEPMinimumReduction + CharacterObject.DEP.TotalValue - CharacterObject.DEP.TotalMaximum);
+                        switch (objImprovement.ImprovedName)
+                        {
+                            case "RES":
+                                intOldRESCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
+                                break;
+                            case "DEP":
+                                intOldDEPCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
+                                break;
+                            case "MAG":
+                                intOldMAGCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
+                                break;
+                            case "MAGAdept":
+                                intOldMAGAdeptCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
+                                break;
+                        }
                     }
-                    // If our new reduction is less than our old one, we don't actually get any new values back
-                    intRESMinimumReduction = Math.Max(intRESMinimumReduction, intOldRESCareerMinimumReduction);
-                    intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intOldDEPCareerMinimumReduction);
-                    // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    intExtraRESBurn += Math.Min(CharacterObject.RES.Karma, intRESMinimumReduction - intOldRESCareerMinimumReduction);
-                    CharacterObject.RES.Karma -= intExtraRESBurn;
-                    intRESMinimumReduction -= intExtraRESBurn;
-                    intExtraDEPBurn += Math.Min(CharacterObject.DEP.Karma, intDEPMinimumReduction - intOldDEPCareerMinimumReduction);
-                    CharacterObject.DEP.Karma -= intExtraDEPBurn;
-                    intDEPMinimumReduction -= intExtraDEPBurn;
-                    // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intRESMaximumReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intDEPMaximumReduction);
                 }
-            }
-            if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-            {
-                if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
-                {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                    if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
-                }
-                else
-                {
-                    int intMAGMinimumReduction = intMagMinReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
-                    int intMAGAdeptMinimumReduction = intMagMinReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
-                    if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                    {
-                        intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
-                        intMAGAdeptMinimumReduction = Math.Max(0, intMAGAdeptMinimumReduction + CharacterObject.MAGAdept.TotalValue - CharacterObject.MAGAdept.TotalMaximum);
-                    }
-                    // If our new reduction is less than our old one, we don't actually get any new values back
-                    intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intOldMAGCareerMinimumReduction);
-                    intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intOldMAGAdeptCareerMinimumReduction);
-                    // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
-                    int intMAGDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
-                    if (intMAGDelta > 0 && CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                    {
-                        // First burn away PPs gained during chargen...
-                        int intPPBurn = Math.Min(CharacterObject.MysticAdeptPowerPoints, intMAGDelta);
-                        CharacterObject.MysticAdeptPowerPoints -= intPPBurn;
-                        // ... now burn away PPs gained from initiations.
-                        intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
-                        // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
-                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
-                    }
-                    // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    intExtraMAGBurn += Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
-                    intExtraMAGAdeptBurn += Math.Min(CharacterObject.MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
-                    CharacterObject.MAG.Karma -= intExtraMAGBurn;
-                    intMAGMinimumReduction -= intExtraMAGBurn;
-                    if (CharacterObject.MAGAdept != CharacterObject.MAG)
-                        CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
-                    intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
-                    // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
-                }
-            }
-            ImprovementManager.Commit(CharacterObject);
 
-            // If the CharacterAttribute reaches 0, the character has burned out.
-            if (CharacterObject.MAGEnabled)
-            {
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
+
+                // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
+                int intRESMaximumReduction = intMaxReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss(false);
+                int intDEPMaximumReduction = intMaxReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss(false);
+                int intMAGMaximumReduction = intMagMaxReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss(false);
+                int intMAGAdeptMaximumReduction = intMagMaxReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss(false);
+
+                // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
+                if (intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
                 {
-                    if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
+                    if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
                     {
-                        CharacterObject.MAG.Base = CharacterObject.MAGAdept.Base;
-                        CharacterObject.MAG.Karma = CharacterObject.MAGAdept.Karma;
-                        CharacterObject.MAG.MetatypeMinimum = CharacterObject.MAGAdept.MetatypeMinimum;
-                        CharacterObject.MAG.MetatypeMaximum = CharacterObject.MAGAdept.MetatypeMaximum;
-                        CharacterObject.MAG.MetatypeAugmentedMaximum = CharacterObject.MAGAdept.MetatypeAugmentedMaximum;
-                        CharacterObject.MAGAdept.Base = 0;
-                        CharacterObject.MAGAdept.Karma = 0;
-                        CharacterObject.MAGAdept.MetatypeMinimum = 0;
-                        CharacterObject.MAGAdept.MetatypeMaximum = 0;
-                        CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
+                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                    }
+                    else
+                    {
+                        int intRESMinimumReduction = intMinReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss(true);
+                        int intDEPMinimumReduction = intMinReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss(true);
+                        if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
+                        {
+                            intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
+                            intDEPMinimumReduction = Math.Max(0, intDEPMinimumReduction + CharacterObject.DEP.TotalValue - CharacterObject.DEP.TotalMaximum);
+                        }
+
+                        // If our new reduction is less than our old one, we don't actually get any new values back
+                        intRESMinimumReduction = Math.Max(intRESMinimumReduction, intOldRESCareerMinimumReduction);
+                        intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intOldDEPCareerMinimumReduction);
+                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
+                        intExtraRESBurn += Math.Min(CharacterObject.RES.Karma, intRESMinimumReduction - intOldRESCareerMinimumReduction);
+                        CharacterObject.RES.Karma -= intExtraRESBurn;
+                        intRESMinimumReduction -= intExtraRESBurn;
+                        intExtraDEPBurn += Math.Min(CharacterObject.DEP.Karma, intDEPMinimumReduction - intOldDEPCareerMinimumReduction);
+                        CharacterObject.DEP.Karma -= intExtraDEPBurn;
+                        intDEPMinimumReduction -= intExtraDEPBurn;
+                        // Create Improvements
+                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction,
+                            -intRESMaximumReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction,
+                            -intDEPMaximumReduction);
+                    }
+                }
+
+                if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+                {
+                    if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
+                    {
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                        if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                            ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
+                    }
+                    else
+                    {
+                        int intMAGMinimumReduction = intMagMinReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss(true);
+                        int intMAGAdeptMinimumReduction = intMagMinReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss(true);
+                        if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
+                        {
+                            intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
+                            intMAGAdeptMinimumReduction = Math.Max(0, intMAGAdeptMinimumReduction + CharacterObject.MAGAdept.TotalValue - CharacterObject.MAGAdept.TotalMaximum);
+                        }
+
+                        // If our new reduction is less than our old one, we don't actually get any new values back
+                        intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intOldMAGCareerMinimumReduction);
+                        intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intOldMAGAdeptCareerMinimumReduction);
+                        // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
+                        int intMAGDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
+                        if (intMAGDelta > 0 && CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                        {
+                            // First burn away PPs gained during chargen...
+                            int intPPBurn = Math.Min(CharacterObject.MysticAdeptPowerPoints, intMAGDelta);
+                            CharacterObject.MysticAdeptPowerPoints -= intPPBurn;
+                            // ... now burn away PPs gained from initiations.
+                            intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
+                            // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
+                            ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                        }
+
+                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
+                        intExtraMAGBurn += Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
+                        intExtraMAGAdeptBurn += Math.Min(CharacterObject.MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
+                        CharacterObject.MAG.Karma -= intExtraMAGBurn;
+                        intMAGMinimumReduction -= intExtraMAGBurn;
+                        if (CharacterObject.MAGAdept != CharacterObject.MAG)
+                            CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
+                        intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
+                        // Create Improvements
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction,
+                            -intMAGMaximumReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
+                            -intMAGAdeptMaximumReduction);
+                    }
+                }
+
+                ImprovementManager.Commit(CharacterObject);
+
+                // If the CharacterAttribute reaches 0, the character has burned out.
+                if (CharacterObject.MAGEnabled)
+                {
+                    if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                    {
+                        if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
+                            (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
+                        {
+                            CharacterObject.MAG.Base = CharacterObject.MAGAdept.Base;
+                            CharacterObject.MAG.Karma = CharacterObject.MAGAdept.Karma;
+                            CharacterObject.MAG.MetatypeMinimum = CharacterObject.MAGAdept.MetatypeMinimum;
+                            CharacterObject.MAG.MetatypeMaximum = CharacterObject.MAGAdept.MetatypeMaximum;
+                            CharacterObject.MAG.MetatypeAugmentedMaximum = CharacterObject.MAGAdept.MetatypeAugmentedMaximum;
+                            CharacterObject.MAGAdept.Base = 0;
+                            CharacterObject.MAGAdept.Karma = 0;
+                            CharacterObject.MAGAdept.MetatypeMinimum = 0;
+                            CharacterObject.MAGAdept.MetatypeMaximum = 0;
+                            CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
+
+                            CharacterObject.MagicianEnabled = false;
+                        }
+
+                        if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAGAdept.TotalMaximum < 1) ||
+                            (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAGAdept.TotalMaximum))
+                        {
+                            CharacterObject.MAGAdept.Base = 0;
+                            CharacterObject.MAGAdept.Karma = 0;
+                            CharacterObject.MAGAdept.MetatypeMinimum = 0;
+                            CharacterObject.MAGAdept.MetatypeMaximum = 0;
+                            CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
+
+                            CharacterObject.AdeptEnabled = false;
+                        }
+
+                        if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
+                            CharacterObject.MAGEnabled = false;
+                    }
+                    else if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
+                             (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
+                    {
+                        CharacterObject.MAG.Base = 0;
+                        CharacterObject.MAG.Karma = 0;
+                        CharacterObject.MAG.MetatypeMinimum = 0;
+                        CharacterObject.MAG.MetatypeMaximum = 0;
+                        CharacterObject.MAG.MetatypeAugmentedMaximum = 0;
 
                         CharacterObject.MagicianEnabled = false;
-                    }
-                    if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAGAdept.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAGAdept.TotalMaximum))
-                    {
-                        CharacterObject.MAGAdept.Base = 0;
-                        CharacterObject.MAGAdept.Karma = 0;
-                        CharacterObject.MAGAdept.MetatypeMinimum = 0;
-                        CharacterObject.MAGAdept.MetatypeMaximum = 0;
-                        CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
-
                         CharacterObject.AdeptEnabled = false;
-                    }
-                    if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
                         CharacterObject.MAGEnabled = false;
+                    }
                 }
-                else if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                    (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
-                {
-                    CharacterObject.MAG.Base = 0;
-                    CharacterObject.MAG.Karma = 0;
-                    CharacterObject.MAG.MetatypeMinimum = 0;
-                    CharacterObject.MAG.MetatypeMaximum = 0;
-                    CharacterObject.MAG.MetatypeAugmentedMaximum = 0;
 
-                    CharacterObject.MagicianEnabled = false;
-                    CharacterObject.AdeptEnabled = false;
-                    CharacterObject.MAGEnabled = false;
+                if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue || intMaxReduction >= CharacterObject.RES.TotalMaximum))
+                {
+                    CharacterObject.RES.Base = 0;
+                    CharacterObject.RES.Karma = 0;
+                    CharacterObject.RES.MetatypeMinimum = 0;
+                    CharacterObject.RES.MetatypeMinimum = 0;
+                    CharacterObject.RES.MetatypeAugmentedMaximum = 0;
+
+                    if (CharacterObject.RESEnabled)
+                    {
+                        // Move all RES-linked Active Skills to Knowledge Skills.
+                        //List<Skill> lstNewSkills = new List<Skill>();
+                        //foreach (Skill objSkill in _objCharacter.Skills)
+                        //{
+                        //    if (objSkill.Attribute == "RES" && objSkill.Rating > 0)
+                        //    {
+                        //        int i = panKnowledgeSkills.Controls.Count;
+                        //        Skill objKnowledge = new Skill(_objCharacter);
+
+                        //        SkillControl objSkillControl = new SkillControl();
+                        //        objKnowledge.Name = objSkill.Name;
+                        //        objSkillControl.SkillObject = objKnowledge;
+
+                        //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+                        //        objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
+                        //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+                        //        objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
+                        //        objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
+                        //        objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
+
+                        //        objSkillControl.KnowledgeSkill = true;
+                        //        objSkillControl.AllowDelete = true;
+                        //        if (objSkill.Rating > 13)
+                        //            objSkillControl.SkillRatingMaximum = objSkill.Rating;
+                        //        else
+                        //            objSkillControl.SkillRatingMaximum = 12;
+                        //        objSkillControl.SkillRating = objSkill.Rating;
+                        //        objSkillControl.SkillCategory = "Professional";
+                        //        // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+                        //        objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+                        //        panKnowledgeSkills.Controls.Add(objSkillControl);
+
+                        //        lstNewSkills.Add(objKnowledge);
+                        //    }
+                        //}
+                        //foreach (Skill objSkill in lstNewSkills)
+                        //    _objCharacter.Skills.Add(objSkill);
+                    }
+
+                    CharacterObject.RESEnabled = false;
+                    CharacterObject.TechnomancerEnabled = false;
                 }
             }
-            if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue || intMaxReduction >= CharacterObject.RES.TotalMaximum))
+            else
             {
-                CharacterObject.RES.Base = 0;
-                CharacterObject.RES.Karma = 0;
-                CharacterObject.RES.MetatypeMinimum = 0;
-                CharacterObject.RES.MetatypeMinimum = 0;
-                CharacterObject.RES.MetatypeAugmentedMaximum = 0;
-
-                if (CharacterObject.RESEnabled)
-                {
-                    // Move all RES-linked Active Skills to Knowledge Skills.
-                    //List<Skill> lstNewSkills = new List<Skill>();
-                    //foreach (Skill objSkill in _objCharacter.Skills)
-                    //{
-                    //    if (objSkill.Attribute == "RES" && objSkill.Rating > 0)
-                    //    {
-                    //        int i = panKnowledgeSkills.Controls.Count;
-                    //        Skill objKnowledge = new Skill(_objCharacter);
-
-                    //        SkillControl objSkillControl = new SkillControl();
-                    //        objKnowledge.Name = objSkill.Name;
-                    //        objSkillControl.SkillObject = objKnowledge;
-
-                    //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    //        objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                    //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    //        objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
-                    //        objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
-                    //        objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
-
-                    //        objSkillControl.KnowledgeSkill = true;
-                    //        objSkillControl.AllowDelete = true;
-                    //        if (objSkill.Rating > 13)
-                    //            objSkillControl.SkillRatingMaximum = objSkill.Rating;
-                    //        else
-                    //            objSkillControl.SkillRatingMaximum = 12;
-                    //        objSkillControl.SkillRating = objSkill.Rating;
-                    //        objSkillControl.SkillCategory = "Professional";
-                    //        // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                    //        objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
-                    //        panKnowledgeSkills.Controls.Add(objSkillControl);
-
-                    //        lstNewSkills.Add(objKnowledge);
-                    //    }
-                    //}
-                    //foreach (Skill objSkill in lstNewSkills)
-                    //    _objCharacter.Skills.Add(objSkill);
-                }
-
-                CharacterObject.RESEnabled = false;
-                CharacterObject.TechnomancerEnabled = false;
+                // Otherwise we need to delete any improvements that might have been created in an older version of Chummer
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
+                ImprovementManager.Commit(CharacterObject);
             }
 
             // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
