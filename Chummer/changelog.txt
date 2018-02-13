@@ -164,6 +164,7 @@ Application Changes:
 - Fixed an issue where skill group names would get cut off if they are too long.
 - Added the ability for talent priority entries to specify the possibly pool of skills or skillgroups to choose from with an xpath filter.
 - Fixed an issue where modifying the load order of a custom data directory after modifying whether it is enabled or not would reset any changes made to whether it was enabled or not.
+- Fixed issues with copying and pasting weapons to and from vehicle mounts, gear to and from armor mods, and gear children to and from gear parents.
 
 Data Changes:
 

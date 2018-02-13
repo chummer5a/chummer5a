@@ -34,7 +34,6 @@ namespace Chummer
     {
         None = 0,
         Gear,
-        OperatingSystem,
         Cyberware,
         Bioware,
         Armor,
