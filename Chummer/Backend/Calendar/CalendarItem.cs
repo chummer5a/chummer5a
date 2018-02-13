@@ -65,6 +65,12 @@ namespace Chummer
         private Guid _guiID;
         private bool _inCharacter;
         private string _notes;
+        private HatchStyle _pattern;
+        private Color _patternColor;
+        private Color _backgroundColor;
+        private Color _backgroundColorLighter;
+        private Color _borderColor;
+        private Color _foreColor;
 
         #endregion
 
@@ -85,17 +91,29 @@ namespace Chummer
         /// <summary>
         /// Gets or sets the a background color for the object. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color BackgroundColor { get; set; }
+        public Color BackgroundColor
+        {
+            get => _backgroundColor;
+            set => _backgroundColor = value;
+        }
 
         /// <summary>
         /// Gets or sets the lighter background color of the item
         /// </summary>
-        public Color BackgroundColorLighter { get; set; }
+        public Color BackgroundColorLighter
+        {
+            get => _backgroundColorLighter;
+            set => _backgroundColorLighter = value;
+        }
 
         /// <summary>
         /// Gets or sets the bordercolor of the item. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color BorderColor { get; set; }
+        public Color BorderColor
+        {
+            get => _borderColor;
+            set => _borderColor = value;
+        }
 
         /// <summary>
         /// Gets the StartDate of the item. Implemented
@@ -217,7 +235,11 @@ namespace Chummer
         /// <summary>
         /// Gets or sets the forecolor of the item. If Color.Empty, renderer default's will be used.
         /// </summary>
-        public Color ForeColor { get; set; }
+        public Color ForeColor
+        {
+            get => _foreColor;
+            set => _foreColor = value;
+        }
 
         /// <summary>
         /// Gets or sets an image for the item
@@ -314,12 +336,20 @@ namespace Chummer
         /// <summary>
         /// Gets or sets the pattern style to use in the background of item.
         /// </summary>
-        public HatchStyle Pattern { get; set; }
+        public HatchStyle Pattern
+        {
+            get => _pattern;
+            set => _pattern = value;
+        }
 
         /// <summary>
         /// Gets or sets the pattern's color
         /// </summary>
-        public Color PatternColor { get; set; }
+        public Color PatternColor
+        {
+            get => _patternColor;
+            set => _patternColor = value;
+        }
 
         /// <summary>
         /// Gets the list of DayTops that this item passes thru
@@ -377,11 +407,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Gets or sets a tag object for the item
-        /// </summary>
-        public object Tag { get; set; }
-
-        /// <summary>
         /// Gets or sets the text of the item
         /// </summary>
         public string Text
@@ -417,6 +442,11 @@ namespace Chummer
             objWriter.WriteElementString("dateend", EndDate.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("incharacter", InCharacter.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("notes", Text);
+            objWriter.WriteElementString("forecolor", ForeColor.Name);
+            objWriter.WriteElementString("pattern", Pattern.ToString());
+            objWriter.WriteElementString("patterncolor", PatternColor.Name);
+            objWriter.WriteElementString("backgroundcolor", BackgroundColor.Name);
+            objWriter.WriteElementString("backgroundcolorlighter", BackgroundColorLighter.Name);
             objWriter.WriteEndElement();
         }
 
@@ -516,6 +546,11 @@ namespace Chummer
 
             objNode.TryGetBoolFieldQuickly("incharacter", ref _inCharacter);
             objNode.TryGetStringFieldQuickly("notes", ref _notes);
+            _foreColor = Color.FromName(objNode["forecolor"]?.InnerText ?? "Empty");
+            _backgroundColor = Color.FromName(objNode["backgroundcolor"]?.InnerText ?? "Empty");
+            _backgroundColorLighter = Color.FromName(objNode["backgroundcolorlighter"]?.InnerText ?? "Empty");
+            _patternColor = Color.FromName(objNode["patterncolor"]?.InnerText ?? "Empty");
+            Enum.TryParse(objNode["pattern"]?.InnerText, out _pattern);
         }
 
         /// <summary>
@@ -545,7 +580,7 @@ namespace Chummer
             ForeColor = Color.Empty;
             BackgroundColorLighter = Color.Empty;
             ImageAlign = CalendarItemImageAlign.West;
-            _guiID = new Guid();
+            _guiID = Guid.NewGuid();
             if (calendar == null) return;
             Font = calendar.ItemsFont;
             BackgroundColor = calendar.ItemsBackgroundColor;
