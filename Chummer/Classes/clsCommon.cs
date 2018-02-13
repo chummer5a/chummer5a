@@ -694,14 +694,12 @@ namespace Chummer
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                objGear.Parent.RefreshMatrixAttributeArray();
             }
 
             if (objDestination.Level == 0)
             {
                 // The Gear was moved to a location, so add it to the character instead.
                 objGear.Location = objDestination.Text;
-                objGear.Parent = null;
                 objCharacter.Gear.Add(objGear);
             }
             else
@@ -711,9 +709,7 @@ namespace Chummer
 
                 // Add the Gear as a child of the destination Node and clear its location.
                 objGear.Location = string.Empty;
-                objGear.Parent = objParent;
                 objParent.Children.Add(objGear);
-                objParent.RefreshMatrixAttributeArray();
             }
         }
 
@@ -923,28 +919,17 @@ namespace Chummer
             {
                 // Remove the Gear from the Vehicle.
                 if (objOldParent != null)
-                {
                     objOldParent.Children.Remove(objGear);
-                    objOldParent.RefreshMatrixAttributeArray();
-                }
                 else if (objOldCyberware != null)
-                {
                     objOldCyberware.Gear.Remove(objGear);
-                    objOldCyberware.RefreshMatrixAttributeArray();
-                }
                 else if (objOldWeaponAccessory != null)
                     objOldWeaponAccessory.Gear.Remove(objGear);
                 else
-                {
                     objOldVehicle.Gear.Remove(objGear);
-                    objOldVehicle.RefreshMatrixAttributeArray();
-                }
 
                 // Add the Gear to its new parent.
                 objGear.Location = string.Empty;
-                objGear.Parent = objDestinationGear;
                 objDestinationGear.Children.Add(objGear);
-                objDestinationGear.RefreshMatrixAttributeArray();
             }
             else
             {
@@ -966,27 +951,16 @@ namespace Chummer
                 {
                     // Remove the Gear from the Vehicle.
                     if (objOldParent != null)
-                    {
                         objOldParent.Children.Remove(objGear);
-                        objOldParent.RefreshMatrixAttributeArray();
-                    }
                     else if (objOldCyberware != null)
-                    {
                         objOldCyberware.Gear.Remove(objGear);
-                        objOldCyberware.RefreshMatrixAttributeArray();
-                    }
                     else if (objOldWeaponAccessory != null)
                         objOldWeaponAccessory.Gear.Remove(objGear);
                     else
-                    {
                         objOldVehicle.Gear.Remove(objGear);
-                        objOldVehicle.RefreshMatrixAttributeArray();
-                    }
 
                     // Add the Gear to the Vehicle and set its Location.
                     objGear.Location = strDestinationLocation;
-                    objGear.Parent = null;
-                    objDestinationVehicle.Gear.Add(objGear);
                 }
             }
         }

@@ -19,6 +19,7 @@
 using Chummer.Backend.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -99,6 +100,15 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Vehicle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+            _lstWeapons.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+        }
+
+        private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Move)
+                this.RefreshMatrixAttributeArray();
         }
 
         /// Create a Vehicle from an XmlNode.
@@ -765,8 +775,6 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-
-            this.RefreshMatrixAttributeArray();
 
             if (objNode["locations"] != null)
             {

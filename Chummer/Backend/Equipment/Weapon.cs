@@ -27,6 +27,7 @@ using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
+using System.Collections.Specialized;
 
 namespace Chummer.Backend.Equipment
 {
@@ -118,6 +119,35 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Weapon.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstUnderbarrel.CollectionChanged += ChildrenOnCollectionChanged;
+        }
+
+        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Weapon objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Weapon objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Weapon objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    foreach (Weapon objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    this.RefreshMatrixAttributeArray();
+                    break;
+            }
         }
 
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
@@ -253,8 +283,6 @@ namespace Chummer.Backend.Equipment
                     objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.Cost = "0";
                     objUnderbarrelWeapon.IncludedInWeapon = true;
-                    objUnderbarrelWeapon.Parent = this;
-                    objUnderbarrelWeapon.ParentVehicle = ParentVehicle;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
                 }
             }
@@ -641,7 +669,6 @@ namespace Chummer.Backend.Equipment
                                 ParentVehicle = ParentVehicle
                             };
                             objUnderbarrel.Load(nodWeapon, blnCopy);
-                            objUnderbarrel.Parent = this;
                             _lstUnderbarrel.Add(objUnderbarrel);
                         }
             }
@@ -692,8 +719,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
-
-            this.RefreshMatrixAttributeArray();
         }
 
         /// <summary>
@@ -1259,7 +1284,20 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
-        public Weapon Parent { get; set; }
+        private Weapon _objParent;
+        public Weapon Parent
+        {
+            get => _objParent;
+            set
+            {
+                if (_objParent != value)
+                {
+                    _objParent = value;
+                    // Includes ParentVehicle setter
+                    ParentMount = value?.ParentMount;
+                }
+            }
+        }
 
         /// <summary>
         /// ID of the object that added this weapon (if any).
@@ -1278,10 +1316,14 @@ namespace Chummer.Backend.Equipment
             get => _blnAllowAccessory;
             set
             {
-                _blnAllowAccessory = value;
-                if (!_blnAllowAccessory)
+                if (value)
+                    _blnAllowAccessory = true;
+                else if (_blnAllowAccessory)
+                {
+                    _blnAllowAccessory = false;
                     foreach (Weapon objChild in UnderbarrelWeapons)
                         objChild.AllowAccessory = false;
+                }
             }
         }
 
@@ -1325,8 +1367,11 @@ namespace Chummer.Backend.Equipment
             get => _objWeaponMount;
             set
             {
-                _objWeaponMount = value;
-                ParentVehicle = _objWeaponMount.Parent;
+                if (_objWeaponMount != value)
+                {
+                    _objWeaponMount = value;
+                    ParentVehicle = value?.Parent;
+                }
                 foreach (Weapon objChild in Children)
                     objChild.ParentMount = value;
             }
@@ -2393,7 +2438,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            int intAP = 0;
+            int intAP;
             try
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);

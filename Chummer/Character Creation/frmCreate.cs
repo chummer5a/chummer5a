@@ -1155,8 +1155,9 @@ namespace Chummer
                     if (chrAvail == 'R' || chrAvail == 'F')
                     {
                         objCyberware.DeleteCyberware();
-                        if (objCyberware.Parent != null)
-                            objCyberware.Parent.Children.Remove(objCyberware);
+                        Cyberware objParent = objCyberware.Parent;
+                        if (objParent != null)
+                            objParent.Children.Remove(objCyberware);
                         else
                             CharacterObject.Cyberware.Remove(objCyberware);
                         blnDoRefresh = true;
@@ -2539,10 +2540,8 @@ namespace Chummer
                                             if (!blnDoAdd)
                                                 return;
                                         }
-
-                                        objGear.Parent = objNewParent;
+                                        
                                         objNewParent.Children.Add(objGear);
-                                        objNewParent.RefreshMatrixAttributeArray();
                                     }
                                     else
                                         return;
@@ -2577,7 +2576,6 @@ namespace Chummer
                         string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
                         Gear objGear = new Gear(CharacterObject);
                         objGear.Load(objXmlNode, true);
-                        objGear.Parent = null;
                         
                         // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
                         WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
@@ -2639,10 +2637,8 @@ namespace Chummer
                                     if (!blnDoAdd)
                                         return;
                                 }
-
-                                objGear.Parent = objNewParent;
+                                
                                 objNewParent.Children.Add(objGear);
-                                objNewParent.RefreshMatrixAttributeArray();
 
                                 IsCharacterUpdateRequested = true;
                                 IsDirty = true;
@@ -2694,10 +2690,8 @@ namespace Chummer
                                 if (!blnDoAdd)
                                     return;
                             }
-
-                            objGear.Parent = objNewParent;
+                            
                             objNewParent.Children.Add(objGear);
-                            objNewParent.RefreshMatrixAttributeArray();
 
                             // Add any Weapons that come with the Gear.
                             XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
@@ -2717,7 +2711,6 @@ namespace Chummer
                         }
                         else
                         {
-                            objGear.Parent = null;
                             CharacterObject.Gear.Add(objGear);
 
                             // Add any Weapons that come with the Gear.
@@ -2787,8 +2780,6 @@ namespace Chummer
                             }
 
                             objVehicleGear.Children.Add(objGear);
-                            objGear.Parent = objVehicleGear;
-                            objVehicleGear.RefreshMatrixAttributeArray();
                         }
                         else
                         {
@@ -2798,7 +2789,6 @@ namespace Chummer
                                 if (objCharacterVehicle.InternalId == strSelectedId)
                                 {
                                     objCharacterVehicle.Gear.Add(objGear);
-                                    objCharacterVehicle.RefreshMatrixAttributeArray();
                                     break;
                                 }
                             }
@@ -3088,15 +3078,9 @@ namespace Chummer
                 // If the Parent is populated, remove the item from its Parent.
                 Cyberware objParent = objCyberware.Parent;
                 if (objParent != null)
-                {
                     objParent.Children.Remove(objCyberware);
-                    objCyberware.Parent = null;
-                    objParent.RefreshMatrixAttributeArray();
-                }
                 else
-                {
                     CharacterObject.Cyberware.Remove(objCyberware);
-                }
             }
             else
             {
@@ -3112,16 +3096,9 @@ namespace Chummer
 
                 Gear objParent = objGear.Parent;
                 if (objParent != null)
-                {
                     objParent.Children.Remove(objGear);
-                    objGear.Parent = null;
-                    objParent.RefreshMatrixAttributeArray();
-                }
                 else
-                {
                     objCyberware.Gear.Remove(objGear);
-                    objCyberware.RefreshMatrixAttributeArray();
-                }
             }
             
             IsCharacterUpdateRequested = true;
@@ -3287,16 +3264,11 @@ namespace Chummer
 
                             Gear objGearParent = objGear.Parent;
                             if (objGearParent != null)
-                            {
                                 objGearParent.Children.Remove(objGear);
-                                objGearParent.RefreshMatrixAttributeArray();
-                            }
                             else if (objMod != null)
                                 objMod.Gear.Remove(objGear);
                             else
-                            {
                                 objArmor?.Gear.Remove(objGear);
-                            }
                         }
                         else
                             return;
@@ -3438,13 +3410,12 @@ namespace Chummer
                             if (objGear != null)
                             {
                                 objGear.DeleteGear();
-                                if (objGear.Parent == null)
-                                    objAccessory.Gear.Remove(objGear);
+
+                                Gear objParent = objGear.Parent;
+                                if (objParent != null)
+                                    objParent.Children.Remove(objGear);
                                 else
-                                {
-                                    objGear.Parent.Children.Remove(objGear);
-                                    objGear.Parent.RefreshMatrixAttributeArray();
-                                }
+                                    objAccessory.Gear.Remove(objGear);
                             }
                             else
                                 return;
@@ -3553,10 +3524,7 @@ namespace Chummer
 
                         // If the Parent is populated, remove the item from its Parent.
                         if (objParent != null)
-                        {
                             objParent.Children.Remove(objGear);
-                            objParent.RefreshMatrixAttributeArray();
-                        }
                         else
                             CharacterObject.Gear.Remove(objGear);
                     }
@@ -3792,15 +3760,11 @@ namespace Chummer
                                     // Removing Cyberware
                                     if (objCyberware != null)
                                     {
-                                        if (objCyberware.Parent != null)
-                                        {
-                                            objCyberware.Parent.Children.Remove(objCyberware);
-                                            objCyberware.RefreshMatrixAttributeArray();
-                                        }
+                                        Cyberware objParent = objCyberware.Parent;
+                                        if (objParent != null)
+                                            objParent.Children.Remove(objCyberware);
                                         else
-                                        {
                                             objMod.Cyberware.Remove(objCyberware);
-                                        }
 
                                         objCyberware.DeleteCyberware();
                                     }
@@ -3809,23 +3773,15 @@ namespace Chummer
                                         Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objWeaponAccessory, out objCyberware);
                                         if (objGear != null)
                                         {
-                                            if (objGear.Parent != null)
-                                            {
-                                                objGear.Parent.Children.Remove(objGear);
-                                                objGear.Parent.RefreshMatrixAttributeArray();
-                                            }
+                                            Gear objParent = objGear.Parent;
+                                            if (objParent != null)
+                                                objParent.Children.Remove(objGear);
                                             else if (objCyberware != null)
-                                            {
                                                 objCyberware.Gear.Remove(objGear);
-                                                objCyberware.RefreshMatrixAttributeArray();
-                                            }
                                             else if (objWeaponAccessory != null)
                                                 objWeaponAccessory.Gear.Remove(objGear);
                                             else
-                                            {
                                                 objVehicle.Gear.Remove(objGear);
-                                                objVehicle.RefreshMatrixAttributeArray();
-                                            }
 
                                             objGear.DeleteGear();
                                         }
@@ -5981,11 +5937,8 @@ namespace Chummer
                 nudVehicleGearQty.Increment = objGear.CostFor;
                 //nudVehicleGearQty.Minimum = objGear.CostFor;
                 _blnSkipRefresh = false;
-
-                objGear.Parent = objSensor;
-
+                
                 objSensor.Children.Add(objGear);
-                objSensor.RefreshMatrixAttributeArray();
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
@@ -7649,10 +7602,8 @@ namespace Chummer
                     objGear.Cost = "0";
                 }
                 frmPickGear.Dispose();
-
-                objGear.Parent = objSensor;
+                
                 objSensor.Children.Add(objGear);
-                objSensor.RefreshMatrixAttributeArray();
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
@@ -7743,10 +7694,8 @@ namespace Chummer
                     objGear.Cost = "0";
                 }
                 frmPickGear.Dispose();
-
-                objGear.Parent = objSensor;
+                
                 objSensor.Children.Add(objGear);
-                objSensor.RefreshMatrixAttributeArray();
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
@@ -7913,9 +7862,7 @@ namespace Chummer
                 }
                 frmPickGear.Dispose();
                 
-                objGear.Parent = objSensor;
                 objSensor.Children.Add(objGear);
-                objSensor.RefreshMatrixAttributeArray();
 
                 // Create any Weapons that came with this Gear.
                 foreach (Weapon objWeapon in lstWeapons)
@@ -8108,9 +8055,7 @@ namespace Chummer
                 }
                 frmPickGear.Dispose();
                 
-                objGear.Parent = objSensor;
                 objSensor.Children.Add(objGear);
-                objSensor.RefreshMatrixAttributeArray();
 
                 // Create any Weapons that came with this Gear.
                 foreach (Weapon objWeapon in lstWeapons)
@@ -13113,14 +13058,9 @@ namespace Chummer
                 objCyberware.Cost = "0";
 
             if (objSelectedCyberware != null)
-            {
                 objSelectedCyberware.Children.Add(objCyberware);
-                objSelectedCyberware.RefreshMatrixAttributeArray();
-            }
             else
-            {
                 CharacterObject.Cyberware.Add(objCyberware);
-            }
 
             CharacterObject.Weapons.AddRange(lstWeapons);
             CharacterObject.Vehicles.AddRange(lstVehicles);
@@ -13216,15 +13156,10 @@ namespace Chummer
             {
                 CharacterObject.Weapons.Add(objWeapon);
             }
-
-            objGear.Parent = objSelectedGear;
-            if (blnNullParent)
-                objGear.Parent = null;
-
+            
             if (!blnNullParent)
             {
                 objSelectedGear.Children.Add(objGear);
-                objSelectedGear.RefreshMatrixAttributeArray();
             }
             else
             {
@@ -13351,7 +13286,6 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
                     objSelectedGear.Children.Add(objGear);
-                    objSelectedGear.RefreshMatrixAttributeArray();
                 }
                 else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                 {
@@ -16844,11 +16778,7 @@ namespace Chummer
             if (objParentObject is Character objParentCharacter)
                 objParentCharacter.Gear.Add(objNewGear);
             else if (objParentObject is Gear objParentGear)
-            {
                 objParentGear.Children.Add(objNewGear);
-                objNewGear.Parent = objParentGear;
-                objNewGear.Parent.RefreshMatrixAttributeArray();
-            }
             else if (objParentObject is Armor objParentArmor)
                 objParentArmor.Gear.Add(objNewGear);
             else if (objParentObject is ArmorMod objParentArmorMod)
@@ -17576,9 +17506,8 @@ namespace Chummer
             {
                 if (objOldParent != null)
                 {
-                    objModularCyberware.Parent = null;
                     objOldParent.Children.Remove(objModularCyberware);
-                    objOldParent.RefreshMatrixAttributeArray();
+
                     CharacterObject.Cyberware.Add(objModularCyberware);
                 }
             }
@@ -17587,14 +17516,13 @@ namespace Chummer
                 Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
                 if (objNewParent != null)
                 {
-                    objModularCyberware.Parent = objNewParent;
                     if (objOldParent != null)
-                    {
                         objOldParent.Children.Remove(objModularCyberware);
-                        objOldParent.RefreshMatrixAttributeArray();
-                    }
+                    else
+                        CharacterObject.Cyberware.Remove(objModularCyberware);
+
                     objNewParent.Children.Add(objModularCyberware);
-                    objNewParent.RefreshMatrixAttributeArray();
+
                     objModularCyberware.ChangeModularEquip(true);
                 }
                 else
@@ -17605,29 +17533,22 @@ namespace Chummer
 
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
-                        objModularCyberware.Parent = objNewParent;
                         if (objOldParent != null)
-                        {
                             objOldParent.Children.Remove(objModularCyberware);
-                            objOldParent.RefreshMatrixAttributeArray();
-                        }
-                        if (objNewParent != null)
-                        {
-                            objNewParent.Children.Add(objModularCyberware);
-                            objNewParent.RefreshMatrixAttributeArray();
-                        }
                         else
-                        {
+                            CharacterObject.Cyberware.Remove(objModularCyberware);
+
+                        if (objNewParent != null)
+                            objNewParent.Children.Add(objModularCyberware);
+                        else
                             objNewVehicleModParent.Cyberware.Add(objModularCyberware);
-                        }
                     }
                     else
                     {
                         if (objOldParent != null)
                         {
-                            objModularCyberware.Parent = null;
                             objOldParent.Children.Remove(objModularCyberware);
-                            objOldParent.RefreshMatrixAttributeArray();
+
                             CharacterObject.Cyberware.Add(objModularCyberware);
                         }
                     }
@@ -17667,36 +17588,23 @@ namespace Chummer
             if (strSelectedParentID == "None")
             {
                 if (objOldParent != null)
-                {
-                    objModularCyberware.Parent = null;
                     objOldParent.Children.Remove(objModularCyberware);
-                    objOldParent.RefreshMatrixAttributeArray();
-                }
                 else
-                {
                     objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-                }
+
                 CharacterObject.Cyberware.Add(objModularCyberware);
-                objModularCyberware.Parent = null;
             }
             else
             {
                 Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
                 if (objNewParent != null)
                 {
-                    objModularCyberware.Parent = objNewParent;
                     if (objOldParent != null)
-                    {
                         objOldParent.Children.Remove(objModularCyberware);
-                        objOldParent.RefreshMatrixAttributeArray();
-                    }
                     else
-                    {
                         objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-                    }
 
                     objNewParent.Children.Add(objModularCyberware);
-                    objNewParent.RefreshMatrixAttributeArray();
 
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -17708,40 +17616,24 @@ namespace Chummer
 
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
-                        objModularCyberware.Parent = objNewParent;
                         if (objOldParent != null)
-                        {
                             objOldParent.Children.Remove(objModularCyberware);
-                            objOldParent.RefreshMatrixAttributeArray();
-                        }
                         else
-                        {
                             objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-                        }
+
                         if (objNewParent != null)
-                        {
                             objNewParent.Children.Add(objModularCyberware);
-                            objNewParent.RefreshMatrixAttributeArray();
-                        }
                         else
-                        {
                             objNewVehicleModParent.Cyberware.Add(objModularCyberware);
-                        }
                     }
                     else
                     {
                         if (objOldParent != null)
-                        {
-                            objModularCyberware.Parent = null;
                             objOldParent.Children.Remove(objModularCyberware);
-                            objOldParent.RefreshMatrixAttributeArray();
-                        }
                         else
-                        {
                             objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-                        }
+
                         CharacterObject.Cyberware.Add(objModularCyberware);
-                        objModularCyberware.Parent = null;
                     }
                 }
             }

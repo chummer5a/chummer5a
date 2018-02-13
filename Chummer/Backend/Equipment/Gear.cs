@@ -19,6 +19,7 @@
 using Chummer.Backend.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
-        private readonly TaggedObservableCollection<Gear> _objChildren = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
         private readonly Character _objCharacter;
@@ -95,6 +96,35 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Gear.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstChildren.CollectionChanged += ChildrenOnCollectionChanged;
+        }
+
+        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    foreach (Gear objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    this.RefreshMatrixAttributeArray();
+                    break;
+            }
         }
 
         /// Create a Gear from an XmlNode and return the TreeNodes for it.
@@ -484,7 +514,6 @@ namespace Chummer.Backend.Equipment
             objChild.Cost = "0";
             objChild.MinRating = intChildRating;
             objChild.MaxRating = intChildRating;
-            objChild.Parent = objParent;
             objChild.ParentID = objParent.InternalId;
             if (!string.IsNullOrEmpty(strChildForceSource))
                 objChild.Source = strChildForceSource;
@@ -544,7 +573,7 @@ namespace Chummer.Backend.Equipment
             {
                 Gear objChild = new Gear(_objCharacter);
                 objChild.Copy(objGearChild, lstWeapons);
-                _objChildren.Add(objChild);
+                _lstChildren.Add(objChild);
             }
 
             _strOverclocked = objGear.Overclocked;
@@ -613,7 +642,7 @@ namespace Chummer.Backend.Equipment
             if (_intChildAvailModifier != 0)
                 objWriter.WriteElementString("childavailmodifier", _intChildAvailModifier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("children");
-            foreach (Gear objGear in _objChildren)
+            foreach (Gear objGear in _lstChildren)
             {
                 objGear.Save(objWriter);
             }
@@ -722,7 +751,7 @@ namespace Chummer.Backend.Equipment
                         Gear objGear = new Gear(_objCharacter);
                         objGear.Load(nodChild, blnCopy);
                         objGear.Parent = this;
-                        _objChildren.Add(objGear);
+                        _lstChildren.Add(objGear);
                     }
 
             // Legacy Shim
@@ -735,9 +764,8 @@ namespace Chummer.Backend.Equipment
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
                         objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>());
-                        objNuyenGear.Parent = this;
                         objNuyenGear.Quantity = Rating;
-                        _objChildren.Add(objNuyenGear);
+                        _lstChildren.Add(objNuyenGear);
                     }
                     GetNode()?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
                     GetNode()?.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
@@ -909,8 +937,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-
-            this.RefreshMatrixAttributeArray();
 
             if (blnCopy)
             {
@@ -1254,7 +1280,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
-        public TaggedObservableCollection<Gear> Children => _objChildren;
+        public TaggedObservableCollection<Gear> Children => _lstChildren;
 
         /// <summary>
         /// Notes.
@@ -1438,7 +1464,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                foreach (Gear objPlugin in _objChildren)
+                foreach (Gear objPlugin in _lstChildren)
                 {
                     if (objPlugin.Name == "Ergonomic")
                         return true;

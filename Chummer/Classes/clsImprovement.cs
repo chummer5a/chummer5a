@@ -2153,23 +2153,13 @@ namespace Chummer
                             decReturn += objWeapon.TotalCost;
                             Weapon objParent = objWeapon.Parent;
                             if (objParent != null)
-                            {
                                 objParent.Children.Remove(objWeapon);
-                                objParent.RefreshMatrixAttributeArray();
-                            }
                             else if (objVehicleMod != null)
-                            {
                                 objVehicleMod.Weapons.Remove(objWeapon);
-                            }
                             else if (objWeaponMount != null)
-                            {
                                 objWeaponMount.Weapons.Remove(objWeapon);
-                            }
                             else if (objVehicle != null)
-                            {
                                 objVehicle.Weapons.Remove(objWeapon);
-                                objVehicle.RefreshMatrixAttributeArray();
-                            }
                             else
                                 objCharacter.Weapons.Remove(objWeapon);
                         }

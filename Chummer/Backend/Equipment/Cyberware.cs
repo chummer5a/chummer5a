@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -125,6 +126,42 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstChildren.CollectionChanged += ChildrenOnCollectionChanged;
+            _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+        }
+
+        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Cyberware objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Cyberware objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Cyberware objOldItem in e.OldItems)
+                        objOldItem.Parent = null;
+                    foreach (Cyberware objNewItem in e.NewItems)
+                        objNewItem.Parent = this;
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    this.RefreshMatrixAttributeArray();
+                    break;
+            }
+        }
+
+        private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Move)
+                this.RefreshMatrixAttributeArray();
         }
 
         /// Create a Cyberware from an XmlNode.
@@ -777,7 +814,6 @@ namespace Chummer.Backend.Equipment
                 {
                     Cyberware objChild = new Cyberware(_objCharacter);
                     objChild.Load(nodChild, blnCopy);
-                    objChild.Parent = this;
                     _lstChildren.Add(objChild);
                 }
             }
@@ -846,8 +882,6 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-
-            this.RefreshMatrixAttributeArray();
         }
 
         /// <summary>
@@ -1275,7 +1309,7 @@ namespace Chummer.Backend.Equipment
                         blnReturn = true;
                     if (!string.IsNullOrEmpty(PlugsIntoModularMount))
                         blnReturn = false;
-                    objCurrentParent = Parent.Parent;
+                    objCurrentParent = objCurrentParent.Parent;
                 }
                 return blnReturn;
             }
@@ -1589,7 +1623,14 @@ namespace Chummer.Backend.Equipment
         public Cyberware Parent
         {
             get => _objParent;
-            set => _objParent = value;
+            set
+            {
+                if (_objParent != value)
+                {
+                    _objParent = value;
+                    ParentVehicle = value?.ParentVehicle;
+                }
+            }
         }
 
         /// <summary>
@@ -1611,7 +1652,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Vehicle ParentVehicle
         {
-            get => _objParentVehicle ?? Parent?.ParentVehicle;
+            get => _objParentVehicle;
             set => _objParentVehicle = value;
         }
 
