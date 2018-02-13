@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
-using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -2485,57 +2484,58 @@ namespace Chummer
             if (tabCharacterTabs.SelectedTab == tabStreetGear)
             {
                 // Lifestyle Tab.
-                if (tabStreetGearTabs.SelectedTab == tabLifestyle && treLifestyles.SelectedNode != null)
+                if (tabStreetGearTabs.SelectedTab == tabLifestyle)
                 {
-                        // Copy the selected Lifestyle.
-                    Lifestyle objCopyLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
+                    // Copy the selected Lifestyle.
+                    Lifestyle objCopyLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode?.Tag.ToString());
 
-                    if (objCopyLifestyle == null)
-                        return;
-
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    if (objCopyLifestyle != null)
                     {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
 
-                    objWriter.WriteStartDocument();
+                        objWriter.WriteStartDocument();
 
-                    // </characters>
-                    objWriter.WriteStartElement("character");
+                        // </characters>
+                        objWriter.WriteStartElement("character");
 
-                    objCopyLifestyle.Save(objWriter);
+                        objCopyLifestyle.Save(objWriter);
 
-                    // </characters>
-                    objWriter.WriteEndElement();
+                        // </characters>
+                        objWriter.WriteEndElement();
 
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
 
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
 
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
 
-                    objWriter.Close();
+                        objWriter.Close();
 
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+
+                        RefreshPasteStatus();
+                    }
                 }
-
                 // Armor Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabArmor && treArmor.SelectedNode != null)
+                else if (tabStreetGearTabs.SelectedTab == tabArmor)
                 {
                     // Copy the selected Armor.
-                    Armor objCopyArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
+                    Armor objCopyArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode?.Tag.ToString());
 
                     if (objCopyArmor != null)
                     {
@@ -2576,11 +2576,288 @@ namespace Chummer
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
 
                         RefreshPasteStatus();
-                        return;
                     }
-
+                    else
+                    {
                         // Attempt to copy Gear.
-                    Gear objCopyGear = CharacterObject.Armor.FindArmorGear(treArmor.SelectedNode.Tag.ToString());
+                        Gear objCopyGear = CharacterObject.Armor.FindArmorGear(treArmor.SelectedNode?.Tag.ToString());
+
+                        if (objCopyGear != null)
+                        {
+                            MemoryStream objStream = new MemoryStream();
+                            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                            {
+                                Formatting = Formatting.Indented,
+                                Indentation = 1,
+                                IndentChar = '\t'
+                            };
+
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyGear.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                            if (!objCopyGear.WeaponID.IsEmptyGuid())
+                            {
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                                {
+                                    objCopyWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
+                            }
+
+                            // </characters>
+                            objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                            objStream.Position = 0;
+                            XmlDocument objCharacterXML = new XmlDocument();
+
+                            // Put the stream into an XmlDocument.
+                            string strXML = objReader.ReadToEnd();
+                            objCharacterXML.LoadXml(strXML);
+
+                            objWriter.Close();
+
+                            GlobalOptions.Clipboard = objCharacterXML;
+
+                            RefreshPasteStatus();
+                        }
+                    }
+                }
+                // Weapons Tab.
+                else if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                {
+                    // Copy the selected Weapon.
+                    Weapon objCopyWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode?.Tag.ToString());
+
+                    if (objCopyWeapon != null)
+                    {
+                        // Do not let the user copy Gear or Cyberware Weapons.
+                        if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                            return;
+
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyWeapon.Save(objWriter);
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
+
+                        RefreshPasteStatus();
+                    }
+                    else
+                    {
+                        Gear objCopyGear = CharacterObject.Weapons.FindWeaponGear(treWeapons.SelectedNode?.Tag.ToString());
+
+                        if (objCopyGear != null)
+                        {
+                            MemoryStream objStream = new MemoryStream();
+                            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                            {
+                                Formatting = Formatting.Indented,
+                                Indentation = 1,
+                                IndentChar = '\t'
+                            };
+
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyGear.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                            if (!objCopyGear.WeaponID.IsEmptyGuid())
+                            {
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyGearWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                                {
+                                    objCopyGearWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
+                            }
+
+                            // </characters>
+                            objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                            objStream.Position = 0;
+                            XmlDocument objCharacterXML = new XmlDocument();
+
+                            // Put the stream into an XmlDocument.
+                            string strXML = objReader.ReadToEnd();
+                            objCharacterXML.LoadXml(strXML);
+
+                            objWriter.Close();
+
+                            GlobalOptions.Clipboard = objCharacterXML;
+
+                            RefreshPasteStatus();
+                        }
+                    }
+                }
+                // Gear Tab.
+                else if (tabStreetGearTabs.SelectedTab == tabGear)
+                {
+                    // Copy the selected Gear.
+                    Gear objCopyGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString());
+
+                    if (objCopyGear != null)
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyGear.Save(objWriter);
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                        if (!objCopyGear.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+
+                        RefreshPasteStatus();
+                    }
+                }
+            }
+            // Vehicles Tab.
+            else if (tabCharacterTabs.SelectedTab == tabVehicles)
+            {
+                // Copy the selected Vehicle.
+                Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
+
+                if (objCopyVehicle != null)
+                {
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    {
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = '\t'
+                    };
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyVehicle.Save(objWriter);
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+
+                    GlobalOptions.Clipboard = objCharacterXML;
+                    GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+
+                    RefreshPasteStatus();
+                }
+                else
+                {
+                    Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString());
 
                     if (objCopyGear != null)
                     {
@@ -2633,231 +2910,16 @@ namespace Chummer
                         GlobalOptions.Clipboard = objCharacterXML;
 
                         RefreshPasteStatus();
-                        return;
-                    }
-                }
-
-                // Weapons Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabWeapons && treWeapons.SelectedNode != null)
-                {
-                    // Copy the selected Weapon.
-                    Weapon objCopyWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
-
-                    if (objCopyWeapon != null)
-                    {
-                        // Do not let the user copy Gear or Cyberware Weapons.
-                        if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                            return;
-
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyWeapon.Save(objWriter);
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        GlobalOptions.Clipboard = objCharacterXML;
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
-
-                        RefreshPasteStatus();
-                        return;
-                    }
-
-                    Gear objCopyGear = CharacterObject.Weapons.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString());
-
-                    if (objCopyGear != null)
-                    {
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyGear.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
-
-                        if (!objCopyGear.WeaponID.IsEmptyGuid())
-                        {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyGearWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
-                            {
-                                objCopyGearWeapon.Save(objWriter);
-                            }
-                            objWriter.WriteEndElement();
-                        }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        GlobalOptions.Clipboard = objCharacterXML;
-
-                        RefreshPasteStatus();
-                        return;
-                    }
-                }
-                // Gear Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabGear && treGear.SelectedNode != null)
-                {
-                    // Copy the selected Gear.
-                    Gear objCopyGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
-
-                    if (objCopyGear == null)
-                        return;
-
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyGear.Save(objWriter);
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
-
-                    if (!objCopyGear.WeaponID.IsEmptyGuid())
-                    {
-                        // <weapons>
-                        objWriter.WriteStartElement("weapons");
-                        // Copy any Weapon that comes with the Gear.
-                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
-                        {
-                            objCopyWeapon.Save(objWriter);
-                        }
-                        objWriter.WriteEndElement();
-                    }
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
-                }
-            }
-
-            // Vehicles Tab.
-            else if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)
-            {
-                if (treVehicles.SelectedNode != null)
-                {
-                    if (treVehicles.SelectedNode.Level == 1)
-                    {
-                        // Copy the selected Vehicle.
-                        Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
-
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyVehicle.Save(objWriter);
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        GlobalOptions.Clipboard = objCharacterXML;
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
                     }
                     else
                     {
-                        Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-
-                        if (objCopyGear != null)
+                        Weapon objCopyWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+                        if (objCopyWeapon != null)
                         {
+                            // Do not let the user copy Gear or Cyberware Weapons.
+                            if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                                return;
+
                             MemoryStream objStream = new MemoryStream();
                             XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
@@ -2871,20 +2933,7 @@ namespace Chummer
                             // </characters>
                             objWriter.WriteStartElement("character");
 
-                            objCopyGear.Save(objWriter);
-                            GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
-
-                            if (!objCopyGear.WeaponID.IsEmptyGuid())
-                            {
-                                // <weapons>
-                                objWriter.WriteStartElement("weapons");
-                                // Copy any Weapon that comes with the Gear.
-                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
-                                {
-                                    objCopyWeapon.Save(objWriter);
-                                }
-                                objWriter.WriteEndElement();
-                            }
+                            objCopyWeapon.Save(objWriter);
 
                             // </characters>
                             objWriter.WriteEndElement();
@@ -2905,67 +2954,13 @@ namespace Chummer
                             objWriter.Close();
 
                             GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
 
                             RefreshPasteStatus();
-                            return;
-                        }
-
-                        foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-                        {
-                            foreach (VehicleMod objMod in objCharacterVehicle.Mods)
-                            {
-                                Weapon objCopyWeapon = objMod.Weapons.DeepFindById(treVehicles.SelectedNode.Tag.ToString());
-                                if (objCopyWeapon != null)
-                                {
-                                    // Do not let the user copy Gear or Cyberware Weapons.
-                                    if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                                        return;
-
-                                    MemoryStream objStream = new MemoryStream();
-                                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                                    {
-                                        Formatting = Formatting.Indented,
-                                        Indentation = 1,
-                                        IndentChar = '\t'
-                                    };
-
-                                    objWriter.WriteStartDocument();
-
-                                    // </characters>
-                                    objWriter.WriteStartElement("character");
-
-                                    objCopyWeapon.Save(objWriter);
-
-                                    // </characters>
-                                    objWriter.WriteEndElement();
-
-                                    // Finish the document and flush the Writer and Stream.
-                                    objWriter.WriteEndDocument();
-                                    objWriter.Flush();
-
-                                    // Read the stream.
-                                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                                    objStream.Position = 0;
-                                    XmlDocument objCharacterXML = new XmlDocument();
-
-                                    // Put the stream into an XmlDocument.
-                                    string strXML = objReader.ReadToEnd();
-                                    objCharacterXML.LoadXml(strXML);
-
-                                    objWriter.Close();
-
-                                    GlobalOptions.Clipboard = objCharacterXML;
-                                    GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
-
-                                    RefreshPasteStatus();
-                                    return;
-                                }
-                            }
                         }
                     }
                 }
             }
-            RefreshPasteStatus();
         }
 
         private void tsbCopy_Click(object sender, EventArgs e)
@@ -13954,14 +13949,8 @@ namespace Chummer
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
                         strDrain = strDrain.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.TotalValue.ToString());
                     }
-                    int intDrain = 0;
-                    try
-                    {
-                        intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain).ToString());
-                    }
-                    catch (XPathException)
-                    {
-                    }
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
+                    int intDrain = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
                     intDrain += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
 
                     string strTip = lblDrainAttributes.Text;
@@ -15838,13 +15827,13 @@ namespace Chummer
             XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
-            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode["source"].InnerText;
-            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
+            string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
             {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
 
                 strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
 
@@ -18009,7 +17998,8 @@ namespace Chummer
             if (objGear.Cost.Contains("Gear Cost"))
             {
                 string strCost = objGear.Cost.Replace("Gear Cost", objSelectedGear.CalculatedCost.ToString(GlobalOptions.InvariantCultureInfo));
-                decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : objGear.TotalCost;
             }
             else
             {
@@ -20056,6 +20046,50 @@ namespace Chummer
         /// </summary>
         private void RefreshPasteStatus()
         {
+            bool blnCopyEnabled = false;
+
+            if (tabCharacterTabs.SelectedTab == tabStreetGear)
+            {
+                // Lifestyle Tab.
+                if (tabStreetGearTabs.SelectedTab == tabLifestyle)
+                {
+                    string strSelectedId = treLifestyles.SelectedNode?.Tag.ToString();
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                        blnCopyEnabled = CharacterObject.Lifestyles.Any(x => x.InternalId == strSelectedId);
+                }
+                // Armor Tab.
+                else if (tabStreetGearTabs.SelectedTab == tabArmor)
+                {
+                    string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                        blnCopyEnabled = CharacterObject.Armor.Any(x => x.InternalId == strSelectedId) || CharacterObject.Armor.FindArmorGear(strSelectedId) != null;
+                }
+
+                // Weapons Tab.
+                if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                {
+                    string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                        blnCopyEnabled = CharacterObject.Weapons.Any(x => x.InternalId == strSelectedId) || CharacterObject.Weapons.FindWeaponGear(strSelectedId) != null;
+                }
+                // Gear Tab.
+                else if (tabStreetGearTabs.SelectedTab == tabGear)
+                {
+                    blnCopyEnabled = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString()) != null;
+                }
+            }
+            // Vehicles Tab.
+            else if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)
+            {
+                string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                if (!string.IsNullOrEmpty(strSelectedId))
+                    blnCopyEnabled = CharacterObject.Vehicles.Any(x => x.InternalId == strSelectedId) ||
+                                     CharacterObject.Vehicles.FindVehicleGear(strSelectedId) != null ||
+                                     CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId) != null;
+            }
+            
+            mnuEditCopy.Enabled = blnCopyEnabled;
+            tsbCopy.Enabled = blnCopyEnabled;
         }
 
         /// <summary>

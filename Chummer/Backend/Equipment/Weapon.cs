@@ -1738,12 +1738,16 @@ namespace Chummer.Backend.Equipment
             {
                 try
                 {
-                    int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
-                    if (Name == "Unarmed Attack (Smashing Blow)")
-                        intDamage *= 2;
-                    strDamage = intDamage.ToString(objCulture);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                    {
+                        int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                        intDamage += intBonus;
+                        if (Name == "Unarmed Attack (Smashing Blow)")
+                            intDamage *= 2;
+                        strDamage = intDamage.ToString(objCulture);
+                    }
                 }
-                catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double
                 catch (InvalidCastException) { } // Result is text and not a double
 
@@ -1783,12 +1787,16 @@ namespace Chummer.Backend.Equipment
 
                 try
                 {
-                    int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
-                    if (Name == "Unarmed Attack (Smashing Blow)")
-                        intDamage *= 2;
-                    strDamage = intDamage.ToString(objCulture);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                    {
+                        int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                        intDamage += intBonus;
+                        if (Name == "Unarmed Attack (Smashing Blow)")
+                            intDamage *= 2;
+                        strDamage = intDamage.ToString(objCulture);
+                    }
                 }
-                catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double
                 catch (InvalidCastException) { } // Result is text and not a double
                 strReturn = strDamage + strDamageType + strDamageExtra;
@@ -1865,7 +1873,6 @@ namespace Chummer.Backend.Equipment
                 if (strThisAmmo.Contains('('))
                 {
                     string strPrepend = string.Empty;
-                    int intAmmo = 0;
                     strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
                     if (strThisAmmo.Contains('x'))
                     {
@@ -1874,27 +1881,24 @@ namespace Chummer.Backend.Equipment
                     }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
-                    try
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
+                    if (blnIsSuccess)
                     {
-                        if (IsUnderbarrelWeapon && !IncludedInWeapon)
-                            intAmmo = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strThisAmmo))) / 2;
-                        else
-                            intAmmo = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strThisAmmo)));
+                        int intAmmo = IsUnderbarrelWeapon && !IncludedInWeapon ? Convert.ToInt32(Math.Ceiling((double)objProcess)) / 2 : Convert.ToInt32(Math.Ceiling((double)objProcess));
+
+                        intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+
+                        if (intExtendedMax > 0 && strAmmo.Contains("(c)"))
+                        {
+                            //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
+                            intAmmo = (intAmmo * (2 + intExtendedMax)) / 2;
+                        }
+
+                        strThisAmmo = intAmmo.ToString(objCulture) + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));
                     }
-                    catch (FormatException) { }
-
-                    intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
-
-                    if (intExtendedMax > 0 && strAmmo.Contains("(c)"))
-                    {
-                        //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
-                        intAmmo = (intAmmo*(2 + intExtendedMax))/2;
-                    }
-
-                    string strAmmoString = intAmmo.ToString(objCulture);
+                    
                     if (!string.IsNullOrEmpty(strPrepend))
-                        strAmmoString = strPrepend + strAmmoString;
-                    strThisAmmo = strAmmoString + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));
+                        strThisAmmo = strPrepend + strThisAmmo;
                 }
                 strReturn += strThisAmmo + ' ';
             }
@@ -2184,8 +2188,9 @@ namespace Chummer.Backend.Equipment
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
 
-                    decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo);
-                    
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                    decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+
                     if (DiscountCost)
                         decReturn *= 0.9m;
                     return decReturn;
@@ -2199,8 +2204,7 @@ namespace Chummer.Backend.Equipment
         public string TotalAP(string strLanguage)
         {
             string strAP = AP;
-
-            int intAP;
+            
             int bonusAP = 0;
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2389,9 +2393,14 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            int intAP = 0;
             try
             {
-                intAP = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAP.ToString()));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAP = Convert.ToInt32(objProcess);
+                else
+                    return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             catch (FormatException)
             {
@@ -2399,11 +2408,6 @@ namespace Chummer.Backend.Equipment
                 return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             catch (OverflowException)
-            {
-                // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
-            }
-            catch (XPathException)
             {
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
                 return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
@@ -2416,7 +2420,7 @@ namespace Chummer.Backend.Equipment
             intAP += bonusAP;
             if (intAP == 0)
                 return "-";
-            else if (intAP > 0)
+            if (intAP > 0)
                 return '+' + intAP.ToString();
             else
                 return intAP.ToString();
@@ -2790,20 +2794,10 @@ namespace Chummer.Backend.Equipment
                         objAccuracy.CheapReplace(strAccuracy, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
                     }
                 }
-                
-                try
-                {
-                    intAccuracy = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString()));
-                }
-                catch (FormatException)
-                {
-                }
-                catch (OverflowException)
-                {
-                }
-                catch (XPathException)
-                {
-                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAccuracy = Convert.ToInt32(objProcess);
 
                 foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
                 {
@@ -2828,77 +2822,79 @@ namespace Chummer.Backend.Equipment
                     {
                         string strPowerSkill = objPower.Extra;
 
-                        string strSkill;
-                        string strSpec = string.Empty;
-                        // Exotic Skills require a matching Specialization.
-                        switch (Category)
+                        string strSkill = UseSkill;
+                        string strSpec = Spec;
+                        // Use the Skill defined by the Weapon if one is present.
+                        if (string.IsNullOrEmpty(strSkill))
                         {
-                            case "Bows":
-                            case "Crossbows":
-                                strSkill = "Archery";
-                                break;
-                            case "Assault Rifles":
-                            case "Machine Pistols":
-                            case "Submachine Guns":
-                                strSkill = "Automatics";
-                                break;
-                            case "Blades":
-                                strSkill = "Blades";
-                                break;
-                            case "Clubs":
-                            case "Improvised Weapons":
-                                strSkill = "Clubs";
-                                break;
-                            case "Exotic Melee Weapons":
-                                strSkill = "Exotic Melee Weapon";
-                                strSpec = Name;
-                                break;
-                            case "Exotic Ranged Weapons":
-                            case "Special Weapons":
-                                strSkill = "Exotic Ranged Weapon";
-                                strSpec = Name;
-                                break;
-                            case "Flamethrowers":
-                                strSkill = "Exotic Ranged Weapon";
-                                strSpec = "Flamethrowers";
-                                break;
-                            case "Laser Weapons":
-                                strSkill = "Exotic Ranged Weapon";
-                                strSpec = "Laser Weapons";
-                                break;
-                            case "Assault Cannons":
-                            case "Grenade Launchers":
-                            case "Missile Launchers":
-                            case "Light Machine Guns":
-                            case "Medium Machine Guns":
-                            case "Heavy Machine Guns":
-                                strSkill = "Heavy Weapons";
-                                break;
-                            case "Shotguns":
-                            case "Sniper Rifles":
-                            case "Sporting Rifles":
-                                strSkill = "Longarms";
-                                break;
-                            case "Throwing Weapons":
-                                strSkill = "Throwing Weapons";
-                                break;
-                            case "Unarmed":
-                                strSkill = "Unarmed Combat";
-                                break;
-                            default:
-                                strSkill = "Pistols";
-                                break;
+                            // Exotic Skills require a matching Specialization.
+                            switch (Category)
+                            {
+                                case "Bows":
+                                case "Crossbows":
+                                    strSkill = "Archery";
+                                    break;
+                                case "Assault Rifles":
+                                case "Machine Pistols":
+                                case "Submachine Guns":
+                                    strSkill = "Automatics";
+                                    break;
+                                case "Blades":
+                                    strSkill = "Blades";
+                                    break;
+                                case "Clubs":
+                                case "Improvised Weapons":
+                                    strSkill = "Clubs";
+                                    break;
+                                case "Exotic Melee Weapons":
+                                    strSkill = "Exotic Melee Weapon";
+                                    if (string.IsNullOrEmpty(strSpec))
+                                        strSpec = Name;
+                                    break;
+                                case "Exotic Ranged Weapons":
+                                case "Special Weapons":
+                                    strSkill = "Exotic Ranged Weapon";
+                                    if (string.IsNullOrEmpty(strSpec))
+                                        strSpec = Name;
+                                    break;
+                                case "Flamethrowers":
+                                    strSkill = "Exotic Ranged Weapon";
+                                    strSpec = "Flamethrowers";
+                                    break;
+                                case "Laser Weapons":
+                                    strSkill = "Exotic Ranged Weapon";
+                                    strSpec = "Laser Weapons";
+                                    break;
+                                case "Assault Cannons":
+                                case "Grenade Launchers":
+                                case "Missile Launchers":
+                                case "Light Machine Guns":
+                                case "Medium Machine Guns":
+                                case "Heavy Machine Guns":
+                                    strSkill = "Heavy Weapons";
+                                    break;
+                                case "Shotguns":
+                                case "Sniper Rifles":
+                                case "Sporting Rifles":
+                                    strSkill = "Longarms";
+                                    break;
+                                case "Throwing Weapons":
+                                    strSkill = "Throwing Weapons";
+                                    break;
+                                case "Unarmed":
+                                    strSkill = "Unarmed Combat";
+                                    break;
+                                default:
+                                    strSkill = "Pistols";
+                                    break;
+                            }
                         }
 
                         if (strSkill.StartsWith("Exotic"))
-                            strSkill += $" ({Name})";
-
-                        // Use the Skill defined by the Weapon if one is present.
-                        if (!string.IsNullOrEmpty(_strUseSkill))
                         {
-                            strSkill = _strUseSkill;
-
-                            if (strSkill.StartsWith("Exotic"))
+                            if (!string.IsNullOrEmpty(strSpec))
+                                strSkill += $"({strSpec})";
+                            else
                                 strSkill += $"({Name})";
                         }
 
@@ -3116,10 +3112,9 @@ namespace Chummer.Backend.Equipment
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");
 
-            decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objRange.ToString()), GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier;
-            int intReturn = decimal.ToInt32(decimal.Ceiling(decReturn));
-
-            return intReturn;
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(objRange.ToString(), out bool blnIsSuccess);
+            
+            return blnIsSuccess ? decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier)) : -1;
         }
 
         /// <summary>
@@ -3640,13 +3635,9 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                try
-                {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             if (blnCheckUnderbarrels)
@@ -4410,7 +4401,8 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
             }
             int.TryParse(strExpression, out int intReturn);
             return intReturn;

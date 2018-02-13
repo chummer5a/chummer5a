@@ -291,7 +291,8 @@ namespace Chummer
                     string strSkillCount = xmlTalentNode.SelectSingleNode("skillqty")?.Value ?? xmlTalentNode.SelectSingleNode("skillgroupqty")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
-                        string strSkillType = xmlTalentNode.SelectSingleNode("skilltype")?.Value ?? xmlTalentNode.SelectSingleNode("skillgrouptype")?.Value;
+                        XPathNavigator xmlSkillTypeNode = xmlTalentNode.SelectSingleNode("skilltype") ?? xmlTalentNode.SelectSingleNode("skillgrouptype");
+                        string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
                         string strSkillVal = xmlTalentNode.SelectSingleNode("skillval")?.Value ?? xmlTalentNode.SelectSingleNode("skillgroupval")?.Value;
                         XPathNodeIterator objNodeList = xmlTalentNode.Select("skillgroupchoices/skillgroup");
                         XPathNodeIterator xmlSkillsList;
@@ -311,6 +312,10 @@ namespace Chummer
                                 break;
                             case "specific":
                                 xmlSkillsList = BuildSkillList(xmlTalentNode.Select("skillchoices/skill"));
+                                break;
+                            case "xpath":
+                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode.SelectSingleNode("@xpath")?.Value);
+                                strSkillType = "active";
                                 break;
                             default:
                                 xmlSkillsList = GetActiveSkillList();
@@ -1016,9 +1021,10 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                intValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce))));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
-            catch (XPathException) { }
             catch (OverflowException) { } // Result is text and not a double
             catch (InvalidCastException) { }
             intValue += intOffset;
@@ -1657,9 +1663,11 @@ namespace Chummer
             return _xmlBaseSkillDataNode.Select("skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
         }
 
-        private XPathNodeIterator GetActiveSkillList()
+        private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "")
         {
-            return _xmlBaseSkillDataNode.Select("skills/skill");
+            if (string.IsNullOrEmpty(strXPathFilter))
+                return _xmlBaseSkillDataNode.Select("skills/skill");
+            return _xmlBaseSkillDataNode.Select("skills/skill[" + strXPathFilter + ']');
         }
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)

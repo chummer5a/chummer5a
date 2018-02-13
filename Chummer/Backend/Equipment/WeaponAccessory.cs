@@ -562,9 +562,10 @@ namespace Chummer.Backend.Equipment
                     strConceal = strConceal.Replace("Rating", Rating.ToString());
                     try
                     {
-                        intReturn = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strConceal)));
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strConceal, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
                     }
-                    catch (XPathException) { }
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }
                 }
@@ -699,13 +700,9 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                try
-                {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             if (blnCheckChildren)
@@ -806,12 +803,13 @@ namespace Chummer.Backend.Equipment
                     objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo) * Parent.CostMultiplier;
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
-                return decReturn;
+                return decReturn * Parent.CostMultiplier;
             }
         }
 

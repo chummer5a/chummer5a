@@ -260,14 +260,8 @@ namespace Chummer
                 }
             }
 
-            try
-            {
-                lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString() + strAvail;
-            }
-            catch (XPathException)
-            {
-                lblAvail.Text = strAvailExpr + strAvail;
-            }
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+            lblAvail.Text = (blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvailExpr) + strAvail;
 
             // Cost.
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
@@ -306,7 +300,8 @@ namespace Chummer
                         .CheapReplace("Armor Cost", () => _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // Apply any markup.
-                    decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
+                    decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
                     lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -337,7 +332,8 @@ namespace Chummer
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out blnIsSuccess);
+                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
 

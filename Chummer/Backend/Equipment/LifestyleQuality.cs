@@ -503,14 +503,9 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 if (!decimal.TryParse(_strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                 {
-                    try
-                    {
-                        decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(_strCost));
-                    }
-                    catch (XPathException)
-                    {
-                        decReturn = 0.0m;
-                    }
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(_strCost, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        return Convert.ToDecimal(objProcess);
                 }
                 return decReturn;
             }

@@ -2286,7 +2286,8 @@ namespace Chummer
                 }
 
                 // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
+                int intDrain = (blnIsSuccess ? Convert.ToInt32(objProcess) : 0) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ')');
                 objWriter.WriteStartElement("drainattribute");
@@ -2390,7 +2391,8 @@ namespace Chummer
                     strDrain = "0";
 
                 // Add any Improvements for Fading Resistance.
-                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
+                int intDrain = (blnIsSuccess ? Convert.ToInt32(objProcess) : 0) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ')');
             }
@@ -3580,10 +3582,10 @@ namespace Chummer
                 int intTemp = 0;
                 int intAttributesValue = 0;
                 // Value from attribute points and raised attribute minimums
-                foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList)
+                foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection.SpecialAttributeList))
                 {
                     string strAttributeName = objLoopAttrib.Abbrev;
-                    if (strAttributeName == "ESS" || strAttributeName != "MAGAdept" || (IsMysticAdept && Options.MysAdeptSecondMAGAttribute))
+                    if (strAttributeName != "ESS" && (strAttributeName != "MAGAdept" || (IsMysticAdept && Options.MysAdeptSecondMAGAttribute)) && objLoopAttrib.MetatypeMaximum > 0)
                     {
                         int intLoopAttribValue = Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum, objLoopAttrib.TotalMinimum) + objLoopAttrib.AttributeValueModifiers;
                         if (intLoopAttribValue > 1)

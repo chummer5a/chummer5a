@@ -57,9 +57,10 @@ namespace Chummer.UI.Attributes
             // lblValue
             // 
             this.lblValue.AutoSize = true;
+            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblValue.Location = new System.Drawing.Point(226, 5);
             this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(19, 13);
+            this.lblValue.Size = new System.Drawing.Size(22, 13);
             this.lblValue.TabIndex = 74;
             this.lblValue.Text = "[0]";
             this.lblValue.TooltipText = null;

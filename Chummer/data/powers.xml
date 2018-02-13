@@ -884,10 +884,11 @@
       <page>171</page>
       <action>Simple</action>
       <bonus>
+        <!-- TODO: Add improvement that contributes dice to a specific specialization
         <specificskill>
           <name>Climbing</name>
           <bonus>Rating</bonus>
-        </specificskill>
+        </specificskill> -->
       </bonus>
     </power>
     <power>

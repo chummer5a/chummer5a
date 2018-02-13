@@ -54,19 +54,14 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                if (_skillGroup.CharacterObject.BuildMethod == CharacterBuildMethod.Karma ||
-                    _skillGroup.CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
-                {
-                    nudSkill.Enabled = false;
-                }
             }
             ResumeLayout();
             sw.TaskEnd("Create skillgroup");
@@ -118,7 +113,7 @@ namespace Chummer.UI.Skills
 
         #region Properties
         public int NameWidth => lblName.PreferredWidth;
-        public int RatingWidth => lblGroupRating.PreferredWidth;
+        public int RatingWidth => _skillGroup.CharacterObject.Created ? lblGroupRating.PreferredWidth : nudSkill.Width;
         #endregion
 
         #region Methods
@@ -130,15 +125,15 @@ namespace Chummer.UI.Skills
         public void MoveControls(int nameWidth, int ratingWidth)
         {
             lblName.Width = nameWidth;
-            lblGroupRating.Left = lblName.Right + 2;
             if (_skillGroup.CharacterObject.Created)
             {
-                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 4;
+                lblGroupRating.Left = lblName.Left + nameWidth + 6;
+                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 6;
             }
             else
             {
-                nudSkill.Left = lblGroupRating.Right + 2;
-                nudKarma.Left = nudSkill.Right + 2;
+                nudSkill.Left = lblName.Left + nameWidth + 6;
+                nudKarma.Left = nudSkill.Left + ratingWidth + 6;
             }
         }
         #endregion

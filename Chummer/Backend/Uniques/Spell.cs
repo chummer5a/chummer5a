@@ -444,17 +444,9 @@ namespace Chummer
                 for (int i = 1; i <= intMAG * 2; i++)
                 {
                     // Calculate the Spell's Drain for the current Force.
-                    object xprResult;
-                    try
-                    {
-                        xprResult = CommonFunctions.EvaluateInvariantXPath(DV.Replace("F", i.ToString()).Replace("/", " div "));
-                    }
-                    catch (XPathException)
-                    {
-                        xprResult = null;
-                    }
+                    object xprResult = CommonFunctions.EvaluateInvariantXPath(DV.Replace("F", i.ToString()).Replace("/", " div "), out bool blnIsSuccess);
 
-                    if (xprResult != null && DV != "Special")
+                    if (blnIsSuccess && DV != "Special")
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
@@ -595,14 +587,17 @@ namespace Chummer
                     {
                         dv += " + -2";
                     }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'));
-                    if (force)
+                    object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'), out bool blnIsSuccess);
+                    if (blnIsSuccess)
                     {
-                        strReturn = $"F{xprResult:+0;-0;0}";
-                    }
-                    else
-                    {
-                        strReturn += xprResult;
+                        if (force)
+                        {
+                            strReturn = $"F{xprResult:+0;-0;0}";
+                        }
+                        else
+                        {
+                            strReturn += xprResult;
+                        }
                     }
                 }
                 return strReturn;

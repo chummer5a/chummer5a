@@ -552,13 +552,10 @@ namespace Chummer.Backend.Equipment
                 objAvail.CheapReplace(strAvail, "Speed", () => Parent?.Speed.ToString() ?? "0");
                 objAvail.CheapReplace(strAvail, "Acceleration", () => Parent?.Accel.ToString() ?? "0");
                 objAvail.CheapReplace(strAvail, "Handling", () => Parent?.Handling.ToString() ?? "0");
-                try
-                {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             // Run through the Accessories and add in their availability.
@@ -631,7 +628,9 @@ namespace Chummer.Backend.Equipment
                 objCost.CheapReplace(strCost, "Speed", () => Parent?.Speed.ToString() ?? "0");
                 objCost.CheapReplace(strCost, "Acceleration", () => Parent?.Accel.ToString() ?? "0");
                 objCost.CheapReplace(strCost, "Handling", () => Parent?.Handling.ToString() ?? "0");
-                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -899,7 +898,8 @@ namespace Chummer.Backend.Equipment
                     objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
             }
         }
 
@@ -977,13 +977,9 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                try
-                {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);

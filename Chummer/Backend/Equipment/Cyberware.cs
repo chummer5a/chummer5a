@@ -1384,17 +1384,14 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
                 {
-                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
-                    strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
-                    strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
-                    try
-                    {
-                        intReturn = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strRating));
-                    }
-                    catch (XPathException)
-                    {
-                    }
+                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
+                        .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
+                        .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
+                        .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
+
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        intReturn = Convert.ToInt32(objProcess);
                 }
 
                 return intReturn;
@@ -1423,17 +1420,14 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
                 {
-                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
-                    strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
-                    strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
-                    try
-                    {
-                        intReturn = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strRating));
-                    }
-                    catch (XPathException)
-                    {
-                    }
+                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
+                        .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
+                        .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
+                        .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
+
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        intReturn = Convert.ToInt32(objProcess);
                 }
 
                 return intReturn;
@@ -1726,13 +1720,9 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                try
-                {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             if (blnCheckChildren)
@@ -1818,13 +1808,11 @@ namespace Chummer.Backend.Equipment
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
+                    
                     try
                     {
-                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
-                    }
-                    catch (XPathException)
-                    {
-                        strReturn = strFirstHalf;
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                        strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
                     catch (OverflowException) // Result is text and not a double
                     {
@@ -1840,11 +1828,8 @@ namespace Chummer.Backend.Equipment
                     strSecondHalf = strSecondHalf.Trim('[', ']');
                     try
                     {
-                        strSecondHalf = '[' + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + ']';
-                    }
-                    catch (XPathException)
-                    {
-                        strSecondHalf = '[' + strSecondHalf + ']';
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                        strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strSecondHalf) + ']';
                     }
                     catch (OverflowException) // Result is text and not a double
                     {
@@ -1864,8 +1849,9 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strCapacity.Contains('[');
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                    strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                    strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
@@ -1903,7 +1889,8 @@ namespace Chummer.Backend.Equipment
             if (strESS.Contains("Rating"))
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strESS.Replace("Rating", Rating.ToString())), GlobalOptions.InvariantCultureInfo);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strESS.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
             }
             else
             {
@@ -2051,13 +2038,14 @@ namespace Chummer.Backend.Equipment
                         objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
-                foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
+                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
                 {
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
             }
             int.TryParse(strExpression, out int intReturn);
             return intReturn;
@@ -2153,8 +2141,8 @@ namespace Chummer.Backend.Equipment
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
-                
-                return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()).ToString(), GlobalOptions.InvariantCultureInfo);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
             }
         }
 

@@ -160,6 +160,11 @@ Application Changes:
 - Added the ability for improvements to add weapons via the <addweapon> bonus.
 - Altering custom data directory information in the options menu will now immediately apply those changes instead of requiring Chummer5a to restart (though the prompt will still appear just in case).
 - Adjusted the NewSpellKarmaCost improvement to support restrictions based on spell type.
+- If a custom XPath filter is specified in an amend node, the amend node will now only use that XPath filter to find its target(s) instead of using it in addition to any specified id or name node contents.
+- Fixed an issue where skill group names would get cut off if they are too long.
+- Added the ability for talent priority entries to specify the possibly pool of skills or skillgroups to choose from with an xpath filter.
+- Fixed an issue where modifying the load order of a custom data directory after modifying whether it is enabled or not would reset any changes made to whether it was enabled or not.
+- Fixed issues with copying and pasting weapons to and from vehicle mounts, gear to and from armor mods, and gear children to and from gear parents.
 
 Data Changes:
 
@@ -185,6 +190,19 @@ Data Changes:
 - Human Bovine shifters now properly have the Uneducated quality.
 - All shifters have had their Uneducated quality updated to be removable with Karma.
 - Dedicated Spellslinger quality now only discounts Spells, excluding Enchantments, Rituals and Preparations.
+- Cyber Submachine Gun (2050) is now properly classified as a Submachine Gun and not a Machine Pistol.
+- Removed the general Gymnastics bonus from the Monkey mentor spirit because the bonus is only given when Climbing is involved.
+- Wolpertinger Mentor Spirit will now properly add 2 dice to defense tests. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- Dolphin and Whale Mentor Spirits will now properly add 2 dice to Pilot Watercraft tests when that bonus is chosen. Characters who already have one of these mentor spirits will need to reapply improvements to see the bonus.
+- Horse Mentor Spirit will now properly add 2 dice to Pilot Ground Craft tests when that bonus is chosen. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- War Mentor Spirit will now properly discount Combat Active skills in career mode when improving to rating 3 or higher. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- Green Man Mentor Spirit will now properly add 2 dice to Negotiation. Characters who already have this mentor spirit will need to reapply improvements to see the bonus.
+- Fixed an issue where Adepts could select Resonance Active skills under priority generation.
+- Added a preliminary version of Delnar's Skills Remake's 5th Edition-Like variant as a custom ruleset.
+- Fixed an issue where College Education from Run Faster was not giving a 50% discount on karma spent on Academic knowledge skills at character creation.
+- Fixed a bug where the Illusionist mastery quality could not be taken with a Spellcasting rank of 4 or 5 if the character had the Illusion specialization.
+- Fixed a bug where the Practiced Alchemist mastery quality would not have lower prerequisites for characters with the Islam tradition.
+- Fixed a bug where the Altmayr Black Moon would function off of Semi-Automatic specialization instead of Revolvers.
 
 New Strings:
 

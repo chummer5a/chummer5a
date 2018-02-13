@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -19799,8 +19799,8 @@
 				<translate>Giraffe</translate>
 				<choices>
 					<choice>
-						<name>+2 dice on Assensing Tets</name>
-						<translate>+2 dice on Assensing Tets</translate>
+						<name>+2 dice on Assensing Tests</name>
+						<translate>+2 dice on Assensing Tests</translate>
 					</choice>
 					<choice>
 						<name>+2 on Judge Intentions Tests</name>
@@ -19829,8 +19829,8 @@
 						<translate>+2 dice on Artisan tests</translate>
 					</choice>
 					<choice>
-						<name>+2 on Pilot (Watercraft) Tests</name>
-						<translate>+2 on Pilot (Watercraft) Tests</translate>
+						<name>+2 on Pilot Watercraft Tests</name>
+						<translate>+2 on Pilot Watercraft Tests</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
@@ -19841,7 +19841,7 @@
 						<translate>Adept: Gain Flexibility (2) power for free</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice on Artisan skill tests or Pilot (Watercraft) skill tests (choose one)</altadvantage>
+				<altadvantage>All: +2 dice on Artisan skill tests or Pilot Watercraft skill tests (choose one)</altadvantage>
 				<altdisadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is difficult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. Atonement is up to the gamemaster but can involve time and money spent with charities.</altdisadvantage>
 				<altpage>42</altpage>
 			</mentor>
@@ -19855,8 +19855,8 @@
 						<translate>+2 dice on Swimming tests</translate>
 					</choice>
 					<choice>
-						<name>+2 on Pilot (Watercraft) Tests</name>
-						<translate>+2 on Pilot (Watercraft) Tests</translate>
+						<name>+2 on Pilot Watercraft Tests</name>
+						<translate>+2 on Pilot Watercraft Tests</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 to Conjuring skill tests for spirits of water</name>
@@ -19867,7 +19867,7 @@
 						<translate>Adept: Receive 2 ranks in Iron Lungs or free.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Swimming or Pilot (Watercraft) skill tests (choose one)</altadvantage>
+				<altadvantage>All: +2 dice to Swimming or Pilot Watercraft skill tests (choose one)</altadvantage>
 				<altdisadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</altdisadvantage>
 				<altpage>43</altpage>
 			</mentor>
@@ -19881,8 +19881,8 @@
 						<translate>+2 dice on Running tests</translate>
 					</choice>
 					<choice>
-						<name>+2 on Pilot (Groundcraft) Tests</name>
-						<translate>+2 on Pilot (Groundcraft) Tests</translate>
+						<name>+2 on Pilot Ground Craft Tests</name>
+						<translate>+2 on Pilot Ground Craft Tests</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: Reduce Drain Value from Reckless Summoning by 1</name>
@@ -19893,7 +19893,7 @@
 						<translate>Adept: May learn to use the Movement critter power as a metamagic (self only, 3 times a day)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Running or Pilot Ground Craft) tests (choose one)</altadvantage>
+				<altadvantage>All: +2 dice to Running or Pilot Ground Craft tests (choose one)</altadvantage>
 				<altdisadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</altdisadvantage>
 				<altpage>45</altpage>
 			</mentor>
@@ -20117,11 +20117,11 @@
 				<translate>Wilde Jagd</translate>
 				<choices>
 					<choice>
-						<name>+2 dice on Pilot Ground Craft Tets</name>
+						<name>+2 dice on Pilot Ground Craft Tests</name>
 						<translate>+2 Würfel für Proben auf Bodenfahrzeuge</translate>
 					</choice>
 					<choice>
-						<name>+2 dice on Intimidation Tets</name>
+						<name>+2 dice on Intimidation Tests</name>
 						<translate>+2 Würfel für Proben auf Einschüchtern</translate>
 					</choice>
 					<choice set="2">

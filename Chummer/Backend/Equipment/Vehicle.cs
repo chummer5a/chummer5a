@@ -1169,13 +1169,9 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                try
-                {
-                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objAvail.ToString()));
-                }
-                catch (XPathException)
-                {
-                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
 
             foreach (VehicleMod objChild in Mods)
@@ -1569,7 +1565,8 @@ namespace Chummer.Backend.Equipment
                     objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (BlackMarketDiscount)
                     decCost *= 0.9m;
@@ -1615,7 +1612,9 @@ namespace Chummer.Backend.Equipment
                         if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                         {
                             // If the bonus is determined by the existing seat number, evaluate the expression.
-                            intTotalBonusSeats += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())), GlobalOptions.InvariantCultureInfo);
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString()), out bool blnIsSuccess);
+                            if (blnIsSuccess)
+                                intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
                         }
                     }
 
@@ -1628,9 +1627,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing seat number, evaluate the expression.
-                                intTotalBonusSeats += Convert.ToInt32(
-                                    CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString())),
-                                    GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Seats", intTotalSeats.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
                             }
                         }
                     }
@@ -1729,7 +1728,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                intTotalBonusSpeed += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Speed", intTotalSpeed.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Speed", intTotalSpeed.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strSpeed = objMod.Bonus["offroadspeed"]?.InnerText;
@@ -1739,7 +1740,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                intTotalBonusOffroadSpeed += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -1752,7 +1755,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                intTotalBonusSpeed += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Speed", intTotalSpeed.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Speed", intTotalSpeed.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strSpeed = objMod.WirelessBonus["offroadspeed"]?.InnerText;
@@ -1762,7 +1767,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                intTotalBonusOffroadSpeed += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -1871,7 +1878,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusAccel += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Accel", intTotalAccel.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Accel", intTotalAccel.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strAccel = objMod.Bonus["offroadaccel"]?.InnerText;
@@ -1881,7 +1890,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusOffroadAccel += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -1894,7 +1905,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusAccel += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Accel", intTotalAccel.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Accel", intTotalAccel.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strAccel = objMod.WirelessBonus["offroadaccel"]?.InnerText;
@@ -1904,7 +1917,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusOffroadAccel += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadAccel", intBaseOffroadAccel.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -1945,8 +1960,9 @@ namespace Chummer.Backend.Equipment
                             if (strBodyElement.Contains("Rating"))
                             {
                                 // If the cost is determined by the Rating, evaluate the expression.
-                                string strBody = strBodyElement.Replace("Rating", objMod.Rating.ToString());
-                                intBody += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strBody));
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intBody += Convert.ToInt32(objProcess);
                             }
                             else
                             {
@@ -1962,8 +1978,9 @@ namespace Chummer.Backend.Equipment
                                 if (strBodyElement.Contains("Rating"))
                                 {
                                     // If the cost is determined by the Rating, evaluate the expression.
-                                    string strBody = strBodyElement.Replace("Rating", objMod.Rating.ToString());
-                                    intBody += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strBody));
+                                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString()), out bool blnIsSuccess);
+                                    if (blnIsSuccess)
+                                        intBody += Convert.ToInt32(objProcess);
                                 }
                                 else
                                 {
@@ -2067,7 +2084,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusHandling += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Handling", intBaseHandling.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Handling", intBaseHandling.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strHandling = objMod.Bonus["offroadhandling"]?.InnerText;
@@ -2077,7 +2096,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusOffroadHandling += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -2090,7 +2111,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusHandling += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Handling", intBaseHandling.ToString())), GlobalOptions.CultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("Handling", intBaseHandling.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                         strHandling = objMod.WirelessBonus["offroadhandling"]?.InnerText;
@@ -2100,7 +2123,9 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                intTotalBonusOffroadHandling += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString())), GlobalOptions.InvariantCultureInfo);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString()).Replace("OffroadHandling", intBaseOffroadHandling.ToString()), out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                    intTotalBonusOffroadHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
                             }
                         }
                     }
@@ -2986,7 +3011,8 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
             }
             int.TryParse(strExpression, out int intReturn);
             return intReturn;

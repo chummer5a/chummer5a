@@ -176,33 +176,8 @@ namespace Chummer
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                     {
-                        int intValue;
-                        try
-                        {
-                            intValue = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString())));
-                        }
-                        catch (XPathException)
-                        {
-                            if (!int.TryParse(strInner, out intValue))
-                            {
-                                intValue = _intForce; //if failed to parse, default to force
-                            }
-                        }
-                        catch (OverflowException)
-                        {
-                            if (!int.TryParse(strInner, out intValue))
-                            {
-                                intValue = _intForce; //if failed to parse, default to force
-                            }
-                        }
-                        catch (FormatException)
-                        {
-                            if (!int.TryParse(strInner, out intValue))
-                            {
-                                intValue = _intForce; //if failed to parse, default to force
-                            }
-                        }
-                        intValue = Math.Max(intValue, 1); //Min value is 1
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString()), out bool blnIsSuccess);
+                        int intValue = Math.Max(blnIsSuccess ? Convert.ToInt32(objProcess) : _intForce, 1);
                         objWriter.WriteElementString(strAttribute, intValue.ToString(objCulture));
 
                         dicAttributes[strAttribute] = intValue;

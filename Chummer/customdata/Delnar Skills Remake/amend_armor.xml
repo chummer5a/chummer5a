@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,14 +18,12 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-
-<!-- This XML file removes the Headware category from all cyberlimbs. -->
 <chummer>
-  <cyberwares>
-    <cyberware xpathfilter="category = 'Cyberlimb'">
-      <allowsubsystems>
-        <category xpathfilter="text() = 'Headware'" amendoperation="remove" />
-      </allowsubsystems>
-    </cyberware>
-  </cyberwares>
+  <armors>
+    <armor>
+      <bonus>
+        <specificskill xpathfilter="name = 'Intimidation' or name = 'Etiquette'" amendoperation="remove" />
+      </bonus>
+    </armor>
+  </armors>
 </chummer>

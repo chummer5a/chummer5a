@@ -610,35 +610,7 @@ namespace Chummer
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         private static void AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath)
         {
-            // Fetch the old node based on identifiers present in the amending node (id or name)
             string strFilter = string.Empty;
-            XmlNode objAmendingNodeId = objAmendingNode["id"];
-            if (objAmendingNodeId != null)
-            {
-                strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
-            }
-            else
-            {
-                objAmendingNodeId = objAmendingNode["name"];
-                if (objAmendingNodeId != null)
-                {
-                    strFilter = "name = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
-                }
-            }
-            // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-            using (XmlNodeList xmlChildrenWithIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
-            {
-                if (xmlChildrenWithIds != null)
-                {
-                    foreach (XmlNode objExtraId in xmlChildrenWithIds)
-                    {
-                        if (!string.IsNullOrEmpty(strFilter))
-                            strFilter += " and ";
-                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
-                    }
-                }
-            }
-
             string strOperation = string.Empty;
             bool blnAddIfNotFound = true;
             XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
@@ -647,13 +619,41 @@ namespace Chummer
                 // This attribute is not used by the node itself, so it can be removed to speed up node importing later on.
                 objAmendingNodeAttribs.RemoveNamedItem("isidnode");
 
-                // Gets the custom XPath filter defined for what children to fetch, so add that into the XPath filter for targeting nodes if it exists.
+                // Gets the custom XPath filter defined for what children to fetch. If it exists, use that as the XPath filter for targeting nodes.
                 XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                 if (objCustomXPath != null)
                 {
-                    if (!string.IsNullOrEmpty(strFilter))
-                        strFilter += " and ";
-                    strFilter += '(' + objCustomXPath.InnerText.Replace("&amp;", "&") + ')';
+                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&");
+                }
+                else
+                {
+                    // Fetch the old node based on identifiers present in the amending node (id or name)
+                    XmlNode objAmendingNodeId = objAmendingNode["id"];
+                    if (objAmendingNodeId != null)
+                    {
+                        strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                    }
+                    else
+                    {
+                        objAmendingNodeId = objAmendingNode["name"];
+                        if (objAmendingNodeId != null)
+                        {
+                            strFilter = "name = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                        }
+                    }
+                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                    using (XmlNodeList xmlChildrenWithIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
+                    {
+                        if (xmlChildrenWithIds != null)
+                        {
+                            foreach (XmlNode objExtraId in xmlChildrenWithIds)
+                            {
+                                if (!string.IsNullOrEmpty(strFilter))
+                                    strFilter += " and ";
+                                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                            }
+                        }
+                    }
                 }
 
                 // Gets the specific operation to execute on this node.
@@ -673,6 +673,22 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strFilter))
                 strFilter = '[' + strFilter + ']';
+
+            if (strOperation == "addnode")
+            {
+                using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
+                {
+                    if (xmlParentNodeList != null)
+                    {
+                        foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                        {
+                            xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                        }
+                    }
+                }
+
+                return;
+            }
 
             string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
 
@@ -787,6 +803,19 @@ namespace Chummer
                                             }
 
                                             objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
+                                        }
+                                    }
+                                    else if (objNodeToEdit.HasChildNodes)
+                                    {
+                                        using (XmlNodeList xmlGrandParentNodeList = objDoc.SelectNodes(strXPath))
+                                        {
+                                            if (xmlGrandParentNodeList != null)
+                                            {
+                                                foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
+                                                {
+                                                    xmlGrandparentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                                                }
+                                            }
                                         }
                                     }
                                     break;

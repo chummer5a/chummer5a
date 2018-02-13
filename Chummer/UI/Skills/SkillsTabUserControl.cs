@@ -111,17 +111,20 @@ namespace Chummer.UI.Skills
             };
             _groups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
             _groups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-            int name = 0;
-            int rating = 0;
+            int intNameLabelWidth = 0;
+            int intRatingLabelWidth = 0;
             foreach (SkillGroupControl sg in _groups.Controls[0].Controls)
             {
-                name = Math.Max(sg.NameWidth, name);
-                rating = Math.Max(sg.RatingWidth, rating);
+                intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
+                intRatingLabelWidth = Math.Max(sg.RatingWidth, intRatingLabelWidth);
             }
+            
             foreach (SkillGroupControl s in _groups.Controls[0].Controls)
             {
-                s.MoveControls(name, rating);
+                s.MoveControls(intNameLabelWidth, intRatingLabelWidth);
             }
+            lblGroupsSp.Left = _groups.Controls[0].Left + intNameLabelWidth + 6;
+            lblGroupKarma.Left = lblGroupsSp.Left + intRatingLabelWidth + 6;
 
             swDisplays.TaskEnd("_groups");
 
@@ -133,10 +136,18 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
-            name = _controls.Max(skill => skill.NameWidth);
+            intNameLabelWidth = _controls.Max(skill => skill.NameWidth);
             foreach (SkillControl2 s in _controls)
             {
-                s.MoveControls(name);
+                s.MoveControls(intNameLabelWidth);
+            }
+
+            lblActiveSkills.Left = _skills.Left;
+            lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
+            if (!_objCharacter.Created)
+            {
+                intRatingLabelWidth = _controls.Max(skill => skill.NudSkillWidth);
+                lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             }
 
             swDisplays.TaskEnd("_skills");
@@ -152,10 +163,10 @@ namespace Chummer.UI.Skills
             };
             if (_objCharacter.SkillsSection.KnowledgeSkills.Count > 0)
             {
-                name = _objCharacter.SkillsSection.KnowledgeSkills.Max(skill => skill.DisplayName.Length);
+                intNameLabelWidth = _objCharacter.SkillsSection.KnowledgeSkills.Max(skill => skill.DisplayName.Length);
                 foreach (KnowledgeSkillControl k in _knoSkills.Controls[0].Controls)
                 {
-                    k.MoveControls(name);
+                    k.MoveControls(intNameLabelWidth);
                 }
             }
 
@@ -166,13 +177,7 @@ namespace Chummer.UI.Skills
             swDisplays.TaskEnd("_knoSkills add");
 
             parts.TaskEnd("MakeSkillDisplay()");
-
-            if (_objCharacter.Created)
-            {
-                lblKnowledgeSkillPoints.Visible = false;
-                lblKnowledgeSkillPointsTitle.Visible = false;
-            }
-
+            
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilterKnowledge.BeginUpdate();
             cboSort.BeginUpdate();
@@ -231,15 +236,25 @@ namespace Chummer.UI.Skills
                 lblActiveKarma.Visible = true;
                 lblGroupKarma.Visible = true;
 
+                lblGroupsSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
+                lblGroupsSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblActiveSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
                 lblActiveSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblBuyWithKarma.Visible = _objCharacter.BuildMethodHasSkillPoints;
                 lblBuyWithKarma.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 //Because visible is broken in databindings
                 _objCharacter.SkillsSection.PropertyChanged += RefreshKnowledgePointsLabels;
-                //lblKnoSp.Visible = true;
-                //lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                //lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoSp.Visible = true;
+                lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoBwk.Visible = true;
+                lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 UpdateKnoSkillRemaining();
+            }
+            else
+            {
+                lblKnowledgeSkillPoints.Visible = false;
+                lblKnowledgeSkillPointsTitle.Visible = false;
             }
             ResumeLayout(true);
             sw.Stop();

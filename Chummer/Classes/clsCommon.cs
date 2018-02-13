@@ -39,15 +39,36 @@ namespace Chummer
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument();
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
+        private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
+
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="strXPath">String as XPath Expression to evaluate</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath or encountered an error.</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(string strXPath)
+        public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
-            return s_ObjXPathNavigator.Evaluate(strXPath);
+            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
+            {
+                blnIsSuccess = false;
+                return strXPath;
+            }
+
+            object objReturn;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath);
+                blnIsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            return objReturn;
         }
 
         /// <summary>
