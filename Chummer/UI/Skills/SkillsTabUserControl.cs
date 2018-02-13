@@ -245,9 +245,10 @@ namespace Chummer.UI.Skills
 
                 //Because visible is broken in databindings
                 _objCharacter.SkillsSection.PropertyChanged += RefreshKnowledgePointsLabels;
-                //lblKnoSp.Visible = true;
-                //lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                //lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoSp.Visible = true;
+                lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoBwk.Visible = true;
+                lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 UpdateKnoSkillRemaining();
             }
             else

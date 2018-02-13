@@ -45,7 +45,17 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
 
-            _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfo);
+            _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();
+            foreach (CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryInfo)
+            {
+                CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
+                {
+                    Name = objInfo.Name,
+                    Path = objInfo.Path,
+                    Enabled = objInfo.Enabled
+                };
+                _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
+            }
             string strCustomDataRootPath = Path.Combine(Application.StartupPath, "customdata");
             if (Directory.Exists(strCustomDataRootPath))
             {
