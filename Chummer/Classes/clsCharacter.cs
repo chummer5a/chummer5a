@@ -44,11 +44,11 @@ namespace Chummer
         SumtoTen = 2,
         LifeModule = 3
     }
-
+    
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
-    public class Character : INotifyPropertyChanged, IHasMugshots, IHasName
+    public sealed class Character : INotifyPropertyChanged, IHasMugshots, IHasName
     {
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
@@ -113,11 +113,9 @@ namespace Chummer
 
         // Build Points
         private int _intSumtoTen = 10;
-        private int _intBuildPoints = 800;
         private decimal _decNuyenMaximumBP = 50;
         private decimal _decNuyenBP;
-        private int _intBuildKarma;
-        private int _intAdeptWayDiscount;
+        private int _intBuildKarma = 800;
         private int _intGameplayOptionQualityLimit = 25;
         private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
@@ -280,7 +278,9 @@ namespace Chummer
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
         public bool Save(string strFileName = "")
-        {
+	    {
+	        if (IsSaving)
+	            return false;
             if (string.IsNullOrWhiteSpace(strFileName))
             {
                 strFileName = _strFileName;
@@ -444,12 +444,8 @@ namespace Chummer
             objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyen />
             objWriter.WriteElementString("startingnuyen", _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <adeptwaydiscount />
-            objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
             // <sumtoten />
             objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString());
-            // <buildpoints />
-            objWriter.WriteElementString("bp", _intBuildPoints.ToString());
             // <buildkarma />
             objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString());
             // <buildmethod />
@@ -1117,7 +1113,6 @@ namespace Chummer
                 _decMaxNuyen = 25;
             objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
             objXmlCharacter.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-            objXmlCharacter.TryGetInt32FieldQuickly("bp", ref _intBuildPoints);
             objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
             if (!objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
                 _intMaxKarma = _intBuildKarma;
@@ -1207,8 +1202,7 @@ namespace Chummer
             objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
             objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
             objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-
-            objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
+            
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
@@ -2148,19 +2142,19 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("sex", Sex);
+            objWriter.WriteElementString("sex", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language), strLanguageToPrint));
             // <age />
-            objWriter.WriteElementString("age", Age);
+            objWriter.WriteElementString("age", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Age, GlobalOptions.Language), strLanguageToPrint));
             // <eyes />
-            objWriter.WriteElementString("eyes", Eyes);
+            objWriter.WriteElementString("eyes", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Eyes, GlobalOptions.Language), strLanguageToPrint));
             // <height />
-            objWriter.WriteElementString("height", Height);
+            objWriter.WriteElementString("height", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Height, GlobalOptions.Language), strLanguageToPrint));
             // <weight />
-            objWriter.WriteElementString("weight", Weight);
+            objWriter.WriteElementString("weight", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Weight, GlobalOptions.Language), strLanguageToPrint));
             // <skin />
-            objWriter.WriteElementString("skin", Skin);
+            objWriter.WriteElementString("skin", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Skin, GlobalOptions.Language), strLanguageToPrint));
             // <hair />
-            objWriter.WriteElementString("hair", Hair);
+            objWriter.WriteElementString("hair", LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair, GlobalOptions.Language), strLanguageToPrint));
             // <description />
             objWriter.WriteElementString("description", Description);
             // <background />
@@ -2232,8 +2226,6 @@ namespace Chummer
             objWriter.WriteElementString("created", Created.ToString());
             // <nuyen />
             objWriter.WriteElementString("nuyen", Nuyen.ToString(Options.NuyenFormat, objCulture));
-            // <adeptwaydiscount />
-            objWriter.WriteElementString("adeptwaydiscount", AdeptWayDiscount.ToString(objCulture));
             // <adept />
             objWriter.WriteElementString("adept", AdeptEnabled.ToString());
             // <magician />
@@ -2953,7 +2945,7 @@ namespace Chummer
         /// </summary>
         private void ResetCharacter()
         {
-            _intBuildPoints = 800;
+            _intBuildKarma = 800;
             _intSumtoTen = 10;
 
             _decNuyenMaximumBP = 50;
@@ -5292,12 +5284,7 @@ namespace Chummer
         /// Willpower (WIL) CharacterAttribute.
         /// </summary>
         public CharacterAttrib WIL => AttributeSection.GetAttributeByName("WIL");
-
-        /// <summary>
-        /// Initiative (INI) CharacterAttribute.
-        /// </summary>
-        public CharacterAttrib INI => AttributeSection.GetAttributeByName("INT");
-
+        
         /// <summary>
         /// Edge (EDG) CharacterAttribute.
         /// </summary>
@@ -6799,16 +6786,7 @@ namespace Chummer
         }
 
         public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority || BuildMethod == CharacterBuildMethod.SumtoTen;
-
-        /// <summary>
-        /// Number of Build Points that are used to create the character.
-        /// </summary>
-        public int BuildPoints
-        {
-            get => _intBuildPoints;
-            set => _intBuildPoints = value;
-        }
-
+        
         /// <summary>
         /// Number of Build Points that are used to create the character.
         /// </summary>
@@ -6852,16 +6830,7 @@ namespace Chummer
             get => _decNuyenBP;
             set => _decNuyenBP = value;
         }
-
-        /// <summary>
-        /// Number of Bonded Foci discounted by an Adept Way.
-        /// </summary>
-        public int AdeptWayDiscount
-        {
-            get => _intAdeptWayDiscount;
-            set => _intAdeptWayDiscount = value;
-        }
-
+        
         /// <summary>
         /// Maximum number of Build Points that can be spent on Nuyen.
         /// </summary>
@@ -7548,6 +7517,7 @@ namespace Chummer
             get => _blnFame;
             set => _blnFame = value;
         }
+
         /// <summary>
         /// Whether or not BornRich is enabled.
         /// </summary>
@@ -8536,8 +8506,16 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Notifies clients that a property value has changed.
+        /// </summary>
+        /// <typeparam name="T">Property type being changed.</typeparam>
+        /// <param name="old">Old value of the property.</param>
+        /// <param name="value">New value of the property.</param>
+        /// <param name="propertyName">Name of the property being changed.</param>
+        /// <returns></returns>
         [NotifyPropertyChangedInvocator]
-        protected virtual bool OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)
+        private bool OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)
         {
             if ((old == null && value != null) || value == null || !old.Equals(value))
             {

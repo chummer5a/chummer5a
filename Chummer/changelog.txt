@@ -172,6 +172,7 @@ Application Changes:
 - Fixed an issue where a spell that was made to be Extended instead of coming as such by default would not have its drain value adjusted.
 - Added an improvement that adjusts the fading value of complex forms.
 - Fixed a bug where armor locations could not be rearranged via drag-and-drop.
+- Fixed an issue where skills attached to critters would not get their names translated when printing to character sheets. Fixes #2488.
 
 Data Changes:
 

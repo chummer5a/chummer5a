@@ -212,6 +212,7 @@ namespace Chummer
                 xmlPowersNode = objXmlCritterNode["skills"];
                 if (xmlPowersNode != null)
                 {
+                    XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", strLanguageToPrint);
                     objWriter.WriteStartElement("skills");
                     foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                     {
@@ -220,8 +221,12 @@ namespace Chummer
                             intAttrValue = _intForce;
                         int intDicepool = intAttrValue + _intForce;
 
+                        string strEnglishName = xmlSkillNode.InnerText;
+                        string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ??
+                                                   xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ?? strEnglishName;
                         objWriter.WriteStartElement("skill");
-                        objWriter.WriteElementString("name", xmlSkillNode.InnerText);
+                        objWriter.WriteElementString("name", strTranslatedName);
+                        objWriter.WriteElementString("name_english", strEnglishName);
                         objWriter.WriteElementString("attr", strAttrName);
                         objWriter.WriteElementString("pool", intDicepool.ToString(objCulture));
                         objWriter.WriteEndElement();
@@ -289,7 +294,7 @@ namespace Chummer
                 if (strExtra.Length > 0)
                     strExtra.Length -= 2;
 
-                if (objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
+                if (!objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
                     strPowerName = strEnglishName;
 
                 objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);

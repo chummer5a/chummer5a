@@ -582,7 +582,6 @@ namespace Chummer
             objCharacter.IsCritter = true;
             objCharacter.Created = true;
             objCharacter.BuildMethod = CharacterBuildMethod.Karma;
-            objCharacter.BuildPoints = 0;
 
             // Show the Metatype selection window.
             frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml");

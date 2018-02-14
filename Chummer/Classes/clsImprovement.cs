@@ -2052,8 +2052,8 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Overclocker:
                         if (!blnHasDuplicate)
-                        objCharacter.Overclocker = false;
-                                break;
+                            objCharacter.Overclocker = false;
+                        break;
                     case Improvement.ImprovementType.RestrictedGear:
                         if (!blnHasDuplicate)
                             objCharacter.RestrictedGear = false;
