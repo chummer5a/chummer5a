@@ -8530,9 +8530,9 @@ namespace Chummer
             }
 
             if (treWeapons.SelectedNode.Level == 1)
-                CommonFunctions.MoveWeaponNode(CharacterObject, intNewIndex, nodDestination, treWeapons.SelectedNode);
+                CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, treWeapons.SelectedNode);
             else
-                CommonFunctions.MoveWeaponRoot(CharacterObject, intNewIndex, nodDestination, treWeapons.SelectedNode);
+                CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, treWeapons.SelectedNode);
 
             // Clear the background color for all Nodes.
             treWeapons.ClearNodeBackground(null);
@@ -8592,7 +8592,10 @@ namespace Chummer
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
 
-            CommonFunctions.MoveArmorNode(CharacterObject, intNewIndex, nodDestination, treArmor.SelectedNode);
+            if (treWeapons.SelectedNode.Level == 1)
+                CharacterObject.MoveArmorNode(intNewIndex, nodDestination, treArmor.SelectedNode);
+            else
+                CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, treArmor.SelectedNode);
 
             // Clear the background color for all Nodes.
             treArmor.ClearNodeBackground(null);
@@ -8979,12 +8982,12 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (treGear.SelectedNode.Level == 1)
-                    CommonFunctions.MoveGearNode(CharacterObject, intNewIndex, nodDestination, treGear.SelectedNode);
+                    CharacterObject.MoveGearNode(intNewIndex, nodDestination, treGear.SelectedNode);
                 else
-                    CommonFunctions.MoveGearRoot(CharacterObject, intNewIndex, nodDestination, treGear.SelectedNode);
+                    CharacterObject.MoveGearRoot(intNewIndex, nodDestination, treGear.SelectedNode);
             }
             if (_eDragButton == MouseButtons.Right)
-                CommonFunctions.MoveGearParent(CharacterObject, nodDestination, treGear.SelectedNode);
+                CharacterObject.MoveGearParent(nodDestination, treGear.SelectedNode);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
@@ -9341,12 +9344,12 @@ namespace Chummer
             }
 
             if (!_blnDraggingGear)
-                CommonFunctions.MoveVehicleNode(CharacterObject, intNewIndex, nodDestination, treVehicles.SelectedNode);
+                CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, treVehicles.SelectedNode);
             else
             {
                 if (_eDragButton == MouseButtons.Left)
                     return;
-                CommonFunctions.MoveVehicleGearParent(CharacterObject, nodDestination, treVehicles.SelectedNode);
+                CharacterObject.MoveVehicleGearParent(nodDestination, treVehicles.SelectedNode);
             }
 
             // Clear the background color for all Nodes.

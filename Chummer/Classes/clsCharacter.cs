@@ -3817,7 +3817,383 @@ namespace Chummer
                 return true;
         }
 
-#region Tab clearing
+        #region Move TreeNodes
+        /// <summary>
+        /// Move a Gear TreeNode after Drag and Drop, changing its parent.
+        /// </summary>
+        /// <param name="objGearNode">Node of gear to move.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        public void MoveGearParent(TreeNode objDestination, TreeNode objGearNode)
+        {
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == objGearNode)
+                    return;
+
+            string strSelectedId = objGearNode.Tag.ToString();
+            // Locate the currently selected piece of Gear.
+            Gear objGear = Gear.DeepFindById(strSelectedId);
+
+            // Gear cannot be moved to one if its children.
+            bool blnAllowMove = true;
+            TreeNode objFindNode = objDestination;
+            if (objDestination.Level > 0)
+            {
+                do
+                {
+                    objFindNode = objFindNode.Parent;
+                    if (objFindNode.Tag.ToString() == objGear.InternalId)
+                    {
+                        blnAllowMove = false;
+                        break;
+                    }
+                } while (objFindNode.Level > 0);
+            }
+
+            if (!blnAllowMove)
+                return;
+
+            // Remove the Gear from the character.
+            if (objGear.Parent == null)
+                Gear.Remove(objGear);
+            else
+                objGear.Parent.Children.Remove(objGear);
+
+            if (objDestination.Level == 0)
+            {
+                // The Gear was moved to a location, so add it to the character instead.
+                objGear.Location = objDestination.Text;
+                Gear.Add(objGear);
+            }
+            else
+            {
+                // Locate the Gear that the item was dropped on.
+                Gear objParent = Gear.DeepFindById(objDestination.Tag.ToString());
+
+                // Add the Gear as a child of the destination Node and clear its location.
+                objGear.Location = string.Empty;
+                objParent.Children.Add(objGear);
+            }
+        }
+
+        /// <summary>
+        /// Move a Gear TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="objGearNode">Node of gear to move.</param>
+        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
+        {
+            string strSelectedId = objGearNode?.Tag.ToString();
+            Gear objGear = Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
+            if (objGear != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                // Change the Location on the Gear item.
+                objGear.Location = objNewParent.Tag.ToString() == "Node_SelectedGear" ? string.Empty : objNewParent.Text;
+
+                Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move a Gear Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of gear location to move.</param>
+        public void MoveGearRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
+            string strLocation = nodOldNode.Tag.ToString();
+            GearLocations.Move(GearLocations.IndexOf(strLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Lifestyle TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodLifestyleNode">Node of lifestyle to move.</param>
+        public void MoveLifestyleNode(int intNewIndex, TreeNode objDestination, TreeNode nodLifestyleNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
+            string strSelectedId = nodLifestyleNode.Tag.ToString();
+            Lifestyle objLifestyle = Lifestyles.FirstOrDefault(x => x.InternalId == strSelectedId);
+            if (objLifestyle != null)
+                Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move an Armor TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodArmorNode">Node of armor to move.</param>
+        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
+        {
+            string strSelectedId = nodArmorNode?.Tag.ToString();
+            // Locate the currently selected Armor.
+            Armor objArmor = Armor.FindById(strSelectedId);
+            if (objArmor != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                // Change the Location on the Armor item.
+                objArmor.Location = objNewParent.Tag.ToString() == "Node_SelectedArmor" ? string.Empty : objNewParent.Text;
+
+                Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move an Armor Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of armor location to move.</param>
+        public void MoveArmorRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
+            string strLocation = nodOldNode.Tag.ToString();
+            ArmorLocations.Move(ArmorLocations.IndexOf(strLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Weapon TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodWeaponNode">Node of weapon to move.</param>
+        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
+        {
+            string strSelectedId = nodWeaponNode?.Tag.ToString();
+            // Locate the currently selected Weapon.
+            Weapon objWeapon = Weapons.FindById(strSelectedId);
+            if (objWeapon != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                // Change the Location on the Armor item.
+                objWeapon.Location = objNewParent.Tag.ToString() == "Node_SelectedWeapons" ? string.Empty : objNewParent.Text;
+
+                Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move a Weapon Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of weapon location to move.</param>
+        public void MoveWeaponRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
+            string strLocation = nodOldNode.Tag.ToString();
+            WeaponLocations.Move(WeaponLocations.IndexOf(strLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Vehicle TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodVehicleNode">Node of vehicle to move.</param>
+        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
+        {
+            string strSelectedId = nodVehicleNode?.Tag.ToString();
+            // Locate the currently selected Vehicle.
+            Vehicle objVehicle = Vehicles.FindById(strSelectedId);
+            if (objVehicle != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                // Change the Location on the Armor item.
+                objVehicle.Location = objNewParent.Tag.ToString() == "Node_SelectedVehicles" ? string.Empty : objNewParent.Text;
+
+                Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move a Vehicle Gear TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="nodDestination">Destination Node.</param>
+        /// <param name="nodGearNode">Node of gear to move.</param>
+        public void MoveVehicleGearParent(TreeNode nodDestination, TreeNode nodGearNode)
+        {
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = nodDestination; objCheckNode != null && objCheckNode.Level >= nodDestination.Level; objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == nodGearNode)
+                    return;
+
+            // Locate the currently selected piece of Gear.
+            Gear objGear = Vehicles.FindVehicleGear(nodGearNode.Tag.ToString(), out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
+
+            if (objGear == null)
+                return;
+
+            Gear objOldParent = objGear.Parent;
+            string strDestinationId = nodDestination.Tag.ToString();
+            // Make sure the destination is another piece of Gear or a Location.
+            Gear objDestinationGear = Vehicles.FindVehicleGear(strDestinationId);
+            if (objDestinationGear != null)
+            {
+                // Remove the Gear from the Vehicle.
+                if (objOldParent != null)
+                    objOldParent.Children.Remove(objGear);
+                else if (objOldCyberware != null)
+                    objOldCyberware.Gear.Remove(objGear);
+                else if (objOldWeaponAccessory != null)
+                    objOldWeaponAccessory.Gear.Remove(objGear);
+                else
+                    objOldVehicle.Gear.Remove(objGear);
+
+                // Add the Gear to its new parent.
+                objGear.Location = string.Empty;
+                objDestinationGear.Children.Add(objGear);
+            }
+            else
+            {
+                // Determine if this is a Location.
+                TreeNode nodVehicleNode = nodDestination;
+                do
+                {
+                    nodVehicleNode = nodVehicleNode.Parent;
+                }
+                while (nodVehicleNode.Level > 1);
+
+                // Get a reference to the destination Vehicle.
+                Vehicle objDestinationVehicle = Vehicles.FindById(nodVehicleNode.Tag.ToString());
+
+                // Determine if this is a Location in the destination Vehicle.
+                string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == strDestinationId);
+
+                if (!string.IsNullOrEmpty(strDestinationLocation))
+                {
+                    // Remove the Gear from the Vehicle.
+                    if (objOldParent != null)
+                        objOldParent.Children.Remove(objGear);
+                    else if (objOldCyberware != null)
+                        objOldCyberware.Gear.Remove(objGear);
+                    else if (objOldWeaponAccessory != null)
+                        objOldWeaponAccessory.Gear.Remove(objGear);
+                    else
+                        objOldVehicle.Gear.Remove(objGear);
+
+                    // Add the Gear to the Vehicle and set its Location.
+                    objGear.Location = strDestinationLocation;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Move an Improvement TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of improvement to move.</param>
+        public void MoveImprovementNode(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            string strSelectedId = nodOldNode?.Tag.ToString();
+            int intOldIndex = -1;
+            for (int i = 0; i < Improvements.Count; ++i)
+            {
+                if (Improvements[i].SourceName == strSelectedId)
+                {
+                    intOldIndex = i;
+                    break;
+                }
+            }
+
+            if (intOldIndex != -1)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+
+                Improvement objImprovement = Improvements[intOldIndex];
+                // Change the Group on the Custom Improvement.
+                objImprovement.CustomGroup = objNewParent.Text;
+                Improvements[intOldIndex] = objImprovement;
+            }
+        }
+
+        /// <summary>
+        /// Move an Improvement Group TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of improvement group to move.</param>
+        public void MoveImprovementRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        {
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (intNewIndex == 0)
+                return;
+
+            string strLocation = nodOldNode.Tag.ToString();
+            ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
+        }
+        #endregion
+
+        #region Tab clearing
         /// <summary>
         /// Clear all Spell tab elements from the character.
         /// </summary>
