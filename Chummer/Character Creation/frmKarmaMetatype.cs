@@ -887,7 +887,12 @@ namespace Chummer
                     }
                     else
                     {
-                        lblForceLabel.Text = LanguageManager.GetString("String_Force", GlobalOptions.Language);
+                        // TODO: Unhardcode whether Force is called "Force" or "Level"
+                        lblForceLabel.Text = LanguageManager.GetString(objXmlMetatype.SelectSingleNode("bodmax")?.Value == "0" &&
+                                                                       objXmlMetatype.SelectSingleNode("agimax")?.Value == "0" &&
+                                                                       objXmlMetatype.SelectSingleNode("reamax")?.Value == "0" &&
+                                                                       objXmlMetatype.SelectSingleNode("strmax")?.Value == "0" &&
+                                                                       objXmlMetatype.SelectSingleNode("magmin")?.Value.Contains('F') != true ? "String_Level" : "String_Force", GlobalOptions.Language);
                         nudForce.Maximum = 100;
                     }
                 }
