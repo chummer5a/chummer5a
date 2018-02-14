@@ -32,7 +32,7 @@ namespace Chummer.Classes
     {
         private readonly Character _objCharacter;
 
-        public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating, Func<Character, string, int, int> valueToInt, Action<Character> rollback)
+        public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating, Func<Character, string, int, int> valueToInt)
         {
             _objCharacter = character;
             _objImprovementSource = objImprovementSource;
@@ -45,13 +45,12 @@ namespace Chummer.Classes
             _strFriendlyName = strFriendlyName;
             _intRating = intRating;
             ValueToInt = valueToInt;
-            Rollback = rollback;
         }
 
-        public string SourceName { get; set; } = string.Empty;
-        public string ForcedValue { get; set; } = string.Empty;
-        public string LimitSelection { get; set; } = string.Empty;
-        public string SelectedValue { get; set; } = string.Empty;
+        public string SourceName { get; set; }
+        public string ForcedValue { get; set; }
+        public string LimitSelection { get; set; }
+        public string SelectedValue { get; set; }
         public string SelectedTarget { get; set; } = string.Empty;
 
         private readonly Improvement.ImprovementSource _objImprovementSource;
@@ -63,8 +62,6 @@ namespace Chummer.Classes
 
         //Transplanted functions, delegate values to make reflection grabbing all methods less fool proof...
         private readonly Func<Character, string, int, int> ValueToInt;
-        private static readonly Action<Character> Commit = ImprovementManager.Commit;
-        private readonly Action<Character> Rollback;
 
         private void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
@@ -76,14 +73,6 @@ namespace Chummer.Classes
                 intValue, intRating, intMinimum, intMaximum, intAugmented,
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
-        private void CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
-            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
-        {
-            if (!ImprovementManager.CreateImprovements(_objCharacter, objImprovementSource, strSourceName, nodBonus, blnConcatSelectedValue, intRating,
-                strFriendlyName))
-                throw new AbortedException();
-        }
-
 
         #region
         public void qualitylevel(XmlNode bonusNode)
@@ -1428,7 +1417,7 @@ namespace Chummer.Classes
             if (string.IsNullOrEmpty(strSelectedComplexForm))
             {
                 // Display the Select ComplexForm window.
-                frmSelectProgram frmPickComplexForm = new frmSelectProgram(_objCharacter);
+                frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(_objCharacter);
                 frmPickComplexForm.ShowDialog();
 
                 // Make sure the dialogue window was not canceled.
@@ -4392,7 +4381,7 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Drain Resistance.
+        // Check for Drain Value.
         public void drainvalue(XmlNode bonusNode)
         {
             Log.Info("drainvalue");
@@ -4409,6 +4398,16 @@ namespace Chummer.Classes
             Log.Info("fadingresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingResistance, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Fading Value.
+        public void fadingvalue(XmlNode bonusNode)
+        {
+            Log.Info("fadingvalue");
+            Log.Info("fadingvalue = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingValue, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 

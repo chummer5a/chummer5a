@@ -474,12 +474,26 @@ namespace Chummer
 
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
+            bool blnAlchemicalFound = false;
             foreach (string strDescriptor in strDescriptorsIn)
             {
                 switch (strDescriptor.Trim())
                 {
+                    case "Active":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescActive", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
                     case "Adept":
                         objDescriptors.Append(LanguageManager.GetString("String_DescAdept", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Alchemical Preparation":
+                        blnAlchemicalFound = true;
+                        objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Area":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescArea", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Anchored":
@@ -494,8 +508,33 @@ namespace Chummer
                         objDescriptors.Append(LanguageManager.GetString("String_DescContractual", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
+                    case "Direct":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescDirect", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Directional":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescDirectional", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Elemental":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescElemental", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Environmental":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescEnvironmental", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Extended Area":
+                        blnExtendedFound = true;
+                        objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
                     case "Geomancy":
                         objDescriptors.Append(LanguageManager.GetString("String_DescGeomancy", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Indirect":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescIndirect", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Mana":
@@ -506,12 +545,52 @@ namespace Chummer
                         objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
+                    case "Mental":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescMental", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
                     case "Minion":
                         objDescriptors.Append(LanguageManager.GetString("String_DescMinion", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
+                    case "Multi-Sense":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Negative":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescNegative", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Obvious":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescObvious", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
                     case "Organic Link":
                         objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Passive":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescPassive", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Physical":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescPhysical", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Psychic":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescPsychic", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Realistic":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescRealistic", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Single-Sense":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense", GlobalOptions.Language));
+                        objDescriptors.Append(", ");
+                        break;
+                    case "Touch":
+                        objDescriptors.Append(LanguageManager.GetString("String_DescTouch", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Spell":
@@ -525,7 +604,12 @@ namespace Chummer
                 }
             }
 
-            if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
+            if (blnAlchemicalFound)
+            {
+                chkAlchemical.Enabled = false;
+                chkAlchemical.Checked = true;
+            }
+            else if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
             {
                 chkAlchemical.Enabled = false;
                 chkAlchemical.Checked = false;
@@ -540,7 +624,7 @@ namespace Chummer
                 objDescriptors.Append(", ");
             }
 
-            if (chkAlchemical.Checked && !blnExtendedFound)
+            if (chkAlchemical.Checked && !blnAlchemicalFound)
             {
                 objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
                 objDescriptors.Append(", ");
@@ -574,7 +658,12 @@ namespace Chummer
                     break;
             }
 
-            if (xmlSpell.SelectSingleNode("category")?.Value == "Detection")
+            if (blnExtendedFound)
+            {
+                chkExtended.Checked = true;
+                chkExtended.Enabled = false;
+            }
+            else if (xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
                 chkExtended.Enabled = true;
             }
@@ -609,14 +698,18 @@ namespace Chummer
                     break;
             }
 
-            string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷').CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Language)) ?? string.Empty;
-            strDV = strDV.CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Language));
-            strDV = strDV.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language));
-            strDV = strDV.CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Language));
-            strDV = strDV.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language));
-            strDV = strDV.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
+            string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷') ?? string.Empty;
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Language))
+                    .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Language))
+                    .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language))
+                    .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Language))
+                    .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
+            }
 
-            if (chkExtended.Checked)
+            if (chkExtended.Checked && !blnExtendedFound)
             {
                 // Add +2 to the DV value if Extended is selected.
                 int intPos = strDV.IndexOf(')') + 1;

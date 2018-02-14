@@ -6005,7 +6005,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Select Program Window -->
     <string>
-      <key>Title_SelectProgram</key>
+      <key>Title_SelectComplexForm</key>
       <text>Sélection d'un Programme</text>
     </string>
     <string>
@@ -6952,11 +6952,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Point de pouvoir</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Target</key>
+      <key>Label_SelectComplexForm_Target</key>
       <text>Cible:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Duration</key>
+      <key>Label_SelectComplexForm_Duration</key>
       <text>Durée:</text>
     </string>
     <string>
@@ -6996,7 +6996,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Appliquer le correctif d'impression Linux</text>
     </string>
     <string>
-      <key>Label_SelectProgram_FV</key>
+      <key>Label_SelectComplexForm_FV</key>
       <text>VT:</text>
     </string>
     <string>

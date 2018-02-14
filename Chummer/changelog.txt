@@ -165,6 +165,12 @@ Application Changes:
 - Added the ability for talent priority entries to specify the possibly pool of skills or skillgroups to choose from with an xpath filter.
 - Fixed an issue where modifying the load order of a custom data directory after modifying whether it is enabled or not would reset any changes made to whether it was enabled or not.
 - Fixed issues with copying and pasting weapons to and from vehicle mounts, gear to and from armor mods, and gear children to and from gear parents.
+- Fixed an issue where Complex Form information was not properly translated.
+- Fixed an issue where spells with an Extended Area would not properly display their descriptor if the "Extended" checkbox was not checked.
+- Fixed an issue where certain spell keywords would not show up in the descriptors box in the spell selection form.
+- Fixed an issue where spells that were already Extended could be marked (or unmarked) as such.
+- Fixed an issue where a spell that was made to be Extended instead of coming as such by default would not have its drain value adjusted.
+- Added an improvement that adjusts the fading value of complex forms.
 
 Data Changes:
 
@@ -203,6 +209,7 @@ Data Changes:
 - Fixed a bug where the Illusionist mastery quality could not be taken with a Spellcasting rank of 4 or 5 if the character had the Illusion specialization.
 - Fixed a bug where the Practiced Alchemist mastery quality would not have lower prerequisites for characters with the Islam tradition.
 - Fixed a bug where the Altmayr Black Moon would function off of Semi-Automatic specialization instead of Revolvers.
+- Fixed an issue where the Detect [Life Form], Extended spell did not have the Extended Area descriptor.
 
 New Strings:
 
@@ -258,6 +265,20 @@ New Strings:
 - MessageTitle_Options_ValidationResults
 - String_TotalComparisonWithPointBuy
 - Message_SelectGeneric_CareerOnlyRestriction
+- Title_SelectComplexForm
+- Label_SelectComplexForm_Target
+- Label_SelectComplexForm_Duration
+- Label_SelectComplexForm_FV
+- String_Level
+- String_ComplexFormLevel
+- String_ComplexFormTargetPersona
+- String_ComplexFormTargetDevice
+- String_ComplexFormTargetFile
+- String_ComplexFormTargetSprite
+- String_ComplexFormTargetHost
+- String_ComplexFormTargetIC
+- Tip_ComplexFormFadingBase
+- Tip_ComplexFormFadingSeeDescription
 
 Changed Strings:
 
@@ -307,6 +328,10 @@ Removed Strings:
 - Tip_OptionsExceptionalAttribute
 - Tip_BuildFoci
 - MessageTitle_SelectGeneric_PriorityRestriction
+- Title_SelectProgram
+- Label_SelectProgram_Target
+- Label_SelectProgram_Duration
+- Label_SelectProgram_FV
 
 Build 197
 

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,18 +47,17 @@ namespace Chummer
 
         private void frmSelectExoticSkill_Load(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
-
             List<ListItem> lstSkills = new List<ListItem>();
-            
 
             // Build the list of Exotic Active Skills from the Skills file.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[exotic = \"True\"]");
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
-            {
-                string strName = objXmlSkill["name"].InnerText;
-                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
-            }
+            using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+                if (objXmlSkillList?.Count > 0)
+                    foreach (XmlNode objXmlSkill in objXmlSkillList)
+                    {
+                        string strName = objXmlSkill["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                    }
             lstSkills.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -101,18 +100,24 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
                 List<ListItem> lstSkillSpecialisations = new List<ListItem>();
-                XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec");
-                XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon[(category = \"" + strSelectedCategory + "s\" or useskill = \"" + strSelectedCategory + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
-                foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-                {
-                    string strName = objXmlWeapon["name"].InnerText;
-                    lstSkillSpecialisations.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
-                }
-                foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
-                {
-                    string strInnerText = objXmlSpecialization.InnerText;
-                    lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
+
+                using (XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon[(category = \"" + strSelectedCategory + "s\" or useskill = \"" + strSelectedCategory + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    if (objXmlWeaponList?.Count > 0)
+                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                        {
+                            string strName = objXmlWeapon["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstSkillSpecialisations.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
+                    if (objXmlSelectedSkill?.Count > 0)
+                        foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
+                        {
+                            string strInnerText = objXmlSpecialization.InnerText;
+                            lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
+
                 cboSkillSpecialisations.BeginUpdate();
                 cboSkillSpecialisations.ValueMember = "Value";
                 cboSkillSpecialisations.DisplayMember = "Name";

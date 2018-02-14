@@ -148,6 +148,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_EnterLimitModifier";
             this.Text = "Enter a Limit Modifier";
+            this.Load += new System.EventHandler(this.frmSelectLimitModifier_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

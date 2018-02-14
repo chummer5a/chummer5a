@@ -375,6 +375,8 @@ namespace Chummer
                     return objImprovementAdder.drainvalue;
                 case "FADINGRESIST":
                     return objImprovementAdder.fadingresist;
+                case "FADINGVALUE":
+                    return objImprovementAdder.fadingvalue;
                 case "NOTORIETY":
                     return objImprovementAdder.notoriety;
                 case "STREETCRED":

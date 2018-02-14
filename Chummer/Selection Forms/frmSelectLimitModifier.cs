@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,12 +53,12 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmSelectText_Shown(object sender, EventArgs e)
+        private void frmSelectLimitModifier_Load(object sender, EventArgs e)
         {
             // If the field is pre-populated, immediately click OK.
             if (!string.IsNullOrEmpty(txtName.Text))
                 cmdOK_Click(sender, e);
-        }        
+        }
         #endregion
 
         #region Properties
@@ -90,6 +90,5 @@ namespace Chummer
         }
 
         #endregion
-
     }
 }

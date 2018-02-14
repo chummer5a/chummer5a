@@ -19,15 +19,15 @@
  using System;
 using System.Collections.Generic;
  using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public partial class frmNaturalWeapon : Form
     {
-        private readonly XmlDocument _objXmlPowersDocument = XmlManager.Load("critterpowers.xml");
-        private readonly XmlDocument _objXmlSkillsDocument = XmlManager.Load("skills.xml");
+        private readonly XPathNavigator _objXmlPowersDocument;
+        private readonly XPathNavigator _objXmlSkillsDocument;
 
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
@@ -35,9 +35,12 @@ namespace Chummer
         #region Control Events
         public frmNaturalWeapon(Character objCharacter)
         {
+            _objCharacter = objCharacter;
+            _objXmlPowersDocument = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _objXmlSkillsDocument = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
+
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
             MoveControls();
         }
 
@@ -45,10 +48,11 @@ namespace Chummer
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             List<ListItem> lstSkills = new List<ListItem>();
-            foreach (XmlNode objXmlSkill in _objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Combat Active\"]"))
+            foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.Select("skills/skill[category = \"Combat Active\"]"))
             {
-                string strName = objXmlSkill["name"].InnerText;
-                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                string strName = objXmlSkill.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName))
+                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
             }
 
             List<ListItem> lstDVBase = new List<ListItem>
@@ -141,28 +145,31 @@ namespace Chummer
                 strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
-            XmlNode objPower = _objXmlPowersDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
+            XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");
 
-            // Create the Weapon.
-            _objWeapon = new Weapon(_objCharacter)
+            if (objPower != null)
             {
-                Name = txtName.Text,
-                Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
-                WeaponType = "Melee",
-                Reach = decimal.ToInt32(nudReach.Value),
-                Damage = strDamage,
-                AP = strAP,
-                Mode = "0",
-                RC = "0",
-                Concealability = 0,
-                Avail = "0",
-                Cost = "0",
-                UseSkill = cboSkill.SelectedValue.ToString(),
-                Source = objPower["source"].InnerText,
-                Page = objPower["page"].InnerText
-            };
+                // Create the Weapon.
+                _objWeapon = new Weapon(_objCharacter)
+                {
+                    Name = txtName.Text,
+                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                    WeaponType = "Melee",
+                    Reach = decimal.ToInt32(nudReach.Value),
+                    Damage = strDamage,
+                    AP = strAP,
+                    Mode = "0",
+                    RC = "0",
+                    Concealability = 0,
+                    Avail = "0",
+                    Cost = "0",
+                    UseSkill = cboSkill.SelectedValue.ToString(),
+                    Source = objPower.SelectSingleNode("source")?.Value,
+                    Page = objPower.SelectSingleNode("page")?.Value
+                };
 
-            DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
+            }
         }
         #endregion
 

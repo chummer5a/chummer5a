@@ -22,7 +22,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;

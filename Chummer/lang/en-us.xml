@@ -790,6 +790,10 @@
       <text>Force</text>
     </string>
     <string>
+      <key>String_Level</key>
+      <text>Level</text>
+    </string>
+    <string>
       <key>String_CyberlimbAttributeModifier</key>
       <text>affected by Cyberlimb Attributes</text>
     </string>
@@ -3725,6 +3729,34 @@
       <text>Touch</text>
     </string>
     <string>
+      <key>String_ComplexFormLevel</key>
+      <text>L</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetPersona</key>
+      <text>Persona</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetDevice</key>
+      <text>Device</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetFile</key>
+      <text>File</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetSprite</key>
+      <text>Sprite</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetHost</key>
+      <text>Host</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetIC</key>
+      <text>IC</text>
+    </string>
+    <string>
       <key>String_ActionAutomatic</key>
       <text>Auto</text>
     </string>
@@ -5495,7 +5527,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
-      <text>See Spell description</text>
+      <text>See Spell Description</text>
+    </string>
+    <string>
+      <key>Tip_ComplexFormFadingBase</key>
+      <text>Base Fading for</text>
+    </string>
+    <string>
+      <key>Tip_ComplexFormFadingSeeDescription</key>
+      <text>See Complex Form Description</text>
     </string>
     <string>
       <key>Tip_ImproveInitiateGrade</key>
@@ -8106,19 +8146,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Select Program Window -->
     <string>
-      <key>Title_SelectProgram</key>
-      <text>Select a Program</text>
+      <key>Title_SelectComplexForm</key>
+      <text>Select a Complex Form</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Target</key>
+      <key>Label_SelectComplexForm_Target</key>
       <text>Target:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Duration</key>
+      <key>Label_SelectComplexForm_Duration</key>
       <text>Duration:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_FV</key>
+      <key>Label_SelectComplexForm_FV</key>
       <text>FV:</text>
     </string>
     <!-- End Region-->

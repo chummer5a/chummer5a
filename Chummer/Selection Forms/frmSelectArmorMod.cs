@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -203,7 +202,10 @@ namespace Chummer
         private void UpdateSelectedArmor()
         {
             string strSelectedId = lstMod.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
+            XmlNode objXmlMod = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + strSelectedId + "\"]");
+            if (objXmlMod == null)
             {
                 lblA.Text = string.Empty;
                 nudRating.Enabled = false;
@@ -215,15 +217,12 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblSource, string.Empty);
                 return;
             }
-            // Retireve the information for the selected Accessory.
-            XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + strSelectedId + "\"]");
-
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
-            lblA.Text = objXmlMod["armor"].InnerText;
+            lblA.Text = objXmlMod["armor"]?.InnerText;
 
-            nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
+            nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
                 while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
@@ -244,7 +243,7 @@ namespace Chummer
             }
 
             string strAvail = string.Empty;
-            string strAvailExpr = objXmlMod["avail"].InnerText;
+            string strAvailExpr = objXmlMod["avail"]?.InnerText ?? string.Empty;
             if (strAvailExpr.Length > 0)
             {
                 char chrLastAvailChar = strAvailExpr[strAvailExpr.Length - 1];
@@ -340,8 +339,8 @@ namespace Chummer
                 lblCapacity.Text = strReturn;
             }
 
-            string strSource = objXmlMod["source"].InnerText;
-            string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"].InnerText;
+            string strSource = objXmlMod["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
             tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
@@ -369,15 +368,20 @@ namespace Chummer
             {
                 strMount += "category = \"General\"";
             }
-            XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]");
 
-            foreach (XmlNode objXmlMod in objXmlModList)
-            {
-                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
-                {
-                    lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
-                }
-            }
+            using (XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]"))
+                if (objXmlModList?.Count > 0)
+                    foreach (XmlNode objXmlMod in objXmlModList)
+                    {
+                        string strId = objXmlMod["id"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
+                            {
+                                lstMods.Add(new ListItem(strId, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                            }
+                        }
+                    }
             lstMods.Sort(CompareListItems.CompareNames);
             lstMod.BeginUpdate();
             lstMod.ValueMember = "Value";

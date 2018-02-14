@@ -246,6 +246,7 @@
       </xs:element>
       <xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="drainvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="disabletab" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -284,6 +285,7 @@
       <xs:element name="essencepenaltymagonlyt100" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="fadingvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fallingarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fame" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fatigueresist" type="xs:string" minOccurs="0" maxOccurs="1" />

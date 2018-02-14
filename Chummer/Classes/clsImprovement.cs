@@ -205,6 +205,7 @@ namespace Chummer
             FreeSpellsATT,
             FreeSpells,
             DrainValue,
+            FadingValue,
             Spell,
             ComplexForm,
             Gear,
@@ -972,21 +973,6 @@ namespace Chummer
                 return intReturn;
             }
         }
-
-        /// <summary>
-        /// Determine whether or not an XmlNode with the specified name exists within an XmlNode.
-        /// </summary>
-        /// <param name="objXmlNode">XmlNode to examine.</param>
-        /// <param name="strName">Name of the XmlNode to look for.</param>
-        private static bool NodeExists(XmlNode objXmlNode, string strName)
-        {
-            //Log.Enter("NodeExists");
-            //Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-            //Log.Info("strName = " + strName);
-
-            return objXmlNode?.SelectSingleNode(strName) != null;
-        }
-
         #endregion
 
         #region Improvement System
@@ -1145,7 +1131,7 @@ namespace Chummer
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
                 strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, blnConcatSelectedValue,
-                strFriendlyName, intRating, ValueToInt, Rollback);
+                strFriendlyName, intRating, ValueToInt);
 
             Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
             if (objImprovementMethod != null)

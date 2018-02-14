@@ -3121,19 +3121,19 @@ namespace Chummer
                 }
 
                 // Let the user select a Program.
-                frmSelectProgram frmPickProgram = new frmSelectProgram(CharacterObject);
-                frmPickProgram.ShowDialog(this);
+                frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(CharacterObject);
+                frmPickComplexForm.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
-                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
                 {
-                    frmPickProgram.Dispose();
+                    frmPickComplexForm.Dispose();
                     break;
                 }
-                blnAddAgain = frmPickProgram.AddAgain;
+                blnAddAgain = frmPickComplexForm.AddAgain;
 
-                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedComplexForm + "\"]");
-                frmPickProgram.Dispose();
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickComplexForm.SelectedComplexForm + "\"]");
+                frmPickComplexForm.Dispose();
                 if (objXmlComplexForm == null)
                     continue;
 
@@ -10016,10 +10016,11 @@ namespace Chummer
             if (objComplexForm != null)
             {
                 cmdDeleteComplexForm.Enabled = objComplexForm.Grade == 0;
-                lblDuration.Text = objComplexForm.Duration;
-                lblTarget.Text = objComplexForm.Target;
-                lblFV.Text = objComplexForm.FV;
-                
+                lblDuration.Text = objComplexForm.DisplayDuration(GlobalOptions.Language);
+                lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Language);
+                lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Language);
+                tipTooltip.SetToolTip(lblFV, objComplexForm.FVTooltip);
+
                 string strPage = objComplexForm.Page(GlobalOptions.Language);
                 lblComplexFormSource.Text = CommonFunctions.LanguageBookShort(objComplexForm.Source, GlobalOptions.Language) + ' ' + strPage;
                 tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objComplexForm.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
@@ -10030,6 +10031,7 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblTarget.Text = string.Empty;
                 lblFV.Text = string.Empty;
+                tipTooltip.SetToolTip(lblFV, string.Empty);
                 lblComplexFormSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblComplexFormSource, string.Empty);
             }

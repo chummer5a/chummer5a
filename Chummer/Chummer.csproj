@@ -666,12 +666,12 @@
     <Compile Include="Selection Forms\frmSelectPACKSKit.Designer.cs">
       <DependentUpon>frmSelectPACKSKit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.cs">
+    <None Include="Selection Forms\frmSelectProgramOption.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectProgramOption.Designer.cs">
       <DependentUpon>frmSelectProgramOption.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectQuality.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -756,11 +756,11 @@
     <Compile Include="Selection Forms\frmSelectPower.Designer.cs">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.cs">
+    <Compile Include="Selection Forms\frmSelectComplexForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.Designer.cs">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectComplexForm.Designer.cs">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectSpell.cs">
       <SubType>Form</SubType>
@@ -1138,8 +1138,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectPower.resx">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectProgram.resx">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectComplexForm.resx">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSpell.resx">
       <DependentUpon>frmSelectSpell.cs</DependentUpon>

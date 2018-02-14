@@ -5426,21 +5426,21 @@
 		</string>
 		<!-- Select Program Window -->
 		<string>
-			<key>Title_SelectProgram</key>
+			<key>Title_SelectComplexForm</key>
 			<text>选择一个程序</text>
 		</string>
-		<string>
-			<key>Label_SelectProgram_Target</key>
-			<text>目标：</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_Duration</key>
-			<text>持续：</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_FV</key>
-			<text>FV：</text>
-		</string>
+	  <string>
+	    <key>Label_SelectComplexForm_Target</key>
+	    <text>目标：</text>
+	  </string>
+	  <string>
+	    <key>Label_SelectComplexForm_Duration</key>
+	    <text>持续：</text>
+	  </string>
+	  <string>
+	    <key>Label_SelectComplexForm_FV</key>
+	    <text>衰褪值：</text>
+	  </string>
 		<!-- Select Program Option Window -->
 		<string>
 			<key>Title_SelectProgramOption</key>
@@ -6703,18 +6703,6 @@
 		<string>
 			<key>String_PowerPoint</key>
 			<text>能力点</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_Target</key>
-			<text>目标：</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_Duration</key>
-			<text>持续：</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_FV</key>
-			<text>衰褪值：</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_Alchemical</key>

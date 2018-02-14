@@ -55,19 +55,21 @@ namespace Chummer
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();
-            foreach (XmlNode objXmlLifestyle in _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
-            {
-                string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
+            using (XmlNodeList xmlLifestyleList = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
+                if (xmlLifestyleList?.Count > 0)
+                    foreach (XmlNode objXmlLifestyle in xmlLifestyleList)
+                    {
+                        string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
 
-                if (!string.IsNullOrEmpty(strLifestyleName) &&
-                    strLifestyleName != "ID ERROR. Re-add life style to fix" &&
-                    (_eType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
-                    !strLifestyleName.Contains("Hospitalized") &&
-                    _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
-                {
-                    lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
-                }
-            }
+                        if (!string.IsNullOrEmpty(strLifestyleName) &&
+                            strLifestyleName != "ID ERROR. Re-add life style to fix" &&
+                            (_eType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
+                            !strLifestyleName.Contains("Hospitalized") &&
+                            _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
+                        {
+                            lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
+                        }
+                    }
             // Populate the Qualities list.
             if (_objSourceLifestyle != null)
             {
@@ -613,27 +615,6 @@ namespace Chummer
         {
             _objSourceLifestyle = objLifestyle;
             _eType = objLifestyle.StyleType;
-        }
-
-        /// <summary>
-        /// Sort the contents of a TreeView alphabetically.
-        /// </summary>
-        /// <param name="treTree">TreeView to sort.</param>
-        private static void SortTree(TreeView treTree)
-        {
-            List<TreeNode> lstNodes = new List<TreeNode>();
-            foreach (TreeNode objNode in treTree.Nodes)
-                lstNodes.Add(objNode);
-            treTree.Nodes.Clear();
-            try
-            {
-                lstNodes.Sort(CompareTreeNodes.CompareText);
-            }
-            catch (ArgumentException)
-            {
-            }
-            foreach (TreeNode objNode in lstNodes)
-                treTree.Nodes.Add(objNode);
         }
 
         private void MoveControls()

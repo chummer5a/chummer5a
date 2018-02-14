@@ -194,8 +194,12 @@ namespace Chummer
         /// </summary>
         public string DisplayRequiresProgram(string strLanguage)
         {
-            XmlNode objNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
-            return objNode?["translate"]?.InnerText ?? objNode?["name"]?.InnerText ?? LanguageManager.GetString("String_None", strLanguage);
+            if (string.IsNullOrEmpty(RequiresProgram))
+                return LanguageManager.GetString("String_None", strLanguage);
+            if (strLanguage == GlobalOptions.Language)
+                return RequiresProgram;
+            
+            return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
 
         /// <summary>

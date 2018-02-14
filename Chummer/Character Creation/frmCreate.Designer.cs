@@ -4402,7 +4402,7 @@ namespace Chummer
             this.lblFVLabel.Name = "lblFVLabel";
             this.lblFVLabel.Size = new System.Drawing.Size(23, 13);
             this.lblFVLabel.TabIndex = 152;
-            this.lblFVLabel.Tag = "Label_SelectProgram_FV";
+            this.lblFVLabel.Tag = "Label_SelectComplexForm_FV";
             this.lblFVLabel.Text = "FV:";
             // 
             // lblDuration
@@ -4421,7 +4421,7 @@ namespace Chummer
             this.lblDurationLabel.Name = "lblDurationLabel";
             this.lblDurationLabel.Size = new System.Drawing.Size(50, 13);
             this.lblDurationLabel.TabIndex = 150;
-            this.lblDurationLabel.Tag = "Label_SelectProgram_Duration";
+            this.lblDurationLabel.Tag = "Label_SelectComplexForm_Duration";
             this.lblDurationLabel.Text = "Duration:";
             // 
             // lblTarget
@@ -4440,7 +4440,7 @@ namespace Chummer
             this.lblTargetLabel.Name = "lblTargetLabel";
             this.lblTargetLabel.Size = new System.Drawing.Size(41, 13);
             this.lblTargetLabel.TabIndex = 148;
-            this.lblTargetLabel.Tag = "Label_SelectProgram_Target";
+            this.lblTargetLabel.Tag = "Label_SelectComplexForm_Target";
             this.lblTargetLabel.Text = "Target:";
             // 
             // lblFadingAttributesValue

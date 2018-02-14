@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -4940,7 +4940,7 @@
 			<text>Kraft Anforderungen</text>
 		</string>
 		<string>
-			<key>Title_SelectProgram</key>
+			<key>Title_SelectComplexForm</key>
 			<text>Programm auswählen</text>
 		</string>
 		<string>
@@ -7321,15 +7321,15 @@
 			<text>Kraftpunkt</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_Target</key>
+			<key>Label_SelectComplexForm_Target</key>
 			<text>Ziel:</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_Duration</key>
+			<key>Label_SelectComplexForm_Duration</key>
 			<text>Dauer:</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_FV</key>
+			<key>Label_SelectComplexForm_FV</key>
 			<text>Schwund:</text>
 		</string>
 		<string>

@@ -21,7 +21,6 @@ using System.Collections.Generic;
  using System.Linq;
  using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Backend.Skills;
 

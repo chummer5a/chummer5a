@@ -432,7 +432,7 @@
       <source>SR5</source>
       <category>Detection</category>
       <damage>0</damage>
-      <descriptor>Active, Area</descriptor>
+      <descriptor>Active, Extended Area</descriptor>
       <duration>S</duration>
       <dv>F</dv>
       <range>T</range>

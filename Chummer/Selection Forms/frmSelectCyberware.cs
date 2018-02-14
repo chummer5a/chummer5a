@@ -606,7 +606,7 @@ namespace Chummer
                 return;
             }
 
-            string strSelectCategory = objXmlCyberware.SelectSingleNode("category").Value;
+            string strSelectCategory = objXmlCyberware.SelectSingleNode("category")?.Value ?? string.Empty;
             bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNode("forcegrade")?.Value == "None";
 
             // Place the Genetech cost multiplier in a varaible that can be safely modified.
@@ -1166,6 +1166,9 @@ namespace Chummer
         /// Populate the list of Cyberware Grades.
         /// </summary>
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
+        /// <param name="blnForce">Force grades to be repopulated.</param>
+        /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
+        /// <param name="blnHideBannedGrades">Whether to hide grades banned by the character's gameplay options.</param>
         private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true)
         {
             if (_blnPopulatingGrades)

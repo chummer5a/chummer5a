@@ -229,10 +229,10 @@ namespace Chummer
 
             foreach (string strFile in lstFiles)
             {
-                Uri objUri = new Uri("/" + Path.GetFileName(strFile).Replace(' ', '_'), UriKind.Relative);
+                Uri objUri = new Uri("/" + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty), UriKind.Relative);
                 PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
                 byte[] bytBuffer = File.ReadAllBytes(strFile);
-                objPart.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
+                objPart?.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
             }
             objPackage.Close();
 
@@ -250,14 +250,14 @@ namespace Chummer
 
             foreach (string strFile in lstFiles)
             {
-                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split(Path.DirectorySeparatorChar);
-                string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + Path.GetFileName(strFile).Replace(' ', '_');
+                string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] {};
+                string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty);
                 if (strPackFile.StartsWith("/saves"))
                     strPackFile = strPackFile.Replace("/saves", string.Empty);
                 Uri objUri = new Uri(strPackFile, UriKind.Relative);
                 PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
                 byte[] bytBuffer = File.ReadAllBytes(strFile);
-                objPart.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
+                objPart?.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
             }
             objPackage.Close();
         }

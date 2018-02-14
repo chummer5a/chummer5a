@@ -495,5 +495,18 @@ namespace Chummer
             }
             return false;
         }
+
+        /// <summary>
+        /// Determine whether or not an XmlNode with the specified name exists within an XmlNode.
+        /// </summary>
+        /// <param name="xmlNode">XmlNode to examine.</param>
+        /// <param name="strName">Name of the XmlNode to look for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool NodeExists(this XmlNode xmlNode, string strName)
+        {
+            if (string.IsNullOrEmpty(strName))
+                return false;
+            return xmlNode?.SelectSingleNode(strName) != null;
+        }
     }
 }

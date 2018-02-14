@@ -21,8 +21,6 @@ using System.Collections.Generic;
  using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
-using System.Xml.XPath;
-using System.Globalization;
 
 namespace Chummer
 {

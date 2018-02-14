@@ -1638,21 +1638,11 @@ namespace Chummer
             cboCategory.EndUpdate();
         }
 
-        private XPathNavigator GetSpecificSkill(string strSkill)
-        {
-            return _xmlBaseSkillDataNode.SelectSingleNode("skills/skill[name = \"" + strSkill + "\"]");
-        }
-
         private XPathNodeIterator GetMatrixSkillList()
         {
             return _xmlBaseSkillDataNode.Select("skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
         }
-
-        private XPathNavigator GetSpecificSkillGroup(string strSkill)
-        {
-            return _xmlBaseSkillDataNode.SelectSingleNode("skillgroups/name[. = \"" + strSkill + "\"]");
-        }
-
+        
         private XPathNodeIterator GetMagicalSkillList()
         {
             return _xmlBaseSkillDataNode.Select("skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");

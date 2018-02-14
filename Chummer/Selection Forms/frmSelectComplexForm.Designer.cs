@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectProgram
+    partial class frmSelectComplexForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.lstPrograms = new System.Windows.Forms.ListBox();
+            this.lstComplexForms = new System.Windows.Forms.ListBox();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
@@ -46,14 +46,14 @@ namespace Chummer
             this.lblFVLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // lstPrograms
+            // lstComplexForms
             // 
-            this.lstPrograms.Location = new System.Drawing.Point(12, 12);
-            this.lstPrograms.Name = "trePrograms";
-            this.lstPrograms.Size = new System.Drawing.Size(241, 430);
-            this.lstPrograms.TabIndex = 6;
-            this.lstPrograms.SelectedIndexChanged += new System.EventHandler(this.lstPrograms_SelectedIndexChanged);
-            this.lstPrograms.DoubleClick += new System.EventHandler(this.lstPrograms_DoubleClick);
+            this.lstComplexForms.Location = new System.Drawing.Point(12, 12);
+            this.lstComplexForms.Name = "lstComplexForms";
+            this.lstComplexForms.Size = new System.Drawing.Size(241, 430);
+            this.lstComplexForms.TabIndex = 6;
+            this.lstComplexForms.SelectedIndexChanged += new System.EventHandler(this.lstComplexForms_SelectedIndexChanged);
+            this.lstComplexForms.DoubleClick += new System.EventHandler(this.lstComplexForms_DoubleClick);
             // 
             // cmdOK
             // 
@@ -73,7 +73,7 @@ namespace Chummer
             this.lblTargetLabel.Name = "lblTargetLabel";
             this.lblTargetLabel.Size = new System.Drawing.Size(41, 13);
             this.lblTargetLabel.TabIndex = 2;
-            this.lblTargetLabel.Tag = "Label_SelectProgram_Target";
+            this.lblTargetLabel.Tag = "Label_SelectComplexForm_Target";
             this.lblTargetLabel.Text = "Target:";
             // 
             // lblTarget
@@ -178,7 +178,7 @@ namespace Chummer
             this.lblDurationLabel.Name = "lblDurationLabel";
             this.lblDurationLabel.Size = new System.Drawing.Size(50, 13);
             this.lblDurationLabel.TabIndex = 10;
-            this.lblDurationLabel.Tag = "Label_SelectProgram_Duration";
+            this.lblDurationLabel.Tag = "Label_SelectComplexForm_Duration";
             this.lblDurationLabel.Text = "Duration:";
             // 
             // lblFV
@@ -197,10 +197,10 @@ namespace Chummer
             this.lblFVLabel.Name = "lblFVLabel";
             this.lblFVLabel.Size = new System.Drawing.Size(23, 13);
             this.lblFVLabel.TabIndex = 12;
-            this.lblFVLabel.Tag = "Label_SelectProgram_FV";
+            this.lblFVLabel.Tag = "Label_SelectComplexForm_FV";
             this.lblFVLabel.Text = "FV:";
             // 
-            // frmSelectProgram
+            // frmSelectComplexForm
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -220,16 +220,16 @@ namespace Chummer
             this.Controls.Add(this.lblTarget);
             this.Controls.Add(this.lblTargetLabel);
             this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.lstPrograms);
+            this.Controls.Add(this.lstComplexForms);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectProgram";
+            this.Name = "frmSelectComplexForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Tag = "Title_SelectProgram";
-            this.Text = "Select a Program";
-            this.Load += new System.EventHandler(this.frmSelectProgram_Load);
+            this.Tag = "Title_SelectComplexForm";
+            this.Text = "Select a Complex Form";
+            this.Load += new System.EventHandler(this.frmSelectComplexForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -237,7 +237,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ListBox lstPrograms;
+        private System.Windows.Forms.ListBox lstComplexForms;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblTargetLabel;
         private System.Windows.Forms.Label lblTarget;
