@@ -18,6 +18,7 @@
  */
 using Chummer.Backend.Attributes;
 using System;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -74,6 +75,51 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new VehicleMod.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstVehicleWeapons.CollectionChanged += ChildrenWeaponsOnCollectionChanged;
+            _lstCyberware.CollectionChanged += ChildrenCyberwareOnCollectionChanged;
+        }
+
+        private void ChildrenCyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Cyberware objNewItem in e.NewItems)
+                        objNewItem.ParentVehicle = Parent;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Cyberware objOldItem in e.OldItems)
+                        objOldItem.ParentVehicle = null;
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Cyberware objOldItem in e.OldItems)
+                        objOldItem.ParentVehicle = null;
+                    foreach (Cyberware objNewItem in e.NewItems)
+                        objNewItem.ParentVehicle = Parent;
+                    break;
+            }
+        }
+
+        private void ChildrenWeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Weapon objNewItem in e.NewItems)
+                        objNewItem.ParentVehicle = Parent;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Weapon objOldItem in e.OldItems)
+                        objOldItem.ParentVehicle = null;
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Weapon objOldItem in e.OldItems)
+                        objOldItem.ParentVehicle = null;
+                    foreach (Weapon objNewItem in e.NewItems)
+                        objNewItem.ParentVehicle = Parent;
+                    break;
+            }
         }
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.

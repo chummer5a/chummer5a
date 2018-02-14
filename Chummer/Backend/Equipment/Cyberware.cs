@@ -1652,7 +1652,12 @@ namespace Chummer.Backend.Equipment
         public Vehicle ParentVehicle
         {
             get => _objParentVehicle;
-            set => _objParentVehicle = value;
+            set
+            {
+                _objParentVehicle = value;
+                foreach (Cyberware objChild in Children)
+                    objChild.ParentVehicle = value;
+            }
         }
 
         /// <summary>

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using System;
 using System.Collections.Generic;
@@ -2877,6 +2878,67 @@ namespace Chummer.Backend.Equipment
             }
 
             return objNode;
+        }
+
+        /// <summary>
+        /// Locate a piece of Cyberware within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
+        public Cyberware FindVehicleCyberware([NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
+        {
+            foreach (VehicleMod objMod in Mods)
+            {
+                Cyberware objReturn = objMod.Cyberware.DeepFirstOrDefault(x => x.Children, funcPredicate);
+                if (objReturn != null)
+                {
+                    objFoundVehicleMod = objMod;
+                    return objReturn;
+                }
+            }
+
+            foreach (WeaponMount objMount in WeaponMounts)
+            {
+                foreach (VehicleMod objMod in objMount.Mods)
+                {
+                    Cyberware objReturn = objMod.Cyberware.DeepFirstOrDefault(x => x.Children, funcPredicate);
+                    if (objReturn != null)
+                    {
+                        objFoundVehicleMod = objMod;
+                        return objReturn;
+                    }
+                }
+            }
+
+            objFoundVehicleMod = null;
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a VehicleMod within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
+        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, out WeaponMount objFoundWeaponMount)
+        {
+            VehicleMod objMod = Mods.FirstOrDefault(funcPredicate);
+            if (objMod != null)
+            {
+                objFoundWeaponMount = null;
+                return objMod;
+            }
+            foreach (WeaponMount objMount in WeaponMounts)
+            {
+                objMod = Mods.FirstOrDefault(funcPredicate);
+                if (objMod != null)
+                {
+                    objFoundWeaponMount = objMount;
+                    return objMod;
+                }
+            }
+
+            objFoundWeaponMount = null;
+            return null;
         }
 
         /// <summary>

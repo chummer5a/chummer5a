@@ -1507,32 +1507,36 @@ namespace Chummer.Backend.Equipment
                     {
                         intUseSTR = ParentVehicle.TotalBody;
                         intUseAGI = ParentVehicle.Pilot;
-                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
-                        if (objWeaponParent != null)
+                        if (!string.IsNullOrEmpty(ParentID))
                         {
-                            Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intAGI = objAttributeSource.TotalStrength;
-                            while (objAttributeSource != null)
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
                             {
-                                if (intSTR != 0 || intAGI != 0)
-                                    break;
-                                objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intAGI = objAttributeSource.TotalStrength;
-                            }
-                            intUseSTR = intSTR;
-                            intUseAGI = intAGI;
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = objAttributeSource.TotalStrength;
+                                int intAGI = objAttributeSource.TotalStrength;
+                                while (objAttributeSource != null)
+                                {
+                                    if (intSTR != 0 || intAGI != 0)
+                                        break;
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
+                                    intSTR = objAttributeSource.TotalStrength;
+                                    intAGI = objAttributeSource.TotalStrength;
+                                }
 
-                            if (intUseSTR == 0)
-                                intUseSTR = objVehicleMod.TotalStrength;
-                            if (intUseAGI == 0)
-                                intUseAGI = objVehicleMod.TotalAgility;
+                                intUseSTR = intSTR;
+                                intUseAGI = intAGI;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = objVehicleMod.TotalStrength;
+                                if (intUseAGI == 0)
+                                    intUseAGI = objVehicleMod.TotalAgility;
+                            }
                         }
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
                         Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
@@ -2332,42 +2336,46 @@ namespace Chummer.Backend.Equipment
                         intUseSTRBase = intUseSTR;
                         intUseAGI = ParentVehicle.Pilot;
                         intUseAGIBase = intUseAGI;
-                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
-                        if (objWeaponParent != null)
+                        if (!string.IsNullOrEmpty(ParentID))
                         {
-                            Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intSTRBase = objAttributeSource.BaseStrength;
-                            int intAGI = objAttributeSource.TotalAgility;
-                            int intAGIBase = objAttributeSource.BaseAgility;
-                            while (objAttributeSource != null)
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
                             {
-                                if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                    break;
-                                objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intSTRBase = objAttributeSource.BaseStrength;
-                                intAGI = objAttributeSource.TotalAgility;
-                                intAGIBase = objAttributeSource.BaseAgility;
-                            }
-                            intUseSTR = intSTR;
-                            intUseAGI = intAGI;
-                            intUseSTRBase = intSTRBase;
-                            intUseAGIBase = intAGIBase;
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = objAttributeSource.TotalStrength;
+                                int intSTRBase = objAttributeSource.BaseStrength;
+                                int intAGI = objAttributeSource.TotalAgility;
+                                int intAGIBase = objAttributeSource.BaseAgility;
+                                while (objAttributeSource != null)
+                                {
+                                    if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
+                                        break;
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
+                                    intSTR = objAttributeSource.TotalStrength;
+                                    intSTRBase = objAttributeSource.BaseStrength;
+                                    intAGI = objAttributeSource.TotalAgility;
+                                    intAGIBase = objAttributeSource.BaseAgility;
+                                }
 
-                            if (intUseSTR == 0)
-                                intUseSTR = objVehicleMod.TotalStrength;
-                            if (intUseAGI == 0)
-                                intUseAGI = objVehicleMod.TotalAgility;
-                            if (intUseSTRBase == 0)
-                                intUseSTRBase = ParentVehicle.TotalBody;
-                            if (intUseAGIBase == 0)
-                                intUseAGIBase = ParentVehicle.Pilot;
+                                intUseSTR = intSTR;
+                                intUseAGI = intAGI;
+                                intUseSTRBase = intSTRBase;
+                                intUseAGIBase = intAGIBase;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = objVehicleMod.TotalStrength;
+                                if (intUseAGI == 0)
+                                    intUseAGI = objVehicleMod.TotalAgility;
+                                if (intUseSTRBase == 0)
+                                    intUseSTRBase = ParentVehicle.TotalBody;
+                                if (intUseAGIBase == 0)
+                                    intUseAGIBase = ParentVehicle.Pilot;
+                            }
                         }
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
                         Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
@@ -2594,29 +2602,33 @@ namespace Chummer.Backend.Equipment
                     if (ParentVehicle != null)
                     {
                         intUseSTR = ParentVehicle.TotalBody;
-                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
-                        if (objWeaponParent != null)
+                        if (!string.IsNullOrEmpty(ParentID))
                         {
-                            Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intAGI = objAttributeSource.TotalStrength;
-                            while (objAttributeSource != null)
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
                             {
-                                if (intSTR != 0 || intAGI != 0)
-                                    break;
-                                objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intAGI = objAttributeSource.TotalStrength;
-                            }
-                            intUseSTR = intSTR;
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = objAttributeSource.TotalStrength;
+                                int intAGI = objAttributeSource.TotalStrength;
+                                while (objAttributeSource != null)
+                                {
+                                    if (intSTR != 0 || intAGI != 0)
+                                        break;
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
+                                    intSTR = objAttributeSource.TotalStrength;
+                                    intAGI = objAttributeSource.TotalStrength;
+                                }
 
-                            if (intUseSTR == 0)
-                                intUseSTR = objVehicleMod.TotalStrength;
+                                intUseSTR = intSTR;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = objVehicleMod.TotalStrength;
+                            }
                         }
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
                         Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
@@ -2720,42 +2732,46 @@ namespace Chummer.Backend.Equipment
                             intUseSTRBase = intUseSTR;
                             intUseAGI = ParentVehicle.Pilot;
                             intUseAGIBase = intUseAGI;
-                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
-                            if (objWeaponParent != null)
+                            if (!string.IsNullOrEmpty(ParentID))
                             {
-                                Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.TotalStrength;
-                                int intSTRBase = objAttributeSource.BaseStrength;
-                                int intAGI = objAttributeSource.TotalAgility;
-                                int intAGIBase = objAttributeSource.BaseAgility;
-                                while (objAttributeSource != null)
+                                // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                                Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                                if (objWeaponParent != null)
                                 {
-                                    if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                        break;
-                                    objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
-                                    intSTR = objAttributeSource.TotalStrength;
-                                    intSTRBase = objAttributeSource.BaseStrength;
-                                    intAGI = objAttributeSource.TotalAgility;
-                                    intAGIBase = objAttributeSource.BaseAgility;
-                                }
-                                intUseSTR = intSTR;
-                                intUseAGI = intAGI;
-                                intUseSTRBase = intSTRBase;
-                                intUseAGIBase = intAGIBase;
+                                    Cyberware objAttributeSource = objWeaponParent;
+                                    int intSTR = objAttributeSource.TotalStrength;
+                                    int intSTRBase = objAttributeSource.BaseStrength;
+                                    int intAGI = objAttributeSource.TotalAgility;
+                                    int intAGIBase = objAttributeSource.BaseAgility;
+                                    while (objAttributeSource != null)
+                                    {
+                                        if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
+                                            break;
+                                        objAttributeSource = objAttributeSource.Parent;
+                                        if (objAttributeSource == null) continue;
+                                        intSTR = objAttributeSource.TotalStrength;
+                                        intSTRBase = objAttributeSource.BaseStrength;
+                                        intAGI = objAttributeSource.TotalAgility;
+                                        intAGIBase = objAttributeSource.BaseAgility;
+                                    }
 
-                                if (intUseSTR == 0)
-                                    intUseSTR = objVehicleMod.TotalStrength;
-                                if (intUseAGI == 0)
-                                    intUseAGI = objVehicleMod.TotalAgility;
-                                if (intUseSTRBase == 0)
-                                    intUseSTRBase = ParentVehicle.TotalBody;
-                                if (intUseAGIBase == 0)
-                                    intUseAGIBase = ParentVehicle.Pilot;
+                                    intUseSTR = intSTR;
+                                    intUseAGI = intAGI;
+                                    intUseSTRBase = intSTRBase;
+                                    intUseAGIBase = intAGIBase;
+
+                                    if (intUseSTR == 0)
+                                        intUseSTR = objVehicleMod.TotalStrength;
+                                    if (intUseAGI == 0)
+                                        intUseAGI = objVehicleMod.TotalAgility;
+                                    if (intUseSTRBase == 0)
+                                        intUseSTRBase = ParentVehicle.TotalBody;
+                                    if (intUseAGIBase == 0)
+                                        intUseAGIBase = ParentVehicle.Pilot;
+                                }
                             }
                         }
-                        else
+                        else if (!string.IsNullOrEmpty(ParentID))
                         {
                             // Look to see if this is attached to a Cyberlimb and use its STR instead.
                             Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
@@ -3071,32 +3087,36 @@ namespace Chummer.Backend.Equipment
                     {
                         intUseSTR = ParentVehicle.TotalBody;
                         intUseAGI = ParentVehicle.Pilot;
-                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
-                        if (objWeaponParent != null)
+                        if (!string.IsNullOrEmpty(ParentID))
                         {
-                            Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intAGI = objAttributeSource.TotalStrength;
-                            while (objAttributeSource != null)
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
                             {
-                                if (intSTR != 0 || intAGI != 0)
-                                    break;
-                                objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intAGI = objAttributeSource.TotalStrength;
-                            }
-                            intUseSTR = intSTR;
-                            intUseAGI = intAGI;
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = objAttributeSource.TotalStrength;
+                                int intAGI = objAttributeSource.TotalStrength;
+                                while (objAttributeSource != null)
+                                {
+                                    if (intSTR != 0 || intAGI != 0)
+                                        break;
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
+                                    intSTR = objAttributeSource.TotalStrength;
+                                    intAGI = objAttributeSource.TotalStrength;
+                                }
 
-                            if (intUseSTR == 0)
-                                intUseSTR = objVehicleMod.TotalStrength;
-                            if (intUseAGI == 0)
-                                intUseAGI = objVehicleMod.TotalAgility;
+                                intUseSTR = intSTR;
+                                intUseAGI = intAGI;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = objVehicleMod.TotalStrength;
+                                if (intUseAGI == 0)
+                                    intUseAGI = objVehicleMod.TotalAgility;
+                            }
                         }
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
                         Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
@@ -4376,7 +4396,7 @@ namespace Chummer.Backend.Equipment
                                  _objCharacter.Armor.FindArmorGear(ParentID) ??
                                  _objCharacter.Cyberware.FindCyberwareGear(ParentID)) ??
                                 ((_objCharacter.Cyberware.DeepFindById(ParentID) ??
-                                  _objCharacter.Vehicles.FindVehicleCyberware(ParentID)) ??
+                                  _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)) ??
                                  ((_objCharacter.Weapons.DeepFindById(ParentID) ??
                                    _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes) _objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
                 }

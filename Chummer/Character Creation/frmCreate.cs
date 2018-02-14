@@ -2750,6 +2750,8 @@ namespace Chummer
                 else
                 {
                     string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                    if (string.IsNullOrEmpty(strSelectedId))
+                        return;
                     // Paste Gear.
                     objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
 
@@ -2757,9 +2759,9 @@ namespace Chummer
                     {
                         Gear objGear = new Gear(CharacterObject);
                         objGear.Load(objXmlNode, true);
-                        
+
                         // Paste the Gear into a Vehicle's Gear.
-                        Gear objVehicleGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString());
+                        Gear objVehicleGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out Vehicle objVehicle, out WeaponAccessory objAccessory, out Cyberware objCyberware);
                         if (objVehicleGear != null)
                         {
                             XmlNodeList xmlAddonCategoryList = objVehicleGear.GetNode()?.SelectNodes("addoncategory");
@@ -2784,17 +2786,81 @@ namespace Chummer
                         else
                         {
                             // Paste the Gear into a Vehicle.
-                            foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
+                            objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
+                            if (objVehicle != null)
                             {
-                                if (objCharacterVehicle.InternalId == strSelectedId)
+                                objVehicle.Gear.Add(objGear);
+                            }
+                            else
+                            {
+                                objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
+                                if (objAccessory != null)
                                 {
-                                    objCharacterVehicle.Gear.Add(objGear);
-                                    break;
+                                    bool blnAllowPaste = false;
+                                    XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
+                                    if (xmlGearCategoryList?.Count > 0)
+                                    {
+                                        foreach (XmlNode objAllowed in xmlGearCategoryList)
+                                        {
+                                            if (objAllowed.InnerText == objGear.Category)
+                                            {
+                                                blnAllowPaste = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (!blnAllowPaste)
+                                        return;
+
+                                    objVehicle = objAccessory.Parent.ParentVehicle;
+                                    objAccessory.Gear.Add(objGear);
                                 }
+                                else
+                                {
+                                    objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out VehicleMod objVehicleMod);
+                                    if (objCyberware != null)
+                                    {
+                                        bool blnAllowPaste = false;
+                                        XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
+                                        if (xmlGearCategoryList?.Count > 0)
+                                        {
+                                            foreach (XmlNode objAllowed in xmlGearCategoryList)
+                                            {
+                                                if (objAllowed.InnerText == objGear.Category)
+                                                {
+                                                    blnAllowPaste = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (!blnAllowPaste)
+                                            return;
+
+                                        objVehicle = objVehicleMod.Parent;
+                                        objCyberware.Gear.Add(objGear);
+                                    }
+                                    else
+                                        return;
+                                }
+                            }
+                        }
+                        // Add any Weapons that come with the Gear.
+                        XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList != null)
+                        {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Weapon objGearWeapon = new Weapon(CharacterObject);
+                                objGearWeapon.Load(objLoopNode, true);
+                                objVehicle.Weapons.Add(objGearWeapon);
+                                objGear.WeaponID = objGearWeapon.InternalId;
                             }
                         }
 
                         IsCharacterUpdateRequested = true;
+
                         IsDirty = true;
                     }
                     else
@@ -2807,7 +2873,7 @@ namespace Chummer
                             WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
                             if (objWeaponMount == null)
                             {
-                                objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                                objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
                                 if (objVehicleMod == null)
                                     return;
                             }
@@ -3681,7 +3747,7 @@ namespace Chummer
                     else
                     {
                         // Locate the VehicleMod that is selected in the tree.
-                        VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                        VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
                         // Removing a Vehicle Mod
                         if (objMod != null)
                         {
@@ -3756,7 +3822,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId, out objMod);
+                                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out objMod);
                                     // Removing Cyberware
                                     if (objCyberware != null)
                                     {
@@ -5071,12 +5137,8 @@ namespace Chummer
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
             // Make sure a Vehicle is selected.
-            Vehicle objVehicle;
-            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level == 1)
-            {
-                objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
-            }
-            else
+            Vehicle objVehicle = treVehicles.SelectedNode?.Level == 1 ? CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString()) : null;
+            if (objVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5121,18 +5183,12 @@ namespace Chummer
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             // Locate the Weapon that is selected in the Tree.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
+            Weapon objWeapon = objSelectedNode?.Level > 0 ? CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString()) : null;
 
             if (objWeapon == null)
             {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5323,7 +5379,7 @@ namespace Chummer
 
         private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
+            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
             if (objVehicle == null)
                 return;
             frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(objVehicle, CharacterObject);
@@ -5344,18 +5400,18 @@ namespace Chummer
 
         private void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
-            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
             TreeNode objSelectedNode = treVehicles.SelectedNode;
+            while (objSelectedNode != null && objSelectedNode.Level > 1)
+                objSelectedNode = objSelectedNode.Parent;
+
+            Vehicle objVehicle = objSelectedNode?.Level > 0 ? CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString()) : null;
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+            if (objVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString());
+            
             // Open the Vehicles XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
@@ -5480,18 +5536,18 @@ namespace Chummer
 
         private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
             // Make sure that a Weapon Mount has been selected.
+            // Attempt to locate the selected VehicleMod.
             VehicleMod objMod = null;
             WeaponMount objWeaponMount = null;
             Vehicle objVehicle = null;
-            if (objSelectedNode != null)
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                string strSelectedId = objSelectedNode.Tag.ToString();
                 objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
                 if (objWeaponMount == null)
                 {
-                    objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                    objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
                     if (objMod != null)
                     {
                         if (!objMod.Name.StartsWith("Mechanical Arm") && !objMod.Name.Contains("Drone Arm"))
@@ -5562,9 +5618,8 @@ namespace Chummer
 
         private void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Attempt to locate the selected VehicleWeapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(objSelectedNode.Tag.ToString());
+            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
             if (objWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5627,17 +5682,11 @@ namespace Chummer
 
         private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Attempt to locate the selected VehicleWeapon.
-            Weapon objSelectedWeapon = CharacterObject.Vehicles.FindVehicleWeapon(objSelectedNode.Tag.ToString());
+            Weapon objSelectedWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
             if (objSelectedWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
-            {
                 return;
             }
 
@@ -5743,21 +5792,15 @@ namespace Chummer
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             // Locate the selected Vehicle.
-            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString());
+            Vehicle objSelectedVehicle = objSelectedNode?.Level > 0 ? CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString()) : null;
             if (objSelectedVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             bool blnAddAgain;
 
             do
@@ -5776,7 +5819,6 @@ namespace Chummer
                 blnAddAgain = frmPickGear.AddAgain;
 
                 // Open the Gear XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
@@ -6090,15 +6132,8 @@ namespace Chummer
         private void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             // Locate the Weapon that is selected in the tree.
-            Weapon objSelectedWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
+            Weapon objSelectedWeapon = objSelectedNode?.Level > 0 ? CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString()) : null;
             if (objSelectedWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6108,11 +6143,6 @@ namespace Chummer
             if (objSelectedWeapon.Cyberware)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CyberwareUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_WeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (objSelectedWeapon.UnderbarrelWeapons.Count > 0)
-            {
                 return;
             }
 
@@ -6899,7 +6929,7 @@ namespace Chummer
             VehicleMod objMod = null;
             if (objVehicle == null)
             {
-                objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId);
+                objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
             }
 
             if (objVehicle != null)
@@ -7060,16 +7090,17 @@ namespace Chummer
 
         private void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
-            if (objSelectedNode == null)
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelectedId))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            
             Cyberware objCyberwareParent = null;
-            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponMount objWeaponMount);
+            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out Vehicle objVehicle, out WeaponMount objWeaponMount);
             if (objMod == null)
-                objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(objSelectedNode.Tag.ToString(), out objMod);
+                objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out objMod);
 
             if (objCyberwareParent == null && (objMod == null || !objMod.AllowCyberware))
             {
@@ -9145,7 +9176,7 @@ namespace Chummer
             {
                 IHasMatrixAttributes objSelectedCommlink = CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
                                                            (CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strGuid) ??
-                                                            (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
+                                                            (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
                 if (objSelectedCommlink != null)
                 {
                     objSelectedCommlink.SetActiveCommlink(CharacterObject, chkVehicleActiveCommlink.Checked);
@@ -9229,13 +9260,16 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode?.Tag.ToString();
-            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
-                                             (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
-                                              (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
+                                                 (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
+                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
+                if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
             _blnLoading = false;
@@ -9248,13 +9282,16 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode?.Tag.ToString();
-            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
-                                             (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
-                                              (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearSleaze, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
+                                                 (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
+                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
+                if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearSleaze, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
             _blnLoading = false;
@@ -9267,13 +9304,16 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode?.Tag.ToString();
-            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
-                                             (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
-                                              (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearFirewall, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
+                                                 (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
+                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
+                if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearFirewall, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
             _blnLoading = false;
@@ -9286,13 +9326,16 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode?.Tag.ToString();
-            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
-                                             (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
-                                              (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearDataProcessing, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
+                                                 (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
+                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
+                if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearDataProcessing, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
             _blnLoading = false;
@@ -9386,10 +9429,11 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (treVehicles.SelectedNode.Level == 2)
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Locate the currently selected VehicleMod.
-                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString());
+                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
                 if (objMod != null)
                 {
                     objMod.Rating = decimal.ToInt32(nudVehicleRating.Value);
@@ -9398,33 +9442,25 @@ namespace Chummer
                 else
                 {
                     // Locate the currently selected Vehicle Gear,.
-                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-
-                    objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                    treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
-                }
-            }
-            else if (treVehicles.SelectedNode.Level > 2)
-            {
-                // Locate the currently selected Vehicle Sensor Plugin.
-                Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-                if (objGear != null)
-                {
-                    objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                    treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
-
-                }
-                else
-                {
-                    // See if this is a piece of Cyberware.
-                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString());
-                    if (objCyberware != null)
+                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId);
+                    if (objGear != null)
                     {
-                        objCyberware.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                        treVehicles.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
+                        objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                        treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        // See if this is a piece of Cyberware.
+                        Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
+                        if (objCyberware != null)
+                        {
+                            objCyberware.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                            treVehicles.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
+                        }
                     }
                 }
             }
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -9443,7 +9479,7 @@ namespace Chummer
                     objAccessory.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
                 else
                 {
-                    VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId);
+                    VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
                     if (objVehicleMod != null)
                         objVehicleMod.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
                     else
@@ -9489,7 +9525,7 @@ namespace Chummer
             {
                 IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid) ??
                                                  (CharacterObject.Vehicles.FindVehicleGear(strGuid) ??
-                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(strGuid));
+                                                  (IHasMatrixAttributes) CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strGuid));
                 if (objTarget != null)
                 {
                     objTarget.SetHomeNode(CharacterObject, chkVehicleHomeNode.Checked);
@@ -13712,7 +13748,7 @@ namespace Chummer
                 else
                 {
                     // Locate the selected VehicleMod.
-                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
                     if (objMod != null)
                     {
                         if (objMod.IncludedInVehicle)
@@ -13907,7 +13943,7 @@ namespace Chummer
                             else
                             {
                                 // See if this is a piece of Cyberware.
-                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId);
+                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
                                 if (objCyberware != null)
                                 {
                                     if (!string.IsNullOrEmpty(objCyberware.ParentID))
@@ -13945,7 +13981,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
+                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId);
                                     if (objGear != null)
                                     {
                                         if (objGear.IncludedInParent)
@@ -16558,7 +16594,8 @@ namespace Chummer
                 {
                     // Update the name of the item in the TreeView.
                     TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
-                    objNode.Text = objGear.DisplayName(GlobalOptions.Language);
+                    if (objNode != null)
+                        objNode.Text = objGear.DisplayName(GlobalOptions.Language);
                 }
             }
         }
@@ -16661,7 +16698,7 @@ namespace Chummer
                 }
             }
             // Vehicles Tab.
-            else if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)
+            else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
                 string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
                 if (!string.IsNullOrEmpty(strSelectedId))
@@ -16683,7 +16720,7 @@ namespace Chummer
                             }
                             else
                             {
-                                VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId);
+                                VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
                                 if (objVehicleMod != null)
                                 {
                                     // TODO: Make this not depend on string names
@@ -17532,9 +17569,9 @@ namespace Chummer
                 }
                 else
                 {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(strSelectedParentID);
+                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
                     if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedParentID, out objNewVehicleModParent);
+                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
 
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
@@ -17567,10 +17604,11 @@ namespace Chummer
 
         private void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            TreeNode nodCyberwareNode = treVehicles.SelectedNode;
-            if (nodCyberwareNode == null)
+            string strSelectedId = treVehicles.SelectedNode.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
                 return;
-            Cyberware objModularCyberware = CharacterObject.Vehicles.FindVehicleCyberware(nodCyberwareNode.Tag.ToString(), out VehicleMod objOldParentVehicleMod);
+            
+            Cyberware objModularCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out VehicleMod objOldParentVehicleMod);
             if (objModularCyberware == null)
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
@@ -17615,9 +17653,9 @@ namespace Chummer
                 }
                 else
                 {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(strSelectedParentID);
+                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
                     if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedParentID, out objNewVehicleModParent);
+                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
 
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {

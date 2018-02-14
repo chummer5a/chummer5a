@@ -1,4 +1,12 @@
-Future Build 198
+Future Build 199
+
+Application Changes:
+
+- Fixed a bug where moving a weapon to a vehicle in career mode would not allow the user to select drone arms or weapon mounts.
+- Fixed issues when pasting gear into cyberware or weapon accessories in vehicles.
+- Fixed bugs where moving or merging gear to and from vehicles that would not result in a deletion would not properly update the gear's tree node's name.
+
+Build 198
 
 Application Changes:
 

@@ -26,6 +26,7 @@ using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
+using Chummer.Annotations;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 
@@ -152,46 +153,29 @@ namespace Chummer
         /// <summary>
         /// Locate a VehicleMod within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static VehicleMod FindVehicleMod(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate)
         {
-            return lstVehicles.FindVehicleMod(strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount);
+            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount);
         }
 
         /// <summary>
         /// Locate a VehicleMod within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
-        public static VehicleMod FindVehicleMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
+        /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
-            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            foreach (Vehicle objVehicle in lstVehicles)
             {
-                foreach (Vehicle objVehicle in lstVehicles)
+                VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount);
+                if (objMod != null)
                 {
-                    foreach (VehicleMod objMod in objVehicle.Mods)
-                    {
-                        if (objMod.InternalId == strGuid)
-                        {
-                            objFoundVehicle = objVehicle;
-                            objFoundWeaponMount = null;
-                            return objMod;
-                        }
-                    }
-                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (VehicleMod objMod in objMount.Mods)
-                        {
-                            if (objMod.InternalId == strGuid)
-                            {
-                                objFoundVehicle = objVehicle;
-                                objFoundWeaponMount = objMount;
-                                return objMod;
-                            }
-                        }
-                    }
+                    objFoundVehicle = objVehicle;
+                    return objMod;
                 }
             }
 
@@ -228,6 +212,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
+        /// <param name="objFoundWeaponMount">Weapon Mount that the Weapon was found in.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
@@ -291,8 +276,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid"></param>
         /// <param name="lstVehicles"></param>
+        /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
         /// <returns></returns>
-        public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle outVehicle)
+        public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
@@ -302,13 +288,13 @@ namespace Chummer
                     {
                         if (objMod.InternalId == strGuid)
                         {
-                            outVehicle = objVehicle;
+                            objFoundVehicle = objVehicle;
                             return objMod;
                         }
                     }
                 }
             }
-            outVehicle = null;
+            objFoundVehicle = null;
             return null;
         }
         /// <summary>
@@ -383,34 +369,27 @@ namespace Chummer
         /// <summary>
         /// Locate a piece of Cyberware within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Cyberware to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Cyberware FindVehicleCyberware(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate)
         {
-            return lstVehicles.FindVehicleCyberware(strGuid, out VehicleMod objFoundVehicleMod);
+            return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod objFoundVehicleMod);
         }
 
         /// <summary>
         /// Locate a piece of Cyberware within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Cyberware to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
-        public static Cyberware FindVehicleCyberware(this IEnumerable<Vehicle> lstVehicles, string strGuid, out VehicleMod objFoundVehicleMod)
+        public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
         {
-            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            foreach (Vehicle objVehicle in lstVehicles)
             {
-                foreach (Vehicle objVehicle in lstVehicles)
+                Cyberware objReturn = objVehicle.FindVehicleCyberware(funcPredicate, out objFoundVehicleMod);
+                if (objReturn != null)
                 {
-                    foreach (VehicleMod objMod in objVehicle.Mods)
-                    {
-                        Cyberware objReturn = objMod.Cyberware.DeepFindById(strGuid);
-                        if (objReturn != null)
-                        {
-                            objFoundVehicleMod = objMod;
-                            return objReturn;
-                        }
-                    }
+                    return objReturn;
                 }
             }
 
