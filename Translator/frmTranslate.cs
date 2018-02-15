@@ -183,6 +183,8 @@ namespace Translator
             string strEnglish = item.Cells["English"].Value.ToString();
             string strId = item.Cells["Id"].Value.ToString();
             string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
+            bool blnHasNameOnPage = cboFile.Text == "qualities.xml";
+            string strNameOnPage = blnHasNameOnPage ? item.Cells["NameOnPage"].Value.ToString() : string.Empty;
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
@@ -215,8 +217,26 @@ namespace Translator
             {
                 XmlElement element = xmlNodeLocal["translate"];
                 if (element != null) element.InnerText = strTranslated;
-                XmlElement xmlElement = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
-                if (xmlElement != null) xmlElement.InnerText = strPage;
+                element = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
+                if (element != null) element.InnerText = strPage;
+                if (blnHasNameOnPage)
+                {
+                    element = xmlNodeLocal["altnameonpage"];
+                    if (string.IsNullOrWhiteSpace(strNameOnPage) && element != null)
+                    {
+                        xmlNodeLocal.RemoveChild(element);
+                    }
+                    else
+                    {
+                        if (element == null)
+                        {
+                            element = _objDataDoc.CreateElement("altnameonpage");
+                            xmlNodeLocal.AppendChild(element);
+                        }
+                        element.InnerText = strNameOnPage;
+                    }
+                }
+
 
                 XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                 if (objAttrib != null)
@@ -476,6 +496,7 @@ namespace Translator
             _blnQueueSectionLoaderRun = false;
             string strFileName = _strSectionLoaderArgs[0];
             string strSection = _strSectionLoaderArgs[1];
+            bool blnHasNameOnPage = strFileName == "qualities.xml";
             DataTable dataTable = new DataTable("strings");
             dataTable.Columns.Add("Id");
             dataTable.Columns.Add("English");
@@ -491,6 +512,8 @@ namespace Translator
                 dataTable.Columns.Add("Page");
             }
             dataTable.Columns.Add("Translated?");
+            if (blnHasNameOnPage)
+                dataTable.Columns.Add("NameOnPage");
             if (strSection == "[Show All Sections]")
                 strSection = "*";
             if (_workerSectionLoader.CancellationPending)
@@ -534,6 +557,7 @@ namespace Translator
                             string strTranslated;
                             string strSource = string.Empty;
                             bool blnTranslated;
+                            string strNameOnPage = string.Empty;
                             XmlNode xmlChildNameNode = xmlChildNode["name"];
                             if (xmlChildNameNode == null)
                             {
@@ -551,11 +575,17 @@ namespace Translator
                                 strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                                 strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                                 blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString;
+                                if (blnHasNameOnPage)
+                                    strNameOnPage = xmlChildNode["altnameonpage"]?.InnerText ?? string.Empty;
                             }
 
                             if (!blnTranslated || !chkOnlyTranslation.Checked)
                             {
-                                object[] objArray = {strId, strName, strTranslated, strSource, strPage, blnTranslated};
+                                object[] objArray;
+                                if (blnHasNameOnPage)
+                                    objArray = new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated, strNameOnPage };
+                                else
+                                    objArray = new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated };
                                 lock (arrayRowsToDisplayLock)
                                     arrayRowsToDisplay[i] = objArray;
                             }
@@ -617,6 +647,12 @@ namespace Translator
                 dgvSection.Columns[3].FillWeight = 0.5f;
                 dgvSection.Columns[4].FillWeight = 0.5f;
                 dgvSection.Columns[5].FillWeight = 0.5f;
+                if (cboFile.Text == "qualities.xml")
+                {
+                    dgvSection.Columns[1].FillWeight = 3.5f;
+                    dgvSection.Columns[2].FillWeight = 3.5f;
+                    dgvSection.Columns[6].FillWeight = 1f;
+                }
                 foreach (DataGridViewRow row in dgvSection.Rows)
                 {
                     TranslatedIndicator(row);
@@ -662,7 +698,7 @@ namespace Translator
                     lstSectionStrings.Insert(0, "[Show All Sections]");
                 }
             }
-            
+
             string strOldSelected = cboSection.SelectedValue?.ToString() ?? string.Empty;
 
             _blnLoading = true;
@@ -692,7 +728,7 @@ namespace Translator
 
             Cursor = Cursors.WaitCursor;
             pbTranslateProgressBar.Value = 0;
-            
+
             _blnQueueStringsLoaderRun = true;
         }
 
