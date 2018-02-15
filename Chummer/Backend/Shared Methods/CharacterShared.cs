@@ -6287,7 +6287,7 @@ namespace Chummer
                                     {
                                         if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
-                                            panSpirits.Controls.RemoveAt(i);
+                                            panSprites.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();
@@ -6320,7 +6320,7 @@ namespace Chummer
                                     {
                                         if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
-                                            panSpirits.Controls.RemoveAt(i);
+                                            panSprites.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();

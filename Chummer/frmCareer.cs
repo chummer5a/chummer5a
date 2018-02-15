@@ -6047,7 +6047,7 @@ namespace Chummer
             else
             {
                 // Make sure the character has enough Karma to buy off the Quality.
-                int intKarmaCost = (objSelectedQuality.BP * CharacterObjectOptions.KarmaQuality);
+                int intKarmaCost = -(objSelectedQuality.BP * CharacterObjectOptions.KarmaQuality);
                 if (!CharacterObjectOptions.DontDoubleQualityRefunds)
                 {
                     intKarmaCost *= 2;
@@ -6070,7 +6070,7 @@ namespace Chummer
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language) + ' ' + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language) + ' ' + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
 
