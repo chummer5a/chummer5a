@@ -3810,7 +3810,7 @@ namespace Chummer
                         if (objAccessory != null)
                         {
                             objAccessory.DeleteWeaponAccessory();
-                            objWeapon.WeaponAccessories.Remove(objAccessory);
+                            objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
                         }
                         else
                         {
