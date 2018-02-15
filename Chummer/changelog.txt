@@ -10,6 +10,7 @@ Application Changes:
 - Added the ability for contact selection improvements to make a contact free.
 - Contact improvements that force loyalty values now properly undo their effects when they are removed. In case of multiple loyalty-forcing improvements, the improvement that forces the highest value wins.
 - Fixed issues where certain improvements that relied on numerical values would not be able to process ratings passed to them for certain fields.
+- Fixed issues with calculating capacity in a gear when using localizations that use commas as decimal separators and periods as thousands separators. Fixes #2493.
 
 Data Changes:
 

@@ -768,53 +768,60 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strReturn;
-                int intPos = _strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                if (!string.IsNullOrEmpty(_strCapacity) && intPos != -1)
+                string strReturn = _strCapacity;
+                if (string.IsNullOrEmpty(strReturn))
+                    return (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
+
+                if (strReturn.StartsWith("FixedValues("))
                 {
-                    string strFirstHalf = _strCapacity.Substring(0, intPos);
-                    string strSecondHalf = _strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
+                    string[] strValues = strReturn.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
+                if (intPos != -1)
+                {
+                    string strFirstHalf = strReturn.Substring(0, intPos);
+                    string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
                     bool blnSquareBrackets = strFirstHalf.Contains('[');
-                    string strCapacity = strFirstHalf;
 
-                    if (blnSquareBrackets && strCapacity.Length > 2)
-                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                    if (blnSquareBrackets && strFirstHalf.Length > 2)
+                        strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
 
-                    if (_strCapacity == "[*]")
+                    if (strFirstHalf == "[*]")
                         strReturn = "*";
                     else
                     {
-                        if (_strCapacity.StartsWith("FixedValues("))
+                        if (strFirstHalf.StartsWith("FixedValues("))
                         {
-                            string[] strValues = _strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                            strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                            string[] strValues = strFirstHalf.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                            strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                         }
-                        else
+
+                        try
                         {
-                            try
-                            {
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                                strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
-                            }
-                            catch (OverflowException) // Result is text and not a double
-                            {
-                                strReturn = strCapacity;
-                            }
-                            catch (InvalidCastException) // Result is text and not a double
-                            {
-                                strReturn = strCapacity;
-                            }
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                            strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
+                        }
+                        catch (OverflowException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
                         }
                     }
+
                     if (blnSquareBrackets)
-                        strReturn = '[' + strCapacity + ']';
+                        strReturn = '[' + strReturn + ']';
 
                     if (strSecondHalf.Contains("Rating"))
                     {
                         strSecondHalf = strSecondHalf.Trim('[', ']');
                         try
                         {
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                             strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strSecondHalf) + ']';
                         }
                         catch (OverflowException) // Result is text and not a double
@@ -829,12 +836,12 @@ namespace Chummer.Backend.Equipment
 
                     strReturn += "/" + strSecondHalf;
                 }
-                else if (_strCapacity.Contains("Rating"))
+                else if (strReturn.Contains("Rating"))
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = _strCapacity.Contains('[');
-                    string strCapacity = _strCapacity;
+                    bool blnSquareBrackets = strReturn.Contains('[');
+                    string strCapacity = strReturn;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -842,23 +849,9 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
-                else
-                {
-                    if (_strCapacity.StartsWith("FixedValues("))
-                    {
-                        string[] strValues = _strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                    }
-                    else
-                    {
-                        // Just a straight Capacity, so return the value.
-                        strReturn = _strCapacity;
-                    }
-                }
-                if (string.IsNullOrEmpty(strReturn))
-                    strReturn = "0";
-                if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+
                 return strReturn;
             }
         }

@@ -640,14 +640,14 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    string strReturn = blnIsSuccess ? ((double)objProcess).ToString("0.##", GlobalOptions.CultureInfo) : strCapacity;
+                    string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
 
                     return strReturn;
                 }
                 else if (decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
-                    return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
+                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 return strArmorCapacity;
             }
@@ -1082,7 +1082,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = Math.Max(intA, 6).ToString();
                     }
                     else
-                        strReturn = "0";
+                        strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
                 else if (strReturn == "Rating")
                     strReturn = Rating.ToString();
@@ -1095,11 +1095,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
                         // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                        string strCapacity = objArmorMod.ArmorCapacity;
-                        strCapacity = strCapacity.Replace("[-", string.Empty);
-                        strCapacity = strCapacity.FastEscape('[', ']');
-                        strCapacity = strCapacity.CheapReplace("Capacity", () => TotalArmorCapacity);
-                        strCapacity = strCapacity.Replace("Rating", Rating.ToString());
+                        string strCapacity = objArmorMod.ArmorCapacity
+                            .Replace("[-", string.Empty)
+                            .FastEscape('[', ']')
+                            .CheapReplace("Capacity", () => TotalArmorCapacity)
+                            .Replace("Rating", Rating.ToString());
                         
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
                         if (blnIsSuccess)
