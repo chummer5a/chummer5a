@@ -53,7 +53,8 @@
           <xs:sequence>
             <xs:element name="loyalty" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="connection" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="forceloyalty" minOccurs="0" maxOccurs="1" />
+            <xs:element name="forcedloyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="forcegroup" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="free" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -66,7 +67,7 @@
           <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+            <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="quantity" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="fullcost" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -88,7 +89,7 @@
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="select" type="xs:string" use="optional" />
-                    <xs:attribute name="rating" type="xs:integer" use="optional" />
+                    <xs:attribute name="rating" type="xs:string" use="optional" />
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -103,7 +104,7 @@
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="grade" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+            <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -116,13 +117,13 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="adeptlinguistics" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="adeptpowerpoints" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="adeptpowerpoints" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="ambidextrous" minOccurs="0" maxOccurs="1" />
       <xs:element name="armor" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attribute name="group" type="xs:integer" use="optional" />
+              <xs:attribute name="group" type="xs:string" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -223,7 +224,7 @@
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="select" type="xs:string" use="optional" />
-                    <xs:attribute name="rating" type="xs:integer" use="optional" />
+                    <xs:attribute name="rating" type="xs:string" use="optional" />
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -257,7 +258,7 @@
       <xs:element name="disablebioware" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="dodge" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="dodge" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
@@ -279,10 +280,10 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="erased" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="essencemax" type="xs:integer" minOccurs="0" maxOccurs="1" />
-      <xs:element name="essencepenalty" type="xs:integer" minOccurs="0" maxOccurs="1" />
-      <xs:element name="essencepenaltyt100" type="xs:integer" minOccurs="0" maxOccurs="1" />
-      <xs:element name="essencepenaltymagonlyt100" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencemax" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenalty" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenaltyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenaltymagonlyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fadingvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -308,9 +309,9 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="freenegativequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
-      <xs:element name="freepositivequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
-      <xs:element name="freespiritpowerpoints" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="freenegativequalities" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="freepositivequalities" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="freespiritpowerpoints" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="freespells" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>
@@ -485,7 +486,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="nativelanguagelimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="nativelanguagelimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="newaiadvancedprogramkarmacost" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="newaiadvancedprogramkarmacostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="newaiprogramkarmacost" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -496,7 +497,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attribute name="type" type="xs:integer" use="optional" />
+              <xs:attribute name="type" type="xs:string" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -538,7 +539,7 @@
       <xs:element name="prototypetranshuman" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="psychologicaladdictionalreadyaddicted" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="psychologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="publicawareness" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="publicawareness" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="quickeningmetamagic" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="radiationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="reach" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -608,7 +609,9 @@
       <xs:element name="selectcontact" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="forceloyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="forcedloyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="forcegroup" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="free" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="loyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -686,8 +689,8 @@
           <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
           <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
           <xs:attribute name="limittoskill" type="xs:string" use="optional" />
-          <xs:attribute name="minimumrating" type="xs:integer" use="optional" />
-          <xs:attribute name="maximumrating" type="xs:integer" use="optional" />
+          <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+          <xs:attribute name="maximumrating" type="xs:string" use="optional" />
           <xs:attribute name="skillcategory" type="xs:string" use="optional" />
           <xs:attribute name="skillgroup" type="xs:string" use="optional" />
         </xs:complexType>
@@ -963,8 +966,8 @@
                 <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
                 <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
                 <xs:attribute name="limittoskill" type="xs:string" use="optional" />
-                <xs:attribute name="minimumrating" type="xs:integer" use="optional" />
-                <xs:attribute name="maximumrating" type="xs:integer" use="optional" />
+                <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+                <xs:attribute name="maximumrating" type="xs:string" use="optional" />
                 <xs:attribute name="skillcategory" type="xs:string" use="optional" />
                 <xs:attribute name="skillgroup" type="xs:string" use="optional" />
               </xs:complexType>

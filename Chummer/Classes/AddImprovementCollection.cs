@@ -370,10 +370,12 @@ namespace Chummer.Classes
 
             // Display the Select Skill window and record which Skill was selected.
             frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter, _strFriendlyName);
-            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["minimumrating"]?.InnerText))
-                frmPickSkill.MinimumRating = Convert.ToInt32(bonusNode.Attributes["minimumrating"].InnerText);
-            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["maximumrating"]?.InnerText))
-                frmPickSkill.MaximumRating = Convert.ToInt32(bonusNode.Attributes["maximumrating"].InnerText);
+            string strMinimumRating = bonusNode.Attributes?["minimumrating"]?.InnerText;
+            if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                frmPickSkill.MinimumRating = ValueToInt(_objCharacter, strMinimumRating, _intRating);
+            string strMaximumRating = bonusNode.Attributes?["maximumrating"]?.InnerText;
+            if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                frmPickSkill.MaximumRating = ValueToInt(_objCharacter, strMaximumRating, _intRating);
             if (!string.IsNullOrEmpty(_strFriendlyName))
                 frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language)
                     .Replace("{0}", _strFriendlyName);
@@ -1549,8 +1551,9 @@ namespace Chummer.Classes
             if (node == null)
                 throw new AbortedException();
             int intRating = 1;
-            if (bonusNode["rating"] != null)
-                intRating = Convert.ToInt32(bonusNode["rating"].InnerText);
+            string strTemp = string.Empty;
+            if (bonusNode.TryGetStringFieldQuickly("rating", ref strTemp))
+                intRating = ValueToInt(_objCharacter, strTemp, _intRating);
             decimal decQty = 1.0m;
             if (bonusNode["quantity"] != null)
                 decQty = Convert.ToDecimal(bonusNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
@@ -1814,10 +1817,7 @@ namespace Chummer.Classes
 
                 //Select any contact where IsGroup equals blnGroup
                 //and add to a list
-                lstSelectedContacts =
-                    new List<Contact>(from contact in _objCharacter.Contacts
-                                      where contact.IsGroup == blnGroup
-                                      select contact);
+                lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
             }
             else
             {
@@ -1841,17 +1841,24 @@ namespace Chummer.Classes
             if (frmSelect.DialogResult == DialogResult.Cancel)
                 throw new AbortedException();
             
-            int.TryParse(frmSelect.SelectedItem, out int intIndex);
-            Contact objSelectedContact = lstSelectedContacts[intIndex];
-
-            if (nodSelect["forceloyalty"] != null)
+            Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex) ? lstSelectedContacts[intIndex] : throw new AbortedException();
+            
+            string strTemp = string.Empty;
+            if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
             {
-                objSelectedContact.ForceLoyalty = true;
-                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceLoyalty, objSelectedContact.GUID);
+                int intForcedLoyalty = ValueToInt(_objCharacter, strTemp, _intRating);
+                objSelectedContact.ForcedLoyalty = Math.Max(intForcedLoyalty, objSelectedContact.ForcedLoyalty);
+                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
             }
-            if (nodSelect["loyalty"] != null)
+            if (nodSelect["free"] != null)
             {
-                objSelectedContact.Loyalty = Convert.ToInt32(nodSelect["loyalty"].InnerText);
+                objSelectedContact.Free = true;
+                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
+            }
+            if (nodSelect["forcegroup"] != null)
+            {
+                objSelectedContact.GroupEnabled = false;
+                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
             }
             if (string.IsNullOrWhiteSpace(SelectedValue))
             {
@@ -1867,27 +1874,43 @@ namespace Chummer.Classes
         {
             Log.Info("addcontact");
 
-            int loyalty = 1;
-            int connection = 1;
+            int intLoyalty = 1;
+            int intConnection = 1;
 
-            bonusNode.TryGetInt32FieldQuickly("loyalty", ref loyalty);
-            bonusNode.TryGetInt32FieldQuickly("connection", ref connection);
+            string strTemp = string.Empty;
+            if (bonusNode.TryGetStringFieldQuickly("loyalty", ref strTemp))
+                intLoyalty = ValueToInt(_objCharacter, strTemp, _intRating);
+            if (bonusNode.TryGetStringFieldQuickly("connection", ref strTemp))
+                intConnection = ValueToInt(_objCharacter, strTemp, _intRating);
             bool group = bonusNode["group"] != null;
-            bool free = bonusNode["free"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
-            bool forceloyalty = bonusNode["forceloyalty"] != null;
             Contact contact = new Contact(_objCharacter)
             {
-                Free = free,
                 IsGroup = group,
-                Loyalty = loyalty,
-                ForceLoyalty = forceloyalty,
-                Connection = connection,
+                Loyalty = intLoyalty,
+                Connection = intConnection,
                 ReadOnly = !canwrite
             };
             _objCharacter.Contacts.Add(contact);
 
             CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.GUID);
+            
+            if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+            {
+                int intForcedLoyalty = ValueToInt(_objCharacter, strTemp, _intRating);
+                contact.ForcedLoyalty = Math.Max(intForcedLoyalty, contact.ForcedLoyalty);
+                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
+            }
+            if (bonusNode["free"] != null)
+            {
+                contact.Free = true;
+                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
+            }
+            if (bonusNode["forcegroup"] != null)
+            {
+                contact.GroupEnabled = false;
+                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
+            }
         }
 
         // Affect a Specific CharacterAttribute.
@@ -5018,9 +5041,11 @@ namespace Chummer.Classes
                         CritterPower objPower = new CritterPower(_objCharacter);
                         string strForcedValue = string.Empty;
                         int intRating = 0;
-                        if (objXmlPower.Attributes != null && objXmlPower.Attributes.Count > 0)
+                        if (objXmlPower.Attributes?.Count > 0)
                         {
-                            intRating = Convert.ToInt32(objXmlPower.Attributes["rating"]?.InnerText);
+                            string strRating = objXmlPower.Attributes["rating"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strRating))
+                                intRating = ValueToInt(_objCharacter, strRating, _intRating);
                             strForcedValue = objXmlPower.Attributes["select"]?.InnerText;
                         }
 
@@ -5050,7 +5075,7 @@ namespace Chummer.Classes
         public void publicawareness(XmlNode bonusNode)
         {
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, 1));
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         public void dealerconnection(XmlNode bonusNode)
@@ -5154,27 +5179,35 @@ namespace Chummer.Classes
                     {
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                        
+                        string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
+                        int intCount = string.IsNullOrEmpty(strRating) ? 1 : ValueToInt(_objCharacter, strRating, _intRating);
+                        bool blnDoesNotContributeToBP = objXmlAddQuality.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString.ToLower();
 
-                        // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                        for (int i = 0; i < intCount; ++i)
                         {
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            Quality objAddQuality = new Quality(_objCharacter);
-                            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-
-                            if (objXmlAddQuality.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
+                            // Makes sure we aren't over our limits for this particular quality from this overall source
+                            if (objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
                             {
-                                objAddQuality.BP = 0;
-                                objAddQuality.ContributeToLimit = false;
+                                List<Weapon> lstWeapons = new List<Weapon>();
+                                Quality objAddQuality = new Quality(_objCharacter);
+                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+
+                                if (blnDoesNotContributeToBP)
+                                {
+                                    objAddQuality.BP = 0;
+                                    objAddQuality.ContributeToLimit = false;
+                                }
+
+                                _objCharacter.Qualities.Add(objAddQuality);
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    _objCharacter.Weapons.Add(objWeapon);
+                                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
                             }
-                            _objCharacter.Qualities.Add(objAddQuality);
-                            foreach (Weapon objWeapon in lstWeapons)
-                                _objCharacter.Weapons.Add(objWeapon);
-                            CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
-                        }
-                        else
-                        {
-                            throw new AbortedException();
+                            else
+                            {
+                                throw new AbortedException();
+                            }
                         }
                     }
         }
@@ -5950,8 +5983,7 @@ namespace Chummer.Classes
             if (node == null)
                 throw new AbortedException();
             string strRating = bonusNode["rating"]?.InnerText;
-            if (string.IsNullOrEmpty(strRating) || !int.TryParse(strRating, out int intRating))
-                intRating = 1;
+            int intRating = string.IsNullOrEmpty(strRating) ? 1 : ValueToInt(_objCharacter, strRating, _intRating);
 
             // Create the new piece of ware.
             Cyberware objCyberware = new Cyberware(_objCharacter);

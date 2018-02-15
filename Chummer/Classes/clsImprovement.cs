@@ -155,7 +155,7 @@ namespace Chummer
             RestrictedGear,
             TrustFund,
             ExCon,
-            ContactMadeMan,
+            ContactForceGroup,
             Attributelevel,
             AddContact,
             Seeker,
@@ -291,7 +291,8 @@ namespace Chummer
             FocusBindingKarmaMultiplier,
             MagiciansWayDiscount,
             BurnoutsWay,
-            ContactForceLoyalty,
+            ContactForcedLoyalty,
+            ContactMakeFree,
             FreeWare,
             WeaponAccuracy,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
@@ -1325,10 +1326,10 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
-                    case Improvement.ImprovementType.ContactMadeMan:
+                    case Improvement.ImprovementType.ContactForceGroup:
                         Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
                         if (MadeManContact != null)
-                            MadeManContact.MadeMan = true;
+                            MadeManContact.GroupEnabled = false;
                         break;
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -1463,6 +1464,20 @@ namespace Chummer
                         {
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
                             objCyberware?.ChangeModularEquip(true);
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactForcedLoyalty:
+                        {
+                            Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
+                            if (objContact != null)
+                                objContact.ForcedLoyalty = Math.Max(objContact.ForcedLoyalty, objImprovement.Value);
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactMakeFree:
+                        {
+                            Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
+                            if (objContact != null)
+                                objContact.Free = true;
                         }
                         break;
                 }
@@ -1659,10 +1674,13 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
-                    case Improvement.ImprovementType.ContactMadeMan:
-                        Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
-                        if (MadeManContact != null)
-                            MadeManContact.MadeMan = false;
+                    case Improvement.ImprovementType.ContactForceGroup:
+                        if (!blnHasDuplicate)
+                        {
+                            Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                            if (MadeManContact != null)
+                                MadeManContact.GroupEnabled = true;
+                        }
                         break;
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -1821,6 +1839,21 @@ namespace Chummer
                         {
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
                             objCyberware?.ChangeModularEquip(false);
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactForcedLoyalty:
+                        {
+                            objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName)?.RecalculateForcedLoyalty();
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactMakeFree:
+                        {
+                            if (!blnHasDuplicate)
+                            {
+                                Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
+                                if (objContact != null)
+                                    objContact.Free = false;
+                            }
                         }
                         break;
                 }
@@ -2075,10 +2108,13 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.ContactMadeMan:
-                        Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
-                        if (MadeManContact != null)
-                            MadeManContact.MadeMan = false;
+                    case Improvement.ImprovementType.ContactForceGroup:
+                        if (!blnHasDuplicate)
+                        {
+                            Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                            if (MadeManContact != null)
+                                MadeManContact.GroupEnabled = true;
+                        }
                         break;
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -2238,6 +2274,21 @@ namespace Chummer
                                 decReturn += objCyberware.DeleteCyberware();
                                 decReturn += objCyberware.TotalCost;
                                 objCharacter.Cyberware.Remove(objCyberware);
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactForcedLoyalty:
+                        {
+                            objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName)?.RecalculateForcedLoyalty();
+                        }
+                        break;
+                    case Improvement.ImprovementType.ContactMakeFree:
+                        {
+                            if (!blnHasDuplicate)
+                            {
+                                Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
+                                if (objContact != null)
+                                    objContact.Free = false;
                             }
                         }
                         break;

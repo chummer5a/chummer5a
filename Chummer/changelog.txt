@@ -7,6 +7,13 @@ Application Changes:
 - Fixed bugs where moving or merging gear to and from vehicles that would not result in a deletion would not properly update the gear's tree node's name.
 - Fixed a crash when deleting technomancer sprites. Fixes #2494.
 - Fixed an issue where removing negative qualities in career mode would add karma instead of removing it. Fixes #2495.
+- Added the ability for contact selection improvements to make a contact free.
+- Contact improvements that force loyalty values now properly undo their effects when they are removed. In case of multiple loyalty-forcing improvements, the improvement that forces the highest value wins.
+- Fixed issues where certain improvements that relied on numerical values would not be able to process ratings passed to them for certain fields.
+
+Data Changes:
+
+- Fixed an issue where the group contact associated with Made Man would still cost karma as a group contact. Fixed an issue where removing Made Man would not undo the forced increase in loyalty it has on the associated group contact. Fixes #2492.
 
 Build 198
 

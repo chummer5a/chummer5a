@@ -365,16 +365,7 @@ namespace Chummer
                     cboContactRole.Text = strContactRole;
                 return;
             }
-
-            if (_objContact.ReadOnly)
-            {
-                chkFree.Enabled = chkGroup.Enabled =
-                nudConnection.Enabled = nudLoyalty.Enabled = false;
-
-                cmdDelete.Visible = false;
-            }
-
-
+            
             // Read the list of Categories from the XML file.
             List<ListItem> lstCategories = new List<ListItem>
             {
@@ -548,11 +539,13 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroupOrMadeMan), false,
+            chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroup), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotMadeMan), false,
+            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.GroupEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.ReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -569,6 +562,8 @@ namespace Chummer
             nudLoyalty.DataBindings.Add("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudConnection.DataBindings.Add("Value", _objContact, nameof(_objContact.Connection), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudConnection.DataBindings.Add("Enabled", _objContact, nameof(_objContact.ReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudConnection.DataBindings.Add("Maximum", _objContact, nameof(_objContact.ConnectionMaximum), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -591,6 +586,8 @@ namespace Chummer
             cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPreferredPayment), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.ReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);

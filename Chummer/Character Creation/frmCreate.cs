@@ -10645,16 +10645,7 @@ namespace Chummer
                 else
                 {
                     //save this for later, as a group contract is counted as a positive quality
-                    if (objContact.MadeMan)
-                    {
-                        //Made man is free, contact (No i don't see any reason for not to have con4)
-                        //per RAW. We keep it that way, can always create a house rule for it later
-
-                    }
-                    else
-                    {
-                        intGroupContacts += objContact.ContactPoints;
-                    }
+                    intGroupContacts += objContact.ContactPoints;
                 }
             }
 
