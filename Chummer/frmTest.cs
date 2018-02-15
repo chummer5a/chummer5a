@@ -494,7 +494,7 @@ namespace Chummer
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix).Count;
 
-            Grade objTestGrade = objCharacter.GetGradeList(objSource).FirstOrDefault(x => x.Name == "Standard");
+            Grade objTestGrade = objCharacter.GetGradeList(objSource, true).FirstOrDefault(x => x.Name == "Standard");
 
             // Gear.
             foreach (XmlNode objXmlGear in objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix))

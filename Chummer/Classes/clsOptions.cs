@@ -639,22 +639,10 @@ namespace Chummer
             }
         }
 
-        private static ClipboardContentType _eClipboardContentType;
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public static ClipboardContentType ClipboardContentType
-        {
-            get => _eClipboardContentType;
-            set
-            {
-                if (_eClipboardContentType != value)
-                {
-                    _eClipboardContentType = value;
-                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(ClipboardContentType)));
-                }
-            }
-        }
+        public static ClipboardContentType ClipboardContentType { get; set; }
 
         /// <summary>
         /// Default character sheet to use when printing.

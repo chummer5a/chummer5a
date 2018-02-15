@@ -2528,8 +2528,6 @@ namespace Chummer
                         GlobalOptions.Clipboard = objCharacterXML;
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
-
-                        RefreshPasteStatus();
                     }
                 }
                 // Armor Tab.
@@ -2554,6 +2552,20 @@ namespace Chummer
                         objWriter.WriteStartElement("character");
 
                         objCopyArmor.Save(objWriter);
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+
+                        if (!objCopyArmor.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmor.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
 
                         // </characters>
                         objWriter.WriteEndElement();
@@ -2575,8 +2587,6 @@ namespace Chummer
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
-
-                        RefreshPasteStatus();
                     }
                     else
                     {
@@ -2633,8 +2643,6 @@ namespace Chummer
                             objWriter.Close();
 
                             GlobalOptions.Clipboard = objCharacterXML;
-
-                            RefreshPasteStatus();
                         }
                     }
                 }
@@ -2685,8 +2693,6 @@ namespace Chummer
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
-
-                        RefreshPasteStatus();
                     }
                     else
                     {
@@ -2742,8 +2748,6 @@ namespace Chummer
                             objWriter.Close();
 
                             GlobalOptions.Clipboard = objCharacterXML;
-
-                            RefreshPasteStatus();
                         }
                     }
                 }
@@ -2804,18 +2808,19 @@ namespace Chummer
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
-
-                        RefreshPasteStatus();
                     }
                 }
             }
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                // Copy the selected Gear.
-                Gear objCopyGear = CharacterObject.Cyberware.FindCyberwareGear(treGear.SelectedNode?.Tag.ToString());
+                string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+                // Copy the selected 'ware
+                Cyberware objCopyCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
 
-                if (objCopyGear != null)
+                if (objCopyCyberware != null)
                 {
                     MemoryStream objStream = new MemoryStream();
                     XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
@@ -2830,17 +2835,29 @@ namespace Chummer
                     // </characters>
                     objWriter.WriteStartElement("character");
 
-                    objCopyGear.Save(objWriter);
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+                    objCopyCyberware.Save(objWriter);
+                    GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
 
-                    if (!objCopyGear.WeaponID.IsEmptyGuid())
+                    if (!objCopyCyberware.WeaponID.IsEmptyGuid())
                     {
                         // <weapons>
                         objWriter.WriteStartElement("weapons");
                         // Copy any Weapon that comes with the Gear.
-                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
                         {
                             objCopyWeapon.Save(objWriter);
+                        }
+
+                        objWriter.WriteEndElement();
+                    }
+                    if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                    {
+                        // <weapons>
+                        objWriter.WriteStartElement("vehicles");
+                        // Copy any Weapon that comes with the Gear.
+                        foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                        {
+                            objCopyVehicle.Save(objWriter);
                         }
 
                         objWriter.WriteEndElement();
@@ -2866,15 +2883,74 @@ namespace Chummer
 
                     GlobalOptions.Clipboard = objCharacterXML;
                     //Clipboard.SetText(objCharacterXML.OuterXml);
+                }
+                else
+                {
+                    // Copy the selected Gear.
+                    Gear objCopyGear = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId);
 
-                    RefreshPasteStatus();
+                    if (objCopyGear != null)
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyGear.Save(objWriter);
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                        if (!objCopyGear.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                    }
                 }
             }
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
+                string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                if (!string.IsNullOrEmpty(strSelectedId))
+                    return;
                 // Copy the selected Vehicle.
-                Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
+                Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
 
                 if (objCopyVehicle != null)
                 {
@@ -2914,12 +2990,10 @@ namespace Chummer
                     GlobalOptions.Clipboard = objCharacterXML;
                     GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
                     //Clipboard.SetText(objCharacterXML.OuterXml);
-
-                    RefreshPasteStatus();
                 }
                 else
                 {
-                    Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString());
+                    Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId);
 
                     if (objCopyGear != null)
                     {
@@ -2970,12 +3044,10 @@ namespace Chummer
                         objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
-
-                        RefreshPasteStatus();
                     }
                     else
                     {
-                        Weapon objCopyWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+                        Weapon objCopyWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId);
                         if (objCopyWeapon != null)
                         {
                             // Do not let the user copy Gear or Cyberware Weapons.
@@ -3017,8 +3089,75 @@ namespace Chummer
 
                             GlobalOptions.Clipboard = objCharacterXML;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
+                        }
+                        else
+                        {
+                            Cyberware objCopyCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
 
-                            RefreshPasteStatus();
+                            if (objCopyCyberware != null)
+                            {
+                                MemoryStream objStream = new MemoryStream();
+                                XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                                {
+                                    Formatting = Formatting.Indented,
+                                    Indentation = 1,
+                                    IndentChar = '\t'
+                                };
+
+                                objWriter.WriteStartDocument();
+
+                                // </characters>
+                                objWriter.WriteStartElement("character");
+
+                                objCopyCyberware.Save(objWriter);
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
+
+                                if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                                {
+                                    // <weapons>
+                                    objWriter.WriteStartElement("weapons");
+                                    // Copy any Weapon that comes with the Gear.
+                                    foreach (Weapon objLoopCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
+                                    {
+                                        objLoopCopyWeapon.Save(objWriter);
+                                    }
+
+                                    objWriter.WriteEndElement();
+                                }
+                                if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                                {
+                                    // <weapons>
+                                    objWriter.WriteStartElement("vehicles");
+                                    // Copy any Weapon that comes with the Gear.
+                                    foreach (Vehicle objLoopCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                                    {
+                                        objLoopCopyVehicle.Save(objWriter);
+                                    }
+
+                                    objWriter.WriteEndElement();
+                                }
+
+                                // </characters>
+                                objWriter.WriteEndElement();
+
+                                // Finish the document and flush the Writer and Stream.
+                                objWriter.WriteEndDocument();
+                                objWriter.Flush();
+
+                                // Read the stream.
+                                StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                                objStream.Position = 0;
+                                XmlDocument objCharacterXML = new XmlDocument();
+
+                                // Put the stream into an XmlDocument.
+                                string strXML = objReader.ReadToEnd();
+                                objCharacterXML.LoadXml(strXML);
+
+                                objWriter.Close();
+
+                                GlobalOptions.Clipboard = objCharacterXML;
+                                //Clipboard.SetText(objCharacterXML.OuterXml);
+                            }
                         }
                     }
                 }
@@ -3524,7 +3663,7 @@ namespace Chummer
                 objHole = new Cyberware(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
                 List<Vehicle> lstVehicles = new List<Vehicle>();
-                objHole.Create(xmlEssHole, CharacterObject, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
+                objHole.Create(xmlEssHole, CharacterObject, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
 
                 CharacterObject.Cyberware.Add(objHole);
 

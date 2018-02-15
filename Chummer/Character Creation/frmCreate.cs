@@ -2053,6 +2053,20 @@ namespace Chummer
                         objWriter.WriteStartElement("character");
 
                         objCopyArmor.Save(objWriter);
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+
+                        if (!objCopyArmor.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmor.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
 
                         // </characters>
                         objWriter.WriteEndElement();
@@ -2073,7 +2087,6 @@ namespace Chummer
                         objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
                     }
                     else
                     {
@@ -2301,10 +2314,13 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                // Copy the selected Gear.
-                Gear objCopyGear = CharacterObject.Cyberware.FindCyberwareGear(treGear.SelectedNode?.Tag.ToString());
+                string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+                // Copy the selected 'ware
+                Cyberware objCopyCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
 
-                if (objCopyGear != null)
+                if (objCopyCyberware != null)
                 {
                     MemoryStream objStream = new MemoryStream();
                     XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
@@ -2319,17 +2335,29 @@ namespace Chummer
                     // </characters>
                     objWriter.WriteStartElement("character");
 
-                    objCopyGear.Save(objWriter);
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+                    objCopyCyberware.Save(objWriter);
+                    GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
 
-                    if (!objCopyGear.WeaponID.IsEmptyGuid())
+                    if (!objCopyCyberware.WeaponID.IsEmptyGuid())
                     {
                         // <weapons>
                         objWriter.WriteStartElement("weapons");
                         // Copy any Weapon that comes with the Gear.
-                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
                         {
                             objCopyWeapon.Save(objWriter);
+                        }
+
+                        objWriter.WriteEndElement();
+                    }
+                    if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                    {
+                        // <weapons>
+                        objWriter.WriteStartElement("vehicles");
+                        // Copy any Weapon that comes with the Gear.
+                        foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                        {
+                            objCopyVehicle.Save(objWriter);
                         }
 
                         objWriter.WriteEndElement();
@@ -2356,12 +2384,73 @@ namespace Chummer
                     GlobalOptions.Clipboard = objCharacterXML;
                     //Clipboard.SetText(objCharacterXML.OuterXml);
                 }
+                else
+                {
+                    // Copy the selected Gear.
+                    Gear objCopyGear = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId);
+
+                    if (objCopyGear != null)
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyGear.Save(objWriter);
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                        if (!objCopyGear.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                    }
+                }
             }
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
+                string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                if (!string.IsNullOrEmpty(strSelectedId))
+                    return;
                 // Copy the selected Vehicle.
-                Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
+                Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
 
                 if (objCopyVehicle != null)
                 {
@@ -2404,7 +2493,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString());
+                    Gear objCopyGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId);
 
                     if (objCopyGear != null)
                     {
@@ -2458,7 +2547,7 @@ namespace Chummer
                     }
                     else
                     {
-                        Weapon objCopyWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+                        Weapon objCopyWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId);
                         if (objCopyWeapon != null)
                         {
                             // Do not let the user copy Gear or Cyberware Weapons.
@@ -2501,6 +2590,75 @@ namespace Chummer
                             GlobalOptions.Clipboard = objCharacterXML;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
                         }
+                        else
+                        {
+                            Cyberware objCopyCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
+
+                            if (objCopyCyberware != null)
+                            {
+                                MemoryStream objStream = new MemoryStream();
+                                XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                                {
+                                    Formatting = Formatting.Indented,
+                                    Indentation = 1,
+                                    IndentChar = '\t'
+                                };
+
+                                objWriter.WriteStartDocument();
+
+                                // </characters>
+                                objWriter.WriteStartElement("character");
+
+                                objCopyCyberware.Save(objWriter);
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
+
+                                if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                                {
+                                    // <weapons>
+                                    objWriter.WriteStartElement("weapons");
+                                    // Copy any Weapon that comes with the Gear.
+                                    foreach (Weapon objLoopCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
+                                    {
+                                        objLoopCopyWeapon.Save(objWriter);
+                                    }
+
+                                    objWriter.WriteEndElement();
+                                }
+                                if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                                {
+                                    // <weapons>
+                                    objWriter.WriteStartElement("vehicles");
+                                    // Copy any Weapon that comes with the Gear.
+                                    foreach (Vehicle objLoopCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                                    {
+                                        objLoopCopyVehicle.Save(objWriter);
+                                    }
+
+                                    objWriter.WriteEndElement();
+                                }
+
+                                // </characters>
+                                objWriter.WriteEndElement();
+
+                                // Finish the document and flush the Writer and Stream.
+                                objWriter.WriteEndDocument();
+                                objWriter.Flush();
+
+                                // Read the stream.
+                                StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                                objStream.Position = 0;
+                                XmlDocument objCharacterXML = new XmlDocument();
+
+                                // Put the stream into an XmlDocument.
+                                string strXML = objReader.ReadToEnd();
+                                objCharacterXML.LoadXml(strXML);
+
+                                objWriter.Close();
+
+                                GlobalOptions.Clipboard = objCharacterXML;
+                                //Clipboard.SetText(objCharacterXML.OuterXml);
+                            }
+                        }
                     }
                 }
             }
@@ -2539,6 +2697,20 @@ namespace Chummer
                         objArmor.Load(objXmlNode, true);
 
                         CharacterObject.Armor.Add(objArmor);
+
+                        // Add any Weapons that come with the Armor.
+                        XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList != null)
+                        {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Weapon objWeapon = new Weapon(CharacterObject);
+                                objWeapon.Load(objLoopNode, true);
+                                CharacterObject.Weapons.Add(objWeapon);
+                                objWeapon.ParentID = objArmor.InternalId;
+                                objArmor.WeaponID = objWeapon.InternalId;
+                            }
+                        }
 
                         IsCharacterUpdateRequested = true;
                         IsDirty = true;
@@ -2589,7 +2761,10 @@ namespace Chummer
                                             }
 
                                             if (!blnDoAdd)
+                                            {
+                                                objGear.DeleteGear();
                                                 return;
+                                            }
                                         }
                                         
                                         objNewParent.Children.Add(objGear);
@@ -2610,6 +2785,7 @@ namespace Chummer
                                     Weapon objWeapon = new Weapon(CharacterObject);
                                     objWeapon.Load(objLoopNode, true);
                                     CharacterObject.Weapons.Add(objWeapon);
+                                    objWeapon.ParentID = objGear.InternalId;
                                     objGear.WeaponID = objWeapon.InternalId;
                                 }
                             }
@@ -2634,7 +2810,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
                         if (objAccessory != null)
                         {
-                            bool blnAllowPaste = false;
+                            bool blnDoAdd = false;
                             XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
                             if (xmlGearCategoryList?.Count > 0)
                             {
@@ -2642,32 +2818,36 @@ namespace Chummer
                                 {
                                     if (objAllowed.InnerText == objGear.Category)
                                     {
-                                        blnAllowPaste = true;
+                                        blnDoAdd = true;
                                         break;
                                     }
                                 }
                             }
 
-                            if (blnAllowPaste)
+                            if (!blnDoAdd)
                             {
-                                objAccessory.Gear.Add(objGear);
-
-                                // Add any Weapons that come with the Gear.
-                                XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
-                                if (objXmlNodeList != null)
-                                {
-                                    foreach (XmlNode objLoopNode in objXmlNodeList)
-                                    {
-                                        Weapon objGearWeapon = new Weapon(CharacterObject);
-                                        objGearWeapon.Load(objLoopNode, true);
-                                        CharacterObject.Weapons.Add(objGearWeapon);
-                                        objGear.WeaponID = objGearWeapon.InternalId;
-                                    }
-                                }
-
-                                IsCharacterUpdateRequested = true;
-                                IsDirty = true;
+                                objGear.DeleteGear();
+                                return;
                             }
+
+                            objAccessory.Gear.Add(objGear);
+
+                            // Add any Weapons that come with the Gear.
+                            XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                            if (objXmlNodeList != null)
+                            {
+                                foreach (XmlNode objLoopNode in objXmlNodeList)
+                                {
+                                    Weapon objGearWeapon = new Weapon(CharacterObject);
+                                    objGearWeapon.Load(objLoopNode, true);
+                                    CharacterObject.Weapons.Add(objGearWeapon);
+                                    objGearWeapon.ParentID = objGear.InternalId;
+                                    objGear.WeaponID = objGearWeapon.InternalId;
+                                }
+                            }
+
+                            IsCharacterUpdateRequested = true;
+                            IsDirty = true;
                         }
                         else
                         {
@@ -2688,7 +2868,10 @@ namespace Chummer
                                     }
 
                                     if (!blnDoAdd)
+                                    {
+                                        objGear.DeleteGear();
                                         return;
+                                    }
                                 }
                                 
                                 objNewParent.Children.Add(objGear);
@@ -2741,7 +2924,10 @@ namespace Chummer
                                 }
 
                                 if (!blnDoAdd)
+                                {
+                                    objGear.DeleteGear();
                                     return;
+                                }
                             }
                             
                             objNewParent.Children.Add(objGear);
@@ -2757,6 +2943,7 @@ namespace Chummer
                                     Weapon objWeapon = new Weapon(CharacterObject);
                                     objWeapon.Load(objLoopNode, true);
                                     CharacterObject.Weapons.Add(objWeapon);
+                                    objWeapon.ParentID = objGear.InternalId;
                                     objGear.WeaponID = objWeapon.InternalId;
                                 }
                             }
@@ -2777,6 +2964,7 @@ namespace Chummer
                                     Weapon objWeapon = new Weapon(CharacterObject);
                                     objWeapon.Load(objLoopNode, true);
                                     CharacterObject.Weapons.Add(objWeapon);
+                                    objWeapon.ParentID = objGear.InternalId;
                                     objGear.WeaponID = objWeapon.InternalId;
                                 }
                             }
@@ -2790,34 +2978,218 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                // Paste Gear into a Cyberware.
+                string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+
+                // Paste Cyberware.
                 XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
                 if (objXmlNode != null)
                 {
-                    string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Load(objXmlNode, true);
+                    Cyberware objCyberware = new Cyberware(CharacterObject);
+                    objCyberware.Load(objXmlNode, true);
 
-                    // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
-                    Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
-                    if (objCyberware != null)
+                    // Paste Cyberware into a Cyberware.
+                    Cyberware objCyberwareParent = CharacterObject.Cyberware.DeepFindById(strSelectedId);
+                    if (objCyberwareParent != null && !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                     {
-                        bool blnAllowPaste = false;
-                        XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
-                        if (xmlGearCategoryList?.Count > 0)
+                        if (objCyberware.PlugsIntoModularMount != objCyberwareParent.HasModularMount || objCyberwareParent.Children.Any(x => x.PlugsIntoModularMount == objCyberware.HasModularMount))
                         {
-                            foreach (XmlNode objAllowed in xmlGearCategoryList)
+                            objCyberwareParent = null;
+                        }
+                        else
+                        {
+                            objCyberware.Location = objCyberwareParent.Location;
+                        }
+                    }
+                    if (objCyberwareParent != null && objCyberware.SourceType == objCyberwareParent.SourceType)
+                    {
+                        string strAllowedSubsystems = objCyberwareParent.AllowedSubsystems;
+                        if (!string.IsNullOrEmpty(strAllowedSubsystems))
+                        {
+                            bool blnDoAdd = false;
+                            foreach (string strSubsystem in strAllowedSubsystems.Split(','))
                             {
-                                if (objAllowed.InnerText == objGear.Category)
+                                if (objCyberware.Category == strSubsystem)
                                 {
-                                    blnAllowPaste = true;
+                                    blnDoAdd = true;
                                     break;
+                                }
+                            }
+
+                            if (!blnDoAdd)
+                            {
+                                objCyberware.DeleteCyberware();
+                                return;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(objCyberware.HasModularMount) || !string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                        {
+                            HashSet<string> setDisallowedMounts = new HashSet<string>();
+                            HashSet<string> setHasMounts = new HashSet<string>();
+                            string[] strLoopDisallowedMounts = objCyberwareParent.BlocksMounts.Split(',');
+                            foreach (string strLoop in strLoopDisallowedMounts)
+                                setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
+                            string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                            if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                setHasMounts.Add(strLoopHasModularMount);
+                            foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            {
+                                strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
+                                foreach (string strLoop in strLoopDisallowedMounts)
+                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    if (!setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
+                            }
+
+                            if (!string.IsNullOrEmpty(objCyberware.HasModularMount) && setDisallowedMounts.Count > 0)
+                            {
+                                foreach (string strLoop in setDisallowedMounts)
+                                {
+                                    if (!strLoop.EndsWith("Right"))
+                                    {
+                                        string strCheck = strLoop;
+                                        if (strCheck.EndsWith("Left"))
+                                        {
+                                            strCheck = strCheck.TrimEnd("Left", true);
+                                            if (!setDisallowedMounts.Contains(strCheck + "Right"))
+                                                continue;
+                                        }
+
+                                        if (strCheck == objCyberware.HasModularMount)
+                                        {
+                                            objCyberware.DeleteCyberware();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                            {
+                                if (!string.IsNullOrEmpty(objCyberware.Location) || !string.IsNullOrEmpty(objCyberwareParent.Location) ||
+                                    (objCyberwareParent.Children.Any(x => x.Location == "Left") && objCyberwareParent.Children.Any(x => x.Location == "Right")))
+                                {
+                                    string[] astrBlockedMounts = objCyberware.BlocksMounts.Split(',');
+                                    foreach (string strLoop in astrBlockedMounts)
+                                    {
+                                        if (setHasMounts.Contains(strLoop))
+                                        {
+                                            objCyberware.DeleteCyberware();
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        if (blnAllowPaste)
+                        objCyberware.Grade = objCyberwareParent.Grade;
+                        objCyberwareParent.Children.Add(objCyberware);
+
+                        // Add any Weapons that come with the Cyberware.
+                        XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList?.Count > 0)
                         {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Weapon objWeapon = new Weapon(CharacterObject);
+                                objWeapon.Load(objLoopNode, true);
+                                CharacterObject.Weapons.Add(objWeapon);
+                                objWeapon.ParentID = objCyberware.InternalId;
+                                objCyberware.WeaponID = objWeapon.InternalId;
+                            }
+                        }
+
+                        // Add any Vehicles that come with the Cyberware.
+                        objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList?.Count > 0)
+                        {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Vehicle objVehicle = new Vehicle(CharacterObject);
+                                objVehicle.Load(objLoopNode, true);
+                                CharacterObject.Vehicles.Add(objVehicle);
+                                objVehicle.ParentID = objCyberware.InternalId;
+                                objCyberware.WeaponID = objVehicle.InternalId;
+                            }
+                        }
+
+                        IsCharacterUpdateRequested = true;
+                        IsDirty = true;
+                    }
+                    else
+                    {
+                        CharacterObject.Cyberware.Add(objCyberware);
+
+                        // Add any Weapons that come with the Cyberware.
+                        XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList?.Count > 0)
+                        {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Weapon objWeapon = new Weapon(CharacterObject);
+                                objWeapon.Load(objLoopNode, true);
+                                CharacterObject.Weapons.Add(objWeapon);
+                                objWeapon.ParentID = objCyberware.InternalId;
+                                objCyberware.WeaponID = objWeapon.InternalId;
+                            }
+                        }
+
+                        // Add any Vehicles that come with the Cyberware.
+                        objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                        if (objXmlNodeList?.Count > 0)
+                        {
+                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            {
+                                Vehicle objVehicle = new Vehicle(CharacterObject);
+                                objVehicle.Load(objLoopNode, true);
+                                CharacterObject.Vehicles.Add(objVehicle);
+                                objVehicle.ParentID = objCyberware.InternalId;
+                                objCyberware.WeaponID = objVehicle.InternalId;
+                            }
+                        }
+
+                        IsCharacterUpdateRequested = true;
+                        IsDirty = true;
+                    }
+                }
+                else
+                {
+                    // Paste Gear
+                    objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
+                    if (objXmlNode != null)
+                    {
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Load(objXmlNode, true);
+
+                        // Paste Gear into a Cyberware.
+                        Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
+                        if (objCyberware != null)
+                        {
+                            bool blnDoAdd = false;
+                            XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
+                            if (xmlGearCategoryList?.Count > 0)
+                            {
+                                foreach (XmlNode objAllowed in xmlGearCategoryList)
+                                {
+                                    if (objAllowed.InnerText == objGear.Category)
+                                    {
+                                        blnDoAdd = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnDoAdd)
+                            {
+                                objGear.DeleteGear();
+                                return;
+                            }
+
                             objCyberware.Gear.Add(objGear);
                             if (!objCyberware.IsModularCurrentlyEquipped)
                                 objGear.ChangeEquippedStatus(false);
@@ -2831,6 +3203,7 @@ namespace Chummer
                                     Weapon objGearWeapon = new Weapon(CharacterObject);
                                     objGearWeapon.Load(objLoopNode, true);
                                     CharacterObject.Weapons.Add(objGearWeapon);
+                                    objGearWeapon.ParentID = objGear.InternalId;
                                     objGear.WeaponID = objGearWeapon.InternalId;
                                 }
                             }
@@ -2838,35 +3211,39 @@ namespace Chummer
                             IsCharacterUpdateRequested = true;
                             IsDirty = true;
                         }
-                    }
-                    else
-                    {
-                        Gear objNewParent = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId, out objCyberware);
-                        if (objNewParent != null)
+                        else
                         {
-                            XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
-                            if (xmlAddonCategoryList?.Count > 0)
+                            // Paste Gear into a Gear.
+                            Gear objNewParent = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId, out objCyberware);
+                            if (objNewParent != null)
                             {
-                                bool blnDoAdd = false;
-                                foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
+                                if (xmlAddonCategoryList?.Count > 0)
                                 {
-                                    if (xmlCategory.InnerText == objGear.Category)
+                                    bool blnDoAdd = false;
+                                    foreach (XmlNode xmlCategory in xmlAddonCategoryList)
                                     {
-                                        blnDoAdd = true;
-                                        break;
+                                        if (xmlCategory.InnerText == objGear.Category)
+                                        {
+                                            blnDoAdd = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!blnDoAdd)
+                                    {
+                                        objGear.DeleteGear();
+                                        return;
                                     }
                                 }
 
-                                if (!blnDoAdd)
-                                    return;
+                                objNewParent.Children.Add(objGear);
+                                if (!objNewParent.Equipped || !objCyberware.IsModularCurrentlyEquipped)
+                                    objGear.ChangeEquippedStatus(false);
+
+                                IsCharacterUpdateRequested = true;
+                                IsDirty = true;
                             }
-
-                            objNewParent.Children.Add(objGear);
-                            if (!objNewParent.Equipped || !objCyberware.IsModularCurrentlyEquipped)
-                                objGear.ChangeEquippedStatus(false);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
                     }
                 }
@@ -2891,25 +3268,37 @@ namespace Chummer
                     string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
                     if (string.IsNullOrEmpty(strSelectedId))
                         return;
-                    // Paste Gear.
-                    objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
 
+                    // Paste Cyberware.
+                    objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Load(objXmlNode, true);
+                        Cyberware objCyberware = new Cyberware(CharacterObject);
+                        objCyberware.Load(objXmlNode, true);
 
-                        // Paste the Gear into a Vehicle's Gear.
-                        Gear objVehicleGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out Vehicle objVehicle, out WeaponAccessory objAccessory, out Cyberware objCyberware);
-                        if (objVehicleGear != null)
+                        // Paste Cyberware into a Cyberware.
+                        Cyberware objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
+                        if (objCyberwareParent != null && !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                         {
-                            XmlNodeList xmlAddonCategoryList = objVehicleGear.GetNode()?.SelectNodes("addoncategory");
-                            if (xmlAddonCategoryList?.Count > 0)
+                            if (objCyberware.PlugsIntoModularMount != objCyberwareParent.HasModularMount || objCyberwareParent.Children.Any(x => x.PlugsIntoModularMount == objCyberware.HasModularMount))
+                            {
+                                objCyberwareParent = null;
+                            }
+                            else
+                            {
+                                objCyberware.Location = objCyberwareParent.Location;
+                            }
+                        }
+
+                        if (objCyberwareParent != null && objCyberware.SourceType == objCyberwareParent.SourceType)
+                        {
+                            string strAllowedSubsystems = objCyberwareParent.AllowedSubsystems;
+                            if (!string.IsNullOrEmpty(strAllowedSubsystems))
                             {
                                 bool blnDoAdd = false;
-                                foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                foreach (string strSubsystem in strAllowedSubsystems.Split(','))
                                 {
-                                    if (xmlCategory.InnerText == objGear.Category)
+                                    if (objCyberware.Category == strSubsystem)
                                     {
                                         blnDoAdd = true;
                                         break;
@@ -2917,125 +3306,397 @@ namespace Chummer
                                 }
 
                                 if (!blnDoAdd)
+                                {
+                                    objCyberware.DeleteCyberware();
                                     return;
+                                }
                             }
 
-                            objVehicleGear.Children.Add(objGear);
-                        }
-                        else
-                        {
-                            // Paste the Gear into a Vehicle.
-                            objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-                            if (objVehicle != null)
+                            if (!string.IsNullOrEmpty(objCyberware.HasModularMount) || !string.IsNullOrEmpty(objCyberware.BlocksMounts))
                             {
-                                objVehicle.Gear.Add(objGear);
-                            }
-                            else
-                            {
-                                objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
-                                if (objAccessory != null)
+                                HashSet<string> setDisallowedMounts = new HashSet<string>();
+                                HashSet<string> setHasMounts = new HashSet<string>();
+                                string[] strLoopDisallowedMounts = objCyberwareParent.BlocksMounts.Split(',');
+                                foreach (string strLoop in strLoopDisallowedMounts)
+                                    setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
+                                string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    setHasMounts.Add(strLoopHasModularMount);
+                                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                                 {
-                                    bool blnAllowPaste = false;
-                                    XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
-                                    if (xmlGearCategoryList?.Count > 0)
+                                    strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
+                                    foreach (string strLoop in strLoopDisallowedMounts)
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                        if (!setHasMounts.Contains(strLoopHasModularMount))
+                                            setHasMounts.Add(strLoopHasModularMount);
+                                }
+
+                                if (!string.IsNullOrEmpty(objCyberware.HasModularMount) && setDisallowedMounts.Count > 0)
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
                                     {
-                                        foreach (XmlNode objAllowed in xmlGearCategoryList)
+                                        if (!strLoop.EndsWith("Right"))
                                         {
-                                            if (objAllowed.InnerText == objGear.Category)
+                                            string strCheck = strLoop;
+                                            if (strCheck.EndsWith("Left"))
                                             {
-                                                blnAllowPaste = true;
-                                                break;
+                                                strCheck = strCheck.TrimEnd("Left", true);
+                                                if (!setDisallowedMounts.Contains(strCheck + "Right"))
+                                                    continue;
+                                            }
+
+                                            if (strCheck == objCyberware.HasModularMount)
+                                            {
+                                                objCyberware.DeleteCyberware();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                                {
+                                    if (!string.IsNullOrEmpty(objCyberware.Location) || !string.IsNullOrEmpty(objCyberwareParent.Location) ||
+                                        (objCyberwareParent.Children.Any(x => x.Location == "Left") && objCyberwareParent.Children.Any(x => x.Location == "Right")))
+                                    {
+                                        string[] astrBlockedMounts = objCyberware.BlocksMounts.Split(',');
+                                        foreach (string strLoop in astrBlockedMounts)
+                                        {
+                                            if (setHasMounts.Contains(strLoop))
+                                            {
+                                                objCyberware.DeleteCyberware();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            objCyberware.Grade = objCyberwareParent.Grade;
+                            objCyberwareParent.Children.Add(objCyberware);
+
+                            // Add any Weapons that come with the Cyberware.
+                            XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                            if (objXmlNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objLoopNode in objXmlNodeList)
+                                {
+                                    Weapon objWeapon = new Weapon(CharacterObject);
+                                    objWeapon.Load(objLoopNode, true);
+                                    CharacterObject.Weapons.Add(objWeapon);
+                                    objWeapon.ParentID = objCyberware.InternalId;
+                                    objCyberware.WeaponID = objWeapon.InternalId;
+                                }
+                            }
+
+                            // Add any Vehicles that come with the Cyberware.
+                            objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                            if (objXmlNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objLoopNode in objXmlNodeList)
+                                {
+                                    Vehicle objVehicle = new Vehicle(CharacterObject);
+                                    objVehicle.Load(objLoopNode, true);
+                                    CharacterObject.Vehicles.Add(objVehicle);
+                                    objVehicle.ParentID = objCyberware.InternalId;
+                                    objCyberware.WeaponID = objVehicle.InternalId;
+                                }
+                            }
+
+                            IsCharacterUpdateRequested = true;
+                            IsDirty = true;
+                        }
+                        else if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                        {
+                            // Add Cyberware to vehicle mod
+                            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId && x.AllowCyberware);
+                            if (objMod != null)
+                            {
+                                string strAllowedSubsystems = objMod.Subsystems;
+                                if (!string.IsNullOrEmpty(strAllowedSubsystems))
+                                {
+                                    bool blnDoAdd = false;
+                                    foreach (string strSubsystem in strAllowedSubsystems.Split(','))
+                                    {
+                                        if (objCyberware.Category == strSubsystem)
+                                        {
+                                            blnDoAdd = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!blnDoAdd)
+                                    {
+                                        objCyberware.DeleteCyberware();
+                                        return;
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(objCyberware.HasModularMount) || !string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                                {
+                                    HashSet<string> setDisallowedMounts = new HashSet<string>();
+                                    HashSet<string> setHasMounts = new HashSet<string>();
+                                    foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                    {
+                                        string[] strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
+                                        foreach (string strLoop in strLoopDisallowedMounts)
+                                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                        string strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                            if (!setHasMounts.Contains(strLoopHasModularMount))
+                                                setHasMounts.Add(strLoopHasModularMount);
+                                    }
+
+                                    if (!string.IsNullOrEmpty(objCyberware.HasModularMount) && setDisallowedMounts.Count > 0)
+                                    {
+                                        foreach (string strLoop in setDisallowedMounts)
+                                        {
+                                            if (!strLoop.EndsWith("Right"))
+                                            {
+                                                string strCheck = strLoop;
+                                                if (strCheck.EndsWith("Left"))
+                                                {
+                                                    strCheck = strCheck.TrimEnd("Left", true);
+                                                    if (!setDisallowedMounts.Contains(strCheck + "Right"))
+                                                        continue;
+                                                }
+
+                                                if (strCheck == objCyberware.HasModularMount)
+                                                {
+                                                    objCyberware.DeleteCyberware();
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
 
-                                    if (!blnAllowPaste)
-                                        return;
+                                    if (!string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                                    {
+                                        if (!string.IsNullOrEmpty(objCyberware.Location) || !string.IsNullOrEmpty(objCyberwareParent.Location) ||
+                                            (objCyberwareParent.Children.Any(x => x.Location == "Left") && objCyberwareParent.Children.Any(x => x.Location == "Right")))
+                                        {
+                                            string[] astrBlockedMounts = objCyberware.BlocksMounts.Split(',');
+                                            foreach (string strLoop in astrBlockedMounts)
+                                            {
+                                                if (setHasMounts.Contains(strLoop))
+                                                {
+                                                    objCyberware.DeleteCyberware();
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 
-                                    objVehicle = objAccessory.Parent.ParentVehicle;
-                                    objAccessory.Gear.Add(objGear);
+                                if (objCyberware.Grade.Name != "Standard")
+                                {
+                                    objCyberware.Grade = CharacterObject.GetGradeList(objCyberware.SourceType, true).FirstOrDefault(x => x.Name == "Standard");
+                                }
+                                objMod.Cyberware.Add(objCyberware);
+
+                                // Add any Weapons that come with the Cyberware.
+                                XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                                if (objXmlNodeList?.Count > 0)
+                                {
+                                    foreach (XmlNode objLoopNode in objXmlNodeList)
+                                    {
+                                        Weapon objWeapon = new Weapon(CharacterObject);
+                                        objWeapon.Load(objLoopNode, true);
+                                        CharacterObject.Weapons.Add(objWeapon);
+                                        objWeapon.ParentID = objCyberware.InternalId;
+                                        objCyberware.WeaponID = objWeapon.InternalId;
+                                    }
+                                }
+
+                                // Add any Vehicles that come with the Cyberware.
+                                objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                                if (objXmlNodeList?.Count > 0)
+                                {
+                                    foreach (XmlNode objLoopNode in objXmlNodeList)
+                                    {
+                                        Vehicle objVehicle = new Vehicle(CharacterObject);
+                                        objVehicle.Load(objLoopNode, true);
+                                        CharacterObject.Vehicles.Add(objVehicle);
+                                        objVehicle.ParentID = objCyberware.InternalId;
+                                        objCyberware.WeaponID = objVehicle.InternalId;
+                                    }
+                                }
+
+                                IsCharacterUpdateRequested = true;
+                                IsDirty = true;
+                            }
+                            else
+                            {
+                                objCyberware.DeleteCyberware();
+                            }
+                        }
+                        else
+                        {
+                            objCyberware.DeleteCyberware();
+                        }
+                    }
+                    else
+                    {
+                        // Paste Gear.
+                        objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
+
+                        if (objXmlNode != null)
+                        {
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Load(objXmlNode, true);
+
+                            // Paste the Gear into a Vehicle's Gear.
+                            Gear objVehicleGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out Vehicle objVehicle, out WeaponAccessory objAccessory, out Cyberware objCyberware);
+                            if (objVehicleGear != null)
+                            {
+                                XmlNodeList xmlAddonCategoryList = objVehicleGear.GetNode()?.SelectNodes("addoncategory");
+                                if (xmlAddonCategoryList?.Count > 0)
+                                {
+                                    bool blnDoAdd = false;
+                                    foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                    {
+                                        if (xmlCategory.InnerText == objGear.Category)
+                                        {
+                                            blnDoAdd = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!blnDoAdd)
+                                    {
+                                        objGear.DeleteGear();
+                                        return;
+                                    }
+                                }
+
+                                objVehicleGear.Children.Add(objGear);
+                            }
+                            else
+                            {
+                                // Paste the Gear into a Vehicle.
+                                objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
+                                if (objVehicle != null)
+                                {
+                                    objVehicle.Gear.Add(objGear);
                                 }
                                 else
                                 {
-                                    objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out VehicleMod objVehicleMod);
-                                    if (objCyberware != null)
+                                    objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
+                                    if (objAccessory != null)
                                     {
-                                        bool blnAllowPaste = false;
-                                        XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
+                                        bool blnDoAdd = false;
+                                        XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
                                         if (xmlGearCategoryList?.Count > 0)
                                         {
                                             foreach (XmlNode objAllowed in xmlGearCategoryList)
                                             {
                                                 if (objAllowed.InnerText == objGear.Category)
                                                 {
-                                                    blnAllowPaste = true;
+                                                    blnDoAdd = true;
                                                     break;
                                                 }
                                             }
                                         }
 
-                                        if (!blnAllowPaste)
+                                        if (!blnDoAdd)
+                                        {
+                                            objGear.DeleteGear();
                                             return;
+                                        }
 
-                                        objVehicle = objVehicleMod.Parent;
-                                        objCyberware.Gear.Add(objGear);
+                                        objVehicle = objAccessory.Parent.ParentVehicle;
+                                        objAccessory.Gear.Add(objGear);
                                     }
                                     else
-                                        return;
+                                    {
+                                        objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out VehicleMod objVehicleMod);
+                                        if (objCyberware != null)
+                                        {
+                                            bool blnDoAdd = false;
+                                            XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
+                                            if (xmlGearCategoryList?.Count > 0)
+                                            {
+                                                foreach (XmlNode objAllowed in xmlGearCategoryList)
+                                                {
+                                                    if (objAllowed.InnerText == objGear.Category)
+                                                    {
+                                                        blnDoAdd = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!blnDoAdd)
+                                            {
+                                                objGear.DeleteGear();
+                                                return;
+                                            }
+
+                                            objVehicle = objVehicleMod.Parent;
+                                            objCyberware.Gear.Add(objGear);
+                                        }
+                                        else
+                                            return;
+                                    }
                                 }
                             }
-                        }
 
-                        objGear.ChangeEquippedStatus(false);
-                        // Add any Weapons that come with the Gear.
-                        XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
-                        if (objXmlNodeList != null)
-                        {
-                            foreach (XmlNode objLoopNode in objXmlNodeList)
+                            objGear.ChangeEquippedStatus(false);
+                            // Add any Weapons that come with the Gear.
+                            XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
+                            if (objXmlNodeList != null)
                             {
-                                Weapon objGearWeapon = new Weapon(CharacterObject);
-                                objGearWeapon.Load(objLoopNode, true);
-                                objVehicle.Weapons.Add(objGearWeapon);
-                                objGear.WeaponID = objGearWeapon.InternalId;
-                            }
-                        }
-
-                        IsCharacterUpdateRequested = true;
-
-                        IsDirty = true;
-                    }
-                    else
-                    {
-                        // Paste Weapon.
-                        objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
-                        if (objXmlNode != null)
-                        {
-                            VehicleMod objVehicleMod = null;
-                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
-                            if (objWeaponMount == null)
-                            {
-                                objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
-                                if (objVehicleMod == null)
-                                    return;
-                            }
-
-                            Weapon objWeapon = new Weapon(CharacterObject) {ParentVehicle = objVehicle};
-                            objWeapon.Load(objXmlNode, true);
-                            if (objVehicleMod != null)
-                            {
-                                // TODO: Make this not depend on string names
-                                if (objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.Name.Contains("Drone Arm"))
+                                foreach (XmlNode objLoopNode in objXmlNodeList)
                                 {
-                                    objVehicleMod.Weapons.Add(objWeapon);
+                                    Weapon objGearWeapon = new Weapon(CharacterObject);
+                                    objGearWeapon.Load(objLoopNode, true);
+                                    objVehicle.Weapons.Add(objGearWeapon);
+                                    objGearWeapon.ParentID = objGear.InternalId;
+                                    objGear.WeaponID = objGearWeapon.InternalId;
                                 }
-                            }
-                            else
-                            {
-                                objWeaponMount.Weapons.Add(objWeapon);
                             }
 
                             IsCharacterUpdateRequested = true;
+
                             IsDirty = true;
+                        }
+                        else
+                        {
+                            // Paste Weapon.
+                            objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
+                            if (objXmlNode != null)
+                            {
+                                VehicleMod objVehicleMod = null;
+                                WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
+                                if (objWeaponMount == null)
+                                {
+                                    objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
+                                    if (objVehicleMod == null)
+                                        return;
+                                }
+
+                                Weapon objWeapon = new Weapon(CharacterObject) {ParentVehicle = objVehicle};
+                                objWeapon.Load(objXmlNode, true);
+                                if (objVehicleMod != null)
+                                {
+                                    // TODO: Make this not depend on string names
+                                    if (objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.Name.Contains("Drone Arm"))
+                                    {
+                                        objVehicleMod.Weapons.Add(objWeapon);
+                                    }
+                                }
+                                else
+                                {
+                                    objWeaponMount.Weapons.Add(objWeapon);
+                                }
+
+                                IsCharacterUpdateRequested = true;
+                                IsDirty = true;
+                            }
                         }
                     }
                 }

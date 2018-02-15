@@ -18,6 +18,9 @@ Application Changes:
 - Fixed being unable to paste gear into weapon accessories on weapons located on vehicles.
 - Fixed an issue where uninstalled accessories containing children that add improvements would not properly toggle off those improvements.
 - Fixed an issue where copying an item from a character and then switching to a different character would not immediately update whether pasting is allowed for that different character.
+- Fixed an issue where copying and pasting armor that adds weapons would not also create copies of said weapons.
+- Fixed an issue where copying and pasting gear that adds weapons would not properly link the new instances of the pasted weapons with the new instance of the pasted gear.
+- Added the ability to copy and paste 'ware of all types. As with other copy-paste code, copying can be done from any character, while pasting only works with characters in create mode.
 
 Data Changes:
 
