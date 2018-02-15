@@ -126,11 +126,11 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstChildren.CollectionChanged += ChildrenOnCollectionChanged;
-            _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+            _lstChildren.CollectionChanged += CyberwareChildrenOnCollectionChanged;
+            _lstGear.CollectionChanged += GearChildrenOnCollectionChanged;
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -157,10 +157,24 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action != NotifyCollectionChangedAction.Move)
-                this.RefreshMatrixAttributeArray();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Replace:
+                    if (ParentVehicle != null || !IsModularCurrentlyEquipped)
+                    {
+                        foreach (Gear objNewItem in e.NewItems)
+                            objNewItem.ChangeEquippedStatus(false);
+                    }
+                    this.RefreshMatrixAttributeArray();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    this.RefreshMatrixAttributeArray();
+                    break;
+            }
         }
 
         /// Create a Cyberware from an XmlNode.
@@ -881,6 +895,48 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            if (blnCopy)
+            {
+                if (Bonus != null || WirelessBonus != null || PairBonus != null)
+                {
+                    if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                        ImprovementManager.ForcedValue = _strForced;
+
+                    if (Bonus != null)
+                    {
+                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, _guiID.ToString("D"), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                    }
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (WirelessBonus != null)
+                    {
+                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, _guiID.ToString("D"), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                    }
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (PairBonus != null)
+                    {
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => IncludePair.Contains(x.Name) && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                        int intCount = lstPairableCyberwares.Count;
+                        if (!string.IsNullOrEmpty(Location))
+                        {
+                            intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
+                        }
+                        if (intCount > 0 && intCount % 2 == 1)
+                        {
+                            ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                        }
+                    }
+                }
+
+                if (!IsModularCurrentlyEquipped)
+                {
+                    ChangeModularEquip(false);
+                }
+            }
         }
 
         /// <summary>
@@ -1298,15 +1354,13 @@ namespace Chummer.Backend.Equipment
             {
                 // Cyberware always equipped if it's not a modular one
                 bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
-                if (blnReturn)
-                    return true;
                 Cyberware objCurrentParent = Parent;
                 // If top-level parent is one that has a modular mount but also does not plug into another modular mount itself, then return true, otherwise return false
                 while (objCurrentParent != null)
                 {
                     if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
                         blnReturn = true;
-                    if (!string.IsNullOrEmpty(PlugsIntoModularMount))
+                    if (!string.IsNullOrEmpty(objCurrentParent.PlugsIntoModularMount))
                         blnReturn = false;
                     objCurrentParent = objCurrentParent.Parent;
                 }
@@ -1626,8 +1680,19 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objParent != value)
                 {
+                    bool blnOldEquipped = IsModularCurrentlyEquipped;
                     _objParent = value;
                     ParentVehicle = value?.ParentVehicle;
+                    if (IsModularCurrentlyEquipped != blnOldEquipped)
+                    {
+                        foreach (Gear objGear in Gear)
+                        {
+                            if (blnOldEquipped)
+                                objGear.ChangeEquippedStatus(false);
+                            else if (objGear.Equipped)
+                                objGear.ChangeEquippedStatus(true);
+                        }
+                    }
                 }
             }
         }
@@ -1654,7 +1719,18 @@ namespace Chummer.Backend.Equipment
             get => _objParentVehicle;
             set
             {
-                _objParentVehicle = value;
+                if (_objParentVehicle != value)
+                {
+                    _objParentVehicle = value;
+                    bool blnEquipped = IsModularCurrentlyEquipped;
+                    foreach (Gear objGear in Gear)
+                    {
+                        if (value != null)
+                            objGear.ChangeEquippedStatus(false);
+                        else if (objGear.Equipped && blnEquipped)
+                            objGear.ChangeEquippedStatus(true);
+                    }
+                }
                 foreach (Cyberware objChild in Children)
                     objChild.ParentVehicle = value;
             }

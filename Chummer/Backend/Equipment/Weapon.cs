@@ -1352,7 +1352,21 @@ namespace Chummer.Backend.Equipment
             get => _objMountedVehicle;
             set
             {
-                _objMountedVehicle = value;
+                if (_objMountedVehicle != value)
+                {
+                    _objMountedVehicle = value;
+                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                    {
+                        foreach (Gear objGear in objAccessory.Gear)
+                        {
+                            if (value != null)
+                                objGear.ChangeEquippedStatus(false);
+                            else if (Installed && objGear.Equipped)
+                                objGear.ChangeEquippedStatus(true);
+                        }
+                    }
+                }
+
                 foreach (Weapon objChild in Children)
                     objChild.ParentVehicle = value;
             }

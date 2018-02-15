@@ -2809,6 +2809,67 @@ namespace Chummer
                     }
                 }
             }
+            // Cyberware Tab.
+            else if (tabCharacterTabs.SelectedTab == tabCyberware)
+            {
+                // Copy the selected Gear.
+                Gear objCopyGear = CharacterObject.Cyberware.FindCyberwareGear(treGear.SelectedNode?.Tag.ToString());
+
+                if (objCopyGear != null)
+                {
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    {
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = '\t'
+                    };
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyGear.Save(objWriter);
+                    GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                    if (!objCopyGear.WeaponID.IsEmptyGuid())
+                    {
+                        // <weapons>
+                        objWriter.WriteStartElement("weapons");
+                        // Copy any Weapon that comes with the Gear.
+                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                        {
+                            objCopyWeapon.Save(objWriter);
+                        }
+
+                        objWriter.WriteEndElement();
+                    }
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+
+                    GlobalOptions.Clipboard = objCharacterXML;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+
+                    RefreshPasteStatus();
+                }
+            }
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
@@ -20066,6 +20127,13 @@ namespace Chummer
                 {
                     blnCopyEnabled = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString()) != null;
                 }
+            }
+            // Cyberware Tab.
+            else if (tabCharacterTabs.SelectedTab == tabCyberware)
+            {
+                string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+                if (!string.IsNullOrEmpty(strSelectedId))
+                    blnCopyEnabled = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId) != null;
             }
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -62,7 +63,6 @@ namespace Chummer.Backend.Equipment
         private int _intAmmoSlots;
         private bool _blnDeployable;
         private bool _blnDiscountCost;
-        private bool _blnBlackMarketDiscount;
         private bool _blnIncludedInWeapon;
         private bool _blnInstalled = true;
         private int _intAccessoryCostMultiplier = 1;
@@ -80,6 +80,22 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Weapon.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstGear.CollectionChanged += GearChildrenOnCollectionChanged;
+        }
+
+        private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+            {
+                if (!Installed || Parent.ParentVehicle != null)
+                {
+                    foreach (Gear objGear in e.NewItems)
+                    {
+                        objGear.ChangeEquippedStatus(false);
+                    }
+                }
+            }
         }
 
         /// Create a Weapon Accessory from an XmlNode and return the TreeNodes for it.
@@ -333,6 +349,12 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+
+            if (blnCopy && !Installed)
+            {
+                _blnInstalled = true;
+                Installed = false;
+            }
         }
 
         /// <summary>
@@ -645,7 +667,28 @@ namespace Chummer.Backend.Equipment
         public bool Installed
         {
             get => _blnInstalled;
-            set => _blnInstalled = value;
+            set
+            {
+                if (_blnInstalled != value)
+                {
+                    _blnInstalled = value;
+                    if (Parent?.ParentVehicle == null)
+                    {
+                        foreach (Gear objGear in Gear)
+                        {
+                            if (objGear.Equipped)
+                                objGear.ChangeEquippedStatus(true);
+                        }
+                    }
+                    else
+                    {
+                        foreach (Gear objGear in Gear)
+                        {
+                            objGear.ChangeEquippedStatus(false);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -758,7 +801,30 @@ namespace Chummer.Backend.Equipment
         public Weapon Parent
         {
             get => _objParent;
-            set => _objParent = value;
+            set
+            {
+                if (_objParent != value)
+                {
+                    _objParent = value;
+                    if (Parent != null)
+                    {
+                        if (Parent.ParentVehicle != null)
+                        {
+                            foreach (Gear objGear in Gear)
+                            {
+                                objGear.ChangeEquippedStatus(false);
+                            }
+                        }
+                        else if (Installed)
+                        {
+                            foreach (Gear objGear in Gear)
+                            {
+                                objGear.ChangeEquippedStatus(true);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -886,15 +952,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _strExtra;
             set => _strExtra = value;
-        }
-        
-        /// <summary>
-        /// Whether the Accessory is affected by Black Market Discounts.
-        /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get => _blnBlackMarketDiscount;
-            set => _blnBlackMarketDiscount = value;
         }
         
         private XmlNode _objCachedMyXmlNode;

@@ -440,6 +440,23 @@ namespace Chummer.Backend.Equipment
                             _lstGear.Add(objGear);
                         }
             }
+
+            if (blnCopy)
+            {
+                if (!string.IsNullOrEmpty(Extra))
+                    ImprovementManager.ForcedValue = Extra;
+                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    Extra = ImprovementManager.SelectedValue;
+                }
+
+                if (!_blnEquipped)
+                {
+                    _blnEquipped = true;
+                    Equipped = false;
+                }
+            }
         }
 
         /// <summary>

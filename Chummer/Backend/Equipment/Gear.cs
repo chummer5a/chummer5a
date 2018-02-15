@@ -800,8 +800,68 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            
+            if (blnCopy)
+            {
+                _guiID = Guid.NewGuid();
+                _strLocation = string.Empty;
 
-            if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.UniqueName == InternalId))
+                if (Bonus != null || WirelessBonus != null)
+                {
+                    bool blnAddImprovement = true;
+                    // If this is a Focus which is not bonded, don't do anything.
+                    if (Category != "Stacked Focus")
+                    {
+                        if (Category.EndsWith("Foci"))
+                            blnAddImprovement = Bonded;
+
+                        if (blnAddImprovement)
+                        {
+                            if (!string.IsNullOrEmpty(Extra))
+                                ImprovementManager.ForcedValue = Extra;
+                            if (Bonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                                Extra = ImprovementManager.SelectedValue;
+                            }
+                            if (WirelessOn && WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Stacked Foci need to be handled a little differently.
+                        foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                        {
+                            if (objStack.GearId == InternalId && objStack.Bonded)
+                            {
+                                foreach (Gear objFociGear in objStack.Gear)
+                                {
+                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    if (objFociGear.Bonus != null)
+                                    {
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating,
+                                            objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                        objFociGear.Extra = ImprovementManager.SelectedValue;
+                                    }
+                                    if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
+                                    {
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, Rating,
+                                            objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!Equipped)
+                    ChangeEquippedStatus(false);
+            }
+            else if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.UniqueName == InternalId))
             {
                 bool blnAddImprovement = true;
                 // If this is a Focus which is not bonded, don't do anything.
@@ -935,12 +995,6 @@ namespace Chummer.Backend.Equipment
                             Children.RemoveAt(i);
                     }
                 }
-            }
-
-            if (blnCopy)
-            {
-                _guiID = Guid.NewGuid();
-                _strLocation = string.Empty;
             }
         }
 

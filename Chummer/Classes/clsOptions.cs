@@ -20,6 +20,7 @@
 using System.Collections.Generic;
  using System.Collections.ObjectModel;
  using System.Collections.Specialized;
+ using System.ComponentModel;
  using System.Globalization;
 using System.IO;
  using System.Linq;
@@ -35,7 +36,6 @@ namespace Chummer
         None = 0,
         Gear,
         Cyberware,
-        Bioware,
         Armor,
         Weapon,
         Vehicle,
@@ -155,6 +155,8 @@ namespace Chummer
 
         public static string ErrorMessage { get; } = string.Empty;
         public static event TextEventHandler MRUChanged;
+        public static event PropertyChangedEventHandler ClipboardChanged;
+
         public const int MaxMruSize = 10;
         private static readonly MostRecentlyUsedCollection<string> _lstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
         private static readonly MostRecentlyUsedCollection<string> _lstFavoritedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
@@ -620,15 +622,39 @@ namespace Chummer
         /// </summary>
         public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
 
+        private static XmlDocument _xmlClipboard = new XmlDocument();
         /// <summary>
         /// Clipboard.
         /// </summary>
-        public static XmlDocument Clipboard { get; set; } = new XmlDocument();
+        public static XmlDocument Clipboard
+        {
+            get => _xmlClipboard;
+            set
+            {
+                if (_xmlClipboard != value)
+                {
+                    _xmlClipboard = value;
+                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                }
+            }
+        }
 
+        private static ClipboardContentType _eClipboardContentType;
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public static ClipboardContentType ClipboardContentType { get; set; }
+        public static ClipboardContentType ClipboardContentType
+        {
+            get => _eClipboardContentType;
+            set
+            {
+                if (_eClipboardContentType != value)
+                {
+                    _eClipboardContentType = value;
+                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(ClipboardContentType)));
+                }
+            }
+        }
 
         /// <summary>
         /// Default character sheet to use when printing.

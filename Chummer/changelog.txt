@@ -12,6 +12,12 @@ Application Changes:
 - Fixed issues where certain improvements that relied on numerical values would not be able to process ratings passed to them for certain fields.
 - Fixed issues with calculating capacity in a gear when using localizations that use commas as decimal separators and periods as thousands separators. Fixes #2493.
 - Fixed a crash when deleting weapon accessories in career mode. Fixes #2496.
+- Fixed an issue where pasting gear or armor that add improvements or pasting items containing gear that add improvements would not create copies of the pasted item's improvements.
+- Fixed an issue where modular children of modular cyberware could never be marked as being unequipped.
+- Added the ability to copy and paste gear to and from cyberware.
+- Fixed being unable to paste gear into weapon accessories on weapons located on vehicles.
+- Fixed an issue where uninstalled accessories containing children that add improvements would not properly toggle off those improvements.
+- Fixed an issue where copying an item from a character and then switching to a different character would not immediately update whether pasting is allowed for that different character.
 
 Data Changes:
 
