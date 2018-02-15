@@ -236,15 +236,13 @@ namespace Chummer
 
                             return 1;
                         }
-                        else
-                        {
-                            if (int.TryParse(y.Value.ToString(), out int yint))
-                            {
-                                return -1;
-                            }
 
-                            return 0;
+                        if (int.TryParse(y.Value.ToString(), out int _))
+                        {
+                            return -1;
                         }
+
+                        return 0;
                     });
 
                     cboStage.ValueMember = "Value";

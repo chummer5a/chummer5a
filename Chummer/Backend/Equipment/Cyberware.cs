@@ -756,7 +756,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             // Legacy shim for old-form customized attribute
             if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
-                int.TryParse(MaxRatingString, out int intDummy))
+                int.TryParse(MaxRatingString, out int _))
             {
                 XmlNode objMyXmlNode = GetNode();
                 if (objMyXmlNode != null)

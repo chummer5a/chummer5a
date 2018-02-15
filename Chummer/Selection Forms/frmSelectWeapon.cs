@@ -280,7 +280,7 @@ namespace Chummer
                         strAccessories.Length -= 1;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
                     SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language));
-                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal decDummy));
+                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), objAvail, strSource, strCost);
                 }

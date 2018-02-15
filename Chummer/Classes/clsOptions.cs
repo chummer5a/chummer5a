@@ -167,7 +167,6 @@ namespace Chummer
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
-        private static bool _blnLocalisedUpdatesOnly;
         private static bool _blnStartupFullscreen;
         private static bool _blnSingleDiceRoller = true;
         private static string _strLanguage = DefaultLanguage;
@@ -362,9 +361,6 @@ namespace Chummer
 
             LoadBoolFromRegistry(ref _omaeEnabled, "omaeenabled");
 
-            // Whether or not the app should only download localised files in the user's selected language.
-            LoadBoolFromRegistry(ref _blnLocalisedUpdatesOnly, "localisedupdatesonly");
-
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
@@ -489,16 +485,7 @@ namespace Chummer
             get => _lifeModuleEnabled;
             set => _lifeModuleEnabled = value;
         }
-
-        /// <summary>
-        /// Whether or not the app should only download localised files in the user's selected language.
-        /// </summary>
-        public static bool LocalisedUpdatesOnly
-        {
-            get => _blnLocalisedUpdatesOnly;
-            set => _blnLocalisedUpdatesOnly = value;
-        }
-
+        
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>

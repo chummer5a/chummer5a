@@ -28,11 +28,11 @@ namespace Chummer
     public sealed partial class frmCreateCyberwareSuite : Form
     {
         private readonly Character _objCharacter;
-        private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
-        private readonly string _strType = "cyberware";
+        private readonly Improvement.ImprovementSource _objSource;
+        private readonly string _strType;
 
         #region Control Events
-        public frmCreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource)
+        public frmCreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
             _objSource = objSource;
@@ -143,9 +143,10 @@ namespace Chummer
             {
                 // <cyberwares>
                 objWriter.WriteStartElement(_strType + "s");
-                XmlNodeList objXmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s");
-                foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-                    objXmlCyberware.WriteContentTo(objWriter);
+                using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
+                    if (xmlCyberwareList?.Count > 0)
+                        foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                            xmlCyberware.WriteContentTo(objWriter);
                 // </cyberwares>
                 objWriter.WriteEndElement();
             }
@@ -156,9 +157,10 @@ namespace Chummer
             // If this is not a new file, write out the current contents.
             if (!blnNewFile)
             {
-                XmlNodeList objXmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites");
-                foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
-                    objXmlCyberware.WriteContentTo(objWriter);
+                using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
+                    if (xmlCyberwareList?.Count > 0)
+                        foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                            xmlCyberware.WriteContentTo(objWriter);
             }
 
             string strGrade = string.Empty;

@@ -165,7 +165,7 @@ namespace Chummer
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
-                _dicPersistentModules.TryRemove(strKey, out StoryModule objDummy);
+                _dicPersistentModules.TryRemove(strKey, out StoryModule _);
 
             Parallel.ForEach(Modules, x =>
             {

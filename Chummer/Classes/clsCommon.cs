@@ -63,7 +63,7 @@ namespace Chummer
                 objReturn = s_ObjXPathNavigator.Evaluate(strXPath);
                 blnIsSuccess = true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Utils.BreakIfDebug();
                 objReturn = strXPath;
@@ -92,7 +92,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            return lstVehicles.FindVehicleGear(strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware);
+            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate)
         {
-            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount);
+            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod);
+            return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
-            return lstVehicles.FindVehicleWeapon(strGuid, out objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod);
+            return lstVehicles.FindVehicleWeapon(strGuid, out objFoundVehicle, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate)
         {
-            return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod objFoundVehicleMod);
+            return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod _);
         }
 
         /// <summary>
@@ -404,7 +404,7 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid)
         {
-            return lstArmors.FindArmorGear(strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod);
+            return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _);
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace Chummer
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid)
         {
-            return lstCyberware.FindCyberwareGear(strGuid, out Cyberware objFoundCyberware);
+            return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _);
         }
 
         /// <summary>
@@ -535,7 +535,7 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons to search.</param>
         public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
-            return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory objFoundAccessory);
+            return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _);
         }
 
         /// <summary>
@@ -600,7 +600,7 @@ namespace Chummer
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
         public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
         {
-            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt objFoundMartialArt);
+            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt _);
         }
 
         /// <summary>

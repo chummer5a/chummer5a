@@ -559,9 +559,11 @@ namespace Chummer
             get => _blnDiscountedAdeptWay;
             set
             {
-                if (value == _blnDiscountedAdeptWay) return;
-                _blnDiscountedAdeptWay = value;
-                OnPropertyChanged();
+                if (value != _blnDiscountedAdeptWay)
+                {
+                    _blnDiscountedAdeptWay = value;
+                    OnPropertyChanged(nameof(DiscountedAdeptWay));
+                }
             }
         }
 
@@ -688,12 +690,15 @@ namespace Chummer
                 {
                     blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
                 }
-                if (!blnReturn && DiscountedAdeptWay)
-                {
-                    DiscountedAdeptWay = false;
-                }
+
                 return blnReturn;
             }
+        }
+
+        public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
+        {
+            if (DiscountedAdeptWay && !blnAdeptWayDiscountEnabled)
+                DiscountedAdeptWay = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

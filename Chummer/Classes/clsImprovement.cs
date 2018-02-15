@@ -1457,7 +1457,7 @@ namespace Chummer
                     case Improvement.ImprovementType.MagiciansWayDiscount:
                         foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
-                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:
@@ -1832,7 +1832,7 @@ namespace Chummer
                     case Improvement.ImprovementType.MagiciansWayDiscount:
                         foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
-                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:
@@ -2263,7 +2263,7 @@ namespace Chummer
                     case Improvement.ImprovementType.MagiciansWayDiscount:
                         foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
-                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:

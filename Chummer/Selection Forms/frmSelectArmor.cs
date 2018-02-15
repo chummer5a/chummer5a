@@ -394,7 +394,7 @@ namespace Chummer
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= 1;
                             SourceString strSource = new SourceString(objArmor.Source, objArmor.Page(GlobalOptions.Language));
-                            NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal decDummy, false));
+                            NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);
                         }

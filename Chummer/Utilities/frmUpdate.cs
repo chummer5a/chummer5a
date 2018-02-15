@@ -32,9 +32,7 @@ namespace Chummer
 {
     public partial class frmUpdate : Form
     {
-
         private bool _blnSilentMode;
-        private bool _blnSilentCheck;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
         private readonly string _strCurrentVersion;
@@ -87,7 +85,7 @@ namespace Chummer
             if (blnHasDuplicate)
             {
                 Log.Info("More than one instance, exiting");
-                if (!_blnSilentMode && !_blnSilentCheck)
+                if (!SilentMode)
                     MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances", GlobalOptions.Language), LanguageManager.GetString("Title_Update", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Log.Info("frmUpdate_Load");
                 Close();
@@ -118,7 +116,7 @@ namespace Chummer
             }
             if (!_clientDownloader.IsBusy)
                 cmdUpdate.Enabled = true;
-            if (_blnSilentMode)
+            if (SilentMode)
             {
                 cmdDownload_Click(sender, e);
             }
@@ -316,16 +314,7 @@ namespace Chummer
                 }
             }
         }
-
-        /// <summary>
-        /// When checking if a new version is available, don't show the update window.
-        /// </summary>
-        public bool SilentCheck
-        {
-            get => _blnSilentCheck;
-            set => _blnSilentCheck = value;
-        }
-
+        
         /// <summary>
         /// When running in silent mode, the update window will not be shown.
         /// </summary>
@@ -484,7 +473,7 @@ namespace Chummer
         {
             //Create a backup file in the temp directory. 
             string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
-            Log.Info("Creating archive from application path: ", _strAppPath);
+            Log.Info("Creating archive from application path: " + _strAppPath);
             try
             {
                 if (!File.Exists(strBackupZipPath))
@@ -514,7 +503,7 @@ namespace Chummer
         {
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
-            Log.Info("Extracting downloaded archive into application path: ", strZipPath);
+            Log.Info("Extracting downloaded archive into application path: " + strZipPath);
             try
             {
                 using (ZipArchive archive = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -650,7 +639,7 @@ namespace Chummer
                 cmdRestart.Enabled = true;
             cmdCleanReinstall.Enabled = true;
             Log.Exit("wc_DownloadExeFileCompleted");
-            if (_blnSilentMode)
+            if (SilentMode)
             {
                 string text = LanguageManager.GetString("Message_Update_CloseForms", GlobalOptions.Language);
                 string caption = LanguageManager.GetString("Title_Update", GlobalOptions.Language);

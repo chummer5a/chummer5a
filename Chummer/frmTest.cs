@@ -73,8 +73,8 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
-            pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle").Count;
-            pgbProgress.Maximum += objXmlDocument.SelectNodes("/chummer/mods/mod").Count;
+            pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle")?.Count ?? 0;
+            pgbProgress.Maximum += objXmlDocument.SelectNodes("/chummer/mods/mod")?.Count ?? 0;
 
             // Vehicles.
             foreach (XmlNode objXmlGear in objXmlDocument.SelectNodes("/chummer/vehicles/vehicle"))

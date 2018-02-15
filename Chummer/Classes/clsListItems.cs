@@ -241,7 +241,7 @@ namespace Chummer
                 else
                     intCompareResult = -1;
             }
-            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal _))
             {
                 intCompareResult = 1;
             }
