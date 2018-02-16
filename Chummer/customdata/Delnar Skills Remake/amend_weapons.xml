@@ -20,14 +20,14 @@
 -->
 <chummer>
   <categories>
-    <category amendoperation="append" blackmarket="Weapons" type="melee">Chainsaws</category>
-    <category amendoperation="append" blackmarket="Weapons" type="melee">Flexible Weapons</category>
-    <category amendoperation="append" blackmarket="Weapons" type="crossbow">Grapple Guns</category>
-    <category amendoperation="append" blackmarket="Weapons" type="crossbow">Harpoon Guns</category>
-    <category amendoperation="append" blackmarket="Weapons" type="crossbow">Net Guns</category>
-    <category amendoperation="append" blackmarket="Weapons" type="melee">Battering Rams</category>
-    <category amendoperation="append" blackmarket="Weapons" type="melee">Shields</category>
-    <category amendoperation="append" blackmarket="Weapons" type="crossbow">Slingshots</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Chainsaws</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Flexible Weapons</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Grapple Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Harpoon Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Net Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Battering Rams</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Shields</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Slingshots</category>
   </categories>
   <weapons>
     <weapon xpathfilter="category = 'Assault Cannons'">
