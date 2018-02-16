@@ -178,9 +178,11 @@ namespace Chummer
         #endregion
 
         #region Dice Roller
+            /*
             DiceRollerControl dice = 
                 tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
-            //dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
+            dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
+            */
         #endregion
         }
         #endregion

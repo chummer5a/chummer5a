@@ -5228,6 +5228,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Walking: AGI × 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI × 4 ({2} MPCT) / ({3} KPH)</text>
     </string>
     <string>
+      <key>Label_OtherCoreCM</key>
+      <text>Core Condition Track:</text>
+    </string>
+    <string>
+      <key>Label_OtherMatrixCM</key>
+      <text>Matrix Condition Track:</text>
+    </string>
+    <string>
       <key>Label_OtherPhysicalCM</key>
       <text>Physical Condition Track:</text>
     </string>
@@ -5583,6 +5591,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <!-- End Region-->
     <!-- Region ASDF Attributes-->
+    <string>
+      <key>String_DeviceRating</key>
+      <text>Device Rating</text>
+    </string>
     <string>
       <key>String_Attack</key>
       <text>Attack</text>

@@ -262,6 +262,7 @@
   <xsl:variable name="lang.ComplexForms"    select="'复合程式'"/>
   <xsl:variable name="lang.ConditionMonitor"  select="'CM'"/>
   <xsl:variable name="lang.ContactList"    select="'人脉表'"/>
+  <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'怪物能力'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'当前极限点'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>

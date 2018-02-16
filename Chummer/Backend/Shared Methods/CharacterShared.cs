@@ -175,38 +175,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Update the label and tooltip for the character's Condition Monitors.
-        /// </summary>
-        /// <param name="lblPhysical"></param>
-        /// <param name="lblStun"></param>
-        /// <param name="tipTooltip"></param>
-        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, ToolTip tipTooltip)
-        {
-            // Condition Monitor.
-            int intCMPhysical = _objCharacter.PhysicalCM;
-            int intCMStun = _objCharacter.StunCM;
-
-            // Update the Condition Monitor labels.
-            lblPhysical.Text = intCMPhysical.ToString();
-            lblStun.Text = intCMStun.ToString();
-            if (tipTooltip != null)
-            {
-                int intBOD = _objCharacter.BOD.TotalValue;
-                int intWIL = _objCharacter.WIL.TotalValue;
-                string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ')';
-                tipTooltip.SetToolTip(lblPhysical, strCM);
-                strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ')';
-                tipTooltip.SetToolTip(lblStun, strCM);
-            }
-        }
-
-        /// <summary>
         /// Update the label and tooltip for the character's Armor Rating.
         /// </summary>
         /// <param name="lblArmor"></param>

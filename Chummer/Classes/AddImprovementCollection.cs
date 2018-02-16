@@ -77,6 +77,7 @@ namespace Chummer.Classes
         #region
         public void qualitylevel(XmlNode bonusNode)
         {
+            /*
             //List of qualities to work with
             Guid[] all =
             {
@@ -85,6 +86,7 @@ namespace Chummer.Classes
                 new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
                 new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
             };
+            */
 
             //Add to list
             //retrive list

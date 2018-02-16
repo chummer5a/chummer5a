@@ -2436,11 +2436,17 @@ namespace Chummer
             // <fallingarmordicephysical />
             objWriter.WriteElementString("fallingarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFallingArmorRating).ToString(objCulture));
 
+            bool blnIsAI = DEPEnabled && BOD.MetatypeMaximum == 0;
+            bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);
             // Condition Monitors.
             // <physicalcm />
-            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
+            int intPhysicalCM = PhysicalCM;
+            objWriter.WriteElementString("physicalcm", intPhysicalCM.ToString(objCulture));
+            objWriter.WriteElementString("physicalcmiscorecm", blnPhysicalTrackIsCore.ToString(GlobalOptions.InvariantCultureInfo));
             // <stuncm />
-            objWriter.WriteElementString("stuncm", StunCM.ToString(objCulture));
+            int intStunCM = StunCM;
+            objWriter.WriteElementString("stuncm", intStunCM.ToString(objCulture));
+            objWriter.WriteElementString("stuncmismatrixcm", blnIsAI.ToString(GlobalOptions.InvariantCultureInfo));
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -2451,9 +2457,9 @@ namespace Chummer
             // <cmthreshold>
             objWriter.WriteElementString("cmthreshold", CMThreshold.ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString(objCulture));
+            objWriter.WriteElementString("physicalcmthresholdoffset", Math.Min(PhysicalCMThresholdOffset, intPhysicalCM).ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString(objCulture));
+            objWriter.WriteElementString("stuncmthresholdoffset", Math.Min(StunCMThresholdOffset, intStunCM).ToString(objCulture));
             // <cmoverflow>
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
 
@@ -4921,8 +4927,20 @@ namespace Chummer
         /// </summary>
         public int PhysicalCMFilled
         {
-            get => _intPhysicalCMFilled;
-            set => _intPhysicalCMFilled = value;
+            get
+            {
+                if (HomeNode is Vehicle objVehicle)
+                    return objVehicle.PhysicalCMFilled;
+
+                return _intPhysicalCMFilled;
+            }
+            set
+            {
+                if (HomeNode is Vehicle objVehicle)
+                    objVehicle.PhysicalCMFilled = value;
+                else
+                    _intPhysicalCMFilled = value;
+            }
         }
 
         /// <summary>
@@ -4930,8 +4948,25 @@ namespace Chummer
         /// </summary>
         public int StunCMFilled
         {
-            get => _intStunCMFilled;
-            set => _intStunCMFilled = value;
+            get
+            {
+                if (DEPEnabled && BOD.MetatypeMaximum == 0 && HomeNode != null)
+                {
+                    // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                    return HomeNode.MatrixCMFilled;
+                }
+                return _intStunCMFilled;
+            }
+            set
+            {
+                if (DEPEnabled && BOD.MetatypeMaximum == 0 && HomeNode != null)
+                {
+                    // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                    HomeNode.MatrixCMFilled = value;
+                }
+                else
+                    _intStunCMFilled = value;
+            }
         }
 
         /// <summary>
@@ -6106,6 +6141,9 @@ namespace Chummer
         {
             get
             {
+                // Matrix damage for A.I.s is not naturally repaired
+                if (DEPEnabled && BOD.MetatypeMaximum == 0)
+                    return 0;
                 int intReturn = BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence));
@@ -6120,6 +6158,18 @@ namespace Chummer
         {
             get
             {
+                if (DEPEnabled && BOD.MetatypeMaximum == 0)
+                {
+                    if (HomeNode is Vehicle)
+                        return 0;
+
+                    // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
+                    int intDEPTotal = DEP.TotalValue;
+                    int intAIReturn = (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute(intDEPTotal) ?? intDEPTotal - 1) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
+                    if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                        intAIReturn += decimal.ToInt32(decimal.Floor(Essence));
+                    return intAIReturn;
+                }
                 int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence));
@@ -6657,9 +6707,14 @@ namespace Chummer
             get
             {
                 int intCMPhysical = 8;
-                if (_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients")
+                if (DEPEnabled && BOD.MetatypeMaximum == 0)
                 {
-                    // A.I.s add 1/2 their System to Physical CM since they do not have BOD.
+                    if (HomeNode is Vehicle objVehicle)
+                    {
+                        return objVehicle.PhysicalCM;
+                    }
+
+                    // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
                     intCMPhysical += (DEP.TotalValue + 1) / 2;
                 }
                 else
@@ -6680,12 +6735,19 @@ namespace Chummer
             get
             {
                 int intCMStun = 0;
-                // A.I. do not have a Stun Condition Monitor.
-                if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
+                if (DEPEnabled && BOD.MetatypeMaximum == 0)
+                {
+                    // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                    if (HomeNode != null)
+                    {
+                        intCMStun = HomeNode.MatrixCM;
+                    }
+                }
+                else
                 {
                     intCMStun = 8 + (WIL.TotalValue + 1) / 2;
-                // Include Improvements in the Condition Monitor values.
-                intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
+                    // Include Improvements in the Condition Monitor values.
+                    intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
                 }
                 return intCMStun;
             }
@@ -6710,9 +6772,14 @@ namespace Chummer
         {
             get
             {
+                if (Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical && objImprovement.Enabled))
+                    return int.MaxValue;
+                if ((DEPEnabled && BOD.MetatypeMaximum == 0) || Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled))
+                    return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+
                 int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
                 // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
-                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(StunCMFilled - CMThreshold, 0);
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(StunCMFilled - CMThreshold - intCMThresholdOffset, 0);
                 return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
             }
         }
@@ -6724,9 +6791,17 @@ namespace Chummer
         {
             get
             {
+                // A.I.s don't get wound penalties from Matrix damage
+                if (DEPEnabled && BOD.MetatypeMaximum == 0)
+                    return int.MaxValue;
+                if (Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled))
+                    return int.MaxValue;
+                if (Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical && objImprovement.Enabled))
+                    return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+
                 int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
                 // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
-                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(PhysicalCMFilled - CMThreshold, 0);
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(PhysicalCMFilled - CMThreshold - intCMThresholdOffset, 0);
                 return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
             }
         }
@@ -6740,9 +6815,9 @@ namespace Chummer
             {
                 int intCMOverflow = 0;
                 // A.I. do not have an Overflow Condition Monitor.
-                if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
+                if (!DEPEnabled || BOD.MetatypeMaximum != 0)
                 {
-                // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
+                    // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
                     intCMOverflow = BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMOverflow) + 1;
                 }
                 return intCMOverflow;

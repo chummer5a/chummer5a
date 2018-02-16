@@ -6712,7 +6712,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle Sensor Gear.
-            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory _, out Cyberware _);
 
             // Make sure the Gear was found.
             if (objSensor == null)
@@ -7900,7 +7900,7 @@ namespace Chummer
             }
             
             Cyberware objCyberwareParent = null;
-            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out Vehicle objVehicle, out WeaponMount objWeaponMount);
+            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out Vehicle objVehicle, out WeaponMount _);
             if (objMod == null)
                 objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out objMod);
 
@@ -8824,7 +8824,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Locate the Vehicle Sensor Gear.
-            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory _, out Cyberware _);
             if (objSensor == null)
             // Make sure the Gear was found.
             {
@@ -10291,7 +10291,7 @@ namespace Chummer
                             objWeapon.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
                         else
                         {
-                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
+                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle _);
                             if (objWeaponMount != null)
                                 objWeaponMount.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
                             else
@@ -11956,15 +11956,20 @@ namespace Chummer
             }
 
             // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
+            intInitiationPoints += CharacterObject.Enhancements.Count * 2;
+            /*
             foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
             {
                 intInitiationPoints += 2;
             }
-
+            */
             foreach (Power objPower in CharacterObject.Powers)
             {
+                intInitiationPoints += objPower.Enhancements.Count * 2;
+                /*
                 foreach (Enhancement objEnhancement in objPower.Enhancements)
                     intInitiationPoints += 2;
+                    */
             }
 
             // Check to see if the character is a member of a Group.
@@ -12362,9 +12367,99 @@ namespace Chummer
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
             }
 
-            UpdateSkillRelatedInfo();
+            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
 
-            UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip);
+            UpdateSkillRelatedInfo();
+            
+            // Update the Condition Monitor labels.
+            lblCMPhysical.Text = CharacterObject.PhysicalCM.ToString();
+            bool blnIsAI = CharacterObject.DEPEnabled && CharacterObject.BOD.MetatypeMaximum == 0;
+            if (blnIsAI)
+            {
+                if (CharacterObject.HomeNode == null)
+                {
+                    lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
+                    lblCMStunLabel.Text = string.Empty;
+                    lblCMStun.Text = string.Empty;
+                    if (tipTooltip != null)
+                    {
+                        string strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(dicAttributeTotalValues["DEP"] + 1) / 2})";
+
+                        int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
+                        if (intBonus != 0)
+                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+
+                        tipTooltip.SetToolTip(lblCMPhysical, strCM);
+                        tipTooltip.SetToolTip(lblCMStun, string.Empty);
+                    }
+                }
+                else
+                {
+                    lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
+                    lblCMStun.Text = CharacterObject.StunCM.ToString();
+
+                    if (tipTooltip != null)
+                    {
+                        string strCM = $"8 + ({LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language)}/2)({(CharacterObject.HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2})";
+
+                        int intBonus = CharacterObject.HomeNode.TotalBonusMatrixBoxes;
+                        if (intBonus != 0)
+                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+
+                        tipTooltip.SetToolTip(lblCMPhysical, strCM);
+                    }
+
+                    if (CharacterObject.HomeNode is Vehicle objVehicleHomeNode)
+                    {
+                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
+                        if (tipTooltip != null)
+                        {
+                            string strCM = $"{objVehicleHomeNode.BasePhysicalBoxes} + ({CharacterObject.BOD.DisplayAbbrev}/2)({(objVehicleHomeNode.TotalBody + 1) / 2})";
+
+                            int intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
+                            if (intBonus != 0)
+                                strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+
+                            tipTooltip.SetToolTip(lblCMPhysical, strCM);
+                        }
+                    }
+                    else
+                    {
+                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
+                        if (tipTooltip != null)
+                        {
+                            string strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(dicAttributeTotalValues["DEP"] + 1) / 2})";
+
+                            int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
+                            if (intBonus != 0)
+                                strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+
+                            tipTooltip.SetToolTip(lblCMPhysical, strCM);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
+                lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
+                lblCMStun.Text = CharacterObject.StunCM.ToString();
+                if (tipTooltip != null)
+                {
+                    string strCM = $"8 + ({CharacterObject.BOD.DisplayAbbrev}/2)({(dicAttributeTotalValues["BOD"] + 1) / 2})";
+
+                    int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
+                    if (intBonus != 0)
+                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+                    tipTooltip.SetToolTip(lblCMPhysical, strCM);
+
+                    strCM = $"8 + ({CharacterObject.WIL.DisplayAbbrev}/2)({(dicAttributeTotalValues["WIL"] + 1) / 2})";
+                    intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.StunCM);
+                    if (intBonus != 0)
+                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
+                    tipTooltip.SetToolTip(lblCMStun, strCM);
+                }
+            }
 
             UpdateSpellDefence(dicAttributeTotalValues);
 
@@ -12414,7 +12509,6 @@ namespace Chummer
             lblINI.Text = CharacterObject.Initiative;
             string strInitText = LanguageManager.GetString("String_Initiative", GlobalOptions.Language);
             string strMatrixInitText = LanguageManager.GetString("String_MatrixInitiativeLong", GlobalOptions.Language);
-            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
             string strInit = $"{CharacterObject.REA.DisplayAbbrev} ({dicAttributeValues["REA"]}) + {CharacterObject.INT.DisplayAbbrev} ({dicAttributeValues["INT"]})";
             if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) > 0 || intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
                 strInit += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers) + ')';
@@ -14012,6 +14106,7 @@ namespace Chummer
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
+        /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
         private bool PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
         {
             Gear objSelectedGear = null;
@@ -15700,13 +15795,16 @@ namespace Chummer
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
-        /// <param name="objGear"></param>
-        /// <param name="blnRestrictedGearUsed"></param>
-        /// <param name="intRestrictedCount"></param>
-        /// <param name="strAvailItems"></param>
-        /// <param name="blnOutRestrictedGearUsed"></param>
-        /// <param name="strOutAvailItems"></param>
-        private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intoutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        /// <param name="objGear">Gear to check.</param>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
         {
             AvailabilityValue objTotalAvail = objGear.TotalAvailTuple();
             if (!objTotalAvail.AddToParent)
@@ -15732,7 +15830,7 @@ namespace Chummer
                 CheckRestrictedGear(objChild, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
             strOutAvailItems = strAvailItems;
-            intoutRestrictedCount = intRestrictedCount;
+            intOutRestrictedCount = intRestrictedCount;
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
@@ -15885,18 +15983,20 @@ namespace Chummer
         /// <summary>
         /// Create Cyberware from a Cyberware Suite.
         /// </summary>
-        /// <param name="objXmlNode">XmlNode for the Cyberware to add.</param>
+        /// <param name="xmlSuiteNode">XmlNode for the cyberware suite to add.</param>
+        /// <param name="xmlCyberwareNode">XmlNode for the Cyberware to add.</param>
         /// <param name="objGrade">CyberwareGrade to add the item as.</param>
         /// <param name="intRating">Rating of the Cyberware.</param>
-        private Cyberware CreateSuiteCyberware(XmlNode objXmlItem, XmlNode objXmlNode, Grade objGrade, int intRating, Improvement.ImprovementSource objSource)
+        /// <param name="eSource">Source representing whether the suite is cyberware or bioware.</param>
+        private Cyberware CreateSuiteCyberware(XmlNode xmlSuiteNode, XmlNode xmlCyberwareNode, Grade objGrade, int intRating, Improvement.ImprovementSource eSource)
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = objXmlItem.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
+            string strForced = xmlSuiteNode.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
-            objCyberware.Create(objXmlNode, CharacterObject, objGrade, objSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
+            objCyberware.Create(xmlCyberwareNode, CharacterObject, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
             objCyberware.Suite = true;
 
             foreach (Weapon objWeapon in lstWeapons)
@@ -15909,8 +16009,8 @@ namespace Chummer
                 CharacterObject.Vehicles.Add(objVehicle);
             }
             
-            string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-            using (XmlNodeList xmlChildrenList = objXmlItem.SelectNodes(strType + "s/" + strType))
+            string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+            using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strType + "s/" + strType))
                 if (xmlChildrenList?.Count > 0)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
@@ -15919,7 +16019,7 @@ namespace Chummer
                         XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"]?.InnerText + "\"]");
                         int intChildRating = Convert.ToInt32(objXmlChild["rating"]?.InnerText);
 
-                        objCyberware.Children.Add(CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, objSource));
+                        objCyberware.Children.Add(CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, eSource));
                     }
                 }
 
@@ -16056,7 +16156,8 @@ namespace Chummer
                     }
                 }
             }
-            
+
+            /*
             // Update Adept Powers.
             if (objXmlKit["powers"] != null)
             {
@@ -16067,7 +16168,9 @@ namespace Chummer
                 {
                     //TODO: Fix
                 }
+                
             }
+            */
 
             // Update Complex Forms.
             XmlNode xmlComplexForms = objXmlKit["complexforms"];
@@ -17584,7 +17687,7 @@ namespace Chummer
                             }
                             break;
                         case ClipboardContentType.Weapon:
-                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
+                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle _);
                             if (objWeaponMount != null)
                             {
                                 blnPasteEnabled = true;
@@ -17743,12 +17846,12 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             objCyberware.Create(objXmlCyberwareNode, CharacterObject, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, blnCreateChildren);
 
-            if (objParentObject.GetType() == typeof(Character))
-                ((Character)objParentObject).Cyberware.Add(objCyberware);
-            else if (objParentObject.GetType() == typeof(Cyberware))
-                ((Cyberware)objParentObject).Children.Add(objCyberware);
-            else if (objParentObject.GetType() == typeof(VehicleMod))
-                ((VehicleMod)objParentObject).Cyberware.Add(objCyberware);
+            if (objParentObject is Character objParentCharacter)
+                objParentCharacter.Cyberware.Add(objCyberware);
+            else if (objParentObject is Cyberware objParentCyberware)
+                objParentCyberware.Children.Add(objCyberware);
+            else if (objParentObject is VehicleMod objParentVehicleMod)
+                objParentVehicleMod.Cyberware.Add(objCyberware);
 
             // Add any children.
             foreach (XmlNode objXmlChild in xmlCyberware.SelectNodes("cyberwares/cyberware"))
@@ -18116,11 +18219,14 @@ namespace Chummer
             Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
             Control destination = panContacts.GetChildAtPoint(mousePosition);
 
-            int indexDestination = panContacts.Controls.IndexOf(destination);
-            if (panContacts.Controls.IndexOf(source) < indexDestination)
-                indexDestination--;
+            if (destination != null)
+            {
+                int indexDestination = panContacts.Controls.IndexOf(destination);
+                if (panContacts.Controls.IndexOf(source) < indexDestination)
+                    indexDestination--;
 
-            panContacts.Controls.SetChildIndex(source, indexDestination);
+                panContacts.Controls.SetChildIndex(source, indexDestination);
+            }
 
             foreach (ContactControl objControl in panContacts.Controls)
             {
@@ -18385,7 +18491,7 @@ namespace Chummer
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(CharacterObject.CalculateKarmaValue(GlobalOptions.Language, out int intDummy),
+            MessageBox.Show(CharacterObject.CalculateKarmaValue(GlobalOptions.Language, out int _),
                 LanguageManager.GetString("MessageTitle_KarmaValue", GlobalOptions.Language),
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

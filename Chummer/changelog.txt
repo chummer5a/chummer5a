@@ -21,10 +21,19 @@ Application Changes:
 - Fixed an issue where copying and pasting armor that adds weapons would not also create copies of said weapons.
 - Fixed an issue where copying and pasting gear that adds weapons would not properly link the new instances of the pasted weapons with the new instance of the pasted gear.
 - Added the ability to copy and paste 'ware of all types. As with other copy-paste code, copying can be done from any character, while pasting only works with characters in create mode.
+- Fixed an issue where shared Condition Monitor threshold offsets did not properly account for improvements that allowed condition monitor penalties to be ignored or overarching threshold offsets.
+- Fixed an issue where A.I. characters would have traditional condition monitor information displayed, both in Chummer5a and on character sheets, instead of condition monitor information based on their home node.
+- Fixed an issue where A.I. characters could receive wound penalties from Matrix condition monitor damage.
 
 Data Changes:
 
 - Fixed an issue where the group contact associated with Made Man would still cost karma as a group contact. Fixed an issue where removing Made Man would not undo the forced increase in loyalty it has on the associated group contact. Fixes #2492.
+
+New Strings:
+
+- String_DeviceRating
+- Label_OtherCoreCM
+- Label_OtherMatrixCM
 
 Build 198
 

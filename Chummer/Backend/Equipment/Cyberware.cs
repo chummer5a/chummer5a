@@ -106,6 +106,8 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a Grade.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
         {
             IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
@@ -184,9 +186,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="objSource">Source of the piece.</param>
         /// <param name="intRating">Selected Rating of the piece of Cyberware.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
+        /// <param name="lstVehicles">List of Vehicles that should be added to the Character.</param>
         /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
+        /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
+        /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
         public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, List<Weapon> lstWeapons, List<Vehicle> lstVehicles, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
         {
             Parent = objParent;
@@ -715,6 +720,7 @@ namespace Chummer.Backend.Equipment
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether this is a copy of an existing cyberware being loaded.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
@@ -2620,29 +2626,8 @@ namespace Chummer.Backend.Equipment
                 {
                     return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
                 }
-                else
-                {
-                    return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
-                }
-            }
-        }
 
-        /// <summary>
-        /// Whether or not the Cyberware is allowed to accept Modular Plugins.
-        /// </summary>
-        public bool AllowModularPlugins
-        {
-            get
-            {
-                foreach (Cyberware objChild in Children)
-                {
-                    if (objChild.AllowedSubsystems.Contains("Modular Plug-In"))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }
 

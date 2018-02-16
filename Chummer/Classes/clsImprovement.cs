@@ -799,9 +799,11 @@ namespace Chummer
         /// <summary>
         /// Retrieve the total Improvement value for the specified ImprovementType.
         /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
         {
             //Log.Enter("ValueOf");
@@ -934,6 +936,7 @@ namespace Chummer
         /// <summary>
         /// Convert a string to an integer, converting "Rating" to a number where appropriate.
         /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         private static int ValueToInt(Character objCharacter, string strValue, int intRating)
@@ -981,6 +984,7 @@ namespace Chummer
         /// <summary>
         /// Create all of the Improvements for an XML Node.
         /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
         /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
         /// <param name="nodBonus">bonus XMLXode from the source data file.</param>
@@ -1433,6 +1437,7 @@ namespace Chummer
                             EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled).ToList());
                         }
                         break;
+                    /*
                     case Improvement.ImprovementType.SkillSpecialization:
                         {
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
@@ -1441,6 +1446,7 @@ namespace Chummer
                             // TODO: Add temporarily removde skill specialization
                         }
                         break;
+                        */
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
                         if (objProgram != null)
@@ -1808,6 +1814,7 @@ namespace Chummer
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled).ToList());
                         }
                         break;
+                    /*
                     case Improvement.ImprovementType.SkillSpecialization:
                         {
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
@@ -1816,6 +1823,7 @@ namespace Chummer
                                 // TODO: Temporarily remove skill specialization
                         }
                         break;
+                        */
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
                         if (objProgram != null)
@@ -2307,6 +2315,7 @@ namespace Chummer
         /// <summary>
         /// Create a new Improvement and add it to the Character.
         /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
         /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
         /// <param name="strSourceName">Name of the item that grants this Improvement.</param>

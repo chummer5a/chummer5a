@@ -168,6 +168,7 @@ namespace Chummer
         /// <param name="objQualitySource">Source of the Quality.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
+        /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
         public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
@@ -791,7 +792,7 @@ namespace Chummer
         /// <returns>Is the Quality valid on said Character</returns>
         public static bool IsValid(Character objCharacter, XmlNode xmlQuality)
         {
-            return IsValid(objCharacter, xmlQuality, out QualityFailureReason q, out List<Quality> q2);
+            return IsValid(objCharacter, xmlQuality, out QualityFailureReason _, out List<Quality> _);
         }
 
         /// <summary>

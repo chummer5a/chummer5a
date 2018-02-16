@@ -262,6 +262,7 @@
   <xsl:variable name="lang.ComplexForms"    select="'Complex Forms'"/>
   <xsl:variable name="lang.ConditionMonitor"  select="'Condition Monitor'"/>
   <xsl:variable name="lang.ContactList"    select="'Contact List'"/>
+  <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Critter Powers'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Current Edge Points'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>

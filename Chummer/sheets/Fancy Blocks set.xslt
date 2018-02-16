@@ -564,11 +564,49 @@
             <tr><td colspan="2"><xsl:value-of select="$lang.MatrixCold" /></td><td colspan="2"><strong><xsl:value-of select="matrixcoldinit" /></strong></td></tr>
             <tr><td colspan="2"><xsl:value-of select="$lang.MatrixHot" /></td><td colspan="2"><strong><xsl:value-of select="matrixhotinit" /></strong></td></tr>
             <tr><td colspan="4"><hr /></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.PhysicalTrack" /></td><td><strong><xsl:value-of select="physicalcm" /></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:choose>
+                <xsl:when test="physicalcmiscorecm = 'True'">
+                  <xsl:value-of select="$lang.CoreTrack" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.PhysicalTrack" />
+                </xsl:otherwise>
+              </xsl:choose>
+            </td><td><strong><xsl:value-of select="physicalcm" /></strong></td></tr>
             <tr><td colspan="3">Overflow</td><td><strong><xsl:value-of select="cmoverflow - 1"/></strong></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.StunTrack" /></td><td><strong><xsl:value-of select="stuncm" /></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:choose>
+                <xsl:when test="stuncmismatrixcm = 'True'">
+                  <xsl:value-of select="$lang.MatrixTrack" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:if test="physicalcmiscorecm != 'True'">
+                    <xsl:value-of select="$lang.StunTrack" />
+                  </xsl:if>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td><td>
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="stuncm" />
+                </strong>
+              </xsl:if>
+            </td></tr>
             <tr><td colspan="3"><xsl:value-of select="$lang.PhysicalNaturalRecovery" /></td><td><strong><xsl:value-of select="physicalcmnaturalrecovery" /></strong></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.StunNaturalRecovery" /></td><td><strong><xsl:value-of select="stuncmnaturalrecovery"/></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="$lang.StunNaturalRecovery" />
+                </strong>
+              </xsl:if>
+            </td><td>
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="stuncmnaturalrecovery"/>
+                </strong>
+              </xsl:if>
+            </td></tr>
     </table>
   </xsl:template>
 

@@ -2797,9 +2797,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
         /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear"></param>
+        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Gear in Vehicle Weapon Accessory Nodes.</param>
         /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
         /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts.</param>
+        /// <param name="cmsCyberware">ContextMenuStrip for Cyberware.</param>
+        /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
         {
             TreeNode objNode = new TreeNode
@@ -2945,6 +2947,10 @@ namespace Chummer.Backend.Equipment
         /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
         /// </summary>
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>
+        /// <param name="treVehicles">TreeView where the vehicle's node would be.</param>
+        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
+        /// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
+        /// <param name="cmsVehicleWeaponAccessoryGear">ContextMenuStrip for Gear in Vehicle Weapon Accessory Nodes.</param>
         public void ChangeVehicleSensor(TreeView treVehicles, bool blnIncrease, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
             Gear objCurrentSensor = null;
@@ -2963,42 +2969,42 @@ namespace Chummer.Backend.Equipment
                     }
                     break;
                 }
-                else if (objCurrentGear.Name == "Minidrone Sensor")
+                if (objCurrentGear.Name == "Minidrone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Microdrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Small Drone Sensor")
+                if (objCurrentGear.Name == "Small Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Medium Drone Sensor")
+                if (objCurrentGear.Name == "Medium Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Large Drone Sensor")
+                if (objCurrentGear.Name == "Large Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Vehicle Sensor")
+                if (objCurrentGear.Name == "Vehicle Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Extra-Large Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Extra-Large Vehicle Sensor")
+                if (objCurrentGear.Name == "Extra-Large Vehicle Sensor")
                 {
                     if (!blnIncrease)
                     {

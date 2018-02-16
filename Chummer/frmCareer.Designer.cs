@@ -634,7 +634,7 @@ namespace Chummer
             this.cboGearOverclocker = new System.Windows.Forms.ComboBox();
             this.lblGearOverclocker = new System.Windows.Forms.Label();
             this.tabGearMatrixCM = new System.Windows.Forms.TabControl();
-            this.tabMatrixCM = new System.Windows.Forms.TabPage();
+            this.tabGearMatrixCMPage = new System.Windows.Forms.TabPage();
             this.chkGearMatrixCM1 = new System.Windows.Forms.CheckBox();
             this.chkGearMatrixCM2 = new System.Windows.Forms.CheckBox();
             this.chkGearMatrixCM3 = new System.Windows.Forms.CheckBox();
@@ -1249,7 +1249,7 @@ namespace Chummer
             this.tabStreetGearTabs.SuspendLayout();
             this.tabGear.SuspendLayout();
             this.tabGearMatrixCM.SuspendLayout();
-            this.tabMatrixCM.SuspendLayout();
+            this.tabGearMatrixCMPage.SuspendLayout();
             this.tabArmor.SuspendLayout();
             this.tabWeapons.SuspendLayout();
             this.tabWeaponMatrixCM.SuspendLayout();
@@ -7756,7 +7756,7 @@ namespace Chummer
             // 
             // tabGearMatrixCM
             // 
-            this.tabGearMatrixCM.Controls.Add(this.tabMatrixCM);
+            this.tabGearMatrixCM.Controls.Add(this.tabGearMatrixCMPage);
             this.tabGearMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
             this.tabGearMatrixCM.Location = new System.Drawing.Point(498, 232);
             this.tabGearMatrixCM.Name = "tabGearMatrixCM";
@@ -7766,40 +7766,40 @@ namespace Chummer
             this.tabGearMatrixCM.TabIndex = 203;
             this.tabGearMatrixCM.Visible = false;
             // 
-            // tabMatrixCM
+            // tabGearMatrixCMPage
             // 
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM1);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM2);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM3);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM4);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM5);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM6);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM7);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM8);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM9);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM10);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM11);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM12);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM13);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM14);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM15);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM16);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM17);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM18);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM19);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM20);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM21);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM22);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM23);
-            this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM24);
-            this.tabMatrixCM.Location = new System.Drawing.Point(4, 22);
-            this.tabMatrixCM.Name = "tabMatrixCM";
-            this.tabMatrixCM.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
-            this.tabMatrixCM.TabIndex = 1;
-            this.tabMatrixCM.Tag = "Tab_MatrixConditionMonitor";
-            this.tabMatrixCM.Text = "Matrix Condition Monitor";
-            this.tabMatrixCM.UseVisualStyleBackColor = true;
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM1);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM2);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM3);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM4);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM5);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM6);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM7);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM8);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM9);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM10);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM11);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM12);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM13);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM14);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM15);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM16);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM17);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM18);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM19);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM20);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM21);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM22);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM23);
+            this.tabGearMatrixCMPage.Controls.Add(this.chkGearMatrixCM24);
+            this.tabGearMatrixCMPage.Location = new System.Drawing.Point(4, 22);
+            this.tabGearMatrixCMPage.Name = "tabGearMatrixCMPage";
+            this.tabGearMatrixCMPage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGearMatrixCMPage.Size = new System.Drawing.Size(205, 87);
+            this.tabGearMatrixCMPage.TabIndex = 1;
+            this.tabGearMatrixCMPage.Tag = "Tab_MatrixConditionMonitor";
+            this.tabGearMatrixCMPage.Text = "Matrix Condition Monitor";
+            this.tabGearMatrixCMPage.UseVisualStyleBackColor = true;
             // 
             // chkGearMatrixCM1
             // 
@@ -9037,7 +9037,7 @@ namespace Chummer
             this.chkWeaponMatrixCM1.Tag = "1";
             this.chkWeaponMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM1.UseVisualStyleBackColor = true;
-            this.chkWeaponMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+            this.chkWeaponMatrixCM1.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM2
             // 
@@ -9049,6 +9049,7 @@ namespace Chummer
             this.chkWeaponMatrixCM2.Tag = "2";
             this.chkWeaponMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM2.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM2.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM3
             // 
@@ -9060,6 +9061,7 @@ namespace Chummer
             this.chkWeaponMatrixCM3.Tag = "3";
             this.chkWeaponMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM3.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM3.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM4
             // 
@@ -9071,6 +9073,7 @@ namespace Chummer
             this.chkWeaponMatrixCM4.Tag = "4";
             this.chkWeaponMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM4.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM4.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM5
             // 
@@ -9082,6 +9085,7 @@ namespace Chummer
             this.chkWeaponMatrixCM5.Tag = "5";
             this.chkWeaponMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM5.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM5.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM6
             // 
@@ -9093,6 +9097,7 @@ namespace Chummer
             this.chkWeaponMatrixCM6.Tag = "6";
             this.chkWeaponMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM6.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM6.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM7
             // 
@@ -9104,6 +9109,7 @@ namespace Chummer
             this.chkWeaponMatrixCM7.Tag = "7";
             this.chkWeaponMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM7.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM7.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM8
             // 
@@ -9115,6 +9121,7 @@ namespace Chummer
             this.chkWeaponMatrixCM8.Tag = "8";
             this.chkWeaponMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM8.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM8.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM9
             // 
@@ -9126,6 +9133,7 @@ namespace Chummer
             this.chkWeaponMatrixCM9.Tag = "9";
             this.chkWeaponMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM9.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM9.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM10
             // 
@@ -9137,6 +9145,7 @@ namespace Chummer
             this.chkWeaponMatrixCM10.Tag = "10";
             this.chkWeaponMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM10.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM10.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM11
             // 
@@ -9148,6 +9157,7 @@ namespace Chummer
             this.chkWeaponMatrixCM11.Tag = "11";
             this.chkWeaponMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM11.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM11.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM12
             // 
@@ -9159,6 +9169,7 @@ namespace Chummer
             this.chkWeaponMatrixCM12.Tag = "12";
             this.chkWeaponMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM12.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM12.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM13
             // 
@@ -9170,6 +9181,7 @@ namespace Chummer
             this.chkWeaponMatrixCM13.Tag = "13";
             this.chkWeaponMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM13.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM13.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM14
             // 
@@ -9181,6 +9193,7 @@ namespace Chummer
             this.chkWeaponMatrixCM14.Tag = "14";
             this.chkWeaponMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM14.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM14.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM15
             // 
@@ -9192,6 +9205,7 @@ namespace Chummer
             this.chkWeaponMatrixCM15.Tag = "15";
             this.chkWeaponMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM15.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM15.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM16
             // 
@@ -9203,6 +9217,7 @@ namespace Chummer
             this.chkWeaponMatrixCM16.Tag = "16";
             this.chkWeaponMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM16.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM16.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM17
             // 
@@ -9214,6 +9229,7 @@ namespace Chummer
             this.chkWeaponMatrixCM17.Tag = "17";
             this.chkWeaponMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM17.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM17.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM18
             // 
@@ -9225,6 +9241,7 @@ namespace Chummer
             this.chkWeaponMatrixCM18.Tag = "18";
             this.chkWeaponMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM18.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM18.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM19
             // 
@@ -9236,6 +9253,7 @@ namespace Chummer
             this.chkWeaponMatrixCM19.Tag = "19";
             this.chkWeaponMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM19.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM19.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM20
             // 
@@ -9247,6 +9265,7 @@ namespace Chummer
             this.chkWeaponMatrixCM20.Tag = "20";
             this.chkWeaponMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM20.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM20.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM21
             // 
@@ -9258,6 +9277,7 @@ namespace Chummer
             this.chkWeaponMatrixCM21.Tag = "21";
             this.chkWeaponMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM21.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM21.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM22
             // 
@@ -9269,6 +9289,7 @@ namespace Chummer
             this.chkWeaponMatrixCM22.Tag = "22";
             this.chkWeaponMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM22.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM22.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM23
             // 
@@ -9280,6 +9301,7 @@ namespace Chummer
             this.chkWeaponMatrixCM23.Tag = "23";
             this.chkWeaponMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM23.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM23.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // chkWeaponMatrixCM24
             // 
@@ -9291,6 +9313,7 @@ namespace Chummer
             this.chkWeaponMatrixCM24.Tag = "24";
             this.chkWeaponMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkWeaponMatrixCM24.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM24.CheckedChanged += new System.EventHandler(this.chkWeaponCM_CheckedChanged);
             // 
             // lblWeaponRangeAlternate
             // 
@@ -14171,7 +14194,7 @@ namespace Chummer
             this.tabGear.ResumeLayout(false);
             this.tabGear.PerformLayout();
             this.tabGearMatrixCM.ResumeLayout(false);
-            this.tabMatrixCM.ResumeLayout(false);
+            this.tabGearMatrixCMPage.ResumeLayout(false);
             this.tabArmor.ResumeLayout(false);
             this.tabArmor.PerformLayout();
             this.tabWeapons.ResumeLayout(false);
@@ -14945,7 +14968,7 @@ namespace Chummer
         private System.Windows.Forms.ComboBox cboGearOverclocker;
         private System.Windows.Forms.Label lblGearOverclocker;
         private System.Windows.Forms.TabControl tabGearMatrixCM;
-        private System.Windows.Forms.TabPage tabMatrixCM;
+        private System.Windows.Forms.TabPage tabGearMatrixCMPage;
         private System.Windows.Forms.CheckBox chkGearMatrixCM1;
         private System.Windows.Forms.CheckBox chkGearMatrixCM2;
         private System.Windows.Forms.CheckBox chkGearMatrixCM3;

@@ -101,6 +101,8 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
@@ -272,11 +274,11 @@ namespace Chummer
             return null;
         }
         /// <summary>
-        /// 
+        /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid"></param>
-        /// <param name="lstVehicles"></param>
-        /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
         /// <returns></returns>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
@@ -298,10 +300,11 @@ namespace Chummer
             return null;
         }
         /// <summary>
-        /// 
+        /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
-        /// <param name="strGuid"></param>
-        /// <param name="lstVehicles"></param>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="outMount">Weapon Mount in which the Vehicle Mod was found.</param>
         /// <returns></returns>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
         {
@@ -853,16 +856,15 @@ namespace Chummer
                     // we still haven't found anything
                     if (intTitleIndex == -1)
                     {
-                        int intTextToSearchLenght = strTextToSearch.Length;
-                        int intLineBiggerThanText = lstStringFromPDF[i].Length - intTextToSearchLenght;
+                        int intTextToSearchLength = strTextToSearch.Length;
                         int intTitleExtraLines = 0;
-                        if (strCurrentLine.Length < intTextToSearchLenght)
+                        if (strCurrentLine.Length < intTextToSearchLength)
                         {
                             // if the line is smaller first check if it contains the start of the text, before parsing the rest
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                while (strCurrentLine.Length < intTextToSearchLenght && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
+                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
@@ -876,16 +878,16 @@ namespace Chummer
                             }
                         }
                         // now either we have enough text to search or the page doesn't have anymore stuff and must give up
-                        if (strCurrentLine.Length < intTextToSearchLenght)
+                        if (strCurrentLine.Length < intTextToSearchLength)
                             break;
 
                         if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
                         {
                             // WE FOUND SOMETHING! lets check what kind block we have
                             // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
-                            if (strCurrentLine.Length > intTextToSearchLenght)
+                            if (strCurrentLine.Length > intTextToSearchLength)
                             {
-                                if (strCurrentLine[intTextToSearchLenght] == ':')
+                                if (strCurrentLine[intTextToSearchLength] == ':')
                                 {
                                     intTitleIndex = i;
                                     blnTitleWithColon = true;
