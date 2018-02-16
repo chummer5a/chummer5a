@@ -536,7 +536,7 @@ namespace Chummer
                         {
                             string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
                             if (!string.IsNullOrEmpty(strWeapon))
-                                strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf("(", StringComparison.Ordinal) - 1);
+                                strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
                             objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strWeapon + "\"]");
                         }
                         else

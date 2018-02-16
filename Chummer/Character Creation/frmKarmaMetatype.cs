@@ -873,12 +873,12 @@ namespace Chummer
 
                 // If the Metatype has Force enabled, show the Force NUD.
                 string strEssMax = objXmlMetatype.SelectSingleNode("essmax")?.Value ?? string.Empty;
-                if (objXmlMetatype.SelectSingleNode("forcecreature") != null || (!string.IsNullOrEmpty(strEssMax) && strEssMax.Contains("D6")))
+                int intPos = strEssMax.FastIndexOf("D6");
+                if (objXmlMetatype.SelectSingleNode("forcecreature") != null || intPos != -1)
                 {
                     lblForceLabel.Visible = true;
                     nudForce.Visible = true;
-
-                    int intPos = !string.IsNullOrEmpty(strEssMax) ? strEssMax.IndexOf("D6", StringComparison.Ordinal) : - 1;
+                    
                     if (intPos != -1)
                     {
                         intPos -= 1;

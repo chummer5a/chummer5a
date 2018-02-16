@@ -126,7 +126,7 @@ namespace Chummer
                 {
                     continue;
                 }
-                if (!_lstCategory.Select(x => x.Value).Contains(strCategory) && RefreshList(strCategory, false, true).Count > 0)
+                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
                     string strInnerText = strCategory;
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
@@ -733,7 +733,7 @@ namespace Chummer
                 string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
                 if (!string.IsNullOrEmpty(strCapacityText))
                 {
-                    int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
+                    int intPos = strCapacityText.FastIndexOf("/[");
                     string strCapacity;
                     if (intPos != -1)
                     {
@@ -744,7 +744,7 @@ namespace Chummer
                             lblCapacity.Text = "*";
                         else
                         {
-                            bool blnSquareBrackets = strFirstHalf.Contains('[');
+                            bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                             strCapacity = strFirstHalf;
                             if (blnSquareBrackets && strCapacity.Length > 2)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -806,7 +806,7 @@ namespace Chummer
                         lblCapacity.Text = "*";
                     else
                     {
-                        bool blnSquareBrackets = strCapacityText.Contains('[');
+                        bool blnSquareBrackets = strCapacityText.StartsWith('[');
                         strCapacity = strCapacityText;
                         if (blnSquareBrackets && strCapacity.Length > 2)
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);

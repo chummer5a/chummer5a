@@ -154,6 +154,7 @@
   <xsl:variable name="lang.Name"      select="'Nom'"/>
   <xsl:variable name="lang.Native"    select="'Maternelle'"/>
   <xsl:variable name="lang.No"      select="'Non'"/>
+  <xsl:variable name="lang.None"      select="'None'"/>
   <xsl:variable name="lang.Notes"      select="'Remarques'"/>
   <xsl:variable name="lang.Notoriety"    select="'Rumeur'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>

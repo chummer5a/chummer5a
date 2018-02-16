@@ -28,16 +28,6 @@
         </specificskill>
       </bonus>
     </gear>
-    <gear>
-      <name>Power Focus</name>
-      <bonus>
-        <skillattribute amendoperation="remove" />
-        <skillcategory>
-          <name>Magical Active</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-      </bonus>
-    </gear>
     <gear xpathfilter="name = 'Disenchanting Focus Formula'">
       <name>Artificing Focus Formula</name>
       <bonus>

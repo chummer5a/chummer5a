@@ -12827,7 +12827,7 @@ namespace Chummer
             {
                 string ammoString = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
                 // Determine which loading methods are available to the Weapon.
-                if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
+                if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
                 {
                     string strWeaponAmmo = ammoString.ToLower();
                     if (strWeaponAmmo.Contains("external source"))
@@ -12849,8 +12849,9 @@ namespace Chummer
                         if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
                             strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
 
-                        if (strThisAmmo.Contains('('))
-                            strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
+                        int intPos = strThisAmmo.IndexOf('(');
+                        if (intPos != -1)
+                            strThisAmmo = strThisAmmo.Substring(0, intPos);
 
                         lstCount.Add(strThisAmmo);
                     }
@@ -12859,8 +12860,9 @@ namespace Chummer
                 {
                     // Nothing weird in the ammo string, so just use the number given.
                     string strAmmo = ammoString;
-                    if (strAmmo.Contains('('))
-                        strAmmo = strAmmo.Substring(0, strAmmo.IndexOf('('));
+                    int intPos = strAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strAmmo = strAmmo.Substring(0, intPos);
                     lstCount.Add(strAmmo);
                 }
                 
@@ -13867,7 +13869,7 @@ namespace Chummer
 
             // Determine which loading methods are available to the Weapon.
             string ammoString = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
+            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
             {
                 string strWeaponAmmo = ammoString.ToLower();
                 if (strWeaponAmmo.Contains("external source"))
@@ -13889,8 +13891,9 @@ namespace Chummer
                     if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
                         strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
 
-                    if (strThisAmmo.Contains('('))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
+                    int intPos = strThisAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strThisAmmo = strThisAmmo.Substring(0, intPos);
 
                     lstCount.Add(strThisAmmo);
                 }
@@ -13898,8 +13901,9 @@ namespace Chummer
             else
             {
                 // Nothing weird in the ammo string, so just use the number given.
-                if (ammoString.Contains('('))
-                    ammoString = ammoString.Substring(0, ammoString.IndexOf('('));
+                int intPos = ammoString.IndexOf('(');
+                if (intPos != -1)
+                    ammoString = ammoString.Substring(0, intPos);
                 lstCount.Add(ammoString);
             }
 
@@ -19032,15 +19036,15 @@ namespace Chummer
                                 DisplayVehicleStats(false);
 
                                 string[] strMounts = objAccessory.Mount.Split('/');
-                                string strMount = string.Empty;
+                                StringBuilder strMount = new StringBuilder();
                                 foreach (string strCurrentMount in strMounts)
                                 {
                                     if (!string.IsNullOrEmpty(strCurrentMount))
-                                        strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
+                                        strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/');
                                 }
                                 // Remove the trailing /
-                                if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
-                                    strMount = strMount.Substring(0, strMount.Length - 1);
+                                if (strMount.Length > 0)
+                                    strMount.Length -= 1;
                                 if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && (objAccessory.ExtraMount != "None"))
                                 {
                                     bool boolHaveAddedItem = false;
@@ -19051,20 +19055,20 @@ namespace Chummer
                                         {
                                             if (!boolHaveAddedItem)
                                             {
-                                                strMount += " + ";
+                                                strMount.Append(" + ");
                                                 boolHaveAddedItem = true;
                                             }
-                                            strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
+                                            strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/');
                                         }
                                     }
                                     // Remove the trailing /
                                     if (boolHaveAddedItem)
-                                        strMount = strMount.Substring(0, strMount.Length - 1);
+                                        strMount.Length -= 1;
                                 }
 
                                 lblVehicleSlotsLabel.Visible = true;
                                 lblVehicleSlots.Visible = true;
-                                lblVehicleSlots.Text = strMount;
+                                lblVehicleSlots.Text = strMount.ToString();
                                 string strPage = objAccessory.Page(GlobalOptions.Language);
                                 lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language) + ' ' + strPage;
                                 tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);

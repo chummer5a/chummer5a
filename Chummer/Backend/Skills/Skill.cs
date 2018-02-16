@@ -100,7 +100,7 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("skill");
 
-            int intRating = PoolOtherAttribute(AttributeObject.TotalValue);
+            int intRating = PoolOtherAttribute(AttributeObject.TotalValue, AttributeObject.Abbrev);
             int intSpecRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? intRating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
@@ -108,8 +108,8 @@ namespace Chummer.Backend.Skills
                     ? intRating + 3
                     : intRating + 2);
 
-            int intRatingModifiers = RatingModifiers;
-            int intDicePoolModifiers = PoolModifiers;
+            int intRatingModifiers = RatingModifiers(AttributeObject.Abbrev);
+            int intDicePoolModifiers = PoolModifiers(AttributeObject.Abbrev);
 
             objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
             objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayNameMethod(strLanguageToPrint) ?? LanguageManager.GetString("String_None", strLanguageToPrint));
@@ -122,7 +122,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
             objWriter.WriteElementString("specializedrating", intSpecRating.ToString(objCulture));
             objWriter.WriteElementString("specbonus", (intSpecRating - intRating).ToString(objCulture));
-            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString(objCulture));
+            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue, AttributeObject.Abbrev).ToString(objCulture));
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
             objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
@@ -427,7 +427,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The total, general pourpose dice pool for this skill
         /// </summary>
-        public int Pool => PoolOtherAttribute(AttributeObject.TotalValue);
+        public int Pool => PoolOtherAttribute(AttributeObject.TotalValue, AttributeObject.Abbrev);
 
         public bool Leveled => Rating > 0;
 
@@ -731,7 +731,7 @@ namespace Chummer.Backend.Skills
                             s.AppendFormat("({0}) ", cyberware.Grade.DisplayName(GlobalOptions.Language));
                         }
 
-                        int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
+                        int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility, Attribute);
 
                         if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous || cyberware.LimbSlotCount > 1)
                         {
@@ -752,7 +752,7 @@ namespace Chummer.Backend.Skills
                     s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
 
                     int intLoopAttribute = CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value;
-                    int intBasePool = PoolOtherAttribute(intLoopAttribute);
+                    int intBasePool = PoolOtherAttribute(intLoopAttribute, objSwapSkillAttribute.ImprovedName);
                     bool blnHaveSpec = false;
 
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
@@ -777,7 +777,7 @@ namespace Chummer.Backend.Skills
                                 s.AppendFormat("({0}) ", cyberware.Grade.DisplayName(GlobalOptions.Language));
                             }
 
-                            int intLoopPool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
+                            int intLoopPool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility, objSwapSkillAttribute.ImprovedName);
                             if (blnHaveSpec)
                             {
                                 intLoopPool += 2;
@@ -900,11 +900,11 @@ namespace Chummer.Backend.Skills
             return strReturn ?? SkillCategory;
         }
 
-        public virtual string DisplayPool => DisplayOtherAttribue(AttributeObject.TotalValue);
+        public virtual string DisplayPool => DisplayOtherAttribute(AttributeObject.TotalValue, AttributeObject.Abbrev);
 
-        public string DisplayOtherAttribue(int attributeValue)
+        public string DisplayOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {
-            int pool = PoolOtherAttribute(attributeValue);
+            int pool = PoolOtherAttribute(intAttributeTotalValue, strAttribute);
 
             if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled))
             {

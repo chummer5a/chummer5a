@@ -2343,10 +2343,10 @@
       <cost>62000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>LOG</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2361,10 +2361,10 @@
       <cost>65000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>INT</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>161</page>

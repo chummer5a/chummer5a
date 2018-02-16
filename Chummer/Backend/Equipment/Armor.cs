@@ -651,7 +651,7 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strArmorCapacity.Contains('[');
+                    bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
                     string strCapacity = strArmorCapacity;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -1164,14 +1164,14 @@ namespace Chummer.Backend.Equipment
                         }
                         if (blnSoftweave) continue;
                         string strCapacity = objMod.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
                         {
                             // If this is a multiple-capacity item, use only the second half.
-                            int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                             strCapacity = strCapacity.Substring(intPos + 1);
                         }
 
-                        if (strCapacity.Contains('['))
+                        if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -1182,14 +1182,14 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objGear in Gear)
                     {
                         string strCapacity = objGear.CalculatedArmorCapacity;
-                        if (strCapacity.Contains("/["))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
                         {
                             // If this is a multiple-capacity item, use only the second half.
-                            int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                             strCapacity = strCapacity.Substring(intPos + 1);
                         }
 
-                        if (strCapacity.Contains('['))
+                        if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";

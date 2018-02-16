@@ -1610,9 +1610,9 @@ namespace Chummer.Backend.Equipment
             }
 
             // Evaluate the min expression if there is one.
-            if (strDamage.Contains("min("))
+            int intStart = strDamage.FastIndexOf("min(");
+            if (intStart != -1)
             {
-                int intStart = strDamage.IndexOf("min(", StringComparison.Ordinal);
                 int intEnd = strDamage.IndexOf(')', intStart);
                 string strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
                 
@@ -1932,14 +1932,16 @@ namespace Chummer.Backend.Equipment
             foreach (string strAmmo in strAmmos)
             {
                 string strThisAmmo = strAmmo;
-                if (strThisAmmo.Contains('('))
+                int intPos = strThisAmmo.IndexOf('(');
+                if (intPos != -1)
                 {
                     string strPrepend = string.Empty;
-                    strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
-                    if (strThisAmmo.Contains('x'))
+                    strThisAmmo = strThisAmmo.Substring(0, intPos);
+                    intPos = strThisAmmo.IndexOf('x');
+                    if (intPos != -1)
                     {
-                        strPrepend = strThisAmmo.Substring(0, strThisAmmo.IndexOf('x') + 1);
-                        strThisAmmo = strThisAmmo.Substring(strThisAmmo.IndexOf('x') + 1, strThisAmmo.Length - (strThisAmmo.IndexOf('x') + 1));
+                        strPrepend = strThisAmmo.Substring(0, intPos + 1);
+                        strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - intPos + 1);
                     }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
@@ -3369,7 +3371,7 @@ namespace Chummer.Backend.Equipment
                     }
                 case FiringMode.GunneryCommandDevice:
                     {
-                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
                         foreach (Gear objGear in ParentVehicle.Gear)
                         {
                             if (objGear.InternalId == AmmoLoaded)
@@ -3384,7 +3386,7 @@ namespace Chummer.Backend.Equipment
                     }
                 case FiringMode.RemoteOperated:
                     {
-                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
                         foreach (Gear objGear in ParentVehicle.Gear)
                         {
                             if (objGear.InternalId == AmmoLoaded)
@@ -4453,7 +4455,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             
-            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
+            if (strExpression.IndexOfAny('{', '+', '-', '*') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)

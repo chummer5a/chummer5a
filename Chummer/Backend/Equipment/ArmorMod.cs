@@ -757,7 +757,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity;
                 string strMyCapacity = CalculatedGearCapacity;
                 // Get the Gear base Capacity.
-                int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
+                int intPos = strMyCapacity.FastIndexOf("/[");
                 if (intPos != -1)
                 {
                     // If this is a multiple-capacity item, use only the first half.
@@ -771,15 +771,15 @@ namespace Chummer.Backend.Equipment
                 foreach (Gear objChildGear in Gear)
                 {
                     string strCapacity = objChildGear.CalculatedCapacity;
-                    if (strCapacity.Contains("/["))
+                    intPos = strCapacity.FastIndexOf("/[");
+                    if (intPos != -1)
                     {
                         // If this is a multiple-capacity item, use only the second half.
-                        int intLoopPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        strCapacity = strCapacity.Substring(intLoopPos + 1);
+                        strCapacity = strCapacity.Substring(intPos + 1);
                     }
 
                     // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                    strCapacity = strCapacity.Contains('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
+                    strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
                     decCapacity -= (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
                 }
 
@@ -804,7 +804,7 @@ namespace Chummer.Backend.Equipment
                 }
                 strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent.TotalArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo))
                     .Replace("Rating", Rating.ToString());
-                bool blnSquareBrackets = strCapacity.Contains('[');
+                bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 

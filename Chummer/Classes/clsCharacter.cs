@@ -1250,24 +1250,34 @@ namespace Chummer
             // Improvements.
             objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
             string strCharacterInnerXml = objXmlCharacter.InnerXml;
+            // Orphaned improvements shouldn't be getting created after 5.198. If this is proven incorrect, bump up the version here.
+            bool blnDoCheckForOrphanedImprovements = LastSavedVersion < new Version("5.198.0");
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
-                string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
-                
-                if (string.IsNullOrEmpty(strLoopSourceName) || !strLoopSourceName.IsGuid() || (objXmlImprovement["custom"]?.InnerText == bool.TrueString) ||
-                    // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                    (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) != strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal)))
+                if (blnDoCheckForOrphanedImprovements)
                 {
-                    Improvement objImprovement = new Improvement(this);
-                    try
+                    string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                     {
-                        objImprovement.Load(objXmlImprovement);
-                        _lstImprovements.Add(objImprovement);
+                        // Hacky way to make sure we aren't loading in any orphaned improvements.
+                        // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
+                        int intFirstIndexOfId = -1;
+                        int intLastIndexOfId = -1;
+                        Parallel.Invoke(() => intFirstIndexOfId = strCharacterInnerXml.FastIndexOf(strLoopSourceName), () => intLastIndexOfId = strCharacterInnerXml.FastLastIndexOf(strLoopSourceName));
+                        if (intFirstIndexOfId == intLastIndexOfId)
+                            continue;
                     }
-                    catch (ArgumentException)
-                    {
-                        _lstInternalIdsNeedingReapplyImprovements.Add(strLoopSourceName);
-                    }
+                }
+
+                Improvement objImprovement = new Improvement(this);
+                try
+                {
+                    objImprovement.Load(objXmlImprovement);
+                    _lstImprovements.Add(objImprovement);
+                }
+                catch (ArgumentException)
+                {
+                    _lstInternalIdsNeedingReapplyImprovements.Add(objXmlImprovement["sourcename"]?.InnerText);
                 }
             }
             Timekeeper.Finish("load_char_imp");
@@ -6202,7 +6212,7 @@ namespace Chummer
 
                     // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
                     int intDEPTotal = DEP.TotalValue;
-                    int intAIReturn = (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute(intDEPTotal) ?? intDEPTotal - 1) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
+                    int intAIReturn = (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute(intDEPTotal, "DEP") ?? intDEPTotal - 1) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                     if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                         intAIReturn += decimal.ToInt32(decimal.Floor(Essence));
                     return intAIReturn;
@@ -8653,6 +8663,7 @@ namespace Chummer
             Improvement.ImprovementType.SkillGroup,  //Group
             Improvement.ImprovementType.SkillCategory, //category
             Improvement.ImprovementType.SkillAttribute, //attribute
+            Improvement.ImprovementType.SkillLinkedAttribute, //linked attribute
             Improvement.ImprovementType.SkillLevel,  //Karma points in skill
             Improvement.ImprovementType.SkillGroupLevel, //group
             Improvement.ImprovementType.SkillBase,  //base points in skill

@@ -572,34 +572,42 @@ namespace Chummer
                 if (Limited || (Extended && !Name.EndsWith("Extended")) || _objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
                                                                    (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category) && o.Enabled))
                 {
-                    string dv = strReturn.TrimStart('F');
+                    string strDV = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(dv))
+                    if (string.IsNullOrEmpty(strDV))
                     {
-                        dv = "0";
+                        strDV = "0";
                     }
-                    else if (strReturn.Contains('-'))
+                    else
                     {
-                        dv = strReturn.Substring(strReturn.IndexOf('-'));
-                    }
-                    else if (strReturn.Contains('+'))
-                    {
-                        dv = strReturn.Substring(strReturn.IndexOf('+'));
+                        int intPos = strReturn.IndexOf('-');
+                        if (intPos != -1)
+                        {
+                            strDV = strReturn.Substring(intPos);
+                        }
+                        else
+                        {
+                            intPos = strReturn.IndexOf('+');
+                            if (intPos != -1)
+                            {
+                                strDV = strReturn.Substring(intPos);
+                            }
+                        }
                     }
                     foreach (Improvement imp in _objCharacter.Improvements.Where(i => (i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
                                                                                       (string.IsNullOrEmpty(i.ImprovedName) || i.ImprovedName == Category) && i.Enabled))
                     {
-                        dv += $" + {imp.Value:0;-0;0}";
+                        strDV += $" + {imp.Value:0;-0;0}";
                     }
                     if (Limited)
                     {
-                        dv += " + -2";
+                        strDV += " + -2";
                     }
                     if (Extended && !Name.EndsWith("Extended"))
                     {
-                        dv += " + 2";
+                        strDV += " + 2";
                     }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'), out bool blnIsSuccess);
+                    object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
                         if (force)
@@ -776,7 +784,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue) : objSkill.Pool;
+                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(Category))
                         intReturn += 2;
@@ -800,7 +808,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue) : objSkill.Pool;
+                    int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
                     strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + " (" + intPool.ToString() + ')';
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(Category))

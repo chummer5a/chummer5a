@@ -14788,15 +14788,15 @@ namespace Chummer
                                 DisplayVehicleStats(false);
 
                                 string[] strMounts = objAccessory.Mount.Split('/');
-                                string strMount = string.Empty;
+                                StringBuilder strMount = new StringBuilder();
                                 foreach (string strCurrentMount in strMounts)
                                 {
                                     if (!string.IsNullOrEmpty(strCurrentMount))
-                                        strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
+                                        strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/');
                                 }
                                 // Remove the trailing /
-                                if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
-                                    strMount = strMount.Substring(0, strMount.Length - 1);
+                                if (strMount.Length > 0)
+                                    strMount.Length -= 1;
                                 if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && (objAccessory.ExtraMount != "None"))
                                 {
                                     bool boolHaveAddedItem = false;
@@ -14807,20 +14807,20 @@ namespace Chummer
                                         {
                                             if (!boolHaveAddedItem)
                                             {
-                                                strMount += " + ";
+                                                strMount.Append(" + ");
                                                 boolHaveAddedItem = true;
                                             }
-                                            strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
+                                            strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/');
                                         }
                                     }
                                     // Remove the trailing /
                                     if (boolHaveAddedItem)
-                                        strMount = strMount.Substring(0, strMount.Length - 1);
+                                        strMount.Length -= 1;
                                 }
 
                                 lblVehicleSlotsLabel.Visible = true;
                                 lblVehicleSlots.Visible = true;
-                                lblVehicleSlots.Text = strMount;
+                                lblVehicleSlots.Text = strMount.ToString();
                                 string strPage = objAccessory.Page(GlobalOptions.Language);
                                 lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language) + ' ' + strPage;
                                 tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);

@@ -1926,12 +1926,12 @@ namespace Chummer.Backend.Equipment
                 if (strCapacity == "[*]")
                     return "*";
                 string strReturn;
-                if (strCapacity.Contains("/["))
+                int intPos = strCapacity.FastIndexOf("/[");
+                if (intPos != -1)
                 {
-                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                     string strFirstHalf = strCapacity.Substring(0, intPos);
                     string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
-                    bool blnSquareBrackets = strFirstHalf.Contains('[');
+                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
@@ -1973,7 +1973,7 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strCapacity.Contains('[');
+                    bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     
@@ -2138,7 +2138,7 @@ namespace Chummer.Backend.Equipment
                 string[] strValues = strExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
             }
-            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
+            if (strExpression.IndexOfAny('{', '+', '-', '*') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2366,7 +2366,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decCapacity = 0;
-                if (_strCapacity.Contains("/["))
+                if (Capacity.Contains("/["))
                 {
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = CalculatedCapacity;
@@ -2381,9 +2381,10 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -2398,9 +2399,10 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildGear.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -2408,7 +2410,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                 }
-                else if (!_strCapacity.Contains('['))
+                else if (!Capacity.Contains('['))
                 {
                     // Get the Cyberware base Capacity.
                     decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
@@ -2421,9 +2423,10 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -2438,9 +2441,10 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildGear.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";

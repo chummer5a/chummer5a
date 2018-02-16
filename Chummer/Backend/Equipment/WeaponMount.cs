@@ -806,7 +806,7 @@ namespace Chummer.Backend.Equipment
                 int intMin;
                 int intMax = 0;
                 string strCost = _strCost.Replace("Variable(", string.Empty).TrimEnd(')');
-                if (strCost.Contains("-"))
+                if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
                     intMin = Convert.ToInt32(strValues[0]);

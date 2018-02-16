@@ -175,7 +175,7 @@ namespace Chummer.Backend.Skills
             {
                 if (CharacterObject.Created)
                 {
-                  return LearnedRating + RatingModifiers;
+                  return LearnedRating + RatingModifiers(AttributeObject.Abbrev);
                 }
                 return LearnedRating;
             }
@@ -223,17 +223,18 @@ namespace Chummer.Backend.Skills
         /// value for the attribute part of the test. This allows calculation of dice pools
         /// while using cyberlimbs or while rigging
         /// </summary>
-        /// <param name="attribute">The value of the used attribute</param>
+        /// <param name="intAttributeTotalValue">The value of the used attribute</param>
+        /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
         /// <returns></returns>
-        public int PoolOtherAttribute(int attribute)
+        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {
             if (Rating > 0)
             {
-                return Rating + attribute + PoolModifiers + WoundModifier;
+                return Rating + intAttributeTotalValue + PoolModifiers(strAttribute) + WoundModifier;
             }
             if (Default)
             {
-                return attribute + PoolModifiers + DefaultModifier + WoundModifier;
+                return intAttributeTotalValue + PoolModifiers(strAttribute) + DefaultModifier + WoundModifier;
             }
             return 0;
         }
@@ -259,23 +260,25 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int PoolModifiers => Bonus(false);
+        public int PoolModifiers(string strUseAttribute) => Bonus(false, strUseAttribute);
 
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int RatingModifiers => Bonus(true);
+        public int RatingModifiers(string strUseAttribute) => Bonus(true, strUseAttribute);
 
-        protected int Bonus(bool blnAddToRating)
+        protected int Bonus(bool blnAddToRating, string strUseAttribute)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == blnAddToRating).Sum(x => x.Value);
+            return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute).Sum(x => x.Value);
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "")
         {
             if (!string.IsNullOrWhiteSpace(Name))
             {
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = AttributeObject.Abbrev;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
                     if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
@@ -307,7 +310,11 @@ namespace Chummer.Backend.Skills
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.SkillAttribute:
-                                if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+                                if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name))
+                                    yield return objImprovement;
+                                break;
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name))
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.BlockSkillDefault:
@@ -320,7 +327,7 @@ namespace Chummer.Backend.Skills
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.EnhancedArticulation:
-                                if (_strCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+                                if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
                                     yield return objImprovement;
                                 break;
                         }

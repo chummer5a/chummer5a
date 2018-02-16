@@ -301,25 +301,33 @@ namespace Chummer
                 bool force = strReturn.StartsWith('L');
                 if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
                 {
-                    string dv = strReturn.TrimStart('L');
+                    string strFV = strReturn.TrimStart('L');
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(dv))
+                    if (string.IsNullOrEmpty(strFV))
                     {
-                        dv = "0";
+                        strFV = "0";
                     }
-                    else if (strReturn.Contains('-'))
+                    else
                     {
-                        dv = strReturn.Substring(strReturn.IndexOf('-'));
-                    }
-                    else if (strReturn.Contains('+'))
-                    {
-                        dv = strReturn.Substring(strReturn.IndexOf('+'));
+                        int intPos = strReturn.IndexOf('-');
+                        if (intPos != -1)
+                        {
+                            strFV = strReturn.Substring(intPos);
+                        }
+                        else
+                        {
+                            intPos = strReturn.IndexOf('+');
+                            if (intPos != -1)
+                            {
+                                strFV = strReturn.Substring(intPos);
+                            }
+                        }
                     }
                     foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
                     {
-                        dv += $" + {imp.Value:0;-0;0}";
+                        strFV += $" + {imp.Value:0;-0;0}";
                     }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'), out bool blnIsSuccess);
+                    object xprResult = CommonFunctions.EvaluateInvariantXPath(strFV.TrimStart('+'), out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
                         if (force)

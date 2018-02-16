@@ -215,8 +215,7 @@ namespace Chummer.UI.Skills
 
                 case nameof(Skill.Rating):
                 case nameof(Skill.Specialization):
-                    lblModifiedRating.Text =
-                        _skill.DisplayOtherAttribue(_attributeActive.TotalValue);
+                    lblModifiedRating.Text =  _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
                     break;
             }
         }

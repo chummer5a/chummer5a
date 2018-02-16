@@ -167,6 +167,7 @@ namespace Chummer
             SkillGroup,  //Group
             SkillCategory, //category
             SkillAttribute, //attribute
+            SkillLinkedAttribute, //linked attribute
             SkillLevel,  //Karma points in skill
             SkillGroupLevel, //group
             SkillBase,  //base points in skill

@@ -94,6 +94,222 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for string::IndexOfAny that uses params in its argument for the char array.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="anyOf">Array of characters to match with IndexOfAny</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, params char[] anyOf)
+        {
+            return strHaystack.IndexOfAny(anyOf);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="chrNeedle">Character for which to look.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, char chrNeedle)
+        {
+            return strHaystack.IndexOf(chrNeedle) != -1;
+        }
+
+        /// <summary>
+        /// Finds the index of the first instance of a pattern in an input string in a way that should be faster than the built-in IndexOf for strings. Comparison is case-sensitive and ordinal.
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">Pattern for which to look.</param>
+        /// <returns>Index of the first instance of <paramref name="strNeedle"/>, -1 if no instance is found.</returns>
+        public static int FastIndexOf(this string strHaystack, string strNeedle)
+        {
+            if (string.IsNullOrEmpty(strNeedle))
+                return -1;
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            int intNeedleLength = strNeedle.Length;
+            // If it's actually just a char we're looking for, use built-in IndexOf for chars
+            if (intNeedleLength == 1)
+                return strHaystack.IndexOf(strNeedle[0]);
+            // Make sure we're not looking for a needle that is larger than our haystack
+            int intHaystackLength = strHaystack.Length;
+            if (intNeedleLength > intHaystackLength)
+                return -1;
+            
+            // We're creating a buffer into which we're going to load the haystack's chars one needle-length at a time.
+            // When the buffer matches the needle, we return the current index from which the haystack was loaded into the buffer.
+            char[] achrBuffer = new char[intNeedleLength];
+            
+            bool blnNeedleFound = true;
+            for (int i = 0; i < intNeedleLength; ++i)
+            {
+                char chrFromHaystack = strHaystack[i];
+                achrBuffer[i] = chrFromHaystack;
+                // We also check chars while we populate the initial buffer to make sure we catch cases when the haystack begins with the needle.
+                blnNeedleFound = blnNeedleFound && chrFromHaystack != strNeedle[i];
+            }
+            // Check to see if the needle is at the start of the string.
+            if (blnNeedleFound)
+                return 0;
+
+            int intLastBufferIndex = intNeedleLength - 1;
+            // It's faster to start the index from the position where we'd load in the haystack char and return a downshifted version of the index if we find the needle
+            // than start at 0 and upshift the index each time we fetch a char from the haystack.
+            for (int i = intNeedleLength; i < intHaystackLength; ++i)
+            {
+                blnNeedleFound = true;
+                for (int i2 = 0; i2 < intLastBufferIndex; ++i2)
+                {
+                    // Shift the chars in the buffer down by 1
+                    char chrLoop = achrBuffer[i2 + 1];
+                    achrBuffer[i2] = chrLoop;
+                    // Check to see if the downshifted char in its new position matches the needle array
+                    blnNeedleFound = blnNeedleFound && chrLoop != strNeedle[i2];
+                }
+
+                // Fetch the last char in the buffer from the haystack
+                char chrFromHaystack = strHaystack[i];
+                achrBuffer[intLastBufferIndex] = chrFromHaystack;
+
+                if (blnNeedleFound && chrFromHaystack == strNeedle[intLastBufferIndex])
+                    return i - intNeedleLength;
+            }
+            
+            return -1;
+        }
+
+        /// <summary>
+        /// Finds the index of the first instance of a pattern in an input string in a way that should be faster than the built-in IndexOf for strings. Comparison is case-sensitive and ordinal.
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">Pattern for which to look.</param>
+        /// <param name="intStartIndex">Position of the haystack from which to start looking</param>
+        /// <returns>Index of the first instance of <paramref name="strNeedle"/> starting from <paramref name="intStartIndex"/>, -1 if no instance is found.</returns>
+        public static int FastIndexOf(this string strHaystack, string strNeedle, int intStartIndex)
+        {
+            if (intStartIndex == 0)
+                return strHaystack.FastIndexOf(strNeedle);
+            if (string.IsNullOrEmpty(strNeedle))
+                return -1;
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            int intNeedleLength = strNeedle.Length;
+            // If it's actually just a char we're looking for, use built-in IndexOf for chars
+            if (intNeedleLength == 1)
+                return strHaystack.IndexOf(strNeedle[0]);
+            // Make sure we're not looking for a needle that is larger than our haystack
+            int intHaystackLength = strHaystack.Length;
+            if (intNeedleLength > intHaystackLength - intStartIndex)
+                return -1;
+
+            // We're creating a buffer into which we're going to load the haystack's chars one needle-length at a time.
+            // When the buffer matches the needle, we return the current index from which the haystack was loaded into the buffer.
+            char[] achrBuffer = new char[intNeedleLength];
+
+            bool blnNeedleFound = true;
+            for (int i = 0; i < intNeedleLength; ++i)
+            {
+                char chrFromHaystack = strHaystack[i + intStartIndex];
+                achrBuffer[i] = chrFromHaystack;
+                // We also check chars while we populate the initial buffer to make sure we catch cases when the haystack begins with the needle.
+                blnNeedleFound = blnNeedleFound && chrFromHaystack == strNeedle[i];
+            }
+            // Check to see if the needle is at the start of the string.
+            if (blnNeedleFound)
+                return 0;
+
+            int intLastBufferIndex = intNeedleLength - 1;
+            // It's faster to start the index from the position where we'd load in the haystack char and return a downshifted version of the index if we find the needle
+            // than start at 0 and upshift the index each time we fetch a char from the haystack.
+            for (int i = intNeedleLength + intStartIndex; i < intHaystackLength; ++i)
+            {
+                blnNeedleFound = true;
+                for (int i2 = 0; i2 < intLastBufferIndex; ++i2)
+                {
+                    // Shift the chars in the buffer down by 1
+                    char chrLoop = achrBuffer[i2 + 1];
+                    achrBuffer[i2] = chrLoop;
+                    // Check to see if the downshifted char in its new position matches the needle array
+                    blnNeedleFound = blnNeedleFound && chrLoop == strNeedle[i2];
+                }
+
+                // Fetch the last char in the buffer from the haystack
+                char chrFromHaystack = strHaystack[i];
+                achrBuffer[intLastBufferIndex] = chrFromHaystack;
+
+                if (blnNeedleFound && chrFromHaystack == strNeedle[intLastBufferIndex])
+                    return i - intNeedleLength;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Finds the index of the last instance of a pattern in an input string in a way that should be faster than the built-in LastIndexOf for strings. Comparison is case-sensitive and ordinal.
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">Pattern for which to look.</param>
+        /// <returns>Index of the last instance of <paramref name="strNeedle"/>, -1 if no instance is found.</returns>
+        public static int FastLastIndexOf(this string strHaystack, string strNeedle)
+        {
+            if (string.IsNullOrEmpty(strNeedle))
+                return -1;
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            int intNeedleLength = strNeedle.Length;
+            // If it's actually just a char we're looking for, use built-in LastIndexOf for chars
+            if (intNeedleLength == 1)
+                return strHaystack.LastIndexOf(strNeedle[0]);
+            // Make sure we're not looking for a needle that is larger than our haystack
+            int intHaystackLength = strHaystack.Length;
+            if (intNeedleLength > intHaystackLength)
+                return -1;
+            
+            // We're creating a buffer into which we're going to load the haystack's chars one needle-length at a time.
+            // When the buffer matches the needle, we return the current index from which the haystack was loaded into the buffer.
+            char[] achrBuffer = new char[intNeedleLength];
+            
+            bool blnNeedleFound = true;
+            for (int i = 0; i < intNeedleLength; ++i)
+            {
+                char chrFromHaystack = strHaystack[intHaystackLength - i];
+                int intLoopNeedleIndex = intNeedleLength - i;
+                achrBuffer[intLoopNeedleIndex] = chrFromHaystack;
+                // We also check chars while we populate the initial buffer to make sure we catch cases when the haystack ends with the needle.
+                blnNeedleFound = blnNeedleFound && chrFromHaystack == strNeedle[intLoopNeedleIndex];
+            }
+            // Check to see if the needle is at the end of the string.
+            if (blnNeedleFound)
+                return intHaystackLength - intNeedleLength + 1;
+            
+            // It's faster to start the index from the position where we'd load in the haystack char and return a downshifted version of the index if we find the needle
+            // than start at the end and downshift the index each time we fetch a char from the haystack.
+            for (int i = intHaystackLength - intNeedleLength; i >= 0; --i)
+            {
+                blnNeedleFound = true;
+                for (int i2 = 1; i2 < intNeedleLength; ++i2)
+                {
+                    // Shift the chars in the buffer up by 1
+                    char chrLoop = achrBuffer[i2 - 1];
+                    achrBuffer[i2] = chrLoop;
+                    // Check to see if the downshifted char in its new position matches the needle array
+                    blnNeedleFound = blnNeedleFound && chrLoop == strNeedle[i2];
+                }
+
+                // Fetch the first char in the buffer from the haystack
+                char chrFromHaystack = strHaystack[i];
+                achrBuffer[0] = chrFromHaystack;
+
+                if (blnNeedleFound && chrFromHaystack == strNeedle[0])
+                    return i - intNeedleLength;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
         /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
@@ -462,16 +678,16 @@ namespace Chummer
 
             int next;
             StringBuilder sb = new StringBuilder(strText.Length);
-
+            string strNewLine = Environment.NewLine;
             // Parse each line of text
             for (int pos = 0; pos < strText.Length; pos = next)
             {
                 // Find end of line
-                int eol = strText.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
+                int eol = strText.FastIndexOf(strNewLine, pos);
                 if (eol == -1)
                     next = eol = strText.Length;
                 else
-                    next = eol + Environment.NewLine.Length;
+                    next = eol + strNewLine.Length;
 
                 // Copy this line of text, breaking into smaller lines as needed
                 if (eol > pos)
@@ -482,7 +698,7 @@ namespace Chummer
                         if (len > intWidth)
                             len = strText.BreakLine(pos, intWidth);
                         sb.Append(strText, pos, len);
-                        sb.Append(Environment.NewLine);
+                        sb.Append(strNewLine);
 
                         // Trim whitespace following break
                         pos += len;
@@ -491,7 +707,7 @@ namespace Chummer
                     }
                     while (eol > pos);
                 }
-                else sb.Append(Environment.NewLine); // Empty line
+                else sb.Append(strNewLine); // Empty line
             }
             return sb.ToString();
         }

@@ -22,7 +22,7 @@
   <cyberwares>
     <cyberware>
       <bonus>
-        <skillattribute amendoperation="remove" />
+        <skilllinkedattribute amendoperation="remove" />
         <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Swimming'" >
           <name>Aquatics</name>

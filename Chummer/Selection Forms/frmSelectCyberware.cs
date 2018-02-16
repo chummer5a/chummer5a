@@ -801,7 +801,7 @@ namespace Chummer
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
             string strCapacity = objXmlCyberware.SelectSingleNode("capacity")?.Value ?? string.Empty;
-            bool blnSquareBrackets = strCapacity.Contains('[');
+            bool blnSquareBrackets = strCapacity.StartsWith('[');
             if (string.IsNullOrEmpty(strCapacity))
             {
                 lblCapacity.Text = 0.ToString(GlobalOptions.CultureInfo);
@@ -817,13 +817,13 @@ namespace Chummer
                     lblCapacity.Text = "*";
                 else
                 {
-                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                    int intPos = strCapacity.FastIndexOf("/[");
                     if (intPos != -1)
                     {
                         string strFirstHalf = strCapacity.Substring(0, intPos);
                         string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
 
-                        blnSquareBrackets = strFirstHalf.Contains('[');
+                        blnSquareBrackets = strFirstHalf.StartsWith('[');
                         if (blnSquareBrackets && strFirstHalf.Length > 1)
                             strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
 
@@ -1253,15 +1253,7 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = ". = \"";
-                if (_strSubsystems.Contains(','))
-                {
-                    strSubsystem += _strSubsystems.Replace(",", "\" or . = \"");
-                }
-                else
-                {
-                    strSubsystem += _strSubsystems;
-                }
+                string strSubsystem = ". = \"" + _strSubsystems.Replace(",", "\" or . = \"");
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.Select("categories/category[" + strSubsystem + "\"]");
             }
             else

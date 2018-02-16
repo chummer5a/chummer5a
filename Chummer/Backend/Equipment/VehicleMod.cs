@@ -778,12 +778,12 @@ namespace Chummer.Backend.Equipment
                     strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
-                int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
+                int intPos = strReturn.FastIndexOf("/[");
                 if (intPos != -1)
                 {
                     string strFirstHalf = strReturn.Substring(0, intPos);
                     string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
-                    bool blnSquareBrackets = strFirstHalf.Contains('[');
+                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
@@ -840,7 +840,7 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strReturn.Contains('[');
+                    bool blnSquareBrackets = strReturn.StartsWith('[');
                     string strCapacity = strReturn;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -877,9 +877,10 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objChildCyberware in Cyberware)
                     {
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -895,9 +896,10 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objChildCyberware in Cyberware)
                     {
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
-                            strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
-                        else if (strCapacity.Contains('['))
+                        int intPos = strCapacity.FastIndexOf("/[");
+                        if (intPos != -1)
+                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                        else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";

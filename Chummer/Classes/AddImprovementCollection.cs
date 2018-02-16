@@ -2581,7 +2581,7 @@ namespace Chummer.Classes
             }
         }
 
-        // The Improvement adjust Skills with the given CharacterAttribute.
+        // The Improvement adjust Skills when used with the given CharacterAttribute.
         public void skillattribute(XmlNode bonusNode)
         {
             Log.Info("skillattribute");
@@ -2609,6 +2609,39 @@ namespace Chummer.Classes
                     Log.Info("Calling CreateImprovement");
                     CreateImprovement(strName, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.SkillAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
+                        0, 0, 0, 0, string.Empty, blnAddToRating);
+                }
+            }
+        }
+
+        // The Improvement adjust Skills whose linked attribute is the given CharacterAttribute.
+        public void skilllinkedattribute(XmlNode bonusNode)
+        {
+            Log.Info("skilllinkedattribute");
+            Log.Info("skilllinkedattribute = " + bonusNode.OuterXml);
+
+            string strUseUnique = _strUnique;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
+
+            string strName = bonusNode["name"]?.InnerText;
+            if (!string.IsNullOrEmpty(strName))
+            {
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
+                string strExclude = bonusNode["exclude"]?.InnerText;
+                if (!string.IsNullOrEmpty(strExclude))
+                {
+                    Log.Info("Calling CreateImprovement - exclude");
+                    CreateImprovement(strName, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
+                        0, 0, 0, 0, strExclude, blnAddToRating);
+                }
+                else
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strName, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
                         0, 0, 0, 0, string.Empty, blnAddToRating);
                 }
             }
