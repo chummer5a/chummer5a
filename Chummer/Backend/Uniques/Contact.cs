@@ -270,6 +270,7 @@ namespace Chummer
                     if (PropertyChanged != null)
                     {
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(ReadOnly)));
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NotReadOnly)));
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(GroupEnabled)));
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(LoyaltyEnabled)));
                     }
@@ -277,6 +278,7 @@ namespace Chummer
             }
         }
 
+        public bool NotReadOnly => !ReadOnly;
 
         /// <summary>
         /// Total points used for this contact.
