@@ -86,15 +86,12 @@ namespace Chummer.Backend.Equipment
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+            if (e.Action != NotifyCollectionChangedAction.Add &&
+                e.Action != NotifyCollectionChangedAction.Replace) return;
+            if (Installed && Parent?.ParentVehicle == null) return;
+            foreach (Gear objGear in e.NewItems)
             {
-                if (!Installed || Parent.ParentVehicle != null)
-                {
-                    foreach (Gear objGear in e.NewItems)
-                    {
-                        objGear.ChangeEquippedStatus(false);
-                    }
-                }
+                objGear.ChangeEquippedStatus(false);
             }
         }
 
