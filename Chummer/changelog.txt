@@ -28,6 +28,7 @@ Application Changes:
 Data Changes:
 
 - Fixed an issue where the group contact associated with Made Man would still cost karma as a group contact. Fixed an issue where removing Made Man would not undo the forced increase in loyalty it has on the associated group contact. Fixes #2492.
+- Fixed an incorrect penalty for the Addiction (Burnout) quality.
 
 New Strings:
 

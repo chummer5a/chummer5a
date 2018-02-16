@@ -1041,7 +1041,10 @@
       <bonus>
         <notoriety>1</notoriety>
         <selecttext />
-        <sociallimit>-3</sociallimit>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-3</bonus>
+        </skillcategory>
       </bonus>
       <source>SR5</source>
       <page>78</page>
