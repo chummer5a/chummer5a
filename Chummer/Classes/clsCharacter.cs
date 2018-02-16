@@ -2844,6 +2844,43 @@ namespace Chummer
             // </vehicles>
             objWriter.WriteEndElement();
 
+            // <initiationgrades>
+            objWriter.WriteStartElement("initiationgrades");
+            foreach (InitiationGrade objgrade in InitiationGrades)
+            {
+                objgrade.Print(objWriter, strLanguageToPrint);
+
+                //TODO: Probably better to integrate this into the main print method, but eh. 
+                // <metamagics>
+                objWriter.WriteStartElement("metamagics");
+                foreach (Metamagic objMetamagic in Metamagics.Where(objMetamagic => objMetamagic.Grade == objgrade.Grade))
+                {
+                    objMetamagic.Print(objWriter, objCulture, strLanguageToPrint);
+                }
+                // </metamagics>
+                objWriter.WriteEndElement();
+
+                // <arts>
+                objWriter.WriteStartElement("arts");
+                foreach (Art objArt in Arts.Where(objArt => objArt.Grade == objgrade.Grade))
+                {
+                    objArt.Print(objWriter, strLanguageToPrint);
+                }
+                // </arts>
+                objWriter.WriteEndElement();
+
+                // <enhancements>
+                objWriter.WriteStartElement("enhancements");
+                foreach (Enhancement objEnhancement in Enhancements.Where(objEnhancement => objEnhancement.Grade == objgrade.Grade))
+                {
+                    objEnhancement.Print(objWriter, strLanguageToPrint);
+                }
+                // </enhancements>
+                objWriter.WriteEndElement();
+            }
+            // </initiationgrade>
+            objWriter.WriteEndElement();
+            
             // <metamagics>
             objWriter.WriteStartElement("metamagics");
             foreach (Metamagic objMetamagic in Metamagics)

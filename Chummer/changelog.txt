@@ -24,12 +24,13 @@ Application Changes:
 - Fixed an issue where shared Condition Monitor threshold offsets did not properly account for improvements that allowed condition monitor penalties to be ignored or overarching threshold offsets.
 - Fixed an issue where A.I. characters would have traditional condition monitor information displayed, both in Chummer5a and on character sheets, instead of condition monitor information based on their home node.
 - Fixed an issue where A.I. characters could receive wound penalties from Matrix condition monitor damage.
+- Initiation/Submersion Grades can now print their notes in thge option to do so is enabled, and any Arts, Enhancements or Metamagics/Echoes are included as child nodes. Sheets will still need to be adjusted to accommodate this.
 
 Data Changes:
 
 - Fixed an issue where the group contact associated with Made Man would still cost karma as a group contact. Fixed an issue where removing Made Man would not undo the forced increase in loyalty it has on the associated group contact. Fixes #2492.
 - Fixed an incorrect penalty for the Addiction (Burnout) quality.
-
+- Initiation/Submersion Grades can now print their notes in thge option to do so is enabled, and any Arts, Enhancements or Metamagics/Echoes are included as child nodes. Sheets will still need to be adjusted to accommodate this.
 New Strings:
 
 - String_DeviceRating
