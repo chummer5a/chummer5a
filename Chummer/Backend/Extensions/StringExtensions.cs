@@ -274,8 +274,8 @@ namespace Chummer
             bool blnNeedleFound = true;
             for (int i = 0; i < intNeedleLength; ++i)
             {
-                char chrFromHaystack = strHaystack[intHaystackLength - i];
-                int intLoopNeedleIndex = intNeedleLength - i;
+                char chrFromHaystack = strHaystack[intHaystackLength - i - 1];
+                int intLoopNeedleIndex = intNeedleLength - i - 1;
                 achrBuffer[intLoopNeedleIndex] = chrFromHaystack;
                 // We also check chars while we populate the initial buffer to make sure we catch cases when the haystack ends with the needle.
                 blnNeedleFound = blnNeedleFound && chrFromHaystack == strNeedle[intLoopNeedleIndex];
