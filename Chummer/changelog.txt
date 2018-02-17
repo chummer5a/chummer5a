@@ -29,6 +29,7 @@ Application Changes:
 - Split up skillattribute improvement into skillattribute (which increases skill dicepools when using a particular skill) and skilllinkedattribute (which increases dicepools of skills linked to a particular attribute).
 - Fixed an issue where the PACKS and Cybersuite creation forms would not check amends, overwrites, live custom data, and custom data directories when making sure there isn't already an item with the new name given by the user.
 - When printing powers for spirits and sprites, Chummer5a will now also check critterpowers.xml in addition to spiritpowers.xml.
+- Children or auxiliary weapons and vehicles that come pre-installed with an item will no longer show up in the UI if their sourcebooks are not enabled. Fixed #2503.
 
 Data Changes:
 

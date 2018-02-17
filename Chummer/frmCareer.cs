@@ -9488,9 +9488,6 @@ namespace Chummer
                 }
             }
 
-            treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
-            treGear.Nodes[0].Expand();
-
             CharacterObject.Gear.Add(objGear);
 
             IsCharacterUpdateRequested = true;

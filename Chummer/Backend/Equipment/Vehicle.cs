@@ -466,20 +466,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-
-                /*
-                if (WeaponMounts.Count > 0)
-                {
-                    objNode.Nodes.Add(mountsNode);
-                    // Weapon Mounts
-                    foreach (WeaponMount objWeaponMount in WeaponMounts)
-                    {
-                        mountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod));
-                        mountsNode.Expand();
-                    }
-                }
-                */
-
+                
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     objWeapon.ParentVehicle = this;
@@ -2804,6 +2791,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
         {
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -2828,13 +2818,14 @@ namespace Chummer.Backend.Equipment
                     ContextMenuStrip = cmsVehicleLocation
                 };
                 lstChildNodes.Add(objLocation);
-                objNode.Expand();
             }
 
             // VehicleMods.
             foreach (VehicleMod objMod in Mods)
             {
-                lstChildNodes.Add(objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                TreeNode objLoopNode = objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             if (WeaponMounts.Count > 0)
             {
@@ -2843,41 +2834,55 @@ namespace Chummer.Backend.Equipment
                     Tag = "String_WeaponMounts",
                     Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
                 };
-                lstChildNodes.Add(nodMountsNode);
-                objNode.Expand();
+                
                 // Weapon Mounts
                 foreach (WeaponMount objWeaponMount in WeaponMounts)
                 {
-                    nodMountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle));
-                    nodMountsNode.Expand();
+                    TreeNode objLoopNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle);
+                    if (objLoopNode != null)
+                    {
+                        nodMountsNode.Nodes.Add(objLoopNode);
+                        nodMountsNode.Expand();
+                    }
                 }
+
+                if (nodMountsNode.Nodes.Count > 0)
+                    lstChildNodes.Add(nodMountsNode);
             }
             // Vehicle Weapons (not attached to a mount).
             foreach (Weapon objWeapon in Weapons)
             {
-                lstChildNodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                objNode.Expand();
+                TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             
             // Vehicle Gear.
             foreach (Gear objGear in Gear)
             {
-                TreeNode objParent = objNode;
-                if (!string.IsNullOrEmpty(objGear.Location))
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear);
+                if (objLoopNode != null)
                 {
-                    foreach (TreeNode objFind in lstChildNodes)
+                    TreeNode objParent = objNode;
+                    if (!string.IsNullOrEmpty(objGear.Location))
                     {
-                        if (objFind.Text == objGear.Location)
+                        foreach (TreeNode objFind in lstChildNodes)
                         {
-                            objParent = objFind;
-                            break;
+                            if (objFind.Text == objGear.Location)
+                            {
+                                objParent = objFind;
+                                break;
+                            }
                         }
                     }
-                }
 
-                objParent.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
-                objParent.Expand();
+                    objParent.Nodes.Add(objLoopNode);
+                    objParent.Expand();
+                }
             }
+
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
 
             return objNode;
         }

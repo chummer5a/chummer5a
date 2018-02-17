@@ -2951,6 +2951,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsGear">ContextMenuStrip that the new Gear TreeNodes should use.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsCyberware, ContextMenuStrip cmsGear)
         {
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -2967,12 +2970,16 @@ namespace Chummer.Backend.Equipment
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Cyberware objChild in Children)
             {
-                lstChildNodes.Add(objChild.CreateTreeNode(cmsCyberware, cmsGear));
+                TreeNode objLoopNode = objChild.CreateTreeNode(cmsCyberware, cmsGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
 
             foreach (Gear objGear in Gear)
             {
-                lstChildNodes.Add(objGear.CreateTreeNode(cmsGear));
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
 
             if (lstChildNodes.Count > 0)

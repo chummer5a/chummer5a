@@ -101,7 +101,9 @@ namespace Chummer
                 objModsParentNode.Expand();
                 foreach (VehicleMod objMod in _objMount.Mods)
                 {
-                    objModsParentNode.Nodes.Add(objMod.CreateTreeNode(null, null, null, null, null, null));
+                    TreeNode objLoopNode = objMod.CreateTreeNode(null, null, null, null, null, null);
+                    if (objLoopNode != null)
+                        objModsParentNode.Nodes.Add(objLoopNode);
                 }
                 _lstMods.AddRange(_objMount.Mods);
 

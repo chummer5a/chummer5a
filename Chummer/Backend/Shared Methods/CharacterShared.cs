@@ -509,6 +509,9 @@ namespace Chummer
 
             void AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
+                if (objNode == null)
+                    return;
                 TreeNode objParentNode = null;
                 switch (objSpell.Category)
                 {
@@ -633,6 +636,7 @@ namespace Chummer
                                     break;
                                 }
                             }
+
                             nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
                             if (blnSingleAdd)
                                 treMetamagic.SelectedNode = objMetamagicNode;
@@ -642,7 +646,6 @@ namespace Chummer
 
                 if (objParentNode != null)
                 {
-                    TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -743,6 +746,10 @@ namespace Chummer
 
             void AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
+                if (objNode == null)
+                    return;
+
                 if (objParentNode == null)
                 {
                     objParentNode = new TreeNode()
@@ -753,7 +760,7 @@ namespace Chummer
                     treAIPrograms.Nodes.Add(objParentNode);
                     objParentNode.Expand();
                 }
-                TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
+
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -766,6 +773,7 @@ namespace Chummer
                             break;
                         }
                     }
+
                     lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     treAIPrograms.SelectedNode = objNode;
                 }
@@ -866,6 +874,9 @@ namespace Chummer
 
             void AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
+                if (objNode == null)
+                    return;
                 if (objParentNode == null)
                 {
                     objParentNode = new TreeNode()
@@ -895,13 +906,13 @@ namespace Chummer
                                     break;
                                 }
                             }
+
                             nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
                             if (blnSingleAdd)
                                 treMetamagic.SelectedNode = objMetamagicNode;
                         }
                     }
                 }
-                TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -914,6 +925,7 @@ namespace Chummer
                             break;
                         }
                     }
+
                     lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     treComplexForms.SelectedNode = objNode;
                 }
@@ -1164,17 +1176,21 @@ namespace Chummer
                     if (objMetamagic.Grade < 0)
                     {
                         TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
-                        int intNodesCount = lstRootNodes.Count;
-                        int intTargetIndex = intOffset;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        if (objNode != null)
                         {
-                            if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                            int intNodesCount = lstRootNodes.Count;
+                            int intTargetIndex = intOffset;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
                             }
+
+                            lstRootNodes.Insert(intTargetIndex, objNode);
+                            objNode.Expand();
                         }
-                        lstRootNodes.Insert(intTargetIndex, objNode);
-                        objNode.Expand();
                     }
                 }
 
@@ -1248,6 +1264,8 @@ namespace Chummer
                     if (objArt.Grade == objInitiationGrade.Grade)
                     {
                         TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            continue;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1265,6 +1283,8 @@ namespace Chummer
                     if (objMetamagic.Grade == objInitiationGrade.Grade)
                     {
                         TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            continue;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1282,6 +1302,8 @@ namespace Chummer
                     if (objSpell.Grade == objInitiationGrade.Grade)
                     {
                         TreeNode objNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            continue;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1299,6 +1321,8 @@ namespace Chummer
                     if (objComplexForm.Grade == objInitiationGrade.Grade)
                     {
                         TreeNode objNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                        if (objNode == null)
+                            continue;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1316,6 +1340,8 @@ namespace Chummer
                     if (objEnhancement.Grade == objInitiationGrade.Grade)
                     {
                         TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            continue;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1335,6 +1361,8 @@ namespace Chummer
                         if (objEnhancement.Grade == objInitiationGrade.Grade)
                         {
                             TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                            if (objNode == null)
+                                continue;
                             int intNodesCount = lstParentNodeChildren.Count;
                             int intTargetIndex = 0;
                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1409,6 +1437,8 @@ namespace Chummer
                     {
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                         TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            return;
                         int intNodesCount = nodMetamagicParentChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1480,6 +1510,8 @@ namespace Chummer
                     {
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                         TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            return;
                         int intNodesCount = nodMetamagicParentChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1571,6 +1603,8 @@ namespace Chummer
                 {
                     TreeNodeCollection nodMetamagicParentChildren = treMetamagic.Nodes;
                     TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                    if (objNode == null)
+                        return;
                     int intNodesCount = nodMetamagicParentChildren.Count;
                     int intTargetIndex = CharacterObject.InitiationGrades.Count;
                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1596,6 +1630,8 @@ namespace Chummer
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                             TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                            if (objNode == null)
+                                return;
                             int intNodesCount = nodMetamagicParentChildren.Count;
                             int intTargetIndex = 0;
                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1700,6 +1736,9 @@ namespace Chummer
 
             void AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
+                if (objNode == null)
+                    return;
                 TreeNode objParentNode;
                 switch (objPower.Category)
                 {
@@ -1730,7 +1769,6 @@ namespace Chummer
                         objParentNode = objPowersNode;
                         break;
                 }
-                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -1875,6 +1913,9 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                if (objNode == null)
+                    return;
                 TreeNode objParentNode = null;
                 switch (objQuality.Type)
                 {
@@ -1921,7 +1962,6 @@ namespace Chummer
 
                 if (objParentNode != null)
                 {
-                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -2225,7 +2265,8 @@ namespace Chummer
             void AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
+                if (objNode == null)
+                    return;
                 TreeNode nodParent = null;
                 if (!string.IsNullOrEmpty(objWeapon.Location))
                 {
@@ -2370,7 +2411,8 @@ namespace Chummer
             void AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
+                if (objNode == null)
+                    return;
                 if (intIndex >= 0)
                     nodParent.Nodes.Insert(intIndex, objNode);
                 else
@@ -2470,7 +2512,8 @@ namespace Chummer
             void AddToTree(WeaponAccessory objWeaponAccessory, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objWeaponAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
+                if (objNode == null)
+                    return;
                 if (intIndex >= 0)
                     nodParent.Nodes.Insert(intIndex, objNode);
                 else
@@ -2773,7 +2816,8 @@ namespace Chummer
             void AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
-
+                if (objNode == null)
+                    return;
                 TreeNode nodParent = null;
                 if (!string.IsNullOrEmpty(objArmor.Location))
                 {
@@ -2885,7 +2929,8 @@ namespace Chummer
             void AddToTree(ArmorMod objArmorMod, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objArmorMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
-
+                if (objNode == null)
+                    return;
                 if (intIndex >= 0)
                     nodArmor.Nodes.Insert(intIndex, objNode);
                 else
@@ -3135,7 +3180,8 @@ namespace Chummer
                     return;
 
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
-
+                if (objNode == null)
+                    return;
                 TreeNode nodParent = null;
                 if (!string.IsNullOrEmpty(objGear.Location))
                 {
@@ -3269,7 +3315,8 @@ namespace Chummer
             void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
-
+                if (objNode == null)
+                    return;
                 if (string.IsNullOrEmpty(objGear.Location))
                 {
                     if (intIndex >= 0)
@@ -3409,6 +3456,10 @@ namespace Chummer
                     return;
                 }
 
+                TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
+                if (objNode == null)
+                    return;
+
                 TreeNode nodParent = null;
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                 {
@@ -3459,8 +3510,6 @@ namespace Chummer
                 
                 if (nodParent != null)
                 {
-                    TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
-
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = nodParent.Nodes;
@@ -3590,6 +3639,8 @@ namespace Chummer
             void AddToTree(Cyberware objCyberware, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
+                if (objNode == null)
+                    return;
 
                 if (intIndex >= 0)
                     nodParent.Nodes.Insert(intIndex, objNode);
@@ -3954,6 +4005,8 @@ namespace Chummer
             void AddToTree(VehicleMod objVehicleMod, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objVehicleMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                if (objNode == null)
+                    return;
 
                 if (intIndex >= 0)
                     nodParent.Nodes.Insert(intIndex, objNode);
@@ -4096,6 +4149,8 @@ namespace Chummer
             void AddToTree(WeaponMount objWeaponMount, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod);
+                if (objNode == null)
+                    return;
 
                 if (nodParent == null)
                 {
@@ -4382,6 +4437,8 @@ namespace Chummer
             void AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsVehicleWeaponMount, cmsCyberware, cmsCyberwareGear);
+                if (objNode == null)
+                    return;
 
                 TreeNode nodParent = null;
                 if (!string.IsNullOrEmpty(objVehicle.Location))
@@ -4434,6 +4491,8 @@ namespace Chummer
                         case "Metamagic Foci":
                             {
                                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                if (objNode == null)
+                                    continue;
                                 objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                 for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                 {
@@ -4518,6 +4577,8 @@ namespace Chummer
                                     case "Metamagic Foci":
                                         {
                                             TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                            if (objNode == null)
+                                                continue;
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
@@ -4687,6 +4748,8 @@ namespace Chummer
                                     case "Metamagic Foci":
                                         {
                                             TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                            if (objNode == null)
+                                                continue;
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
@@ -4867,6 +4930,8 @@ namespace Chummer
             void AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
+                if (objNode == null)
+                    return;
 
                 TreeNode objParentNode;
                 if (objMartialArt.IsQuality)
@@ -4977,6 +5042,8 @@ namespace Chummer
             void AddToTree(MartialArtTechnique objTechnique, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objTechnique.CreateTreeNode(cmsTechnique);
+                if (objNode == null)
+                    return;
 
                 if (blnSingleAdd)
                 {
@@ -5506,6 +5573,10 @@ namespace Chummer
 
             void AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
             {
+                TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
+                if (objNode == null)
+                    return;
+
                 if (objParentNode == null)
                 {
                     objParentNode = new TreeNode()
@@ -5516,7 +5587,7 @@ namespace Chummer
                     treLifestyles.Nodes.Add(objParentNode);
                     objParentNode.Expand();
                 }
-                TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
+                
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;

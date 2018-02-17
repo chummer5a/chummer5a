@@ -2500,6 +2500,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsGear)
         {
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -2529,9 +2532,12 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objChild in Children)
             {
                 TreeNode objChildNode = objChild.CreateTreeNode(cmsGear);
-                objParentNode.Nodes.Add(objChildNode);
-                if (objChild.ParentID != InternalId || (GetNode()?.SelectSingleNode("gears/@startcollapsed")?.InnerText != bool.TrueString))
-                    blnExpandNode = true;
+                if (objChildNode != null)
+                {
+                    objParentNode.Nodes.Add(objChildNode);
+                    if (objChild.ParentID != InternalId || (GetNode()?.SelectSingleNode("gears/@startcollapsed")?.InnerText != bool.TrueString))
+                        blnExpandNode = true;
+                }
             }
             if (blnExpandNode)
                 objParentNode.Expand();

@@ -1367,6 +1367,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
         {
+            //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            //return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -1381,11 +1384,15 @@ namespace Chummer.Backend.Equipment
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (ArmorMod objMod in ArmorMods)
             {
-                lstChildNodes.Add(objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear));
+                TreeNode objLoopNode = objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             foreach (Gear objGear in Gear)
             {
-                lstChildNodes.Add(objGear.CreateTreeNode(cmsArmorGear));
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsArmorGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             if (lstChildNodes.Count > 0)
                 objNode.Expand();

@@ -276,6 +276,9 @@ namespace Chummer
         #region Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false)
         {
+            if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
                 strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + ' ' + strText;

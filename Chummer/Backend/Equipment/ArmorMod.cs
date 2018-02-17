@@ -955,6 +955,9 @@ namespace Chummer.Backend.Equipment
         #region Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
         {
+            if (IncludedInArmor && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -968,12 +971,14 @@ namespace Chummer.Backend.Equipment
                 objNode.ForeColor = SystemColors.GrayText;
             objNode.ToolTipText = Notes.WordWrap(100);
 
-            TreeNodeCollection lstModChildNodes = objNode.Nodes;
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Gear objGear in Gear)
             {
-                lstModChildNodes.Add(objGear.CreateTreeNode(cmsArmorGear));
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsArmorGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
-            if (lstModChildNodes.Count > 0)
+            if (lstChildNodes.Count > 0)
                 objNode.Expand();
 
             return objNode;

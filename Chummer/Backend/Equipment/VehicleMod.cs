@@ -1190,6 +1190,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -1203,19 +1206,25 @@ namespace Chummer.Backend.Equipment
                 objNode.ForeColor = SystemColors.GrayText;
             objNode.ToolTipText = Notes.WordWrap(100);
 
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Cyberware.
             foreach (Cyberware objCyberware in Cyberware)
             {
-                objNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
-                objNode.Expand();
+                TreeNode objLoopNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             
             // VehicleWeapons.
             foreach (Weapon objWeapon in Weapons)
             {
-                objNode.Nodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
-                objNode.Expand();
+                TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
+
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
 
             return objNode;
         }

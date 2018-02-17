@@ -753,6 +753,12 @@ namespace Chummer
         #region Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
         {
+            if ((OriginSource == QualitySource.BuiltIn ||
+                 OriginSource == QualitySource.Improvement ||
+                 OriginSource == QualitySource.LifeModule ||
+                 OriginSource == QualitySource.Metatype) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,

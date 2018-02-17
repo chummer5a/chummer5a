@@ -983,6 +983,9 @@ namespace Chummer.Backend.Equipment
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
         {
+            if (IncludedInWeapon && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -998,11 +1001,18 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.ForeColor = SystemColors.GrayText;
             }
+
             objNode.ToolTipText = Notes.WordWrap(100);
+
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Gear objGear in Gear)
             {
-                objNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                objNode.Expand();
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear);
+                if (objLoopNode != null)
+                {
+                    lstChildNodes.Add(objLoopNode);
+                    objNode.Expand();
+                }
             }
 
             return objNode;

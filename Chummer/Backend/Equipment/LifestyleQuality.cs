@@ -658,6 +658,9 @@ namespace Chummer.Backend.Equipment
         #region Methods
         public TreeNode CreateTreeNode()
         {
+            if (_objLifestyleQualitySource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
