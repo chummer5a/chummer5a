@@ -1126,6 +1126,7 @@ namespace Chummer
             return true;
 
         }
+
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
             bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
         {
