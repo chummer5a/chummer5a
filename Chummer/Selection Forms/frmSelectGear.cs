@@ -78,7 +78,7 @@ namespace Chummer
             // Load the Gear information.
             _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
-            foreach (string strCategory in strAllowedCategories.TrimEnd(',').Split(','))
+            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
             {
                 string strLoop = strCategory.Trim();
                 if (!string.IsNullOrEmpty(strLoop))
@@ -684,7 +684,7 @@ namespace Chummer
 
                     if (objCostNode.Value.StartsWith("FixedValues("))
                     {
-                        string[] strValues = objCostNode.Value.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         string strCost = "0";
                         if (nudRating.Value > 0)
                             strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
@@ -699,7 +699,7 @@ namespace Chummer
                     {
                         decimal decMin;
                         decimal decMax = decimal.MaxValue;
-                        string strCost = objCostNode.Value.TrimStart("Variable(", true).TrimEnd(')');
+                        string strCost = objCostNode.Value.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
@@ -733,7 +733,7 @@ namespace Chummer
                 string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
                 if (!string.IsNullOrEmpty(strCapacityText))
                 {
-                    int intPos = strCapacityText.FastIndexOf("/[");
+                    int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
                     string strCapacity;
                     if (intPos != -1)
                     {
@@ -751,7 +751,7 @@ namespace Chummer
 
                             if (strCapacity.StartsWith("FixedValues("))
                             {
-                                string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                                 if (strValues.Length >= decimal.ToInt32(nudRating.Value))
                                     lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
                                 else
@@ -812,7 +812,7 @@ namespace Chummer
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacityText.StartsWith("FixedValues("))
                         {
-                            string[] strValues = strCapacityText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                             lblCapacity.Text = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                         }
                         else
@@ -893,7 +893,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')');
+                    strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
             if (_blnShowArmorCapacityOnly)

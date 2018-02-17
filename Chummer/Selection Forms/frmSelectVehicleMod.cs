@@ -280,7 +280,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
             }
             */
@@ -481,7 +481,7 @@ namespace Chummer
                 string strSlots = xmlVehicleMod.SelectSingleNode("slots")?.Value ?? string.Empty;
                 if (strSlots.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strSlots.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
                 int.TryParse(strSlots, out int intExtraSlots);
@@ -496,7 +496,7 @@ namespace Chummer
                 if (strAvailExpr.StartsWith("FixedValues("))
                 {
                     int intRating = decimal.ToInt32(nudRating.Value - 1);
-                    strAvailExpr = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')');
+                    strAvailExpr = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
                     string[] strValues = strAvailExpr.Split(',');
                     if (intRating > strValues.Length || intRating < 0)
                     {
@@ -537,7 +537,7 @@ namespace Chummer
                     {
                         decimal decMin;
                         decimal decMax = decimal.MaxValue;
-                        strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                        strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
@@ -557,7 +557,7 @@ namespace Chummer
                     else if (strCost.StartsWith("FixedValues("))
                     {
                         int intRating = decimal.ToInt32(nudRating.Value) - 1;
-                        strCost = strCost.TrimStart("FixedValues(", true).TrimEnd(')');
+                        strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
                         string[] strValues = strCost.Split(',');
                         if (intRating < 0 || intRating > strValues.Length)
                         {

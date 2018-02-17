@@ -413,7 +413,7 @@ namespace Chummer
                 {
                     strVersion = strVersion + ".0";
                 }
-                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
+                Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion);
             }
             // Cleanup the streams and the response.
             reader.Close();

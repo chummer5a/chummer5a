@@ -285,7 +285,7 @@ namespace Chummer
                     objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 
                 objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
-                string[] lstExtras = strPowerName.TrimStart(strEnglishName).Trim().TrimStart('(').TrimEnd(')').Split(',');
+                string[] lstExtras = strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').Split(',');
                 foreach (string strLoopExtra in lstExtras)
                 {
                     strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint));
@@ -344,7 +344,7 @@ namespace Chummer
                         break;
                 }
 
-                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange))
+                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
                     strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
                         .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))

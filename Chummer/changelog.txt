@@ -27,6 +27,7 @@ Application Changes:
 - Initiation/Submersion Grades can now print their notes in thge option to do so is enabled, and any Arts, Enhancements or Metamagics/Echoes are included as child nodes. Sheets will still need to be adjusted to accommodate this.
 - Fixed an issue where the Fancy Blocks character sheet did not format sprite optional powers and weaknesses correctly.
 - Split up skillattribute improvement into skillattribute (which increases skill dicepools when using a particular skill) and skilllinkedattribute (which increases dicepools of skills linked to a particular attribute).
+- Fixed an issue where the PACKS and Cybersuite creation forms would not check amends, overwrites, live custom data, and custom data directories when making sure there isn't already an item with the new name given by the user.
 
 Data Changes:
 
@@ -40,6 +41,11 @@ New Strings:
 - String_DeviceRating
 - Label_OtherCoreCM
 - Label_OtherMatrixCM
+
+Changed Strings:
+
+- Message_CreatePACKSKit_DuplicateName
+- Message_CyberwareSuite_DuplicateName
 
 Build 198
 

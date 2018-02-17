@@ -301,7 +301,7 @@ namespace Chummer
                 bool force = strReturn.StartsWith('L');
                 if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
                 {
-                    string strFV = strReturn.TrimStart('L');
+                    string strFV = strReturn.TrimStartOnce('L');
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (string.IsNullOrEmpty(strFV))
                     {

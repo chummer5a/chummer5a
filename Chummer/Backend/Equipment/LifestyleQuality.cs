@@ -134,7 +134,7 @@ namespace Chummer.Backend.Equipment
             int intParenthesesIndex = _strExtra.IndexOf('(');
             if (intParenthesesIndex != -1)
             {
-                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEnd(')') : string.Empty;
+                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')') : string.Empty;
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.

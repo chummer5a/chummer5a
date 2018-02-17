@@ -207,7 +207,7 @@ namespace Chummer
                         objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
                 if (objFilter.Length > 0)
                 {
-                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter += " and (" + objFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
             }
 

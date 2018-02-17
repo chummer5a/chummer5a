@@ -237,7 +237,7 @@ namespace Chummer
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
         // Character Version
-        private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
+        private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
         Version _verSavedVersion = new Version();
         // Events.
         public event EventHandler AdeptTabEnabledChanged;
@@ -306,7 +306,7 @@ namespace Chummer
             // <createdversion />
             objWriter.WriteElementString("createdversion", _strVersionCreated);
             // <appversion />
-            objWriter.WriteElementString("appversion", Application.ProductVersion.Replace("0.0.", string.Empty));
+            objWriter.WriteElementString("appversion", Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
             // <gameedition />
             objWriter.WriteElementString("gameedition", "SR5");
 
@@ -1261,10 +1261,7 @@ namespace Chummer
                     {
                         // Hacky way to make sure we aren't loading in any orphaned improvements.
                         // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                        int intFirstIndexOfId = -1;
-                        int intLastIndexOfId = -1;
-                        Parallel.Invoke(() => intFirstIndexOfId = strCharacterInnerXml.FastIndexOf(strLoopSourceName), () => intLastIndexOfId = strCharacterInnerXml.FastLastIndexOf(strLoopSourceName));
-                        if (intFirstIndexOfId == intLastIndexOfId)
+                        if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) == strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                             continue;
                     }
                 }
@@ -7694,7 +7691,7 @@ namespace Chummer
             if (strAvail.EndsWith(strTestSuffix))
             {
                 blnShowTest = true;
-                strAvail = strAvail.TrimEnd(strTestSuffix, true);
+                strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
             }
             else
             {
@@ -7702,7 +7699,7 @@ namespace Chummer
                 if (strAvail.EndsWith(strTestSuffix))
                 {
                     blnShowTest = true;
-                    strAvail = strAvail.TrimEnd(strTestSuffix, true);
+                    strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
                 }
             }
             if (int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
@@ -8485,9 +8482,8 @@ namespace Chummer
         /// <param name="strLanguage">Language to fetch</param>
         public static string TranslatedBookList(string strInput, string strLanguage)
         {
-            string strReturn = string.Empty;
-            strInput = strInput.TrimEnd(';');
-            string[] strArray = strInput.Split(';');
+            StringBuilder strReturn = new StringBuilder();
+            string[] strArray = strInput.TrimEndOnce(';').Split(';');
             // Load the Sourcebook information.
             XmlDocument objXmlDocument = XmlManager.Load("books.xml", strLanguage);
 
@@ -8496,15 +8492,15 @@ namespace Chummer
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if (objXmlBook != null)
                 {
-                    strReturn += objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    strReturn.Append(objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
+                    strReturn.Append($" ({objXmlBook["altcode"]?.InnerText ?? strBook})");
                 }
                 else
                 {
-                    strReturn += LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    strReturn.Append(LanguageManager.GetString("String_Unknown", GlobalOptions.Language) + ' ' + strBook);
                 }
-                strReturn += $" ({objXmlBook?["altcode"]?.InnerText ?? strBook})";
             }
-            return strReturn;
+            return strReturn.ToString();
         }
 
 #endregion

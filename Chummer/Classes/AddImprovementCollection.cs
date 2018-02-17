@@ -1940,9 +1940,9 @@ namespace Chummer.Classes
                 strTemp = bonusNode["max"]?.InnerXml;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    if (strTemp.Contains("-natural"))
+                    if (strTemp.EndsWith("-natural"))
                     {
-                        intMax = Convert.ToInt32(strTemp.Replace("-natural", string.Empty)) -
+                        intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true)) -
                                  _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
                     }
                     else
@@ -2340,7 +2340,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2356,7 +2356,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2372,7 +2372,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2388,7 +2388,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2404,7 +2404,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2420,7 +2420,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());

@@ -45,8 +45,8 @@ namespace Chummer
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
-        /// <param name="strXPath">String as XPath Expression to evaluate</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath or encountered an error.</param>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
@@ -76,11 +76,24 @@ namespace Chummer
         /// Evaluate an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
-            return s_ObjXPathNavigator.Evaluate(objXPath);
+            object objReturn;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            return objReturn;
         }
         #endregion
 
@@ -820,7 +833,11 @@ namespace Chummer
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
             // PS: does any qualities have numbers on them? Or is that a chummer thing?
-            string strTextToSearch = strText.Split(':')[0].Trim().TrimEnd(" I", " II", " III", " IV");
+            string strTextToSearch = strText;
+            int intPos = strTextToSearch.IndexOf(':');
+            if (intPos != -1)
+                strTextToSearch = strTextToSearch.Substring(0, intPos);
+            strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
             PdfReader reader = objBookInfo.CachedPdfReader;
             List<string> lstStringFromPDF = new List<string>();
@@ -843,7 +860,7 @@ namespace Chummer
                 string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPDF.AddRange(strPageText.Split('\n').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
+                lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
 
                 for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {

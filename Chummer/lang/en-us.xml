@@ -5926,7 +5926,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>A Suite named "{0}" already exists in the "{1}" data file. Please choose a different name.</text>
+      <text>A Suite named "{0}" already exists in a data file. Please choose a different name.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -6032,7 +6032,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>A Kit named "{0}" already exists in the "{1}" data file. Please choose a different name.</text>
+      <text>A Kit named "{0}" already exists in a data file. Please choose a different name.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>

@@ -252,8 +252,7 @@ namespace Chummer
             {
                 string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] {};
                 string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty);
-                if (strPackFile.StartsWith("/saves"))
-                    strPackFile = strPackFile.Replace("/saves", string.Empty);
+                strPackFile = strPackFile.TrimStartOnce("/saves");
                 Uri objUri = new Uri(strPackFile, UriKind.Relative);
                 PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
                 byte[] bytBuffer = File.ReadAllBytes(strFile);

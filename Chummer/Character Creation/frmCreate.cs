@@ -3055,7 +3055,7 @@ namespace Chummer
                                         string strCheck = strLoop;
                                         if (strCheck.EndsWith("Left"))
                                         {
-                                            strCheck = strCheck.TrimEnd("Left", true);
+                                            strCheck = strCheck.TrimEndOnce("Left", true);
                                             if (!setDisallowedMounts.Contains(strCheck + "Right"))
                                                 continue;
                                         }
@@ -3343,7 +3343,7 @@ namespace Chummer
                                             string strCheck = strLoop;
                                             if (strCheck.EndsWith("Left"))
                                             {
-                                                strCheck = strCheck.TrimEnd("Left", true);
+                                                strCheck = strCheck.TrimEndOnce("Left", true);
                                                 if (!setDisallowedMounts.Contains(strCheck + "Right"))
                                                     continue;
                                             }
@@ -3460,7 +3460,7 @@ namespace Chummer
                                                 string strCheck = strLoop;
                                                 if (strCheck.EndsWith("Left"))
                                                 {
-                                                    strCheck = strCheck.TrimEnd("Left", true);
+                                                    strCheck = strCheck.TrimEndOnce("Left", true);
                                                     if (!setDisallowedMounts.Contains(strCheck + "Right"))
                                                         continue;
                                                 }
@@ -5393,7 +5393,7 @@ namespace Chummer
                     if (CharacterObjectOptions.EnemyKarmaQualityLimit)
                     {
                         // Include the BP used by Enemies.
-                        string strEnemiesBPText = lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty).NormalizeWhiteSpace();
+                        string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Language)).NormalizeWhiteSpace();
                         if (int.TryParse(strEnemiesBPText, out int intTemp))
                             intBP += intTemp;
                     }
@@ -6046,7 +6046,7 @@ namespace Chummer
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objAccessory.Cost.TrimStart("Variable(", true).TrimEnd(')');
+                    string strCost = objAccessory.Cost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -9082,7 +9082,7 @@ namespace Chummer
                         if (CharacterObjectOptions.EnemyKarmaQualityLimit)
                         {
                             // Include the BP used by Enemies.
-                            string strEnemiesBPText = lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty).NormalizeWhiteSpace();
+                            string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Language)).NormalizeWhiteSpace();
                             if (int.TryParse(strEnemiesBPText, out int intTemp))
                                 intBP += intTemp;
                         }
@@ -9299,7 +9299,7 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                         if (!string.IsNullOrEmpty(objGear.Extra))
                         {
-                            ImprovementManager.ForcedValue = objGear.Extra.TrimEnd(", Hacked");
+                            ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                         }
                         if (objGear.Bonus != null)
                             ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
@@ -9619,7 +9619,7 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                     if (!string.IsNullOrEmpty(objGear.Extra))
                     {
-                        ImprovementManager.ForcedValue = objGear.Extra.TrimEnd(", Hacked");
+                        ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                     }
                     bool blnAddBonus = true;
                     if (objGear.Name == "Qi Focus")

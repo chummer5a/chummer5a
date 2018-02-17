@@ -197,7 +197,7 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (!blnSkipCost && _strCost.StartsWith("Variable("))
             {
-                string strFirstHalf = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 string strSecondHalf = string.Empty;
                 int intHyphenIndex = strFirstHalf.IndexOf('-');
                 if (intHyphenIndex != -1)
@@ -1224,7 +1224,7 @@ namespace Chummer.Backend.Equipment
             string strReturn = Cost;
             if (strReturn.StartsWith("Variable("))
             {
-                strReturn = strReturn.TrimStart("Variable(", true).TrimEnd(')');
+                strReturn = strReturn.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 decimal decMin;
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
@@ -1610,13 +1610,13 @@ namespace Chummer.Backend.Equipment
             }
 
             // Evaluate the min expression if there is one.
-            int intStart = strDamage.FastIndexOf("min(");
+            int intStart = strDamage.IndexOf("min(", StringComparison.Ordinal);
             if (intStart != -1)
             {
                 int intEnd = strDamage.IndexOf(')', intStart);
                 string strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
                 
-                string[] strValue = strMin.TrimStart("min(", true).TrimEnd(')').Split(',');
+                string[] strValue = strMin.TrimStartOnce("min(", true).TrimEndOnce(')').Split(',');
                 int intMinValue = Convert.ToInt32(strValue[0]);
                 for (int i = 1; i < strValue.Length; ++i)
                 {
@@ -1630,39 +1630,37 @@ namespace Chummer.Backend.Equipment
             if (strDamage.Contains("P or S"))
             {
                 strDamageType = "P or S";
-                strDamage = strDamage.Replace("P or S", string.Empty);
+                strDamage = strDamage.FastEscape("P or S");
             }
-            else
+            else if (strDamage.Contains('P'))
             {
-                if (strDamage.Contains('P'))
-                {
-                    strDamageType = "P";
-                    strDamage = strDamage.FastEscape('P');
-                }
-                if (strDamage.Contains('S'))
-                {
-                    strDamageType = "S";
-                    strDamage = strDamage.FastEscape('S');
-                }
+                strDamageType = "P";
+                strDamage = strDamage.FastEscape('P');
+            }
+            else if (strDamage.Contains('S'))
+            {
+                strDamageType = "S";
+                strDamage = strDamage.FastEscape('S');
             }
             // Place any extra text like (e) and (f) in a string and remove it from the expression.
             if (strDamage.Contains("(e)"))
             {
                 strDamageExtra = "(e)";
-                strDamage = strDamage.Replace("(e)", string.Empty);
+                strDamage = strDamage.FastEscape("(e)");
             }
-            if (strDamage.Contains("(f)"))
+            else if (strDamage.Contains("(f)"))
             {
                 strDamageExtra = "(f)";
-                strDamage = strDamage.Replace("(f)", string.Empty);
+                strDamage = strDamage.FastEscape("(f)");
             }
 
             // Look for splash damage info.
             if (strDamage.Contains("/m)") || strDamage.Contains(" Radius)"))
             {
-                string strSplash = strDamage.Substring(strDamage.IndexOf('('), strDamage.IndexOf(')') - strDamage.IndexOf('(') + 1);
+                int intPos = strDamage.IndexOf('(');
+                string strSplash = strDamage.Substring(intPos, strDamage.IndexOf(')') - intPos + 1);
                 strDamageExtra += ' ' + strSplash;
-                strDamage = strDamage.Replace(strSplash, string.Empty).Trim();
+                strDamage = strDamage.FastEscape(strSplash).Trim();
             }
 
             // Replace the division sign with "div" since we're using XPath.
@@ -1695,7 +1693,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && objImprovement.Enabled)
+                    if (strDamageType == "S" && objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && objImprovement.Enabled)
                         strDamageType = "P";
                     if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDV && objImprovement.Enabled)
                         intImprove += objImprovement.Value;
@@ -1821,14 +1819,14 @@ namespace Chummer.Backend.Equipment
                 if (strDamage.Contains("P or S"))
                 {
                     strDamageType = "P or S";
-                    strDamage = strDamage.Replace("P or S", string.Empty);
+                    strDamage = strDamage.FastEscape("P or S");
                 }
-                if (strDamage.Contains('P'))
+                else if (strDamage.Contains('P'))
                 {
                     strDamageType = "P";
                     strDamage = strDamage.FastEscape('P');
                 }
-                if (strDamage.Contains('S'))
+                else if (strDamage.Contains('S'))
                 {
                     strDamageType = "S";
                     strDamage = strDamage.FastEscape('S');
@@ -1837,12 +1835,12 @@ namespace Chummer.Backend.Equipment
                 if (strDamage.Contains("(e)"))
                 {
                     strDamageExtra = "(e)";
-                    strDamage = strDamage.Replace("(e)", string.Empty);
+                    strDamage = strDamage.FastEscape("(e)");
                 }
-                if (strDamage.Contains("(f)"))
+                else if (strDamage.Contains("(f)"))
                 {
                     strDamageExtra = "(f)";
-                    strDamage = strDamage.Replace("(f)", string.Empty);
+                    strDamage = strDamage.FastEscape("(f)");
                 }
                 // Replace the division sign with "div" since we're using XPath.
                 strDamage = strDamage.Replace("/", " div ");
@@ -1871,22 +1869,21 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
-                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage));
-
-                strReturn = strReturn.CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage));
-                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage));
-                strReturn = strReturn.CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage));
-                strReturn = strReturn.CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage));
-                strReturn = strReturn.CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage));
-                strReturn = strReturn.CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage));
-                strReturn = strReturn.CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage));
-                strReturn = strReturn.CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage));
-                strReturn = strReturn.CheapReplace("Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage));
-                strReturn = strReturn.CheapReplace("Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage));
-                strReturn = strReturn.CheapReplace("As Drug/Toxin", () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage));
-                strReturn = strReturn.CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage));
-                strReturn = strReturn.CheapReplace("/m", () => "/" + LanguageManager.GetString("String_DamageMeter", strLanguage));
+                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                    .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
+                    .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
+                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
+                    .CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
+                    .CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
+                    .CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
+                    .CheapReplace("Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage))
+                    .CheapReplace("Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage))
+                    .CheapReplace("As Drug/Toxin", () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage))
+                    .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
+                    .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage));
             }
 
             return strReturn;
@@ -1971,20 +1968,19 @@ namespace Chummer.Backend.Equipment
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.CheapReplace(" or ", () => ' ' + LanguageManager.GetString("String_Or", strLanguage) + ' ');
-                strReturn = strReturn.CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage));
-                strReturn = strReturn.CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage));
-                strReturn = strReturn.CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage));
-                strReturn = strReturn.CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage));
-
-                strReturn = strReturn.CheapReplace("(b)", () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(belt)", () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(c)", () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(cy)", () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(d)", () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(m)", () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')');
-                strReturn = strReturn.CheapReplace("(ml)", () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace(" or ", () => ' ' + LanguageManager.GetString("String_Or", strLanguage) + ' ')
+                    .CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage))
+                    .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage))
+                    .CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage))
+                    .CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage))
+                    .CheapReplace("(b)", () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')')
+                    .CheapReplace("(belt)", () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
+                    .CheapReplace("(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')
+                    .CheapReplace("(c)", () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')')
+                    .CheapReplace("(cy)", () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')')
+                    .CheapReplace("(d)", () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')')
+                    .CheapReplace("(m)", () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')')
+                    .CheapReplace("(ml)", () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage) + ')');
             }
 
             return strReturn;
@@ -2468,22 +2464,22 @@ namespace Chummer.Backend.Equipment
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess);
                 else
-                    return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             catch (FormatException)
             {
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             catch (OverflowException)
             {
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             catch (InvalidCastException)
             {
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
             intAP += bonusAP;
             if (intAP == 0)
@@ -4455,7 +4451,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             
-            if (strExpression.IndexOfAny('{', '+', '-', '*') != -1 || strExpression.Contains("div"))
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)

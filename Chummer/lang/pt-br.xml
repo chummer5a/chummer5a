@@ -5485,7 +5485,7 @@
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>Um Conjunto chamado "{0}" já existe no arquivo de dados "{1}". Por favor, escolha um nome diferente.</text>
+      <text>Um Conjunto chamado "{0}" já existe em um arquivo de dados. Por favor, escolha um nome diferente.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -5591,7 +5591,7 @@
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>Um Kit chamado '{0}" já existe no arquivo de dados "{1}". Por favor, escolha um nome diferente.</text>
+      <text>Um Kit chamado '{0}" já existe em um arquivo de dados. Por favor, escolha um nome diferente.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>

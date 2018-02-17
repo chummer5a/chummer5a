@@ -949,7 +949,7 @@ namespace Chummer
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.StartsWith("FixedValues("))
             {
-                string[] strValues = strValue.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
@@ -2111,7 +2111,7 @@ namespace Chummer
                             {
                                 foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                                 {
-                                    string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
+                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)").Trim();
                                     // Determine which GradeList to use for the Cyberware.
                                     objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType, true).FirstOrDefault(x => x.Name == strNewName);
                                 }

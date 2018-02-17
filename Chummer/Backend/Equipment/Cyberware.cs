@@ -284,7 +284,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decMin;
                 decimal decMax = decimal.MaxValue;
-                string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
@@ -1823,12 +1823,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (strAvail.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
-                blnOrGear = strAvail.Contains(" or Gear");
-                strAvail = strAvail.Replace(" or Gear", string.Empty);
+                blnOrGear = strAvail.EndsWith(" or Gear");
+                if (blnOrGear)
+                    strAvail = strAvail.TrimEndOnce(" or Gear", true);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -1918,7 +1919,7 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = Capacity;
                 if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
                 if (string.IsNullOrEmpty(strCapacity))
@@ -1926,7 +1927,7 @@ namespace Chummer.Backend.Equipment
                 if (strCapacity == "[*]")
                     return "*";
                 string strReturn;
-                int intPos = strCapacity.FastIndexOf("/[");
+                int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                 if (intPos != -1)
                 {
                     string strFirstHalf = strCapacity.Substring(0, intPos);
@@ -2011,7 +2012,7 @@ namespace Chummer.Backend.Equipment
             string strESS = _strESS;
             if (strESS.StartsWith("FixedValues("))
             {
-                string[] strValues = strESS.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                string[] strValues = strESS.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strESS = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
             }
             if (strESS.Contains("Rating"))
@@ -2135,10 +2136,10 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.StartsWith("FixedValues("))
             {
-                string[] strValues = strExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
             }
-            if (strExpression.IndexOfAny('{', '+', '-', '*') != -1 || strExpression.Contains("div"))
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2220,7 +2221,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpression.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
@@ -2381,7 +2382,7 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        int intPos = strCapacity.FastIndexOf("/[");
+                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))
@@ -2399,7 +2400,7 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildGear.CalculatedCapacity;
-                        int intPos = strCapacity.FastIndexOf("/[");
+                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))
@@ -2423,7 +2424,7 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
-                        int intPos = strCapacity.FastIndexOf("/[");
+                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))
@@ -2441,7 +2442,7 @@ namespace Chummer.Backend.Equipment
                             continue;
                         }
                         string strCapacity = objChildGear.CalculatedCapacity;
-                        int intPos = strCapacity.FastIndexOf("/[");
+                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))

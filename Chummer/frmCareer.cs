@@ -2243,7 +2243,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strShowFileName))
                     strShowFileName = CharacterObject.CharacterName;
-                strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
+                strShowFileName = strShowFileName.TrimEndOnce(".chum5");
 
                 strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
@@ -2444,7 +2444,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = CharacterObject.CharacterName;
-            strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
+            strShowFileName = strShowFileName.TrimEndOnce(".chum5");
 
             strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
@@ -7206,7 +7206,7 @@ namespace Chummer
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objAccessory.Cost.TrimStart("Variable(", true).TrimEnd(')');
+                    string strCost = objAccessory.Cost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -12833,21 +12833,16 @@ namespace Chummer
                     if (strWeaponAmmo.Contains("external source"))
                         blnExternalSource = true;
                     // Get rid of external source, special, or belt, and + energy.
-                    strWeaponAmmo = strWeaponAmmo.Replace("external source", "100");
-                    strWeaponAmmo = strWeaponAmmo.Replace("special", "100");
-                    strWeaponAmmo = strWeaponAmmo.Replace(" + energy", string.Empty);
-                    strWeaponAmmo = strWeaponAmmo.Replace(" or belt", " or 250(belt)");
-
+                    strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                        .Replace("special", "100")
+                        .FastEscapeOnceFromEnd(" + energy")
+                        .Replace(" or belt", " or 250(belt)");
 
                     string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
 
                     foreach (string strAmmo in strAmmos)
                     {
-                        string strThisAmmo = strAmmo;
-                        if (strThisAmmo.StartsWith("2x") || strThisAmmo.StartsWith("3x") || strThisAmmo.StartsWith("4x"))
-                            strThisAmmo = strThisAmmo.Substring(2, strThisAmmo.Length - 2);
-                        if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
-                            strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
+                        string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
 
                         int intPos = strThisAmmo.IndexOf('(');
                         if (intPos != -1)
@@ -13875,21 +13870,17 @@ namespace Chummer
                 if (strWeaponAmmo.Contains("external source"))
                     blnExternalSource = true;
                 // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100");
-                strWeaponAmmo = strWeaponAmmo.Replace("special", "100");
-                strWeaponAmmo = strWeaponAmmo.Replace(" + energy", string.Empty);
-                strWeaponAmmo = strWeaponAmmo.Replace(" or belt", string.Empty);
+                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                    .Replace("special", "100")
+                    .FastEscapeOnceFromEnd(" + energy")
+                    .FastEscapeOnceFromEnd(" or belt");
 
                 string[] strSplit = { " or " };
                 string[] strAmmos = strWeaponAmmo.Split(strSplit, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (string strAmmo in strAmmos)
                 {
-                    string strThisAmmo = strAmmo;
-                    if (strThisAmmo.StartsWith("2x") || strThisAmmo.StartsWith("3x") || strThisAmmo.StartsWith("4x"))
-                        strThisAmmo = strThisAmmo.Substring(2, strThisAmmo.Length - 2);
-                    if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
+                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
 
                     int intPos = strThisAmmo.IndexOf('(');
                     if (intPos != -1)
@@ -19312,14 +19303,14 @@ namespace Chummer
             // Configure the Karma chart.
             ChartArea objKarmaChartArea = chtKarma.ChartAreas[0];
             objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
-            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEnd(':');
+            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEndOnce(':');
             objKarmaChartArea.AxisX.Minimum = 0;
             objKarmaChartArea.AxisX.Maximum = (DateTime.Now - KarmaFirst).TotalDays;
 
             // Configure the Nuyen chart.
             ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
             objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
-            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEnd(':');
+            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEndOnce(':');
             objNuyenChartArea.AxisX.Minimum = 0;
             objNuyenChartArea.AxisX.Maximum = (DateTime.Now - NuyenFirst).TotalDays;
             
