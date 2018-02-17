@@ -30,6 +30,7 @@ Application Changes:
 - Fixed an issue where the PACKS and Cybersuite creation forms would not check amends, overwrites, live custom data, and custom data directories when making sure there isn't already an item with the new name given by the user.
 - When printing powers for spirits and sprites, Chummer5a will now also check critterpowers.xml in addition to spiritpowers.xml.
 - Children or auxiliary weapons and vehicles that come pre-installed with an item will no longer show up in the UI if their sourcebooks are not enabled. Fixed #2503.
+- Fixed a rare issue where adding certain items in create mode would generate expense log entries that stayed around afterwards and showed up in career mode. Affected characters with this issue in create mode will have it fixed retroactively, but the entry will remain for affected characters in career mode. Fixes #2507.
 
 Data Changes:
 

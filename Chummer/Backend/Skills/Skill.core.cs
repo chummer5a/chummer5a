@@ -631,27 +631,32 @@ namespace Chummer.Backend.Skills
 
         public void Upgrade()
         {
-            if (!CanUpgradeCareer) return;
-
-            int price = UpgradeKarmaCost();
-            int intTotalBaseRating = TotalBaseRating;
-            string strSkillType = "String_ExpenseActiveSkill";
-            if (IsKnowledgeSkill)
+            if (_objCharacter.Created)
             {
-                strSkillType = "String_ExpenseKnowledgeSkill";
+                if (!CanUpgradeCareer)
+                    return;
+
+                int price = UpgradeKarmaCost();
+                int intTotalBaseRating = TotalBaseRating;
+                string strSkillType = "String_ExpenseActiveSkill";
+                if (IsKnowledgeSkill)
+                {
+                    strSkillType = "String_ExpenseKnowledgeSkill";
+                }
+                //If data file contains {4} this crashes but...
+                string upgradetext =
+                    $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} 🡒 {(intTotalBaseRating + 1)}";
+
+                ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
+                entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
+
+                CharacterObject.ExpenseEntries.AddWithSort(entry);
+
+                CharacterObject.Karma -= price;
             }
-            //If data file contains {4} this crashes but...
-            string upgradetext =
-                $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} 🡒 {(intTotalBaseRating + 1)}";
-
-            ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
-            entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-            entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
             
-            CharacterObject.ExpenseEntries.AddWithSort(entry);
-
             Karma += 1;
-            CharacterObject.Karma -= price;
         }
 
         private bool _oldCanAffordSpecialization;
@@ -690,46 +695,49 @@ namespace Chummer.Backend.Skills
 
         public void AddSpecialization(string name)
         {
-            int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
-
-            int intExtraSpecCost = 0;
-            int intTotalBaseRating = TotalBaseRating;
-            decimal decSpecCostMultiplier = 1.0m;
-            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            SkillSpecialization nspec = new SkillSpecialization(name, false, this);
+            if (_objCharacter.Created)
             {
-                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
-                    if (objLoopImprovement.ImprovedName == SkillCategory)
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                            intExtraSpecCost += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        if (objLoopImprovement.ImprovedName == SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
-            }
-            if (decSpecCostMultiplier != 1.0m)
-                price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
-            price += intExtraSpecCost; //Spec
+                if (decSpecCostMultiplier != 1.0m)
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
 
-            if (price > CharacterObject.Karma)
-                return;
+                if (price > CharacterObject.Karma)
+                    return;
 
-            //If data file contains {4} this crashes but...
-            string upgradetext = //TODO WRONG
+                //If data file contains {4} this crashes but...
+                string upgradetext = //TODO WRONG
                 $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({name})";
 
-            SkillSpecialization nspec = new SkillSpecialization(name, false, this);
+                ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
+                entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
-            ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
-            entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-            entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
+                CharacterObject.ExpenseEntries.AddWithSort(entry);
 
-            CharacterObject.ExpenseEntries.AddWithSort(entry);
-
+                CharacterObject.Karma -= price;
+            }
+            
             Specializations.Add(nspec);
-            CharacterObject.Karma -= price;
         }
 
         /// <summary>

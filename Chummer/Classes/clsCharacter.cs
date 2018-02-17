@@ -1817,18 +1817,34 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_init");
-            Timekeeper.Start("load_char_elog");
-
-            // Expense Log Entries.
-            XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
-            foreach (XmlNode objXmlExpense in objXmlExpenseList)
+            // While we want to save expenses in create mode due to starting nuyen and starting karma being logged as expense log entries,
+            // we don't want to load them in create mode because they shouldn't be there.
+            if (Created)
             {
-                ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
-                objExpenseLogEntry.Load(objXmlExpense);
-                _lstExpenseLog.AddWithSort(objExpenseLogEntry);
-            }
+                Timekeeper.Start("load_char_elog");
 
-            Timekeeper.Finish("load_char_elog");
+                // Expense Log Entries.
+                XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+                foreach (XmlNode objXmlExpense in objXmlExpenseList)
+                {
+                    ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
+                    objExpenseLogEntry.Load(objXmlExpense);
+                    _lstExpenseLog.AddWithSort(objExpenseLogEntry);
+                }
+
+                Timekeeper.Finish("load_char_elog");
+            }
+#if DEBUG
+            else
+            {
+                // There shouldn't be any expenses for a character loaded in create mode. This code is to help narrow down issues should expenses somehow be created.
+                XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+                if (objXmlExpenseList?.Count > 0)
+                {
+                    Utils.BreakIfDebug();
+                }
+            }
+#endif
             Timekeeper.Start("load_char_loc");
 
             // Locations.

@@ -210,22 +210,27 @@ namespace Chummer.Backend.Skills
 
         public void Upgrade()
         {
-            if (!CareerIncrease) return;
+            if (CharacterObject.Created)
+            {
+                if (!CareerIncrease)
+                    return;
 
-            int intPrice = UpgradeKarmaCost();
+                int intPrice = UpgradeKarmaCost();
 
-            //If data file contains {4} this crashes but...
-            string strUpgradetext =
-                $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} 🡒 {(Rating + 1)}";
+                //If data file contains {4} this crashes but...
+                string strUpgradetext =
+                    $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} 🡒 {(Rating + 1)}";
 
-            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-            objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-            objEntry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
+                objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                objEntry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
 
-            CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
+                CharacterObject.Karma -= intPrice;
+            }
+           
             Karma += 1;
-            CharacterObject.Karma -= intPrice;
         }
 
         #endregion
