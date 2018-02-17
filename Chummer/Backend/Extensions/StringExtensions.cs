@@ -148,7 +148,7 @@ namespace Chummer
                 char chrFromHaystack = strHaystack[i];
                 achrBuffer[i] = chrFromHaystack;
                 // We also check chars while we populate the initial buffer to make sure we catch cases when the haystack begins with the needle.
-                blnNeedleFound = blnNeedleFound && chrFromHaystack != strNeedle[i];
+                blnNeedleFound = blnNeedleFound && chrFromHaystack == strNeedle[i];
             }
             // Check to see if the needle is at the start of the string.
             if (blnNeedleFound)
@@ -166,7 +166,7 @@ namespace Chummer
                     char chrLoop = achrBuffer[i2 + 1];
                     achrBuffer[i2] = chrLoop;
                     // Check to see if the downshifted char in its new position matches the needle array
-                    blnNeedleFound = blnNeedleFound && chrLoop != strNeedle[i2];
+                    blnNeedleFound = blnNeedleFound && chrLoop == strNeedle[i2];
                 }
 
                 // Fetch the last char in the buffer from the haystack

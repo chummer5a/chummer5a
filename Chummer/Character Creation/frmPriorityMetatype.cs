@@ -1470,11 +1470,19 @@ namespace Chummer
                         lblForceLabel.Visible = true;
                         nudForce.Visible = true;
 
-                        if (intPos > 0)
+                        if (intPos != -1)
                         {
-                            intPos -= 1;
-                            lblForceLabel.Text = strEssMax.Substring(intPos, 3);
-                            nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
+                            if (intPos > 0)
+                            {
+                                intPos -= 1;
+                                lblForceLabel.Text = strEssMax.Substring(intPos, 3);
+                                nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
+                            }
+                            else
+                            {
+                                lblForceLabel.Text = "1D6";
+                                nudForce.Maximum = 6;
+                            }
                         }
                         else
                         {
