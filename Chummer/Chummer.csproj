@@ -1677,6 +1677,8 @@
     <Content Include="customdata\Delnar Skills Remake\amend_skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_streams.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_traditions.xml" />
     <Content Include="customdata\Delnar Skills Remake\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

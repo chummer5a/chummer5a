@@ -58,8 +58,8 @@
         <power>Hash</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -80,9 +80,9 @@
         <power>Suppression</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -100,12 +100,12 @@
       <wil>F+1</wil>
       <ini>(F*2)+4</ini>
       <powers>
-        <power>Camoulage</power>
+        <power>Camouflage</power>
         <power>Watermark</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
       </skills>
     </spirit>
     <spirit>
@@ -126,9 +126,9 @@
         <power>Electron Storm</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Cyber Combat</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Cybercombat</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -151,9 +151,9 @@
         <power>Stability</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-        <skill attr="log">Hardware</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+        <skill>Hardware</skill>
       </skills>
     </spirit>
   </spirits>
