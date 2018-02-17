@@ -879,7 +879,7 @@ namespace Chummer
                     lblForceLabel.Visible = true;
                     nudForce.Visible = true;
                     
-                    if (intPos != -1)
+                    if (intPos > 0)
                     {
                         intPos -= 1;
                         lblForceLabel.Text = strEssMax.Substring(intPos, 3);
