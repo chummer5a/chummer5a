@@ -38,4 +38,5 @@
         <skill xpathfilter="text() = 'Leadership' or text() = 'Intimidation'" amendoperation="replace" attr="cha">Command</skill>
       </skills>
     </spirit>
+  </spirits>
 </chummer>
