@@ -199,22 +199,6 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
                 }
             }
-
-            // Remove any Improvements from Armor Encumbrance.
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance);
-            if (!_objCharacter.Options.IgnoreArmorEncumbrance)
-            {
-                // Create the Armor Encumbrance Improvements.
-                int intEncumbrance = _objCharacter.ArmorEncumbrance;
-                if (intEncumbrance < 0)
-                {
-                    ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
-                        Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
-                    ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
-                        Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
-                    ImprovementManager.Commit(_objCharacter);
-                }
-            }
         }
 
         /// <summary>
@@ -239,7 +223,7 @@ namespace Chummer
                 StringBuilder objMental = new StringBuilder(
                     $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3");
                 StringBuilder objSocial = new StringBuilder(
-                    $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence.ToString(GlobalOptions.CultureInfo)}] / 3");
+                    $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence().ToString(GlobalOptions.CultureInfo)}] / 3");
 
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
@@ -6564,6 +6548,11 @@ namespace Chummer
             IsDirty = true;
         }
 
+        public void MakeDirty(object sender, EventArgs e)
+        {
+            IsDirty = true;
+        }
+
         public bool IsCharacterUpdateRequested { get; set; }
 
         public Character CharacterObject => _objCharacter;
@@ -6737,62 +6726,34 @@ namespace Chummer
 
         /// <summary>
         /// Processes the string strDrain into a calculated Drain dicepool and appropriate display attributes and labels.
+        /// TODO: DataBind the controls that would use this method
         /// </summary>
-        /// <param name="strDrain"></param>
-        /// <param name="drain"></param>
-        /// <param name="attributeText"></param>
-        /// <param name="valueText"></param>
-        /// <param name="tooltip"></param>
-        protected void CalculateTraditionDrain(string strDrain, Improvement.ImprovementType drain, Label attributeText = null, Label valueText = null, ToolTip tooltip = null)
+        /// <param name="eDrainType"></param>
+        protected string GetTraditionDrainToolTip(Improvement.ImprovementType eDrainType)
         {
-            if (string.IsNullOrWhiteSpace(strDrain) || (attributeText == null && valueText == null && tooltip == null))
-                return;
-            StringBuilder objDrain = valueText != null ? new StringBuilder(strDrain) : null;
-            StringBuilder objDisplayDrain = attributeText != null ? new StringBuilder(strDrain) : null;
-            StringBuilder objTip = tooltip != null ? new StringBuilder(strDrain) : null;
-            int intDrain = 0;
+            string strDrain = eDrainType == Improvement.ImprovementType.FadingResistance ? _objCharacter.TechnomancerFading : _objCharacter.TraditionDrain;
+            
+            StringBuilder objTip = new StringBuilder(strDrain);
+
             // Update the Fading CharacterAttribute Value.
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
-                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                if (strDrain.Contains(objAttrib.Abbrev))
+                objTip.CheapReplace(strAttribute, () =>
                 {
-                    string strAttribTotalValue = objAttrib.TotalValue.ToString();
-                    objDrain?.Replace(objAttrib.Abbrev, strAttribTotalValue);
-                    objDisplayDrain?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-                    objTip?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + strAttribTotalValue + ')');
-                }
-            }
-            if (objDrain != null)
-            {
-                try
-                {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objDrain.ToString(), out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        intDrain = Convert.ToInt32(Math.Ceiling((double)objProcess));
-                }
-                catch (XPathException) { }
-                catch (OverflowException) { } // Result is text and not a double
-                catch (InvalidCastException) { } // Result is text and not a double
+                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                    return objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue + ')';
+                });
             }
 
-            if (valueText != null || tooltip != null)
+            int intBonusDrain = ImprovementManager.ValueOf(_objCharacter, eDrainType);
+            if (intBonusDrain != 0)
             {
-                int intBonusDrain = ImprovementManager.ValueOf(_objCharacter, drain);
-                if (intBonusDrain != 0)
-                {
-                    intDrain += intBonusDrain;
-                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ')');
-                }
+                if (objTip.Length > 0)
+                    objTip.Append(" + ");
+                objTip.Append(LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ')');
             }
 
-            if (attributeText != null)
-                attributeText.Text = objDisplayDrain.ToString();
-            if (valueText != null)
-            {
-                valueText.Text = intDrain.ToString();
-                tooltip?.SetToolTip(valueText, objTip.ToString());
-            }
+            return objTip.ToString();
         }
 
         /// <summary>

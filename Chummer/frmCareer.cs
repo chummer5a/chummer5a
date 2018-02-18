@@ -64,6 +64,14 @@ namespace Chummer
         {
             InitializeComponent();
 
+            txtTraditionName.TextChanged += MakeDirty;
+            cboDrain.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+            cboSpiritCombat.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+            cboSpiritDetection.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+            cboSpiritHealth.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+            cboSpiritIllusion.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+            cboSpiritManipulation.SelectedIndexChanged += MakeDirtyWithCharacterUpdate;
+
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.CharacterNameChanged += ForceUpdateWindowTitle;
             CharacterObject.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
@@ -333,13 +341,21 @@ namespace Chummer
                 string strName = objXmlTradition["name"].InnerText;
                 lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
-            lstTraditions.Sort(CompareListItems.CompareNames);
-            lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
-            cboTradition.BeginUpdate();
-            cboTradition.ValueMember = "Value";
-            cboTradition.DisplayMember = "Name";
-            cboTradition.DataSource = lstTraditions;
-            cboTradition.EndUpdate();
+            if (lstTraditions.Count > 1)
+            {
+                lstTraditions.Sort(CompareListItems.CompareNames);
+                lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
+                cboTradition.BeginUpdate();
+                cboTradition.ValueMember = "Value";
+                cboTradition.DisplayMember = "Name";
+                cboTradition.DataSource = lstTraditions;
+                cboTradition.EndUpdate();
+            }
+            else
+            {
+                cboTradition.Visible = false;
+                lblTraditionLabel.Visible = false;
+            }
 
             // Populate the Magician Custom Drain Options list.
             List<ListItem> lstDrainAttributes = new List<ListItem>
@@ -353,10 +369,17 @@ namespace Chummer
             }
             lstDrainAttributes.Sort(CompareListItems.CompareNames);
             cboDrain.BeginUpdate();
-            cboDrain.ValueMember = "Value";
-            cboDrain.DisplayMember = "Name";
+            cboDrain.ValueMember = nameof(ListItem.Value);
+            cboDrain.DisplayMember = nameof(ListItem.Name);
             cboDrain.DataSource = lstDrainAttributes;
+            cboDrain.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.TraditionDrain), false, DataSourceUpdateMode.OnPropertyChanged);
             cboDrain.EndUpdate();
+
+            lblDrainAttributes.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayTraditionDrain), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblDrainAttributesValue.DataBindings.Add("Text", CharacterObject, nameof(Character.TraditionDrainValue), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblFadingAttributes.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayTechnomancerFading), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblFadingAttributesValue.DataBindings.Add("Text", CharacterObject, nameof(Character.TechnomancerFadingValue), false, DataSourceUpdateMode.OnPropertyChanged);
 
             HashSet<string> limit = new HashSet<string>();
             foreach (Improvement improvement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
@@ -384,6 +407,7 @@ namespace Chummer
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
             cboSpiritCombat.DataSource = lstCombat;
+            cboSpiritCombat.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritCombat), false, DataSourceUpdateMode.OnPropertyChanged);
             cboSpiritCombat.EndUpdate();
 
             List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
@@ -391,6 +415,7 @@ namespace Chummer
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstDetection;
+            cboSpiritDetection.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritDetection), false, DataSourceUpdateMode.OnPropertyChanged);
             cboSpiritDetection.EndUpdate();
 
             List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
@@ -398,6 +423,7 @@ namespace Chummer
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
             cboSpiritHealth.DataSource = lstHealth;
+            cboSpiritHealth.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritHealth), false, DataSourceUpdateMode.OnPropertyChanged);
             cboSpiritHealth.EndUpdate();
 
             List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
@@ -405,6 +431,7 @@ namespace Chummer
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstIllusion;
+            cboSpiritIllusion.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritIllusion), false, DataSourceUpdateMode.OnPropertyChanged);
             cboSpiritIllusion.EndUpdate();
 
             List<ListItem> lstManip = new List<ListItem>(lstSpirit);
@@ -412,25 +439,32 @@ namespace Chummer
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
             cboSpiritManipulation.DataSource = lstManip;
+            cboSpiritManipulation.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritManipulation), false, DataSourceUpdateMode.OnPropertyChanged);
             cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
             xmlTraditionsDocument = XmlManager.Load("streams.xml");
-            List<ListItem> lstStreams = new List<ListItem>
-            {
-                ListItem.Blank
-            };
+            List<ListItem> lstStreams = new List<ListItem>();
             foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
             {
                 string strName = objXmlTradition["name"].InnerText;
                 lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
-            lstStreams.Sort(CompareListItems.CompareNames);
-            cboStream.BeginUpdate();
-            cboStream.ValueMember = "Value";
-            cboStream.DisplayMember = "Name";
-            cboStream.DataSource = lstStreams;
-            cboStream.EndUpdate();
+            if (lstStreams.Count > 1)
+            {
+                lstStreams.Sort(CompareListItems.CompareNames);
+                lstStreams.Insert(0, new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
+                cboStream.BeginUpdate();
+                cboStream.ValueMember = "Value";
+                cboStream.DisplayMember = "Name";
+                cboStream.DataSource = lstStreams;
+                cboStream.EndUpdate();
+            }
+            else
+            {
+                cboStream.Visible = false;
+                lblStreamLabel.Visible = false;
+            }
 
             cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
             if (CharacterObject.MetatypeCategory == "Shapeshifter")
@@ -455,17 +489,10 @@ namespace Chummer
                 cboAttributeCategory.SelectedValue = "Standard";
             }
 
-            // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-            if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-            {
-                lblMysticAdeptMAGAdept.Text = CharacterObject.MysticAdeptPowerPoints.ToString();
-
-                lblMysticAdeptAssignment.Visible = true;
-                lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
-            }
-            else
-                cmdIncreasePowerPoints.Visible = false;
+            lblMysticAdeptAssignment.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMysticAdeptMAGAdept.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMysticAdeptMAGAdept.DataBindings.Add("Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdIncreasePowerPoints.DataBindings.Add("Visible", CharacterObject, nameof(Character.MysAdeptAllowPPCareer), false, DataSourceUpdateMode.OnPropertyChanged);
             cmdIncreasePowerPoints.DataBindings.Add("Enabled", CharacterObject, nameof(Character.CanAffordCareerPP), false, DataSourceUpdateMode.OnPropertyChanged);
             
             // Populate vehicle weapon fire mode list.
@@ -486,35 +513,15 @@ namespace Chummer
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
                 cboTradition.SelectedValue = CharacterObject.MagicTradition;
+            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                cboTradition.SelectedIndex = 0;
+            txtTraditionName.DataBindings.Add("Text", CharacterObject, nameof(Character.TraditionName), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            if (!string.IsNullOrEmpty(CharacterObject.TraditionName))
-                txtTraditionName.Text = CharacterObject.TraditionName;
-
-            if (!string.IsNullOrEmpty(CharacterObject.TraditionDrain))
-                cboDrain.SelectedValue = CharacterObject.TraditionDrain;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritCombat))
-                cboSpiritCombat.SelectedValue = CharacterObject.SpiritCombat;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritDetection))
-                cboSpiritDetection.SelectedValue = CharacterObject.SpiritDetection;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritHealth))
-                cboSpiritHealth.SelectedValue = CharacterObject.SpiritHealth;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritIllusion))
-                cboSpiritIllusion.SelectedValue = CharacterObject.SpiritIllusion;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritManipulation))
-                cboSpiritManipulation.SelectedValue = CharacterObject.SpiritManipulation;
-
-            // Update the Fading CharacterAttribute Value.
-            if (CharacterObject.RESEnabled)
-            {
-                // Select the Technomancer's Stream.
-                if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
-                    cboStream.SelectedValue = CharacterObject.TechnomancerStream;
-            }
+            // Select the Technomancer's Stream.
+            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
+                cboStream.SelectedValue = CharacterObject.TechnomancerStream;
+            else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                cboStream.SelectedIndex = 0;
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -566,6 +573,7 @@ namespace Chummer
             // Set the visibility of the Armor Degradation buttons.
             cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
             cmdArmorIncrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterObjectOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblCMPenalty.DataBindings.Add("Text", CharacterObject, nameof(Character.WoundModifier), false, DataSourceUpdateMode.OnPropertyChanged);
 
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
@@ -1104,20 +1112,6 @@ namespace Chummer
 
                 IsDirty = true;
             }
-
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-            {
-                lblMysticAdeptAssignment.Visible = true;
-                lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
-            }
-            else
-            {
-                lblMysticAdeptAssignment.Visible = false;
-                lblMysticAdeptMAGAdept.Visible = false;
-                cmdIncreasePowerPoints.Visible = false;
-            }
         }
 
         private void objCharacter_MagicianTabEnabledChanged(object sender, EventArgs e)
@@ -1149,20 +1143,6 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
-            }
-
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-            {
-                lblMysticAdeptAssignment.Visible = true;
-                lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
-            }
-            else
-            {
-                lblMysticAdeptAssignment.Visible = false;
-                lblMysticAdeptMAGAdept.Visible = false;
-                cmdIncreasePowerPoints.Visible = false;
             }
         }
 
@@ -1424,7 +1404,7 @@ namespace Chummer
             string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Language);
 
             // Make sure the character has an Essence lower than 0.
-            if (CharacterObject.Essence >= 0)
+            if (CharacterObject.Essence() >= 0)
             {
                 strMessage += "\n\t" + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
                 blnEssence = false;
@@ -9936,35 +9916,14 @@ namespace Chummer
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
                 cboTradition.SelectedValue = CharacterObject.MagicTradition;
+            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                cboTradition.SelectedIndex = 0;
 
-            if (!string.IsNullOrEmpty(CharacterObject.TraditionName))
-                txtTraditionName.Text = CharacterObject.TraditionName;
-
-            if (!string.IsNullOrEmpty(CharacterObject.TraditionDrain))
-                cboDrain.SelectedValue = CharacterObject.TraditionDrain;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritCombat))
-                cboSpiritCombat.SelectedValue = CharacterObject.SpiritCombat;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritDetection))
-                cboSpiritDetection.SelectedValue = CharacterObject.SpiritDetection;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritHealth))
-                cboSpiritHealth.SelectedValue = CharacterObject.SpiritHealth;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritIllusion))
-                cboSpiritIllusion.SelectedValue = CharacterObject.SpiritIllusion;
-
-            if (!string.IsNullOrEmpty(CharacterObject.SpiritManipulation))
-                cboSpiritManipulation.SelectedValue = CharacterObject.SpiritManipulation;
-
-            // Update the Fading CharacterAttribute Value.
-            if (CharacterObject.RESEnabled)
-            {
-                // Select the Technomancer's Stream.
-                if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
-                    cboStream.SelectedValue = CharacterObject.TechnomancerStream;
-            }
+            // Select the Technomancer's Stream.
+            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
+                cboStream.SelectedValue = CharacterObject.TechnomancerStream;
+            else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                cboStream.SelectedIndex = 0;
 
             IsCharacterUpdateRequested = true;
 
@@ -14640,8 +14599,6 @@ namespace Chummer
 
             if (objXmlTradition == null)
             {
-                CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
-                CharacterObject.TraditionDrain = string.Empty;
                 cboDrain.Visible = false;
                 lblTraditionName.Visible = false;
                 txtTraditionName.Visible = false;
@@ -14657,6 +14614,9 @@ namespace Chummer
                 cboSpiritHealth.Visible = false;
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
+
+                CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
+                CharacterObject.TraditionDrain = string.Empty;
             }
             else if (objXmlTradition["name"]?.InnerText == "Custom")
             {
@@ -14703,7 +14663,6 @@ namespace Chummer
                 CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
                 CharacterObject.TraditionDrain = objXmlTradition["drain"]?.InnerText;
             }
-            lblDrainAttributes.Text = CharacterObject.TraditionDrain;
 
             IsCharacterUpdateRequested = true;
 
@@ -14726,12 +14685,14 @@ namespace Chummer
                 return;
             
             string strDrain = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + strSelectedId + "\"]/drain")?.InnerText;
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            if (!string.IsNullOrEmpty(strDrain))
             {
-                CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                strDrain = strDrain.CheapReplace(objAttrib.Abbrev, () => objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue + ')');
+                CharacterObject.TechnomancerFading = strDrain;
             }
-            lblFadingAttributes.Text = strDrain;
+            else
+            {
+                CharacterObject.TechnomancerFading = string.Empty;
+            }
             CharacterObject.TechnomancerStream = strSelectedId;
 
             IsCharacterUpdateRequested = true;
@@ -15709,10 +15670,8 @@ namespace Chummer
         /// <param name="intThreshold">Show an increase in modifiers every <paramref name="intThreshold"/> boxes.</param>
         /// <param name="intThresholdOffset">Initial threshold for penalties from <paramref name="intThreshold"/> should be offset by this much.</param>
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
-        /// <param name="intLowestActiveModifier">The most negative modifier that is currently active due to a filled CM</param>
-        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, out int intLowestActiveModifier)
+        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow)
         {
-            intLowestActiveModifier = 0;
             pnlConditionMonitorPanel.SuspendLayout();
             if (intConditionMax > 0)
             {
@@ -15727,8 +15686,6 @@ namespace Chummer
                         if (intCurrentBoxTag > intThresholdOffset && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
                         {
                             int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
-                            if (chkCmBox.Checked && intModifiers < intLowestActiveModifier)
-                                intLowestActiveModifier = intModifiers;
                             chkCmBox.Text = intModifiers.ToString();
                         }
                         else
@@ -16032,7 +15989,11 @@ namespace Chummer
             
             _blnSkipUpdate = true;
 
+            CharacterObject.ResetCachedEssence();
+            // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
             CharacterObject.RefreshRedliner();
+            CharacterObject.RefreshEssenceLossImprovements();
+            CharacterObject.RefreshEncumbrance();
 
             int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
             string strESSFormat = "#,0";
@@ -16043,306 +16004,15 @@ namespace Chummer
                     objESSFormat.Append('0');
                 strESSFormat += objESSFormat.ToString();
             }
-
-            CharacterObject.ResetCachedEssence();
-            decimal decESS = CharacterObject.Essence;
-            decimal decRoundedESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
-            if (!CharacterObjectOptions.DontRoundEssenceInternally)
-                decESS = decRoundedESS;
-            lblESSMax.Text = decRoundedESS.ToString(strESSFormat, GlobalOptions.CultureInfo);
-            tssEssence.Text = lblESSMax.Text;
+            
+            string strESS = decimal.Round(CharacterObject.Essence(), intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblESSMax.Text = strESS;
+            tssEssence.Text = strESS;
 
             lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-            
-            decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
-            // Only perform essence loss calculations if we have any attributes enabled that could lose essence (set through EssenceAtSpecialStart)
-            if (decEssenceAtSpecialStart != decimal.MinValue)
-            {
-                // Reduce a character's MAG and RES from Essence Loss.
-                int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
-                int intMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
-                int intMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESS));
-                decimal decESSMag = CharacterObject.EssenceAtSpecialStart + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
-                if (!CharacterObjectOptions.DontRoundEssenceInternally)
-                    decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
-                int intMagMaxReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
-                int intMagMinReduction = decimal.ToInt32(decimal.Floor(decEssenceAtSpecialStart - decESSMag));
 
-                // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
-                int intExtraRESBurn = Math.Max(0,
-                    Math.Max(CharacterObject.RES.Base + CharacterObject.RES.FreeBase + CharacterObject.RES.RawMinimum + CharacterObject.RES.AttributeValueModifiers, CharacterObject.RES.TotalMinimum) + CharacterObject.RES.Karma -
-                    CharacterObject.RES.TotalMaximum);
-                int intExtraDEPBurn = Math.Max(0,
-                    Math.Max(CharacterObject.DEP.Base + CharacterObject.DEP.FreeBase + CharacterObject.DEP.RawMinimum + CharacterObject.DEP.AttributeValueModifiers, CharacterObject.DEP.TotalMinimum) + CharacterObject.DEP.Karma -
-                    CharacterObject.DEP.TotalMaximum);
-                int intExtraMAGBurn = Math.Max(0,
-                    Math.Max(CharacterObject.MAG.Base + CharacterObject.MAG.FreeBase + CharacterObject.MAG.RawMinimum + CharacterObject.MAG.AttributeValueModifiers, CharacterObject.MAG.TotalMinimum) + CharacterObject.MAG.Karma -
-                    CharacterObject.MAG.TotalMaximum);
-                int intExtraMAGAdeptBurn = Math.Max(0,
-                    Math.Max(CharacterObject.MAGAdept.Base + CharacterObject.MAGAdept.FreeBase + CharacterObject.MAGAdept.RawMinimum + CharacterObject.MAGAdept.AttributeValueModifiers, CharacterObject.MAGAdept.TotalMinimum) +
-                    CharacterObject.MAGAdept.Karma - CharacterObject.MAGAdept.TotalMaximum);
-                // Old values for minimum reduction from essence loss. These are used to determine if any karma needs to get burned.
-                int intOldRESCareerMinimumReduction = 0;
-                int intOldDEPCareerMinimumReduction = 0;
-                int intOldMAGCareerMinimumReduction = 0;
-                int intOldMAGAdeptCareerMinimumReduction = 0;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
-                    {
-                        switch (objImprovement.ImprovedName)
-                        {
-                            case "RES":
-                                intOldRESCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                                break;
-                            case "DEP":
-                                intOldDEPCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                                break;
-                            case "MAG":
-                                intOldMAGCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                                break;
-                            case "MAGAdept":
-                                intOldMAGAdeptCareerMinimumReduction -= objImprovement.Minimum + objImprovement.Augmented;
-                                break;
-                        }
-                    }
-                }
-
-                // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
-
-                // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
-                int intRESMaximumReduction = intMaxReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss(false);
-                int intDEPMaximumReduction = intMaxReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss(false);
-                int intMAGMaximumReduction = intMagMaxReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss(false);
-                int intMAGAdeptMaximumReduction = intMagMaxReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss(false);
-
-                // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-                if (intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
-                {
-                    if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
-                    {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
-                        ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
-                    }
-                    else
-                    {
-                        int intRESMinimumReduction = intMinReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss(true);
-                        int intDEPMinimumReduction = intMinReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss(true);
-                        if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                        {
-                            intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
-                            intDEPMinimumReduction = Math.Max(0, intDEPMinimumReduction + CharacterObject.DEP.TotalValue - CharacterObject.DEP.TotalMaximum);
-                        }
-
-                        // If our new reduction is less than our old one, we don't actually get any new values back
-                        intRESMinimumReduction = Math.Max(intRESMinimumReduction, intOldRESCareerMinimumReduction);
-                        intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intOldDEPCareerMinimumReduction);
-                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                        intExtraRESBurn += Math.Min(CharacterObject.RES.Karma, intRESMinimumReduction - intOldRESCareerMinimumReduction);
-                        CharacterObject.RES.Karma -= intExtraRESBurn;
-                        intRESMinimumReduction -= intExtraRESBurn;
-                        intExtraDEPBurn += Math.Min(CharacterObject.DEP.Karma, intDEPMinimumReduction - intOldDEPCareerMinimumReduction);
-                        CharacterObject.DEP.Karma -= intExtraDEPBurn;
-                        intDEPMinimumReduction -= intExtraDEPBurn;
-                        // Create Improvements
-                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction,
-                            -intRESMaximumReduction);
-                        ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction,
-                            -intDEPMaximumReduction);
-                    }
-                }
-
-                if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                {
-                    if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
-                    {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                        if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                            ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
-                    }
-                    else
-                    {
-                        int intMAGMinimumReduction = intMagMinReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss(true);
-                        int intMAGAdeptMinimumReduction = intMagMinReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss(true);
-                        if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                        {
-                            intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
-                            intMAGAdeptMinimumReduction = Math.Max(0, intMAGAdeptMinimumReduction + CharacterObject.MAGAdept.TotalValue - CharacterObject.MAGAdept.TotalMaximum);
-                        }
-
-                        // If our new reduction is less than our old one, we don't actually get any new values back
-                        intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intOldMAGCareerMinimumReduction);
-                        intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intOldMAGAdeptCareerMinimumReduction);
-                        // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
-                        int intMAGDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
-                        if (intMAGDelta > 0 && CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                        {
-                            // First burn away PPs gained during chargen...
-                            int intPPBurn = Math.Min(CharacterObject.MysticAdeptPowerPoints, intMAGDelta);
-                            CharacterObject.MysticAdeptPowerPoints -= intPPBurn;
-                            // ... now burn away PPs gained from initiations.
-                            intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
-                            // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
-                            ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
-                        }
-
-                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                        intExtraMAGBurn += Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
-                        intExtraMAGAdeptBurn += Math.Min(CharacterObject.MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
-                        CharacterObject.MAG.Karma -= intExtraMAGBurn;
-                        intMAGMinimumReduction -= intExtraMAGBurn;
-                        if (CharacterObject.MAGAdept != CharacterObject.MAG)
-                            CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
-                        intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
-                        // Create Improvements
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction,
-                            -intMAGMaximumReduction);
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
-                            -intMAGAdeptMaximumReduction);
-                    }
-                }
-
-                ImprovementManager.Commit(CharacterObject);
-
-                // If the CharacterAttribute reaches 0, the character has burned out.
-                if (CharacterObject.MAGEnabled)
-                {
-                    if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                    {
-                        if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                            (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
-                        {
-                            CharacterObject.MAG.Base = CharacterObject.MAGAdept.Base;
-                            CharacterObject.MAG.Karma = CharacterObject.MAGAdept.Karma;
-                            CharacterObject.MAG.MetatypeMinimum = CharacterObject.MAGAdept.MetatypeMinimum;
-                            CharacterObject.MAG.MetatypeMaximum = CharacterObject.MAGAdept.MetatypeMaximum;
-                            CharacterObject.MAG.MetatypeAugmentedMaximum = CharacterObject.MAGAdept.MetatypeAugmentedMaximum;
-                            CharacterObject.MAGAdept.Base = 0;
-                            CharacterObject.MAGAdept.Karma = 0;
-                            CharacterObject.MAGAdept.MetatypeMinimum = 0;
-                            CharacterObject.MAGAdept.MetatypeMaximum = 0;
-                            CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
-
-                            CharacterObject.MagicianEnabled = false;
-                        }
-
-                        if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAGAdept.TotalMaximum < 1) ||
-                            (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAGAdept.TotalMaximum))
-                        {
-                            CharacterObject.MAGAdept.Base = 0;
-                            CharacterObject.MAGAdept.Karma = 0;
-                            CharacterObject.MAGAdept.MetatypeMinimum = 0;
-                            CharacterObject.MAGAdept.MetatypeMaximum = 0;
-                            CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
-
-                            CharacterObject.AdeptEnabled = false;
-                        }
-
-                        if (!CharacterObject.MagicianEnabled && !CharacterObject.AdeptEnabled)
-                            CharacterObject.MAGEnabled = false;
-                    }
-                    else if ((!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && CharacterObject.MAG.TotalMaximum < 1) ||
-                             (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue && intMagMaxReduction >= CharacterObject.MAG.TotalMaximum))
-                    {
-                        CharacterObject.MAG.Base = 0;
-                        CharacterObject.MAG.Karma = 0;
-                        CharacterObject.MAG.MetatypeMinimum = 0;
-                        CharacterObject.MAG.MetatypeMaximum = 0;
-                        CharacterObject.MAG.MetatypeAugmentedMaximum = 0;
-
-                        CharacterObject.MagicianEnabled = false;
-                        CharacterObject.AdeptEnabled = false;
-                        CharacterObject.MAGEnabled = false;
-                    }
-                }
-
-                if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue || intMaxReduction >= CharacterObject.RES.TotalMaximum))
-                {
-                    CharacterObject.RES.Base = 0;
-                    CharacterObject.RES.Karma = 0;
-                    CharacterObject.RES.MetatypeMinimum = 0;
-                    CharacterObject.RES.MetatypeMinimum = 0;
-                    CharacterObject.RES.MetatypeAugmentedMaximum = 0;
-
-                    if (CharacterObject.RESEnabled)
-                    {
-                        // Move all RES-linked Active Skills to Knowledge Skills.
-                        //List<Skill> lstNewSkills = new List<Skill>();
-                        //foreach (Skill objSkill in _objCharacter.Skills)
-                        //{
-                        //    if (objSkill.Attribute == "RES" && objSkill.Rating > 0)
-                        //    {
-                        //        int i = panKnowledgeSkills.Controls.Count;
-                        //        Skill objKnowledge = new Skill(_objCharacter);
-
-                        //        SkillControl objSkillControl = new SkillControl();
-                        //        objKnowledge.Name = objSkill.Name;
-                        //        objSkillControl.SkillObject = objKnowledge;
-
-                        //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                        //        objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                        //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                        //        objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
-                        //        objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
-                        //        objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
-
-                        //        objSkillControl.KnowledgeSkill = true;
-                        //        objSkillControl.AllowDelete = true;
-                        //        if (objSkill.Rating > 13)
-                        //            objSkillControl.SkillRatingMaximum = objSkill.Rating;
-                        //        else
-                        //            objSkillControl.SkillRatingMaximum = 12;
-                        //        objSkillControl.SkillRating = objSkill.Rating;
-                        //        objSkillControl.SkillCategory = "Professional";
-                        //        // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                        //        objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
-                        //        panKnowledgeSkills.Controls.Add(objSkillControl);
-
-                        //        lstNewSkills.Add(objKnowledge);
-                        //    }
-                        //}
-                        //foreach (Skill objSkill in lstNewSkills)
-                        //    _objCharacter.Skills.Add(objSkill);
-                    }
-
-                    CharacterObject.RESEnabled = false;
-                    CharacterObject.TechnomancerEnabled = false;
-                }
-            }
-            else
-            {
-                // Otherwise we need to delete any improvements that might have been created in an older version of Chummer
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
-                ImprovementManager.Commit(CharacterObject);
-            }
-
-            // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
-            if (CharacterObject.DEPEnabled)
-                CharacterObject.EDG.MetatypeMaximum = CharacterObject.DEP.Value;
-
-            // If the character is Cyberzombie, adjust their Attributes based on their Essence.
-            if (CharacterObject.MetatypeCategory == "Cyberzombie")
-            {
-                int intESSModifier = CharacterObject.EssencePenalty - decimal.ToInt32(CharacterObject.EssenceMaximum);
-                ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Cyberzombie && x.ImproveType == Improvement.ImprovementType.Attribute).ToList());
-                ImprovementManager.CreateImprovement(CharacterObject, "BOD", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "AGI", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "REA", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "STR", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "CHA", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.Commit(CharacterObject);
-            }
-            
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
@@ -16352,12 +16022,6 @@ namespace Chummer
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
-            }
-
-            if (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
-            {
-                if (CharacterObject.MysticAdeptPowerPoints > dicAttributeTotalValues["MAG"])
-                    CharacterObject.MysticAdeptPowerPoints = dicAttributeTotalValues["MAG"];
             }
 
             string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
@@ -16460,27 +16124,8 @@ namespace Chummer
                 }
             }
 
-            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow, out int intPhysicalCMPenalty);
-            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0, out int intStunCMPenalty);
-
-            // Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
-            if (CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled))
-                intStunCMPenalty = 0;
-            if (CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical && objImprovement.Enabled))
-                intPhysicalCMPenalty = 0;
-
-            int intCMPenalty = intPhysicalCMPenalty + intStunCMPenalty;
-            lblCMPenalty.Text = intCMPenalty.ToString();
-
-            // Discard any old Condition Monitor penalties.
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ConditionMonitor);
-
-            // Create the new Condition Monitor penalties.
-            if (intCMPenalty < 0)
-            {
-                ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.ConditionMonitor, string.Empty, Improvement.ImprovementType.ConditionMonitor, string.Empty, intCMPenalty);
-                ImprovementManager.Commit(CharacterObject);
-            }
+            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow);
+            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0);
 
             UpdateArmorRating(lblArmor, tipTooltip, lblCMArmor);
 
@@ -16489,77 +16134,53 @@ namespace Chummer
 
             // Update the CharacterAttribute information.
 
-                /*// Character Attribute: BOD
-                UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip);
+            /*// Character Attribute: BOD
+            UpdateCharacterAttribute(_objCharacter.BOD, lblBODMetatype, lblBODAug, tipTooltip);
 
-                // Character Attribute: AGI
-                UpdateCharacterAttribute(_objCharacter.AGI,lblAGIMetatype,lblAGIAug,tipTooltip);
+            // Character Attribute: AGI
+            UpdateCharacterAttribute(_objCharacter.AGI,lblAGIMetatype,lblAGIAug,tipTooltip);
 
-                // Character Attribute: REA
-                UpdateCharacterAttribute(_objCharacter.REA, lblREAMetatype, lblREAAug, tipTooltip);
+            // Character Attribute: REA
+            UpdateCharacterAttribute(_objCharacter.REA, lblREAMetatype, lblREAAug, tipTooltip);
 
-                // Character Attribute: STR
-                UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip);
+            // Character Attribute: STR
+            UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip);
 
-                // Character Attribute: CHA
-                UpdateCharacterAttribute(_objCharacter.CHA, lblCHAMetatype, lblCHAAug, tipTooltip);
+            // Character Attribute: CHA
+            UpdateCharacterAttribute(_objCharacter.CHA, lblCHAMetatype, lblCHAAug, tipTooltip);
 
-                // Character Attribute: INT
-                UpdateCharacterAttribute(_objCharacter.INT, lblINTMetatype, lblINTAug, tipTooltip);
+            // Character Attribute: INT
+            UpdateCharacterAttribute(_objCharacter.INT, lblINTMetatype, lblINTAug, tipTooltip);
 
-                // Character Attribute: AGI
-                UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip);
+            // Character Attribute: AGI
+            UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip);
 
-                // Character Attribute: LOG
-                UpdateCharacterAttribute(_objCharacter.LOG, lblLOGMetatype, lblLOGAug, tipTooltip);
+            // Character Attribute: LOG
+            UpdateCharacterAttribute(_objCharacter.LOG, lblLOGMetatype, lblLOGAug, tipTooltip);
 
-                // Character Attribute: WIL
-                UpdateCharacterAttribute(_objCharacter.WIL, lblWILMetatype, lblWILAug, tipTooltip);
+            // Character Attribute: WIL
+            UpdateCharacterAttribute(_objCharacter.WIL, lblWILMetatype, lblWILAug, tipTooltip);
 
-                // Character Attribute: EDG
-                UpdateCharacterAttribute(_objCharacter.EDG, lblEDGMetatype, lblEDGAug, tipTooltip);
+            // Character Attribute: EDG
+            UpdateCharacterAttribute(_objCharacter.EDG, lblEDGMetatype, lblEDGAug, tipTooltip);
 
-                // Character Attribute: MAG
-                UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip);
+            // Character Attribute: MAG
+            UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip);
 
-                // Character Attribute: RES
-                UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip);
+            // Character Attribute: RES
+            UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip);
 
-                // Character Attribute: DEP
-                UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip);*/
-
-            // Update the MAG pseudo-Attributes if applicable.
-            if (CharacterObject.AdeptEnabled && CharacterObject.MagicianEnabled)
-            {
-                lblMysticAdeptMAGAdept.Text = CharacterObject.MysticAdeptPowerPoints.ToString();
-            }
-
-            // Update the maximum Force for all Spirits.
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
-            {
-                objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
-            }
-            foreach (SpiritControl objSpiritControl in panSprites.Controls)
-            {
-                objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
-            }
-
+            // Character Attribute: DEP
+            UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip);*/
+            
             if (CharacterObject.AdeptEnabled)
             {
                 tabPowerUc.MissingDatabindingsWorkaround();
             }
 
-            // Update the Drain CharacterAttribute Value.
-            if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
-            {
-                CalculateTraditionDrain(CharacterObject.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
-            }
-
-            // Update the Fading CharacterAttribute Value.
-            if (CharacterObject.RESEnabled && !string.IsNullOrEmpty(lblFadingAttributes.Text))
-            {
-                CalculateTraditionDrain(CharacterObject.TechnomancerFading, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
-            }
+            // Update tooltips for Drain and Fading values.
+            tipTooltip.SetToolTip(lblDrainAttributesValue, GetTraditionDrainToolTip(Improvement.ImprovementType.DrainResistance));
+            tipTooltip.SetToolTip(lblFadingAttributesValue, GetTraditionDrainToolTip(Improvement.ImprovementType.FadingResistance));
 
             // Skill Limits
             RefreshLimits(lblPhysical, lblMental, lblSocial, lblAstral, tipTooltip);
@@ -21019,94 +20640,6 @@ namespace Chummer
                     }
                 }
             }
-        }
-
-        private void cboDrain_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading || string.IsNullOrEmpty(cboDrain.SelectedValue?.ToString()))
-                return;
-
-            CharacterObject.TraditionDrain = cboDrain.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void txtTraditionName_TextChanged(object sender, EventArgs e)
-        {
-            CharacterObject.TraditionName = txtTraditionName.Text;
-            IsDirty = true;
-        }
-
-        private void cboSpiritCombat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSpiritCombat.SelectedValue == null)
-                return;
-            if (_blnLoading || string.IsNullOrEmpty(cboSpiritCombat.SelectedValue.ToString()))
-                return;
-
-            CharacterObject.SpiritCombat = cboSpiritCombat.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cboSpiritDetection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSpiritDetection.SelectedValue == null)
-                return;
-            if (_blnLoading || string.IsNullOrEmpty(cboSpiritDetection.SelectedValue.ToString()))
-                return;
-
-            CharacterObject.SpiritDetection = cboSpiritDetection.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cboSpiritHealth_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSpiritHealth.SelectedValue == null)
-                return;
-            if (_blnLoading || string.IsNullOrEmpty(cboSpiritHealth.SelectedValue.ToString()))
-                return;
-
-            CharacterObject.SpiritHealth = cboSpiritHealth.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cboSpiritIllusion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSpiritIllusion.SelectedValue == null)
-                return;
-            if (_blnLoading || string.IsNullOrEmpty(cboSpiritIllusion.SelectedValue.ToString()))
-                return;
-
-            CharacterObject.SpiritIllusion = cboSpiritIllusion.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cboSpiritManipulation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSpiritManipulation.SelectedValue == null)
-                return;
-            if (_blnLoading || string.IsNullOrEmpty(cboSpiritManipulation.SelectedValue.ToString()))
-                return;
-
-            CharacterObject.SpiritManipulation = cboSpiritManipulation.SelectedValue.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)

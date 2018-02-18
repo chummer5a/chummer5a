@@ -5196,7 +5196,6 @@ namespace Chummer
             this.cboSpiritManipulation.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritManipulation.TabIndex = 166;
             this.cboSpiritManipulation.Visible = false;
-            this.cboSpiritManipulation.SelectedIndexChanged += new System.EventHandler(this.cboSpiritManipulation_SelectedIndexChanged);
             // 
             // lblSpiritManipulation
             // 
@@ -5218,7 +5217,6 @@ namespace Chummer
             this.cboSpiritIllusion.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritIllusion.TabIndex = 164;
             this.cboSpiritIllusion.Visible = false;
-            this.cboSpiritIllusion.SelectedIndexChanged += new System.EventHandler(this.cboSpiritIllusion_SelectedIndexChanged);
             // 
             // lblSpiritIllusion
             // 
@@ -5240,7 +5238,6 @@ namespace Chummer
             this.cboSpiritHealth.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritHealth.TabIndex = 162;
             this.cboSpiritHealth.Visible = false;
-            this.cboSpiritHealth.SelectedIndexChanged += new System.EventHandler(this.cboSpiritHealth_SelectedIndexChanged);
             // 
             // lblSpiritHealth
             // 
@@ -5262,7 +5259,6 @@ namespace Chummer
             this.cboSpiritDetection.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritDetection.TabIndex = 160;
             this.cboSpiritDetection.Visible = false;
-            this.cboSpiritDetection.SelectedIndexChanged += new System.EventHandler(this.cboSpiritDetection_SelectedIndexChanged);
             // 
             // lblSpiritDetection
             // 
@@ -5284,7 +5280,6 @@ namespace Chummer
             this.cboSpiritCombat.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritCombat.TabIndex = 158;
             this.cboSpiritCombat.Visible = false;
-            this.cboSpiritCombat.SelectedIndexChanged += new System.EventHandler(this.cboSpiritCombat_SelectedIndexChanged);
             // 
             // lblSpiritCombat
             // 
@@ -5306,7 +5301,6 @@ namespace Chummer
             this.cboDrain.Size = new System.Drawing.Size(82, 21);
             this.cboDrain.TabIndex = 156;
             this.cboDrain.Visible = false;
-            this.cboDrain.SelectedIndexChanged += new System.EventHandler(this.cboDrain_SelectedIndexChanged);
             // 
             // txtTraditionName
             // 
@@ -5315,7 +5309,6 @@ namespace Chummer
             this.txtTraditionName.Size = new System.Drawing.Size(122, 20);
             this.txtTraditionName.TabIndex = 155;
             this.txtTraditionName.Visible = false;
-            this.txtTraditionName.TextChanged += new System.EventHandler(this.txtTraditionName_TextChanged);
             // 
             // lblTraditionName
             // 
@@ -5867,7 +5860,7 @@ namespace Chummer
             this.cboStream.Name = "cboStream";
             this.cboStream.Size = new System.Drawing.Size(141, 21);
             this.cboStream.TabIndex = 106;
-            this.cboStream.Visible = false;
+            this.cboStream.Visible = true;
             this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
             // 
             // lblFadingAttributesValue
@@ -5907,7 +5900,7 @@ namespace Chummer
             this.lblStreamLabel.TabIndex = 100;
             this.lblStreamLabel.Tag = "Label_Stream";
             this.lblStreamLabel.Text = "Stream:";
-            this.lblStreamLabel.Visible = false;
+            this.lblStreamLabel.Visible = true;
             // 
             // treComplexForms
             // 

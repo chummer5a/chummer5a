@@ -452,7 +452,7 @@
                     <br/>
           == <xsl:value-of select="$lang.ComplexForms"/> ==
           <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="stream"/>,
-                    <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="drain"/>) <xsl:call-template
+                    <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="drainattributes"/> = <xsl:value-of select="drain"/>) <xsl:call-template
                         name="complexforms"/>
                 </xsl:if>
 

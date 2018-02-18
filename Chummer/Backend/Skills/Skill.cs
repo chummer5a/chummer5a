@@ -714,7 +714,7 @@ namespace Chummer.Backend.Skills
                 }
 
 
-                int wound = WoundModifier;
+                int wound = _objCharacter.WoundModifier;
                 if (wound != 0)
                 {
                     s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds", GlobalOptions.Language) + " (" + wound.ToString() + ')');

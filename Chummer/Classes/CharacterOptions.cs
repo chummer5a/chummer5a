@@ -1135,7 +1135,14 @@ namespace Chummer
         public bool MysAdeptAllowPPCareer
         {
             get => _blnMysAdeptAllowPPCareer;
-            set => _blnMysAdeptAllowPPCareer = value;
+            set
+            {
+                if (_blnMysAdeptAllowPPCareer != value)
+                {
+                    _blnMysAdeptAllowPPCareer = value;
+                    _character.RefreshMysAdeptAllowPPCareer();
+                }
+            }
         }
 
         /// <summary>
@@ -1144,7 +1151,14 @@ namespace Chummer
         public bool MysAdeptSecondMAGAttribute
         {
             get => _blnMysAdeptSecondMAGAttribute;
-            set => _blnMysAdeptSecondMAGAttribute = value;
+            set
+            {
+                if (_blnMysAdeptSecondMAGAttribute != value)
+                {
+                    _blnMysAdeptSecondMAGAttribute = value;
+                    _character.RefreshUseMysticAdeptPPs();
+                }
+            }
         }
 
         /// <summary>

@@ -388,9 +388,11 @@ namespace Chummer
             this.lblDurationLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
             this.lblTargetLabel = new System.Windows.Forms.Label();
+            this.cboStream = new System.Windows.Forms.ComboBox();
             this.lblFadingAttributesValue = new System.Windows.Forms.Label();
             this.lblFadingAttributes = new System.Windows.Forms.Label();
             this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
+            this.lblStreamLabel = new System.Windows.Forms.Label();
             this.lblComplexFormSource = new System.Windows.Forms.Label();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
             this.treComplexForms = new System.Windows.Forms.TreeView();
@@ -3870,7 +3872,6 @@ namespace Chummer
             this.cboSpiritManipulation.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritManipulation.TabIndex = 153;
             this.cboSpiritManipulation.Visible = false;
-            this.cboSpiritManipulation.SelectedIndexChanged += new System.EventHandler(this.cboSpiritManipulation_SelectedIndexChanged);
             // 
             // lblSpiritManipulation
             // 
@@ -3892,7 +3893,6 @@ namespace Chummer
             this.cboSpiritIllusion.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritIllusion.TabIndex = 151;
             this.cboSpiritIllusion.Visible = false;
-            this.cboSpiritIllusion.SelectedIndexChanged += new System.EventHandler(this.cboSpiritIllusion_SelectedIndexChanged);
             // 
             // lblSpiritIllusion
             // 
@@ -3914,7 +3914,6 @@ namespace Chummer
             this.cboSpiritHealth.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritHealth.TabIndex = 149;
             this.cboSpiritHealth.Visible = false;
-            this.cboSpiritHealth.SelectedIndexChanged += new System.EventHandler(this.cboSpiritHealth_SelectedIndexChanged);
             // 
             // lblSpiritHealth
             // 
@@ -3936,7 +3935,6 @@ namespace Chummer
             this.cboSpiritDetection.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritDetection.TabIndex = 147;
             this.cboSpiritDetection.Visible = false;
-            this.cboSpiritDetection.SelectedIndexChanged += new System.EventHandler(this.cboSpiritDetection_SelectedIndexChanged);
             // 
             // lblSpiritDetection
             // 
@@ -3958,7 +3956,6 @@ namespace Chummer
             this.cboSpiritCombat.Size = new System.Drawing.Size(122, 21);
             this.cboSpiritCombat.TabIndex = 145;
             this.cboSpiritCombat.Visible = false;
-            this.cboSpiritCombat.SelectedIndexChanged += new System.EventHandler(this.cboSpiritCombat_SelectedIndexChanged);
             // 
             // lblSpiritCombat
             // 
@@ -3980,7 +3977,6 @@ namespace Chummer
             this.cboDrain.Size = new System.Drawing.Size(82, 21);
             this.cboDrain.TabIndex = 143;
             this.cboDrain.Visible = false;
-            this.cboDrain.SelectedIndexChanged += new System.EventHandler(this.cboDrain_SelectedIndexChanged);
             // 
             // txtTraditionName
             // 
@@ -3989,7 +3985,6 @@ namespace Chummer
             this.txtTraditionName.Size = new System.Drawing.Size(122, 20);
             this.txtTraditionName.TabIndex = 142;
             this.txtTraditionName.Visible = false;
-            this.txtTraditionName.TextChanged += new System.EventHandler(this.txtTraditionName_TextChanged);
             // 
             // lblTraditionName
             // 
@@ -4367,9 +4362,11 @@ namespace Chummer
             this.tabTechnomancer.Controls.Add(this.lblDurationLabel);
             this.tabTechnomancer.Controls.Add(this.lblTarget);
             this.tabTechnomancer.Controls.Add(this.lblTargetLabel);
+            this.tabTechnomancer.Controls.Add(this.cboStream);
             this.tabTechnomancer.Controls.Add(this.lblFadingAttributesValue);
             this.tabTechnomancer.Controls.Add(this.lblFadingAttributes);
             this.tabTechnomancer.Controls.Add(this.lblFadingAttributesLabel);
+            this.tabTechnomancer.Controls.Add(this.lblStreamLabel);
             this.tabTechnomancer.Controls.Add(this.lblComplexFormSource);
             this.tabTechnomancer.Controls.Add(this.lblComplexFormSourceLabel);
             this.tabTechnomancer.Controls.Add(this.treComplexForms);
@@ -4443,6 +4440,17 @@ namespace Chummer
             this.lblTargetLabel.Tag = "Label_SelectComplexForm_Target";
             this.lblTargetLabel.Text = "Target:";
             // 
+            // cboStream
+            // 
+            this.cboStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStream.FormattingEnabled = true;
+            this.cboStream.Location = new System.Drawing.Point(407, 163);
+            this.cboStream.Name = "cboStream";
+            this.cboStream.Size = new System.Drawing.Size(141, 21);
+            this.cboStream.TabIndex = 101;
+            this.cboStream.Visible = true;
+            this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
+            // 
             // lblFadingAttributesValue
             // 
             this.lblFadingAttributesValue.AutoSize = true;
@@ -4470,6 +4478,17 @@ namespace Chummer
             this.lblFadingAttributesLabel.TabIndex = 96;
             this.lblFadingAttributesLabel.Tag = "Label_ResistFading";
             this.lblFadingAttributesLabel.Text = "Resist Fading with:";
+            // 
+            // lblStreamLabel
+            // 
+            this.lblStreamLabel.AutoSize = true;
+            this.lblStreamLabel.Location = new System.Drawing.Point(309, 166);
+            this.lblStreamLabel.Name = "lblStreamLabel";
+            this.lblStreamLabel.Size = new System.Drawing.Size(43, 13);
+            this.lblStreamLabel.TabIndex = 100;
+            this.lblStreamLabel.Tag = "Label_Stream";
+            this.lblStreamLabel.Text = "Stream:";
+            this.lblStreamLabel.Visible = true;
             // 
             // lblComplexFormSource
             // 
@@ -10732,9 +10751,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private System.Windows.Forms.TreeView treComplexForms;
+        private System.Windows.Forms.ComboBox cboStream;
         private System.Windows.Forms.Label lblFadingAttributesValue;
         private System.Windows.Forms.Label lblFadingAttributes;
         private System.Windows.Forms.Label lblFadingAttributesLabel;
+        private System.Windows.Forms.Label lblStreamLabel;
         private System.Windows.Forms.ContextMenuStrip cmsComplexForm;
         private System.Windows.Forms.ToolStripMenuItem tsAddComplexFormOption;
         private System.Windows.Forms.NumericUpDown nudVehicleGearQty;

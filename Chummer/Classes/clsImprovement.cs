@@ -318,7 +318,6 @@ namespace Chummer
             ArmorMod,
             EssenceLoss,
             EssenceLossChargen,
-            ConditionMonitor,
             CritterPower,
             ComplexForm,
             EdgeUse,

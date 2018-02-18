@@ -222,11 +222,19 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                if (_objCharacter.DEPEnabled && Abbrev == "EDG")
+                    return _objCharacter.DEP.TotalValue;
+
                 int intReturn = _intMetatypeMax;
                 Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Maximum;
+                }
+
+                if (Abbrev == "ESS")
+                {
+                    intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax);
                 }
                 return intReturn;
             }

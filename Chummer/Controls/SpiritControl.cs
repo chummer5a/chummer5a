@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.IO;
+ using System.ComponentModel;
+ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -50,6 +51,7 @@ namespace Chummer
         private void SpiritControl_Load(object sender, EventArgs e)
         {
             DoubleBuffered = true;
+            bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
             nudForce.DataBindings.Add("Enabled", _objSpirit.CharacterObject, nameof(Character.Created), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkBound.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Bound), false,
@@ -62,7 +64,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, _objSpirit.EntityType == SpiritType.Spirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel), false,
+            nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudServices.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.ServicesOwed), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -70,7 +72,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
 
-            if (_objSpirit.EntityType == SpiritType.Spirit)
+            if (blnIsSpirit)
             {
                 chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
                     DataSourceUpdateMode.OnPropertyChanged);
@@ -96,11 +98,15 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
 
+            _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+
             _blnLoading = false;
         }
 
         public void UnbindSpiritControl()
         {
+            _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -301,6 +307,21 @@ namespace Chummer
         #endregion
 
         #region Methods
+        // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
+        public void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.MagicTradition))
+            {
+                if (_objSpirit.EntityType == SpiritType.Spirit)
+                    RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
+            }
+            else if (e.PropertyName == nameof(Character.TechnomancerStream))
+            {
+                if (_objSpirit.EntityType == SpiritType.Sprite)
+                    RebuildSpiritList(_objSpirit.CharacterObject.TechnomancerStream);
+            }
+        }
+
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
         public void RebuildSpiritList(string strTradition)
         {

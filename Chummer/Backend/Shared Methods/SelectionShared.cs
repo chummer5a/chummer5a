@@ -538,16 +538,16 @@ namespace Chummer
                                 strName = "\n\t" +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                            return objCharacter.Essence < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
+                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                            return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = "\n\t" +
                                LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                        return objCharacter.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                        return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
                     {
@@ -1533,16 +1533,16 @@ namespace Chummer
                                 strName = "\n\t" +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                            return objCharacter.Essence < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
+                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                            return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = "\n\t" +
                                LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                        return objCharacter.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                        return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
                     {

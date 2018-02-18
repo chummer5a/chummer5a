@@ -404,6 +404,7 @@ namespace Chummer
                 {
                     _objCachedMyXmlNode = null;
                     _strName = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
                 }
             }
         }
@@ -419,7 +420,14 @@ namespace Chummer
                     return LinkedCharacter.CharacterName;
                 return _strCritterName;
             }
-            set => _strCritterName = value;
+            set
+            {
+                if (_strCritterName != value)
+                {
+                    _strCritterName = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
+                }
+            }
         }
 
         /// <summary>
@@ -445,6 +453,7 @@ namespace Chummer
                             _intServicesOwed = intSkillValue;
                         }
                     }
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ServicesOwed)));
                 }
             }
         }
@@ -455,7 +464,14 @@ namespace Chummer
         public int Force
         {
             get => _intForce;
-            set => _intForce = value;
+            set
+            {
+                if (_intForce != value)
+                {
+                    _intForce = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Force)));
+                }
+            }
         }
 
         /// <summary>
@@ -464,7 +480,14 @@ namespace Chummer
         public bool Bound
         {
             get => _blnBound;
-            set => _blnBound = value;
+            set
+            {
+                if (_blnBound != value)
+                {
+                    _blnBound = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Bound)));
+                }
+            }
         }
 
         /// <summary>
@@ -479,6 +502,7 @@ namespace Chummer
                 {
                     _objCachedMyXmlNode = null;
                     _eEntityType = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EntityType)));
                 }
             }
         }
@@ -495,6 +519,7 @@ namespace Chummer
                 {
                     _strFileName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
                 }
             }
         }
@@ -511,6 +536,7 @@ namespace Chummer
                 {
                     _strRelativeName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelativeFileName)));
                 }
             }
         }
@@ -569,6 +595,7 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
                     }
                     _blnFettered = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Fettered)));
                 }
             }
         }
@@ -681,10 +708,9 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.MainMugshot;
-                else if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
+                if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
                     return null;
-                else
-                    return Mugshots[MainMugshotIndex];
+                return Mugshots[MainMugshotIndex];
             }
             set
             {
@@ -720,8 +746,7 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.MainMugshotIndex;
-                else
-                    return _intMainMugshotIndex;
+                return _intMainMugshotIndex;
             }
             set
             {

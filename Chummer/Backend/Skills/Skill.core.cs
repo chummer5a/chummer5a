@@ -230,11 +230,11 @@ namespace Chummer.Backend.Skills
         {
             if (Rating > 0)
             {
-                return Rating + intAttributeTotalValue + PoolModifiers(strAttribute) + WoundModifier;
+                return Rating + intAttributeTotalValue + PoolModifiers(strAttribute) + _objCharacter.WoundModifier;
             }
             if (Default)
             {
-                return intAttributeTotalValue + PoolModifiers(strAttribute) + DefaultModifier + WoundModifier;
+                return intAttributeTotalValue + PoolModifiers(strAttribute) + DefaultModifier + _objCharacter.WoundModifier;
             }
             return 0;
         }
@@ -335,8 +335,6 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-
-        public int WoundModifier => Math.Min(0, ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ConditionMonitor));
 
         /// <summary>
         /// How much Sp this costs. Price during career mode is undefined

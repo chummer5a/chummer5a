@@ -1264,7 +1264,7 @@
             <tr>
               <td><xsl:value-of select="stream"/></td>
               <td style="text-align:center;">
-			    <xsl:value-of select="drain"/>
+			    <xsl:value-of select="drainattributes"/> (<xsl:value-of select="drain"/>)
 			  </td>
               <td/>
               <td style="text-align:center;">
@@ -2035,7 +2035,7 @@
         </xsl:if>
       </td>
       <td style="vertical-align:top; text-align:center;">
-        <xsl:value-of select="tradition/drain" />
+        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drain" />)
       </td>
       <td style="vertical-align:top; text-align:center;">
         <xsl:value-of select="tradition/spiritcombat" />
