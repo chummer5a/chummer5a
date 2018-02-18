@@ -540,7 +540,7 @@ namespace Chummer
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
         {
             if (strInput.EndsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
+                return strInput.Substring(0, strInput.Length - 1);
             return strInput;
         }
 
