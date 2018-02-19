@@ -1184,58 +1184,50 @@ namespace Chummer.Backend.Equipment
 
             foreach (VehicleMod objChild in Mods)
             {
-                if (!objChild.IncludedInVehicle)
-                {
-                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
-                    if (objLoopAvail.AddToParent)
-                        intAvail += objLoopAvail.Value;
-                    if (objLoopAvail.Suffix == 'F')
-                        chrLastAvailChar = 'F';
-                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
-                        chrLastAvailChar = 'R';
-                }
+                if (objChild.IncludedInVehicle || !objChild.Installed) continue;
+                AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                if (objLoopAvail.AddToParent)
+                    intAvail += objLoopAvail.Value;
+                if (objLoopAvail.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                    chrLastAvailChar = 'R';
             }
 
             foreach (WeaponMount objChild in WeaponMounts)
             {
-                if (!objChild.IncludedInVehicle)
-                {
-                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
-                    if (objLoopAvail.AddToParent)
-                        intAvail += objLoopAvail.Value;
-                    if (objLoopAvail.Suffix == 'F')
-                        chrLastAvailChar = 'F';
-                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
-                        chrLastAvailChar = 'R';
-                }
+                if (objChild.IncludedInVehicle || !objChild.Installed) continue;
+                AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                if (objLoopAvail.AddToParent)
+                    intAvail += objLoopAvail.Value;
+                if (objLoopAvail.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                    chrLastAvailChar = 'R';
             }
 
             foreach (Weapon objChild in Weapons)
             {
-                if (objChild.ParentID != InternalId)
-                {
-                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
-                    if (objLoopAvail.AddToParent)
-                        intAvail += objLoopAvail.Value;
-                    if (objLoopAvail.Suffix == 'F')
-                        chrLastAvailChar = 'F';
-                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
-                        chrLastAvailChar = 'R';
-                }
+                if (objChild.ParentID == InternalId || !objChild.Installed) continue;
+                AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                if (objLoopAvail.AddToParent)
+                    intAvail += objLoopAvail.Value;
+                if (objLoopAvail.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                    chrLastAvailChar = 'R';
             }
 
             foreach (Gear objChild in Gear)
             {
-                if (objChild.ParentID != InternalId)
-                {
-                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
-                    if (objLoopAvail.AddToParent)
-                        intAvail += objLoopAvail.Value;
-                    if (objLoopAvail.Suffix == 'F')
-                        chrLastAvailChar = 'F';
-                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
-                        chrLastAvailChar = 'R';
-                }
+                if (objChild.ParentID == InternalId) continue;
+                AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                if (objLoopAvail.AddToParent)
+                    intAvail += objLoopAvail.Value;
+                if (objLoopAvail.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                    chrLastAvailChar = 'R';
             }
 
             if (intAvail < 0)

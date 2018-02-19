@@ -1848,19 +1848,19 @@ namespace Chummer.Backend.Equipment
 
             if (blnCheckChildren)
             {
-                // Run through cyberware children and increase the Avail by any Mod whose Avail starts with "+" or "-".
+                // Run through cyberware children and increase the Avail by any installed Mod whose Avail starts with "+" or "-".
                 foreach (Cyberware objChild in Children)
                 {
-                    if (objChild.ParentID != InternalId)
-                    {
-                        AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
-                        if (objLoopAvailTuple.AddToParent)
-                            intAvail += objLoopAvailTuple.Value;
-                        if (objLoopAvailTuple.Suffix == 'F')
-                            chrLastAvailChar = 'F';
-                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
-                            chrLastAvailChar = 'R';
-                    }
+                    if (objChild.ParentID == InternalId ||
+                        (!AllowModularPlugins || !objChild.IsModularCurrentlyEquipped) &&
+                         objChild.PlugsIntoModularMount != string.Empty) continue;
+                    AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
+                    if (objLoopAvailTuple.AddToParent)
+                        intAvail += objLoopAvailTuple.Value;
+                    if (objLoopAvailTuple.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        chrLastAvailChar = 'R';
                 }
             }
 
