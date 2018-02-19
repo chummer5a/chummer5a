@@ -1859,7 +1859,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objChild in Children)
                 {
                     if (objChild.ParentID == InternalId ||
-                        (!AllowModularPlugins || !objChild.IsModularCurrentlyEquipped) &&
+                        !objChild.IsModularCurrentlyEquipped &&
                          objChild.PlugsIntoModularMount != string.Empty) continue;
                     AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
                     if (objLoopAvailTuple.AddToParent)
