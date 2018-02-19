@@ -23,7 +23,7 @@
     <bioware>
       <bonus>
         <specificskill xpathfilter="name = 'Escape Artist' or name = 'Navigation' or name = 'Perception'" amendoperation="remove" />
-        <skillattribute amendoperation="remove" />
+        <skilllinkedattribute amendoperation="remove" />
         <skillgroup xpathfilter="name = 'Athletics'">
           <name>Prowess</name>
         </skillgroup>

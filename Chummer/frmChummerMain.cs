@@ -395,8 +395,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(line))
             {
                 string strVersion = line.Substring(line.IndexOf(':') + 1);
-                if (strVersion.Contains('}'))
-                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
+                int intPos = strVersion.IndexOf('}');
+                if (intPos != -1)
+                    strVersion = strVersion.Substring(0, intPos);
                 strVersion = strVersion.FastEscape('\"');
 
                 if (_workerVersionUpdateChecker.CancellationPending)
@@ -412,7 +413,7 @@ namespace Chummer
                 {
                     strVersion = strVersion + ".0";
                 }
-                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
+                Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion);
             }
             // Cleanup the streams and the response.
             reader.Close();

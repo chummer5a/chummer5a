@@ -314,7 +314,7 @@ namespace Chummer
             string strCost = objXmlVehicle.SelectSingleNode("cost")?.Value ?? string.Empty;
             if (strCost.StartsWith("Variable"))
             {
-                lblVehicleCost.Text = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                lblVehicleCost.Text = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 lblTest.Text = string.Empty;
             }
             else
@@ -365,7 +365,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
             }
 

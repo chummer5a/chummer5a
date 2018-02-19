@@ -45,8 +45,8 @@ namespace Chummer
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
-        /// <param name="strXPath">String as XPath Expression to evaluate</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath or encountered an error.</param>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
@@ -76,11 +76,24 @@ namespace Chummer
         /// Evaluate an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
-            return s_ObjXPathNavigator.Evaluate(objXPath);
+            object objReturn;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            return objReturn;
         }
         #endregion
 
@@ -101,6 +114,8 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
@@ -272,11 +287,11 @@ namespace Chummer
             return null;
         }
         /// <summary>
-        /// 
+        /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid"></param>
-        /// <param name="lstVehicles"></param>
-        /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
         /// <returns></returns>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
@@ -298,10 +313,11 @@ namespace Chummer
             return null;
         }
         /// <summary>
-        /// 
+        /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
-        /// <param name="strGuid"></param>
-        /// <param name="lstVehicles"></param>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="outMount">Weapon Mount in which the Vehicle Mod was found.</param>
         /// <returns></returns>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
         {
@@ -817,7 +833,11 @@ namespace Chummer
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
             // PS: does any qualities have numbers on them? Or is that a chummer thing?
-            string strTextToSearch = strText.Split(':')[0].Trim().TrimEnd(" I", " II", " III", " IV");
+            string strTextToSearch = strText;
+            int intPos = strTextToSearch.IndexOf(':');
+            if (intPos != -1)
+                strTextToSearch = strTextToSearch.Substring(0, intPos);
+            strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
             PdfReader reader = objBookInfo.CachedPdfReader;
             List<string> lstStringFromPDF = new List<string>();
@@ -840,7 +860,7 @@ namespace Chummer
                 string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPDF.AddRange(strPageText.Split('\n').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
+                lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
 
                 for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {
@@ -853,16 +873,15 @@ namespace Chummer
                     // we still haven't found anything
                     if (intTitleIndex == -1)
                     {
-                        int intTextToSearchLenght = strTextToSearch.Length;
-                        int intLineBiggerThanText = lstStringFromPDF[i].Length - intTextToSearchLenght;
+                        int intTextToSearchLength = strTextToSearch.Length;
                         int intTitleExtraLines = 0;
-                        if (strCurrentLine.Length < intTextToSearchLenght)
+                        if (strCurrentLine.Length < intTextToSearchLength)
                         {
                             // if the line is smaller first check if it contains the start of the text, before parsing the rest
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                while (strCurrentLine.Length < intTextToSearchLenght && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
+                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
@@ -876,16 +895,16 @@ namespace Chummer
                             }
                         }
                         // now either we have enough text to search or the page doesn't have anymore stuff and must give up
-                        if (strCurrentLine.Length < intTextToSearchLenght)
+                        if (strCurrentLine.Length < intTextToSearchLength)
                             break;
 
                         if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
                         {
                             // WE FOUND SOMETHING! lets check what kind block we have
                             // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
-                            if (strCurrentLine.Length > intTextToSearchLenght)
+                            if (strCurrentLine.Length > intTextToSearchLength)
                             {
-                                if (strCurrentLine[intTextToSearchLenght] == ':')
+                                if (strCurrentLine[intTextToSearchLength] == ':')
                                 {
                                     intTitleIndex = i;
                                     blnTitleWithColon = true;

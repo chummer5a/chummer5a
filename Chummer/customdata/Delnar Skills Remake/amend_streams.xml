@@ -19,22 +19,14 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <gears>
-    <gear xpathfilter="name = 'Disenchanting Focus'">
-      <name>Artificing Focus</name>
-      <bonus>
-        <specificskill xpathfilter="name = 'Disenchanting'">
-          <name>Artificing</name>
-        </specificskill>
-      </bonus>
-    </gear>
-    <gear xpathfilter="name = 'Disenchanting Focus Formula'">
-      <name>Artificing Focus Formula</name>
-      <bonus>
-        <specificskill xpathfilter="name = 'Disenchanting'">
-          <name>Artificing</name>
-        </specificskill>
-      </bonus>
-    </gear>
-  </gears>
+  <spirits>
+    <spirit>
+      <skills>
+        <skill xpathfilter="text() = 'Electronic Warfare' or text() = 'Cybercombat'" amendoperation="remove" />
+        <skill xpathfilter="text() = 'Computer'">Matrix</skill>
+        <skill xpathfilter="text() = 'Hacking'">Cyberwarfare</skill>
+        <skill xpathfilter="text() = 'Hardware'">Electronics</skill>
+      </skills>
+    </spirit>
+  </spirits>
 </chummer>

@@ -222,11 +222,19 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                if (_objCharacter.DEPEnabled && Abbrev == "EDG")
+                    return _objCharacter.DEP.TotalValue;
+
                 int intReturn = _intMetatypeMax;
                 Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Maximum;
+                }
+
+                if (Abbrev == "ESS")
+                {
+                    intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax);
                 }
                 return intReturn;
             }
@@ -1286,21 +1294,26 @@ namespace Chummer.Backend.Attributes
         {
             for (int i = 0; i < intAmount; ++i)
             {
-                if (!CanUpgradeCareer)
-                    return;
+                if (_objCharacter.Created)
+                {
+                    if (!CanUpgradeCareer)
+                        return;
 
-                int intPrice = UpgradeKarmaCost;
-                int intValue = Value;
-                string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {intValue} 🡒 {intValue + 1}";
+                    int intPrice = UpgradeKarmaCost;
+                    int intValue = Value;
 
-                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-                objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {intValue} 🡒 {intValue + 1}";
 
-                _objCharacter.ExpenseEntries.AddWithSort(objEntry);
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
+                    objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                    objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+
+                    _objCharacter.ExpenseEntries.AddWithSort(objEntry);
+
+                    _objCharacter.Karma -= intPrice;
+                }
 
                 Karma += 1;
-                _objCharacter.Karma -= intPrice;
             }
         }
 
@@ -1316,7 +1329,7 @@ namespace Chummer.Backend.Attributes
                 {
                     Base -= 1;
                 }
-                else if (Abbrev == "EDG" && TotalMinimum > 0)
+                else if (Abbrev == "EDG" && _objCharacter.Created && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero. 
                     MetatypeMinimum -= 1;

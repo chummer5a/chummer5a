@@ -154,6 +154,7 @@
   <xsl:variable name="lang.Name"      select="'Name'"/>
   <xsl:variable name="lang.Native"    select="'Native'"/>
   <xsl:variable name="lang.No"      select="'No'"/>
+  <xsl:variable name="lang.None"      select="'None'"/>
   <xsl:variable name="lang.Notes"      select="'Notes'"/>
   <xsl:variable name="lang.Notoriety"    select="'Notoriety'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
@@ -262,6 +263,7 @@
   <xsl:variable name="lang.ComplexForms"    select="'Complex Forms'"/>
   <xsl:variable name="lang.ConditionMonitor"  select="'Condition Monitor'"/>
   <xsl:variable name="lang.ContactList"    select="'Contact List'"/>
+  <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Critter Powers'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Current Edge Points'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>

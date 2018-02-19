@@ -128,7 +128,7 @@ namespace Chummer
                     {
                         int intMin;
                         int intMax = int.MaxValue;
-                        string strCost = strKarma.TrimStart("Variable(", true).TrimEnd(')');
+                        string strCost = strKarma.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');

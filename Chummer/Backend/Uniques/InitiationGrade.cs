@@ -94,6 +94,24 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("schooling", ref _blnSchooling);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        {
+            objWriter.WriteStartElement("initiationgrade");
+            objWriter.WriteElementString("grade", Grade.ToString());
+            objWriter.WriteElementString("group", Group.ToString());
+            objWriter.WriteElementString("ordeal", Ordeal.ToString());
+            objWriter.WriteElementString("schooling", Schooling.ToString());
+            objWriter.WriteElementString("technomancer", Technomancer.ToString());
+            if (_objOptions.PrintNotes)
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteEndElement();
+        }
         #endregion
 
         #region Properties

@@ -627,7 +627,7 @@ namespace Chummer
                 string strAvailExpr = strAvail;
                 if (strAvailExpr.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
 
@@ -689,7 +689,7 @@ namespace Chummer
                 {
                     if (strCost.StartsWith("FixedValues("))
                     {
-                        string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                     }
                     // Check for a Variable Cost.
@@ -697,7 +697,7 @@ namespace Chummer
                     {
                         decimal decMin;
                         decimal decMax = decimal.MaxValue;
-                        strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                        strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
@@ -782,7 +782,7 @@ namespace Chummer
                 string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
                 if (strEss.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strEss.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
 
@@ -801,7 +801,7 @@ namespace Chummer
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
             string strCapacity = objXmlCyberware.SelectSingleNode("capacity")?.Value ?? string.Empty;
-            bool blnSquareBrackets = strCapacity.Contains('[');
+            bool blnSquareBrackets = strCapacity.StartsWith('[');
             if (string.IsNullOrEmpty(strCapacity))
             {
                 lblCapacity.Text = 0.ToString(GlobalOptions.CultureInfo);
@@ -810,7 +810,7 @@ namespace Chummer
             {
                 if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 if (strCapacity == "[*]")
@@ -823,7 +823,7 @@ namespace Chummer
                         string strFirstHalf = strCapacity.Substring(0, intPos);
                         string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
 
-                        blnSquareBrackets = strFirstHalf.Contains('[');
+                        blnSquareBrackets = strFirstHalf.StartsWith('[');
                         if (blnSquareBrackets && strFirstHalf.Length > 1)
                             strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
 
@@ -883,7 +883,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strCategoryFilter += objCategoryFilter.ToString().TrimEnd(" or ");
+                    strCategoryFilter += objCategoryFilter.ToString().TrimEndOnce(" or ");
                 }
             }
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
@@ -1029,7 +1029,7 @@ namespace Chummer
                         string strAvailExpr = xmlCyberware.SelectSingleNode("avail")?.Value ?? string.Empty;
                         if (strAvailExpr.StartsWith("FixedValues("))
                         {
-                            string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                            string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                             strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
                         }
                         if (strAvailExpr.EndsWith('F', 'R'))
@@ -1108,7 +1108,7 @@ namespace Chummer
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     if (strCapacity.StartsWith("FixedValues("))
                     {
-                        string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                     }
 
@@ -1253,15 +1253,7 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = ". = \"";
-                if (_strSubsystems.Contains(','))
-                {
-                    strSubsystem += _strSubsystems.Replace(",", "\" or . = \"");
-                }
-                else
-                {
-                    strSubsystem += _strSubsystems;
-                }
+                string strSubsystem = ". = \"" + _strSubsystems.Replace(",", "\" or . = \"");
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.Select("categories/category[" + strSubsystem + "\"]");
             }
             else

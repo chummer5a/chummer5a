@@ -154,6 +154,7 @@
   <xsl:variable name="lang.Name"      select="'Nom'"/>
   <xsl:variable name="lang.Native"    select="'Maternelle'"/>
   <xsl:variable name="lang.No"      select="'Non'"/>
+  <xsl:variable name="lang.None"      select="'None'"/>
   <xsl:variable name="lang.Notes"      select="'Remarques'"/>
   <xsl:variable name="lang.Notoriety"    select="'Rumeur'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
@@ -262,6 +263,7 @@
   <xsl:variable name="lang.ComplexForms"    select="'Formes Complexes'"/>
   <xsl:variable name="lang.ConditionMonitor"  select="'Moniteur de conditions'"/>
   <xsl:variable name="lang.ContactList"    select="'Liste de contacts'"/>
+  <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Pouvoirs de Créature'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Points de chance courants'"/>
   <xsl:variable name="lang.DamageType"  select="'Type de dommage'"/>

@@ -143,6 +143,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroup;
                 case "SKILLATTRIBUTE":
                     return objImprovementAdder.skillattribute;
+                case "SKILLLINKEDATTRIBUTE":
+                    return objImprovementAdder.skilllinkedattribute;
                 case "SKILLARTICULATION":
                     return objImprovementAdder.skillarticulation;
                 case "ARMOR":

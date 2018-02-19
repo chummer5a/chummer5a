@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,9 +23,8 @@ namespace Chummer
 {
     public partial class frmSelectCalendarStart : Form
     {
-        private int _intSelectedYear = 2072;
+        private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
-        private readonly CalendarWeek objDefaultWeek = new CalendarWeek();
 
         #region Control Events
         public frmSelectCalendarStart()

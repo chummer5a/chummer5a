@@ -185,8 +185,9 @@ namespace Chummer
             else
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains('('))
-                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
+                int intPos = strPowerName.IndexOf('(');
+                if (intPos != -1)
+                    strPowerName = strPowerName.Substring(0, intPos - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (xmlPower.TryGetField("id", Guid.TryParse, out _sourceID))
@@ -201,8 +202,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strAdeptWayDiscount))
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains('('))
-                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
+                int intPos = strPowerName.IndexOf('(');
+                if (intPos != -1)
+                    strPowerName = strPowerName.Substring(0, intPos - 1);
                 _strAdeptWayDiscount = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
@@ -228,7 +230,7 @@ namespace Chummer
                 XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
-                    if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out int intTemp))
+                    if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
                     {
                         Create(objXmlPower, intTemp, null, false);
                         objNode.TryGetStringFieldQuickly("notes", ref _strNotes);

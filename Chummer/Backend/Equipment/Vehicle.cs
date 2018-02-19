@@ -190,7 +190,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                    string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -466,20 +466,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-
-                /*
-                if (WeaponMounts.Count > 0)
-                {
-                    objNode.Nodes.Add(mountsNode);
-                    // Weapon Mounts
-                    foreach (WeaponMount objWeaponMount in WeaponMounts)
-                    {
-                        mountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod));
-                        mountsNode.Expand();
-                    }
-                }
-                */
-
+                
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     objWeapon.ParentVehicle = this;
@@ -2789,11 +2776,16 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
         /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear"></param>
+        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Gear in Vehicle Weapon Accessory Nodes.</param>
         /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
         /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts.</param>
+        /// <param name="cmsCyberware">ContextMenuStrip for Cyberware.</param>
+        /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
         {
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -2818,13 +2810,14 @@ namespace Chummer.Backend.Equipment
                     ContextMenuStrip = cmsVehicleLocation
                 };
                 lstChildNodes.Add(objLocation);
-                objNode.Expand();
             }
 
             // VehicleMods.
             foreach (VehicleMod objMod in Mods)
             {
-                lstChildNodes.Add(objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                TreeNode objLoopNode = objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             if (WeaponMounts.Count > 0)
             {
@@ -2833,41 +2826,55 @@ namespace Chummer.Backend.Equipment
                     Tag = "String_WeaponMounts",
                     Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
                 };
-                lstChildNodes.Add(nodMountsNode);
-                objNode.Expand();
+                
                 // Weapon Mounts
                 foreach (WeaponMount objWeaponMount in WeaponMounts)
                 {
-                    nodMountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle));
-                    nodMountsNode.Expand();
+                    TreeNode objLoopNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle);
+                    if (objLoopNode != null)
+                    {
+                        nodMountsNode.Nodes.Add(objLoopNode);
+                        nodMountsNode.Expand();
+                    }
                 }
+
+                if (nodMountsNode.Nodes.Count > 0)
+                    lstChildNodes.Add(nodMountsNode);
             }
             // Vehicle Weapons (not attached to a mount).
             foreach (Weapon objWeapon in Weapons)
             {
-                lstChildNodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                objNode.Expand();
+                TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                if (objLoopNode != null)
+                    lstChildNodes.Add(objLoopNode);
             }
             
             // Vehicle Gear.
             foreach (Gear objGear in Gear)
             {
-                TreeNode objParent = objNode;
-                if (!string.IsNullOrEmpty(objGear.Location))
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear);
+                if (objLoopNode != null)
                 {
-                    foreach (TreeNode objFind in lstChildNodes)
+                    TreeNode objParent = objNode;
+                    if (!string.IsNullOrEmpty(objGear.Location))
                     {
-                        if (objFind.Text == objGear.Location)
+                        foreach (TreeNode objFind in lstChildNodes)
                         {
-                            objParent = objFind;
-                            break;
+                            if (objFind.Text == objGear.Location)
+                            {
+                                objParent = objFind;
+                                break;
+                            }
                         }
                     }
-                }
 
-                objParent.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
-                objParent.Expand();
+                    objParent.Nodes.Add(objLoopNode);
+                    objParent.Expand();
+                }
             }
+
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
 
             return objNode;
         }
@@ -2937,6 +2944,10 @@ namespace Chummer.Backend.Equipment
         /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
         /// </summary>
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>
+        /// <param name="treVehicles">TreeView where the vehicle's node would be.</param>
+        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
+        /// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
+        /// <param name="cmsVehicleWeaponAccessoryGear">ContextMenuStrip for Gear in Vehicle Weapon Accessory Nodes.</param>
         public void ChangeVehicleSensor(TreeView treVehicles, bool blnIncrease, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear)
         {
             Gear objCurrentSensor = null;
@@ -2955,42 +2966,42 @@ namespace Chummer.Backend.Equipment
                     }
                     break;
                 }
-                else if (objCurrentGear.Name == "Minidrone Sensor")
+                if (objCurrentGear.Name == "Minidrone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Microdrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Small Drone Sensor")
+                if (objCurrentGear.Name == "Small Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Medium Drone Sensor")
+                if (objCurrentGear.Name == "Medium Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Large Drone Sensor")
+                if (objCurrentGear.Name == "Large Drone Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Vehicle Sensor")
+                if (objCurrentGear.Name == "Vehicle Sensor")
                 {
                     XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Extra-Large Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
-                else if (objCurrentGear.Name == "Extra-Large Vehicle Sensor")
+                if (objCurrentGear.Name == "Extra-Large Vehicle Sensor")
                 {
                     if (!blnIncrease)
                     {
@@ -3047,7 +3058,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 List<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = new List<IHasMatrixAttributes>(ChildrenWithMatrixAttributes);

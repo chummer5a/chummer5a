@@ -4206,7 +4206,7 @@
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>"{0}" という名前のスイートはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のスイートはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4311,7 +4311,7 @@
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>"{0}" という名前のKitはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のKitはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>

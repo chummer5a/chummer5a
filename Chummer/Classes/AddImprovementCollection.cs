@@ -77,6 +77,7 @@ namespace Chummer.Classes
         #region
         public void qualitylevel(XmlNode bonusNode)
         {
+            /*
             //List of qualities to work with
             Guid[] all =
             {
@@ -85,6 +86,7 @@ namespace Chummer.Classes
                 new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
                 new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
             };
+            */
 
             //Add to list
             //retrive list
@@ -1938,9 +1940,9 @@ namespace Chummer.Classes
                 strTemp = bonusNode["max"]?.InnerXml;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    if (strTemp.Contains("-natural"))
+                    if (strTemp.EndsWith("-natural"))
                     {
-                        intMax = Convert.ToInt32(strTemp.Replace("-natural", string.Empty)) -
+                        intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true)) -
                                  _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
                     }
                     else
@@ -2338,7 +2340,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2354,7 +2356,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2370,7 +2372,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2386,7 +2388,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2402,7 +2404,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2418,7 +2420,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString());
@@ -2579,7 +2581,7 @@ namespace Chummer.Classes
             }
         }
 
-        // The Improvement adjust Skills with the given CharacterAttribute.
+        // The Improvement adjust Skills when used with the given CharacterAttribute.
         public void skillattribute(XmlNode bonusNode)
         {
             Log.Info("skillattribute");
@@ -2607,6 +2609,39 @@ namespace Chummer.Classes
                     Log.Info("Calling CreateImprovement");
                     CreateImprovement(strName, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.SkillAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
+                        0, 0, 0, 0, string.Empty, blnAddToRating);
+                }
+            }
+        }
+
+        // The Improvement adjust Skills whose linked attribute is the given CharacterAttribute.
+        public void skilllinkedattribute(XmlNode bonusNode)
+        {
+            Log.Info("skilllinkedattribute");
+            Log.Info("skilllinkedattribute = " + bonusNode.OuterXml);
+
+            string strUseUnique = _strUnique;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
+
+            string strName = bonusNode["name"]?.InnerText;
+            if (!string.IsNullOrEmpty(strName))
+            {
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
+                string strExclude = bonusNode["exclude"]?.InnerText;
+                if (!string.IsNullOrEmpty(strExclude))
+                {
+                    Log.Info("Calling CreateImprovement - exclude");
+                    CreateImprovement(strName, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
+                        0, 0, 0, 0, strExclude, blnAddToRating);
+                }
+                else
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strName, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
                         0, 0, 0, 0, string.Empty, blnAddToRating);
                 }
             }

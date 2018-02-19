@@ -21,10 +21,46 @@ Application Changes:
 - Fixed an issue where copying and pasting armor that adds weapons would not also create copies of said weapons.
 - Fixed an issue where copying and pasting gear that adds weapons would not properly link the new instances of the pasted weapons with the new instance of the pasted gear.
 - Added the ability to copy and paste 'ware of all types. As with other copy-paste code, copying can be done from any character, while pasting only works with characters in create mode.
+- Fixed an issue where shared Condition Monitor threshold offsets did not properly account for improvements that allowed condition monitor penalties to be ignored or overarching threshold offsets.
+- Fixed an issue where A.I. characters would have traditional condition monitor information displayed, both in Chummer5a and on character sheets, instead of condition monitor information based on their home node.
+- Fixed an issue where A.I. characters could receive wound penalties from Matrix condition monitor damage.
+- Initiation/Submersion Grades can now print their notes in thge option to do so is enabled, and any Arts, Enhancements or Metamagics/Echoes are included as child nodes. Sheets will still need to be adjusted to accommodate this.
+- Fixed an issue where the Fancy Blocks character sheet did not format sprite optional powers and weaknesses correctly.
+- Split up skillattribute improvement into skillattribute (which increases skill dicepools when using a particular skill) and skilllinkedattribute (which increases dicepools of skills linked to a particular attribute).
+- Fixed an issue where the PACKS and Cybersuite creation forms would not check amends, overwrites, live custom data, and custom data directories when making sure there isn't already an item with the new name given by the user.
+- When printing powers for spirits and sprites, Chummer5a will now also check critterpowers.xml in addition to spiritpowers.xml.
+- Children or auxiliary weapons and vehicles that come pre-installed with an item will no longer show up in the UI if their sourcebooks are not enabled. Fixed #2503.
+- Fixed a rare issue where adding certain items in create mode would generate expense log entries that stayed around afterwards and showed up in career mode. Affected characters with this issue in create mode will have it fixed retroactively, but the entry will remain for affected characters in career mode. Fixes #2507.
+- Fixed an issue where drain and fading attributes were not translated on character sheets.
+- Technomancer Streams can now be selected in the "Complex Forms and Spirits" tab if there is more than one stream present in the data files.
+- Fixed an issue where bonuses that increased maximum Essence were not accounted for when calculating the amount by which the maximum of special attributes should be reduced from essence loss.
+- Fixed an issue where encumbrance penalties to attributes would not be factored immediately into various displays, e.g. Physical limit.
+- Drain attributes and drain values are now exposed to print methods as separate items, allowing sheets more control over how these should be displayed. The same applies to fading attributes and fading values.
+- Fixed an issue where characters loaded into Chummer5a when their values for attribute loss from essence modifiers, wound modifiers, or encumbrance modifiers would be different than under the conditions in which they were originally saved would not have those modifiers updated unless they had a character tab opened for them as well (this primarily affected critters, spirits, and sprites with linked character files).
+- Fixed an issue where non-Magician magical characters could proceed into career mode without choosing a tradition.
+- Fixed an issue where a character with too many martial arts or martial arts techniques could still be allowed to proceed into career mode even though an error message was displayed.
+- Fixed issues where accessories not installed in weapons would still modify said weapons' stats.
 
 Data Changes:
 
 - Fixed an issue where the group contact associated with Made Man would still cost karma as a group contact. Fixed an issue where removing Made Man would not undo the forced increase in loyalty it has on the associated group contact. Fixes #2492.
+- Fixed an incorrect penalty for the Addiction (Burnout) quality.
+- Initiation/Submersion Grades can now print their notes in thge option to do so is enabled, and any Arts, Enhancements or Metamagics/Echoes are included as child nodes. Sheets will still need to be adjusted to accommodate this.
+- Fixed an issue where Power foci were not adding their rating to skill dicepools other than the ones linked to MAG a the skill control in career mode was switched to MAG.
+- Fixed an issue where sprites' Matrix attributes contributed to their skill dicepools.
+- Fixed typos that prevented some spirits and sprites from having certain skills and powers of theirs detected properly. Fixes #2485.
+- Fixed an issue where newly infected mundanes would gain access to MAG before their essence was lowered, causing them to start at MAG 0 instead of MAG 1 in career mode. Part of #2508.
+
+New Strings:
+
+- String_DeviceRating
+- Label_OtherCoreCM
+- Label_OtherMatrixCM
+
+Changed Strings:
+
+- Message_CreatePACKSKit_DuplicateName
+- Message_CyberwareSuite_DuplicateName
 
 Build 198
 

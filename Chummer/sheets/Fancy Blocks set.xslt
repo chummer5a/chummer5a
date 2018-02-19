@@ -564,11 +564,49 @@
             <tr><td colspan="2"><xsl:value-of select="$lang.MatrixCold" /></td><td colspan="2"><strong><xsl:value-of select="matrixcoldinit" /></strong></td></tr>
             <tr><td colspan="2"><xsl:value-of select="$lang.MatrixHot" /></td><td colspan="2"><strong><xsl:value-of select="matrixhotinit" /></strong></td></tr>
             <tr><td colspan="4"><hr /></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.PhysicalTrack" /></td><td><strong><xsl:value-of select="physicalcm" /></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:choose>
+                <xsl:when test="physicalcmiscorecm = 'True'">
+                  <xsl:value-of select="$lang.CoreTrack" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.PhysicalTrack" />
+                </xsl:otherwise>
+              </xsl:choose>
+            </td><td><strong><xsl:value-of select="physicalcm" /></strong></td></tr>
             <tr><td colspan="3">Overflow</td><td><strong><xsl:value-of select="cmoverflow - 1"/></strong></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.StunTrack" /></td><td><strong><xsl:value-of select="stuncm" /></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:choose>
+                <xsl:when test="stuncmismatrixcm = 'True'">
+                  <xsl:value-of select="$lang.MatrixTrack" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:if test="physicalcmiscorecm != 'True'">
+                    <xsl:value-of select="$lang.StunTrack" />
+                  </xsl:if>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td><td>
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="stuncm" />
+                </strong>
+              </xsl:if>
+            </td></tr>
             <tr><td colspan="3"><xsl:value-of select="$lang.PhysicalNaturalRecovery" /></td><td><strong><xsl:value-of select="physicalcmnaturalrecovery" /></strong></td></tr>
-            <tr><td colspan="3"><xsl:value-of select="$lang.StunNaturalRecovery" /></td><td><strong><xsl:value-of select="stuncmnaturalrecovery"/></strong></td></tr>
+            <tr><td colspan="3">
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="$lang.StunNaturalRecovery" />
+                </strong>
+              </xsl:if>
+            </td><td>
+              <xsl:if test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                <strong>
+                  <xsl:value-of select="stuncmnaturalrecovery"/>
+                </strong>
+              </xsl:if>
+            </td></tr>
     </table>
   </xsl:template>
 
@@ -1552,17 +1590,60 @@
           </tr>
           <tr>
             <td>
-              <ul style="margin-left:5px;">
-                <xsl:if test="count(powers/power) &gt; 0">
-                  <li><strong><xsl:value-of select="$lang.Powers"/></strong></li>
-                  <xsl:for-each select="powers/power">
+              <strong>
+                <xsl:value-of select="$lang.Powers"/>
+              </strong>
+              <xsl:choose>
+                <xsl:when test="count(powers/critterpower) &gt; 0">
+                  <ul style="margin-left:5px;">
+                    <xsl:for-each select="powers/critterpower">
+                      <li>
+                        <xsl:value-of select="name" />
+                        <xsl:call-template name="print_source_page" />
+                      </li>
+                    </xsl:for-each>
+                  </ul>
+                </xsl:when>
+                <xsl:otherwise>
+                  <span style="margin-left:5px;">
+                    <xsl:value-of select="$lang.None"/>
+                  </span>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td>
+            <td>
+              <xsl:if test="count(optionalpowers/critterpower) &gt; 0">
+                <strong>
+                  <xsl:value-of select="$lang.OptionalPowers"/>
+                </strong>
+                <ul style="margin-left:5px;">
+                  <xsl:for-each select="optionalpowers/critterpower">
                     <li>
                       <xsl:value-of select="name" />
+                      <xsl:if test="extra!=''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
                       <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
-                </xsl:if>
-              </ul>
+                </ul>
+              </xsl:if>
+              <xsl:if test="count(weaknesses/critterpower) &gt; 0">
+                <strong>
+                  <xsl:value-of select="$lang.Weaknesses"/>
+                </strong>
+                <ul style="margin-left:5px;">
+                  <xsl:for-each select="weaknesses/critterpower">
+                    <li>
+                      <xsl:value-of select="name" />
+                      <xsl:if test="extra!=''">
+                        (<xsl:value-of select="extra" />)
+                      </xsl:if>
+                      <xsl:call-template name="print_source_page" />
+                    </li>
+                  </xsl:for-each>
+                </ul>
+              </xsl:if>
             </td>
           </tr>
 
@@ -1807,25 +1888,33 @@
           </tr>
           <tr>
             <td>
-              <ul style="margin-left:5px;">
-                <xsl:if test="count(powers/critterpower) &gt; 0">
-                  <li><strong><xsl:value-of select="$lang.Powers"/></strong></li>
-                  <xsl:for-each select="powers/critterpower">
-                    <li>
-                      <xsl:value-of select="name" />
-                      <xsl:if test="extra!=''">
-                        (<xsl:value-of select="extra" />)
-                      </xsl:if>
-                      <xsl:call-template name="print_source_page" />
-                    </li>
-                  </xsl:for-each>
-                </xsl:if>
-              </ul>
+              <strong>
+                <xsl:value-of select="$lang.Powers"/>
+              </strong>
+              <xsl:choose>
+                <xsl:when test="count(powers/critterpower) &gt; 0">
+                  <ul style="margin-left:5px;">
+                    <xsl:for-each select="powers/critterpower">
+                      <li>
+                        <xsl:value-of select="name" />
+                        <xsl:call-template name="print_source_page" />
+                      </li>
+                    </xsl:for-each>
+                  </ul>
+                </xsl:when>
+                <xsl:otherwise>
+                  <span style="margin-left:5px;">
+                    <xsl:value-of select="$lang.None"/>
+                  </span>
+                </xsl:otherwise>
+              </xsl:choose>
             </td>
             <td>
-              <ul style="margin-left:5px;">
-                <xsl:if test="count(optionalpowers/critterpower) &gt; 0">
-                  <li><strong><xsl:value-of select="$lang.OptionalPowers"/></strong></li>
+              <xsl:if test="count(optionalpowers/critterpower) &gt; 0">
+                <strong>
+                  <xsl:value-of select="$lang.OptionalPowers"/>
+                </strong>
+                <ul style="margin-left:5px;">
                   <xsl:for-each select="optionalpowers/critterpower">
                     <li>
                       <xsl:value-of select="name" />
@@ -1835,9 +1924,13 @@
                       <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
-                </xsl:if>
-                <xsl:if test="count(weaknesses/critterpower) &gt; 0">
-                  <li><strong><xsl:value-of select="$lang.Weaknesses"/></strong></li>
+                </ul>
+              </xsl:if>
+              <xsl:if test="count(weaknesses/critterpower) &gt; 0">
+                <strong>
+                  <xsl:value-of select="$lang.Weaknesses"/>
+                </strong>
+                <ul style="margin-left:5px;">
                   <xsl:for-each select="weaknesses/critterpower">
                     <li>
                       <xsl:value-of select="name" />
@@ -1847,8 +1940,8 @@
                       <xsl:call-template name="print_source_page" />
                     </li>
                   </xsl:for-each>
-                </xsl:if>
-              </ul>
+                </ul>
+              </xsl:if>
             </td>
           </tr>
           <xsl:if test="position() != last()">

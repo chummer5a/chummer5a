@@ -345,7 +345,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
             }
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
@@ -674,12 +674,15 @@ namespace Chummer
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-            strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language));
-            strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language));
-            strRange = strRange.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language));
-            strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language));
-            strRange = strRange.CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ')');
-            strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language))
+                    .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language))
+                    .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language))
+                    .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language))
+                    .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ')')
+                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
+            }
             lblRange.Text = strRange;
 
             switch (xmlSpell.SelectSingleNode("damage")?.Value)
@@ -732,31 +735,34 @@ namespace Chummer
 
             if (chkLimited.Checked)
             {
-                int intPos;
-                if (strDV.Contains('-'))
+                int intPos = strDV.IndexOf('-');
+                if (intPos != -1)
                 {
-                    intPos = strDV.IndexOf('-') + 1;
+                    intPos = intPos + 1;
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
                     int intAfter = Convert.ToInt32(strAfter);
                     intAfter += 2;
                     strDV += intAfter.ToString();
                 }
-                else if (strDV.Contains('+'))
-                {
-                    intPos = strDV.IndexOf('+');
-                    string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Substring(0, intPos);
-                    int intAfter = Convert.ToInt32(strAfter);
-                    intAfter -= 2;
-                    if (intAfter > 0)
-                        strDV += '+' + intAfter.ToString();
-                    else if (intAfter < 0)
-                        strDV += intAfter.ToString();
-                }
                 else
                 {
-                    strDV += "-2";
+                    intPos = strDV.IndexOf('+');
+                    if (intPos != -1)
+                    {
+                        string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
+                        strDV = strDV.Substring(0, intPos);
+                        int intAfter = Convert.ToInt32(strAfter);
+                        intAfter -= 2;
+                        if (intAfter > 0)
+                            strDV += '+' + intAfter.ToString();
+                        else if (intAfter < 0)
+                            strDV += intAfter.ToString();
+                    }
+                    else
+                    {
+                        strDV += "-2";
+                    }
                 }
             }
 

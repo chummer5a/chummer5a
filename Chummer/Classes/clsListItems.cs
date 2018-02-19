@@ -227,12 +227,12 @@ namespace Chummer
             // Compare the two items
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
-                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
-                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
-            string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
-                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
-                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
+            string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))

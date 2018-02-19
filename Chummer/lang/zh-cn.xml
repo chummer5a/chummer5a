@@ -4029,7 +4029,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_DuplicateName</key>
-			<text>“{1}”文件中已有名为“{0}”的套件。请选择一个别的名称。</text>
+			<text>文件中已有名为“{0}”的套件。请选择一个别的名称。</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4134,7 +4134,7 @@
 		</string>
 		<string>
 			<key>Message_CreatePACKSKit_DuplicateName</key>
-			<text>“{1}”文件中已有名为“{0}”的预设角色套件。请选择一个别的名称。</text>
+			<text>文件中已有名为“{0}”的预设角色套件。请选择一个别的名称。</text>
 		</string>
 		<string>
 			<key>MessageTitle_CreatePACKSKit_DuplicateName</key>

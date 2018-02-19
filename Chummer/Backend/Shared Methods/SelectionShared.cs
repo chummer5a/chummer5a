@@ -538,16 +538,16 @@ namespace Chummer
                                 strName = "\n\t" +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                            return objCharacter.Essence < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
+                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                            return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = "\n\t" +
                                LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                        return objCharacter.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                        return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
                     {
@@ -1008,7 +1008,7 @@ namespace Chummer
             string strAvailExpr = objAvailNode?.InnerText ?? string.Empty;
             if (strAvailExpr.StartsWith("FixedValues("))
             {
-                string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
             }
 
@@ -1018,7 +1018,7 @@ namespace Chummer
             if (chrFirstAvailChar == '+' || chrFirstAvailChar == '-')
                 return true;
 
-            strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
+            strAvailExpr = strAvailExpr.TrimEndOnce(" or Gear").TrimEndOnce('F', 'R');
             int intAvail = intAvailModifier;
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             if (blnIsSuccess)
@@ -1533,16 +1533,16 @@ namespace Chummer
                                 strName = "\n\t" +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                            return objCharacter.Essence < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
+                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                            return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = "\n\t" +
                                LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence.ToString(GlobalOptions.InvariantCultureInfo));
-                        return objCharacter.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                        return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
                     {
@@ -2002,7 +2002,7 @@ namespace Chummer
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
             if (strAvailExpr.StartsWith("FixedValues("))
             {
-                string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
             }
 
@@ -2012,7 +2012,7 @@ namespace Chummer
             if (chrFirstAvailChar == '+' || chrFirstAvailChar == '-')
                 return true;
 
-            strAvailExpr = strAvailExpr.TrimEnd(" or Gear").TrimEnd('F', 'R');
+            strAvailExpr = strAvailExpr.TrimEndOnce(" or Gear").TrimEndOnce('F', 'R');
             int intAvail = intAvailModifier;
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             if (blnIsSuccess)
@@ -2047,12 +2047,12 @@ namespace Chummer
             {
                 if (strCost.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 else if (strCost.StartsWith("Variable"))
                 {
-                    strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     int intHyphenIndex = strCost.IndexOf('-');
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }

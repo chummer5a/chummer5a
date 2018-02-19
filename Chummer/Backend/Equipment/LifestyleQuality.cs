@@ -134,7 +134,7 @@ namespace Chummer.Backend.Equipment
             int intParenthesesIndex = _strExtra.IndexOf('(');
             if (intParenthesesIndex != -1)
             {
-                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEnd(')') : string.Empty;
+                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')') : string.Empty;
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
@@ -658,6 +658,9 @@ namespace Chummer.Backend.Equipment
         #region Methods
         public TreeNode CreateTreeNode()
         {
+            if (_objLifestyleQualitySource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,

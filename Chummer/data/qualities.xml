@@ -1041,7 +1041,10 @@
       <bonus>
         <notoriety>1</notoriety>
         <selecttext />
-        <sociallimit>-3</sociallimit>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-3</bonus>
+        </skillcategory>
       </bonus>
       <source>SR5</source>
       <page>78</page>
@@ -7000,6 +7003,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <critterpowers>
           <power>Adaptive Coloration</power>
           <power select="Sunlight, Mild">Allergy</power>
@@ -7011,7 +7015,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7406,6 +7409,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Corrosive Secretions</power>
@@ -7422,7 +7426,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7535,6 +7538,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7549,7 +7553,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7669,6 +7672,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7683,7 +7687,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7803,6 +7806,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7817,7 +7821,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7937,6 +7940,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7951,7 +7955,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8071,6 +8074,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8085,7 +8089,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8205,6 +8208,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8219,7 +8223,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8329,6 +8332,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power select="Vermin">Animal Control</power>
@@ -8345,7 +8349,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8611,6 +8614,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Animal Control</power>
@@ -8629,7 +8633,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -8756,6 +8759,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8771,7 +8775,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
         <replaceattributes>
@@ -8905,6 +8908,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8923,7 +8927,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
         <replaceattributes>

@@ -545,7 +545,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.ReadOnly), false,
+            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -563,7 +563,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             nudConnection.DataBindings.Add("Value", _objContact, nameof(_objContact.Connection), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            nudConnection.DataBindings.Add("Enabled", _objContact, nameof(_objContact.ReadOnly), false,
+            nudConnection.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudConnection.DataBindings.Add("Maximum", _objContact, nameof(_objContact.ConnectionMaximum), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -587,7 +587,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.ReadOnly), false,
+            cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.NotReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);

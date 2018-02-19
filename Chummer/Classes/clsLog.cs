@@ -178,14 +178,8 @@ namespace Chummer
         /// <summary>
         /// Log an exception has occoured
         /// </summary>
-        /// <param name="info">An optional array of objects providing additional data</param>
-        /// <param name="file">Do not use this</param>
-        /// <param name="method">Do not use this</param>
-        /// <param name="line">Do not use this</param>
-        public static void Exception
-        (
-            Exception exception
-        )
+        /// <param name="exception">Exception to log.</param>
+        public static void Exception(Exception exception)
         {
             if(!s_BlnLogEnabled)
                 return;

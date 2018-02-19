@@ -30,43 +30,6 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        /// <summary>
-        /// An individual language string.
-        /// </summary>
-        private struct LanguageString
-        {
-            /// <summary>
-            /// String's unique Key.
-            /// </summary>
-            public string Key { get; }
-
-            /// <summary>
-            /// String's text.
-            /// </summary>
-            public string Text { get; }
-
-            public LanguageString(string strKey, string strText)
-            {
-                Key = strKey ?? string.Empty;
-                Text = strText ?? string.Empty;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return Key.Equals(obj?.ToString());
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return Key;
-            }
-        }
-
         public class LanguageData
         {
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
@@ -290,7 +253,7 @@ namespace Chummer
                 // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
                 // Update the Form itself.
                 string strControlTag = frmForm.Tag?.ToString();
-                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                     frmForm.Text = GetString(strControlTag, strIntoLanguage);
                 else if (frmForm.Text.StartsWith('['))
                     frmForm.Text = string.Empty;
@@ -307,7 +270,7 @@ namespace Chummer
                 if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
                     else if (objChild.Text.StartsWith('['))
                         objChild.Text = string.Empty;
@@ -324,7 +287,7 @@ namespace Chummer
                     foreach (ColumnHeader objHeader in lstList.Columns)
                     {
                         string strControlTag = objHeader.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                             objHeader.Text = GetString(strControlTag, strIntoLanguage);
                         else if (objHeader.Text.StartsWith('['))
                             objHeader.Text = string.Empty;
@@ -335,7 +298,7 @@ namespace Chummer
                     foreach (TabPage tabPage in objTabControl.TabPages)
                     {
                         string strControlTag = tabPage.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                             tabPage.Text = GetString(strControlTag, strIntoLanguage);
                         else if (tabPage.Text.StartsWith('['))
                             tabPage.Text = string.Empty;
@@ -391,7 +354,7 @@ namespace Chummer
         public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
         {
             string strControlTag = tssItem.Tag?.ToString();
-            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
             else if (tssItem.Text.StartsWith('['))
                 tssItem.Text = string.Empty;
@@ -412,7 +375,7 @@ namespace Chummer
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
-                if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+                if (DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
                 {
                     if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                     {
@@ -433,7 +396,7 @@ namespace Chummer
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
         public static XmlDocument GetDataDocument(string strLanguage)
         {
-            if (LoadLanguage(strLanguage) && s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            if (LoadLanguage(strLanguage) && DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
             {
                 return objLanguageData.DataDocument;
             }
@@ -446,8 +409,8 @@ namespace Chummer
         /// <param name="strLanguage">Language to check.</param>
         public static void VerifyStrings(string strLanguage)
         {
-            ConcurrentBag<LanguageString> lstEnglish = new ConcurrentBag<LanguageString>();
-            ConcurrentBag<LanguageString> lstLanguage = new ConcurrentBag<LanguageString>();
+            ConcurrentBag<string> lstEnglish = new ConcurrentBag<string>();
+            ConcurrentBag<string> lstLanguage = new ConcurrentBag<string>();
             Parallel.Invoke(
                 () =>
                 {
@@ -477,7 +440,9 @@ namespace Chummer
                             if (xmlEnglishStringList != null)
                                 foreach (XmlNode objNode in xmlEnglishStringList)
                                 {
-                                    lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                                    string strKey = objNode["key"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strKey))
+                                        lstEnglish.Add(strKey);
                                 }
                     }
                 },
@@ -509,7 +474,9 @@ namespace Chummer
                             if (xmlLanguageStringList != null)
                                 foreach (XmlNode objNode in xmlLanguageStringList)
                                 {
-                                    lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
+                                    string strKey = objNode["key"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strKey))
+                                        lstLanguage.Add(strKey);
                                 }
                     }
                 }
@@ -521,19 +488,19 @@ namespace Chummer
                 () =>
                 {
                     // Check for strings that are in the English file but not in the selected language file.
-                    foreach (LanguageString objString in lstEnglish)
+                    foreach (string strKey in lstEnglish)
                     {
-                        if (lstLanguage.All(objItem => objItem.Key != objString.Key))
-                            objMissingMessage.Append("\nMissing String: " + objString.Key);
+                        if (!lstLanguage.Contains(strKey))
+                            objMissingMessage.Append("\nMissing String: " + strKey);
                     }
                 },
                 () =>
                 {
                     // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                    foreach (LanguageString objString in lstLanguage)
+                    foreach (string strKey in lstLanguage)
                     {
-                        if (lstEnglish.All(objItem => objItem.Key != objString.Key))
-                            objUnusedMessage.Append("\nUnused String: " + objString.Key);
+                        if (!lstEnglish.Contains(strKey))
+                            objUnusedMessage.Append("\nUnused String: " + strKey);
                     }
                 }
             );

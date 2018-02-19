@@ -3657,7 +3657,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_DuplicateName</key>
-			<text>Ein Cyberware-Set mit dem Namen "{0}" existiert bereits in der Datei "{1}". Bitte wählen Sie einen anderen Namen.</text>
+			<text>Ein Cyberware-Set mit dem Namen "{0}" existiert bereits in einer Datendatei. Bitte wählen Sie einen anderen Namen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -3761,7 +3761,7 @@
 		</string>
 		<string>
 			<key>Message_CreatePACKSKit_DuplicateName</key>
-			<text>Ein Kit mit dem Namen "{0}" existiert bereits in der Datei "{1}". Bitte wählen Sie einen anderen Namen.</text>
+			<text>Ein Kit mit dem Namen "{0}" existiert bereits in einer Datendatei. Bitte wählen Sie einen anderen Namen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CreatePACKSKit_DuplicateName</key>

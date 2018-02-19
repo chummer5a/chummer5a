@@ -194,17 +194,48 @@
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
           <xsl:value-of select="matrixhotinit"/>
+          <xsl:variable name="PhysicalTrackTitle">
+            <xsl:choose>
+              <xsl:when test="physicalcmiscorecm = 'True'">
+                <xsl:value-of select="$lang.CoreTrack" />
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$lang.PhysicalTrack" />
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
           <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.PhysicalTrack,': ')"/>
+              <xsl:with-param name="string" select="concat($PhysicalTrackTitle,': ')"/>
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
             <xsl:value-of select="physicalcm"/>
-          <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.StunTrack,': ')"/>
-              <xsl:with-param name="length" select="27"/>
-            </xsl:call-template>
-            <xsl:value-of select="stuncm"/>
-
+          <br/>
+          <xsl:choose>
+            <xsl:when test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+              <xsl:variable name="StunTrackTitle">
+                <xsl:choose>
+                  <xsl:when test="stuncmismatrixcm = 'True'">
+                    <xsl:value-of select="$lang.MatrixTrack" />
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$lang.StunTrack" />
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:variable>
+              <xsl:call-template name="fnx-pad-r">
+                <xsl:with-param name="string" select="concat($StunTrackTitle,': ')"/>
+                <xsl:with-param name="length" select="27"/>
+              </xsl:call-template>
+              <xsl:value-of select="stuncm"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="fnx-pad-r">
+                <xsl:with-param name="string" select="' '"/>
+                <xsl:with-param name="length" select="27"/>
+              </xsl:call-template>
+              <xsl:value-of select="stuncm"/>
+            </xsl:otherwise>
+          </xsl:choose>
           <br/>
           <br/>== <xsl:value-of select="$lang.Limits"/> ==
           <xsl:call-template name="limitmodifiersphys"/>
@@ -277,7 +308,7 @@
           <xsl:if test="complexforms/complexform">
             <br/>
             <br/>== <xsl:value-of select="$lang.ComplexForms"/> ==
-            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="stream"/>, <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="drain"/>)
+            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="stream"/>, <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="drainattributes"/> = <xsl:value-of select="drain"/>)
             <xsl:call-template name="complexforms"/>
           </xsl:if>
 

@@ -5228,6 +5228,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Walking: AGI × 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI × 4 ({2} MPCT) / ({3} KPH)</text>
     </string>
     <string>
+      <key>Label_OtherCoreCM</key>
+      <text>Core Condition Track:</text>
+    </string>
+    <string>
+      <key>Label_OtherMatrixCM</key>
+      <text>Matrix Condition Track:</text>
+    </string>
+    <string>
       <key>Label_OtherPhysicalCM</key>
       <text>Physical Condition Track:</text>
     </string>
@@ -5584,6 +5592,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region ASDF Attributes-->
     <string>
+      <key>String_DeviceRating</key>
+      <text>Device Rating</text>
+    </string>
+    <string>
       <key>String_Attack</key>
       <text>Attack</text>
     </string>
@@ -5914,7 +5926,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>A Suite named "{0}" already exists in the "{1}" data file. Please choose a different name.</text>
+      <text>A Suite named "{0}" already exists in a data file. Please choose a different name.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -6020,7 +6032,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>A Kit named "{0}" already exists in the "{1}" data file. Please choose a different name.</text>
+      <text>A Kit named "{0}" already exists in a data file. Please choose a different name.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>

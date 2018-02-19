@@ -1544,8 +1544,9 @@ namespace Chummer
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
             // Strip away the language prefix
-            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
-                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+            int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intPos != -1)
+                strOldSelected = strOldSelected.Substring(intPos + 1);
 
             cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";

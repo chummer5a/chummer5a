@@ -351,7 +351,7 @@ namespace Chummer
 
         public void DoVersionTextUpdate()
         {
-            string strLatestVersion = LatestVersion.Trim().TrimStart("Nightly-v");
+            string strLatestVersion = LatestVersion.Trim().TrimStartOnce("Nightly-v");
             lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
             if (strLatestVersion == LanguageManager.GetString("String_Error", GlobalOptions.Language).Trim())
             {
@@ -410,10 +410,10 @@ namespace Chummer
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
-                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
+                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                     int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                     string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if ((!strFilePath.StartsWith("data") && !strFilePath.StartsWith("export") && !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") && !strFilePath.StartsWith("Utils") && !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
+                    if ((!strFilePath.StartsWith("data") && !strFilePath.StartsWith("export") && !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") && !strFilePath.StartsWith("Utils") && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))) ||
                         strFileName?.EndsWith(".old") != false ||
                         strFileName.StartsWith("custom") ||
                         strFileName.StartsWith("override") ||
@@ -451,7 +451,7 @@ namespace Chummer
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
-                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
+                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                     if ((!strFilePath.StartsWith("customdata") &&
                         !strFilePath.StartsWith("data") &&
                         !strFilePath.StartsWith("export") &&
@@ -459,7 +459,7 @@ namespace Chummer
                         !strFilePath.StartsWith("settings") &&
                         !strFilePath.StartsWith("sheets") &&
                         !strFilePath.StartsWith("Utils") &&
-                        !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
+                        !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))) ||
                         strFileName?.EndsWith(".old") != false)
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }

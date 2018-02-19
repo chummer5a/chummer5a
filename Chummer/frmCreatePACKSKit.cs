@@ -62,37 +62,18 @@ namespace Chummer
                 return;
             }
 
-            // See if a Kit with this name already exists for the Custom category. This is done without the XmlManager since we need to check each file individually.
-            XmlDocument objXmlDocument = new XmlDocument();
-            string strCustomPath = Path.Combine(Application.StartupPath, "data");
-            foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
+            // See if a Kit with this name already exists for the Custom category.
+            // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
+            string strName = txtName.Text;
+            if (XmlManager.Load("packs.xml", GlobalOptions.Language).SelectSingleNode("/chummer/packs/pack[name = \"" + strName + "\" and category = \"Custom\"]") != null)
             {
-                try
-                {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                    {
-                        objXmlDocument.Load(objStreamReader);
-                    }
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return;
-                }
-                catch (XmlException ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return;
-                }
-                XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + txtName.Text + "\" and category = \"Custom\"]");
-                if (objXmlPACKSList.Count > 0)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", strName),
+                    LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
-            string strPath = Path.Combine(strCustomPath, txtFileName.Text);
+            string strPath = Path.Combine(Application.StartupPath, "data", txtFileName.Text);
             bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.

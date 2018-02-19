@@ -96,9 +96,14 @@ namespace Chummer
                 TreeNode nodGridsParent = treLifestyleQualities.Nodes[3];
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.FreeGrids)
                 {
-                    nodGridsParent.Nodes.Add(objQuality.CreateTreeNode());
-                    nodGridsParent.Expand();
                     _objLifestyle.FreeGrids.Add(objQuality);
+
+                    TreeNode objLoopNode = objQuality.CreateTreeNode();
+                    if (objLoopNode != null)
+                    {
+                        nodGridsParent.Nodes.Add(objLoopNode);
+                        nodGridsParent.Expand();
+                    }
                 }
             }
             cboBaseLifestyle.BeginUpdate();
@@ -224,24 +229,30 @@ namespace Chummer
                 //objNode.ContextMenuStrip = cmsQuality;
                 if (objQuality.InternalId.IsEmptyGuid())
                     continue;
-
-                TreeNode nodParent;
-                // Add the Quality to the appropriate parent node.
-                if (objQuality.Type == QualityType.Positive)
-                {
-                    nodParent = treLifestyleQualities.Nodes[0];
-                }
-                else if (objQuality.Type == QualityType.Negative)
-                {
-                    nodParent = treLifestyleQualities.Nodes[1];
-                }
-                else
-                {
-                    nodParent = treLifestyleQualities.Nodes[2];
-                }
-                nodParent.Nodes.Add(objQuality.CreateTreeNode());
-                nodParent.Expand();
+                
                 _objLifestyle.LifestyleQualities.Add(objQuality);
+
+                TreeNode objLoopNode = objQuality.CreateTreeNode();
+                if (objLoopNode != null)
+                {
+                    TreeNode nodParent;
+                    // Add the Quality to the appropriate parent node.
+                    if (objQuality.Type == QualityType.Positive)
+                    {
+                        nodParent = treLifestyleQualities.Nodes[0];
+                    }
+                    else if (objQuality.Type == QualityType.Negative)
+                    {
+                        nodParent = treLifestyleQualities.Nodes[1];
+                    }
+                    else
+                    {
+                        nodParent = treLifestyleQualities.Nodes[2];
+                    }
+
+                    nodParent.Nodes.Add(objQuality.CreateTreeNode());
+                    nodParent.Expand();
+                }
 
                 CalculateValues();
             }
@@ -395,11 +406,16 @@ namespace Chummer
                     XmlNode xmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Not a Home\"]");
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                     objQuality.Create(xmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
+
                     _objLifestyle.LifestyleQualities.Add(objQuality);
 
-                    TreeNode nodParent = treLifestyleQualities.Nodes[1];
-                    nodParent.Nodes.Add(objQuality.CreateTreeNode());
-                    nodParent.Expand();
+                    TreeNode objLoopNode = objQuality.CreateTreeNode();
+                    if (objLoopNode != null)
+                    {
+                        TreeNode nodParent = treLifestyleQualities.Nodes[1];
+                        nodParent.Nodes.Add(objQuality.CreateTreeNode());
+                        nodParent.Expand();
+                    }
                 }
             }
             else
@@ -462,9 +478,16 @@ namespace Chummer
                         _objCharacter.Pushtext.Push(strPush);
                     }
                     objQuality.Create(xmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
-                    treLifestyleQualities.Nodes[3].Nodes.Add(objQuality.CreateTreeNode());
-                    treLifestyleQualities.Nodes[3].Expand();
+
                     _objLifestyle.FreeGrids.Add(objQuality);
+
+                    TreeNode objLoopNode = objQuality.CreateTreeNode();
+                    if (objLoopNode != null)
+                    {
+                        TreeNode nodParent = treLifestyleQualities.Nodes[3];
+                        nodParent.Nodes.Add(objQuality.CreateTreeNode());
+                        nodParent.Expand();
+                    }
                 }
             }
 

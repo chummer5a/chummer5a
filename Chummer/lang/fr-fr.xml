@@ -4189,7 +4189,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>Une suite Cyberware nommée "{0}" existe déja dans le fichier "{1}". Veuillez choisir un autre nom.</text>
+      <text>Une suite Cyberware nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4294,7 +4294,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>Un Kit nommée "{0}" existe déja dans le fichier "{1}". Veuillez choisir un autre nom.</text>
+      <text>Un Kit nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>

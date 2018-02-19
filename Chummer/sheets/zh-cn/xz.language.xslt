@@ -154,6 +154,7 @@
   <xsl:variable name="lang.Name"      select="'姓名'"/>
   <xsl:variable name="lang.Native"    select="'母语'"/>
   <xsl:variable name="lang.No"      select="'不'"/>
+  <xsl:variable name="lang.None"      select="'None'"/>
   <xsl:variable name="lang.Notes"      select="'备注'"/>
   <xsl:variable name="lang.Notoriety"    select="'恶名'"/>
   <xsl:variable name="lang.Nuyen"      select="'新円'"/>
@@ -262,6 +263,7 @@
   <xsl:variable name="lang.ComplexForms"    select="'复合程式'"/>
   <xsl:variable name="lang.ConditionMonitor"  select="'CM'"/>
   <xsl:variable name="lang.ContactList"    select="'人脉表'"/>
+  <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'怪物能力'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'当前极限点'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>

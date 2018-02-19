@@ -599,10 +599,26 @@
                     <table class="tablestyle">
                       <tr>
                         <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.PhysicalTrack"/>
+                          <xsl:choose>
+                            <xsl:when test="physicalcmiscorecm = 'True'">
+                              <xsl:value-of select="$lang.CoreTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="$lang.PhysicalTrack" />
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
                         <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.StunTrack"/>
+                          <xsl:choose>
+                            <xsl:when test="stuncmismatrixcm = 'True'">
+                              <xsl:value-of select="$lang.MatrixTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:if test="physicalcmiscorecm != 'True'">
+                                <xsl:value-of select="$lang.StunTrack" />
+                              </xsl:if>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
                       </tr>
                       <tr>
@@ -626,22 +642,29 @@
                           </xsl:call-template><br />
                           <xsl:value-of select="$lang.PhysicalNaturalRecovery"/>: <xsl:value-of select="physicalcmnaturalrecovery"/>
                         </td>
-                        <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
-                          <xsl:call-template name="ConditionMonitor">
-                            <xsl:with-param name="PenaltyBox">
-                              <xsl:value-of select="cmthreshold"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="Offset">
-                              <xsl:value-of select="stuncmthresholdoffset"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="TotalBoxes">
-                              <xsl:value-of select="stuncm"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="DamageTaken">
-                              <xsl:value-of select="stuncmfilled"/>
-                            </xsl:with-param>
-                          </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
-                        </td>
+                        <xsl:choose>
+                          <xsl:when test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
+                              <xsl:call-template name="ConditionMonitor">
+                                <xsl:with-param name="PenaltyBox">
+                                  <xsl:value-of select="cmthreshold"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="Offset">
+                                  <xsl:value-of select="stuncmthresholdoffset"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="TotalBoxes">
+                                  <xsl:value-of select="stuncm"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="DamageTaken">
+                                  <xsl:value-of select="stuncmfilled"/>
+                                </xsl:with-param>
+                              </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
+                            </td>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </tr>
                     </table>
                   </div>
@@ -1241,7 +1264,7 @@
             <tr>
               <td><xsl:value-of select="stream"/></td>
               <td style="text-align:center;">
-			    <xsl:value-of select="drain"/>
+			    <xsl:value-of select="drainattributes"/> (<xsl:value-of select="drain"/>)
 			  </td>
               <td/>
               <td style="text-align:center;">
@@ -2012,7 +2035,7 @@
         </xsl:if>
       </td>
       <td style="vertical-align:top; text-align:center;">
-        <xsl:value-of select="tradition/drain" />
+        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drain" />)
       </td>
       <td style="vertical-align:top; text-align:center;">
         <xsl:value-of select="tradition/spiritcombat" />

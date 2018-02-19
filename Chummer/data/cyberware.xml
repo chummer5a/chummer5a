@@ -5198,10 +5198,10 @@
           <value>Rating</value>
           <condition>Only with Intuition-linked skills</condition>
         </limitmodifier>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>INT</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
@@ -5223,10 +5223,10 @@
           <value>Rating</value>
           <condition>Only with Logic-linked skills</condition>
         </limitmodifier>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>LOG</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
