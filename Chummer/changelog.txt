@@ -39,6 +39,7 @@ Application Changes:
 - Fixed an issue where characters loaded into Chummer5a when their values for attribute loss from essence modifiers, wound modifiers, or encumbrance modifiers would be different than under the conditions in which they were originally saved would not have those modifiers updated unless they had a character tab opened for them as well (this primarily affected critters, spirits, and sprites with linked character files).
 - Fixed an issue where non-Magician magical characters could proceed into career mode without choosing a tradition.
 - Fixed an issue where a character with too many martial arts or martial arts techniques could still be allowed to proceed into career mode even though an error message was displayed.
+- Fixed issues where accessories not installed in weapons would still modify said weapons' stats.
 
 Data Changes:
 

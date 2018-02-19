@@ -1905,13 +1905,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    // Replace the Ammo value.
-                    if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                    if (objAccessory.Installed)
                     {
-                        strAmmos = new [] { objAccessory.AmmoReplace };
-                        break;
+                        // Replace the Ammo value.
+                        if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                        {
+                            strAmmos = new[] {objAccessory.AmmoReplace};
+                            break;
+                        }
+
+                        intAmmoBonus += objAccessory.AmmoBonus;
                     }
-                    intAmmoBonus += objAccessory.AmmoBonus;
                 }
             }
             if (ParentMount != null)
@@ -2084,45 +2088,51 @@ namespace Chummer.Backend.Equipment
                     // Do the same for any accessories/modifications.
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                        if (objAccessory.Installed)
                         {
-                            if (objAccessory.FireMode.Contains('/'))
+                            if (!string.IsNullOrEmpty(objAccessory.FireMode))
                             {
-                                strModes = objAccessory.FireMode.Split('/');
+                                if (objAccessory.FireMode.Contains('/'))
+                                {
+                                    strModes = objAccessory.FireMode.Split('/');
 
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
-                                    lstModes.Add(strMode);
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strModes)
+                                        lstModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    lstModes.Add(objAccessory.FireMode);
+                                }
                             }
-                            else
-                            {
-                                lstModes.Add(objAccessory.FireMode);
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
-                        {
-                            lstModes.Clear();
-                            if (objAccessory.FireModeReplacement.Contains('/'))
-                            {
-                                strModes = objAccessory.FireModeReplacement.Split('/');
 
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
-                                    lstModes.Add(strMode);
-                            }
-                            else
+                            if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
                             {
-                                lstModes.Add(objAccessory.FireModeReplacement);
+                                lstModes.Clear();
+                                if (objAccessory.FireModeReplacement.Contains('/'))
+                                {
+                                    strModes = objAccessory.FireModeReplacement.Split('/');
+
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strModes)
+                                        lstModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    lstModes.Add(objAccessory.FireModeReplacement);
+                                }
+
+                                break;
                             }
-                            break;
                         }
                     }
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(x => !string.IsNullOrEmpty(x.AddMode)))
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                lstModes.Add(objAccessory.AddMode);
+                if (objAccessory.Installed && string.IsNullOrEmpty(objAccessory.AddMode))
+                    lstModes.Add(objAccessory.AddMode);
             }
 
             string strReturn = string.Empty;
@@ -2166,7 +2176,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the list of Weapon Mods.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (!objAccessory.IncludedInWeapon)
+                    if (objAccessory.Installed && !objAccessory.IncludedInWeapon)
                     {
                         if (!objAccessory.Cost.StartsWith("Total Cost"))
                             decReturn += objAccessory.TotalCost;
@@ -2873,14 +2883,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
                 {
-                    if (objWeaponAccessory.Name == "Laser Sight" || objWeaponAccessory.Name == "Holographic Sight")
+                    if (objWeaponAccessory.Installed)
                     {
-                        // Skip it if there is a smartgun on this weapon
-                        if (WeaponAccessories.All(x => !x.Name.StartsWith("Smartgun")))
+                        if (objWeaponAccessory.Name == "Laser Sight" || objWeaponAccessory.Name == "Holographic Sight")
+                        {
+                            // Skip it if there is a smartgun on this weapon
+                            if (WeaponAccessories.All(x => !x.Name.StartsWith("Smartgun")))
+                                intAccuracy += objWeaponAccessory.Accuracy;
+                        }
+                        else
                             intAccuracy += objWeaponAccessory.Accuracy;
                     }
-                    else
-                        intAccuracy += objWeaponAccessory.Accuracy;
                 }
                 string s = Name.ToLower();
                 intAccuracy += _objCharacter.Improvements
@@ -3204,7 +3217,8 @@ namespace Chummer.Backend.Equipment
 
                 // Weapon Mods.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                    intRangeBonus += objAccessory.RangeBonus;
+                    if (objAccessory.Installed)
+                        intRangeBonus += objAccessory.RangeBonus;
 
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
                 if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -3285,7 +3299,7 @@ namespace Chummer.Backend.Equipment
                 // Check to see if any of the Mods replace this value.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.FullBurst > intReturn)
+                    if (objAccessory.Installed && objAccessory.FullBurst > intReturn)
                         intReturn = objAccessory.FullBurst;
                 }
 
@@ -3305,7 +3319,7 @@ namespace Chummer.Backend.Equipment
                 // Check to see if any of the Mods replace this value.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Suppressive > intReturn)
+                    if (objAccessory.Installed && objAccessory.Suppressive > intReturn)
                         intReturn = objAccessory.Suppressive;
                 }
 
@@ -3323,7 +3337,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 0;
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.AccessoryCostMultiplier != 1)
+                    if (objAccessory.Installed && objAccessory.AccessoryCostMultiplier != 1)
                         intReturn += objAccessory.AccessoryCostMultiplier;
                 }
 
@@ -3738,7 +3752,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the Accessories and add in their availability.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (!objAccessory.IncludedInWeapon)
+                    if (!objAccessory.IncludedInWeapon && objAccessory.Installed)
                     {
                         AvailabilityValue objLoopAvail = objAccessory.TotalAvailTuple();
                         if (objLoopAvail.AddToParent)
@@ -3765,7 +3779,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 1;
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.AccessoryCostMultiplier > 1)
+                    if (objAccessory.Installed && objAccessory.AccessoryCostMultiplier > 1)
                         intReturn = objAccessory.AccessoryCostMultiplier;
                 }
 
