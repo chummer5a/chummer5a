@@ -921,9 +921,10 @@ namespace Chummer.Backend.Attributes
                         }
                         else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                         {
+                            int intValue = objImprovement.Augmented * objImprovement.Rating;
                             strModifier += " + " + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + " (" +
-                                           (objImprovement.Augmented * objImprovement.Rating).ToString() + ')';
-                            intBaseValue += objImprovement.Augmented * objImprovement.Rating;
+                                           (intValue).ToString() + ')';
+                            intBaseValue += intValue;
                         }
                     }
                 }

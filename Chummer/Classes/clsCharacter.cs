@@ -3400,7 +3400,7 @@ namespace Chummer
                     string strReturn = objImprovement.SourceName;
                     if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                     {
-                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveType.ToString(), strLanguage, false);
+                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource.ToString(), strLanguage, false);
                         if (!string.IsNullOrEmpty(strTemp))
                             strReturn = strTemp;
                     }
@@ -8887,8 +8887,8 @@ namespace Chummer
 
                 // Reduce a character's MAG and RES from Essence Loss.
                 decimal decMetatypeMaximumESS = ESS.MetatypeMaximum;
-                int intMagMaxReduction = decimal.ToInt32(decimal.Floor(decMetatypeMaximumESS - decESSMag));
-                int intMaxReduction = decimal.ToInt32(decimal.Floor(decMetatypeMaximumESS - decESS));
+                int intMagMaxReduction = decimal.ToInt32(decimal.Ceiling(decMetatypeMaximumESS - decESSMag));
+                int intMaxReduction = decimal.ToInt32(decimal.Ceiling(decMetatypeMaximumESS - decESS));
                 if (Options.SpecialKarmaCostBasedOnShownValue)
                 {
                     Improvement.ImprovementSource eEssenceLossSource = Created ? Improvement.ImprovementSource.EssenceLoss : Improvement.ImprovementSource.EssenceLossChargen;
@@ -8909,8 +8909,8 @@ namespace Chummer
                 }
                 else if (Created)
                 {
-                    int intMinReduction = decimal.ToInt32(decimal.Floor(EssenceAtSpecialStart - decESS));
-                    int intMagMinReduction = decimal.ToInt32(decimal.Floor(EssenceAtSpecialStart - decESSMag));
+                    int intMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESS));
+                    int intMagMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESSMag));
 
                     // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
                     int intExtraRESBurn = Math.Max(0,
@@ -9190,7 +9190,7 @@ namespace Chummer
             // If the character is Cyberzombie, adjust their Attributes based on their Essence.
             if (MetatypeCategory == "Cyberzombie")
             {
-                int intESSModifier = decimal.ToInt32(decimal.Floor(Essence() - ESS.MetatypeMaximum));
+                int intESSModifier = decimal.ToInt32(decimal.Ceiling(Essence() - ESS.MetatypeMaximum));
                 ImprovementManager.RemoveImprovements(this, Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Cyberzombie && x.ImproveType == Improvement.ImprovementType.Attribute).ToList());
                 if (intESSModifier != 0)
                 {
