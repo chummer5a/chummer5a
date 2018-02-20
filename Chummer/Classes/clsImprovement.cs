@@ -1979,7 +1979,7 @@ namespace Chummer
                                 objKnowledgeSkill.UnbindSkill();
                                 objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
                             }
-                            for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count; i >= 0; --i)
+                            for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
                             {
                                 KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
                                 if (objSkill.InternalId == objImprovement.ImprovedName)
