@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -334,12 +335,16 @@ namespace Chummer
             objCharacter_AmbidextrousChanged(this, EventArgs.Empty);
 
             // Populate the Magician Traditions list.
-            XmlDocument xmlTraditionsDocument = XmlManager.Load("traditions.xml");
+            XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstTraditions = new List<ListItem>();
-            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlTradition["name"].InnerText;
-                lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select("traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                {
+                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstTraditions.Add(new ListItem(strName, xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
             if (lstTraditions.Count > 1)
             {
@@ -362,10 +367,14 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlDrain in xmlTraditionsDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlDrain["name"].InnerText;
-                lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select("drainattributes/drainattribute"))
+                {
+                    string strName = xmlDrain.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstDrainAttributes.Add(new ListItem(strName, xmlDrain.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
             lstDrainAttributes.Sort(CompareListItems.CompareNames);
             cboDrain.BeginUpdate();
@@ -392,12 +401,18 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlSpirit in xmlTraditionsDocument.SelectNodes("/chummer/spirits/spirit"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strSpiritName = objXmlSpirit["name"].InnerText;
-                if (limit.Count == 0 || limit.Contains(strSpiritName))
+                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
                 {
-                    lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
+                    string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strSpiritName))
+                    {
+                        if (limit.Count == 0 || limit.Contains(strSpiritName))
+                        {
+                            lstSpirit.Add(new ListItem(strSpiritName, xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                        }
+                    }
                 }
             }
             lstSpirit.Sort(CompareListItems.CompareNames);
@@ -443,12 +458,16 @@ namespace Chummer
             cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
-            xmlTraditionsDocument = XmlManager.Load("streams.xml");
+            xmlTraditionsBaseChummerNode = XmlManager.Load("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstStreams = new List<ListItem>();
-            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlTradition["name"].InnerText;
-                lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select("traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                {
+                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstStreams.Add(new ListItem(strName, xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
             if (lstStreams.Count > 1)
             {
@@ -2279,14 +2298,18 @@ namespace Chummer
 
             // Prompt the user to select an inanimate Vessel.
             XmlDocument objVesselDoc = XmlManager.Load("vessels.xml");
-            XmlNodeList objXmlMetatypeList = objVesselDoc.SelectNodes("/chummer/metatypes/metatype");
             List<ListItem> lstMetatype = new List<ListItem>();
-            foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
-            {
-                string strName = objXmlMetatype["name"].InnerText;
-                ListItem objItem = new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName);
-                lstMetatype.Add(objItem);
-            }
+            using (XmlNodeList xmlMetatypeList = objVesselDoc.SelectNodes("/chummer/metatypes/metatype"))
+                if (xmlMetatypeList?.Count > 0)
+                    foreach (XmlNode xmlMetatype in xmlMetatypeList)
+                    {
+                        string strName = xmlMetatype["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            ListItem objItem = new ListItem(strName, xmlMetatype["translate"]?.InnerText ?? strName);
+                            lstMetatype.Add(objItem);
+                        }
+                    }
 
             frmSelectItem frmSelectVessel = new frmSelectItem
             {
@@ -2295,6 +2318,12 @@ namespace Chummer
             frmSelectVessel.ShowDialog(this);
 
             if (frmSelectVessel.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Get the Node for the selected Vessel.
+            XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
+
+            if (objSelected == null)
                 return;
 
             Cursor = Cursors.WaitCursor;
@@ -2307,9 +2336,6 @@ namespace Chummer
             objMerge.Load();
             objMerge.Possessed = true;
             objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
-
-            // Get the Node for the selected Vessel.
-            XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
 
             //TODO: Update spirit attribute values.
             /*
@@ -2366,25 +2392,30 @@ namespace Chummer
                 objMerge.STR.Value = 1;
             */
 
+            XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
+
             // Update the Movement if the Vessel has one.
-            if (objSelected["movement"] != null)
-                objMerge.Movement = objSelected["movement"].InnerText;
+            string strMovement = objSelected["movement"]?.InnerText;
+            if (!string.IsNullOrEmpty(strMovement))
+                objMerge.Movement = strMovement;
 
             // Add any additional Critter Powers the Vessel grants.
-            if (objSelected["powers"] != null)
+            XmlNode xmlPowersNode = objSelected["powers"];
+            if (xmlPowersNode != null)
             {
-                XmlDocument objXmlPowerDoc = XmlManager.Load("critterpowers.xml");
-                foreach (XmlNode objXmlPower in objSelected.SelectNodes("powers/power"))
-                {
-                    XmlNode objXmlCritterPower = objXmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                    CritterPower objPower = new CritterPower(objMerge);
-                    string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                    int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
-                    
-                    objPower.Create(objXmlCritterPower, intRating, strSelect);
+                using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
+                    if (xmlPowerList?.Count > 0)
+                        foreach (XmlNode objXmlPower in xmlPowerList)
+                        {
+                            XmlNode objXmlCritterPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                            CritterPower objPower = new CritterPower(objMerge);
+                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                            int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
 
-                    objMerge.CritterPowers.Add(objPower);
-                }
+                            objPower.Create(objXmlCritterPower, intRating, strSelect);
+
+                            objMerge.CritterPowers.Add(objPower);
+                        }
             }
 
             // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
@@ -2399,8 +2430,7 @@ namespace Chummer
             }
             if (!blnHasImmunity)
             {
-                XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
-                XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                XmlNode objPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 CritterPower objCritterPower = new CritterPower(objMerge);
                 objCritterPower.Create(objPower, 0, "Normal Weapons");
@@ -3725,7 +3755,7 @@ namespace Chummer
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"].InnerText)
+                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language))
                     };
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
@@ -3983,8 +4013,6 @@ namespace Chummer
                     }
                     else
                     {
-                        objWeapon = CharacterObject.Weapons.DeepFindById(strSelectedId);
-
                         // Locate the Accessory that is selected in the tree.
                         WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
                         if (objAccessory != null)
@@ -6270,30 +6298,30 @@ namespace Chummer
                 case "Changeling (Class III SURGE)":
                     CharacterObject.MetageneticLimit = 0;
                     break;
-                default:
-                    break;
             }
 
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
             {
-                foreach (XmlNode objXmlPower in XmlManager.Load("critterpowers.xml").SelectNodes("optionalpowers/optionalpower"))
-                {
-                    string strExtra = objXmlPower.Attributes?["select"]?.InnerText;
-
-                    foreach (CritterPower objPower in CharacterObject.CritterPowers)
-                    {
-                        if (objPower.Name == objXmlPower.InnerText && objPower.Extra == strExtra)
+                using (XmlNodeList xmlPowerList = XmlManager.Load("critterpowers.xml").SelectNodes("optionalpowers/optionalpower"))
+                    if (xmlPowerList?.Count > 0)
+                        foreach (XmlNode objXmlPower in xmlPowerList)
                         {
-                            // Remove any Improvements created by the Critter Power.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
+                            string strExtra = objXmlPower.Attributes?["select"]?.InnerText;
 
-                            // Remove the Critter Power from the character.
-                            CharacterObject.CritterPowers.Remove(objPower);
-                            break;
+                            foreach (CritterPower objPower in CharacterObject.CritterPowers)
+                            {
+                                if (objPower.Name == objXmlPower.InnerText && objPower.Extra == strExtra)
+                                {
+                                    // Remove any Improvements created by the Critter Power.
+                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
+
+                                    // Remove the Critter Power from the character.
+                                    CharacterObject.CritterPowers.Remove(objPower);
+                                    break;
+                                }
+                            }
                         }
-                    }
-                }
             }
 
             // Remove any Weapons created by the Quality if applicable.
@@ -8275,10 +8303,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -8832,7 +8857,7 @@ namespace Chummer
                                 objParent.Children.Remove(objGear);
                             else if (objArmorMod != null)
                                 objArmorMod.Gear.Remove(objGear);
-                            else if (objArmor != null)
+                            else
                                 objArmor.Gear.Remove(objGear);
 
                             // Create the Expense Log Entry for the sale.
@@ -10456,7 +10481,9 @@ namespace Chummer
 
         private void tsArmorNotes_Click(object sender, EventArgs e)
         {
-            Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode?.Tag.ToString());
+            if (treArmor.SelectedNode == null)
+                return;
+            Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
             if (objArmor != null)
             {
                 string strOldValue = objArmor.Notes;
@@ -10485,7 +10512,9 @@ namespace Chummer
 
         private void tsArmorModNotes_Click(object sender, EventArgs e)
         {
-            ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(treArmor.SelectedNode?.Tag.ToString());
+            if (treArmor.SelectedNode == null)
+                return;
+            ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(treArmor.SelectedNode.Tag.ToString());
             if (objArmorMod != null)
             {
                 string strOldValue = objArmorMod.Notes;
@@ -10516,7 +10545,9 @@ namespace Chummer
 
         private void tsArmorGearNotes_Click(object sender, EventArgs e)
         {
-            Gear objArmorGear = CharacterObject.Armor.FindArmorGear(treArmor.SelectedNode?.Tag.ToString());
+            if (treArmor.SelectedNode == null)
+                return;
+            Gear objArmorGear = CharacterObject.Armor.FindArmorGear(treArmor.SelectedNode.Tag.ToString());
             if (objArmorGear != null)
             {
                 string strOldValue = objArmorGear.Notes;
@@ -10547,7 +10578,9 @@ namespace Chummer
 
         private void tsWeaponNotes_Click(object sender, EventArgs e)
         {
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode?.Tag.ToString());
+            if (treWeapons.SelectedNode == null)
+                return;
+            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
             if (objWeapon != null)
             {
                 string strOldValue = objWeapon.Notes;
@@ -10578,7 +10611,9 @@ namespace Chummer
 
         private void tsWeaponAccessoryNotes_Click(object sender, EventArgs e)
         {
-            WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(treWeapons.SelectedNode?.Tag.ToString());
+            if (treWeapons.SelectedNode == null)
+                return;
+            WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString());
             if (objAccessory != null)
             {
                 string strOldValue = objAccessory.Notes;
@@ -10611,7 +10646,7 @@ namespace Chummer
         {
             if (treCyberware.SelectedNode == null)
                 return;
-            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode?.Tag.ToString());
+            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
             if (objCyberware != null)
             {
                 string strOldValue = objCyberware.Notes;
@@ -10678,7 +10713,9 @@ namespace Chummer
 
         private void tsMartialArtsNotes_Click(object sender, EventArgs e)
         {
-            MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode?.Tag.ToString());
+            if (treMartialArts.SelectedNode == null)
+                return;
+            MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
             if (objMartialArt != null)
             {
                 string strOldValue = objMartialArt.Notes;
@@ -10704,7 +10741,7 @@ namespace Chummer
             }
             else
             {
-                MartialArtTechnique objTechnique = CharacterObject.MartialArts.FindMartialArtTechnique(treMartialArts.SelectedNode?.Tag.ToString());
+                MartialArtTechnique objTechnique = CharacterObject.MartialArts.FindMartialArtTechnique(treMartialArts.SelectedNode.Tag.ToString());
                 if (objTechnique != null)
                 {
                     string strOldValue = objTechnique.Notes;
@@ -10766,7 +10803,9 @@ namespace Chummer
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
-            Spell objSpell = CharacterObject.Spells.FindById(treSpells.SelectedNode?.Tag.ToString());
+            if (treSpells.SelectedNode == null)
+                return;
+            Spell objSpell = CharacterObject.Spells.FindById(treSpells.SelectedNode.Tag.ToString());
             if (objSpell != null)
             {
                 string strOldValue = objSpell.Notes;
@@ -10795,7 +10834,9 @@ namespace Chummer
 
         private void tsComplexFormNotes_Click(object sender, EventArgs e)
         {
-            ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode?.Tag.ToString());
+            if (treComplexForms.SelectedNode == null)
+                return;
+            ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
             if (objComplexForm != null)
             {
                 string strOldValue = objComplexForm.Notes;
@@ -11768,10 +11809,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -11989,10 +12027,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -12214,10 +12249,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -13182,6 +13214,8 @@ namespace Chummer
         {
             // Locate the selected Weapon.
             Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode?.Tag.ToString());
+            if (objWeapon == null)
+                return;
 
             List<Vehicle> lstVehicles = new List<Vehicle>();
             if (objWeapon != null)
@@ -14710,21 +14744,6 @@ namespace Chummer
 #endregion
 
 #region Additional Initiation Tab Control Events
-        private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateInitiationCost();
-        }
-
-        private void chkInitiationOrdeal_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateInitiationCost();
-        }
-
-        private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateInitiationCost();
-        }
-
         private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
             string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
@@ -16332,7 +16351,7 @@ namespace Chummer
             cmdAddBioware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             UpdateReputation();
-            UpdateInitiationCost();
+            UpdateInitiationCost(this, EventArgs.Empty);
             UpdateMentorSpirits();
             UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 
@@ -16557,7 +16576,7 @@ namespace Chummer
                     {
                         chkCyberwareHomeNode.Visible = true;
                         chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
 
                     lblCyberDeviceRating.Text = intDeviceRating.ToString();
@@ -18959,7 +18978,7 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private void UpdateInitiationCost()
+        private void UpdateInitiationCost(object sender, EventArgs e)
         {
             decimal decMultiplier = 1.0m;
             int intAmount;
@@ -19897,6 +19916,13 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            
+            string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+            XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
+
+            XmlNode xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
+            if (xmlSuite == null)
+                return;
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -19904,21 +19930,19 @@ namespace Chummer
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
 
-            string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-            XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
-
-            XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
 
             // Run through each of the items in the Suite and add them to the character.
-            foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))
-            {
-                XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-                int intRating = Convert.ToInt32(objXmlItem["rating"]?.InnerText);
+            using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strType + "s/" + strType))
+                if (xmlItemList?.Count > 0)
+                    foreach (XmlNode xmlItem in xmlItemList)
+                    {
+                        XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + xmlItem["name"]?.InnerText + "\"]");
+                        int intRating = Convert.ToInt32(xmlItem["rating"]?.InnerText);
 
-                Cyberware objCyberware = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, objSource);
-                CharacterObject.Cyberware.Add(objCyberware);
-            }
+                        Cyberware objCyberware = CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource);
+                        CharacterObject.Cyberware.Add(objCyberware);
+                    }
 
             IsCharacterUpdateRequested = true;
 
@@ -20561,7 +20585,7 @@ namespace Chummer
                 return;
 
             // Find the associated Power
-            string strPower = objXmlArt["power"].InnerText;
+            string strPower = objXmlArt["power"]?.InnerText;
             bool blnPowerFound = false;
             foreach (Power objPower in CharacterObject.Powers)
             {
@@ -20719,7 +20743,7 @@ namespace Chummer
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText)
+                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language))
                     };
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
@@ -20816,7 +20840,10 @@ namespace Chummer
 
         private void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
-            AIProgram objAIProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode?.Tag.ToString());
+            if (treAIPrograms.SelectedNode == null)
+                return;
+
+            AIProgram objAIProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode.Tag.ToString());
             if (objAIProgram != null)
             {
                 string strOldValue = objAIProgram.Notes;

@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -30,7 +31,7 @@ namespace Chummer
         int MainMugshotIndex { get; set; }
 
         void SaveMugshots(XmlTextWriter objWriter);
-        void LoadMugshots(XmlNode xmlSavedNode);
+        void LoadMugshots(XPathNavigator xmlSavedNode);
         void PrintMugshots(XmlTextWriter objWriter);
     }
 }

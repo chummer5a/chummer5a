@@ -118,7 +118,7 @@ namespace Chummer
         /// Load the Spirit from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XPathNavigator objNode)
         {
             if (objNode == null)
                 return;
@@ -130,7 +130,9 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("force", ref _intForce);
             objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
             objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
-            _eEntityType = ConvertToSpiritType(objNode["type"]?.InnerText);
+            string strTemp = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
+                _eEntityType = ConvertToSpiritType(strTemp);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -772,36 +774,31 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        public void LoadMugshots(XmlNode xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            using (XmlNodeList xmlMugshotsList = xmlSavedNode.SelectNodes("mugshots/mugshot"))
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+            foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
             {
-                if (xmlMugshotsList != null)
+                string strMugshot = objXmlMugshot.Value;
+                if (!string.IsNullOrWhiteSpace(strMugshot))
                 {
-                    List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                    foreach (XmlNode objXmlMugshot in xmlMugshotsList)
-                    {
-                        string strMugshot = objXmlMugshot.InnerText;
-                        if (!string.IsNullOrWhiteSpace(strMugshot))
-                        {
-                            lstMugshotsBase64.Add(strMugshot);
-                        }
-                    }
-                    if (lstMugshotsBase64.Count > 1)
-                    {
-                        Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                        Parallel.For(0, lstMugshotsBase64.Count, i =>
-                        {
-                            objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                        });
-                        _lstMugshots.AddRange(objMugshotImages);
-                    }
-                    else if (lstMugshotsBase64.Count == 1)
-                    {
-                        _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
-                    }
+                    lstMugshotsBase64.Add(strMugshot);
                 }
+            }
+            if (lstMugshotsBase64.Count > 1)
+            {
+                Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
+                Parallel.For(0, lstMugshotsBase64.Count, i =>
+                {
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                });
+                _lstMugshots.AddRange(objMugshotImages);
+            }
+            else if (lstMugshotsBase64.Count == 1)
+            {
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
             }
         }
 

@@ -42,6 +42,7 @@ Application Changes:
 - Fixed issues where accessories not installed in weapons would still modify said weapons' stats.
 - Fixed a crash when evaluating the Shiawase Monsoon's ammo capacity.
 - Fixed a crash when altering the rating of knowsofts and lingasofts. Fixes #2514
+- Fixed an issue where checking or unchecking the "Ordeal" and "Group" checkboxes in the initiations/submersions tab would not update the displayed cost for initiation/submersion.
 
 Data Changes:
 

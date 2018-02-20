@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -161,7 +162,7 @@ namespace Chummer
         /// Load the Contact from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XPathNavigator objNode)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("role", ref _strRole);
@@ -175,7 +176,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("preferredpayment", ref _strPreferredPayment);
             objNode.TryGetStringFieldQuickly("hobbiesvice", ref _strHobbiesVice);
             objNode.TryGetStringFieldQuickly("personallife", ref _strPersonalLife);
-            _eContactType = ConvertToContactType(objNode["type"]?.InnerText);
+            string strTemp = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
+                _eContactType = ConvertToContactType(strTemp);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
@@ -184,24 +187,24 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
             objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
             objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
-            if (objNode["colour"] != null)
+            if (objNode.SelectSingleNode("colour") != null)
             {
                 int intTmp = _objColour.ToArgb();
                 if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
                     _objColour = Color.FromArgb(intTmp);
             }
 
-            _blnReadOnly = objNode["readonly"] != null;
+            _blnReadOnly = objNode.SelectSingleNode("readonly") != null;
 
             if (!objNode.TryGetInt32FieldQuickly("forcedloyalty", ref _intForcedLoyalty))
             {
-                if (objNode["forceloyalty"] != null)
+                if (objNode.SelectSingleNode("forceloyalty") != null)
                 {
                     bool blnIsLoyaltyForced = false;
                     if (objNode.TryGetBoolFieldQuickly("forceloyalty", ref blnIsLoyaltyForced) && blnIsLoyaltyForced)
                         _intForcedLoyalty = _intLoyalty;
                 }
-                else if (objNode["mademan"] != null)
+                else if (objNode.SelectSingleNode("mademan") != null)
                 {
                     bool blnIsLoyaltyForced = false;
                     if (objNode.TryGetBoolFieldQuickly("mademan", ref blnIsLoyaltyForced) && blnIsLoyaltyForced)
@@ -962,36 +965,31 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        public void LoadMugshots(XmlNode xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            using (XmlNodeList xmlMugshotsList = xmlSavedNode.SelectNodes("mugshots/mugshot"))
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+            foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
             {
-                if (xmlMugshotsList != null)
+                string strMugshot = objXmlMugshot.Value;
+                if (!string.IsNullOrWhiteSpace(strMugshot))
                 {
-                    List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                    foreach (XmlNode objXmlMugshot in xmlMugshotsList)
-                    {
-                        string strMugshot = objXmlMugshot.InnerText;
-                        if (!string.IsNullOrWhiteSpace(strMugshot))
-                        {
-                            lstMugshotsBase64.Add(strMugshot);
-                        }
-                    }
-                    if (lstMugshotsBase64.Count > 1)
-                    {
-                        Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                        Parallel.For(0, lstMugshotsBase64.Count, i =>
-                        {
-                            objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                        });
-                        _lstMugshots.AddRange(objMugshotImages);
-                    }
-                    else if (lstMugshotsBase64.Count == 1)
-                    {
-                        _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
-                    }
+                    lstMugshotsBase64.Add(strMugshot);
                 }
+            }
+            if (lstMugshotsBase64.Count > 1)
+            {
+                Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
+                Parallel.For(0, lstMugshotsBase64.Count, i =>
+                {
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                });
+                _lstMugshots.AddRange(objMugshotImages);
+            }
+            else if (lstMugshotsBase64.Count == 1)
+            {
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
             }
         }
 

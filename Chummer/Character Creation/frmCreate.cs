@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -365,14 +366,18 @@ namespace Chummer
             CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
 
             // Populate the Magician Traditions list.
-            XmlDocument xmlTraditionsDocument = XmlManager.Load("traditions.xml");
+            XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstTraditions = new List<ListItem>();
-            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlTradition["name"]?.InnerText;
-                if (!string.IsNullOrEmpty(strName))
-                    lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select("traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                {
+                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstTraditions.Add(new ListItem(strName, xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
+
             if (lstTraditions.Count > 1)
             {
                 lstTraditions.Sort(CompareListItems.CompareNames);
@@ -394,12 +399,16 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlDrain in xmlTraditionsDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlDrain["name"]?.InnerText;
-                if (!string.IsNullOrEmpty(strName))
-                    lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select("drainattributes/drainattribute"))
+                {
+                    string strName = xmlDrain.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstDrainAttributes.Add(new ListItem(strName, xmlDrain.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
+
             lstDrainAttributes.Sort(CompareListItems.CompareNames);
             cboDrain.BeginUpdate();
             cboDrain.ValueMember = nameof(ListItem.Value);
@@ -425,17 +434,21 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode objXmlSpirit in xmlTraditionsDocument.SelectNodes("/chummer/spirits/spirit"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strSpiritName = objXmlSpirit["name"]?.InnerText;
-                if (!string.IsNullOrEmpty(strSpiritName))
+                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
                 {
-                    if (limit.Count == 0 || limit.Contains(strSpiritName))
+                    string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strSpiritName))
                     {
-                        lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
+                        if (limit.Count == 0 || limit.Contains(strSpiritName))
+                        {
+                            lstSpirit.Add(new ListItem(strSpiritName, xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                        }
                     }
                 }
             }
+
             lstSpirit.Sort(CompareListItems.CompareNames);
 
             List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
@@ -479,13 +492,18 @@ namespace Chummer
             cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
-            xmlTraditionsDocument = XmlManager.Load("streams.xml");
+            xmlTraditionsBaseChummerNode = XmlManager.Load("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstStreams = new List<ListItem>();
-            foreach (XmlNode objXmlTradition in xmlTraditionsDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+            if (xmlTraditionsBaseChummerNode != null)
             {
-                string strName = objXmlTradition["name"].InnerText;
-                lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
+                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select("traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                {
+                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstStreams.Add(new ListItem(strName, xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
+
             if (lstStreams.Count > 1)
             {
                 lstStreams.Sort(CompareListItems.CompareNames);
@@ -6739,10 +6757,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -7557,7 +7572,7 @@ namespace Chummer
 
         private void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
-            if (treComplexForms.SelectedNode == null)
+            if (treAIPrograms.SelectedNode == null)
                 return;
 
             AIProgram objAIProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode.Tag.ToString());
@@ -8391,10 +8406,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -8484,10 +8496,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -8651,10 +8660,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories)
-                {
-                    //frmPickGear.ShowNegativeCapacityOnly = true;
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
 
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -9011,7 +9017,7 @@ namespace Chummer
             }
             XmlNode objQualityNode = objSelectedQuality.GetNode();
             string strLimitString = objQualityNode != null ? (objQualityNode["chargenlimit"]?.InnerText ?? objQualityNode["limit"]?.InnerText) : string.Empty;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
                 nudQualityLevel.Value = objSelectedQuality.Levels;
@@ -12715,7 +12721,7 @@ namespace Chummer
                     {
                         chkCyberwareHomeNode.Visible = true;
                         chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
 
                     if (objGear.MaxRating > 0)
@@ -15863,52 +15869,32 @@ namespace Chummer
             XmlNode xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
             {
-                XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                XmlDocument xmlQualityDocument = XmlManager.Load("qualities.xml");
 
-                // Positive Qualities.
-                foreach (XmlNode objXmlQuality in xmlQualities.SelectNodes("positive/quality"))
-                {
-                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
-
-                    if (objXmlQualityNode != null)
-                    {
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        Quality objQuality = new Quality(CharacterObject);
-                        string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-
-                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
-
-                        CharacterObject.Qualities.Add(objQuality);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
+                // Positive and Negative Qualities.
+                using (XmlNodeList xmlQualityList = xmlQualities.SelectNodes("*/quality"))
+                    if (xmlQualityList?.Count > 0)
+                        foreach (XmlNode objXmlQuality in xmlQualityList)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            XmlNode objXmlQualityNode = xmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
+
+                            if (objXmlQualityNode != null)
+                            {
+                                List<Weapon> lstWeapons = new List<Weapon>();
+                                Quality objQuality = new Quality(CharacterObject);
+                                string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+
+                                objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
+
+                                CharacterObject.Qualities.Add(objQuality);
+
+                                // Add any created Weapons to the character.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    CharacterObject.Weapons.Add(objWeapon);
+                                }
+                            }
                         }
-                    }
-                }
-
-                // Negative Qualities.
-                foreach (XmlNode objXmlQuality in xmlQualities.SelectNodes("negative/quality"))
-                {
-                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
-
-                    if (objXmlQualityNode != null)
-                    {
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        Quality objQuality = new Quality(CharacterObject);
-                        string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-
-                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
-                        CharacterObject.Qualities.Add(objQuality);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            CharacterObject.Weapons.Add(objWeapon);
-                        }
-                    }
-                }
             }
 
             //TODO: PACKS SKILLS?
@@ -17543,20 +17529,22 @@ namespace Chummer
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", string.Empty, true);
 
-            XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            if (objXmlSuite == null)
+            XmlNode xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
+            if (xmlSuite == null)
                 return;
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
 
             // Run through each of the items in the Suite and add them to the character.
-            foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))
-            {
-                XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-                int intRating = Convert.ToInt32(objXmlItem["rating"]?.InnerText);
+            using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strType + "s/" + strType))
+                if (xmlItemList?.Count > 0)
+                    foreach (XmlNode xmlItem in xmlItemList)
+                    {
+                        XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + xmlItem["name"]?.InnerText + "\"]");
+                        int intRating = Convert.ToInt32(xmlItem["rating"]?.InnerText);
 
-                Cyberware objCyberware = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, objSource);
-                CharacterObject.Cyberware.Add(objCyberware);
-            }
+                        Cyberware objCyberware = CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource);
+                        CharacterObject.Cyberware.Add(objCyberware);
+                    }
             
             IsCharacterUpdateRequested = true;
 
@@ -17619,10 +17607,12 @@ namespace Chummer
                 objParentVehicle.Gear.Add(objNewGear);
 
             // Look for child components.
-            foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))
-            {
-                AddPACKSGear(objXmlGearDocument, objXmlChild, objNewGear, blnCreateChildren);
-            }
+            using (XmlNodeList xmlChildrenList = objXmlGear.SelectNodes("gears/gear"))
+                if (xmlChildrenList?.Count > 0)
+                    foreach (XmlNode xmlChild in xmlChildrenList)
+                    {
+                        AddPACKSGear(objXmlGearDocument, xmlChild, objNewGear, blnCreateChildren);
+                    }
 
             // Add any Weapons created by the Gear.
             if (lstWeapons.Count > 0)
@@ -17636,21 +17626,25 @@ namespace Chummer
             return objNewGear;
         }
 
-        private Cyberware AddPACKSCyberware(XmlDocument xmlCyberwareDocument, XmlDocument xmlBiowareDocument, XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject, bool blnCreateChildren)
+        private void AddPACKSCyberware(XmlDocument xmlCyberwareDocument, XmlDocument xmlBiowareDocument, XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject, bool blnCreateChildren)
         {
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlCyberware["grade"]?.InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject);
 
             int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText);
 
             Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
-            XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + xmlCyberware["name"].InnerText + "\"]");
+            string strName = xmlCyberware["name"]?.InnerText;
+            if (string.IsNullOrEmpty(strName))
+                return;
+
+            XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + strName + "\"]");
             if (objXmlCyberwareNode == null)
             {
                 eSource = Improvement.ImprovementSource.Bioware;
-                objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + xmlCyberware["name"].InnerText + "\"]");
+                objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + strName + "\"]");
                 if (objXmlCyberwareNode == null)
                 {
-                    return null;
+                    return;
                 }
             }
             List<Weapon> lstWeapons = new List<Weapon>();
@@ -17666,11 +17660,15 @@ namespace Chummer
                 objParentVehicleMod.Cyberware.Add(objCyberware);
 
             // Add any children.
-            foreach (XmlNode objXmlChild in xmlCyberware.SelectNodes("cyberwares/cyberware"))
-                AddPACKSCyberware(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument, objXmlChild, objCyberware, blnCreateChildren);
+            using (XmlNodeList xmlCyberwareList = xmlCyberware.SelectNodes("cyberwares/cyberware"))
+                if (xmlCyberwareList?.Count > 0)
+                    foreach (XmlNode objXmlChild in xmlCyberwareList)
+                        AddPACKSCyberware(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument, objXmlChild, objCyberware, blnCreateChildren);
 
-            foreach (XmlNode objXmlGear in xmlCyberware.SelectNodes("gears/gear"))
-                AddPACKSGear(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren);
+            using (XmlNodeList xmlGearList = xmlCyberware.SelectNodes("gears/gear"))
+                if (xmlGearList?.Count > 0)
+                    foreach (XmlNode objXmlGear in xmlGearList)
+                        AddPACKSGear(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren);
 
             if (lstWeapons.Count > 0)
             {
@@ -17687,8 +17685,6 @@ namespace Chummer
                     CharacterObject.Vehicles.Add(objVehicle);
                 }
             }
-
-            return objCyberware;
         }
 #endregion
         

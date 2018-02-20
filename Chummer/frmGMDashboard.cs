@@ -165,13 +165,16 @@ namespace Chummer
         {
             // tosses the character information relevant to each character
         #region Condition Monitor
-            ConditionMonitorUserControl uc = 
-                tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
-            uc.MaxPhysical = CurrentNPC.PhysicalCM;
-            uc.MaxStun = CurrentNPC.StunCM;
-            uc.Physical = uc.MaxPhysical;
-            uc.Stun = uc.MaxStun;
-        #endregion
+
+            if (tabControl.TabPages[(int) DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
+            {
+                uc.MaxPhysical = CurrentNPC.PhysicalCM;
+                uc.MaxStun = CurrentNPC.StunCM;
+                uc.Physical = uc.MaxPhysical;
+                uc.Stun = uc.MaxStun;
+            }
+
+            #endregion
 
         #region Skill tab
             //TODO fix this

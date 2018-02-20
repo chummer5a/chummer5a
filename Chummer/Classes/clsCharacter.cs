@@ -16,7 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -28,7 +27,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -951,20 +949,21 @@ namespace Chummer
             Timekeeper.Finish("load_xml");
             Timekeeper.Start("load_char_misc");
             XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+            XPathNavigator xmlCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
 
-            if (objXmlCharacter == null)
+            if (objXmlCharacter == null || xmlCharacterNavigator == null)
                 return false;
 
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
 
-            objXmlCharacter.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
-            objXmlCharacter.TryGetBoolFieldQuickly("created", ref _blnCreated);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
 
             ResetCharacter();
 
             // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
-            string strGameEdition = objXmlCharacter["gameedition"]?.InnerText ?? string.Empty;
-            if (!string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
+            string strGameEdition = string.Empty;
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("gameedition", ref strGameEdition) && !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
             {
                 MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo,
@@ -974,7 +973,7 @@ namespace Chummer
 
             string strVersion = string.Empty;
             //Check to see if the character was created in a version of Chummer later than the currently installed one.
-            if (objXmlCharacter.TryGetStringFieldQuickly("appversion", ref strVersion) && !string.IsNullOrEmpty(strVersion))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) && !string.IsNullOrEmpty(strVersion))
             {
                 if (strVersion.StartsWith("0."))
                 {
@@ -997,135 +996,125 @@ namespace Chummer
                 }
 #endif
             // Get the name of the settings file in use if possible.
-            objXmlCharacter.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
                 return false;
 
             // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-            XmlNode xmlTempNode = objXmlCharacter["sources"];
-            if (xmlTempNode != null)
+            string strMissingBooks = string.Empty;
+            //Does the list of enabled books contain the current item?
+            foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
             {
-                string strMissingBooks = string.Empty;
-                //Does the list of enabled books contain the current item?
-                foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
+                string strLoopString = xmlSourceNode.Value;
+                if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
                 {
-                    string strLoopString = objXmlNode.InnerText;
-                    if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
-                    {
-                        strMissingBooks += strLoopString + ';';
-                    }
+                    strMissingBooks += strLoopString + ';';
                 }
-                if (!string.IsNullOrEmpty(strMissingBooks))
+            }
+            if (!string.IsNullOrEmpty(strMissingBooks))
+            {
+                string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks, GlobalOptions.Language));
+                if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                 {
-                    string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks, GlobalOptions.Language));
-                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
             // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-            xmlTempNode = objXmlCharacter["customdatadirectorynames"];
-            if (xmlTempNode != null)
+            string strMissingSourceNames = string.Empty;
+            //Does the list of enabled books contain the current item?
+            foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select("customdatadirectorynames/directoryname"))
             {
-                string strMissingSourceNames = string.Empty;
-                //Does the list of enabled books contain the current item?
-                foreach (XmlNode objXmlNode in xmlTempNode.ChildNodes)
+                string strLoopString = xmlDirectoryName.Value;
+                if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
                 {
-                    string strLoopString = objXmlNode.InnerText;
-                    if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
-                    {
-                        strMissingSourceNames += strLoopString + ";\n";
-                    }
+                    strMissingSourceNames += strLoopString + ";\n";
                 }
-                if (!string.IsNullOrEmpty(strMissingSourceNames))
+            }
+            if (!string.IsNullOrEmpty(strMissingSourceNames))
+            {
+                string strMessage = LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language).Replace("{0}", strMissingSourceNames);
+                if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                 {
-                    string strMessage = LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language).Replace("{0}", strMissingSourceNames);
-                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
-            xmlTempNode = objXmlCharacter["essenceatspecialstart"];
-            if (xmlTempNode != null)
+            if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart", ref _decEssenceAtSpecialStart))
             {
-                _decEssenceAtSpecialStart = Convert.ToDecimal(xmlTempNode.InnerText, GlobalOptions.InvariantCultureInfo);
                 // fix to work around a mistake made when saving decimal values in previous versions.
                 if (_decEssenceAtSpecialStart > ESS.MetatypeMaximum)
                     _decEssenceAtSpecialStart /= 10;
             }
 
-            objXmlCharacter.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
 
             // Metatype information.
-            objXmlCharacter.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-            objXmlCharacter.TryGetStringFieldQuickly("movement", ref _strMovement);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
 
-            objXmlCharacter.TryGetStringFieldQuickly("walk", ref _strWalk);
-            objXmlCharacter.TryGetStringFieldQuickly("run", ref _strRun);
-            objXmlCharacter.TryGetStringFieldQuickly("sprint", ref _strSprint);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("walk", ref _strWalk);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("run", ref _strRun);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("sprint", ref _strSprint);
 
-            _strRunAlt = objXmlCharacter.SelectSingleNode("run/@alt")?.InnerText ?? string.Empty;
-            _strWalkAlt = objXmlCharacter.SelectSingleNode("walk/@alt")?.InnerText ?? string.Empty;
-            _strSprintAlt = objXmlCharacter.SelectSingleNode("sprint/@alt")?.InnerText ?? string.Empty;
+            _strRunAlt = xmlCharacterNavigator.SelectSingleNode("run/@alt")?.Value ?? string.Empty;
+            _strWalkAlt = xmlCharacterNavigator.SelectSingleNode("walk/@alt")?.Value ?? string.Empty;
+            _strSprintAlt = xmlCharacterNavigator.SelectSingleNode("sprint/@alt")?.Value ?? string.Empty;
 
-            objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
-            objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
 
             //Shim for characters created prior to Run Faster Errata
             if (_strMetavariant == "Cyclopean")
             {
                 _strMetavariant = "Cyclops";
             }
-            objXmlCharacter.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
 
             // General character information.
-            objXmlCharacter.TryGetStringFieldQuickly("name", ref _strName);
-            LoadMugshots(objXmlCharacter);
-            objXmlCharacter.TryGetStringFieldQuickly("sex", ref _strSex);
-            objXmlCharacter.TryGetStringFieldQuickly("age", ref _strAge);
-            objXmlCharacter.TryGetStringFieldQuickly("eyes", ref _strEyes);
-            objXmlCharacter.TryGetStringFieldQuickly("height", ref _strHeight);
-            objXmlCharacter.TryGetStringFieldQuickly("weight", ref _strWeight);
-            objXmlCharacter.TryGetStringFieldQuickly("skin", ref _strSkin);
-            objXmlCharacter.TryGetStringFieldQuickly("hair", ref _strHair);
-            objXmlCharacter.TryGetStringFieldQuickly("description", ref _strDescription);
-            objXmlCharacter.TryGetStringFieldQuickly("background", ref _strBackground);
-            objXmlCharacter.TryGetStringFieldQuickly("concept", ref _strConcept);
-            objXmlCharacter.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objXmlCharacter.TryGetStringFieldQuickly("alias", ref _strAlias);
-            objXmlCharacter.TryGetStringFieldQuickly("playername", ref _strPlayerName);
-            objXmlCharacter.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
-            if (!objXmlCharacter.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
+            xmlCharacterNavigator.TryGetStringFieldQuickly("name", ref _strName);
+            LoadMugshots(xmlCharacterNavigator);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strSex);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("age", ref _strAge);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("eyes", ref _strEyes);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("height", ref _strHeight);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("weight", ref _strWeight);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("skin", ref _strSkin);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("hair", ref _strHair);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("description", ref _strDescription);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("background", ref _strBackground);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("concept", ref _strConcept);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("notes", ref _strNotes);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("alias", ref _strAlias);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
+            if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                 _strPrimaryArm = "Right";
 
-            if (!objXmlCharacter.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
+            if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
             {
-                if (objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) && _intBuildKarma == 35)
+                if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) && _intBuildKarma == 35)
                     _strGameplayOption = "Prime Runner";
                 else
                     _strGameplayOption = "Standard";
             }
 
-            objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-            if (!objXmlCharacter.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) || _decMaxNuyen == 0)
+            xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
+            if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) || _decMaxNuyen == 0)
                 _decMaxNuyen = 25;
-            objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
-            objXmlCharacter.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-            objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
-            if (!objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
+            if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
                 _intMaxKarma = _intBuildKarma;
 
             //Maximum number of Karma that can be spent/gained on Qualities.
-            objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
 
-            objXmlCharacter.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
-            objXmlCharacter.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
+            xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
 
             XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
             XmlNode xmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
@@ -1144,28 +1133,23 @@ namespace Chummer
                     return false;
             }
 
-            objXmlCharacter.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityattributes", ref _strPriorityAttributes);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
-            objXmlCharacter.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes", ref _strPriorityAttributes);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
             _lstPrioritySkills.Clear();
-            XmlNodeList objXmlPrioritySkillsList = objXmlCharacter.SelectNodes("priorityskills/priorityskill");
-            if (objXmlPrioritySkillsList != null)
+            foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator.Select("priorityskills/priorityskill"))
             {
-                foreach (XmlNode objXmlSkillName in objXmlPrioritySkillsList)
-                {
-                    _lstPrioritySkills.Add(objXmlSkillName.InnerText);
-                }
+                _lstPrioritySkills.Add(xmlSkillName.Value);
             }
             BannedWareGrades.Clear();
-            xmlTempNode = objXmlCharacter["bannedwaregrades"];
+            XPathNavigator xmlTempNode = xmlCharacterNavigator.SelectSingleNode("bannedwaregrades");
             if (xmlTempNode != null)
             {
-                if (xmlTempNode.HasChildNodes)
-                    foreach (XmlNode xmlNode in xmlTempNode.SelectNodes("grade"))
-                        BannedWareGrades.Add(xmlNode.InnerText);
+                foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
+                    BannedWareGrades.Add(xmlNode.Value);
             }
             else
             {
@@ -1174,70 +1158,70 @@ namespace Chummer
             }
             string strSkill1 = string.Empty;
             string strSkill2 = string.Empty;
-            if (objXmlCharacter.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) && !string.IsNullOrEmpty(strSkill1))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) && !string.IsNullOrEmpty(strSkill1))
                 _lstPrioritySkills.Add(strSkill1);
-            if (objXmlCharacter.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) && !string.IsNullOrEmpty(strSkill2))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) && !string.IsNullOrEmpty(strSkill2))
                 _lstPrioritySkills.Add(strSkill2);
 
-            objXmlCharacter.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
 
-            objXmlCharacter.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
-            objXmlCharacter.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
 
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
-            objXmlCharacter.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("karma", ref _intKarma);
-            objXmlCharacter.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
 
-            objXmlCharacter.TryGetInt32FieldQuickly("special", ref _intSpecial);
-            objXmlCharacter.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("special", ref _intSpecial);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
             //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
-            objXmlCharacter.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
-            objXmlCharacter.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
-            objXmlCharacter.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
-            objXmlCharacter.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
-            objXmlCharacter.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
-            objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
+            xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
+            xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
+            xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
             
-            objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
 
-            objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
-            objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
-            objXmlCharacter.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
-            objXmlCharacter.TryGetBoolFieldQuickly("excon", ref _blnExCon);
-            objXmlCharacter.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
-            objXmlCharacter.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
-            objXmlCharacter.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
-            objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
-            objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
-            objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
-            objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
-            objXmlCharacter.TryGetBoolFieldQuickly("erased", ref _blnErased);
-            objXmlCharacter.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
-            objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
-            objXmlCharacter.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
-            objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
-            objXmlCharacter.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
+            xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("excon", ref _blnExCon);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("fame", ref _blnFame);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("erased", ref _blnErased);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
             // Legacy shim
             if (!_blnCreated && !_blnMAGEnabled && !_blnRESEnabled && !_blnDEPEnabled)
                 _decEssenceAtSpecialStart = decimal.MinValue;
-            objXmlCharacter.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
-            objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-            objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
+            xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
             Timekeeper.Finish("load_char_misc");
             Timekeeper.Start("load_char_mentorspirit");
             // Improvements.
@@ -1377,41 +1361,41 @@ namespace Chummer
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
             {
-                objXmlCharacter.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
-                objXmlCharacter.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
+                xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
+                xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
             }
 
             // Attempt to load the Magic Tradition.
-            objXmlCharacter.TryGetStringFieldQuickly("tradition", ref _strMagicTradition);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref _strMagicTradition);
             // Attempt to load the Magic Tradition Drain Attributes.
             string strTemp = string.Empty;
-            if (objXmlCharacter.TryGetStringFieldQuickly("traditiondrain", ref strTemp))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("traditiondrain", ref strTemp))
             {
                 TraditionDrain = strTemp;
             }
             // Attempt to load the Magic Tradition Name.
-            objXmlCharacter.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
             // Attempt to load the Spirit Combat Name.
-            objXmlCharacter.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
             // Attempt to load the Spirit Detection Name.
-            objXmlCharacter.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
             // Attempt to load the Spirit Health Name.
-            objXmlCharacter.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
             // Attempt to load the Spirit Illusion Name.
-            objXmlCharacter.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
             // Attempt to load the Spirit Manipulation Name.
-            objXmlCharacter.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
             // Attempt to load the Technomancer Stream.
-            objXmlCharacter.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
+            xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
             // Attempt to load the Technomancer Stream's Fading attributes.
-            if (objXmlCharacter.TryGetStringFieldQuickly("streamfading", ref strTemp))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("streamfading", ref strTemp))
             {
                 TechnomancerFading = strTemp;
             }
 
             // Attempt to load Condition Monitor Progress.
-            objXmlCharacter.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
-            objXmlCharacter.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
             Timekeeper.Finish("load_char_misc2");
             Timekeeper.Start("load_char_skills");  //slightly messy
 
@@ -1432,11 +1416,10 @@ namespace Chummer
 
 
             // Contacts.
-            objXmlNodeList = objXmlCharacter.SelectNodes("contacts/contact");
-            foreach (XmlNode objXmlContact in objXmlNodeList)
+            foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
             {
                 Contact objContact = new Contact(this);
-                objContact.Load(objXmlContact);
+                objContact.Load(xmlContact);
                 _lstContacts.Add(objContact);
             }
 
@@ -1619,11 +1602,10 @@ namespace Chummer
             Timekeeper.Start("load_char_spirits");
 
             // Spirits/Sprites.
-            objXmlNodeList = objXmlCharacter.SelectNodes("spirits/spirit");
-            foreach (XmlNode objXmlSpirit in objXmlNodeList)
+            foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
             {
                 Spirit objSpirit = new Spirit(this);
-                objSpirit.Load(objXmlSpirit);
+                objSpirit.Load(xmlSpirit);
                 _lstSpirits.Add(objSpirit);
             }
 
@@ -4538,41 +4520,38 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        public void LoadMugshots(XmlNode xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             // Mugshots
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            XmlNodeList objXmlMugshotsList = xmlSavedNode.SelectNodes("mugshots/mugshot");
-            if (objXmlMugshotsList != null)
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+            foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
             {
-                List<string> lstMugshotsBase64 = new List<string>(objXmlMugshotsList.Count);
-                foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
+                string strMugshot = objXmlMugshot.Value;
+                if (!string.IsNullOrWhiteSpace(strMugshot))
                 {
-                    string strMugshot = objXmlMugshot.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
-                    {
-                        lstMugshotsBase64.Add(strMugshot);
-                    }
+                    lstMugshotsBase64.Add(strMugshot);
                 }
-                if (lstMugshotsBase64.Count > 1)
+            }
+            if (lstMugshotsBase64.Count > 1)
+            {
+                Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
+                Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                    Parallel.For(0, lstMugshotsBase64.Count, i =>
-                    {
-                        objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                    });
-                    _lstMugshots.AddRange(objMugshotImages);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
-                }
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                });
+                _lstMugshots.AddRange(objMugshotImages);
+            }
+            else if (lstMugshotsBase64.Count == 1)
+            {
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
             }
             // Legacy Shimmer
             if (Mugshots.Count == 0)
             {
-                XmlNode objOldMugshotNode = xmlSavedNode.SelectSingleNode("mugshot");
-                string strMugshot = objOldMugshotNode?.InnerText;
+                XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNode("mugshot");
+                string strMugshot = objOldMugshotNode?.Value;
                 if (!string.IsNullOrWhiteSpace(strMugshot))
                 {
                     _lstMugshots.Add(strMugshot.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));

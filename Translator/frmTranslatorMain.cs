@@ -174,7 +174,7 @@ namespace Translator
 
             try
             {
-                CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
+                CultureInfo _ = CultureInfo.GetCultureInfo(strLowerCode);
             }
             catch (CultureNotFoundException)
             {

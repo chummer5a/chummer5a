@@ -2725,11 +2725,13 @@ namespace Chummer
             // 
             this.tsBoltHole.Name = "tsBoltHole";
             this.tsBoltHole.Size = new System.Drawing.Size(32, 19);
+            this.tsBoltHole.Click += new System.EventHandler(this.tsBoltHole_Click);
             // 
             // tsSafehouse
             // 
             this.tsSafehouse.Name = "tsSafehouse";
             this.tsSafehouse.Size = new System.Drawing.Size(32, 19);
+            this.tsSafehouse.Click += new System.EventHandler(this.tsSafehouse_Click);
             // 
             // lblArmor
             // 
@@ -4383,6 +4385,7 @@ namespace Chummer
             this.tsMetamagicNotes});
             this.cmsMetamagic.Name = "cmsMetamagic";
             this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
+            this.cmsMetamagic.Opening += new System.ComponentModel.CancelEventHandler(this.InitiationContextMenu_Opening);
             // 
             // tsMetamagicAddArt
             // 
@@ -6395,7 +6398,7 @@ namespace Chummer
             this.chkInitiationSchooling.Tag = "Checkbox_InitiationSchooling";
             this.chkInitiationSchooling.Text = "Schooling (-10%)";
             this.chkInitiationSchooling.UseVisualStyleBackColor = true;
-            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.chkInitiationSchooling_CheckedChanged);
+            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
             // 
             // chkInitiationOrdeal
             // 
@@ -6407,6 +6410,7 @@ namespace Chummer
             this.chkInitiationOrdeal.Tag = "Checkbox_InitiationOrdeal";
             this.chkInitiationOrdeal.Text = "Initiatory Ordeal (-10%)";
             this.chkInitiationOrdeal.UseVisualStyleBackColor = true;
+            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
             // 
             // chkInitiationGroup
             // 
@@ -6418,6 +6422,7 @@ namespace Chummer
             this.chkInitiationGroup.Tag = "Checkbox_GroupInitiation";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
+            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
             // 
             // chkJoinGroup
             // 

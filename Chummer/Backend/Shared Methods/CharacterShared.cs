@@ -6206,16 +6206,12 @@ namespace Chummer
                 MessageBox.Show(ex.ToString());
                 return;
             }
-
-            XmlNodeList xmlContactList = xmlDoc.SelectNodes("/chummer/contacts/contact");
-            if (xmlContactList != null)
+            
+            foreach (XPathNavigator xmlContact in xmlDoc.GetFastNavigator().Select("/chummer/contacts/contact"))
             {
-                foreach (XmlNode xmlContact in xmlContactList)
-                {
-                    Contact objContact = new Contact(CharacterObject);
-                    objContact.Load(xmlContact);
-                    CharacterObject.Contacts.Add(objContact);
-                }
+                Contact objContact = new Contact(CharacterObject);
+                objContact.Load(xmlContact);
+                CharacterObject.Contacts.Add(objContact);
             }
         }
         #endregion
