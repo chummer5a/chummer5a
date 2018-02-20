@@ -501,10 +501,10 @@ namespace Chummer
                 cboStream.Visible = false;
                 lblStreamLabel.Visible = false;
             }
-
+            
             lblMysticAdeptAssignment.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
             nudMysticAdeptMAGMagician.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
-            nudMysticAdeptMAGMagician.DataBindings.Add("Maximum", CharacterObject.MAG, nameof(CharacterObject.MAG.TotalValue), false, DataSourceUpdateMode.OnPropertyChanged);
+            nudMysticAdeptMAGMagician.DataBindings.Add("Maximum", CharacterObject.MAG, nameof(CharacterAttrib.TotalValue), false, DataSourceUpdateMode.OnPropertyChanged);
             nudMysticAdeptMAGMagician.DataBindings.Add("Value", CharacterObject, nameof(Character.MysticAdeptPowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
 
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.

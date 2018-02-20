@@ -267,7 +267,9 @@ namespace Chummer
 			AttributeSection = new AttributeSection(this);
 			AttributeSection.Reset();
             MAG.PropertyChanged += RefreshMaxSpiritForce;
+            MAG.PropertyChanged += RefreshCanAffordCareerPP;
             RES.PropertyChanged += RefreshMaxSpriteLevel;
+
             SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
         }
@@ -5101,8 +5103,15 @@ namespace Chummer
             get => _intKarma;
             set
             {
-                if (OnPropertyChanged(ref _intKarma, value))
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
+                if (_intKarma != value)
+                {
+                    _intKarma = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Karma)));
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
+                    }
+                }
             }
         }
 
@@ -7654,14 +7663,13 @@ namespace Chummer
                     {
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(AdeptEnabled)));
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IsMysticAdept)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UseMysticAdeptPPs)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
                         if (!MagicianEnabled)
                         {
                             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(TraditionDrain)));
                             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayTraditionDrain)));
                         }
                     }
+                    RefreshUseMysticAdeptPPs();
                 }
             }
         }
@@ -7682,14 +7690,13 @@ namespace Chummer
                     {
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(MagicianEnabled)));
                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IsMysticAdept)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UseMysticAdeptPPs)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
                         if (AdeptEnabled)
                         {
                             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(TraditionDrain)));
                             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayTraditionDrain)));
                         }
                     }
+                    RefreshUseMysticAdeptPPs();
                 }
             }
         }
@@ -9251,7 +9258,7 @@ namespace Chummer
         }
 
         public Version LastSavedVersion => _verSavedVersion;
-
+        
         /// <summary>
         /// Is the character a mystic adept (MagicianEnabled && AdeptEnabled)? Used for databinding properties.
         /// </summary>
@@ -9267,8 +9274,8 @@ namespace Chummer
             if (PropertyChanged != null)
             {
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UseMysticAdeptPPs)));
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(MysAdeptAllowPPCareer)));
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
                 if (EssenceAtSpecialStart != decimal.MinValue && Options.SpecialKarmaCostBasedOnShownValue)
                 {
                     RefreshEssenceLossImprovements();
@@ -9283,7 +9290,11 @@ namespace Chummer
 
         public void RefreshMysAdeptAllowPPCareer()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MysAdeptAllowPPCareer)));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(MysAdeptAllowPPCareer)));
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
+            }
         }
 
         /// <summary>
@@ -9291,33 +9302,19 @@ namespace Chummer
         /// </summary>
         public bool CanAffordCareerPP => Options.MysAdeptAllowPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
 
+        public void RefreshCanAffordCareerPP(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
+        }
+
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode. 
         /// </summary>
         public HashSet<string> BannedWareGrades { get; } = new HashSet<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies clients that a property value has changed.
-        /// </summary>
-        /// <typeparam name="T">Property type being changed.</typeparam>
-        /// <param name="old">Old value of the property.</param>
-        /// <param name="value">New value of the property.</param>
-        /// <param name="propertyName">Name of the property being changed.</param>
-        /// <returns></returns>
-        [NotifyPropertyChangedInvocator]
-        private bool OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)
-        {
-            if ((old == null && value != null) || value == null || !old.Equals(value))
-            {
-                old = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-            return false;
-        }
-
+        
         //I also think this prevents GC. But there is no good way to do it...
         internal event Action<ICollection<Improvement>> SkillImprovementEvent;
         internal event Action<ICollection<Improvement>> AttributeImprovementEvent;
@@ -9410,7 +9407,6 @@ namespace Chummer
             {
                 ResetCachedEssence();
                 AttributeImprovementEvent?.Invoke(lstTransaction);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
             else if (lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
             {

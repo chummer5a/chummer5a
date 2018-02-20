@@ -4841,7 +4841,6 @@ namespace Chummer
             this.lblMysticAdeptAssignment.TabIndex = 56;
             this.lblMysticAdeptAssignment.Tag = "Label_MysticAdeptAssignment";
             this.lblMysticAdeptAssignment.Text = "Mystic Adept Power Points";
-            this.lblMysticAdeptAssignment.Visible = false;
             // 
             // lblMysticAdeptMAGAdept
             // 
@@ -4851,7 +4850,6 @@ namespace Chummer
             this.lblMysticAdeptMAGAdept.Size = new System.Drawing.Size(19, 13);
             this.lblMysticAdeptMAGAdept.TabIndex = 58;
             this.lblMysticAdeptMAGAdept.Text = "[0]";
-            this.lblMysticAdeptMAGAdept.Visible = false;
             // 
             // lblMetatype
             // 

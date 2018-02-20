@@ -3487,7 +3487,6 @@ namespace Chummer
             this.nudMysticAdeptMAGMagician.Name = "nudMysticAdeptMAGMagician";
             this.nudMysticAdeptMAGMagician.Size = new System.Drawing.Size(40, 20);
             this.nudMysticAdeptMAGMagician.TabIndex = 60;
-            this.nudMysticAdeptMAGMagician.Visible = false;
             // 
             // lblMysticAdeptAssignment
             // 
@@ -3498,7 +3497,6 @@ namespace Chummer
             this.lblMysticAdeptAssignment.TabIndex = 56;
             this.lblMysticAdeptAssignment.Tag = "Label_MysticAdeptAssignment";
             this.lblMysticAdeptAssignment.Text = "Mystic Adept Power Points";
-            this.lblMysticAdeptAssignment.Visible = false;
             // 
             // treQualities
             // 

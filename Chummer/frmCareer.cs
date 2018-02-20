@@ -488,7 +488,7 @@ namespace Chummer
                 cboAttributeCategory.EndUpdate();
                 cboAttributeCategory.SelectedValue = "Standard";
             }
-
+            
             lblMysticAdeptAssignment.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
             lblMysticAdeptMAGAdept.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
             lblMysticAdeptMAGAdept.DataBindings.Add("Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
