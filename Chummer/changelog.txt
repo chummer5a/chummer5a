@@ -40,6 +40,7 @@ Application Changes:
 - Fixed an issue where non-Magician magical characters could proceed into career mode without choosing a tradition.
 - Fixed an issue where a character with too many martial arts or martial arts techniques could still be allowed to proceed into career mode even though an error message was displayed.
 - Fixed issues where accessories not installed in weapons would still modify said weapons' stats.
+- Fixed a crash when evaluating the Shiawase Monsoon's ammo capacity.
 
 Data Changes:
 

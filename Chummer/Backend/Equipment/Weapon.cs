@@ -1942,7 +1942,7 @@ namespace Chummer.Backend.Equipment
                     if (intPos != -1)
                     {
                         strPrepend = strThisAmmo.Substring(0, intPos + 1);
-                        strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - intPos + 1);
+                        strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - (intPos + 1));
                     }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
@@ -2470,6 +2470,7 @@ namespace Chummer.Backend.Equipment
             int intAP;
             try
             {
+
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess);
