@@ -5437,9 +5437,47 @@ namespace Chummer
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence(true);
                         }
+                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the MAG-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            // If we have any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "MAG" &&
+                                                                                                    (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                            Dictionary<string, decimal> dicImprovementEssencePenalties = new Dictionary<string, decimal>();
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if ((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) && objImprovement.Enabled)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    {
+                                        decLoopEssencePenalty += objImprovement.Value;
+                                    }
+                                    else if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100 ||
+                                             objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                                    {
+                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] = dicImprovementEssencePenalties[objImprovement.SourceName] + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName, decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            else
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
                     }
                     else if (!Created && !RESEnabled && !DEPEnabled)
@@ -5829,9 +5867,45 @@ namespace Chummer
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence();
                         }
+                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the RES-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            // If we have any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "RES" &&
+                                                                                                    (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                            Dictionary<string, decimal> dicImprovementEssencePenalties = new Dictionary<string, decimal>();
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if ((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) && objImprovement.Enabled)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    {
+                                        decLoopEssencePenalty += objImprovement.Value;
+                                    }
+                                    else if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
+                                    {
+                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] = dicImprovementEssencePenalties[objImprovement.SourceName] + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName, decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            else
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
                         TechnomancerStream = "Default";
                     }
@@ -5866,9 +5940,45 @@ namespace Chummer
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence();
                         }
+                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the DEP-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            // If we have any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "DEP" &&
+                                                                                                    (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                                                                                     x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                            Dictionary<string, decimal> dicImprovementEssencePenalties = new Dictionary<string, decimal>();
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if ((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
+                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) && objImprovement.Enabled)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    {
+                                        decLoopEssencePenalty += objImprovement.Value;
+                                    }
+                                    else if (objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
+                                    {
+                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] = dicImprovementEssencePenalties[objImprovement.SourceName] + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName, decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            else
+                                EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
                     }
                     else if (!Created && !RESEnabled && !MAGEnabled)
@@ -9020,29 +9130,31 @@ namespace Chummer
                 }
                 else
                 {
-                    int intRESMinimumReduction = intMaxReduction;
-                    int intDEPMinimumReduction = intMaxReduction;
-                    int intMAGMinimumReduction = intMagMaxReduction;
-                    int intMAGAdeptMinimumReduction = intMagMaxReduction;
+                    int intMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESS));
+                    int intMagMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESSMag));
+                    int intRESMinimumReduction = intMinReduction;
+                    int intDEPMinimumReduction = intMinReduction;
+                    int intMAGMinimumReduction = intMagMinReduction;
+                    int intMAGAdeptMinimumReduction = intMagMinReduction;
                     if (Options.ESSLossReducesMaximumOnly)
                     {
-                        intRESMinimumReduction = Math.Max(0, intMaxReduction + RES.TotalValue - RES.TotalMaximum);
-                        intDEPMinimumReduction = Math.Max(0, intMaxReduction + DEP.TotalValue - DEP.TotalMaximum);
-                        intMAGMinimumReduction = Math.Max(0, intMagMaxReduction + MAG.TotalValue - MAG.TotalMaximum);
-                        intMAGAdeptMinimumReduction = Math.Max(0, intMagMaxReduction + MAGAdept.TotalValue - MAGAdept.TotalMaximum);
+                        intRESMinimumReduction = Math.Max(0, intMinReduction + RES.TotalValue - RES.TotalMaximum);
+                        intDEPMinimumReduction = Math.Max(0, intMinReduction + DEP.TotalValue - DEP.TotalMaximum);
+                        intMAGMinimumReduction = Math.Max(0, intMagMinReduction + MAG.TotalValue - MAG.TotalMaximum);
+                        intMAGAdeptMinimumReduction = Math.Max(0, intMagMinReduction + MAGAdept.TotalValue - MAGAdept.TotalMaximum);
                     }
 
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
                     if (intMaxReduction != 0 || intRESMinimumReduction != 0 || intDEPMinimumReduction != 0)
                     {
-                        ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -intRESMinimumReduction, -intMaxReduction);
-                        ImprovementManager.CreateImprovement(this, "DEP", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -intDEPMinimumReduction, -intMaxReduction);
+                        ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intMaxReduction);
+                        ImprovementManager.CreateImprovement(this, "DEP", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intMaxReduction);
                     }
                     if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0 || intMAGAdeptMinimumReduction != 0)
                     {
-                        ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -intMAGMinimumReduction, -intMagMaxReduction);
-                        ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -intMAGAdeptMinimumReduction, -intMagMaxReduction);
+                        ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMagMaxReduction);
+                        ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMagMaxReduction);
                     }
                 }
                 

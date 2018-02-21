@@ -154,22 +154,22 @@ namespace Chummer.Classes
             switch (bonusNode["name"]?.InnerText)
             {
                 case "MAG":
-                    _objCharacter.MAGEnabled = true;
                     Log.Info("Calling CreateImprovement for MAG");
                     CreateImprovement("MAG", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
                         "enableattribute", 0, 0);
+                    _objCharacter.MAGEnabled = true;
                     break;
                 case "RES":
-                    _objCharacter.RESEnabled = true;
                     Log.Info("Calling CreateImprovement for RES");
                     CreateImprovement("RES", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
                         "enableattribute", 0, 0);
+                    _objCharacter.RESEnabled = true;
                     break;
                 case "DEP":
-                    _objCharacter.DEPEnabled = true;
                     Log.Info("Calling CreateImprovement for DEP");
                     CreateImprovement("DEP", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
                         "enableattribute", 0, 0);
+                    _objCharacter.DEPEnabled = true;
                     break;
             }
         }
