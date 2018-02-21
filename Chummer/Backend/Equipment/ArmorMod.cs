@@ -561,7 +561,7 @@ namespace Chummer.Backend.Equipment
                     _blnEquipped = value;
                     if (value)
                     {
-                        if (Parent.Equipped)
+                        if (Parent?.Equipped == true)
                         {
                             ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
                             // Add the Improvements from any Gear in the Armor.
@@ -736,7 +736,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent.TotalArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo))
+                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent?.TotalArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo))
                     .Replace("Rating", Rating.ToString());
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
@@ -802,7 +802,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent.TotalArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo))
+                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent?.TotalArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo))
                     .Replace("Rating", Rating.ToString());
                 bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)

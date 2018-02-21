@@ -14700,13 +14700,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>6200</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
       <firewall>0</firewall>
-      <programs>0</programs>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14718,13 +14717,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>13200</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14736,13 +14734,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>111000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>3</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14754,13 +14751,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>150000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14772,13 +14768,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>364000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14790,13 +14785,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>514000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14808,13 +14802,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>990000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>5</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <!-- End Region -->
@@ -14828,13 +14821,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>620</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
+      <firewall>1</firewall>
+      <programs>2</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14846,13 +14838,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>1300</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>2</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14864,13 +14855,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>11000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14882,13 +14872,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>15000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>4</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14900,13 +14889,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>37000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14918,13 +14906,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>51500</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14936,13 +14923,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>450000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>6</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <!-- End Region -->
@@ -14956,13 +14942,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>3000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
       <firewall>0</firewall>
-      <programs>0</programs>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14974,13 +14959,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>6500</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14992,13 +14976,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>60000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>3</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15010,13 +14993,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>75000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15028,13 +15010,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>364000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15046,13 +15027,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>250000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15064,13 +15044,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>499999</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>5</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>

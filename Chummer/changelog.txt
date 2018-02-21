@@ -43,6 +43,9 @@ Application Changes:
 - Fixed a crash when evaluating the Shiawase Monsoon's ammo capacity.
 - Fixed a crash when altering the rating of knowsofts and lingasofts. Fixes #2514
 - Fixed an issue where checking or unchecking the "Ordeal" and "Group" checkboxes in the initiations/submersions tab would not update the displayed cost for initiation/submersion.
+- The tester tool accessible through Chummer5a command line options will now test every single property of the items it tests instead of a few select ones that would tend to cause problems.
+- The tester tool accessible through Chummer5a command line options now has an option to print detailed exception information when an error is encountered with an item.
+- Fixed possible crashes that could occur when selecting an armor mod or weapon accessory that somehow does not have a parent set.
 
 Data Changes:
 
@@ -53,6 +56,9 @@ Data Changes:
 - Fixed an issue where sprites' Matrix attributes contributed to their skill dicepools.
 - Fixed typos that prevented some spirits and sprites from having certain skills and powers of theirs detected properly. Fixes #2485.
 - Fixed an issue where newly infected mundanes would gain access to MAG before their essence was lowered, causing them to start at MAG 0 instead of MAG 1 in career mode. Part of #2508.
+- Fixed crashes that occured when adding cyberdecks or cyberterminals from Shadowrun 2050.
+- Cyberdecks and cyberterminals from Shadowrun 2050 now have their Matrix attributes populated where possible. "MPCP" is translated as Device Rating, "Härte" is translated as Firewall, "Aktiver Speicher" is translated as program slots, and "I/O" is translated as Data Processing. Memory storage space ("Speicherbänke") will still need be to tracked manually.
+- Fixed a crash that would occur when adding the Infected: Fomoriag quality due to a misnamed critter power.
 
 New Strings:
 

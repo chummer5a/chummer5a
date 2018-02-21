@@ -7412,7 +7412,7 @@
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
-          <power>Corrosive Secretions</power>
+          <power select="Corrosive">Secretion/Substance Extrusion</power>
           <power>Magical Guard</power>
           <power>Dual Natured</power>
           <power select="Air Pollution, Moderate">Allergy</power>

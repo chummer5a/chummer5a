@@ -19,7 +19,9 @@
  using System;
 using System.Collections.Generic;
  using System.Linq;
- using System.Windows.Forms;
+ using System.Reflection;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
  using Chummer.Backend.Skills;
@@ -33,9 +35,15 @@ namespace Chummer
             InitializeComponent();
         }
 
+        private bool _blnAddExceptionInfoToErrors;
+        private readonly StringBuilder _objOutputBuilder = new StringBuilder();
+
         private void cmdTest_Click(object sender, EventArgs e)
         {
-            txtOutput.Text = string.Empty;
+            cmdTest.Enabled = false;
+            _blnAddExceptionInfoToErrors = chkAddExceptionInfoToErrors.Checked;
+            txtOutput.Text = _blnAddExceptionInfoToErrors ? "Testing " + cboTest.Text + " with exception info printed.\n\nPlease wait..." : "Testing " + cboTest.Text + ".\n\nPlease wait...";
+            _objOutputBuilder.Clear();
             switch (cboTest.Text)
             {
                 case "armor.xml":
@@ -46,13 +54,11 @@ namespace Chummer
                     TestCyberware(cboTest.Text);
                     break;
                 case "critters.xml":
-                    TestMetatype("critters.xml");
+                case "metatypes.xml":
+                    TestMetatype(cboTest.Text);
                     break;
                 case "gear.xml":
                     TestGear();
-                    break;
-                case "metatypes.xml":
-                    TestMetatype("metatypes.xml");
                     break;
                 case "qualities.xml":
                     TestQuality();
@@ -64,7 +70,11 @@ namespace Chummer
                     TestWeapons();
                     break;
             }
-            txtOutput.Text += "Done validation";
+
+            if (_objOutputBuilder.Length == 0)
+                _objOutputBuilder.Append("Validation finished with no errors.");
+            txtOutput.Text = _objOutputBuilder.ToString();
+            cmdTest.Enabled = true;
         }
 
         private void TestVehicles()
@@ -92,72 +102,41 @@ namespace Chummer
                     {
                         Vehicle objTemp = new Vehicle(objCharacter);
                         objTemp.Create(objXmlGear);
-                        try
-                        {
-                            decimal _ = objTemp.TotalCost;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalCost\r\n";
-                        }
 
-                        try
-                        {
-                            string _ = objTemp.TotalAccel;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalAccel\r\n";
-                        }
+                        Type objType = objTemp.GetType();
 
-                        try
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
                         {
-                            int _ = objTemp.TotalArmor;
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
                         }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalArmor\r\n";
-                        }
-
-                        try
-                        {
-                            int _ = objTemp.TotalBody;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalBody\r\n";
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalHandling;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalHandling\r\n";
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalSpeed;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalSpeed\r\n";
-                        }
-
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed CalculatedAvail\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -176,36 +155,41 @@ namespace Chummer
                     {
                         VehicleMod objTemp = new VehicleMod(objCharacter);
                         objTemp.Create(objXmlGear, 1, null);
-                        try
-                        {
-                            decimal _ = objTemp.TotalCost;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalCost\r\n";
-                        }
 
+                        Type objType = objTemp.GetType();
+
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        {
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
+                        }
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAvail\r\n";
-                        }
-
-                        try
-                        {
-                            int _ = objTemp.CalculatedSlots;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed CalculatedSlots\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -237,82 +221,90 @@ namespace Chummer
                     try
                     {
                         Weapon objTemp = new Weapon(objCharacter);
-                        objTemp.Create(objXmlGear, null);
-                        try
-                        {
-                            decimal _ = objTemp.TotalCost;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalCost\r\n";
-                        }
+                        objTemp.Create(objXmlGear, null, true, false, true);
 
+                        Type objType = objTemp.GetType();
+
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        {
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
+                        }
                         try
                         {
                             string _ = objTemp.TotalAP(GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAP\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAP. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAP");
                         }
 
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAvail\r\n";
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalRC;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalRC\r\n";
-                        }
-
-                        try
-                        {
-                            int _ = objTemp.TotalReach;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalReach\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
 
                         try
                         {
                             string _ = objTemp.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed CalculatedAmmo\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo");
                         }
 
                         try
                         {
                             string _ = objTemp.CalculatedConcealability(GlobalOptions.CultureInfo);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed CalculatedConcealability\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability");
                         }
 
                         try
                         {
                             string _ = objTemp.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed CalculatedDamage\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -330,28 +322,43 @@ namespace Chummer
                     try
                     {
                         WeaponAccessory objTemp = new WeaponAccessory(objCharacter);
-                        objTemp.Create(objXmlGear, new Tuple<string, string>(string.Empty, string.Empty), 0);
-                        try
+                        objTemp.Create(objXmlGear, new Tuple<string, string>(string.Empty, string.Empty), 0, true, true, false);
+
+                        Type objType = objTemp.GetType();
+
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
                         {
-                            decimal _ = objTemp.TotalCost;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed CalculatedCost\r\n";
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
                         }
 
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAvail\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -384,46 +391,42 @@ namespace Chummer
                     {
                         Armor objTemp = new Armor(objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
-                        objTemp.Create(objXmlGear, 0, lstWeapons);
-                        try
-                        {
-                            decimal _ = objTemp.TotalCost;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalCost\r\n";
-                        }
+                        objTemp.Create(objXmlGear, 0, lstWeapons, true, true, true);
 
-                        try
-                        {
-                            int _ = objTemp.TotalArmor;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed TotalArmor\r\n";
-                        }
+                        Type objType = objTemp.GetType();
 
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        {
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
+                        }
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAvail\r\n";
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.CalculatedCapacity;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed CalculatedCapacity\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -442,28 +445,42 @@ namespace Chummer
                     {
                         ArmorMod objTemp = new ArmorMod(objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
-                        objTemp.Create(objXmlGear, 1, lstWeapons);
+                        objTemp.Create(objXmlGear, 1, lstWeapons, true, true);
+
+                        Type objType = objTemp.GetType();
+
+                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        {
+                            try
+                            {
+                                objProperty.GetValue(objTemp, null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                            }
+                        }
                         try
                         {
                             string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " failed TotalAvail\r\n";
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.CalculatedCapacity;
-                        }
-                        catch
-                        {
-                            txtOutput.Text += strName + " failed CalculatedCapacity\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        txtOutput.Text += strName + " general failure\r\n";
+                        if (_blnAddExceptionInfoToErrors)
+                            _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        else
+                            _objOutputBuilder.AppendLine(strName + " general failure");
                     }
                 }
             }
@@ -493,57 +510,42 @@ namespace Chummer
                         {
                             Gear objTemp = new Gear(objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
-                            objTemp.Create(objXmlGear, 1, lstWeapons);
-                            try
-                            {
-                                decimal _ = objTemp.TotalCost;
-                            }
-                            catch
-                            {
-                                if (objXmlGear["category"]?.InnerText != "Mook")
-                                    txtOutput.Text += strName + " failed TotalCost\r\n";
-                            }
+                            objTemp.Create(objXmlGear, 1, lstWeapons, string.Empty, false);
 
+                            Type objType = objTemp.GetType();
+
+                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            {
+                                try
+                                {
+                                    objProperty.GetValue(objTemp, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (_blnAddExceptionInfoToErrors)
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    else
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
+                            }
                             try
                             {
                                 string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                txtOutput.Text += strName + " failed TotalAvail\r\n";
-                            }
-
-                            try
-                            {
-                                string _ = objTemp.CalculatedArmorCapacity;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed CalculatedArmorCapacity\r\n";
-                            }
-
-                            try
-                            {
-                                string _ = objTemp.CalculatedCapacity;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed CalculatedCapacity\r\n";
-                            }
-
-                            try
-                            {
-                                decimal _ = objTemp.CalculatedCost;
-                            }
-                            catch
-                            {
-                                if (objXmlGear["category"]?.InnerText != "Mook")
-                                    txtOutput.Text += strName + " failed CalculatedCost\r\n";
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                             }
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " general failure\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " general failure");
                         }
                     }
                 }
@@ -587,73 +589,53 @@ namespace Chummer
                             Cyberware objTemp = new Cyberware(objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<Vehicle> objVehicles = new List<Vehicle>();
-                            objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, lstWeapons, objVehicles);
-                            try
-                            {
-                                decimal _ = objTemp.TotalCost;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed TotalCost\r\n";
-                            }
+                            objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
 
+                            Type objType = objTemp.GetType();
+
+                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            {
+                                try
+                                {
+                                    objProperty.GetValue(objTemp, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (_blnAddExceptionInfoToErrors)
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    else
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
+                            }
                             try
                             {
                                 string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                txtOutput.Text += strName + " failed TotalAvail\r\n";
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                             }
-
-                            try
-                            {
-                                int _ = objTemp.TotalAgility;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed TotalAgility\r\n";
-                            }
-
-                            try
-                            {
-                                int _ = objTemp.TotalBody;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed TotalBody\r\n";
-                            }
-
-                            try
-                            {
-                                int _ = objTemp.TotalStrength;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed TotalStrength\r\n";
-                            }
-
-                            try
-                            {
-                                string _ = objTemp.CalculatedCapacity;
-                            }
-                            catch
-                            {
-                                txtOutput.Text += strName + " failed CalculatedCapacity\r\n";
-                            }
-
                             try
                             {
                                 decimal _ = objTemp.CalculatedESS();
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                txtOutput.Text += strName + " failed CalculatedESS()\r\n";
+                                if (_blnAddExceptionInfoToErrors)
+                                    _objOutputBuilder.AppendLine(strName + " failed CalculatedESS. Exception: " + e.ToString());
+                                else
+                                    _objOutputBuilder.AppendLine(strName + " failed CalculatedESS");
                             }
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " general failure\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " general failure");
                         }
                     }
                 }
@@ -688,10 +670,30 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objTemp = new Quality(objCharacter);
                             objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
+
+                            Type objType = objTemp.GetType();
+
+                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            {
+                                try
+                                {
+                                    objProperty.GetValue(objTemp, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (_blnAddExceptionInfoToErrors)
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    else
+                                        _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
+                            }
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " general failure\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " general failure");
                         }
                     }
                 }
@@ -1017,9 +1019,12 @@ namespace Chummer
                                 objCharacter.Gear.Add(objGear);
                             }
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            txtOutput.Text += strName + " general failure\r\n";
+                            if (_blnAddExceptionInfoToErrors)
+                                _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            else
+                                _objOutputBuilder.AppendLine(strName + " general failure");
                         }
 
                         objCharacter.DeleteCharacter();

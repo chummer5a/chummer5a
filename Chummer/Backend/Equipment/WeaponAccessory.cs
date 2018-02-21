@@ -870,8 +870,10 @@ namespace Chummer.Backend.Equipment
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
+                if (Parent != null)
+                    decReturn *= Parent.CostMultiplier;
 
-                return decReturn * Parent.CostMultiplier;
+                return decReturn;
             }
         }
 
