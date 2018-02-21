@@ -366,7 +366,7 @@ namespace Chummer.Backend.Skills
                 },
                 () =>
                 {
-                    foreach (Skill objLoopSkill in KnowledgeSkills)
+                    foreach (KnowledgeSkill objLoopSkill in KnowledgeSkills)
                     {
                         dicSkills.TryAdd(objLoopSkill.Name, objLoopSkill.Id);
                     }

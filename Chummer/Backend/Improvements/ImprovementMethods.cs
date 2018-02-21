@@ -107,8 +107,10 @@ namespace Chummer
                     return objImprovementAdder.skilllevel;
                 case "PUSHTEXT":
                     return objImprovementAdder.pushtext;
-                case "KNOWSOFT":
-                    return objImprovementAdder.knowsoft;
+                case "ACTIVESOFT":
+                    return objImprovementAdder.activesoft;
+                case "SKILLSOFT":
+                    return objImprovementAdder.skillsoft;
                 case "KNOWLEDGESKILLLEVEL":
                     return objImprovementAdder.knowledgeskilllevel;
                 case "KNOWLEDGESKILLPOINTS":

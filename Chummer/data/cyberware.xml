@@ -400,7 +400,7 @@
       <source>SR5</source>
       <page>452</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -415,7 +415,7 @@
       <source>SR5G</source>
       <page>452</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -934,14 +934,14 @@
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
       <name>Skillwires</name>
       <category>Bodyware</category>
-      <ess>Rating * 0.1</ess>
+      <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>(Rating * 3)</avail>
       <cost>Rating * 20000</cost>
       <source>SR5</source>
       <page>455</page>
       <bonus>
-        <skillwire>Rating</skillwire>
+        <skillwire precedence="0">Rating</skillwire>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -2714,7 +2714,7 @@
       <bonus>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
-        <skillwire>Rating * 2</skillwire>
+        <skillwire precedence="0">Rating * 2</skillwire>
         <sociallimit>-Rating</sociallimit>
         <specificattribute>
           <name precedence="0">REA</name>
@@ -6767,7 +6767,7 @@
       <source>2050</source>
       <page>199</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>4</rating>
     </cyberware>

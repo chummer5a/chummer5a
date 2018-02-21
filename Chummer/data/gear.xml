@@ -4414,16 +4414,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>8</avail>
+      <avail>Rating * 2</avail>
       <bonus>
-        <selectskill />
+        <activesoft>
+          <val>Rating</val>
+        </activesoft>
       </bonus>
       <cost>Rating * 5000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Activesoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>d9d017c4-b3b5-4d28-9c41-870d69287cfb</id>
@@ -4432,21 +4429,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>4</avail>
+      <avail>Rating</avail>
       <bonus>
-        <knowsoft>
-          <pick />
+        <skillsoft excludecategory="Language">
           <val>Rating</val>
-          <notgroup>Language</notgroup>
-          <require>skilljack</require>
-        </knowsoft>
+        </skillsoft>
       </bonus>
       <cost>Rating * 2000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Knowsoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>c4599705-6b8c-45d0-8687-63a720043f7d</id>
@@ -4455,21 +4444,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>2</avail>
+      <avail>Rating</avail>
       <bonus>
-        <knowsoft>
-          <pick />
+        <skillsoft skillcategory="Language">
           <val>Rating</val>
-          <group>Language</group>
-          <require>skilljack</require>
-        </knowsoft>
+        </skillsoft>
       </bonus>
       <cost>Rating * 1000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Linguasoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>

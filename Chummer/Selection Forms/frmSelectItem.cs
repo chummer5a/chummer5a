@@ -28,9 +28,8 @@ namespace Chummer
     {
         private IList<Gear> _lstGear = new List<Gear>();
         private IList<Vehicle> _lstVehicles = new List<Vehicle>();
-        private IList<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
         private IList<ListItem> _lstGeneralItems = new List<ListItem>();
-        private string _strMode = "Gear";
+        private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
@@ -49,6 +48,7 @@ namespace Chummer
 
             if (_strMode == "Gear")
             {
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
@@ -74,22 +74,16 @@ namespace Chummer
             }
             else if (_strMode == "Vehicles")
             {
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 // Add each of the items to a new List.
                 foreach (Vehicle objVehicle in _lstVehicles)
                 {
                     lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.DisplayName(GlobalOptions.Language)));
                 }
             }
-            else if (_strMode == "VehicleMods")
-            {
-                // Add each of the items to a new List.
-                foreach (VehicleMod objMod in _lstVehicleMods)
-                {
-                    lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
-                }
-            }
             else if (_strMode == "General")
             {
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 lstItems = _lstGeneralItems;
             }
             else if (_strMode == "Dropdown")
@@ -258,6 +252,9 @@ namespace Chummer
                     AcceptForm();
             }
             cboAmmo.EndUpdate();
+
+            if (cboAmmo.Items.Count < 0)
+                cmdOK.Enabled = false;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -295,19 +292,7 @@ namespace Chummer
                 _strMode = "Vehicles";
             }
         }
-
-        /// <summary>
-        /// List of Vehicle Mods that the user can select.
-        /// </summary>
-        public IList<VehicleMod> VehicleMods
-        {
-            set
-            {
-                _lstVehicleMods = value;
-                _strMode = "VehicleMods";
-            }
-        }
-
+        
         /// <summary>
         /// List of general items that the user can select.
         /// </summary>

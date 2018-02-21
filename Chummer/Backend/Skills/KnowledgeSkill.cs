@@ -68,21 +68,6 @@ namespace Chummer.Backend.Skills
                     }
         }
 
-        public static IEnumerable<ListItem> KnowledgeSkillsWithCategory(string strLanguage, params string[] categories)
-        {
-            HashSet<string> lstCategories = new HashSet<string>(categories);
-            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
-                if (xmlSkillList != null)
-                    foreach (XmlNode objXmlSkill in xmlSkillList)
-                    {
-                        if (lstCategories.Contains(objXmlSkill["category"]?.InnerText))
-                        {
-                            string strName = objXmlSkill["name"]?.InnerText ?? string.Empty;
-                            yield return new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName);
-                        }
-                    }
-        } 
-
         public override bool AllowDelete => true;
 
         private string _strType = string.Empty;
@@ -197,16 +182,37 @@ namespace Chummer.Backend.Skills
                 if (CachedWareRating != int.MinValue)
                     return CachedWareRating;
 
-                if (IsKnowledgeSkill && CharacterObject.SkillsoftAccess)
+                string strTranslatedName = DisplayNameMethod(GlobalOptions.Language);
+                //this might do hardwires if i understand how they works correctly
+                int intMaxHardwire = -1;
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    int intMax = 0;
-                    //TODO this works with translate?
-                    foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && (x.Extra == Name || x.Extra == DisplayNameMethod(GlobalOptions.Language))))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) && objImprovement.Enabled && objImprovement.Value > intMaxHardwire)
                     {
-                        if (objSkillsoft.Rating > intMax)
-                            intMax = objSkillsoft.Rating;
+                        intMaxHardwire = objImprovement.Value;
                     }
-                    return CachedWareRating = intMax;
+                }
+                if (intMaxHardwire >= 0)
+                {
+                    return CachedWareRating = intMaxHardwire;
+                }
+                
+                if (IsKnowledgeSkill)
+                {
+                    int intMaxSkillsoftRating = Math.Min(IsKnowledgeSkill ? int.MaxValue : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess));
+                    if (intMaxSkillsoftRating > 0)
+                    {
+                        int intMax = 0;
+                        foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
+                        {
+                            if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft && objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
+                            {
+                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value);
+                            }
+                        }
+
+                        return CachedWareRating = Math.Min(intMax, intMaxSkillsoftRating);
+                    }
                 }
 
                 return CachedWareRating = 0;
@@ -390,7 +396,7 @@ namespace Chummer.Backend.Skills
 
             return Math.Max(intPointCost, 0);
         }
-
+        
         protected override void SaveExtendedData(XmlTextWriter writer)
         {
             writer.WriteElementString("name", Name);
