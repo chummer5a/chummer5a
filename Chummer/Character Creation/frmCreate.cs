@@ -284,8 +284,8 @@ namespace Chummer
                     treMetamagic.Top = cmdAddMetamagic.Top + cmdAddMetamagic.Height + 6;
                     cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
                 }
-                cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
-                if (!CharacterObjectOptions.AllowInitiationInCreateMode)
+                cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode || CharacterObject.IgnoreRules;
+                if (!CharacterObjectOptions.AllowInitiationInCreateMode && !CharacterObject.IgnoreRules)
                     CharacterObject.ClearInitiations();
             }
 
@@ -837,7 +837,7 @@ namespace Chummer
                     cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
                     chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Language);
                     chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
-                    cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
+                    cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode || CharacterObject.IgnoreRules;
                 }
 
                 if (!SpecialAttributes.Contains(CharacterObject.MAG))
@@ -895,7 +895,7 @@ namespace Chummer
                     //chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion");
                     chkInitiationGroup.Visible = false;
                     chkInitiationSchooling.Visible = false;
-                    cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
+                    cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode || CharacterObject.IgnoreRules;
                 }
                 if (!SpecialAttributes.Contains(CharacterObject.RES))
                 {
@@ -14967,7 +14967,7 @@ namespace Chummer
                 blnValid = false;
             }
 
-            if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7 && !x.Free))
+            if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && (!CharacterObject.FriendsInHighPlaces && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7) && !x.Free))
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.GetString("Message_HighContact", GlobalOptions.Language);

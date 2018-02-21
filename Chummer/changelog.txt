@@ -46,6 +46,7 @@ Application Changes:
 - The tester tool accessible through Chummer5a command line options will now test every single property of the items it tests instead of a few select ones that would tend to cause problems.
 - The tester tool accessible through Chummer5a command line options now has an option to print detailed exception information when an error is encountered with an item.
 - Fixed possible crashes that could occur when selecting an armor mod or weapon accessory that somehow does not have a parent set.
+- Initiation is now allowed if the character is ignoring character creation rules.
 
 Data Changes:
 
