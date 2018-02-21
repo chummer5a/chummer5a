@@ -63,6 +63,8 @@ Data Changes:
 - Fixed crashes that occured when adding cyberdecks or cyberterminals from Shadowrun 2050.
 - Cyberdecks and cyberterminals from Shadowrun 2050 now have their Matrix attributes populated where possible. "MPCP" is translated as Device Rating, "Härte" is translated as Firewall, "Aktiver Speicher" is translated as program slots, and "I/O" is translated as Data Processing. Memory storage space ("Speicherbänke") will still need be to tracked manually.
 - Fixed a crash that would occur when adding the Infected: Fomoriag quality due to a misnamed critter power.
+- Fixed bonus power ranks not applying properly to the Chaos, Artist, Holy Text, and Death mentor spirits. 
+- Fixed Holy Text not providing a knowledge skill bonus.
 
 New Strings:
 
