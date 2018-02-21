@@ -1934,7 +1934,7 @@ namespace Chummer
                             objCyberware.ChangeModularEquip(false);
                         else if (objCyberware.PairBonus != null)
                         {
-                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
                             if (objMatchingCyberware != null)
                                 dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
                             else

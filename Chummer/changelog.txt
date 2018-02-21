@@ -47,6 +47,8 @@ Application Changes:
 - The tester tool accessible through Chummer5a command line options now has an option to print detailed exception information when an error is encountered with an item.
 - Fixed possible crashes that could occur when selecting an armor mod or weapon accessory that somehow does not have a parent set.
 - Initiation is now allowed if the character is ignoring character creation rules.
+- Fixed an issue where 'ware with a pair bonus that also needed a specified location would not properly add that pair bonus. Fixes #2500.
+- Fixed an issue where re-applying improvements for 'ware that includes 'ware types other than its own when calculating members for its pair bonuses would not properly re-apply those pair bonuses.
 
 Data Changes:
 
