@@ -27,6 +27,7 @@ using Chummer.Classes;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Drawing;
+using System.Text;
 using static Chummer.Backend.Skills.SkillsSection;
 
 namespace Chummer
@@ -172,7 +173,8 @@ namespace Chummer
             SkillGroupLevel, //group
             SkillBase,  //base points in skill
             SkillGroupBase, //group
-            SkillKnowledgeForced, //A skill gained from a knowsoft
+            Skillsoft, // A knowledge or language skill gained from a knowsoft
+            Activesoft, // An active skill gained from an activesoft
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
@@ -939,7 +941,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
-        private static int ValueToInt(Character objCharacter, string strValue, int intRating)
+        public static int ValueToInt(Character objCharacter, string strValue, int intRating)
         {
             if (string.IsNullOrEmpty(strValue))
                 return 0;
@@ -970,12 +972,246 @@ namespace Chummer
                 //Log.Exit("ValueToInt");
                 return intValue;
             }
+            //Log.Exit("ValueToInt");
+            int.TryParse(strValue, out int intReturn);
+            return intReturn;
+        }
+
+        public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating, string strFriendlyName, ref bool blnIsKnowledgeSkill)
+        {
+            string strSelectedSkill;
+            blnIsKnowledgeSkill = blnIsKnowledgeSkill || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
+            if (blnIsKnowledgeSkill)
+            {
+                int intMinimumRating = 0;
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                int intMaximumRating = int.MaxValue;
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                HashSet<string> setAllowedCategories = null;
+                string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strOnlyCategory))
+                {
+                    setAllowedCategories = new HashSet<string>(strOnlyCategory.Split(',').Select(x => x.Trim()));
+                }
+                else
+                {
+                    using (XmlNodeList xmlCategoryList = xmlBonusNode.SelectNodes("skillcategories/category"))
+                    {
+                        if (xmlCategoryList?.Count > 0)
+                        {
+                            setAllowedCategories = new HashSet<string>();
+                            foreach (XmlNode objNode in xmlCategoryList)
+                            {
+                                setAllowedCategories.Add(objNode.InnerText);
+                            }
+                        }
+                    }
+                }
+
+                HashSet<string> setForbiddenCategories = null;
+                string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strExcludeCategory))
+                {
+                    setForbiddenCategories = new HashSet<string>(strExcludeCategory.Split(',').Select(x => x.Trim()));
+                }
+                HashSet<string> setAllowedNames = null;
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    setAllowedNames = new HashSet<string> {ForcedValue};
+                }
+                else
+                {
+                    string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strLimitToSkill))
+                    {
+                        setAllowedNames = new HashSet<string>(strLimitToSkill.Split(',').Select(x => x.Trim()));
+                    }
+                }
+
+                HashSet<string> setAllowedLinkedAttributes = null;
+                string strLimitToAttribute = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                if (!string.IsNullOrEmpty(strLimitToAttribute))
+                {
+                    setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.Split(',').Select(x => x.Trim()));
+                }
+
+                List<ListItem> lstDropdownItems = new List<ListItem>();
+                HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills)
+                {
+                    if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false &&
+                        setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory) != true &&
+                        setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
+                        setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute) != false)
+                    {
+                        int intSkillRating = objKnowledgeSkill.Rating;
+                        if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                        {
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                        }
+                    }
+                    setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                }
+                if (intMinimumRating <= 0)
+                {
+                    StringBuilder objFilter = new StringBuilder();
+                    if (setAllowedCategories?.Count > 0)
+                    {
+                        objFilter.Append('(');
+                        foreach (string strCategory in setAllowedCategories)
+                        {
+                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setForbiddenCategories?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append("not(");
+                        foreach (string strCategory in setForbiddenCategories)
+                        {
+                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setAllowedNames?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append('(');
+                        foreach (string strName in setAllowedNames)
+                        {
+                            objFilter.Append("name = \"" + strName + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setProcessedSkillNames.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append("not(");
+                        foreach (string strName in setProcessedSkillNames)
+                        {
+                            objFilter.Append("name = \"" + strName + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setAllowedLinkedAttributes?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append('(');
+                        foreach (string strAttribute in setAllowedLinkedAttributes)
+                        {
+                            objFilter.Append("attribute = \"" + strAttribute + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    
+                    string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
+                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    {
+                        if (xmlSkillList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlSkill in xmlSkillList)
+                            {
+                                string strName = xmlSkill["name"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strName))
+                                    lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                            }
+                        }
+                    }
+                }
+
+                lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                frmSelectItem frmPickSkill = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                };
+                if (setAllowedNames != null)
+                    frmPickSkill.GeneralItems = lstDropdownItems;
+                else
+                    frmPickSkill.DropdownItems = lstDropdownItems;
+                
+                frmPickSkill.ShowDialog();
+
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSelectedSkill = frmPickSkill.SelectedItem;
+            }
             else
             {
-                //Log.Exit("ValueToInt");
-                int.TryParse(strValue, out int intReturn);
-                return intReturn;
+                // Display the Select Skill window and record which Skill was selected.
+                frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                {
+                    Description = !string.IsNullOrEmpty(strFriendlyName)
+                        ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
+                };
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                    frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                    frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                
+                XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                if (xmlSkillCategories != null)
+                    frmPickSkill.LimitToCategories = xmlSkillCategories;
+                string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.OnlyCategory = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.OnlySkillGroup = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeCategory = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.LimitToSkill = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.LinkedAttribute = strTemp;
+
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickSkill.OnlySkill = ForcedValue;
+                    frmPickSkill.Opacity = 0;
+                }
+
+                frmPickSkill.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSelectedSkill = frmPickSkill.SelectedSkill;
             }
+
+            return strSelectedSkill;
         }
         #endregion
 
@@ -1137,7 +1373,7 @@ namespace Chummer
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
                 strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, blnConcatSelectedValue,
-                strFriendlyName, intRating, ValueToInt);
+                strFriendlyName, intRating);
 
             Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
             if (objImprovementMethod != null)
@@ -1180,6 +1416,7 @@ namespace Chummer
 
             bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
             bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
+            bool blnCharacterHasSkillsoftAccess = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
@@ -1212,23 +1449,22 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                    case Improvement.ImprovementType.Activesoft:
                         blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                         {
-                            objKnowledgeSkill.Enabled = true;
+                            if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
                         }
                         break;
-                    case Improvement.ImprovementType.SkillKnowledgeForced:
+                    case Improvement.ImprovementType.Skillsoft:
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
-                            {
-                                objKnowledgeSkill.Enabled = true;
-                            }
                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
                             {
-                                objKnowledgeSkill.Enabled = true;
+                                if (blnCharacterHasSkillsoftAccess && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
                             }
                         }
                         break;
@@ -1541,6 +1777,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                    case Improvement.ImprovementType.Activesoft:
                         blnDoSkillsSectionForceProperyChangedNotificationAll = blnDoSkillsSectionForceProperyChangedNotificationAll || objImprovement.Enabled;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
@@ -1548,20 +1785,16 @@ namespace Chummer
                         {
                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                             {
-                                objKnowledgeSkill.Enabled = false;
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.SkillKnowledgeForced:
+                    case Improvement.ImprovementType.Skillsoft:
                         if (!blnHasDuplicate)
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
-                            {
-                                objKnowledgeSkill.Enabled = false;
-                            }
                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
                             {
-                                objKnowledgeSkill.Enabled = false;
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
                             }
                         }
                         break;
@@ -1963,20 +2196,23 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                    case Improvement.ImprovementType.Activesoft:
                         blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
-                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(objCharacter.SkillsSection.KnowsoftSkills.Contains).ToList())
+                        if (!blnHasDuplicate)
                         {
-                            objKnowledgeSkill.UnbindSkill();
-                            objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
                         }
                         break;
-                    case Improvement.ImprovementType.SkillKnowledgeForced:
+                    case Improvement.ImprovementType.Skillsoft:
+                        if (!blnHasDuplicate)
                         {
                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
                             {
-                                objKnowledgeSkill.UnbindSkill();
                                 objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
                             }
                             for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
@@ -1984,6 +2220,7 @@ namespace Chummer
                                 KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
                                 if (objSkill.InternalId == objImprovement.ImprovedName)
                                 {
+                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
                                     objSkill.UnbindSkill();
                                     objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
                                 }

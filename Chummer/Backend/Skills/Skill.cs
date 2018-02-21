@@ -964,9 +964,9 @@ namespace Chummer.Backend.Skills
                 int intMaxHardwire = -1;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == Name && objImprovement.Enabled && objImprovement.Value > intMaxHardwire)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == Name && objImprovement.Enabled)
                     {
-                        intMaxHardwire = objImprovement.Value;
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value);
                     }
                 }
                 if (intMaxHardwire >= 0)
@@ -974,17 +974,19 @@ namespace Chummer.Backend.Skills
                     return CachedWareRating = intMaxHardwire;
                 }
 
-                int intSkillWireRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire);
-                if ((intSkillWireRating > 0 || IsKnowledgeSkill) && CharacterObject.SkillsoftAccess)
+                int intMaxActivesoftRating = Math.Min(IsKnowledgeSkill ? int.MaxValue : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess));
+                if (intMaxActivesoftRating > 0)
                 {
                     int intMax = 0;
                     //TODO this works with translate?
-                    foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && x.Extra == Name))
+                    foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
                     {
-                        if (objSkillsoft.Rating > intMax)
-                            intMax = objSkillsoft.Rating;
+                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Activesoft && objSkillsoftImprovement.ImprovedName == Name && objSkillsoftImprovement.Enabled)
+                        {
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value);
+                        }
                     }
-                    return CachedWareRating = Math.Min(intMax, intSkillWireRating);
+                    return CachedWareRating = Math.Min(intMax, intMaxActivesoftRating);
                 }
 
                 return CachedWareRating = 0;
@@ -1006,6 +1008,7 @@ namespace Chummer.Backend.Skills
                         new ReverseTree<string>(nameof(CanHaveSpecs),
                             new ReverseTree<string>(nameof(Leveled),
                                 new ReverseTree<string>(nameof(Rating),
+                                    new ReverseTree<string>(nameof(CyberwareRating)),
                                     new ReverseTree<string>(nameof(TotalBaseRating),
                                         new ReverseTree<string>(nameof(RatingModifiers)),
                                         new ReverseTree<string>(nameof(LearnedRating),
@@ -1104,6 +1107,12 @@ namespace Chummer.Backend.Skills
                 imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects)))
             {
                 OnPropertyChanged(nameof(Base));
+            }
+            else if (improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillsoftAccess ||
+                                           x.ImprovedName == Name && (x.ImproveType == Improvement.ImprovementType.Hardwire || x.ImproveType == Improvement.ImprovementType.Activesoft)) ||
+                     this is KnowledgeSkill objThisAsKnowledgeSkill && improvements.Any(x => x.ImprovedName == objThisAsKnowledgeSkill.InternalId && (x.ImproveType == Improvement.ImprovementType.Hardwire || x.ImproveType == Improvement.ImprovementType.Skillsoft)))
+            {
+                OnPropertyChanged(nameof(CyberwareRating));
             }
             else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization))
             {

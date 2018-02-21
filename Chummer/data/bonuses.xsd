@@ -47,6 +47,28 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="activesoft" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+          <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+          <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+          <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+          <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+          <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+          <xs:attribute name="addknowledge" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="adapsin" minOccurs="0" maxOccurs="1" />
       <xs:element name="addcontact" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -413,17 +435,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="knowsoft" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="pick" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="notgroup" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="require" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -933,8 +944,44 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="skillsoftaccess" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="skillwire" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="skillsoft" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+          <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+          <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+          <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+          <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="skillsoftaccess" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="precedence" type="xs:integer" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="skillwire" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="precedence" type="xs:integer" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="smartlink" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />

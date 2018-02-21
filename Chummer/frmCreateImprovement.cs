@@ -23,6 +23,7 @@ using System.IO;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -259,15 +260,52 @@ namespace Chummer
                     break;
                 case "SelectKnowSkill":
                     {
-                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter)
+                        List<ListItem> lstDropdownItems = new List<ListItem>();
+                        HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                        foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
-                            ShowKnowledgeSkills = true,
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                        }
+                        StringBuilder objFilter = new StringBuilder();
+                        if (setProcessedSkillNames.Count > 0)
+                        {
+                            objFilter.Append("not(");
+                            foreach (string strName in setProcessedSkillNames)
+                            {
+                                objFilter.Append("name = \"" + strName + "\" or ");
+                            }
+
+                            objFilter.Length -= 4;
+                            objFilter.Append(')');
+                        }
+
+                        string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
+                        using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
+                        {
+                            if (xmlSkillList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlSkill in xmlSkillList)
+                                {
+                                    string strName = xmlSkill["name"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                                }
+                            }
+                        }
+
+                        lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                        frmSelectItem frmPickSkill = new frmSelectItem
+                        {
+                            DropdownItems = lstDropdownItems,
                             Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                         };
+                        
                         frmPickSkill.ShowDialog(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)
-                            txtSelect.Text = frmPickSkill.SelectedSkill;
+                            txtSelect.Text = frmPickSkill.SelectedItem;
                     }
                     break;
                 case "SelectSkillCategory":

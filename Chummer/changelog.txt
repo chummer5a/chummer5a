@@ -50,6 +50,10 @@ Application Changes:
 - Fixed an issue where 'ware with a pair bonus that also needed a specified location would not properly add that pair bonus. Fixes #2500.
 - Fixed an issue where re-applying improvements for 'ware that includes 'ware types other than its own when calculating members for its pair bonuses would not properly re-apply those pair bonuses.
 - Fixed an issue where taking an item with a bonus that enables a special attribute in create mode would not properly account for essence-modifying bonuses when calculating special attribute loss from essence loss. Fixes #2508.
+- Fixed an issue where taking knowsofts in a knowledge skill would also grant bonuses to active skills. Fixes #2518.
+- Fixed an issue where skillsofts could grant ratings higher than the user's skilljack rating.
+- Unhardcoded checks for skillsofts and activesofts. These bonuses can now be granted by any item, not just gear in the Skillsofts category. Note that existing characters with activesofts will need to manually re-apply improvements for them to work again, while existing characters with knowsofts and linguasofts should be automatically prompted to re-apply improvements for those pieces of gear alone.
+- Added tooltips to knowledge skill controls that function similarly to those for active skill controls.
 
 Data Changes:
 
@@ -63,6 +67,9 @@ Data Changes:
 - Fixed crashes that occured when adding cyberdecks or cyberterminals from Shadowrun 2050.
 - Cyberdecks and cyberterminals from Shadowrun 2050 now have their Matrix attributes populated where possible. "MPCP" is translated as Device Rating, "Härte" is translated as Firewall, "Aktiver Speicher" is translated as program slots, and "I/O" is translated as Data Processing. Memory storage space ("Speicherbänke") will still need be to tracked manually.
 - Fixed a crash that would occur when adding the Infected: Fomoriag quality due to a misnamed critter power.
+- Fixed incorrect availabilities for activesofts, knowsofts, and linguasofts that were using core rulebook values instead of Chrome Flesh values.
+- Fixed incorrect Essence cost for skillwires, which was using the core rulebook value of 0.1 x Rating instead of the Chrome Flesh value of 0.2 x Rating.
+- Fixed an issue where Move-By-Wires and Skillwires would stack when determining the maximum rating of activesoft that could be used.
 
 New Strings:
 

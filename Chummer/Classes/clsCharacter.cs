@@ -1263,6 +1263,11 @@ namespace Chummer
                 {
                     objImprovement.Load(objXmlImprovement);
                     _lstImprovements.Add(objImprovement);
+
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess && objImprovement.Value == 0)
+                    {
+                        _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement.SourceName);
+                    }
                 }
                 catch (ArgumentException)
                 {
@@ -8121,17 +8126,6 @@ namespace Chummer
                 return Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BurnoutsWay && x.Enabled);
             }
         }
-
-        /// <summary>
-        /// Whether or not the character has access to Knowsofts and Linguasofts.
-        /// </summary>
-        public bool SkillsoftAccess
-        {
-            get
-            {
-                return Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillsoftAccess && x.Enabled);
-            }
-        }
 #endregion
 
 #region Application Properties
@@ -9438,7 +9432,8 @@ namespace Chummer
             Improvement.ImprovementType.SkillGroupLevel, //group
             Improvement.ImprovementType.SkillBase,  //base points in skill
             Improvement.ImprovementType.SkillGroupBase, //group
-            Improvement.ImprovementType.SkillKnowledgeForced, //A skill gained from a knowsoft
+            Improvement.ImprovementType.Skillsoft, //A skill gained from a knowsoft
+            Improvement.ImprovementType.Activesoft,
             Improvement.ImprovementType.SpecialSkills,
             Improvement.ImprovementType.ReflexRecorderOptimization,
             Improvement.ImprovementType.BlockSkillDefault,
