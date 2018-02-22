@@ -65,7 +65,7 @@ namespace Chummer
         private bool _blnDroneArmorMultiplierEnabled;
         private bool _blnFreeKnowledgeMultiplierEnabled;
         private bool _blnFreeSpiritPowerPointsMAG;
-        private bool _blnIgnoreArmorEncumbrance = true;
+        private bool _blnNoArmorEncumbrance;
         private bool _blnIgnoreArt;
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
@@ -294,8 +294,8 @@ namespace Chummer
             objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
             // <nosinglearmorencumbrance />
             objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
-            // <ignorearmorencumbrance />
-            objWriter.WriteElementString("ignorearmorencumbrance", _blnIgnoreArmorEncumbrance.ToString());
+            // <NoArmorEncumbrance />
+            objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString());
             // <esslossreducesmaximumonly />
             objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString());
             // <allowskillregrouping />
@@ -648,7 +648,7 @@ namespace Chummer
             // No Single Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
-            objXmlNode.TryGetBoolFieldQuickly("ignorearmorencumbrance", ref _blnIgnoreArmorEncumbrance);
+            objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
             // Essence Loss Reduces Maximum Only.
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
@@ -1253,10 +1253,10 @@ namespace Chummer
         /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
-        public bool IgnoreArmorEncumbrance
+        public bool NoArmorEncumbrance
         {
-            get => _blnIgnoreArmorEncumbrance;
-            set => _blnIgnoreArmorEncumbrance = value;
+            get => _blnNoArmorEncumbrance;
+            set => _blnNoArmorEncumbrance = value;
         }
 
         /// <summary>

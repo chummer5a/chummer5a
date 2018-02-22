@@ -9308,7 +9308,7 @@ namespace Chummer
         {
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance);
-            if (!Options.IgnoreArmorEncumbrance)
+            if (!Options.NoArmorEncumbrance)
             {
                 // Create the Armor Encumbrance Improvements.
                 int intEncumbrance = ArmorEncumbrance;

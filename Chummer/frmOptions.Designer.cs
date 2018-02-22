@@ -285,6 +285,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2830,6 +2831,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkNoArmorEncumbrance);
             this.tabHouseRules.Controls.Add(this.chkEnemyKarmaQualityLimit);
             this.tabHouseRules.Controls.Add(this.chkCompensateSkillGroupKarmaDifference);
             this.tabHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute);
@@ -3296,6 +3298,7 @@ namespace Chummer
             this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s AGI when calculating" +
         " movement rates.");
             this.chkCyberlegMovement.UseVisualStyleBackColor = true;
+            this.chkCyberlegMovement.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkIgnoreArt
             // 
@@ -3309,6 +3312,7 @@ namespace Chummer
             this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art " +
         "requirement detailed in Street Grimoire.");
             this.chkIgnoreArt.UseVisualStyleBackColor = true;
+            this.chkIgnoreArt.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // cboSetting
             // 
@@ -3358,6 +3362,18 @@ namespace Chummer
             this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
+            // 
+            // chkNoArmorEncumbrance
+            // 
+            this.chkNoArmorEncumbrance.AutoSize = true;
+            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(458, 210);
+            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(251, 17);
+            this.chkNoArmorEncumbrance.TabIndex = 38;
+            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
+            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
+            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // frmOptions
             // 
@@ -3719,5 +3735,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
         private System.Windows.Forms.CheckBox chkEnemyKarmaQualityLimit;
         private ElasticComboBox cboSheetLanguage;
+        private System.Windows.Forms.CheckBox chkNoArmorEncumbrance;
     }
 }

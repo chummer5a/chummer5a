@@ -54,6 +54,7 @@ Application Changes:
 - Fixed an issue where skillsofts could grant ratings higher than the user's skilljack rating.
 - Unhardcoded checks for skillsofts and activesofts. These bonuses can now be granted by any item, not just gear in the Skillsofts category. Note that existing characters with activesofts will need to manually re-apply improvements for them to work again, while existing characters with knowsofts and linguasofts should be automatically prompted to re-apply improvements for those pieces of gear alone.
 - Added tooltips to knowledge skill controls that function similarly to those for active skill controls.
+- Fixed the No Armor Encumbrance house rule from applying by default and not being changable through the UI.
 
 Data Changes:
 

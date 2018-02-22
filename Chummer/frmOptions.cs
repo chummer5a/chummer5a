@@ -168,6 +168,7 @@ namespace Chummer
             _characterOptions.MetatypeCostsKarmaMultiplier = decimal.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
             _characterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
             _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
+            _characterOptions.NoArmorEncumbrance = chkNoArmorEncumbrance.Checked;
             _characterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
             _characterOptions.PrintExpenses = chkPrintExpenses.Checked;
             _characterOptions.PrintFreeExpenses = chkPrintFreeExpenses.Checked;
@@ -875,6 +876,7 @@ namespace Chummer
             chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
             chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
             chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
+            chkNoArmorEncumbrance.Checked = _characterOptions.NoArmorEncumbrance;
             chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
             chkPrintFreeExpenses.Checked = _characterOptions.PrintFreeExpenses;
             chkPrintFreeExpenses.Enabled = chkPrintExpenses.Checked;
