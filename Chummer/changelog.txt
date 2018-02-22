@@ -55,6 +55,7 @@ Application Changes:
 - Unhardcoded checks for skillsofts and activesofts. These bonuses can now be granted by any item, not just gear in the Skillsofts category. Note that existing characters with activesofts will need to manually re-apply improvements for them to work again, while existing characters with knowsofts and linguasofts should be automatically prompted to re-apply improvements for those pieces of gear alone.
 - Added tooltips to knowledge skill controls that function similarly to those for active skill controls.
 - Fixed the No Armor Encumbrance house rule from applying by default and not being changable through the UI.
+- Added the ability to use groups in forbidden and required sections where the user is only required to have one of the items in the group (intended for use within "allof" nodes). These groups are processed via "grouponeof" nodes.
 
 Data Changes:
 
@@ -73,6 +74,7 @@ Data Changes:
 - Fixed incorrect availabilities for activesofts, knowsofts, and linguasofts that were using core rulebook values instead of Chrome Flesh values.
 - Fixed incorrect Essence cost for skillwires, which was using the core rulebook value of 0.1 x Rating instead of the Chrome Flesh value of 0.2 x Rating.
 - Fixed an issue where Move-By-Wires and Skillwires would stack when determining the maximum rating of activesoft that could be used.
+- Fixed an issue where adepts following The Spiritual Way could not learn Psychometry, but could learn Sympathetic Linking without Psychometry.
 
 New Strings:
 

@@ -145,10 +145,10 @@
       <adept>False</adept>
       <magician>True</magician>
       <required>
-        <oneof>
+        <allof>
+          <metamagic>Psychometry</metamagic>
           <art>Psychometry</art>
-          <quality>The Spiritual Way</quality>
-        </oneof>
+        </allof>
       </required>
       <source>SG</source>
       <page>145</page>
@@ -159,9 +159,10 @@
       <adept>False</adept>
       <magician>True</magician>
       <required>
-        <allof>
+        <oneof>
           <art>Psychometry</art>
-        </allof>
+          <quality>The Spiritual Way</quality>
+        </oneof>
       </required>
       <source>SG</source>
       <page>145</page>
@@ -399,9 +400,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Athlete's Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>156</page>
@@ -412,9 +413,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Beast's Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>157</page>
@@ -455,9 +456,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Spiritual Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>158</page>
@@ -468,9 +469,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Speaker's Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>158</page>
@@ -481,9 +482,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Speaker's Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>159</page>
@@ -494,9 +495,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <quality>The Warrior's Way</quality>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>159</page>

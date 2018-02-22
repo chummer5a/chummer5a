@@ -110,6 +110,11 @@
                     <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
                 </xs:complexType>
             </xs:element>
+            <xs:element name="grouponeof" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                </xs:complexType>
+            </xs:element>
             <xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="initiategrade" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="martialtechnique" type="xs:string" minOccurs="0" maxOccurs="1" />

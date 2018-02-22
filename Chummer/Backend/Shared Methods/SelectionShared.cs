@@ -584,6 +584,25 @@ namespace Chummer
                             strName = strResultName;
                         return blnResult;
                     }
+                case "grouponeof":
+                {
+                    // Check that one of the clustered options are present
+                    bool blnResult = false;
+                    string strResultName = LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
+                    foreach (XmlNode xmlChildNode in xmlNode.ChildNodes)
+                    {
+                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        if (blnResult)
+                        {
+                            break;
+                        }
+
+                        strResultName += strLoopResult;
+                    }
+                    if (blnShowMessage)
+                        strName = strResultName;
+                    return blnResult;
+                }
                 case "initiategrade":
                     {
                         // Character's initiate grade must be higher than or equal to the required value.
@@ -1579,6 +1598,25 @@ namespace Chummer
                             strName = strResultName;
                         return blnResult;
                     }
+                case "grouponeof":
+                {
+                    // Check that one of the clustered options are present
+                    bool blnResult = false;
+                    string strResultName = LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
+                    foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                    {
+                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        if (blnResult)
+                        {
+                            break;
+                        }
+
+                        strResultName += strLoopResult;
+                    }
+                    if (blnShowMessage)
+                        strName = strResultName;
+                    return blnResult;
+                }
                 case "initiategrade":
                     {
                         // Character's initiate grade must be higher than or equal to the required value.
