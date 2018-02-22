@@ -287,12 +287,12 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DiceRollerControl.cs">
+    <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DiceRollerControl.Designer.cs">
+    </None>
+    <None Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,12 +335,12 @@
     <Compile Include="frmCreateSpell.Designer.cs">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGMDashboard.cs">
+    <None Include="frmGMDashboard.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmGMDashboard.Designer.cs">
+    </None>
+    <None Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -522,12 +522,12 @@
     <None Include="Omae\frmOmaeUploadSheet.Designer.cs">
       <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
     </None>
-    <Compile Include="frmPlayerDashboard.cs">
+    <None Include="frmPlayerDashboard.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmPlayerDashboard.Designer.cs">
+    </None>
+    <None Include="frmPlayerDashboard.Designer.cs">
       <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmPrintMultiple.cs">
       <SubType>Form</SubType>
     </Compile>

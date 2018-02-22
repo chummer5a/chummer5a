@@ -465,10 +465,12 @@ namespace Chummer
             Close();
         }
 
+        /*
         private void dashboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmGMDashboard.Instance.Show();
         }
+        */
 
         private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {

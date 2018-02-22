@@ -4440,16 +4440,32 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Add Initiate Grade</text>
     </string>
     <string>
+      <key>Button_RemoveInitiateGrade</key>
+      <text>Remove Initiate Grade</text>
+    </string>
+    <string>
       <key>Button_AddSubmersionGrade</key>
       <text>Add Submersion Grade</text>
+    </string>
+    <string>
+      <key>Button_RemoveSubmersionGrade</key>
+      <text>Remove Submersion Grade</text>
     </string>
     <string>
       <key>Button_AddMetamagic</key>
       <text>Add Metamagic</text>
     </string>
     <string>
+      <key>Button_RemoveMetamagic</key>
+      <text>Remove Metamagic</text>
+    </string>
+    <string>
       <key>Button_AddEcho</key>
       <text>Add Echo</text>
+    </string>
+    <string>
+      <key>Button_RemoveEcho</key>
+      <text>Remove Echo</text>
     </string>
     <!-- End Region-->
     <!-- Region Cyberware Tab -->

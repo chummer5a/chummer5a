@@ -2402,7 +2402,7 @@ namespace Chummer.Backend.Equipment
                 HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
                 foreach (Focus objFocus in _objCharacter.Foci)
                 {
-                    if (objFocus.GearId == InternalId)
+                    if (objFocus.GearObject == this)
                         lstRemoveFoci.Add(objFocus);
                 }
                 foreach (Focus objFocus in lstRemoveFoci)

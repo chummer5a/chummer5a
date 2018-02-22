@@ -18,19 +18,17 @@
  */
 using System;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     /// <summary>
     /// A Focus.
     /// </summary>
-    public class Focus : IHasInternalId, IHasName
+    public class Focus : IHasInternalId
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
-        private string _strName = string.Empty;
-        private Guid _guiGearId;
-        private int _intRating;
 
         #region Constructor, Create, Save, and Load Methods
         public Focus(Character objCharacter)
@@ -48,9 +46,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("focus");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("gearid", _guiGearId.ToString("D"));
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("gearid", GearObject?.InternalId);
             objWriter.WriteEndElement();
         }
 
@@ -61,9 +57,14 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
+            string strGearId = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("gearid", ref strGearId))
+            {
+                GearObject = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGearId) ??
+                             (_objCharacter.Armor.FindArmorGear(strGearId) ?? (_objCharacter.Weapons.FindWeaponGear(strGearId) ??
+                                                                               (_objCharacter.Cyberware.FindCyberwareGear(strGearId) ??
+                                                                                _objCharacter.Vehicles.FindVehicleGear(strGearId))));
+            }
         }
         #endregion
 
@@ -73,39 +74,16 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public string DisplayName { get; set; }
-
         /// <summary>
         /// Foci's name.
         /// </summary>
-        public string Name
-        {
-            get => _strName;
-            set => _strName = value;
-        }
-
-        /// <summary>
-        /// GUID of the linked Gear.
-        /// TODO: Replace this with a pointer to the Gear instead of having to do lookups.
-        /// </summary>
-        public string GearId
-        {
-            get => _guiGearId.ToString("D");
-            set
-            {
-                if (Guid.TryParse(value, out Guid guiTemp))
-                    _guiGearId = guiTemp;
-            }
-        }
+        public Gear GearObject { get; set; }
 
         /// <summary>
         /// Rating of the Foci.
         /// </summary>
-        public int Rating
-        {
-            get => _intRating;
-            set => _intRating = value;
-        }
+        public int Rating => GearObject?.Rating ?? 0;
+
         #endregion
     }
 }

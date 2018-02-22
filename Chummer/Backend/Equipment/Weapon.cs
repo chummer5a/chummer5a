@@ -109,8 +109,8 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMFilled;
 
         private readonly Character _objCharacter;
-        private string _mount;
-        private string _extraMount;
+        private string _strMount;
+        private string _strExtraMount;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Weapon(Character objCharacter)
@@ -168,8 +168,8 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlWeapon.TryGetStringFieldQuickly("mode", ref _strMode);
             objXmlWeapon.TryGetStringFieldQuickly("ammo", ref _strAmmo);
-            objXmlWeapon.TryGetStringFieldQuickly("mount", ref _mount);
-            objXmlWeapon.TryGetStringFieldQuickly("extramount", ref _extraMount);
+            objXmlWeapon.TryGetStringFieldQuickly("mount", ref _strMount);
+            objXmlWeapon.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
             if (objXmlWeapon["accessorymounts"] != null)
             {
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -468,8 +468,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("installed", _blnInstalled.ToString());
             objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
             objWriter.WriteElementString("accuracy", _strAccuracy);
-            objWriter.WriteElementString("mount", _mount);
-            objWriter.WriteElementString("extramount", _extraMount);
+            objWriter.WriteElementString("mount", _strMount);
+            objWriter.WriteElementString("extramount", _strExtraMount);
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
@@ -612,8 +612,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
             objNode.TryGetStringFieldQuickly("range", ref _strRange);
-            objNode.TryGetStringFieldQuickly("mount", ref _mount);
-            objNode.TryGetStringFieldQuickly("extramount", ref _extraMount);
+            objNode.TryGetStringFieldQuickly("mount", ref _strMount);
+            objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
             if (_strRange == "Hold-Outs")
             {
                 _strRange = "Holdouts";
@@ -1278,9 +1278,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
+                return Page;
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
         }
 
         private Weapon _objParent;
@@ -2167,24 +2167,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
         /// </summary>
-        public decimal MultipliableCost
+        public decimal MultipliableCost(WeaponAccessory objExcludeAccessory)
         {
-            get
+            decimal decReturn = OwnCost;
+
+            // Run through the list of Weapon Mods.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                decimal decReturn = OwnCost;
-
-                // Run through the list of Weapon Mods.
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                if (objExcludeAccessory != objAccessory && objAccessory.Installed && !objAccessory.IncludedInWeapon)
                 {
-                    if (objAccessory.Installed && !objAccessory.IncludedInWeapon)
-                    {
-                        if (!objAccessory.Cost.StartsWith("Total Cost"))
-                            decReturn += objAccessory.TotalCost;
-                    }
+                    decReturn += objAccessory.TotalCost;
                 }
-
-                return decReturn;
             }
+
+            return decReturn;
         }
 
         public string AccessoryMounts
@@ -3369,59 +3365,35 @@ namespace Chummer.Backend.Equipment
                             intDicePool = objAutosoft.Rating + ParentVehicle.Pilot;
                         }
 
-                        foreach (Gear objGear in ParentVehicle.Gear)
-                        {
-                            if (objGear.InternalId == AmmoLoaded)
-                            {
-                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-                            }
-                        }
+                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         break;
                     }
                 case FiringMode.GunneryCommandDevice:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
-                        foreach (Gear objGear in ParentVehicle.Gear)
-                        {
-                            if (objGear.InternalId == AmmoLoaded)
-                            {
-                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-                            }
-                        }
+                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
                 case FiringMode.RemoteOperated:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
-                        foreach (Gear objGear in ParentVehicle.Gear)
-                        {
-                            if (objGear.InternalId == AmmoLoaded)
-                            {
-                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-                            }
-                        }
+                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
                 case FiringMode.ManualOperation:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
-                        foreach (Gear objGear in ParentVehicle.Gear)
-                        {
-                            if (objGear.InternalId == AmmoLoaded)
-                            {
-                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-                            }
-                        }
+                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
@@ -3438,15 +3410,10 @@ namespace Chummer.Backend.Equipment
                                     strExtra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
                             }
                         }
-                        foreach (Gear objGear in _objCharacter.Gear)
-                        {
-                            if (objGear.InternalId == AmmoLoaded)
-                            {
-                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-                            }
-                        }
+                        
+                        string strWeaponBonusPool = _objCharacter.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
@@ -3659,7 +3626,7 @@ namespace Chummer.Backend.Equipment
 
                 string strReturn = strSkill + " (" + intDicePool.ToString() + ')';
 
-                if (objSkill != null && (!string.IsNullOrEmpty(objSkill.Specialization) && !objSkill.IsExoticSkill))
+                if (!string.IsNullOrEmpty(objSkill?.Specialization) && !objSkill.IsExoticSkill)
                 {
                     if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
                         strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + " (2)";
@@ -3791,19 +3758,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Mount slot that is used when mounting this weapon to another weapon.
         /// </summary>
-        public string Mount
-        {
-            get => _mount;
-            private set => _mount = value;
-        }
+        public string Mount => _strMount;
+
         /// <summary>
         /// Additional Mount slot that is used when mounting this weapon to another weapon.
         /// </summary>
-        public string ExtraMount
-        {
-            get => _extraMount;
-            private set => _extraMount = value;
-        }
+        public string ExtraMount => _strExtraMount;
 
         /// <summary>
         /// Method used to fire the Weapon. If not vehicle mounted, always returns Skill.

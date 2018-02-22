@@ -56,6 +56,9 @@ Application Changes:
 - Added tooltips to knowledge skill controls that function similarly to those for active skill controls.
 - Fixed the No Armor Encumbrance house rule from applying by default and not being changable through the UI.
 - Added the ability to use groups in forbidden and required sections where the user is only required to have one of the items in the group (intended for use within "allof" nodes). These groups are processed via "grouponeof" nodes.
+- Fixed an issue where trying to add plugins and/or notes to cyberware or children of cyberware in a vehicle would result in said plugin getting added to the selected node in the Cyberware tab.
+- Fixed an issue where weapons accessories that altered the cost of additional weapons accessories (e.g. Vintage) would not work properly.
+- Added a button to immediately delete the selected metamagic, initiation grade, art, enhancement, etc. in the metamagics tree instead of users having to always use the Delete button on their keyboard to perform the action.
 
 Data Changes:
 
@@ -81,6 +84,10 @@ New Strings:
 - String_DeviceRating
 - Label_OtherCoreCM
 - Label_OtherMatrixCM
+- Button_RemoveInitiateGrade
+- Button_RemoveSubmersionGrade
+- Button_RemoveMetamagic
+- Button_RemoveEcho
 
 Changed Strings:
 

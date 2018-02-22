@@ -152,6 +152,10 @@ namespace Chummer
             this.tsCyberwareAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsCyberwareAddGear = new System.Windows.Forms.ToolStripMenuItem();
             this.tsCyberwareNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsVehicleCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleCyberwareAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleCyberwareAddGear = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleCyberwareNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsDeleteCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCyberwareSell = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -537,6 +541,7 @@ namespace Chummer
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.treMetamagic = new System.Windows.Forms.TreeView();
             this.cmdAddMetamagic = new System.Windows.Forms.Button();
+            this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.tabCyberware = new System.Windows.Forms.TabPage();
             this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
             this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
@@ -1153,6 +1158,8 @@ namespace Chummer
             this.tsImprovementRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCyberwareGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsVehicleCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleCyberwareGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsWeaponAccessoryGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicleLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1190,6 +1197,7 @@ namespace Chummer
             this.cmsSpellButton.SuspendLayout();
             this.cmsComplexForm.SuspendLayout();
             this.cmsCyberware.SuspendLayout();
+            this.cmsVehicleCyberware.SuspendLayout();
             this.cmsDeleteCyberware.SuspendLayout();
             this.cmsLifestyle.SuspendLayout();
             this.cmsArmor.SuspendLayout();
@@ -1288,6 +1296,7 @@ namespace Chummer
             this.cmsArmorLocation.SuspendLayout();
             this.cmsImprovementLocation.SuspendLayout();
             this.cmsCyberwareGear.SuspendLayout();
+            this.cmsVehicleCyberwareGear.SuspendLayout();
             this.cmsWeaponAccessoryGear.SuspendLayout();
             this.cmsVehicleLocation.SuspendLayout();
             this.cmsVehicleWeaponAccessory.SuspendLayout();
@@ -2278,11 +2287,47 @@ namespace Chummer
             this.tsCyberwareNotes.Text = "&Notes";
             this.tsCyberwareNotes.Click += new System.EventHandler(this.tsCyberwareNotes_Click);
             // 
+            // cmsVehicleCyberware
+            // 
+            this.cmsVehicleCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.tsVehicleCyberwareAddAsPlugin,
+                this.tsVehicleCyberwareAddGear,
+                this.tsVehicleCyberwareNotes});
+            this.cmsVehicleCyberware.Name = "cmsVehicleCyberware";
+            this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 70);
+            // 
+            // tsVehicleCyberwareAddAsPlugin
+            // 
+            this.tsVehicleCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsVehicleCyberwareAddAsPlugin.Name = "tsVehicleCyberwareAddAsPlugin";
+            this.tsVehicleCyberwareAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleCyberwareAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsVehicleCyberwareAddAsPlugin.Text = "&Add as Plugin";
+            this.tsVehicleCyberwareAddAsPlugin.Click += new System.EventHandler(this.tsVehicleCyberwareAddAsPlugin_Click);
+            // 
+            // tsVehicleCyberwareAddGear
+            // 
+            this.tsVehicleCyberwareAddGear.Image = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleCyberwareAddGear.Name = "tsVehicleCyberwareAddGear";
+            this.tsVehicleCyberwareAddGear.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleCyberwareAddGear.Tag = "Menu_AddGear";
+            this.tsVehicleCyberwareAddGear.Text = "Add &Gear";
+            this.tsVehicleCyberwareAddGear.Click += new System.EventHandler(this.tsVehicleCyberwareAddGear_Click);
+            // 
+            // tsVehicleCyberwareNotes
+            // 
+            this.tsVehicleCyberwareNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleCyberwareNotes.Name = "tsVehicleCyberwareNotes";
+            this.tsVehicleCyberwareNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleCyberwareNotes.Tag = "Menu_Notes";
+            this.tsVehicleCyberwareNotes.Text = "&Notes";
+            this.tsVehicleCyberwareNotes.Click += new System.EventHandler(this.tsVehicleCyberwareNotes_Click);
+            // 
             // cmsDeleteCyberware
             // 
             this.cmsDeleteCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCyberwareSell});
-            this.cmsDeleteCyberware.Name = "cmsCyberware";
+            this.cmsDeleteCyberware.Name = "cmsDeleteCyberware";
             this.cmsDeleteCyberware.Size = new System.Drawing.Size(120, 26);
             // 
             // tsCyberwareSell
@@ -6380,6 +6425,7 @@ namespace Chummer
             this.tabInitiation.Controls.Add(this.lblMetamagicSourceLabel);
             this.tabInitiation.Controls.Add(this.treMetamagic);
             this.tabInitiation.Controls.Add(this.cmdAddMetamagic);
+            this.tabInitiation.Controls.Add(this.cmdDeleteMetamagic);
             this.tabInitiation.Location = new System.Drawing.Point(4, 22);
             this.tabInitiation.Name = "tabInitiation";
             this.tabInitiation.Padding = new System.Windows.Forms.Padding(3);
@@ -6526,6 +6572,18 @@ namespace Chummer
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
+            // 
+            // cmdDeleteMetamagic
+            // 
+            this.cmdDeleteMetamagic.AutoSize = true;
+            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(257, 35);
+            this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
+            this.cmdDeleteMetamagic.Size = new System.Drawing.Size(102, 23);
+            this.cmdDeleteMetamagic.TabIndex = 94;
+            this.cmdDeleteMetamagic.Tag = "Button_RemoveInitiateGrade";
+            this.cmdDeleteMetamagic.Text = "&Remove Initiate Grade";
+            this.cmdDeleteMetamagic.UseVisualStyleBackColor = true;
+            this.cmdDeleteMetamagic.Click += new System.EventHandler(this.cmdDeleteMetamagic_Click);
             // 
             // tabCyberware
             // 
@@ -13817,11 +13875,27 @@ namespace Chummer
             this.tsCyberwareGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsCyberwareGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsCyberwareGearMenuAddAsPlugin_Click);
             // 
+            // cmsVehicleCyberwareGear
+            // 
+            this.cmsVehicleCyberwareGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.tsVehicleCyberwareGearMenuAddAsPlugin});
+            this.cmsVehicleCyberwareGear.Name = "cmsVehicleCyberwareGear";
+            this.cmsVehicleCyberwareGear.Size = new System.Drawing.Size(148, 26);
+            // 
+            // tsVehicleCyberwareGearMenuAddAsPlugin
+            // 
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Name = "tsVehicleCyberwareGearMenuAddAsPlugin";
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Text = "&Add as Plugin";
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsVehicleCyberwareGearMenuAddAsPlugin_Click);
+            // 
             // cmsWeaponAccessoryGear
             // 
             this.cmsWeaponAccessoryGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsWeaponAccessoryGearMenuAddAsPlugin});
-            this.cmsWeaponAccessoryGear.Name = "cmsCyberwareGear";
+            this.cmsWeaponAccessoryGear.Name = "cmsWeaponAccessoryGear";
             this.cmsWeaponAccessoryGear.Size = new System.Drawing.Size(148, 26);
             // 
             // tsWeaponAccessoryGearMenuAddAsPlugin
@@ -13901,7 +13975,7 @@ namespace Chummer
             // 
             this.cmsVehicleWeaponAccessoryGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin});
-            this.cmsVehicleWeaponAccessoryGear.Name = "cmsCyberwareGear";
+            this.cmsVehicleWeaponAccessoryGear.Name = "cmsVehicleWeaponAccessoryGear";
             this.cmsVehicleWeaponAccessoryGear.Size = new System.Drawing.Size(148, 26);
             // 
             // tsVehicleWeaponAccessoryGearMenuAddAsPlugin
@@ -14114,6 +14188,7 @@ namespace Chummer
             this.cmsSpellButton.ResumeLayout(false);
             this.cmsComplexForm.ResumeLayout(false);
             this.cmsCyberware.ResumeLayout(false);
+            this.cmsVehicleCyberware.ResumeLayout(false);
             this.cmsDeleteCyberware.ResumeLayout(false);
             this.cmsLifestyle.ResumeLayout(false);
             this.cmsArmor.ResumeLayout(false);
@@ -14242,6 +14317,7 @@ namespace Chummer
             this.cmsArmorLocation.ResumeLayout(false);
             this.cmsImprovementLocation.ResumeLayout(false);
             this.cmsCyberwareGear.ResumeLayout(false);
+            this.cmsVehicleCyberwareGear.ResumeLayout(false);
             this.cmsWeaponAccessoryGear.ResumeLayout(false);
             this.cmsVehicleLocation.ResumeLayout(false);
             this.cmsVehicleWeaponAccessory.ResumeLayout(false);
@@ -14280,6 +14356,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuFileSave;
         private System.Windows.Forms.ContextMenuStrip cmsCyberware;
         private System.Windows.Forms.ToolStripMenuItem tsCyberwareAddAsPlugin;
+        private System.Windows.Forms.ContextMenuStrip cmsVehicleCyberware;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareAddAsPlugin;
         private System.Windows.Forms.ContextMenuStrip cmsWeapon;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAddAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsArmor;
@@ -14419,6 +14497,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsArmorNotes;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponNotes;
         private System.Windows.Forms.ToolStripMenuItem tsCyberwareNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareNotes;
         private System.Windows.Forms.ContextMenuStrip cmsArmorMod;
         private System.Windows.Forms.ToolStripMenuItem tsArmorModNotes;
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
@@ -14494,10 +14573,13 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsEditLifestyle;
         private System.Windows.Forms.ContextMenuStrip cmsCyberwareGear;
         private System.Windows.Forms.ToolStripMenuItem tsCyberwareGearMenuAddAsPlugin;
+        private System.Windows.Forms.ContextMenuStrip cmsVehicleCyberwareGear;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareGearMenuAddAsPlugin;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponAccessoryGear;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAccessoryGearMenuAddAsPlugin;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAccessoryAddGear;
         private System.Windows.Forms.ToolStripMenuItem tsCyberwareAddGear;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareAddGear;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleLocation;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleRenameLocation;
         private System.Windows.Forms.ToolStripButton tsbCopy;
@@ -14752,6 +14834,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetamagicSourceLabel;
         private System.Windows.Forms.TreeView treMetamagic;
         private System.Windows.Forms.Button cmdAddMetamagic;
+        private System.Windows.Forms.Button cmdDeleteMetamagic;
         private System.Windows.Forms.TabPage tabCyberware;
         private System.Windows.Forms.Label lblCyberlimbSTR;
         private System.Windows.Forms.Label lblCyberlimbAGI;

@@ -4483,19 +4483,13 @@ namespace Chummer
                                     if (i < _objCharacter.Foci.Count)
                                     {
                                         Focus objFocus = _objCharacter.Foci[i];
-                                        if (objFocus.GearId == objGear.InternalId)
+                                        if (objFocus.GearObject == objGear)
                                         {
-                                            objFocus.Rating = objGear.Rating;
                                             intFociTotal += objFocus.Rating;
                                             // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                             if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                                             {
-                                                // Mark the Gear a Bonded.
-                                                foreach (Gear objCharacterGear in _objCharacter.Gear)
-                                                {
-                                                    if (objCharacterGear.InternalId == objFocus.GearId)
-                                                        objCharacterGear.Bonded = false;
-                                                }
+                                                objGear.Bonded = false;
                                                 _objCharacter.Foci.RemoveAt(i);
                                                 objNode.Checked = false;
                                             }
@@ -4547,11 +4541,11 @@ namespace Chummer
                             if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
-                            HashSet<string> setNewGearIds = new HashSet<string>();
+                            HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                setNewGearIds.Add(objGear.InternalId);
+                                setNewGears.Add(objGear);
 
-                            int intFociTotal = _objCharacter.Foci.Where(x => !setNewGearIds.Contains(x.GearId)).Sum(x => x.Rating);
+                            int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject)).Sum(x => x.Rating);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -4569,19 +4563,14 @@ namespace Chummer
                                                 if (i < _objCharacter.Foci.Count)
                                                 {
                                                     Focus objFocus = _objCharacter.Foci[i];
-                                                    if (objFocus.GearId == objGear.InternalId)
+                                                    if (objFocus.GearObject == objGear)
                                                     {
-                                                        objFocus.Rating = objGear.Rating;
                                                         intFociTotal += objFocus.Rating;
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                                                         {
                                                             // Mark the Gear a Bonded.
-                                                            foreach (Gear objCharacterGear in _objCharacter.Gear)
-                                                            {
-                                                                if (objCharacterGear.InternalId == objFocus.GearId)
-                                                                    objCharacterGear.Bonded = false;
-                                                            }
+                                                            objGear.Bonded = false;
                                                             _objCharacter.Foci.RemoveAt(i);
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
@@ -4642,7 +4631,7 @@ namespace Chummer
                                                 if (i < _objCharacter.Foci.Count)
                                                 {
                                                     Focus objFocus = _objCharacter.Foci[i];
-                                                    if (objFocus.GearId == objGear.InternalId)
+                                                    if (objFocus.GearObject == objGear)
                                                     {
                                                         _objCharacter.Foci.RemoveAt(i);
                                                     }
@@ -4685,7 +4674,7 @@ namespace Chummer
                                                 if (i < _objCharacter.Foci.Count)
                                                 {
                                                     Focus objFocus = _objCharacter.Foci[i];
-                                                    if (objFocus.GearId == objGear.InternalId)
+                                                    if (objFocus.GearObject == objGear)
                                                     {
                                                         _objCharacter.Foci.RemoveAt(i);
                                                     }
@@ -4718,11 +4707,11 @@ namespace Chummer
                             if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
-                            HashSet<string> setNewGearIds = new HashSet<string>();
+                            HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                setNewGearIds.Add(objGear.InternalId);
+                                setNewGears.Add(objGear);
 
-                            int intFociTotal = _objCharacter.Foci.Where(x => !setNewGearIds.Contains(x.GearId)).Sum(x => x.Rating);
+                            int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject)).Sum(x => x.Rating);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -4740,19 +4729,14 @@ namespace Chummer
                                                 if (i < _objCharacter.Foci.Count)
                                                 {
                                                     Focus objFocus = _objCharacter.Foci[i];
-                                                    if (objFocus.GearId == objGear.InternalId)
+                                                    if (objFocus.GearObject == objGear)
                                                     {
-                                                        objFocus.Rating = objGear.Rating;
                                                         intFociTotal += objFocus.Rating;
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                                                         {
                                                             // Mark the Gear a Bonded.
-                                                            foreach (Gear objCharacterGear in _objCharacter.Gear)
-                                                            {
-                                                                if (objCharacterGear.InternalId == objFocus.GearId)
-                                                                    objCharacterGear.Bonded = false;
-                                                            }
+                                                            objGear.Bonded = false;
                                                             _objCharacter.Foci.RemoveAt(i);
                                                             objNode.Checked = false;
                                                             if (!blnWarned)

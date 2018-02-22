@@ -74,14 +74,14 @@ namespace Chummer
             }
 
             string strPath = Path.Combine(Application.StartupPath, "data", txtFileName.Text);
-            bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument();
-            if (!blnNewFile)
+            XmlDocument objXmlCurrentDocument = null;
+            if (File.Exists(strPath))
             {
                 try
                 {
+                    objXmlCurrentDocument = new XmlDocument();
                     using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                     {
                         objXmlCurrentDocument.Load(objStreamReader);
@@ -114,11 +114,12 @@ namespace Chummer
             objWriter.WriteStartElement("packs");
 
             // If this is not a new file, write out the current contents.
-            if (!blnNewFile)
+            if (objXmlCurrentDocument != null)
             {
-                XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*");
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                    objXmlNode.WriteContentTo(objWriter);
+                using (XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*"))
+                    if (objXmlNodeList?.Count > 0)
+                        foreach (XmlNode objXmlNode in objXmlNodeList)
+                            objXmlNode.WriteContentTo(objWriter);
             }
 
             // <pack>

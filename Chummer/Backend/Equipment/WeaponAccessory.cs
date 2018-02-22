@@ -858,6 +858,7 @@ namespace Chummer.Backend.Equipment
                 StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
                 objCost.CheapReplace(strCostExpr, "Rating", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.CheapReplace(strCostExpr, "Weapon Cost", () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.CheapReplace(strCostExpr, "Weapon Total Cost", () => (Parent?.MultipliableCost(this) ?? 0.0m).ToString(GlobalOptions.InvariantCultureInfo));
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
@@ -871,7 +872,7 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
                 if (Parent != null)
-                    decReturn *= Parent.CostMultiplier;
+                    decReturn *= Parent.AccessoryMultiplier;
 
                 return decReturn;
             }

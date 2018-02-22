@@ -97,11 +97,7 @@ namespace Chummer
         private Guid _guiQualityId;
         private string _strStage;
 
-        public string Stage
-        {
-            get => _strStage;
-            private set => _strStage = value;
-        }
+        public string Stage => _strStage;
 
         #region Helper Methods
         /// <summary>

@@ -1572,18 +1572,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_spells");
-            Timekeeper.Start("load_char_foci");
-
-            // Foci.
-            objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
-            foreach (XmlNode objXmlFocus in objXmlNodeList)
-            {
-                Focus objFocus = new Focus(this);
-                objFocus.Load(objXmlFocus);
-                _lstFoci.Add(objFocus);
-            }
-
-            Timekeeper.Finish("load_char_foci");
             Timekeeper.Start("load_char_powers");
 
             // Powers.
@@ -1819,6 +1807,18 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_cpow");
+            Timekeeper.Start("load_char_foci");
+
+            // Foci.
+            objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
+            foreach (XmlNode objXmlFocus in objXmlNodeList)
+            {
+                Focus objFocus = new Focus(this);
+                objFocus.Load(objXmlFocus);
+                _lstFoci.Add(objFocus);
+            }
+
+            Timekeeper.Finish("load_char_foci");
             Timekeeper.Start("load_char_init");
 
             // Initiation Grades.
