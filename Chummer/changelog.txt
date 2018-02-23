@@ -59,6 +59,7 @@ Application Changes:
 - Fixed an issue where trying to add plugins and/or notes to cyberware or children of cyberware in a vehicle would result in said plugin getting added to the selected node in the Cyberware tab.
 - Fixed an issue where weapons accessories that altered the cost of additional weapons accessories (e.g. Vintage) would not work properly.
 - Added a button to immediately delete the selected metamagic, initiation grade, art, enhancement, etc. in the metamagics tree instead of users having to always use the Delete button on their keyboard to perform the action.
+- Unhardcoded skill selection in the weaponcategorydv bonus/improvement so that it is no longer always RAW melee combat active skills.
 
 Data Changes:
 

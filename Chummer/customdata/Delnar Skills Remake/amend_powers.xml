@@ -39,6 +39,9 @@
         <specificskill xpathfilter="name = 'Negotiation'">
           <name>Persuade</name>
         </specificskill>
+        <weaponcategorydv>
+          <selectskill xpathfilter="@limittoskill='Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat'" amendoperation="replace" limittoskill="Astral,Edged Weapons,Blunt Weapons,Unarmed Combat" />
+        </weaponcategorydv>
       </bonus>
     </power>
     <power>

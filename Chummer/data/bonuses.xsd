@@ -1168,11 +1168,22 @@
           <xs:sequence>
             <xs:element name="selectskill" minOccurs="0" maxOccurs="1">
               <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="skillcategory" type="xs:string" use="optional" />
-                  </xs:extension>
-                </xs:simpleContent>
+                <xs:sequence>
+                  <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+                <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+                <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+                <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+                <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+                <xs:attribute name="skillgroup" type="xs:string" use="optional" />
               </xs:complexType>
             </xs:element>
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -1183,17 +1194,22 @@
       <xs:element name="weaponcategorydice" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="selectskill" minOccurs="0" maxOccurs="1">
+            <xs:element name="selectcategory" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="skillcategory" type="xs:string" use="optional" />
-                  </xs:extension>
-                </xs:simpleContent>
+                <xs:sequence>
+                  <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                  <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
               </xs:complexType>
             </xs:element>
-            <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="category" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                  <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
