@@ -3722,7 +3722,7 @@ namespace Chummer
                 // The number of Complex Forms cannot exceed the character's LOG.
                 if (CharacterObject.ComplexForms.Count >= ((CharacterObject.RES.Value * 2) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimitCareer", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
                 int intComplexFormKarmaCost = CharacterObject.ComplexFormKarmaCost;

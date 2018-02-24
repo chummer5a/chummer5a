@@ -4015,8 +4015,8 @@ namespace Chummer
 
             do
             {
-                // The number of Complex Forms cannot exceed twice the character's LOG.
-                if (CharacterObject.ComplexForms.Count >= ((CharacterObject.LOG.Value * 2) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)) && !CharacterObject.IgnoreRules)
+                // The number of Complex Forms cannot exceed twice the character's RES.
+                if (CharacterObject.ComplexForms.Count >= ((CharacterObject.RES.Value * 2) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)) && !CharacterObject.IgnoreRules)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
