@@ -77,7 +77,6 @@ namespace Chummer
         private int _intAIAdvancedProgramLimit;
         private int _intContactPoints;
         private int _intContactPointsUsed;
-        private int _intMetageneticLimit;
         private int _intRedlinerBonus;
 
         // General character info.
@@ -323,8 +322,6 @@ namespace Chummer
             objWriter.WriteElementString("metavariant", _strMetavariant);
             // <metatypecategory />
             objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
-            // <metageneticlimit />
-            objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
             // <movement />
             objWriter.WriteElementString("movement", _strMovement);
             // <walk />
@@ -406,8 +403,6 @@ namespace Chummer
                 objWriter.WriteElementString("iscritter", _blnIsCritter.ToString());
             if (_blnPossessed)
                 objWriter.WriteElementString("possessed", _blnPossessed.ToString());
-            if (_intMetageneticLimit > 0)
-                objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
             // <karma />
             objWriter.WriteElementString("karma", _intKarma.ToString());
             // <totalkarma />
@@ -1164,8 +1159,6 @@ namespace Chummer
                 _lstPrioritySkills.Add(strSkill2);
 
             xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
-
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
 
             xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
@@ -5201,8 +5194,7 @@ namespace Chummer
         /// </summary>
         public int MetageneticLimit
         {
-            get => _intMetageneticLimit;
-            set => _intMetageneticLimit = value;
+            get => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
         }
 
         /// <summary>

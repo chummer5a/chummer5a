@@ -6306,16 +6306,6 @@ namespace Chummer
 
             // Remove the Improvements that were created by the Quality.
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objSelectedQuality.InternalId);
-
-            switch (objSelectedQuality.Name)
-            {
-                case "Changeling (Class I SURGE)":
-                case "Changeling (Class II SURGE)":
-                case "Changeling (Class III SURGE)":
-                    CharacterObject.MetageneticLimit = 0;
-                    break;
-            }
-
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
             {

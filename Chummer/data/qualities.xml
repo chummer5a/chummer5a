@@ -2497,6 +2497,9 @@
       <karma>10</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>10</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class II SURGE)</quality>
@@ -2513,6 +2516,9 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>15</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -2529,6 +2535,9 @@
       <karma>30</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>30</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>

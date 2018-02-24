@@ -549,6 +549,8 @@ namespace Chummer
                     return objImprovementAdder.addware;
                 case "WEAPONACCURACY":
                     return objImprovementAdder.weaponaccuracy;
+                case "METAGENETICLIMIT":
+                    return objImprovementAdder.metageneticlimit;
                 // No method matches, return a null pointer
                 default:
                     return null;

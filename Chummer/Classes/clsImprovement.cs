@@ -298,7 +298,8 @@ namespace Chummer
             ContactMakeFree,
             FreeWare,
             WeaponAccuracy,
-            NumImprovementTypes // 🡐 This one should always be the last defined enum
+            MetageneticLimit,
+            NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource

@@ -432,20 +432,6 @@ namespace Chummer
             if (objNode == null || !objNode.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
                 return;
 
-            //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
-            switch (strSelectedQuality)
-            {
-                case "Changeling (Class I SURGE)":
-                    _objCharacter.MetageneticLimit = 10;
-                    break;
-                case "Changeling (Class II SURGE)":
-                    _objCharacter.MetageneticLimit = 15;
-                    break;
-                case "Changeling (Class III SURGE)":
-                    _objCharacter.MetageneticLimit = 30;
-                    break;
-            }
-
             _strSelectedQuality = strSelectedQuality;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
