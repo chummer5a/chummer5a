@@ -63,6 +63,7 @@ Application Changes:
 - Metagenetic Limit for Changelings is now provided by an improvement. Characters in create mode will need to Reapply Improvements to gain access to it.
 - Fixed an issue where gear that comes with a gear parent and has a set rating will use the maximum rating of the gear instead of the one specified in the data files. Fixes #2521.
 - Fixed an issue where specifying extra gear children of a gear parent that comes with a gear grandparent would not work.
+- Fixed an issue where the UI would not update with changes to skill specializations in career mode. Fixes #2522.
 
 Data Changes:
 
