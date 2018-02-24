@@ -3192,33 +3192,13 @@ namespace Chummer.Classes
 
             if (nodWeapon["selectskill"] != null)
             {
-                // Display the Select Skill window and record which Skill was selected.
-                frmSelectSkill frmPickCategory = new frmSelectSkill(_objCharacter, _strFriendlyName)
-                {
-                    LimitToSkill = "Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat",
-                    Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
-                        : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
-                };
-                
-                Log.Info("_strForcedValue = " + ForcedValue);
+                bool blnDummy = false;
+                SelectedValue = ImprovementManager.DoSelectSkill(nodWeapon["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
 
-                if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
-                    ForcedValue = string.Empty;
-
-                if (!string.IsNullOrEmpty(ForcedValue))
-                {
-                    frmPickCategory.Opacity = 0;
-                }
-                frmPickCategory.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                if (blnDummy)
                 {
                     throw new AbortedException();
                 }
-
-                SelectedValue = frmPickCategory.SelectedSkill;
 
                 Log.Info("strSelected = " + SelectedValue);
 
@@ -3250,72 +3230,77 @@ namespace Chummer.Classes
         {
             Log.Info("WeaponCategoryDice");
             Log.Info("WeaponCategoryDice = " + bonusNode.OuterXml);
-            if (bonusNode["selectcategory"] != null)
+            using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategory"))
             {
-                // Display the Select Category window and record which Category was selected.
-                XmlNodeList objXmlCategoryList = bonusNode.SelectNodes("selectcategory");
-                frmSelectItem frmPickCategory = new frmSelectItem();
-                List<ListItem> lstGeneralItems = new List<ListItem>();
-
-                if (objXmlCategoryList != null)
+                if (xmlSelectCategoryList?.Count > 0)
                 {
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
                     {
-                        string strInnerText = objXmlCategory.InnerText;
-                        lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText, GlobalOptions.Language)));
+                        // Display the Select Category window and record which Category was selected.
+                        List<ListItem> lstGeneralItems = new List<ListItem>();
+
+                        XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category");
+                        if (xmlCategoryList?.Count > 0)
+                        {
+                            foreach (XmlNode objXmlCategory in xmlCategoryList)
+                            {
+                                string strInnerText = objXmlCategory.InnerText;
+                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText, GlobalOptions.Language)));
+                            }
+                        }
+
+                        frmSelectItem frmPickCategory = new frmSelectItem
+                        {
+                            GeneralItems = lstGeneralItems,
+                            Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                                : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
+                        };
+
+                        Log.Info("_strForcedValue = " + ForcedValue);
+
+                        if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
+                            ForcedValue = string.Empty;
+
+                        if (!string.IsNullOrEmpty(ForcedValue))
+                        {
+                            frmPickCategory.Opacity = 0;
+                            frmPickCategory.ForceItem = ForcedValue;
+                        }
+                        frmPickCategory.ShowDialog();
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        Log.Info("strSelected = " + SelectedValue);
+
+                        foreach (Power objPower in _objCharacter.Powers)
+                        {
+                            if (objPower.InternalId == SourceName)
+                            {
+                                objPower.Extra = SelectedValue;
+                            }
+                        }
+
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToInt(_objCharacter, xmlSelectCategory["value"]?.InnerText, _intRating));
                     }
                 }
-
-                frmPickCategory.GeneralItems = lstGeneralItems;
-
-                frmPickCategory.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
-                    : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language);
-
-                Log.Info("_strForcedValue = " + ForcedValue);
-
-                if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
-                    ForcedValue = string.Empty;
-
-                if (!string.IsNullOrEmpty(ForcedValue))
-                {
-                    frmPickCategory.Opacity = 0;
-                    frmPickCategory.ForceItem = ForcedValue;
-                }
-                frmPickCategory.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickCategory.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedValue = frmPickCategory.SelectedItem;
-
-                Log.Info("strSelected = " + SelectedValue);
-
-                foreach (Power objPower in _objCharacter.Powers)
-                {
-                    if (objPower.InternalId == SourceName)
-                    {
-                        objPower.Extra = SelectedValue;
-                    }
-                }
-
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating));
             }
-            else
+
+            using (XmlNodeList xmlCategoryList = bonusNode.SelectNodes("category"))
             {
-                XmlNodeList objXmlCategoryList = bonusNode.SelectNodes("Weaponcategorydice");
-                if (objXmlCategoryList != null)
+                if (xmlCategoryList?.Count > 0)
                 {
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    foreach (XmlNode xmlCategory in xmlCategoryList)
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(objXmlCategory["name"]?.InnerText, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToInt(_objCharacter, objXmlCategory["value"]?.InnerXml, _intRating));
+                        CreateImprovement(xmlCategory["name"]?.InnerText, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToInt(_objCharacter, xmlCategory["value"]?.InnerText, _intRating));
                     }
                 }
             }

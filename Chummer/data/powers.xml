@@ -114,8 +114,7 @@
       </adeptwayrequires>
       <bonus>
         <weaponcategorydv>
-          <selectskill skillcategory="Combat Active">
-          </selectskill>
+          <selectskill limittoskill="Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat" />
           <bonus>1</bonus>
         </weaponcategorydv>
       </bonus>
