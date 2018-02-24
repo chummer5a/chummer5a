@@ -2801,10 +2801,12 @@
           <name>Agent</name>
           <category>Software</category>
           <rating>3</rating>
-          <usegear>
-            <name>Love Life Management</name>
-            <category>Software</category>
-          </usegear>
+          <gears>
+            <usegear>
+              <name>Love Life Management</name>
+              <category>Software</category>
+            </usegear>
+          </gears>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>

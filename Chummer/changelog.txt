@@ -61,6 +61,8 @@ Application Changes:
 - Added a button to immediately delete the selected metamagic, initiation grade, art, enhancement, etc. in the metamagics tree instead of users having to always use the Delete button on their keyboard to perform the action.
 - Unhardcoded skill selection in the weaponcategorydv bonus/improvement so that it is no longer always RAW melee combat active skills.
 - Metagenetic Limit for Changelings is now provided by an improvement. Characters in create mode will need to Reapply Improvements to gain access to it.
+- Fixed an issue where gear that comes with a gear parent and has a set rating will use the maximum rating of the gear instead of the one specified in the data files. Fixes #2521.
+- Fixed an issue where specifying extra gear children of a gear parent that comes with a gear grandparent would not work.
 
 Data Changes:
 
@@ -80,7 +82,9 @@ Data Changes:
 - Fixed incorrect Essence cost for skillwires, which was using the core rulebook value of 0.1 x Rating instead of the Chrome Flesh value of 0.2 x Rating.
 - Fixed an issue where Move-By-Wires and Skillwires would stack when determining the maximum rating of activesoft that could be used.
 - Fixed an issue where adepts following The Spiritual Way could not learn Psychometry, but could learn Sympathetic Linking without Psychometry.
-- Added metageneticlimit Improvement to the three Changeling qualities. 
+- Added metageneticlimit Improvement to the three Changeling qualities.
+- The agent in Nixdorf Sekretar w/ Liebesekretar now properly comes with love life management software.
+
 New Strings:
 
 - String_DeviceRating
