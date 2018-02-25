@@ -65,6 +65,7 @@ Application Changes:
 - Fixed an issue where specifying extra gear children of a gear parent that comes with a gear grandparent would not work.
 - Fixed an issue where the UI would not update with changes to skill specializations in career mode. Fixes #2522.
 - Fixed an issue where Chummer5a did not comply with official errata that the number of complex forms a technomancer can learn at character generation cannot exceed twice their RES rating (it previously checked against their LOG rating).
+- Fixed a crash that occurred when entering the "Karma and Nuyen" tab with a karma or nuyen entry whose date is set to sometime after the current date and time of the user, as well as when adding a karma or nuyen entry with a date set to sometime after the current date and time of the user. Fixes #2523, fixes #2519.
 
 Data Changes:
 

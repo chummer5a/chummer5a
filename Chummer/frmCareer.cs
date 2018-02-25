@@ -19118,13 +19118,17 @@ namespace Chummer
             lstNuyen.ContextMenuStrip = null;
             //Find the first karma/nuyen entry
             DateTime KarmaFirst = DateTime.MinValue;
+            DateTime KarmaLast = DateTime.Now;
             DateTime NuyenFirst = DateTime.MinValue;
+            DateTime NuyenLast = DateTime.Now;
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
                     if (KarmaFirst == DateTime.MinValue || objExpense.Date.CompareTo(KarmaFirst) < 0)
                         KarmaFirst = objExpense.Date;
+                    if (objExpense.Date.CompareTo(KarmaLast) > 0)
+                        KarmaLast = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
                     {
@@ -19158,6 +19162,8 @@ namespace Chummer
                 {
                     if (NuyenFirst == DateTime.MinValue || objExpense.Date.CompareTo(NuyenFirst) < 0)
                         NuyenFirst = objExpense.Date;
+                    if (objExpense.Date.CompareTo(NuyenLast) > 0)
+                        NuyenLast = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
                     {
@@ -19232,14 +19238,14 @@ namespace Chummer
             objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
             objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEndOnce(':');
             objKarmaChartArea.AxisX.Minimum = 0;
-            objKarmaChartArea.AxisX.Maximum = (DateTime.Now - KarmaFirst).TotalDays;
+            objKarmaChartArea.AxisX.Maximum = (KarmaLast - KarmaFirst).TotalDays;
 
             // Configure the Nuyen chart.
             ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
             objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
             objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEndOnce(':');
             objNuyenChartArea.AxisX.Minimum = 0;
-            objNuyenChartArea.AxisX.Maximum = (DateTime.Now - NuyenFirst).TotalDays;
+            objNuyenChartArea.AxisX.Maximum = (NuyenLast - NuyenFirst).TotalDays;
             
             double dblKarmaValue = 0;
             double dblNuyenValue = 0;
@@ -19258,8 +19264,8 @@ namespace Chummer
                 }
             }
 
-            objKarmaSeries.Points.AddXY((DateTime.Now - KarmaFirst).TotalDays, CharacterObject.Karma);
-            objNuyenSeries.Points.AddXY((DateTime.Now - NuyenFirst).TotalDays, CharacterObject.Nuyen);
+            objKarmaSeries.Points.AddXY((KarmaLast - KarmaFirst).TotalDays, CharacterObject.Karma);
+            objNuyenSeries.Points.AddXY((NuyenLast - NuyenFirst).TotalDays, CharacterObject.Nuyen);
 
             chtKarma.Invalidate();
             chtNuyen.Invalidate();
