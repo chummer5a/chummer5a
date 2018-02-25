@@ -6334,29 +6334,48 @@ namespace Chummer
                         {
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
+                                int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
-                                    for (int i = panSpirits.Controls.Count - 1; i >= 0; i--)
+                                    int intSpirits = panSpirits.Controls.Count;
+                                    for (int i = 0; i < intSpirits; ++i)
                                     {
-                                        if (panSpirits.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        Control objLoopControl = panSpirits.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
+                                            intMoveUpAmount = objSpiritControl.Height;
                                             panSpirits.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();
+                                            i -= 1;
+                                            intSpirits -= 1;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    for (int i = panSprites.Controls.Count - 1; i >= 0; i--)
+                                    int intSprites = panSprites.Controls.Count;
+                                    for (int i = 0; i < intSprites; ++i)
                                     {
-                                        if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        Control objLoopControl = panSprites.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
+                                            intMoveUpAmount = objSpiritControl.Height;
                                             panSprites.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();
+                                            i -= 1;
+                                            intSprites -= 1;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
                                 }
@@ -6365,37 +6384,54 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            int intSpirits = panSpirits.Controls.Count;
+                            int intSprites = panSprites.Controls.Count;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
+                                int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
-                                    for (int i = panSpirits.Controls.Count - 1; i >= 0; i--)
+                                    for (int i = 0; i < intSpirits; ++i)
                                     {
-                                        if (panSpirits.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        Control objLoopControl = panSpirits.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
+                                            intMoveUpAmount = objSpiritControl.Height;
                                             panSpirits.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();
+                                            i -= 1;
+                                            intSpirits -= 1;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    for (int i = panSprites.Controls.Count - 1; i >= 0; i--)
+                                    for (int i = 0; i < intSprites; ++i)
                                     {
-                                        if (panSprites.Controls[i] is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
+                                        Control objLoopControl = panSprites.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl && objSpiritControl.SpiritObject == objSpirit)
                                         {
+                                            intMoveUpAmount = objSpiritControl.Height;
                                             panSprites.Controls.RemoveAt(i);
                                             objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                             objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                             objSpiritControl.Dispose();
+                                            i -= 1;
+                                            intSprites -= 1;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
                                 }
                             }
-                            int intSpirits = panSpirits.Controls.Count;
-                            int intSprites = panSprites.Controls.Count;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;

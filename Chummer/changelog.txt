@@ -68,6 +68,7 @@ Application Changes:
 - Fixed a crash that occurred when entering the "Karma and Nuyen" tab with a karma or nuyen entry whose date is set to sometime after the current date and time of the user, as well as when adding a karma or nuyen entry with a date set to sometime after the current date and time of the user. Fixes #2523, fixes #2519.
 - When selecting children gear for items that only allow certain categories of gear children and that also have a fixed capacity for said items, only items that consume capacity and/or items in the Custom category (if eligible) are shown.
 - Fixed an issue where changing the rating of a focus would not properly update the corresponding item in the focus list.
+- Fixed an issue where deleting sprites or spirits from anywhere other than the end of their lists would not cause the remaining controls to move up and fill in the empty space.
 
 Data Changes:
 
