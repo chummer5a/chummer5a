@@ -388,6 +388,7 @@ namespace Chummer
         /// </summary>
         public bool ShowPositiveCapacityOnly
         {
+            get => _blnShowPositiveCapacityOnly;
             set
             {
                 _blnShowPositiveCapacityOnly = value;
@@ -401,6 +402,7 @@ namespace Chummer
         /// </summary>
         public bool ShowNegativeCapacityOnly
         {
+            get => _blnShowNegativeCapacityOnly;
             set
             {
                 _blnShowNegativeCapacityOnly = value;
@@ -414,6 +416,7 @@ namespace Chummer
         /// </summary>
         public bool ShowArmorCapacityOnly
         {
+            get => _blnShowArmorCapacityOnly;
             set => _blnShowArmorCapacityOnly = value;
         }
 
@@ -724,7 +727,7 @@ namespace Chummer
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacityField = _blnShowArmorCapacityOnly ? "armorcapacity" : "capacity";
+            string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
 
             if (_eCapacityStyle == CapacityStyle.Zero)
                 lblCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
@@ -896,12 +899,12 @@ namespace Chummer
                     strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
-            if (_blnShowArmorCapacityOnly)
-                strFilter.Append(" and contains(armorcapacity, \"[\")");
-            else if (_blnShowPositiveCapacityOnly)
-                strFilter.Append(" and not(contains(capacity, \"[\"))");
-            else if (_blnShowNegativeCapacityOnly)
-                strFilter.Append(" and contains(capacity, \"[\")");
+            if (ShowArmorCapacityOnly)
+                strFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
+            else if (ShowPositiveCapacityOnly)
+                strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
+            else if (ShowNegativeCapacityOnly)
+                strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
             if (_objParentNode == null)
                 strFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)

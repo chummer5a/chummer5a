@@ -299,7 +299,7 @@ namespace Chummer
 
             RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            RefreshFociFromGear(treFoci, cmsGear);
+            RefreshFociFromGear(treFoci, null);
             RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear);
@@ -759,7 +759,7 @@ namespace Chummer
         private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, notifyCollectionChangedEventArgs);
-            RefreshFociFromGear(treFoci, cmsGear, notifyCollectionChangedEventArgs);
+            RefreshFociFromGear(treFoci, null, notifyCollectionChangedEventArgs);
         }
 
         private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -5447,10 +5447,9 @@ namespace Chummer
                 return;
 
             // Create a new piece of Gear.
-            List<Weapon> lstWeapons = new List<Weapon>();
             Gear objGear = new Gear(CharacterObject);
 
-            objGear.Copy(objSelectedGear, lstWeapons);
+            objGear.Copy(objSelectedGear);
 
             objGear.Quantity = frmPickNumber.SelectedValue;
             objGear.Equipped = objSelectedGear.Equipped;
@@ -5463,12 +5462,6 @@ namespace Chummer
             
             CharacterObject.Gear.Add(objGear);
 
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-            {
-                CharacterObject.Weapons.Add(objWeapon);
-            }
-            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -5648,17 +5641,14 @@ namespace Chummer
             if (objFoundGear == null)
             {
                 // Create a new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
                 Gear objGear = new Gear(CharacterObject);
 
-                objGear.Copy(objSelectedGear, lstWeapons);
+                objGear.Copy(objSelectedGear);
 
                 objGear.Quantity = decMove;
                 objGear.Location = string.Empty;
                 
                 objVehicle.Gear.Add(objGear);
-                foreach (Weapon objWeapon in lstWeapons)
-                    objVehicle.Weapons.Add(objWeapon);
             }
             else
             {
@@ -5760,20 +5750,13 @@ namespace Chummer
                     if (objFoundGear == null)
                     {
                         // Create a new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>();
                         Gear objGear = new Gear(CharacterObject);
 
-                        objGear.Copy(objSelectedGear, lstWeapons);
+                        objGear.Copy(objSelectedGear);
                         
                         objGear.Quantity = decMove;
                         
                         CharacterObject.Gear.Add(objGear);
-
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objGearWeapon in lstWeapons)
-                        {
-                            CharacterObject.Weapons.Add(objGearWeapon);
-                        }
 
                         AddGearImprovements(objGear);
                     }
@@ -8174,10 +8157,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle.GetNode())
-                {
-                    ShowPositiveCapacityOnly = false
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle.GetNode());
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -8324,7 +8304,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11747,6 +11728,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11859,6 +11842,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11979,7 +11964,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12098,7 +12084,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12202,6 +12189,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12316,7 +12305,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12538,7 +12528,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12644,6 +12635,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -13194,15 +13187,10 @@ namespace Chummer
                             // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
                             if (objChild.Parent.Name.StartsWith("Spare Clip") || objChild.Parent.Name.StartsWith("Speed Loader"))
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>();
                                 Gear objNewGear = new Gear(CharacterObject);
-                                objNewGear.Copy(objChild, lstWeapons);
+                                objNewGear.Copy(objChild);
                                 objNewGear.Quantity = objWeapon.AmmoRemaining;
                                 CharacterObject.Gear.Add(objNewGear);
-                                foreach (Weapon objLoopWeapon in lstWeapons)
-                                {
-                                    CharacterObject.Weapons.Add(objLoopWeapon);
-                                }
                                 
                                 goto EndLoop;
                             }
@@ -17958,7 +17946,7 @@ namespace Chummer
             if (!blnNullParent)
             {
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                if (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
+                if (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
                 {
                     frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
 
@@ -17968,6 +17956,9 @@ namespace Chummer
                         MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
+
+                    if (!string.IsNullOrEmpty(strCategories))
+                        frmPickGear.ShowNegativeCapacityOnly = true;
                 }
 
                 // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.

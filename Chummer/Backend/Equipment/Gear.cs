@@ -533,7 +533,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objGear">Gear object to copy.</param>
         /// <param name="lstWeapons">List of Weapons created by the copied item.</param>
-        public void Copy(Gear objGear, List<Weapon> lstWeapons)
+        public void Copy(Gear objGear)
         {
             _objCachedMyXmlNode = objGear.GetNode();
             _SourceGuid = objGear._SourceGuid;
@@ -571,7 +571,7 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGearChild in objGear.Children)
             {
                 Gear objChild = new Gear(_objCharacter);
-                objChild.Copy(objGearChild, lstWeapons);
+                objChild.Copy(objGearChild);
                 _lstChildren.Add(objChild);
             }
 
@@ -1509,23 +1509,7 @@ namespace Chummer.Backend.Equipment
                                  Category == "Tactical AR Software" ||
                                  Category == "Telematics Infrastructure Software" ||
                                  Category == "Sensor Software";
-
-        /// <summary>
-        /// Whether or not the Gear has the Ergonomic Program Option.
-        /// </summary>
-        public bool IsErgonomic
-        {
-            get
-            {
-                foreach (Gear objPlugin in _lstChildren)
-                {
-                    if (objPlugin.Name == "Ergonomic")
-                        return true;
-                }
-                return false;
-            }
-        }
-
+        
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.
         /// </summary>

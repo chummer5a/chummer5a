@@ -4453,7 +4453,7 @@ namespace Chummer
             }
         }
 
-        public void RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        public void RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treFoci.SelectedNode?.Tag.ToString();
 
@@ -4474,7 +4474,7 @@ namespace Chummer
                         case "Foci":
                         case "Metamagic Foci":
                             {
-                                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                 if (objNode == null)
                                     continue;
                                 objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
@@ -4521,7 +4521,7 @@ namespace Chummer
                                             }
                                         }
 
-                                        AddToTree(objStack.CreateTreeNode(objGear, cmsGear), false);
+                                        AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false);
                                     }
                                 }
                             }
@@ -4554,7 +4554,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                         {
-                                            TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                            TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
@@ -4608,7 +4608,7 @@ namespace Chummer
                                                         }
                                                     }
 
-                                                    AddToTree(objStack.CreateTreeNode(objGear, cmsGear));
+                                                    AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
                                                 }
                                             }
                                         }
@@ -4720,7 +4720,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                         {
-                                            TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                                            TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
@@ -4774,7 +4774,7 @@ namespace Chummer
                                                         }
                                                     }
 
-                                                    AddToTree(objStack.CreateTreeNode(objGear, cmsGear));
+                                                    AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
                                                 }
                                             }
                                         }
@@ -4785,7 +4785,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshFociFromGear(treFoci, cmsGear);
+                            RefreshFociFromGear(treFoci, cmsFocus);
                         }
                         break;
                 }
@@ -4811,6 +4811,69 @@ namespace Chummer
                 else
                     lstParentNodeChildren.Add(objNode);
             }
+        }
+
+        /// <summary>
+        /// Refreshes a single focus' rating (for changing ratings in create mode)
+        /// </summary>
+        /// <param name="treFoci">TreeView of foci.</param>
+        /// <param name="objFocusGear">Gear to which the changed focus belongs.</param>
+        /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
+        /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
+        protected bool RefreshSingleFocusRating(TreeView treFoci, Gear objFocusGear, int intNewRating)
+        {
+            if (objFocusGear.Bonded)
+            {
+                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+
+                int intFociTotal = _objCharacter.Foci.Where(x => x.GearObject != objFocusGear).Sum(x => x.Rating);
+
+                if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+            }
+
+            objFocusGear.Rating = intNewRating;
+
+            switch (objFocusGear.Category)
+            {
+                case "Foci":
+                case "Metamagic Foci":
+                {
+                    TreeNode nodFocus = treFoci.FindNode(objFocusGear.InternalId);
+                    if (nodFocus != null)
+                    {
+                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                    }
+                }
+                    break;
+                case "Stacked Focus":
+                    {
+                        for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                        {
+                            if (i < _objCharacter.StackedFoci.Count)
+                            {
+                                StackedFocus objStack = _objCharacter.StackedFoci[i];
+                                if (objStack.GearId == objFocusGear.InternalId)
+                                {
+                                    TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                                    if (nodFocus != null)
+                                    {
+                                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return true;
         }
         
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)

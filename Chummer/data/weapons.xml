@@ -11964,6 +11964,7 @@
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>SR5</source>
       <page>432</page>
@@ -12115,6 +12116,7 @@
       </forbidden>
       <allowgear>
         <gearcategory>Autosofts</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <rating>0</rating>
       <avail>12F</avail>
@@ -12865,6 +12867,7 @@
       <cost>200</cost>
       <allowgear>
         <gearcategory>Commlinks</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>RG</source>
       <page>53</page>
@@ -13681,6 +13684,7 @@
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>2050</source>
       <page>189</page>
