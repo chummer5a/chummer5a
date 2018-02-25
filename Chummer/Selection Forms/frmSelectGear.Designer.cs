@@ -61,7 +61,6 @@ namespace Chummer
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
@@ -425,18 +424,6 @@ namespace Chummer
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
-            // chkAerodynamic
-            // 
-            this.chkAerodynamic.AutoSize = true;
-            this.chkAerodynamic.Location = new System.Drawing.Point(464, 97);
-            this.chkAerodynamic.Name = "chkAerodynamic";
-            this.chkAerodynamic.Size = new System.Drawing.Size(87, 17);
-            this.chkAerodynamic.TabIndex = 39;
-            this.chkAerodynamic.Tag = "Checkbox_Aerodynamic";
-            this.chkAerodynamic.Text = "Aerodynamic";
-            this.chkAerodynamic.UseVisualStyleBackColor = true;
-            this.chkAerodynamic.Visible = false;
-            // 
             // chkBlackMarketDiscount
             // 
             this.chkBlackMarketDiscount.AutoSize = true;
@@ -484,7 +471,6 @@ namespace Chummer
             this.Controls.Add(this.chkShowOnlyAffordItems);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
-            this.Controls.Add(this.chkAerodynamic);
             this.Controls.Add(this.lblTest);
             this.Controls.Add(this.lblTestLabel);
             this.Controls.Add(this.chkStack);
@@ -567,7 +553,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblTest;
         private System.Windows.Forms.Label lblTestLabel;
         private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-        private System.Windows.Forms.CheckBox chkAerodynamic;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;

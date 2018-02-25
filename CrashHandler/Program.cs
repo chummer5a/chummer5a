@@ -39,7 +39,11 @@ namespace CrashHandler
 				try
 				{
 					dmper?.Process?.Kill();
-				} catch { }
+				}
+			    catch
+			    {
+			        // ignored
+			    }
 			}
 		}
 

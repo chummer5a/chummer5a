@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
@@ -149,16 +150,31 @@ namespace Chummer.Backend.Equipment
                     _strCost = strFirstHalf;
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
+            if (!blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), objXmlArmorNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (Bonus != null)
                 {
-                    _guiID = Guid.Empty;
-                    return;
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    {
+                        _strExtra = ImprovementManager.SelectedValue;
+                    }
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+
+                if (WirelessOn && WirelessBonus != null)
                 {
-                    _strExtra = ImprovementManager.SelectedValue;
+                    ImprovementManager.ForcedValue = Extra;
+
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), WirelessBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
                 }
             }
 
@@ -443,12 +459,26 @@ namespace Chummer.Backend.Equipment
 
             if (blnCopy)
             {
-                if (!string.IsNullOrEmpty(Extra))
-                    ImprovementManager.ForcedValue = Extra;
-                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (Bonus != null)
                 {
-                    Extra = ImprovementManager.SelectedValue;
+                    if (!string.IsNullOrEmpty(Extra))
+                        ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    {
+                        Extra = ImprovementManager.SelectedValue;
+                    }
+                }
+
+                if (WirelessOn && WirelessBonus != null)
+                {
+                    ImprovementManager.ForcedValue = Extra;
+
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), WirelessBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
                 }
 
                 if (!_blnEquipped)
@@ -1159,7 +1189,8 @@ namespace Chummer.Backend.Equipment
                         {
                             blnSoftweave = objMod.WirelessBonus.SelectSingleNode("softweave") != null;
                         }
-                        if (blnSoftweave) continue;
+                        if (blnSoftweave)
+                            continue;
                         string strCapacity = objMod.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
@@ -1176,21 +1207,16 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Run through its Gear and deduct the Armor Capacity costs.
-                    foreach (Gear objGear in Gear)
+                    if (Gear.Count > 0)
                     {
-                        string strCapacity = objGear.CalculatedArmorCapacity;
-                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        if (intPos != -1)
+                        object decCapacityLock = new object();
+                        // Run through its Children and deduct the Capacity costs.
+                        Parallel.ForEach(Gear, objChildGear =>
                         {
-                            // If this is a multiple-capacity item, use only the second half.
-                            strCapacity = strCapacity.Substring(intPos + 1);
-                        }
-
-                        if (strCapacity.StartsWith('['))
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (strCapacity == "*")
-                            strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                            decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
+                            lock (decCapacityLock)
+                                decCapacity -= decLoop;
+                        });
                     }
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
@@ -1226,14 +1252,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                CapacityStyle eReturn = CapacityStyle.Zero;
                 string strArmorCapacity = ArmorCapacity;
                 if (!string.IsNullOrEmpty(strArmorCapacity) && strArmorCapacity != "0")
                 {
-                    eReturn = CapacityStyle.Standard;
+                    return CapacityStyle.Standard;
                 }
 
-                return eReturn;
+                return CapacityStyle.Zero;
             }
         }
 

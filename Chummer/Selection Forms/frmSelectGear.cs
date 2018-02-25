@@ -201,14 +201,6 @@ namespace Chummer
                 if (objXmlGear != null)
                 {
                     string strName = objXmlGear.SelectSingleNode("name")?.Value ?? string.Empty;
-                    // If a Grenade is selected, show the Aerodynamic checkbox.
-                    if (strName.StartsWith("Grenade:"))
-                        chkAerodynamic.Visible = true;
-                    else
-                    {
-                        chkAerodynamic.Visible = false;
-                        chkAerodynamic.Checked = false;
-                    }
 
                     // Quantity.
                     nudGearQty.Enabled = true;
@@ -257,16 +249,12 @@ namespace Chummer
                 {
                     nudGearQty.Enabled = false;
                     nudGearQty.Value = 1;
-                    chkAerodynamic.Visible = false;
-                    chkAerodynamic.Checked = false;
                 }
             }
             else
             {
                 nudGearQty.Enabled = false;
                 nudGearQty.Value = 1;
-                chkAerodynamic.Visible = false;
-                chkAerodynamic.Checked = false;
             }
 
             UpdateGearInfo();
@@ -491,12 +479,7 @@ namespace Chummer
         {
             set => _eCapacityStyle = value;
         }
-
-        /// <summary>
-        /// Whether or not a Grenade is Aerodynamic.
-        /// </summary>
-        public bool Aerodynamic => chkAerodynamic.Checked;
-
+        
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>

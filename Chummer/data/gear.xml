@@ -1149,7 +1149,7 @@
     </gear>
     <gear>
       <id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
-      <name>Paint Grenade</name>
+      <name>Grenade: Paint</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
@@ -1160,13 +1160,116 @@
     </gear>
     <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
-      <name>Smokebomb</name>
+      <name>Grenade: Smokebomb</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>HT</source>
       <page>187</page>
       <avail>6</avail>
-      <addweapon>Smokebomb</addweapon>
+      <addweapon>Grenade: Smokebomb</addweapon>
+      <cost>25</cost>
+    </gear>
+    <gear>
+      <id>922c2a9b-88a8-47bf-a3ac-378a0e86be9c</id>
+      <name>Grenade: Flash-Bang, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>6R</avail>
+      <addweapon>Grenade: Flash-Bang, Aerodynamic</addweapon>
+      <cost>100</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>4d27ebbf-02e8-45e7-9c0a-7151f1e4faae</id>
+      <name>Grenade: Flash-Pak, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4</avail>
+      <addweapon>Grenade: Flash-Pak, Aerodynamic</addweapon>
+      <cost>125</cost>
+    </gear>
+    <gear>
+      <id>afde3ea3-2db2-4049-b54a-f471e8c11102</id>
+      <name>Grenade: Fragmentation, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>11F</avail>
+      <addweapon>Grenade: Fragmentation, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>e7a602bd-33f4-485b-8a18-a253b7e73a77</id>
+      <name>Grenade: High Explosive, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>11F</avail>
+      <addweapon>Grenade: High Explosive, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>1ceef439-32d7-4e1b-a13b-0223dfadf784</id>
+      <name>Grenade: Gas, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <addweapon>Grenade: Gas, Aerodynamic</addweapon>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>13208e69-2cc6-43c4-98ff-e0295cdf3b68</id>
+      <name>Grenade: Smoke, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4R</avail>
+      <addweapon>Grenade: Smoke, Aerodynamic</addweapon>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>2b58af45-2097-4607-a0d4-e251b64332af</id>
+      <name>Grenade: Thermal Smoke, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>6R</avail>
+      <addweapon>Grenade: Thermal Smoke, Aerodynamic</addweapon>
+      <cost>60</cost>
+    </gear>
+    <gear>
+      <id>ff32c75d-9cb8-499e-8926-eb0728b2748b</id>
+      <name>Grenade: Paint, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>32d933f1-638e-4022-bed7-7cf846cb4f20</id>
+      <name>Grenade: Smokebomb, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>HT</source>
+      <page>187</page>
+      <avail>6</avail>
+      <addweapon>Grenade: Smokebomb, Aerodynamic</addweapon>
       <cost>25</cost>
     </gear>
     <gear>
@@ -14198,6 +14301,17 @@
       <cost>30</cost>
     </gear>
     <gear>
+      <id>355086f4-63ee-4244-aba6-3b84eddd9592</id>
+      <name>Grenade: Smoke, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>3R</avail>
+      <addweapon>Grenade: Smoke, Aerodynamic (2050)</addweapon>
+      <cost>30</cost>
+    </gear>
+    <gear>
       <id>7eb45820-7ef0-4a7c-ba0e-99e4dda66b02</id>
       <name>Minigrenade: Smoke (2050)</name>
       <category>Ammunition</category>
@@ -14217,6 +14331,17 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Grenade: Offensive (2050)</addweapon>
+      <cost>45</cost>
+    </gear>
+    <gear>
+      <id>18286c99-ad70-4e66-a048-3ffa3007eabd</id>
+      <name>Grenade: Offensive, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Offensive, Aerodynamic (2050)</addweapon>
       <cost>45</cost>
     </gear>
     <gear>
@@ -14242,6 +14367,17 @@
       <cost>45</cost>
     </gear>
     <gear>
+      <id>8bb8839c-487a-478a-ab74-6b1e9b85b4d1</id>
+      <name>Grenade: Defensive, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Defensive, Aerodynamic (2050)</addweapon>
+      <cost>45</cost>
+    </gear>
+    <gear>
       <id>d12aabe8-9ca6-4ce7-9ea3-e9874ea66e6c</id>
       <name>Minigrenade: Defensive (2050)</name>
       <category>Ammunition</category>
@@ -14250,17 +14386,6 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Minigrenade: Defensive (2050)</addweapon>
-      <cost>60</cost>
-    </gear>
-    <gear>
-      <id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
-      <name>Minigrenade: Shock (2050)</name>
-      <category>Ammunition</category>
-      <rating>0</rating>
-      <source>2050</source>
-      <page>191</page>
-      <avail>8F</avail>
-      <addweapon>Minigrenade: Shock (2050)</addweapon>
       <cost>60</cost>
     </gear>
     <gear>
@@ -14276,14 +14401,48 @@
       <costfor>1</costfor>
     </gear>
     <gear>
+      <id>f6471d39-4e6f-41e5-a946-f0b55ccb2ded</id>
+      <name>Grenade: Shock, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>5F</avail>
+      <addweapon>Grenade: Shock, Aerodynamic (2050)</addweapon>
+      <cost>30</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
+      <name>Minigrenade: Shock (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>8F</avail>
+      <addweapon>Minigrenade: Shock (2050)</addweapon>
+      <cost>60</cost>
+    </gear>
+    <gear>
       <id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
-      <name>Halloweener Molotov Cocktail</name>
+      <name>Grenade: Halloweener Molotov Cocktail</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>TSG</source>
       <page>29</page>
       <avail>4F</avail>
-      <addweapon>Halloweener Molotov Cocktail</addweapon>
+      <addweapon>Grenade: Halloweener Molotov Cocktail</addweapon>
+      <cost>50</cost>
+    </gear>
+    <gear>
+      <id>089af282-4ffb-4aea-86e9-bac83474e27e</id>
+      <name>Grenade: Halloweener Molotov Cocktail, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>TSG</source>
+      <page>29</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Halloweener Molotov Cocktail, Aerodynamic</addweapon>
       <cost>50</cost>
     </gear>
     <!-- Ammo -->

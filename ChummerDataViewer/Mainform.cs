@@ -213,7 +213,7 @@ namespace ChummerDataViewer
 	{
 		public int Compare(CrashReport x, CrashReport y)
 		{
-			return y.Timestamp.CompareTo(x.Timestamp);
+			return y?.Timestamp.CompareTo(x?.Timestamp) ?? ((x?.Timestamp == null) ? 0 : -1);
 		}
 	}
 }

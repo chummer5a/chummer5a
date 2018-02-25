@@ -156,7 +156,7 @@ namespace WpfApplication1
 			        foreach (var s in split.Where(s => s != string.Empty))
 			        {
 				        xmlNode = doc.CreateElement("skill"); 
-				        var index = s.LastIndexOf(" R");
+				        int index = s.LastIndexOf(" R", StringComparison.Ordinal);
 				        if (index != -1)
 						{
 							var attr = doc.CreateAttribute("rating");

@@ -16,9 +16,8 @@ using System.Web.Script.Serialization;
 
 namespace CrashHandler
 {
-	public class CrashDumper : IDisposable
+	public sealed class CrashDumper : IDisposable
 	{
-		public List<string> FilesList => _filesList;
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
@@ -235,11 +234,11 @@ namespace CrashHandler
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 					
 				}
-				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
@@ -284,7 +283,7 @@ namespace CrashHandler
 			{
 				if(!File.Exists(file)) continue;
 
-				string name = Path.GetFileName(file);
+				string name = Path.GetFileName(file) ?? string.Empty;
 				string destination = Path.Combine(WorkingDirectory, name);
 				File.Copy(file, destination);
 			}
@@ -331,8 +330,7 @@ namespace CrashHandler
 			}
             finally
             {
-                if (managed != null)
-                    managed.Dispose();
+                managed?.Dispose();
             }
 
 			return encrypted;
@@ -384,11 +382,10 @@ namespace CrashHandler
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
 			HttpClient client = new HttpClient();
-			HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
-				new StringContent(payload)).Result;
+		    client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload));
+		    //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
 
-			string result = msg.Content.ReadAsStringAsync().Result;
-
+		    //string result = msg.Content.ReadAsStringAsync().Result;
 		}
 
 		private void Clean()
@@ -483,15 +480,14 @@ namespace CrashHandler
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+	    private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
                     _startSendEvent.Dispose();
-                    if (CrashLogWriter != null)
-                        CrashLogWriter.Dispose();
+                    CrashLogWriter?.Dispose();
                 }
 
                 disposedValue = true;

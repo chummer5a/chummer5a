@@ -133,8 +133,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        /// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
-        public void Create(XmlNode objXmlGear, int intRating, IList<Weapon> lstWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
+        public void Create(XmlNode objXmlGear, int intRating, IList<Weapon> lstWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true)
         {
             if (objXmlGear == null)
                 return;
@@ -532,7 +531,6 @@ namespace Chummer.Backend.Equipment
         /// Copy a piece of Gear.
         /// </summary>
         /// <param name="objGear">Gear object to copy.</param>
-        /// <param name="lstWeapons">List of Weapons created by the copied item.</param>
         public void Copy(Gear objGear)
         {
             _objCachedMyXmlNode = objGear.GetNode();
@@ -2035,6 +2033,8 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
+                if (strCapacity == "*")
+                    return 0;
                 return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
@@ -2042,7 +2042,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear's Capacity cost if used as an Armor plugin.
         /// </summary>
-        public int PluginArmorCapacity
+        public decimal PluginArmorCapacity
         {
             get
             {
@@ -2056,7 +2056,9 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                return Convert.ToInt32(strCapacity);
+                if (strCapacity == "*")
+                    return 0;
+                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
 
@@ -2088,17 +2090,7 @@ namespace Chummer.Backend.Equipment
                         // Run through its Children and deduct the Capacity costs.
                         Parallel.ForEach(Children, objChildGear =>
                         {
-                            string strCapacity = objChildGear.CalculatedCapacity;
-                            // If this is a multiple-capacity item, use only the second half.
-                            intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                            if (intPos != -1)
-                            {
-                                strCapacity = strCapacity.Substring(intPos + 1);
-                            }
-
-                            // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                            strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                            decimal decLoop = (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
+                            decimal decLoop = objChildGear.PluginCapacity * objChildGear.Quantity;
                             lock (decCapacityLock)
                                 decCapacity -= decLoop;
                         });

@@ -108,8 +108,9 @@ namespace ChummerDataViewer.Model
 
 			WebFileLocation = args.AttachedData.destinationPath;
 
-			string userstory = null, exception;
-			using (ZipArchive archive = new ZipArchive(File.OpenRead(args.AttachedData.destinationPath), ZipArchiveMode.Read, false))
+			string userstory = null;
+		    string exception = null;
+            using (ZipArchive archive = new ZipArchive(File.OpenRead(args.AttachedData.destinationPath), ZipArchiveMode.Read, false))
 			{
 				ZipArchiveEntry userstoryEntry = archive.GetEntry("userstory.txt");
 				if (userstoryEntry != null)
@@ -123,12 +124,14 @@ namespace ChummerDataViewer.Model
 				}
 
 				ZipArchiveEntry exceptionEntry= archive.GetEntry("exception.txt");
-				using (Stream s = exceptionEntry.Open())
-				{
-					byte[] buffer = new byte[exceptionEntry.Length];
-					s.Read(buffer, 0, buffer.Length);
-					exception = Encoding.UTF8.GetString(buffer);
-				}
+			    if (exceptionEntry != null)
+			    {
+			        Stream s = exceptionEntry.Open();
+			        byte[] buffer = new byte[exceptionEntry.Length];
+			        s.Read(buffer, 0, buffer.Length);
+			        exception = Encoding.UTF8.GetString(buffer);
+                    s.Close();
+                }
 			}
 			Userstory = userstory;
 			StackTrace = exception;

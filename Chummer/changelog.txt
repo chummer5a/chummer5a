@@ -69,6 +69,7 @@ Application Changes:
 - When selecting children gear for items that only allow certain categories of gear children and that also have a fixed capacity for said items, only items that consume capacity and/or items in the Custom category (if eligible) are shown.
 - Fixed an issue where changing the rating of a focus would not properly update the corresponding item in the focus list.
 - Fixed an issue where deleting sprites or spirits from anywhere other than the end of their lists would not cause the remaining controls to move up and fill in the empty space.
+- Removed the (currently non-functional) checkbox in the gear selection screen to make a grenade aerodynamic. Aerodynamic grenades now have separate gear entries.
 
 Data Changes:
 
@@ -91,6 +92,9 @@ Data Changes:
 - Added metageneticlimit Improvement to the three Changeling qualities.
 - The agent in Nixdorf Sekretar w/ Liebesekretar now properly comes with love life management software.
 - Imaging Scope, Imaging Scope (2050), Weapon Commlink, and Smart Firing Platform now allow custom gear children.
+- Added separate entries for Aerodynamic versions of each grenade.
+- Fixed issues where some non-aerodynamic grenades would not benefit from the Non-Aerodynamic specialization on Throwing Weapons.
+- Fixed the range and specialization information of Harpoons to match that of Javelins.
 
 New Strings:
 

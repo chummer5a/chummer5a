@@ -371,11 +371,6 @@
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
-      <name>Smokebomb</name>
-      <spec>Grenades</spec>
-      <useskill>Throwing Weapons</useskill>
-    </weapon>
-    <weapon>
       <name>Harpoon</name>
       <spec>Polearms</spec>
       <useskill>Throwing Weapons</useskill>
@@ -760,13 +755,6 @@
     <weapon>
       <name>Osmium Mace</name>
       <spec>Large Clubs/Maces</spec>
-    </weapon>
-    <!-- End Region -->
-    <!-- Region The Seattle Gambit -->
-    <weapon>
-      <name>Halloweener Molotov Cocktail</name>
-      <spec>Grenades</spec>
-      <useskill>Throwing Weapons</useskill>
     </weapon>
     <!-- End Region -->
   </weapons>
