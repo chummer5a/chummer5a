@@ -299,7 +299,7 @@ namespace Chummer
 
             RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            RefreshFociFromGear(treFoci, cmsGear);
+            RefreshFociFromGear(treFoci, null);
             RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear);
@@ -759,7 +759,7 @@ namespace Chummer
         private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, notifyCollectionChangedEventArgs);
-            RefreshFociFromGear(treFoci, cmsGear, notifyCollectionChangedEventArgs);
+            RefreshFociFromGear(treFoci, null, notifyCollectionChangedEventArgs);
         }
 
         private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -3722,7 +3722,7 @@ namespace Chummer
                 // The number of Complex Forms cannot exceed the character's LOG.
                 if (CharacterObject.ComplexForms.Count >= ((CharacterObject.RES.Value * 2) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimitCareer", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
                 int intComplexFormKarmaCost = CharacterObject.ComplexFormKarmaCost;
@@ -5464,10 +5464,9 @@ namespace Chummer
                 return;
 
             // Create a new piece of Gear.
-            List<Weapon> lstWeapons = new List<Weapon>();
             Gear objGear = new Gear(CharacterObject);
 
-            objGear.Copy(objSelectedGear, lstWeapons);
+            objGear.Copy(objSelectedGear);
 
             objGear.Quantity = frmPickNumber.SelectedValue;
             objGear.Equipped = objSelectedGear.Equipped;
@@ -5480,12 +5479,6 @@ namespace Chummer
             
             CharacterObject.Gear.Add(objGear);
 
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-            {
-                CharacterObject.Weapons.Add(objWeapon);
-            }
-            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -5665,17 +5658,14 @@ namespace Chummer
             if (objFoundGear == null)
             {
                 // Create a new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
                 Gear objGear = new Gear(CharacterObject);
 
-                objGear.Copy(objSelectedGear, lstWeapons);
+                objGear.Copy(objSelectedGear);
 
                 objGear.Quantity = decMove;
                 objGear.Location = string.Empty;
                 
                 objVehicle.Gear.Add(objGear);
-                foreach (Weapon objWeapon in lstWeapons)
-                    objVehicle.Weapons.Add(objWeapon);
             }
             else
             {
@@ -5777,20 +5767,13 @@ namespace Chummer
                     if (objFoundGear == null)
                     {
                         // Create a new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>();
                         Gear objGear = new Gear(CharacterObject);
 
-                        objGear.Copy(objSelectedGear, lstWeapons);
+                        objGear.Copy(objSelectedGear);
                         
                         objGear.Quantity = decMove;
                         
                         CharacterObject.Gear.Add(objGear);
-
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objGearWeapon in lstWeapons)
-                        {
-                            CharacterObject.Weapons.Add(objGearWeapon);
-                        }
 
                         AddGearImprovements(objGear);
                     }
@@ -8191,10 +8174,7 @@ namespace Chummer
             do
             {
                 Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle.GetNode())
-                {
-                    ShowPositiveCapacityOnly = false
-                };
+                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle.GetNode());
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -8212,7 +8192,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -8341,7 +8321,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -8359,7 +8340,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -11678,6 +11659,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11696,7 +11679,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -11790,6 +11773,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11808,7 +11793,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -11910,7 +11895,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -11928,7 +11914,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -12029,7 +12015,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12047,7 +12034,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -12133,6 +12120,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12151,7 +12140,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -12247,7 +12236,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12264,7 +12254,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -12469,7 +12459,8 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objXmlSensorGear, strCategories);
-
+                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12486,7 +12477,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -12575,6 +12566,8 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                     strCategories += objXmlCategory.InnerText + ",";
                 frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory.GetNode(), strCategories);
+                if (!string.IsNullOrEmpty(strCategories))
+                    frmPickGear.ShowNegativeCapacityOnly = true;
                 frmPickGear.ShowDialog(this);
                 Cursor = Cursors.Default;
 
@@ -12591,7 +12584,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
 
                 if (objGear.InternalId.IsEmptyGuid())
                 {
@@ -13125,15 +13118,10 @@ namespace Chummer
                             // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
                             if (objChild.Parent.Name.StartsWith("Spare Clip") || objChild.Parent.Name.StartsWith("Speed Loader"))
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>();
                                 Gear objNewGear = new Gear(CharacterObject);
-                                objNewGear.Copy(objChild, lstWeapons);
+                                objNewGear.Copy(objChild);
                                 objNewGear.Quantity = objWeapon.AmmoRemaining;
                                 CharacterObject.Gear.Add(objNewGear);
-                                foreach (Weapon objLoopWeapon in lstWeapons)
-                                {
-                                    CharacterObject.Weapons.Add(objLoopWeapon);
-                                }
                                 
                                 goto EndLoop;
                             }
@@ -17745,7 +17733,7 @@ namespace Chummer
             if (!blnNullParent)
             {
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                if (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
+                if (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
                 {
                     frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
 
@@ -17755,6 +17743,9 @@ namespace Chummer
                         MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
+
+                    if (!string.IsNullOrEmpty(strCategories))
+                        frmPickGear.ShowNegativeCapacityOnly = true;
                 }
 
                 // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
@@ -17797,7 +17788,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strForceItemValue))
                 strForceValue = strForceItemValue;
             Gear objGear = new Gear(CharacterObject);
-            objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue, true, true, frmPickGear.Aerodynamic);
+            objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
 
             if (objGear.InternalId.IsEmptyGuid())
                 return frmPickGear.AddAgain;
@@ -18018,7 +18009,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
 
             Gear objGear = new Gear(CharacterObject);
-            objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+            objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
 
             if (objGear.InternalId.IsEmptyGuid())
                 return frmPickGear.AddAgain;
@@ -18905,13 +18896,17 @@ namespace Chummer
             lstNuyen.ContextMenuStrip = null;
             //Find the first karma/nuyen entry
             DateTime KarmaFirst = DateTime.MinValue;
+            DateTime KarmaLast = DateTime.Now;
             DateTime NuyenFirst = DateTime.MinValue;
+            DateTime NuyenLast = DateTime.Now;
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
                     if (KarmaFirst == DateTime.MinValue || objExpense.Date.CompareTo(KarmaFirst) < 0)
                         KarmaFirst = objExpense.Date;
+                    if (objExpense.Date.CompareTo(KarmaLast) > 0)
+                        KarmaLast = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
                     {
@@ -18945,6 +18940,8 @@ namespace Chummer
                 {
                     if (NuyenFirst == DateTime.MinValue || objExpense.Date.CompareTo(NuyenFirst) < 0)
                         NuyenFirst = objExpense.Date;
+                    if (objExpense.Date.CompareTo(NuyenLast) > 0)
+                        NuyenLast = objExpense.Date;
 
                     if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
                     {
@@ -19019,14 +19016,14 @@ namespace Chummer
             objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
             objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEndOnce(':');
             objKarmaChartArea.AxisX.Minimum = 0;
-            objKarmaChartArea.AxisX.Maximum = (DateTime.Now - KarmaFirst).TotalDays;
+            objKarmaChartArea.AxisX.Maximum = (KarmaLast - KarmaFirst).TotalDays;
 
             // Configure the Nuyen chart.
             ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
             objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
             objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEndOnce(':');
             objNuyenChartArea.AxisX.Minimum = 0;
-            objNuyenChartArea.AxisX.Maximum = (DateTime.Now - NuyenFirst).TotalDays;
+            objNuyenChartArea.AxisX.Maximum = (NuyenLast - NuyenFirst).TotalDays;
             
             double dblKarmaValue = 0;
             double dblNuyenValue = 0;
@@ -19045,8 +19042,8 @@ namespace Chummer
                 }
             }
 
-            objKarmaSeries.Points.AddXY((DateTime.Now - KarmaFirst).TotalDays, CharacterObject.Karma);
-            objNuyenSeries.Points.AddXY((DateTime.Now - NuyenFirst).TotalDays, CharacterObject.Nuyen);
+            objKarmaSeries.Points.AddXY((KarmaLast - KarmaFirst).TotalDays, CharacterObject.Karma);
+            objNuyenSeries.Points.AddXY((NuyenLast - NuyenFirst).TotalDays, CharacterObject.Nuyen);
 
             chtKarma.Invalidate();
             chtNuyen.Invalidate();

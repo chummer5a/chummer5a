@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace ChummerDataViewer.Model
 {
-	class DownloaderWorker : INotifyThreadStatus, IDisposable
+	public sealed class DownloaderWorker : INotifyThreadStatus, IDisposable
 	{
 		public event StatusChangedEvent StatusChanged;
 		public string Name => "DownloaderWorker";
@@ -36,8 +36,7 @@ namespace ChummerDataViewer.Model
                     {
                         OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
                         byte[] encrypted = client.DownloadData(task.Url);
-                        byte[] buffer;
-                        buffer = Decrypt(task.Key, encrypted);
+                        byte[] buffer = Decrypt(task.Key, encrypted);
                         WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
                     }
 
@@ -82,8 +81,7 @@ namespace ChummerDataViewer.Model
             }
             finally
             {
-                if (managed != null)
-                    managed.Dispose();
+                managed?.Dispose();
             }
 	        return buffer;
 	    }
@@ -92,7 +90,7 @@ namespace ChummerDataViewer.Model
 		{
 			ThreadPool.QueueUserWorkItem(a =>
 			{
-				Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+				Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
 				File.WriteAllBytes(destinationPath, buffer);
 				OnStatusChanged(new StatusChangedEventArgs("Saving " + destinationPath + Queue(), new {destinationPath, guid}));
 			});
@@ -119,7 +117,7 @@ namespace ChummerDataViewer.Model
 
 		}
 
-		protected virtual void OnStatusChanged(StatusChangedEventArgs args)
+	    private void OnStatusChanged(StatusChangedEventArgs args)
 		{
 			StatusChanged?.Invoke(this, args);
 		}
@@ -151,7 +149,7 @@ namespace ChummerDataViewer.Model
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+	    private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

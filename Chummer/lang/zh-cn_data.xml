@@ -5185,7 +5185,7 @@
 			<gear>
 				<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
 				<name>Speed Loader</name>
-				<translate>弹药速填器</translate>
+				<translate>快速装弹器</translate>
 			</gear>
 			<gear>
 				<id>0025f1c7-45a4-4ec5-a692-e18aab2f97a9</id>
@@ -7749,8 +7749,8 @@
 				<id>136a3dc5-d9c4-45ad-bc24-705f54692590</id>
 				<name>Bear</name>
 				<translate>巨熊</translate>
-				<advantage>通用：抵抗伤害的检定获得+2骰池调整（不包括抵抗耗竭）</advantage>
-				<disadvantage>当你收到物理伤害，或者受你保护者遭到严重伤害时，你可能会陷入狂暴，进行一个简单检定，魅力＋意志（3），计算伤势调整值。失败的话，你会狂暴｛3－成功｝回合。如果你已经处于狂暴状态，那么会延长狂暴状态的持续时间。在狂暴期间，你会不顾自身安危地疯狂攻击自己的攻击者，如果你使他（们）失去战斗力，狂暴自动结束。</disadvantage>
+				<altadvantage>通用：抵抗伤害的检定获得+2骰池调整（不包括抵抗耗竭）</altadvantage>
+        <altdisadvantage>当你收到物理伤害，或者受你保护者遭到严重伤害时，你可能会陷入狂暴，进行一个简单检定，魅力＋意志（3），计算伤势调整值。失败的话，你会狂暴｛3－成功｝回合。如果你已经处于狂暴状态，那么会延长狂暴状态的持续时间。在狂暴期间，你会不顾自身安危地疯狂攻击自己的攻击者，如果你使他（们）失去战斗力，狂暴自动结束。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Health spells</name>
@@ -7766,8 +7766,8 @@
 				<id>f32b8b69-0f6b-417d-bd06-6a85e1076a36</id>
 				<name>Cat</name>
 				<translate>猫</translate>
-				<advantage>通用：〈体操〉或〈潜行〉检定受到+2骰池调整（二选一）</advantage>
-				<disadvantage>猫的追随者们更愿戏弄自己的猎物。除非在战斗开始时通过一个简单检定，魅力魅力＋意志（3），你不能作出使目标失去战斗力的攻击。如果你受到任何物理伤害，玩耍的时间就结束了。</disadvantage>
+        <altadvantage>通用：〈体操〉或〈潜行〉检定受到+2骰池调整（二选一）</altadvantage>
+        <altdisadvantage>猫的追随者们更愿戏弄自己的猎物。除非在战斗开始时通过一个简单检定，魅力魅力＋意志（3），你不能作出使目标失去战斗力的攻击。如果你受到任何物理伤害，玩耍的时间就结束了。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice on Gymnastics Tests</name>
@@ -7791,8 +7791,8 @@
 				<id>98785f59-5739-4998-b334-ec4501c75cf8</id>
 				<name>Dog</name>
 				<translate>犬</translate>
-				<advantage>通用：〈追踪〉检定受到+2骰池调整</advantage>
-				<disadvantage>信仰狗图腾的魔法师忠诚而固执，除非你成功通过一个简单检定，魅力＋意志（３），你无法抛弃任何人，背叛队友，或是让他人为你牺牲。</disadvantage>
+        <altadvantage>通用：〈追踪〉检定受到+2骰池调整</altadvantage>
+				<altdisadvantage>信仰狗图腾的魔法师忠诚而固执，除非你成功通过一个简单检定，魅力＋意志（３），你无法抛弃任何人，背叛队友，或是让他人为你牺牲。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
@@ -7808,8 +7808,8 @@
 				<id>dc7ce567-18c7-4101-b16c-0d4930f3af81</id>
 				<name>Dragonslayer</name>
 				<translate>屠龙者</translate>
-				<advantage>通用：一个所选社交检定受到+2骰池调整</advantage>
-				<disadvantage>如果你打破任何誓言，不论是出于意外还是故意毁约，所有行动检定获得-1骰池罚值，直到你补偿你的诺言为止。</disadvantage>
+				<altadvantage>通用：一个所选社交检定受到+2骰池调整</altadvantage>
+				<altdisadvantage>如果你打破任何誓言，不论是出于意外还是故意毁约，所有行动检定获得-1骰池罚值，直到你补偿你的诺言为止。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
@@ -7825,8 +7825,8 @@
 				<id>9e38a8c0-f11c-461d-a489-ba1432f4551f</id>
 				<name>Eagle</name>
 				<translate>鹰</translate>
-				<advantage>通用：〈侦察〉检定受到+2骰池调整</advantage>
-				<disadvantage>你获得特质：「过敏」（污染物，轻微），此特质不会增加你的业力。</disadvantage>
+        <altadvantage>通用：〈侦察〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>你获得特质：「过敏」（污染物，轻微），此特质不会增加你的业力。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice summoning spirits of air</name>
@@ -7842,8 +7842,8 @@
 				<id>bd0d6ff0-8af1-4689-8997-7bcfbbd642ff</id>
 				<name>Fire-Bringer</name>
 				<translate>引火人</translate>
-				<advantage>通用：〈炼金〉或〈工匠〉检定受到+2骰池调整（二选一）</advantage>
-				<disadvantage>当有人诚心诚意地向你寻求帮助时，除非你通过一个简单检定，魅力＋意志（3）检定，否则你不能拒绝他们。</disadvantage>
+        <altadvantage>通用：〈炼金〉或〈工匠〉检定受到+2骰池调整（二选一）</altadvantage>
+        <altdisadvantage>当有人诚心诚意地向你寻求帮助时，除非你通过一个简单检定，魅力＋意志（3）检定，否则你不能拒绝他们。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice on Artisan Tests</name>
@@ -7867,8 +7867,8 @@
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
 				<name>Mountain</name>
 				<translate>山峦</translate>
-				<advantage>通用：〈生存〉检定受到+2骰池调整</advantage>
-				<disadvantage>山峦的追随者们一旦做好了计划，就不撞南墙不回头。除非你通过一个简单检定，魅力＋意志（3），你不能放弃已有的计划并选择新的计划。如果你检定失败，你必须继续完成现有目标，即便你必须单打独斗。同样地，通过一个简单检定，魅力＋意志（3），才能不做任何计划地参与任何行动。</disadvantage>
+        <altadvantage>通用：〈生存〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>山峦的追随者们一旦做好了计划，就不撞南墙不回头。除非你通过一个简单检定，魅力＋意志（3），你不能放弃已有的计划并选择新的计划。如果你检定失败，你必须继续完成现有目标，即便你必须单打独斗。同样地，通过一个简单检定，魅力＋意志（3），才能不做任何计划地参与任何行动。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Counterspelling and anchored rituals</name>
@@ -7884,8 +7884,8 @@
 				<id>4a37e26d-e6f1-4e97-b305-e4aed048fcad</id>
 				<name>Rat</name>
 				<translate>鼠</translate>
-				<advantage>通用：〈潜行〉检定受到+2骰池调整</advantage>
-				<disadvantage>信仰鼠神的魔法师在开战时，需要通过一个简单检定，魅力＋意志（３），否则必须逃跑或寻找掩体，除非她无路可退。</disadvantage>
+        <altadvantage>通用：〈潜行〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>信仰鼠神的魔法师在开战时，需要通过一个简单检定，魅力＋意志（３），否则必须逃跑或寻找掩体，除非她无路可退。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 to Alchemy for harvesting, and you may use any reagents</name>
@@ -7901,8 +7901,8 @@
 				<id>168a0db8-0676-4a7d-86ce-99a43bf0f2bc</id>
 				<name>Raven</name>
 				<translate>乌鸦</translate>
-				<advantage>通用：〈哄骗〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（３），你在看到有人遭遇不幸时必须试图做出渔翁得利的行为，像是在他们身上搞一个恶作剧，开一个大玩笑，即便这样不利于队友工作也是一样。(</disadvantage>
+        <altadvantage>通用：〈哄骗〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>除非你通过一个简单检定，魅力＋意志（３），你在看到有人遭遇不幸时必须试图做出渔翁得利的行为，像是在他们身上搞一个恶作剧，开一个大玩笑，即便这样不利于队友工作也是一样。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation spells</name>
@@ -7918,8 +7918,8 @@
 				<id>0242ba67-f93b-44e1-a1ad-b0d6f9051525</id>
 				<name>Sea</name>
 				<translate>海洋</translate>
-				<advantage>通用：〈游泳〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（3），否则你不能放弃任何自己拥有的东西或是以任何方式表现自己的慷慨。 </disadvantage>
+        <altadvantage>通用：〈游泳〉检定受到+2骰池调整</altadvantage>
+				<altdisadvantage>除非你通过一个简单检定，魅力＋意志（3），否则你不能放弃任何自己拥有的东西或是以任何方式表现自己的慷慨。 </altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice summoning spirits of water</name>
@@ -7935,8 +7935,8 @@
 				<id>fa343b9a-6e4d-49cd-8c5a-68002ddf244b</id>
 				<name>Seducer</name>
 				<translate>引诱者</translate>
-				<advantage>通用：〈哄骗〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（3），否则你会尽一切可能，在有任何诸如药品，BTL和性爱等等癖好与恶习可供消遣的时候去满足自己。</disadvantage>
+        <altadvantage>通用：〈哄骗〉检定受到+2骰池调整</altadvantage>
+				<altdisadvantage>除非你通过一个简单检定，魅力＋意志（3），否则你会尽一切可能，在有任何诸如药品，BTL和性爱等等癖好与恶习可供消遣的时候去满足自己。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion spells</name>
@@ -7952,8 +7952,8 @@
 				<id>db8a0489-fe87-4223-bc02-3639911429a7</id>
 				<name>Shark</name>
 				<translate>鲨鱼</translate>
-				<advantage>通用：〈徒手格斗〉检定受到+2骰池调整</advantage>
-				<disadvantage>当你受到物理伤害，你可能会陷入狂暴，进行一个简单检定，魅力＋意志（计算伤势调整值）。你会狂暴｛3－成功｝回合，狂暴状态在成功数≥3时可被完全避免。如果你已经处于狂暴状态，那么会延长狂暴状态的持续时间。在狂暴期间，你会不顾自身安危地疯狂攻击自己的攻击者，如果你使他（们）失去战斗力，狂暴自动结束。</disadvantage>
+        <altadvantage>通用：〈徒手格斗〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>当你受到物理伤害，你可能会陷入狂暴，进行一个简单检定，魅力＋意志（计算伤势调整值）。你会狂暴｛3－成功｝回合，狂暴状态在成功数≥3时可被完全避免。如果你已经处于狂暴状态，那么会延长狂暴状态的持续时间。在狂暴期间，你会不顾自身安危地疯狂攻击自己的攻击者，如果你使他（们）失去战斗力，狂暴自动结束。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
@@ -7964,13 +7964,13 @@
 						<translate>修士：免费获得『杀戮之手』</translate>
 					</choice>
 				</choices>
-			</mentor>
+      </mentor>
 			<mentor>
 				<id>17ee9f01-ebe2-43ba-a4fe-741053973444</id>
 				<name>Snake</name>
 				<translate>蛇</translate>
-				<advantage>通用：〈奥秘学〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（3），否则如果你了解到任何鲜为人知的秘密或知识的存在后，必须开始调查。</disadvantage>
+        <altadvantage>通用：〈奥秘学〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>除非你通过一个简单检定，魅力＋意志（3），否则如果你了解到任何鲜为人知的秘密或知识的存在后，必须开始调查。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
@@ -7986,8 +7986,8 @@
 				<id>a805cc41-3dc3-49cc-b290-887a3203158e</id>
 				<name>Thunderbird</name>
 				<translate>雷鸟</translate>
-				<advantage>通用：〈威吓〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（3），否则在受到侮辱后必须以牙还牙。</disadvantage>
+				<altadvantage>通用：〈威吓〉检定受到+2骰池调整</altadvantage>
+        <altdisadvantage>除非你通过一个简单检定，魅力＋意志（3），否则在受到侮辱后必须以牙还牙。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning spirits of air</name>
@@ -8003,8 +8003,8 @@
 				<id>5d27ec80-e4c0-4bb7-af9c-d7499cfa6c24</id>
 				<name>Wise Warrior</name>
 				<translate>老练战士</translate>
-				<advantage>通用：〈领导力〉或〈指导〉检定受到+2骰池调整（二选一）</advantage>
-				<disadvantage>如果你的行为有失颜面或缺乏礼仪，不论是有意为止还是出于意外，所有行动检定获得－1骰池罚值，直到你补偿你的诺言为止。</disadvantage>
+				<altadvantage>通用：〈领导力〉或〈指导〉检定受到+2骰池调整（二选一）</altadvantage>
+				<altdisadvantage>如果你的行为有失颜面或缺乏礼仪，不论是有意为止还是出于意外，所有行动检定获得－1骰池罚值，直到你补偿你的诺言为止。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>+2 dice for Leadership skill tests</name>
@@ -8028,8 +8028,8 @@
 				<id>b5211e08-4be0-4e18-9186-7412f4e9e74f</id>
 				<name>Wolf</name>
 				<translate>狼</translate>
-				<advantage>通用：〈追踪〉检定受到+2骰池调整</advantage>
-				<disadvantage>除非你通过一个简单检定，魅力＋意志（3），否则无法从战斗中撤退。</disadvantage>
+				<altadvantage>通用：〈追踪〉检定受到+2骰池调整</altadvantage>
+				<altdisadvantage>除非你通过一个简单检定，魅力＋意志（3），否则无法从战斗中撤退。</altdisadvantage>
 				<choices>
 					<choice>
 						<name>Magician:+2 dice for Combat spells</name>
@@ -8041,6 +8041,546 @@
 					</choice>
 				</choices>
 			</mentor>
+      <!-- Region Street Grimoire-->
+      <mentor>
+        <id>796d5046-572e-427e-a49d-3fb66972d07e</id>
+        <name>Berserker</name>
+        <translate>狂战士</translate>
+        <altadvantage>通用：沉着检定+2骰池调整</altadvantage>
+        <altdisadvantage>狂战士的追随者很不理智。每当有人坚决不同意你（GM判断），你必须通过一个魅力+意志（3）检定来避免攻击冒犯你的人。如果检定失败，你必须进行攻击，可以是你所选的任何形式（拳头、咒语等），但必须意图造成伤害。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Physical-type Combat Spells</name>
+            <translate>法师：涉及物理类型的战斗系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: 2 free levels of Mystic Armor</name>
+            <translate>修士：免费获得2级『秘法护甲』</translate>
+          </choice>
+          <choice>
+            <name>Adept: 2 free levels of Pain Resistance</name>
+            <translate>修士：免费获得2级『疼痛抗力』</translate>
+          </choice>
+          <choice>
+            <name>Adept: 1 free level of Mystic Armor and Pain Resistance</name>
+            <translate>修士：免费获得1级『秘法护甲』和1级『疼痛抗力』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>2c6a5ac3-0d61-46dd-86a3-a630ebc91070</id>
+        <name>Chaos</name>
+        <translate>混沌</translate>
+        <altadvantage>通用：〈唬骗〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>你是一个根深蒂固的企图挑起事端的王八蛋，尤其是在朋友之间，从而无法继续破坏自己的秘密。另外，任何时候如果你遇到一个太安静或稳定的公共场合（GM自由裁定），需要做一个意志+直觉（3）检定。失败意味着你被迫以任何你想要的方式来搅局，无论是攻击、说谎，还是向附近的人扔饮料。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Illusion Spells</name>
+            <translate>法师：涉及幻象系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: 2 free levels of Improved Potential</name>
+            <translate>修士：免费获得2级『提升潜能』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>68e34866-96d6-420e-a595-10bdbf37f011</id>
+        <name>Peacemaker</name>
+        <translate>调停人</translate>
+        <altadvantage>通用：〈交涉〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>你甚至把敌人视为潜在的朋友，并尽力避免伤害任何人，除非情况所迫。在战斗开始时，你必须通过一个“魅力+直觉”（3）的检定；失败意味着你在行动阶段无法采取任何造成物理伤害的行动。在一个新的战斗轮开始时，如果你第一次检定失败，且你或你的队员在前一轮战斗中受伤,你可以选择重新检定。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Detection Spells</name>
+            <translate>法师：涉及侦测系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: 2 free levels of Enhanced Perception</name>
+            <translate>修士：免费获得2级『强化侦察』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>f7f30f82-babe-419a-b7df-8dcc98dcada3</id>
+        <name>Oracle</name>
+        <translate>先知</translate>
+        <altadvantage>通用：〈奥秘学〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>你讨厌秘密，你可以带着激情消失好几天试图去追寻答案。当面对一个特别困扰的问题时（GM自由裁定），你必须通过意志+直觉（3）检定。失败意味着你必须进行直觉+逻辑（精神）（5, 1小时）的延续检定以研究答案。延续检定的完成并不一定意味着你找到了答案，但至少暂时使你心中的问题沉寂下去。\n当先知的追随者进入一级启蒙时（核心规则书324页），必须选择占卜（147页）作为他的第一个超魔，而不是能力点或任何其他好处。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Detection Spells</name>
+            <translate>法师：涉及侦测系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Free Astral Perception</name>
+            <translate>修士：免费获得『星界侦察』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <!-- Region Howling Shadows-->
+      <mentor>
+        <id>f841b9f1-bc80-4fd5-a94d-6f76d2c59518</id>
+        <name>Alligator</name>
+        <translate>鳄鱼</translate>
+        <altadvantage>All: +2 dice to intimidation tests.</altadvantage>
+        <altdisadvantage>通用：〈威吓〉检定获得+2骰池调整</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</name>
+            <translate>法师：对水精魂或人精魂（选择其一）的〈召唤〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Free Inertia Strike</name>
+            <translate>修士：免费获得『惯性冲击』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>16bd99dd-49df-41aa-a8a2-9b8962fac44c</id>
+        <name>Boar</name>
+        <translate>野猪</translate>
+        <altadvantage>通用：免费获得「自家地盘」特质</altadvantage>
+        <altdisadvantage>一个野猪的追随者在有人侵入他的空间或扰乱他的日常例行时非常不快。最好的情况，一个追随者会保护他常去的酒吧和那里的雇员。最坏的情况，一个追随者会为了他认为属于自己的一张特定台子或高脚凳而挑起争斗。警告则不一定都会有，而且通常由追随者的朋友提出。野猪的追随者如果要永远地离开他的家，安全屋，或例行程序时，必须通过一个魅力+意志（3）检定。否则他会继续回来，即使这样做会危及他自己的安全。如果野猪（的追随者）的确离开了，那他在三周内所有主动技能检定都受到-1骰池减值，直到他适应了一个新的地方和例行程序为止。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +1 to the number of services gained when successfully summoning a spirit</name>
+            <translate>法师：当成功召唤精魂时，获得的服务数+1</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gains Rooting (2) power for free.</name>
+            <translate>修士：免费获得2级『盘根』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>19154c75-9fa9-4e7e-aeee-da1faaaca3e2</id>
+        <name>Giraffe</name>
+        <translate></translate>
+        <altadvantage>通用：〈灵视〉检定或察言观色检定（选择其一）获得+2骰池调整</altadvantage>
+        <altdisadvantage>一个长颈鹿的追随者在社交礼仪中磕磕绊绊，因为她相信社交性寒暄中作为核心的碎嘴和闲聊本质上是不诚实的，并且不值得她努力为之。她能使得很广泛的许多场合变得尴尬，并因此在礼仪技能检定中受到-2骰池调整。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>+2 dice on Assensing Tests</name>
+            <translate>〈灵视〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>+2 on Judge Intentions Tests</name>
+            <translate>察言观色检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Magician: +2 to Conjuring skill tests of air spirits</name>
+            <translate>法师：对气精魂的〈召唤〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Adept: 2 free levels of Piercing Senses</name>
+            <translate>修士：免费获得2级『锋锐感知』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>e8e25c51-bca0-4647-b345-f7f1d7a06be3</id>
+        <name>Dolphin</name>
+        <translate>海豚</translate>
+        <altadvantage>通用：〈手艺〉检定或〈水上驾驶〉检定（选择其一）获得+2骰池调整</altadvantage>
+        <altdisadvantage>跟随者们会无私帮助他人，他们不会无视他们认为值得帮助的人。当他们看到有人受到欺压，或者有人显然在污染环境时，他们很难坐视不理。当海豚的跟随者们见到了这样的情况，就要通过一个魅力+意志(3)检定，否则就会出面制止。如果跟随者接的活涉及污染环境，或者自己会成为欺压弱者行为的执行者，那么她每做出一次这样的行为，就要承受2点骰池惩罚，直到以赎罪补偿。具体赎罪方式由GM决定，基本上可以是在慈善事业上花时间或金钱。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>+2 dice on Artisan tests</name>
+            <translate>〈手艺〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>+2 on Pilot Watercraft Tests</name>
+            <translate>〈水上驾驶〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
+            <translate>法师：涉及生命系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Adept: Gain Flexibility (2) power for free</name>
+            <translate>修士：免费获得2级『缩骨术』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>cf290b67-e417-4cd6-a36e-d28f35bdc18d</id>
+        <name>Whale</name>
+        <translate>鲸</translate>
+        <altadvantage>通用：〈游泳〉检定或〈水上驾驶〉检定（选择其一）获得+2骰池调整</altadvantage>
+        <altdisadvantage>鉴于鲸鱼跟随者们的的个人道德观，他们必须遵守诺言。这可以是对某个组织的宣誓，也可以是与一家公司的口头协议。未能遵守协议或誓言的话们将会失去1点魔法。如果能否达成诺言的条件并不是这位觉醒者所能控制的，那么鲸鱼精魂导师是会明白的。其它情况下，跟随者可以尝试赎罪，不过得经过GM同意。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>+2 dice on Swimming tests</name>
+            <translate>〈游泳〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>+2 on Pilot Watercraft Tests</name>
+            <translate>〈水上驾驶〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Magician: +2 to Conjuring skill tests for spirits of water</name>
+            <translate>法师：〈召唤〉水精魂获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Adept: Receive 2 ranks in Iron Lungs or free.</name>
+            <translate>修士：免费获得3级『铁肺』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>9ca5be05-1420-4592-81a5-1b59bb93545d</id>
+        <name>Horse</name>
+        <translate> 马</translate>
+        <altadvantage>通用：〈奔跑〉检定或〈陆用驾驶〉检定（选择其一）获得+2骰池调整</altadvantage>
+        <altdisadvantage>马的跟随者们没法长时间坐定在一个地方，也不能被关在室内。他们每天至少得有4小时时间能待在室外导出跑动或开车（任何比走路更快的旅行方式）。如果跟随者们没能满足该条件，那么他们会在所有技能检定中骰池-1。该惩罚是可累加的，这意味着如果这位跟随者连着两天都全天被困在桌子旁（在室内且不能四处移动），ta的所有行动都要承受-2骰池惩罚，直到ta补上了那段自由时间。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>+2 dice on Running tests</name>
+            <translate>〈奔跑〉检定或获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>+2 on Pilot Ground Craft Tests</name>
+            <translate>〈陆用驾驶〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice set="2">
+            <name>Magician: Reduce Drain Value from Reckless Summoning by 1</name>
+            <translate>法师：降低1点鲁莽施法的耗竭</translate>
+          </choice>
+          <choice set="2">
+            <name>Adept: May learn to use the Movement critter power as a metamagic (self only, 3 times a day)</name>
+            <translate>修士：能够学习怪物能力的“移动”作为一个超魔（仅限自身，每天3次）</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>dd6aa95d-5112-493e-9ba1-557dc43b6708</id>
+        <name>Raccoon</name>
+        <translate>浣熊</translate>
+        <altadvantage>通用：〈手上功夫〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>浣熊，是常见的盗贼图腾之一，所以其跟随者们会倾向于在贪婪的方向上犯错。一位浣熊的跟随者必须通过一个魅力+意志(3)的检定，才能抵抗住冲动，不去打开下一扇上锁的门进去看看有什么好偷的，或是抵御住值钱数据的诱惑，不去追踪矩阵中的某条猎物踪迹。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for spells, preparations, and spell rituals in the Manipulation category.</name>
+            <translate>法师：涉及操纵系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: 2 Improved Sense powers</name>
+            <translate>修士：免费获得2级『提升感知』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>924e0d72-a83a-44c2-90ba-24455c389207</id>
+        <name>Spider</name>
+        <translate>蜘蛛</translate>
+        <altadvantage>通用：〈计算机〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>蜘蛛的跟随者们已经因为总担心别人把他们当作虫萨满而惶惶不安了。他们在闲聊中不会详谈这个话题。蜘蛛的跟随者们在建立联系方面，比那些传统萨满们更擅长利用矩阵的便利。这也使得这些跟随者们更容易有广场恐惧症(agoraphobic)，因为他们喜欢避免不可控的社交情况以及陌生的环境。当他们呆在空旷场所，他们在进行魔法检定时要承受-1骰池调整（这也包括特别大的室内房间，比如大会堂，剧场，还有体育场）。如果碰巧还要应付一大群人，那么惩罚翻倍。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Illusion spells</name>
+            <translate>法师：涉及幻象系法术、制剂和仪式检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Hang time (2)</name>
+            <translate>修士：免费获得2级『滞空时间』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <!-- Region Forbidden Arcana-->
+      <mentor>
+        <id>bd56ecdf-ebba-4b66-8e39-445831744496</id>
+        <name>Dove</name>
+        <translate>鸽子</translate>
+        <altadvantage>通用：〈交涉〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>鸽子在尽可能的情况下反对战斗。因此，那些遵从鸽子的人在施放战斗法术或使用致命手段时受到-2骰池调整。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
+            <translate>法师：施放生命系法术获得+1骰池调整，召唤气精魂获得+1骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 1 free level of Enhanced Perception.</name>
+            <translate>修士：免费获得1级『强化侦察』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>0fc002e4-c130-4ca8-8719-487941e86863</id>
+        <name>Planar Entity</name>
+        <translate>位面实体</translate>
+        <altadvantage>通用：取决于精魂类型和GM批准</altadvantage>
+        <altdisadvantage>将异界存在接纳入一个人的灵魂不是没有缺陷的。他们很大一部分精神力量都被用来保持自己不因这种共享存在的状态而失去自我上。法师在使用意志的检定上受到-2骰池减值。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: Determined by spirit type and gamemaster approval.</name>
+            <translate>法师：取决于精魂类型和GM批准</translate>
+          </choice>
+          <choice>
+            <name>Adept: Determined by spirit type and gamemaster approval.</name>
+            <translate>修士：取决于精魂类型和GM批准</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
+        <name>Arcana</name>
+        <translate>奥秘</translate>
+        <altadvantage>通用：每天一次，在做决定或做受塔罗解读/塔罗牌影响的检定时，可以如同使用了极限（良机再现）般重投结果中的未成功骰子</altadvantage>
+        <altdisadvantage>奥秘的追随者必须使用塔罗牌卡组或单张卡牌作为法器或崇拜物，否则在尝试使用它们时受到-2骰池调整。\n塔罗奥秘在它的拥护者的生活中扮演着如此重要的角色，以至于当奥秘的追随者进阶1级启蒙时，他们必须选择专注（Centering）或修士专注（Adept Centering）作为他们的首要益处，同时选择塔罗牌作为他们使用专注的器具。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
+            <translate>法师：施放侦测系法术受+1骰池调整，施放『千里眼』时额外受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 2 free levels of Danger Sense</name>
+            <translate>修士：免费获得2级『危险感应』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>2dcbe44e-3789-4cf2-b51b-0337c239ce7c</id>
+        <name>Holy Text</name>
+        <translate>神圣经文</translate>
+        <altadvantage>通用：〈特定神圣经文〉知识技能+4等级</altadvantage>
+        <altdisadvantage>拥有一本神圣经文意味着某些行为将被视作不正当的或违反经文教义的。当神圣经文的追随者想要进行一个与经文教义相违背的行为时（无论是哪种经文），他们必须通过一个魅力+意志（4）检定来进行该行为。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
+            <translate>法师：〈驱逐〉检定获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Magician: +2 dice pool modifer when casting Health spells.</name>
+            <translate>法师：施放生命系法术时获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
+            <translate>修士：免费获得1级『共情疗法』或『秘法护甲』（二选一）</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>833ce699-081b-454d-ac93-5c2bd2c61862</id>
+        <name>Death</name>
+        <translate>死亡</translate>
+        <altadvantage>通用：〈解剖/疾病/感染者/亡灵〉（选择其一）知识技能+4等级</altadvantage>
+        <altdisadvantage></altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+            <translate>法师：在施放『死亡之触』、『法力球』、『法力箭』、『触杀术』、『屠戮术』、『诛灭术』时骰池获得+2调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
+            <translate> 修士：免费获得1级『杀戮之手』或『瘟疫之云』（二选一）</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>c3f3cf4d-3e99-4395-9d24-0b4492ecf45c</id>
+        <name>War</name>
+        <translate>战争</translate>
+        <altadvantage>通用：在角色创建完成后，可以以比正常低1业力的价格提升等级3或以上的战斗技能</altadvantage>
+        <altdisadvantage>贵族之战斗、不得不为之的战斗与不计后果的战斗，彼此间是截然不同的。结果是，那些遵从战争的人比任何人或任何事都更害怕的是失败。在看起来要输掉战斗时，那些遵从战争导师的人必须通过一个魅力+意志（4）检定，否则会使用任何有必要的手段——包括生命，新元，以及他们的同伴的荣誉——来击败他们的敌手。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 1 free level of Critical Strike.</name>
+            <translate>修士：免费获得1级『致命一击』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
+        <name>Tohu Wa-Bohu</name>
+        <translate></translate>
+        <altadvantage>通用：〈威吓〉检定或〈爆破〉检定（选择其一）获得+2骰池调整</altadvantage>
+        <altdisadvantage>虚空混沌的追随者有时很难与之合作，因为他们不喜欢目标，这对他们来说更接近创造而不是毁灭。追随者获得「执念」（注：RF）特质，而其目标为毁灭某些有意义的东西的机会。此外，他们发现由于他们的毁灭天性而很难集体协作。他们永远不能从团队合作或领导力中获得加值</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: Gain the Witness My Hate quality for free.</name>
+            <translate>法师：免费获得「见证我的怨恨」特质</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain the Adept Accident power for free.</name>
+            <translate> 修士：免费获得『修士降咒』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>0855eb9d-65b2-4168-ae58-6b07c38b86c3</id>
+        <name>Green Man</name>
+        <translate>绿之人</translate>
+        <altadvantage>通用：〈交涉〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>绿之人的追随者认为植物的价值高于几乎其它一切。于是，他们在植物被大肆毁灭时不会袖手旁观。这并不是说每个追随者都必须为每根折断的枝条复仇，但当植物正在受到明显的伤害，他们必须通过一个魅力+意志（3）检定，否则会使用一切可能的手段来阻止破坏。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
+            <translate> 法师：〈召唤〉植物精魂获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 2 free levels of Rooting.</name>
+            <translate>修士：免费获得2级『盘根』异能</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>79346916-7987-4332-b031-4b8bd59700d7</id>
+        <name>Sun</name>
+        <translate>太阳</translate>
+        <altadvantage> 通用：在日间户外时〈侦察〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>太阳的追随者必须通过一个魅力+意志（4）检定才能有目的地误导他人。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
+            <translate>法师：施放太阳或火焰相关的法术时获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 3 free levels of Temperature Tolerance</name>
+            <translate>修士：免费获得3级『耐温性』（只对热而不对冷有效）</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>31a16d45-74a1-451e-998c-d9ed9c369f1e</id>
+        <name>Dark King</name>
+        <translate>冥王</translate>
+        <altadvantage>通用：〈威吓〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>追随者拥有的与冥王的怪异链接使得痛苦与濒死更加鲜明。似乎就像冥王希望他的追随者早日加入他的王庭来告诉他那些他们收集的秘密。追随者在抵抗物理伤害时受到-1骰池调整。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice to Contractual Rituals.</name>
+            <translate>法师：契约性仪式获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain Spirit Ram for free.</name>
+            <translate>修士：免费获得『灵槌』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>a40f9df8-9303-4f3b-9088-b9bd60c43f72</id>
+        <name>Moon</name>
+        <translate>月亮</translate>
+        <altadvantage>通用：〈交涉〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>月亮的追随者必须通过一个魅力+意志（4）检定来加入直接对抗；检定失败意味着他们不能进行任何被认为是正面冲突行动。交涉不被视作冲突（月亮热爱交流），但争吵就算。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice for Illusion and transformation-focused Manipulation spells, preparations, and spell rituals.</name>
+            <translate>法师：涉及幻术系和变形相关的操纵系法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 3 levels of Stillness for free.</name>
+            <translate>修士：免费获得3级『寂静』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>b1a5d0cd-b4f1-4de2-86ee-3965f1c36034</id>
+        <name>Oak</name>
+        <translate>橡树</translate>
+        <altadvantage>通用：伤害抵抗检定获得+1骰池调整</altadvantage>
+        <altdisadvantage>要选择该精魂导师必须拥有一个天然的（也就是未经殖装增强的）身体，并且力量属性为4或更高。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool bonus when summoning plant or air spirits (choose 1 when selecting this mentor spirit).</name>
+            <translate>法师：〈召唤〉植物或气精魂（在选择该导师时选择其一）时获得+2骰池调整。</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 2 levels of Stillness for free</name>
+            <translate>修士：免费获得2级『寂静』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>6ff55926-3ea8-4e8c-8cd2-a114595d159b</id>
+        <name>Stag</name>
+        <translate>牡鹿</translate>
+        <altadvantage>通用：〈利刃〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>牡鹿的追随者需要尊重，尤其是来自那些他们给予尊重者的。一旦不被尊重，他们必须通过一个魅力+意志（3）检定，否则他们就会要求怠慢者展示尊重来满足自己的需求。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 to summoning earth spirits.</name>
+            <translate>法师：〈召唤〉地精魂时获得+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain +2 levels of Light Body for free.</name>
+            <translate>修士：免费获得2级『梯云纵』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
+        <name>Great Mother</name>
+        <translate>伟大母亲</translate>
+        <altadvantage> 通用：当不处于城市区域时，使用户外技能组的检定获得+1骰池调整</altadvantage>
+        <altdisadvantage>将任何由于污染或扭曲元素导致的背景计数视作两倍其等级。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
+            <translate>法师：涉及生命系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain Empathic Healing for free.</name>
+            <translate>修士：免费获得『共情疗法』</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>26eed20e-86c6-4245-be55-231370fff939</id>
+        <name>Spider (Alt)</name>
+        <translate>蜘蛛（变体）</translate>
+        <altadvantage>通用：使用隐匿技能组的检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>蜘蛛的追随者，如同他们的导师，在事情的发展超出其控制时变得焦虑。因此，他们不遗余力地控制他们的遭遇的随机性。当没有在遵从一个计划或事情并没有照计划发展时，蜘蛛的追随者必须通过一个魅力+意志（4）检定，否则在一个新计划被建立起来前一切检定受到-2骰池调整。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+            <translate>法师：涉及操纵系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</name>
+            <translate>修士：免费获得2级『灵爪』（SG）异能（虽然在这种情况下，它表现为毒牙）</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>a7532966-cdeb-4732-b486-59cbf5552f83</id>
+        <name>Wolf (Alt)</name>
+        <translate>狼（变体）</translate>
+        <altadvantage>通用：〈潜行〉、〈侦察〉、〈生存〉和〈追踪〉检定获得+1骰池调整</altadvantage>
+        <altdisadvantage>狼不是光荣的。狼是捕食弱者的存活者。每当狼的追随者看到通过攻击或牺牲弱者来存活的机会，他们必须通过一个魅力+意志（4）检定，否则就会尝试抓住机会。这对于狼视为朋友与家人的那些人不生效。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 2 free levels of Danger Sense.</name>
+            <translate>修士：免费获得2级『危险感应』异能</translate>
+          </choice>
+        </choices>
+      </mentor>
+      <mentor>
+        <id>e27fd190-c19f-4d86-8e99-7552df1e8be3</id>
+        <name>Rat (Alt)</name>
+        <translate>鼠（变体）</translate>
+        <altadvantage> 通用：〈侦察〉和〈潜行〉检定获得+1骰池调整</altadvantage>
+        <altdisadvantage>鼠天生就是独行者。因此，有时它很难相信别人。与鼠对于不称职的无法忍受相结合，这可能在团队环境中引发问题。鼠之追随者无法通过团队合作检定受到帮助或帮助他人，除非他们相信他们正在组队的对象。此外，如果他们确实相信一个人，但这份信任因不相称或背叛而破裂，将来每次他们都必须通过一个魅力+意志（4）检定，才能够与此人进行团队合作检定。</altdisadvantage>
+        <choices>
+          <choice>
+            <name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
+            <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+1骰池调整</translate>
+          </choice>
+          <choice>
+            <name>Adept: Gain 1 free level of Analytics.</name>
+            <translate>修士：免费获得1级『解析』</translate>
+          </choice>
+        </choices>
+      </mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -8755,26 +9295,144 @@
 				<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
 				<name>A - Magician or Technomancer</name>
 				<translate>A - 法师/神秘修士，或超链者</translate>
+        <talents>
+          <talent>
+            <name>Magician - 6 Magic/10 Spells</name>
+            <translate>法师 - 6 魔法＋10 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Mystic Adept - 6 Magic/10 Spells</name>
+            <translate>神秘修士 - 6 魔法＋10 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Technomancer - 6 Resonance/7 Complex Forms</name>
+            <translate>超链者 - 6 共鸣＋7 复合程式</translate>
+          </talent>
+          <talent>
+            <name>A.I. - 6 Depth</name>
+            <translate>AI - 6 深度</translate>
+          </talent>
+        </talents>
       </priority>
 			<priority>
 				<id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
 				<name>B - Adept, Magician, or Technomancer</name>
 				<translate>B - 修士，法师/神秘修士，或超链者</translate>
+        <talents>
+          <talent>
+            <name>Adept - 6 Magic</name>
+            <translate>修士 - 6 魔法</translate>
+          </talent>
+          <talent>
+            <name>Magician - 4 Magic/7 Spells</name>
+            <translate>法师 - 4 魔法＋7 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Mystic Adept - 4 Magic/7 Spells</name>
+            <translate>神秘修士 - 4 魔法＋7 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Aspected Magician - 5 Magic</name>
+            <translate>专精法师 - 5 魔法</translate>
+          </talent>
+          <talent>
+            <name>Apprentice - 5 Magic</name>
+            <translate>学徒 - 5 魔法</translate>
+          </talent>
+          <talent>
+            <name>Technomancer - 4 Resonance/5 Complex Forms</name>
+            <translate>超链者 - 4 共鸣＋5 复合程式</translate>
+          </talent>
+          <talent>
+            <name>A.I. - 4 Depth</name>
+            <translate>AI - 4 深度</translate>
+          </talent>
+        </talents>
 			</priority>
 			<priority>
 				<id>aae3a140-d306-4811-a9d2-874140600150</id>
 				<name>C - Adept, Magician, or Technomancer</name>
 				<translate>C - 修士，法师/神秘修士，或超链者</translate>
+        <talents>
+          <talent>
+            <name>Adept - 4 Magic</name>
+            <translate>修士 - 4 魔法</translate>
+          </talent>
+          <talent>
+            <name>Magician - 3 Magic/5 Spells</name>
+            <translate>法师 - 3 魔法＋5 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Mystic Adept - 3 Magic/5 Spells</name>
+            <translate>神秘修士 - 3 魔法＋5 法术/仪式/炼金法术</translate>
+          </talent>
+          <talent>
+            <name>Aspected Magician - 3 Magic</name>
+            <translate>专精法师 - 3 魔法</translate>
+          </talent>
+          <talent>
+            <name>Explorer - 5 Magic</name>
+            <translate>探索者 - 5 魔法</translate>
+          </talent>
+          <talent>
+            <name>Enchanter - 5 Magic</name>
+            <translate>附魔者 - 5 魔法</translate>
+          </talent>
+          <talent>
+            <name>Apprentice - 3 Magic</name>
+            <translate>学徒 - 3 魔法</translate>
+          </talent>
+          <talent>
+            <name>Technomancer - 3 Resonance/3 Complex Forms</name>
+            <translate>超链者 - 3 共鸣＋3 复合程式</translate>
+          </talent>
+          <talent>
+            <name>A.I. - 3 Depth</name>
+            <translate>AI - 3 深度</translate>
+          </talent>
+        </talents>
 			</priority>
 			<priority>
 				<id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
 				<name>D - Adept or Aspected Magician</name>
 				<translate>D - 修士或专精法师</translate>
+        <talents>
+          <talent>
+            <name>Adept - 2 Magic</name>
+            <translate>修士 - 2 魔法</translate>
+          </talent>
+          <talent>
+            <name>Aspected Magician - 2 Magic</name>
+            <translate>专精法师 - 2 魔法</translate>
+          </talent>
+          <talent>
+            <name>Aware - 3 Magic</name>
+            <translate>觉察者 - 3 魔法</translate>
+          </talent>
+          <talent>
+            <name>Apprentice - 2 Magic</name>
+            <translate>学徒 - 2 魔法</translate>
+          </talent>
+          <talent>
+            <name>A.I. - 2 Depth</name>
+            <translate>AI - 2 深度</translate>
+          </talent>
+        </talents>
 			</priority>
 			<priority>
 				<id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
 				<name>E - Mundane</name>
 				<translate>E - 凡俗</translate>
+        <talents>
+          <talent>
+            <name>Mundane</name>
+            <translate>凡俗</translate>
+          </talent>
+          <talent>
+            <name>A.I. - 2 Depth</name>
+            <translate>AI - 2 深度</translate>
+          </talent>
+        </talents>
 			</priority>
 			<priority>
 				<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
@@ -10608,6 +11266,602 @@
         <name>Wanted</name>
         <translate>通缉名单</translate>
       </quality>
+      <!-- Region Run Faster Metagenetic Qualities -->
+      <quality>
+        <id>0355c69a-85b4-48ae-84d6-f6dbf031eae7</id>
+        <name>Arcane Arrester</name>
+        <translate>法术绝缘</translate>
+      </quality>
+      <quality>
+        <id>bd2cf8ea-4eb3-458c-aa04-2de47067f3ad</id>
+        <name>Celerity</name>
+        <translate>迅捷</translate>
+      </quality>
+      <quality>
+        <id>fe67d02c-e9f0-4d8f-9888-adbea2797376</id>
+        <name>Dermal Alteration (Bark Skin)</name>
+        <translate>皮肤改变（树皮）</translate>
+      </quality>
+      <quality>
+        <id>8a09e5c6-8b0a-4fbb-80dc-42020fac96b5</id>
+        <name>Dermal Alteration (Blubber)</name>
+        <translate>皮肤改变（鲸脂）</translate>
+      </quality>
+      <quality>
+        <id>baee0763-4b49-4568-a80b-e1d4682272cd</id>
+        <name>Dermal Alteration (Dragon Skin)</name>
+        <translate>皮肤改变（龙皮）</translate>
+      </quality>
+      <quality>
+        <id>64354f78-c8dd-4d3e-9d9f-3fcbe08e6c27</id>
+        <name>Dermal Alteration (Granite Shell)</name>
+        <translate>皮肤改变（花岗岩外壳）</translate>
+      </quality>
+      <quality>
+        <id>bfb6b16b-d2b1-4b28-af37-e011d016da37</id>
+        <name>Dermal Alteration (Rhino Hide)</name>
+        <translate>皮肤改变（犀牛皮）</translate>
+      </quality>
+      <quality>
+        <id>5e0aebd7-02a0-4ffd-80f5-56a26d508e2f</id>
+        <name>Elongated Limbs</name>
+        <translate>加长肢体</translate>
+      </quality>
+      <quality>
+        <id>27209cc3-756b-4cb2-b6fe-ffec5bd6a072</id>
+        <name>Fangs</name>
+        <translate>尖牙</translate>
+      </quality>
+      <quality>
+        <id>07536b3f-ca42-43af-b7eb-ce4e410aaa2e</id>
+        <name>Functional Tail (Balance)</name>
+        <translate>功能性尾巴（平衡）</translate>
+      </quality>
+      <quality>
+        <id>92f92e40-f9c3-4d5a-b832-44375088be97</id>
+        <name>Functional Tail (Paddle)</name>
+        <translate>功能性尾巴（桨）</translate>
+      </quality>
+      <quality>
+        <id>c724871b-6ae9-43fe-a0ae-83b0afcd4123</id>
+        <name>Functional Tail (Prehensile)</name>
+        <translate>功能性尾巴（抓握）</translate>
+      </quality>
+      <quality>
+        <id>c4324d55-2914-4b5c-9586-19f5515da5d7</id>
+        <name>Functional Tail (Thagomizer)</name>
+        <translate>功能性尾巴（钉刺）</translate>
+      </quality>
+      <quality>
+        <id>195f183e-8c42-49cb-bfce-fe84bb9a9964</id>
+        <name>Gills (Air)</name>
+        <translate>鳃（空气）</translate>
+      </quality>
+      <quality>
+        <id>d10f48e4-5587-4ecf-ba8e-f7de16fe6a2a</id>
+        <name>Gills (Aqua)</name>
+        <translate>鳃（水）</translate>
+      </quality>
+      <quality>
+        <id>1cf04f79-0d0a-4c61-b166-d1c95b78ebfb</id>
+        <name>Gills (Full)</name>
+        <translate>鳃（完整）</translate>
+      </quality>
+      <quality>
+        <id>35103093-5f41-4d42-a2b5-6fbb64f627b1</id>
+        <name>Glamour</name>
+        <translate>诱惑力</translate>
+      </quality>
+      <quality>
+        <id>556c2599-ae97-44ff-98aa-442af1c9c6d4</id>
+        <name>Goring Horns</name>
+        <translate>撞角</translate>
+      </quality>
+      <quality>
+        <id>32c427cf-2f0b-4cbc-a1bd-5dc97ba5e9c6</id>
+        <name>Keen-Eared</name>
+        <translate>敏锐听觉</translate>
+      </quality>
+      <quality>
+        <id>9b8a9ecc-295f-4764-b5d8-0a3fb317d9b8</id>
+        <name>Monkey Paws</name>
+        <translate>猴爪</translate>
+      </quality>
+      <quality>
+        <id>b3fce27e-d762-4eaa-9cb6-c62cfb2fbccf</id>
+        <name>Ogre Stomach</name>
+        <translate>食人魔胃</translate>
+      </quality>
+      <quality>
+        <id>5ce51789-1ed2-446a-8aff-5f7f70969507</id>
+        <name>Photometabolism</name>
+        <translate>光合代谢</translate>
+      </quality>
+      <quality>
+        <id>5451c3da-b08c-4a63-899f-afb62bd50a57</id>
+        <name>Satyr Legs</name>
+        <translate>半羊人腿</translate>
+      </quality>
+      <quality>
+        <id>51ba5e67-f2fd-4149-b24c-9b502ed0e7c7</id>
+        <name>Shiva Arms (Pair)</name>
+        <translate>湿婆手臂（一对）</translate>
+      </quality>
+
+      <quality>
+        <id>4390735f-54fa-44a5-bce7-d23a67427f25</id>
+        <name>Underwater Vision</name>
+        <translate>水下视觉</translate>
+      </quality>
+      <quality>
+        <id>059f4399-f3c4-40b0-a975-d7e29a2e412b</id>
+        <name>Webbed Digits</name>
+        <translate>带蹼手脚</translate>
+      </quality>
+      <quality>
+        <id>acd06d4f-7f09-4d80-8bab-006b680392a2</id>
+        <name>Cyclopean Eye</name>
+        <translate>独眼</translate>
+      </quality>
+      <quality>
+        <id>9135118a-1085-4e31-9682-014c8b40c888</id>
+        <name>Neoteny</name>
+        <translate>幼态持续</translate>
+      </quality>
+      <quality>
+        <id>b0887f45-c0b1-4a5c-bd17-d73450287621</id>
+        <name>Nocturnal</name>
+        <translate>夜行</translate>
+      </quality>
+      <quality>
+        <id>c57c9407-7ac6-4061-abab-7735c8bd69b4</id>
+        <name>Striking Skin Pigmentation</name>
+        <translate>醒目皮肤着色</translate>
+      </quality>
+      <quality>
+        <id>33a1a0ed-20b8-4ddd-9070-2b460a5455b7</id>
+        <name>Symbiosis</name>
+        <translate>共生</translate>
+      </quality>
+      <quality>
+        <id>69a61e8c-238e-4ef9-8847-6271ed260a62</id>
+        <name>Unusual Hair</name>
+        <translate>奇异毛发</translate>
+      </quality>
+      <!-- 泛基因特质 待补
+      <quality>
+        <id>6509ce7a-a453-4941-9bfa-ec0fe48c6d40</id>
+        <name>360-degree Eyesight</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>9b441cbf-538d-4a75-bc7d-b1c9b6be0f9d</id>
+        <name>Animal Pelage (Quills)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>4a381795-b582-4a81-8963-d81027a3986f</id>
+        <name>Animal Pelage (Insulating Pelt)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>f46d91ad-8b3c-4bd7-bc5b-85ab7bb36d78</id>
+        <name>Animal Pelage (Camo Fur)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>cdcb6ace-b35e-48bc-8eb0-d7a48626e350</id>
+        <name>Balance Receptor</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>f767c6fa-c316-428b-b15d-f7f96be97fba</id>
+        <name>Beak</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>491c1279-693d-47c7-87c7-b77f4dc4f60e</id>
+        <name>Raptor Beak</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>f368f4c5-6d8e-4bf0-9567-f6ba8367678f</id>
+        <name>Bicardiac</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>79c42549-0ebd-48f9-9e1d-1215ab07bd47</id>
+        <name>Biosonar</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>0c11aefb-2306-43e9-9588-a84a563e9025</id>
+        <name>Bone Spikes</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>8c434958-fce8-45d3-88a5-b0f6f8ca58b0</id>
+        <name>Broadened Auditory System (Infrasound)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>bbabf58c-e3b7-49c0-be8f-29f7d8011814</id>
+        <name>Broadened Auditory System (Ultrasound)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>cb8ee404-fe6d-4697-9adf-1e41b14355cb</id>
+        <name>Camouflage</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>02a5832b-6521-4be0-a025-f320e345ca81</id>
+        <name>Dynamic Coloration</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>7d6e068b-0d9d-47d5-b175-6785b50eeb2b</id>
+        <name>Claws</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>72a6fe4e-056d-4f04-872d-d911f2e66946</id>
+        <name>Razor Claws</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>d45602d8-6c15-476b-8f91-adb35c8804ec</id>
+        <name>Retractable Claws</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>1d9239a1-0e58-4779-873d-5b8677865806</id>
+        <name>Climate Adaptation (Arctic)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>850ac6a8-4264-4b7f-bf75-04e1c768b411</id>
+        <name>Climate Adaptation (Desert)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>a4a85a3e-c5b6-4613-b299-7726c6918026</id>
+        <name>Corrosive Spit</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>72d1d797-4b61-4fbd-97b7-ffb8ea9ddf36</id>
+        <name>Dermal Deposits</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>de498da5-c141-4ea3-991e-97e73fb551d4</id>
+        <name>Defensive Secretion</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>67767d53-56f0-4b66-b7ef-5ff6319ea551</id>
+        <name>Electroception (Electrosense)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>54c7952d-24b2-489e-9597-3430dfff6207</id>
+        <name>Electroception (Technosense)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>ef0e9191-c931-4d41-986f-ed1ad0092a65</id>
+        <name>Frog Tongue</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>3f96728d-9309-4335-9712-a568b61a8983</id>
+        <name>Greasy Skin</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>9885823f-d80f-45dc-b379-1b3f55cd6aa3</id>
+        <name>Larger Tusks</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>2f080d13-92d7-4b16-9ee6-93b5a89206e4</id>
+        <name>Low-Light Vision (Changeling)</name>
+        <translate>低光视觉（替换儿）</translate>
+      </quality>
+      <quality>
+        <id>210401d7-57fa-4260-9517-2725689a509e</id>
+        <name>Low-Light Vision (Feline)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
+        <name>Magic Sense (Changeling)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>a22edb75-9b26-4f9f-b61a-26c58197694b</id>
+        <name>Magnetoception</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>51027aca-c1db-470a-afa4-d28cc219152f</id>
+        <name>Marsupial Pouch</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>2ffd990c-ced6-4484-955c-108473df5335</id>
+        <name>Metagenetic Improvement (Body)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
+        <name>Metagenetic Improvement (Agility)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
+        <name>Metagenetic Improvement (Reaction)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
+        <name>Metagenetic Improvement (Strength)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
+        <name>Metagenetic Improvement (Charisma)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
+        <name>Metagenetic Improvement (Intuition)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
+        <name>Metagenetic Improvement (Willpower)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>dc510f9d-0648-474b-8016-11a810ada098</id>
+        <name>Metahuman Traits</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>f3f8c1c4-a222-4f9d-a89d-b8a25fde0dad</id>
+        <name>Nasty Vibe</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>05113ce9-0255-4753-b467-569564f6a60d</id>
+        <name>Natural Venom (Exhaled, Mild)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>280af894-df4f-451c-874d-71c4b3db1580</id>
+        <name>Natural Venom (Exhaled, Moderate)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>0d416e3e-2f90-4a33-8277-d58af5e42de5</id>
+        <name>Natural Venom (Exhaled, Serious)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>3a627958-3dc8-4db9-8672-3c4f343f484b</id>
+        <name>Natural Venom (Exhaled, Deadly)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>51d327e7-e5f7-4972-a9f8-836bb555f53d</id>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>c5552f98-af9d-413e-ba81-4d42dc9d0770</id>
+        <name>Natural Venom (Spat, Moderate)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>a31a80cb-d05b-40ff-849e-37d2d9856225</id>
+        <name>Natural Venom (Spat, Serious)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>19901576-8376-439a-9070-0a2df09c6baf</id>
+        <name>Natural Venom (Spat, Deadly)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>827a22bc-43ea-4f17-bf81-f68e289ea623</id>
+        <name>Natural Venom (Injected, Mild)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>be99a6f3-e1f2-4abe-afae-34a7dadb0b8f</id>
+        <name>Natural Venom (Injected, Moderate)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>4d6208c5-5b00-440c-a720-20f41d54410c</id>
+        <name>Natural Venom (Injected, Serious)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>2291b5e9-ebec-4a8f-96ae-e2539501ba72</id>
+        <name>Natural Venom (Injected, Deadly)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>493450e1-b88b-441b-b7ee-bdecf5a99d2d</id>
+        <name>Proboscis</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>3e80d1e0-ae6a-4059-8a49-ae97547b3384</id>
+        <name>Setae</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>9b205e4a-66c7-45d9-b87b-d0c743944d60</id>
+        <name>Thermal Sensitivity</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>fd346177-3791-44c0-af8c-7cf176fc9aa3</id>
+        <name>Thermographic Vision (SURGE)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>c16ecaf5-e57f-4aae-8ef9-b7df84626ac5</id>
+        <name>Thorns</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>6dae7800-8634-44e3-9aca-f5a18eb06b45</id>
+        <name>Vomeronasal Organ</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>db002182-a3c4-4c77-a615-7a878d227871</id>
+        <name>Adiposis</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>8236f10b-345c-44f5-b0b1-648004f24d3f</id>
+        <name>Astral Hazing</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>95ba1f65-34c0-4f6e-9440-40e860278342</id>
+        <name>Berserker</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>96b4cfc7-ddf6-4828-8393-7625b0564bd1</id>
+        <name>Bioluminescence</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>8b0eb8a7-fc44-4452-bfd6-db8ee531bc0d</id>
+        <name>Cephalopod Skull</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>006409d3-cc04-4195-8569-b81d73ccb1a2</id>
+        <name>Cold-Blooded</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>bf416ac2-75b2-4907-8b15-1447784b5851</id>
+        <name>Critter Spook</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>ddc04b8e-b0f7-485d-9ab7-dee1110133fd</id>
+        <name>Deformity (Picasso)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>5c067c2c-435e-40c8-ab76-e4ffe6a4f884</id>
+        <name>Deformity (Quasimodo)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>35279341-3611-439a-9550-8227b306198f</id>
+        <name>Feathers</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>96911a4d-d82e-4a1e-a550-3e12b8e14a7b</id>
+        <name>Impaired Attribute (Body)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>8a1a04ff-5bff-48b2-90c2-b9bdb5fde8e8</id>
+        <name>Impaired Attribute (Agility)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>959b00a6-a55b-4c6b-95b0-a9746b31a24d</id>
+        <name>Impaired Attribute (Reaction)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>c00591dc-fe6d-4ff0-8e42-22000878f03f</id>
+        <name>Impaired Attribute (Strength)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>14e71856-7d38-4e04-933f-069ed89a14e9</id>
+        <name>Impaired Attribute (Charisma)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>b58b47a7-9011-4bef-8ba2-ae561a443765</id>
+        <name>Impaired Attribute (Intuition)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>0df94dda-5941-4130-b6fc-0a98fcf7f846</id>
+        <name>Impaired Attribute (Logic)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>a6a4d71d-452f-4d26-9588-e7a5bc2474c0</id>
+        <name>Impaired Attribute (Willpower)</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>7618be2b-b4c1-4f7c-905b-7698cc2e744e</id>
+        <name>Insectoid Features</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>0ece5812-aa89-484b-b899-f02ac961a417</id>
+        <name>Mood Hair</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>856622a9-b28c-4ac7-8707-812a51fecf7a</id>
+        <name>Progeria</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>873d8045-853f-4797-9f08-1a1eac388af0</id>
+        <name>Scales</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>b0152c5a-b959-43f2-825e-801e5ac07466</id>
+        <name>Scent Glands</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>b8b300d4-cf20-4652-8feb-2528030c6271</id>
+        <name>Slow Healer</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>73ded55c-3f96-4efa-bd03-cd9bdebeb303</id>
+        <name>Stubby Arms</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>dba6c764-3851-4d8e-97ce-344f45c8d771</id>
+        <name>Third Eye</name>
+        <translate></translate>
+      </quality>
+      <quality>
+        <id>4e35cd80-5a2e-431b-aafc-5a39a9e17f38</id>
+        <name>Vestigial Tail</name>
+        <translate></translate>
+      </quality> -->
     <!-- Region AI -->
     <quality>
       <id>829568f2-509f-40a3-a16a-a5994ae8a037</id>
@@ -10754,31 +12008,6 @@
       <id>0ebdfce5-c613-4fd9-9763-cae2d21c2153</id>
       <name>Uncanny Healer</name>
       <translate>神秘治愈者</translate>
-    </quality>  
-  <quality>
-      <id>0d5e6819-ac41-4700-ac7d-58fa957b328c</id>
-      <name>Phenotypic Variation - Genewipe</name>
-	  <translate>原型超人</translate>
-    </quality>
-    <quality>
-      <id>13edde6a-f920-4665-9e65-53a20b30c2a3</id>
-      <name>Phenotypic Variation - Masque</name>
-	  <chargenonly />
-      <karma>23</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>CF</source>
-      <page>157</page>
-    </quality>
-    <quality>
-      <id>eac42e74-2f7b-418d-bd38-c1cdd56ceec4</id>
-      <name>Phenotypic Variation - Reprint</name>
-	  <chargenonly />
-      <karma>18</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>CF</source>
-      <page>157</page>
     </quality>
     <quality>
       <id>b9afa9de-39c0-4e49-8271-f76910352ec2</id>
@@ -10972,7 +12201,53 @@
       <name>Combat Junkie</name>
       <translate>战斗狂热者</translate>
     </quality>
-     <!--Region Bullets and Bandages Positive Qualities -->
+      <!--Region Street Grimoire -->
+      <quality>
+        <id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
+        <name>Spirit Champion</name>
+        <translate>精魂捍卫者</translate>
+      </quality>
+      <quality>
+        <id>15b8fbbd-9d6f-43e4-acf3-97badf073ac4</id>
+        <name>The Artisan's Way</name>
+        <translate>匠人之道</translate>
+      </quality>
+      <quality>
+        <id>a61e2873-fe15-40f5-9ce3-07caa1f824d2</id>
+        <name>The Artist's Way</name>
+        <translate>艺术之道</translate>
+      </quality>
+      <quality>
+        <id>7da60a93-aa53-478c-8d08-18b5638d9b87</id>
+        <name>The Burnout's Way</name>
+        <translate>燃尽之道</translate>
+      </quality>
+      <quality>
+        <id>01181bb0-2a94-43f1-8a97-41347eac3843</id>
+        <name>The Invisible Way</name>
+        <translate>无形之道</translate>
+      </quality>
+      <quality>
+        <id>64165b48-d67e-4bb8-b662-ca45fbf5b3c0</id>
+        <name>The Magician's Way</name>
+        <translate>魔法之道</translate>
+      </quality>
+      <quality>
+        <id>1a530492-7036-49fe-9ff1-ff84c9ed5d0a</id>
+        <name>The Spiritual Way</name>
+        <translate>灵性之道</translate>
+      </quality>
+      <quality>
+        <id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
+        <name>The Warrior's Way</name>
+        <translate>战士之道</translate>
+      </quality>
+      <quality>
+        <id>94a4cc04-d856-418f-ac60-165f327433d5</id>
+        <name>Spirit Pariah</name>
+        <translate>精魂遗弃者</translate>
+      </quality>
+     <!--Region Bullets and Bandages -->
     <quality>
       <id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
       <name>Gifted Healer</name>
@@ -11143,10 +12418,10 @@
 					<spec translate="火精魂">Spirits of Fire</spec>
 					<spec translate="人精魂">Spirits of Man</spec>
 					<spec translate="水精魂">Spirits of Water</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
+					<spec translate="守卫精魂">Guardian Spirit</spec>
+					<spec translate="引导精魂">Guidance Spirit</spec>
+					<spec translate="植物精魂">Plant Spirit</spec>
+					<spec translate="任务精魂">Task Spirit</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -11160,10 +12435,10 @@
 					<spec translate="火精魂">Spirits of Fire</spec>
 					<spec translate="人精魂">Spirits of Man</spec>
 					<spec translate="水精魂">Spirits of Water</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
+					<spec translate="守卫精魂">Guardian Spirit</spec>
+					<spec translate="引导精魂">Guidance Spirit</spec>
+					<spec translate="植物精魂">Plant Spirit</spec>
+					<spec translate="任务精魂">Task Spirit</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -11708,10 +12983,10 @@
 					<spec translate="火精魂">Spirits of Fire</spec>
 					<spec translate="人精魂">Spirits of Man</spec>
 					<spec translate="水精魂">Spirits of Water</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
+					<spec translate="守卫精魂">Guardian Spirit</spec>
+					<spec translate="引导精魂">Guidance Spirit</spec>
+					<spec translate="植物精魂">Plant Spirit</spec>
+					<spec translate="任务精魂">Task Spirit</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13740,6 +15015,115 @@
 				<name>Weather Control</name>
 				<translate>天气控制</translate>
 			</power>
+      <!--spirits power Street Grimoire-->
+      <power>
+        <name>Anaphylaxis</name>
+        <translate>过敏反应</translate>
+      </power>
+      <power>
+        <name>Astral Gateaway</name>
+        <translate>星界通道</translate>
+      </power>
+      <power>
+        <name>Aura Masking</name>
+        <translate>灵光面具</translate>
+      </power>
+      <power>
+        <name>Banishing Resistance</name>
+        <translate>驱逐抵抗</translate>
+      </power>
+      <power>
+        <name>Desire Reflection</name>
+        <translate>欲望映射</translate>
+      </power>
+      <power>
+        <name>Deathly Aura</name>
+        <translate>死意灵光</translate>
+      </power>
+      <power>
+        <name>Devouring</name>
+        <translate>蚕噬</translate>
+      </power>
+      <power>
+        <name>Divining</name>
+        <translate>占卜</translate>
+      </power>
+      <power>
+        <name>Elemental Attack (Pollutant)</name>
+        <translate>元素攻击（污染）</translate>
+      </power>
+      <power>
+        <name>Elemental Attack (Radiation)</name>
+        <translate>元素攻击（辐射）</translate>
+      </power>
+      <power>
+        <name>Endowment</name>
+        <translate>赐予</translate>
+      </power>
+      <power>
+        <name>Energy Drain</name>
+        <translate>能量汲取</translate>
+      </power>
+      <power>
+        <name>Hive Mind</name>
+        <translate>蜂群思维</translate>
+      </power>
+      <power>
+        <name>Inhabitation</name>
+        <translate>寄生</translate>
+      </power>
+      <power>
+        <name>Magical Guard</name>
+        <translate>魔法守护</translate>
+      </power>
+      <power>
+        <name>Mind Link</name>
+        <translate>心灵链接</translate>
+      </power>
+      <power>
+        <name>Mutagen</name>
+        <translate>突变</translate>
+      </power>
+      <power>
+        <name>Pestilence</name>
+        <translate>瘟疫</translate>
+      </power>
+      <power>
+        <name>Possession</name>
+        <translate>附身</translate>
+      </power>
+      <power>
+        <name>Quake</name>
+        <translate>震颤</translate>
+      </power>
+      <power>
+        <name>Realistic Form</name>
+        <translate>真实形体</translate>
+      </power>
+      <power>
+        <name>Reinforcement</name>
+        <translate>加固</translate>
+      </power>
+      <power>
+        <name>Sense Link</name>
+        <translate>感知链接</translate>
+      </power>
+      <power>
+        <name>Shadow Cloak</name>
+        <translate>暗影斗篷</translate>
+      </power>
+      <power>
+        <name>Silence</name>
+        <translate>沉默</translate>
+      </power>
+      <power>
+        <name>Sonic Projection</name>
+        <translate>尖啸投射</translate>
+      </power>
+      <power>
+        <name>Storm</name>
+        <translate>风暴</translate>
+      </power>
 			<!--sprite powers corebook-->
 			<power>
 				<name>Camouflage</name>
@@ -13911,17 +15295,17 @@
 			<spirit>
 				<id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
 				<name>Guardian Spirit</name>
-				<translate>Guardian Spirit</translate>
+				<translate>守卫精魂</translate>
 			</spirit>
 			<spirit>
 				<id>12028356-5d37-406b-83d1-d25ef18030d1</id>
 				<name>Guidance Spirit</name>
-				<translate>Guidance Spirit</translate>
+				<translate>引导精魂</translate>
 			</spirit>
 			<spirit>
 				<id>22efb7b7-b822-4243-9fa3-6d87d407e9e5</id>
 				<name>Plant Spirit</name>
-				<translate>Plant Spirit</translate>
+				<translate>植物精魂</translate>
 			</spirit>
 			<spirit>
 				<id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
@@ -13956,7 +15340,7 @@
 			<spirit>
 				<id>a6906b58-489e-4100-a84d-866a3af4e37a</id>
 				<name>Task Spirit</name>
-				<translate>Task Spirit</translate>
+				<translate>任务精魂</translate>
 			</spirit>
 		</spirits>
 		<drainattributes>
@@ -16845,7 +18229,7 @@
 			<accessory>
 				<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 				<name>Speed Loader</name>
-				<translate>弹药速填器</translate>
+				<translate>快速装弹器</translate>
 			</accessory>
 			<accessory>
 				<id>28936368-9e16-498f-b028-92ec31e89a00</id>

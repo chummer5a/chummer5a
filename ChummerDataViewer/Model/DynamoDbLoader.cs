@@ -193,8 +193,7 @@ namespace ChummerDataViewer.Model
             {
                 if (disposing)
                 {
-                    if (_client != null)
-                        _client.Dispose();
+                    _client?.Dispose();
                 }
 
                 disposedValue = true;

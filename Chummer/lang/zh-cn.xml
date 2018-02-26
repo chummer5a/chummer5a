@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -382,14 +382,14 @@
 			<key>String_Weeks</key>
 			<text>周</text>
 		</string>
-    <string>
-      <key>String_Month</key>
-      <text>月</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>月</text>
-    </string>
+		<string>
+			<key>String_Month</key>
+			<text>月</text>
+		</string>
+		<string>
+			<key>String_Months</key>
+			<text>月</text>
+		</string>
 		<string>
 			<key>String_Hour</key>
 			<text>小时</text>
@@ -574,10 +574,10 @@
 			<key>Title_CreateNewCharacter</key>
 			<text>创建新角色</text>
 		</string>
-    <string>
-      <key>String_CharacterRoster</key>
-      <text>角色花名册</text>
-    </string>
+		<string>
+			<key>String_CharacterRoster</key>
+			<text>角色花名册</text>
+		</string>
 		<string>
 			<key>Title_CareerMode</key>
 			<text>职业模式</text>
@@ -753,11 +753,11 @@
 		</string>
 		<string>
 			<key>Menu_SpecialPossessLiving</key>
-			<text>Possess/Inhabit Living Vessel</text>
+			<text>附身/寄生活体容器</text>
 		</string>
 		<string>
 			<key>Menu_SpecialPossessInanimate</key>
-			<text>Possess/Inhabit Inanimate Vessel</text>
+			<text>附身/寄生无生命容器</text>
 		</string>
 		<string>
 			<key>Menu_SpecialBPAvailLimit</key>
@@ -1241,7 +1241,7 @@
 		</string>
 		<string>
 			<key>Message_SpellLimit</key>
-			<text>你的法术、仪式或炼金制剂不能多于魔法属性的两倍。</text>
+			<text>你的法术、仪式或炼金制剂不能超过魔法×2。</text>
 		</string>
 		<string>
 			<key>MessageTitle_SpellLimit</key>
@@ -1270,10 +1270,6 @@
 		<string>
 			<key>MessageTitle_CannotRemoveCyberware</key>
 			<text>无法移除赛博改造</text>
-		</string>
-		<string>
-			<key>Message_ComplexFormLimit</key>
-			<text>角色创建阶段，你所知的复合程式数量不能超过逻辑属性。</text>
 		</string>
 		<string>
 			<key>MessageTitle_ComplexFormLimit</key>
@@ -3332,10 +3328,10 @@
 			<key>Label_Mugshot</key>
 			<text>人物肖像：</text>
 		</string>
-    <string>
-      <key>Checkbox_IsMainMugshot</key>
-      <text>作为主肖像</text>
-    </string>
+		<string>
+			<key>Checkbox_IsMainMugshot</key>
+			<text>作为主肖像</text>
+		</string>
 		<string>
 			<key>Label_MugshotDimensions</key>
 			<text>210 × 310像素</text>
@@ -3644,7 +3640,7 @@
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiative</key>
-			<text>星界主动性：INT x2</text>
+			<text>星界主动性：INT ×2</text>
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiativePasses</key>
@@ -3766,11 +3762,11 @@
 		</string>
 		<!-- Individual Form- and UserControl-specific strings below this point -->
 		<!-- Contacts/Enemies -->
-    <string>
-      <key>String_Relationships</key>
-      <text>关系</text>
-    </string>
-    <string>
+		<string>
+			<key>String_Relationships</key>
+			<text>关系</text>
+		</string>
+		<string>
 			<key>Label_Contact_Connection</key>
 			<text>联系：</text>
 		</string>
@@ -5429,18 +5425,18 @@
 			<key>Title_SelectComplexForm</key>
 			<text>选择一个程序</text>
 		</string>
-	  <string>
-	    <key>Label_SelectComplexForm_Target</key>
-	    <text>目标：</text>
-	  </string>
-	  <string>
-	    <key>Label_SelectComplexForm_Duration</key>
-	    <text>持续：</text>
-	  </string>
-	  <string>
-	    <key>Label_SelectComplexForm_FV</key>
-	    <text>衰褪值：</text>
-	  </string>
+		<string>
+			<key>Label_SelectComplexForm_Target</key>
+			<text>目标：</text>
+		</string>
+		<string>
+			<key>Label_SelectComplexForm_Duration</key>
+			<text>持续：</text>
+		</string>
+		<string>
+			<key>Label_SelectComplexForm_FV</key>
+			<text>衰褪值：</text>
+		</string>
 		<!-- Select Program Option Window -->
 		<string>
 			<key>Title_SelectProgramOption</key>
@@ -5546,11 +5542,11 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_ExtendedSpell</key>
-			<text>Extended Spell</text>
+			<text>大范围法术</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Extended range Spells have a range of (Force × MAG × 10) meters but have their DV increased by +2.</text>
+			<text>大范围法术的范围是(强度×魔法×10)米，但耗竭伤害+2。</text>
 		</string>
 		<!-- Select Text Window -->
 		<string>
@@ -6030,11 +6026,11 @@
 		<!-- Special Strings -->
 		<string>
 			<key>String_SkillCommand</key>
-			<text>Command</text>
+			<text>命令</text>
 		</string>
 		<string>
 			<key>String_SkillDirectFire</key>
-			<text>Direct Fire</text>
+			<text>直接射击</text>
 		</string>
 		<string>
 			<key>String_SkillArtificing</key>
@@ -7302,10 +7298,10 @@
 			<key>Label_SkillGroup_Broken</key>
 			<text>拆解</text>
 		</string>
-    <string>
-      <key>String_SpellDefense</key>
-      <text>法术防御</text>
-    </string>
+		<string>
+			<key>String_SpellDefense</key>
+			<text>法术防御</text>
+		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttAGI</key>
 			<text>降低属性（AGI）</text>
@@ -7375,9 +7371,13 @@
 			<text>未检测到设定文件，这似乎是你第一次运行Chummer。需要打开选项菜单吗？</text>
 		</string>
 		<string>
-			<key>Message_ComplexFormLimitCareer</key>
-			<text>你所知的复合程式数量不能超过共鸣属性 x2。</text>
+			<key>Message_ComplexFormLimit</key>
+			<text>你习得的复合程式数量不能超过共鸣属性×2。</text>
 		</string>
+    <string>
+      <key>Message_PriorityComplexFormLimit</key>
+      <text>你习得的复合程式数量不能超过你天资优先级决定的数字。</text>
+    </string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
 			<text>你确定要花费{2}点业力，由{0}提升到{1}，并锁定技能种类于{3}吗？</text>
@@ -7624,7 +7624,7 @@
 		</string>
 		<string>
 			<key>Tip_CalculatedMovement</key>
-			<text>行走：AGI x2（{0}米/战斗轮）/({1}千米/小时)\n奔跑：AGI x4（{2}米/战斗轮）/({3}千米/小时)</text>
+			<text>行走：AGI ×2（{0}米/战斗轮）/({1}千米/小时)\n奔跑：AGI ×4（{2}米/战斗轮）/({3}千米/小时)</text>
 		</string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
@@ -8244,14 +8244,14 @@
 			<key>String_Update_Available</key>
 			<text>已经可以更新到新版本了{0}！</text>
 		</string>
-	  <string>
-	    <key>String_Currently_Installed_Version</key>
-	    <text>当前安装版本为{0}。</text>
-	  </string>
-	  <string>
-	    <key>String_Latest_Version</key>
-	    <text>Chummer5的最新{0}版本是{1}。</text>
-	  </string>
+		<string>
+			<key>String_Currently_Installed_Version</key>
+			<text>当前安装版本为{0}。</text>
+		</string>
+		<string>
+			<key>String_Latest_Version</key>
+			<text>Chummer5的最新{0}版本是{1}。</text>
+		</string>
 		<string>
 			<key>String_Nightly_Changelog_Warning</key>
 			<text>在每日版本中的更新是暂时的。</text>
@@ -8627,6 +8627,310 @@
 		<string>
 			<key>Label_CustomDataDirectories</key>
 			<text>使用个性化数据目录（更改只会在重启后应用。）</text>
+		</string>
+		<string>
+			<key>DialogFilter_Xml</key>
+			<text>XML 文件 (*.xml)|*.xml</text>
+		</string>
+		<string>
+			<key>DialogFilter_Html</key>
+			<text>HTML 文件 (*.htm;*.html)|*.htm;*.html</text>
+		</string>
+		<string>
+			<key>DialogFilter_Chum5</key>
+			<text>Chummer5 文件 (*.chum5)|*.chum5</text>
+		</string>
+		<string>
+			<key>DialogFilter_Pdf</key>
+			<text>PDF 文件 (*.pdf)|*.pdf</text>
+		</string>
+		<string>
+			<key>DialogFilter_Exe</key>
+			<text>可执行文件 (*.exe)|*.exe</text>
+		</string>
+		<string>
+			<key>DialogFilter_Json</key>
+			<text>JSON 文件 (*.json)|*.json</text>
+		</string>
+		<string>
+			<key>DialogFilter_All</key>
+			<text>所有文件 (*.*)|*.*</text>
+		</string>
+		<string>
+			<key>String_Unknown</key>
+			<text>未知</text>
+		</string>
+		<string>
+			<key>String_Version</key>
+			<text>版本</text>
+		</string>
+		<string>
+			<key>String_Dashboard</key>
+			<text>控制屏</text>
+		</string>
+		<string>
+			<key>Main_Menu_Player_Dash</key>
+			<text>玩家控制屏</text>
+		</string>
+		<string>
+			<key>Main_Menu_GM_Dash</key>
+			<text>GM控制屏</text>
+		</string>
+		<string>
+			<key>Message_FailedLoad</key>
+			<text>该文件未能载入以下XML 错误:\n{0}</text>
+		</string>
+		<string>
+			<key>Message_FailedSave</key>
+			<text>该文件未能存储以下XML 错误:\n{0}</text>
+		</string>
+		<string>
+			<key>Title_ChooseCharacterPriorities</key>
+			<text>选择角色优先权</text>
+		</string>
+		<string>
+			<key>String_Level</key>
+			<text>等级</text>
+		</string>
+		<string>
+			<key>About_Description_Text</key>
+			<text>暗影狂奔5版角色生成器\n\r\n\r感谢Keith和他在制作和维持SR4E的Chummer中所做的一切。没有他，这一切都不会存在。\n\r\n\r感谢Dumpshock社群中的每一位成员，用珍贵的反馈、妙想、Bug报告支持这个项目，指出我愚蠢的错误。同样感谢那些把Chummer到其他语言的志愿者！</text>
+		</string>
+		<string>
+			<key>About_Label_Contributors</key>
+			<text>感谢所有GitHub的贡献者！</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer</key>
+			<text>免责声明</text>
+		</string>
+		<string>
+			<key>About_Company_Text</key>
+			<text>初版Chummer由Keith Rudolph为4版制作。\n\rChummer5由Adam Schmidt更新：srchummer5@gmail.com\n\rChummer5a由Anonymous fa/tg/uy更新：chummer5isalive@gmail.com\n\r其他5a更新由Johannes Elgaard完成：joha4270@gmail.com</text>
+		</string>
+		<string>
+			<key>String_Cyberzombie</key>
+			<text>赛博丧尸</text>
+		</string>
+		<string>
+			<key>Tab_MatrixConditionMonitor</key>
+			<text>矩阵CM</text>
+		</string>
+		<string>
+			<key>Tab_PhysicalConditionMonitor</key>
+			<text>物理CM</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer_Text</key>
+			<text>Chummer完全是非官方的，并无The Topps Company, Inc或Catalyst Game Labs的支持。The Topps Company, Inc.拥有与游戏《暗影狂奔》相关的名称、标志、艺术作品、商标、图片、声音、音频、视频和/或任何使用的专利材料的独占权。\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the Silk icon set made by Mark James which is available at www.famfamfam.com.</text>
+		</string>
+		<string>
+			<key>Button_AddMod</key>
+			<text>添加改良</text>
+		</string>
+		<string>
+			<key>Button_DeleteMod</key>
+			<text>删除改良</text>
+		</string>
+		<string>
+			<key>Node_AdditionalMods</key>
+			<text>额外改良</text>
+		</string>
+		<string>
+			<key>Title_CreateWeaponMount</key>
+			<text>添加武器挂载位</text>
+		</string>
+		<string>
+			<key>String_EdgeUse</key>
+			<text>使用极限</text>
+		</string>
+		<string>
+			<key>String_EssenceLoss</key>
+			<text>精华损失</text>
+		</string>
+		<string>
+			<key>String_EssenceLossChargen</key>
+			<text>精华损失（角色创建阶段）</text>
+		</string>
+		<string>
+			<key>String_SpiritFettering</key>
+			<text>精魂禁锢</text>
+		</string>
+		<string>
+			<key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
+			<text>在重新添加提升时，以下项目没有找到数据文件：\n\n</text>
+		</string>
+		<string>
+			<key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
+			<text>\n任何它们提供的提升无法被添加回去。请手动移除或替换掉这些项目并/或确保在创建角色时使用的数据文件仍在并有效。</text>
+		</string>
+		<string>
+			<key>MessageTitle_Possession</key>
+			<text>附身/寄生</text>
+		</string>
+		<string>
+			<key>Message_VesselInCareerMode</key>
+			<text>要想被附身或寄生，容器必须在职业模式下。</text>
+		</string>
+		<string>
+			<key>Message_PossessionSave</key>
+			<text>在能够附身或寄生容器之前，必须先保存精魂文件。要现在保存吗？</text>
+		</string>
+		<string>
+			<key>String_Possessed</key>
+			<text>被附身</text>
+		</string>
+		<string>
+			<key>String_AttributeLoss</key>
+			<text>属性损失</text>
+		</string>
+		<string>
+			<key>String_ExpenseFetteredSpirit</key>
+			<text>禁锢精魂</text>
+		</string>
+		<string>
+			<key>String_DamageAsRound</key>
+			<text>每轮</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetSprite</key>
+			<text>网精</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetFile</key>
+			<text>文件</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetDevice</key>
+			<text>设备</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetPersona</key>
+			<text>化身</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetHost</key>
+			<text>主机</text>
+		</string>
+		<string>
+			<key>Menu_AddWeaponMount</key>
+			<text>添加武器挂载位</text>
+		</string>
+		<string>
+			<key>Menu_EditWeaponMount</key>
+			<text>编辑武器挂载位(&amp;E)</text>
+		</string>
+		<string>
+			<key>String_WeaponMounts</key>
+			<text>武器挂载位</text>
+		</string>
+		<string>
+			<key>Label_FiringMode</key>
+			<text>射击模式：</text>
+		</string>
+		<string>
+			<key>Enum_Skill</key>
+			<text>角色技能</text>
+		</string>
+		<string>
+			<key>Enum_GunneryCommandDevice</key>
+			<text>操控设备 - 炮术[AGI]</text>
+		</string>
+		<string>
+			<key>Enum_RemoteOperated</key>
+			<text>远程操作 - 炮术[LOG]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_PreferNightlyBuilds</key>
+			<text>选择每日版本</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
+			<text>允许用技能点为业力购买的技能购买专精</text>
+		</string>
+		<string>
+			<key>Label_OtherCoreCM</key>
+			<text>核心CM：</text>
+		</string>
+		<string>
+			<key>Label_OtherMatrixCM</key>
+			<text>矩阵CM：</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingBase</key>
+			<text>基础衰褪为</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingSeeDescription</key>
+			<text>见复合程式描述</text>
+		</string>
+		<string>
+			<key>String_DeviceRating</key>
+			<text>设备等级</text>
+		</string>
+		<string>
+			<key>Button_SwapOrdering</key>
+			<text>交换顺序(&amp;S)</text>
+		</string>
+		<string>
+			<key>Checkbox_Contact_Blackmail</key>
+			<text>勒索</text>
+		</string>
+		<string>
+			<key>Checkbox_Contact_Family</key>
+			<text>家庭</text>
+		</string>
+		<string>
+			<key>String_Power</key>
+			<text>异能</text>
+		</string>
+		<string>
+			<key>Tip_Skill_Cannot_Default</key>
+			<text>你不能未受训尝试该技能</text>
+		</string>
+		<string>
+			<key>Checkbox_Spirit_Fettered</key>
+			<text>禁锢</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheManPeople</key>
+			<text>为老大干活/为人民服务</text>
+		</string>
+		<string>
+			<key>Checkbox_Metatype_PossessionTradition</key>
+			<text>由附身流派召唤</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_PrintFreeExpenses</key>
+			<text>显示免费业力和新円支出</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
+			<text>计算免费人脉业力时使用增强后的魅力属性。</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
+			<text>计算免费知识技能点时使用增强后的逻辑+直觉属性。</text>
+		</string>
+		<string>
+			<key>Message_Options_SettingsName</key>
+			<text>你必须给设定文件起一个名字。</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_SettingsName</key>
+			<text>Chummer设置</text>
+		</string>
+		<string>
+			<key>Label_SelectLifestyle_CostPerDay</key>
+			<text>每日花费：</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_CareerOnlyRestriction</key>
+			<text>因为角色还没有被创建，你不能选择{0}。</text>
+		</string>
+		<string>
+			<key>String_TotalComparisonWithPointBuy</key>
+			<text>总计（与业力模式对比）</text>
 		</string>
 	</strings>
 </chummer>

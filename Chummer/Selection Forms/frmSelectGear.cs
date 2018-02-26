@@ -201,14 +201,6 @@ namespace Chummer
                 if (objXmlGear != null)
                 {
                     string strName = objXmlGear.SelectSingleNode("name")?.Value ?? string.Empty;
-                    // If a Grenade is selected, show the Aerodynamic checkbox.
-                    if (strName.StartsWith("Grenade:"))
-                        chkAerodynamic.Visible = true;
-                    else
-                    {
-                        chkAerodynamic.Visible = false;
-                        chkAerodynamic.Checked = false;
-                    }
 
                     // Quantity.
                     nudGearQty.Enabled = true;
@@ -257,16 +249,12 @@ namespace Chummer
                 {
                     nudGearQty.Enabled = false;
                     nudGearQty.Value = 1;
-                    chkAerodynamic.Visible = false;
-                    chkAerodynamic.Checked = false;
                 }
             }
             else
             {
                 nudGearQty.Enabled = false;
                 nudGearQty.Value = 1;
-                chkAerodynamic.Visible = false;
-                chkAerodynamic.Checked = false;
             }
 
             UpdateGearInfo();
@@ -388,6 +376,7 @@ namespace Chummer
         /// </summary>
         public bool ShowPositiveCapacityOnly
         {
+            get => _blnShowPositiveCapacityOnly;
             set
             {
                 _blnShowPositiveCapacityOnly = value;
@@ -401,6 +390,7 @@ namespace Chummer
         /// </summary>
         public bool ShowNegativeCapacityOnly
         {
+            get => _blnShowNegativeCapacityOnly;
             set
             {
                 _blnShowNegativeCapacityOnly = value;
@@ -414,6 +404,7 @@ namespace Chummer
         /// </summary>
         public bool ShowArmorCapacityOnly
         {
+            get => _blnShowArmorCapacityOnly;
             set => _blnShowArmorCapacityOnly = value;
         }
 
@@ -488,12 +479,7 @@ namespace Chummer
         {
             set => _eCapacityStyle = value;
         }
-
-        /// <summary>
-        /// Whether or not a Grenade is Aerodynamic.
-        /// </summary>
-        public bool Aerodynamic => chkAerodynamic.Checked;
-
+        
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
@@ -724,7 +710,7 @@ namespace Chummer
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacityField = _blnShowArmorCapacityOnly ? "armorcapacity" : "capacity";
+            string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
 
             if (_eCapacityStyle == CapacityStyle.Zero)
                 lblCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
@@ -896,12 +882,12 @@ namespace Chummer
                     strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
-            if (_blnShowArmorCapacityOnly)
-                strFilter.Append(" and contains(armorcapacity, \"[\")");
-            else if (_blnShowPositiveCapacityOnly)
-                strFilter.Append(" and not(contains(capacity, \"[\"))");
-            else if (_blnShowNegativeCapacityOnly)
-                strFilter.Append(" and contains(capacity, \"[\")");
+            if (ShowArmorCapacityOnly)
+                strFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
+            else if (ShowPositiveCapacityOnly)
+                strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
+            else if (ShowNegativeCapacityOnly)
+                strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
             if (_objParentNode == null)
                 strFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)

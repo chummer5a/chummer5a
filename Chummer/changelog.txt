@@ -62,6 +62,15 @@ Application Changes:
 - Unhardcoded skill selection in the weaponcategorydv bonus/improvement so that it is no longer always RAW melee combat active skills.
 - Metagenetic Limit for Changelings is now provided by an improvement. Characters in create mode will need to Reapply Improvements to gain access to it.
 - Aligned the Initiation/Submersion methods between career and create modes. Fixes inability to delete Initiate/Submersion grades in career mode.
+- Fixed an issue where gear that comes with a gear parent and has a set rating will use the maximum rating of the gear instead of the one specified in the data files. Fixes #2521.
+- Fixed an issue where specifying extra gear children of a gear parent that comes with a gear grandparent would not work.
+- Fixed an issue where the UI would not update with changes to skill specializations in career mode. Fixes #2522.
+- Fixed an issue where Chummer5a did not comply with official errata that the number of complex forms a technomancer can learn at character generation cannot exceed twice their RES rating (it previously checked against their LOG rating).
+- Fixed a crash that occurred when entering the "Karma and Nuyen" tab with a karma or nuyen entry whose date is set to sometime after the current date and time of the user, as well as when adding a karma or nuyen entry with a date set to sometime after the current date and time of the user. Fixes #2523, fixes #2519.
+- When selecting children gear for items that only allow certain categories of gear children and that also have a fixed capacity for said items, only items that consume capacity and/or items in the Custom category (if eligible) are shown.
+- Fixed an issue where changing the rating of a focus would not properly update the corresponding item in the focus list.
+- Fixed an issue where deleting sprites or spirits from anywhere other than the end of their lists would not cause the remaining controls to move up and fill in the empty space.
+- Removed the (currently non-functional) checkbox in the gear selection screen to make a grenade aerodynamic. Aerodynamic grenades now have separate gear entries.
 
 Data Changes:
 
@@ -81,7 +90,13 @@ Data Changes:
 - Fixed incorrect Essence cost for skillwires, which was using the core rulebook value of 0.1 x Rating instead of the Chrome Flesh value of 0.2 x Rating.
 - Fixed an issue where Move-By-Wires and Skillwires would stack when determining the maximum rating of activesoft that could be used.
 - Fixed an issue where adepts following The Spiritual Way could not learn Psychometry, but could learn Sympathetic Linking without Psychometry.
-- Added metageneticlimit Improvement to the three Changeling qualities. 
+- Added metageneticlimit Improvement to the three Changeling qualities.
+- The agent in Nixdorf Sekretar w/ Liebesekretar now properly comes with love life management software.
+- Imaging Scope, Imaging Scope (2050), Weapon Commlink, and Smart Firing Platform now allow custom gear children.
+- Added separate entries for Aerodynamic versions of each grenade.
+- Fixed issues where some non-aerodynamic grenades would not benefit from the Non-Aerodynamic specialization on Throwing Weapons.
+- Fixed the range and specialization information of Harpoons to match that of Javelins.
+
 New Strings:
 
 - String_DeviceRating
@@ -96,6 +111,12 @@ Changed Strings:
 
 - Message_CreatePACKSKit_DuplicateName
 - Message_CyberwareSuite_DuplicateName
+- Message_ComplexFormLimit
+- Message_PriorityComplexFormLimit
+
+Removed Strings:
+
+- Message_ComplexFormLimitCareer
 
 Build 198
 

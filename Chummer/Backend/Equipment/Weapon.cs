@@ -1796,22 +1796,31 @@ namespace Chummer.Backend.Equipment
             string strReturn;
             if (!blnDamageReplaced)
             {
-                try
+                if (string.IsNullOrEmpty(strDamage))
+                    strReturn = strDamageType + strDamageExtra;
+                else
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
-                    if (blnIsSuccess)
+                    try
                     {
-                        int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
-                        intDamage += intBonus;
-                        if (Name == "Unarmed Attack (Smashing Blow)")
-                            intDamage *= 2;
-                        strDamage = intDamage.ToString(objCulture);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                        {
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            intDamage += intBonus;
+                            if (Name == "Unarmed Attack (Smashing Blow)")
+                                intDamage *= 2;
+                            strDamage = intDamage.ToString(objCulture);
+                        }
                     }
-                }
-                catch (OverflowException) { } // Result is text and not a double
-                catch (InvalidCastException) { } // Result is text and not a double
+                    catch (OverflowException)
+                    {
+                    } // Result is text and not a double
+                    catch (InvalidCastException)
+                    {
+                    } // Result is text and not a double
 
-                strReturn = strDamage + strDamageType + strDamageExtra;
+                    strReturn = strDamage + strDamageType + strDamageExtra;
+                }
             }
             else
             {
@@ -1842,24 +1851,35 @@ namespace Chummer.Backend.Equipment
                     strDamageExtra = "(f)";
                     strDamage = strDamage.FastEscape("(f)");
                 }
-                // Replace the division sign with "div" since we're using XPath.
-                strDamage = strDamage.Replace("/", " div ");
 
-                try
+                if (string.IsNullOrEmpty(strDamage))
+                    strReturn = strDamageType + strDamageExtra;
+                else
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
-                    if (blnIsSuccess)
+                    // Replace the division sign with "div" since we're using XPath.
+                    strDamage = strDamage.Replace("/", " div ");
+
+                    try
                     {
-                        int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
-                        intDamage += intBonus;
-                        if (Name == "Unarmed Attack (Smashing Blow)")
-                            intDamage *= 2;
-                        strDamage = intDamage.ToString(objCulture);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                        {
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            intDamage += intBonus;
+                            if (Name == "Unarmed Attack (Smashing Blow)")
+                                intDamage *= 2;
+                            strDamage = intDamage.ToString(objCulture);
+                        }
                     }
+                    catch (OverflowException)
+                    {
+                    } // Result is text and not a double
+                    catch (InvalidCastException)
+                    {
+                    } // Result is text and not a double
+
+                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
-                catch (OverflowException) { } // Result is text and not a double
-                catch (InvalidCastException) { } // Result is text and not a double
-                strReturn = strDamage + strDamageType + strDamageExtra;
             }
 
             // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.

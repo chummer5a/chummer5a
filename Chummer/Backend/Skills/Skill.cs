@@ -1093,7 +1093,7 @@ namespace Chummer.Backend.Skills
         {
             _cachedStringSpec.Clear();
             OnPropertyChanged(nameof(Specialization));
-            OnPropertyChanged(nameof(DisplaySpecializationMethod));
+            OnPropertyChanged(nameof(DisplaySpecialization));
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
