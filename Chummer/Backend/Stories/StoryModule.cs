@@ -370,18 +370,18 @@ namespace Chummer
                     return string.Empty;
                 }
             }
-
+            
             if (blnGeneratePersistents)
             {
                 if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                    return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage).NormalizeWhiteSpace();
+                    return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
-                    return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), strLanguage).NormalizeWhiteSpace();
+                    return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), strLanguage);
             }
             else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage).NormalizeWhiteSpace();
-            
+                return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
+
             return LanguageManager.GetString("String_Error", strLanguage);
         }
 

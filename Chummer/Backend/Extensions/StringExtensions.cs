@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -234,21 +235,23 @@ namespace Chummer
         {
             return strHaystack.IndexOf(chrNeedle) != -1;
         }
-        
+
         /// <summary>
         /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="chrWhiteSpace">Whitespace character to use</param>
-        /// <param name="keepLineBreaks">Keep line breaks or consider them whitespace</param>
-        /// <returns>New string with any excess whitespace removed</returns>
-        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', bool keepLineBreaks = false)
+        /// <param name="chrWhiteSpace">Whitespace character to use when replacing chars.</param>
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace.</param>
+        /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with <paramref name="chrWhiteSpace"/> and any excess whitespace removed.</returns>
+        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', Func<char, bool> funcIsWhiteSpace = null)
         {
             if (strInput == null)
                 return string.Empty;
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
+            if (funcIsWhiteSpace == null)
+                funcIsWhiteSpace = char.IsWhiteSpace;
             char[] achrNewChars = new char[intLength];
             // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
             int intCurrent = 0;
@@ -258,7 +261,7 @@ namespace Chummer
             {
                 char chrLoop = strInput[i];
                 // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                if (char.IsWhiteSpace(chrLoop) && !(keepLineBreaks && chrLoop=='\n'))
+                if (funcIsWhiteSpace(chrLoop))
                 {
                     if (!blnLastCharWasWhiteSpace)
                         achrNewChars[intCurrent++] = chrWhiteSpace;

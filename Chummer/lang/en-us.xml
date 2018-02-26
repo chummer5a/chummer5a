@@ -8525,6 +8525,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Warning_Update_CouldNotConnect</key>
       <text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.</text>
     </string>
+    <string>
+      <key>Warning_Update_CouldNotConnectException</key>
+      <text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.\n\nError Message:\n{0}.</text>
+    </string>
 	<string>
       <key>Button_Download</key>
       <text>Download</text>

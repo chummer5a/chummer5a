@@ -27,6 +27,7 @@ using System.Reflection;
  using Application = System.Windows.Forms.Application;
  using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
+ using System.Linq;
 
 namespace Chummer
 {
@@ -46,6 +47,7 @@ namespace Chummer
         private readonly BackgroundWorker _workerConnectionLoader = new BackgroundWorker();
         private readonly WebClient _clientDownloader = new WebClient();
         private readonly WebClient _clientChangelogDownloader = new WebClient();
+        private string _strExceptionString;
 
         public frmUpdate()
         {
@@ -138,7 +140,8 @@ namespace Chummer
             if (_clientChangelogDownloader.IsBusy)
                 return;
             bool blnChummerVersionGotten = true;
-            string strError = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+            string strError = LanguageManager.GetString("String_Error", GlobalOptions.Language).Trim();
+            _strExceptionString = string.Empty;
             LatestVersion = strError;
             string strUpdateLocation = _blnPreferNightly
                 ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
@@ -168,9 +171,14 @@ namespace Chummer
                 {
                     response = request.GetResponse() as HttpWebResponse;
                 }
-                catch (WebException)
+                catch (WebException ex)
                 {
                     blnChummerVersionGotten = false;
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
                 }
 
                 if (_workerConnectionLoader.CancellationPending)
@@ -241,7 +249,7 @@ namespace Chummer
                         if (!blnFoundTag && line.Contains("tag_name"))
                         {
                             _strLatestVersion = line.Split(':')[1];
-                            LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"');
+                            LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"').Trim();
                             blnFoundTag = true;
                             if (blnFoundArchive)
                                 break;
@@ -267,7 +275,10 @@ namespace Chummer
             }
             if (!blnChummerVersionGotten || LatestVersion == strError)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    string.IsNullOrEmpty(_strExceptionString)
+                        ? LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language)
+                        : string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), _strExceptionString), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
                 e.Cancel = true;
             }
@@ -280,34 +291,42 @@ namespace Chummer
                     File.Move(_strTempUpdatePath, _strTempUpdatePath + ".old");
                 }
                 string strURL = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
-                if (Uri.TryCreate(strURL, UriKind.Absolute, out Uri uriConnectionAddress))
+                try
                 {
-                    try
+                    Uri uriConnectionAddress = new Uri(strURL);
+                    if (File.Exists(_strTempUpdatePath + ".tmp"))
+                        File.Delete(_strTempUpdatePath + ".tmp");
+                    _clientChangelogDownloader.DownloadFileAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
+                    while (_clientChangelogDownloader.IsBusy)
                     {
-                        if (File.Exists(_strTempUpdatePath + ".tmp"))
-                            File.Delete(_strTempUpdatePath + ".tmp");
-                        _clientChangelogDownloader.DownloadFileAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
-                        while (_clientChangelogDownloader.IsBusy)
+                        if (_workerConnectionLoader.CancellationPending)
                         {
-                            if (_workerConnectionLoader.CancellationPending)
-                            {
-                                _clientChangelogDownloader.CancelAsync();
-                                e.Cancel = true;
-                                return;
-                            }
+                            _clientChangelogDownloader.CancelAsync();
+                            e.Cancel = true;
+                            return;
                         }
-                        File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
                     }
-                    catch (WebException)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        _blnIsConnected = false;
-                        e.Cancel = true;
-                    }
+                    File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
                 }
-                else
+                catch (WebException ex)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _blnIsConnected = false;
+                    e.Cancel = true;
+                }
+                catch (UriFormatException ex)
+                {
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _blnIsConnected = false;
                     e.Cancel = true;
                 }
@@ -350,11 +369,13 @@ namespace Chummer
 
         public void DoVersionTextUpdate()
         {
-            string strLatestVersion = LatestVersion.Trim().TrimStartOnce("Nightly-v");
+            string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
             lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
             if (strLatestVersion == LanguageManager.GetString("String_Error", GlobalOptions.Language).Trim())
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language);
+                lblUpdaterStatus.Text = string.IsNullOrEmpty(_strExceptionString)
+                    ? LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language)
+                    : string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language).NormalizeWhiteSpace(), _strExceptionString);
                 cmdUpdate.Enabled = false;
                 return;
             }
@@ -607,10 +628,14 @@ namespace Chummer
             {
                 _clientDownloader.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
             }
-            catch (WebException)
+            catch (WebException ex)
             {
+                string strException = ex.ToString();
+                int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                if (intNewLineLocation != -1)
+                    strException = strException.Substring(0, intNewLineLocation);
                 // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmdUpdate.Enabled = true;
             }
         }
