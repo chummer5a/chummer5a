@@ -126,11 +126,10 @@ namespace Chummer.UI.Skills
                     //dropdown/spec
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
-                        DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                     cboSpec.SelectedIndex = -1;
                     cboSpec.DataSource = skill.CGLSpecializations;
-
+                    
                     cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
                 cboSpec.EndUpdate();
@@ -187,7 +186,7 @@ namespace Chummer.UI.Skills
 
                 case nameof(Skill.Leveled):
                     BackColor = _skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-                    btnAddSpec.Visible = _skill.CharacterObject.Created && _skill.Leveled &&  !_skill.IsExoticSkill;
+                    btnAddSpec.Visible = _skill.CharacterObject.Created &&  !_skill.IsExoticSkill && _skill.CanHaveSpecs;
                     if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 

@@ -106,7 +106,7 @@ namespace Chummer.UI.Skills
                 if (skill.ForcedName)
                     cboSpec.Enabled = false;
                 else
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 skill.PropertyChanged += Skill_PropertyChanged;
@@ -185,11 +185,20 @@ namespace Chummer.UI.Skills
                         goto case nameof(Skill.CGLSpecializations);
                     break;
                 case nameof(Skill.CGLSpecializations):
+                    string strOldSpec = cboSpec.SelectedValue?.ToString();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
                     cboSpec.DataSource = _skill.CGLSpecializations;
                     cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+                    if (string.IsNullOrEmpty(strOldSpec))
+                        cboSpec.SelectedIndex = -1;
+                    else
+                    {
+                        cboSpec.SelectedValue = strOldSpec;
+                        if (cboSpec.SelectedIndex == -1)
+                            cboSpec.Text = strOldSpec;
+                    }
                     break;
                 case nameof(KnowledgeSkill.Type):
                     if (!cboSkill.Enabled)
@@ -214,7 +223,7 @@ namespace Chummer.UI.Skills
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                   _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
