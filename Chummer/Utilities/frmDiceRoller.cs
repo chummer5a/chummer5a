@@ -174,7 +174,7 @@ namespace Chummer
             else
                 lblResults.Text += string.Format(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language), intHitCount.ToString());
 
-            lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum", GlobalOptions.Language) + ' ' + lstRandom.Sum().ToString();
+            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum", GlobalOptions.Language) + ' ' + lstRandom.Sum().ToString();
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = "Value";
@@ -333,7 +333,7 @@ namespace Chummer
             else
                 lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language).Replace("{0}", intHitCount.ToString());
 
-            lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum", GlobalOptions.Language) + ' ' + (lstRandom.Sum() + intKeepSum).ToString();
+            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum", GlobalOptions.Language) + ' ' + (lstRandom.Sum() + intKeepSum).ToString();
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = "Value";

@@ -2415,7 +2415,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public void ReaddImprovements(TreeView treGears, ref string strOutdatedItems, ICollection<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
+        public void ReaddImprovements(TreeView treGears, StringBuilder strOutdatedItems, ICollection<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(InternalId))
@@ -2430,7 +2430,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (Gear objFociGear in objStack.Gear)
                             {
-                                objFociGear.ReaddImprovements(treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                                objFociGear.ReaddImprovements(treGears, strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
                             }
                         }
                     }
@@ -2467,11 +2467,11 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    strOutdatedItems += DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(DisplayName(GlobalOptions.Language));
                 }
             }
             foreach (Gear objChild in Children)
-                objChild.ReaddImprovements(treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
+                objChild.ReaddImprovements(treGears, strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
         #region UI Methods

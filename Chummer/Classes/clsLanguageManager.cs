@@ -78,30 +78,30 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                         {
                                             if (TranslatedStrings.ContainsKey(strKey))
-                                                TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                                TranslatedStrings[strKey] = strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine);
                                             else
-                                                TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                                TranslatedStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".\n";
+                                    ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
                                 }
                         }
                         else
                         {
-                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".\n";
+                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
                         }
                     }
                     catch (Exception ex)
                     {
-                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + ".\n";
+                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
                     }
                 }
                 else
                 {
-                    ErrorMessage += "Could not find the strings file " + strLanguage + ".xml.\n";
+                    ErrorMessage += "Could not find the strings file " + strLanguage + ".xml." + Environment.NewLine;
                 }
 
                 // Check to see if the data translation file for the selected language exists.
@@ -120,23 +120,23 @@ namespace Chummer
                         catch (IOException ex)
                         {
                             DataDocument = null;
-                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
+                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
                         }
                         catch (XmlException ex)
                         {
                             DataDocument = null;
-                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
+                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
                         }
                     }
                     catch (Exception ex)
                     {
                         DataDocument = null;
-                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
+                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
                     }
                 }
                 else
                 {
-                    ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.\n";
+                    ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml." + Environment.NewLine;
                 }
             }
         }
@@ -164,11 +164,11 @@ namespace Chummer
                     }
                     catch (IOException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\n" + ex.ToString();
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex.ToString();
                     }
                     catch (XmlException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\n" + ex.ToString();
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex.ToString();
                     }
 
                     if (string.IsNullOrEmpty(ManagerErrorMessage))
@@ -185,18 +185,20 @@ namespace Chummer
                                         if (s_DictionaryEnglishStrings.ContainsKey(strKey))
                                             Utils.BreakIfDebug();
                                         else
-                                            s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                            s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
                                     }
                                 }
                             }
                             else
                             {
-                                ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\nNo strings found in file.";
+                                ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
+                                                       Environment.NewLine + Environment.NewLine + "No strings found in file.";
                             }
                     }
                 }
                 else
-                    ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:\n\nFile " + strFilePath + " does not exist or cannot be found.";
+                    ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
+                                           Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
             }
         }
         #endregion
@@ -228,7 +230,7 @@ namespace Chummer
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
                     {
-                        MessageBox.Show("Language with code " + strLanguage + " could not be loaded for the following reasons:\n\n" + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objNewLanguage.ErrorAlreadyShown = true;
                     }
                     return false;
@@ -491,7 +493,7 @@ namespace Chummer
                     foreach (string strKey in lstEnglish)
                     {
                         if (!lstLanguage.Contains(strKey))
-                            objMissingMessage.Append("\nMissing String: " + strKey);
+                            objMissingMessage.AppendLine("Missing String: " + strKey);
                     }
                 },
                 () =>
@@ -500,12 +502,12 @@ namespace Chummer
                     foreach (string strKey in lstLanguage)
                     {
                         if (!lstEnglish.Contains(strKey))
-                            objUnusedMessage.Append("\nUnused String: " + strKey);
+                            objUnusedMessage.AppendLine("Unused String: " + strKey);
                     }
                 }
             );
 
-            string strMessage = objMissingMessage.ToString() + objUnusedMessage.ToString();
+            string strMessage = (objMissingMessage.ToString() + objUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
             MessageBox.Show(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

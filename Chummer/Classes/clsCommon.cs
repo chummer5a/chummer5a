@@ -981,32 +981,32 @@ namespace Chummer
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 // add the title
-                string strResultContent = strArray[intTitleIndex] + '\n';
+                string strResultContent = strArray[intTitleIndex] + Environment.NewLine;
                 // if we have extra info add it keeping the line breaks
                 if (intExtraAllCapsInfo > 0)
-                    strResultContent += string.Join("\n", strArray, intTitleIndex + 1, intExtraAllCapsInfo) + '\n';
+                    strResultContent += string.Join(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo) + Environment.NewLine;
                 int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
                 // this is the best we can do for now, it will still mangle spell blocks a bit
                 for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
                 {
                     string strContentString = strArray[i];
-                    switch (strContentString.Last())
+                    if (strContentString.Length > 0)
                     {
-                        case '-':
-                            strResultContent += strContentString.Substring(0, strContentString.Length - 1);
-                            break;
-                        case '.':
-                        case '!':
-                        case '?':
-                            strResultContent += strContentString + '\n';
-                            break;
-                        default:
+                        char chrLastChar = strContentString[strContentString.Length - 1];
+                        if (char.IsPunctuation(chrLastChar))
+                        {
+                            if (chrLastChar == '-')
+                                strResultContent += strContentString.Substring(0, strContentString.Length - 1);
+                            else
+                                strResultContent += strContentString + Environment.NewLine;
+                        }
+                        else
+                        {
                             strResultContent += strContentString + ' ';
-                            break;
+                        }
                     }
                 }
-                // In tooltips linebreaks should follow windows style \r\n
-                return strResultContent.Replace("\n", Environment.NewLine);
+                return strResultContent;
             }
             return string.Empty;
         }

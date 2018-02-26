@@ -1427,7 +1427,7 @@ namespace Chummer
             // Make sure the character has an Essence lower than 0.
             if (CharacterObject.Essence() >= 0)
             {
-                strMessage += "\n\t" + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
                 blnEssence = false;
             }
 
@@ -1442,7 +1442,7 @@ namespace Chummer
             }
 
             if (!blnCyberware)
-                strMessage += "\n\t" + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator", GlobalOptions.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator", GlobalOptions.Language);
 
             if (!blnEssence || !blnCyberware)
             {
@@ -1606,7 +1606,7 @@ namespace Chummer
         {
             Cursor = Cursors.WaitCursor;
 
-            string strOutdatedItems = string.Empty;
+            StringBuilder strOutdatedItems = new StringBuilder();
 
             // Record the status of any flags that normally trigger character events.
             bool blnMAGEnabled = CharacterObject.MAGEnabled;
@@ -1670,7 +1670,7 @@ namespace Chummer
                 if (objNode != null)
                 {
                     objQuality.Bonus = objNode["bonus"];
-                    if (objQuality.Bonus?.HasChildNodes == true)
+                    if (objQuality.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = strSelected;
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
@@ -1714,7 +1714,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objQuality.DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(objQuality.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1742,26 +1742,26 @@ namespace Chummer
                         }
                         else
                         {
-                            strOutdatedItems += objMartialArt.DisplayName(GlobalOptions.Language) + "\n";
+                            strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Language));
                         }
                     }
                 }
                 else
                 {
-                    strOutdatedItems += objMartialArt.DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Language));
                 }
             }
 
             // Refresh Spells.
             foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                XmlNode xmlNode = objSpell.GetNode();
-                if (xmlNode != null)
+                XmlNode objNode = objSpell.GetNode();
+                if (objNode != null)
                 {
-                    if (xmlNode["bonus"] != null)
+                    if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objSpell.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, xmlNode["bonus"], false, 1, objSpell.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objSpell.Extra = ImprovementManager.SelectedValue;
@@ -1773,7 +1773,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objSpell.DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(objSpell.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1792,7 +1792,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objPower.DisplayName + "\n";
+                    strOutdatedItems.AppendLine(objPower.DisplayName);
                 }
             }
 
@@ -1817,7 +1817,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objComplexForm.DisplayName + "\n";
+                    strOutdatedItems.AppendLine(objComplexForm.DisplayName);
                 }
             }
 
@@ -1832,8 +1832,6 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objProgram.Extra;
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                            objProgram.Extra = ImprovementManager.SelectedValue;
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objProgram.Extra = ImprovementManager.SelectedValue;
                             TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
@@ -1844,7 +1842,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objProgram.DisplayName + "\n";
+                    strOutdatedItems.AppendLine(objProgram.DisplayName);
                 }
             }
 
@@ -1875,7 +1873,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objPower.DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(objPower.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1900,7 +1898,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objMetamagic.DisplayName(GlobalOptions.Language) + "\n";
+                    strOutdatedItems.AppendLine(objMetamagic.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1917,7 +1915,6 @@ namespace Chummer
                         objCyberware.Bonus = objNode["bonus"];
                         objCyberware.WirelessBonus = objNode["wirelessbonus"];
                         objCyberware.PairBonus = objNode["pairbonus"];
-
                         if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                             ImprovementManager.ForcedValue = objCyberware.Forced;
                         if (objCyberware.Bonus != null)
@@ -1942,18 +1939,18 @@ namespace Chummer
                             else
                                 dicPairableCyberwares.Add(objCyberware, 1);
                         }
+                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
+                        if (objWareNode != null)
+                            objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                     }
                     else
                     {
-                        strOutdatedItems += objCyberware.DisplayName(GlobalOptions.Language) + "\n";
+                        strOutdatedItems.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
                     }
-                    TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
-                    if (objWareNode != null)
-                        objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                 }
                 foreach (Gear objGear in objCyberware.Gear)
                 {
-                    objGear.ReaddImprovements(treCyberware, ref strOutdatedItems, lstInternalIdFilter);
+                    objGear.ReaddImprovements(treCyberware, strOutdatedItems, lstInternalIdFilter);
                 }
             }
             // Separate Pass for PairBonuses
@@ -1961,13 +1958,25 @@ namespace Chummer
             {
                 Cyberware objCyberware = objItem.Key;
                 int intCyberwaresCount = objItem.Value;
-                if (!string.IsNullOrEmpty(objCyberware.Location))
+                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware.DeepWhere(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
+                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                if (!string.IsNullOrEmpty(objCyberware.Location) && objCyberware.IncludePair.All(x => x == objCyberware.Name))
                 {
-                    intCyberwaresCount = Math.Min(intCyberwaresCount, CharacterObject.Cyberware.DeepCount(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.Location != objCyberware.Location && x.IsModularCurrentlyEquipped));
+                    int intMatchLocationCount = 0;
+                    int intNotMatchLocationCount = 0;
+                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                    {
+                        if (objPairableCyberware.Location != objCyberware.Location)
+                            intNotMatchLocationCount += 1;
+                        else
+                            intMatchLocationCount += 1;
+                    }
+                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                    intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
                 }
                 if (intCyberwaresCount > 0)
                 {
-                    foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped))
+                    foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                     {
                         if (intCyberwaresCount % 2 == 0)
                         {
@@ -2016,7 +2025,7 @@ namespace Chummer
                     }
                     else
                     {
-                        strOutdatedItems += objArmor.DisplayName(GlobalOptions.Language) + "\n";
+                        strOutdatedItems.AppendLine(objArmor.DisplayName(GlobalOptions.Language));
                     }
                 }
 
@@ -2049,25 +2058,25 @@ namespace Chummer
                         }
                         else
                         {
-                            strOutdatedItems += objMod.DisplayName(GlobalOptions.Language) + "\n";
+                            strOutdatedItems.AppendLine(objMod.DisplayName(GlobalOptions.Language));
                         }
                     }
                     foreach (Gear objGear in objMod.Gear)
                     {
-                        objGear.ReaddImprovements(treArmor, ref strOutdatedItems, lstInternalIdFilter);
+                        objGear.ReaddImprovements(treArmor, strOutdatedItems, lstInternalIdFilter);
                     }
                 }
 
                 foreach (Gear objGear in objArmor.Gear)
                 {
-                    objGear.ReaddImprovements(treArmor, ref strOutdatedItems, lstInternalIdFilter);
+                    objGear.ReaddImprovements(treArmor, strOutdatedItems, lstInternalIdFilter);
                 }
             }
 
             // Refresh Gear.
             foreach (Gear objGear in CharacterObject.Gear)
             {
-                objGear.ReaddImprovements(treGear, ref strOutdatedItems, lstInternalIdFilter);
+                objGear.ReaddImprovements(treGear, strOutdatedItems, lstInternalIdFilter);
             }
 
             // Refresh Weapons Gear
@@ -2078,7 +2087,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in objAccessory.Gear)
                     {
-                        objGear.ReaddImprovements(treWeapons, ref strOutdatedItems, lstInternalIdFilter);
+                        objGear.ReaddImprovements(treWeapons, strOutdatedItems, lstInternalIdFilter);
                     }
                 }
             }
@@ -2110,10 +2119,11 @@ namespace Chummer
 
             Cursor = Cursors.Default;
 
-            if (!string.IsNullOrEmpty(strOutdatedItems))
+            if (strOutdatedItems.Length > 0)
             {
-                strOutdatedItems = LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top", GlobalOptions.Language) + strOutdatedItems + LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom", GlobalOptions.Language);
-                MessageBox.Show(strOutdatedItems, LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top", GlobalOptions.Language) +
+                                strOutdatedItems.ToString() +
+                                LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             IsDirty = true;
@@ -16388,7 +16398,7 @@ namespace Chummer
             intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry);
             if (intLoopModifier != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier + ')';
-            strTip += "\n" + LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language).Replace("{0}", (dicAttributeTotalValues["STR"] * 15).ToString()).Replace("{1}", (dicAttributeTotalValues["STR"] * 10).ToString());
+            strTip += Environment.NewLine + LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language).Replace("{0}", (dicAttributeTotalValues["STR"] * 15).ToString()).Replace("{1}", (dicAttributeTotalValues["STR"] * 10).ToString());
             tipTooltip.SetToolTip(lblLiftCarry, strTip);
             lblMemory.Text = CharacterObject.Memory.ToString();
             strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]})";
@@ -17116,7 +17126,7 @@ namespace Chummer
                             strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
                             strArmorEquipped.Append(" (");
                             strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                            strArmorEquipped.Append(")\n");
+                            strArmorEquipped.AppendLine(")");
                         }
                     }
                     if (strArmorEquipped.Length > 0)
@@ -19107,7 +19117,7 @@ namespace Chummer
                 lblMentorSpiritInformation.Visible = true;
                 lblMentorSpirit.Text = objMentor.DisplayNameShort(GlobalOptions.Language);
                 lblMentorSpiritInformation.Text = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage", GlobalOptions.Language) + ' ' +
-                                   objMentor.DisplayAdvantage(GlobalOptions.Language) + "\n\n" +
+                                   objMentor.DisplayAdvantage(GlobalOptions.Language) + Environment.NewLine + Environment.NewLine +
                                    LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Language) + ' ' +
                                    objMentor.Disadvantage;
             }

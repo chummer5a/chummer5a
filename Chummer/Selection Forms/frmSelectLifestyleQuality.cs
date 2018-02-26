@@ -465,7 +465,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += "\n\t" + objQuality.DisplayNameShort(GlobalOptions.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;
@@ -477,7 +477,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += "\n\t" + objQuality.DisplayNameShort(GlobalOptions.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;
@@ -488,7 +488,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlForbidden.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlForbidden.InnerText + "\"]");
-                                    strForbidden += "\n\t" + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
+                                    strForbidden += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
                             case "metatypecategory":
@@ -498,7 +498,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlForbidden.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlForbidden.InnerText + "\"]");
-                                    strForbidden += "\n\t" + (objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText);
+                                    strForbidden += Environment.NewLine + '\t' + (objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
                             case "metavariant":
@@ -508,7 +508,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlForbidden.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlForbidden.InnerText + "\"]");
-                                    strForbidden += "\n\t" + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
+                                    strForbidden += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
                             case "metagenetic":
@@ -519,7 +519,7 @@ namespace Chummer
                                     if (objXmlCheck["metagenetic"]?.InnerText == bool.TrueString)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += "\n\t" + objQuality.DisplayName(GlobalOptions.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.Language);
                                         break;
                                     }
                                 }
@@ -548,7 +548,7 @@ namespace Chummer
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
-                    string strThisRequirement = "\n" + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
+                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
                     XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
                     {
@@ -567,8 +567,8 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
                                     strThisRequirement += objNode["translate"] != null
-                                        ? "\n\t" + objNode["translate"].InnerText
-                                        : "\n\t" + objXmlRequired.InnerText;
+                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
+                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
                                 }
                                 break;
                             case "characterquality":
@@ -585,8 +585,8 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
                                     strThisRequirement += objNode["translate"] != null
-                                        ? "\n\t" + objNode["translate"].InnerText
-                                        : "\n\t" + objXmlRequired.InnerText;
+                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
+                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
                                 }
                                 break;
                             case "metatype":
@@ -598,8 +598,8 @@ namespace Chummer
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]");
                                     strThisRequirement += objNode["translate"] != null
-                                        ? "\n\t" + objNode["translate"].InnerText
-                                        : "\n\t" + objXmlRequired.InnerText;
+                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
+                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
                                 }
                                 break;
                             case "metatypecategory":
@@ -611,8 +611,8 @@ namespace Chummer
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]");
                                     strThisRequirement += objNode["translate"] != null
-                                        ? "\n\t" + objNode["translate"].InnerText
-                                        : "\n\t" + objXmlRequired.InnerText;
+                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
+                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
                                 }
                                 break;
                             case "metavariant":
@@ -624,19 +624,19 @@ namespace Chummer
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]");
                                     strThisRequirement += objNode["translate"] != null
-                                        ? "\n\t" + objNode["translate"].InnerText
-                                        : "\n\t" + objXmlRequired.InnerText;
+                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
+                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += "\n\t" + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
+                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnOneOfMet = true;
                                 else
-                                    strThisRequirement = "\n\t" + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -825,7 +825,7 @@ namespace Chummer
                 foreach (XmlNode objXmlAllOf in objXmlRequiredList)
                 {
                     bool blnAllOfMet = true;
-                    string strThisRequirement = "\n" + LanguageManager.GetString("Message_SelectQuality_AllOf", GlobalOptions.Language);
+                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf", GlobalOptions.Language);
                     XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlAllOfList)
                     {
@@ -845,7 +845,7 @@ namespace Chummer
                                 if (!blnFound)
                                 {
                                     XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]/translate");
-                                    strThisRequirement += "\n\t" + (objNode?.InnerText ?? objXmlRequired.InnerText);
+                                    strThisRequirement += Environment.NewLine + '\t' + (objNode?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatype":
@@ -856,7 +856,7 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += "\n\t" + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatypecategory":
@@ -867,7 +867,7 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += "\n\t" + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metavariant":
@@ -878,18 +878,18 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += "\n\t" + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += "\n\t" + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
+                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnFound = true;
                                 else
-                                    strThisRequirement = "\n\t" + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.

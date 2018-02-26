@@ -82,7 +82,7 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += "\n\n" + _objSpirit.Notes;
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
             else
@@ -94,7 +94,7 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += "\n\n" + _objSpirit.Notes;
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
 
@@ -214,8 +214,8 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(@Application.StartupPath);
-                Uri uriFile = new Uri(@_objSpirit.FileName);
+                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriFile = new Uri(_objSpirit.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
 
@@ -290,7 +290,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
 
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += "\n\n" + _objSpirit.Notes;
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
 
                 ContactDetailChanged?.Invoke(this, e);

@@ -186,6 +186,7 @@ namespace Chummer.UI.Skills
                     break;
                 case nameof(Skill.CGLSpecializations):
                     string strOldSpec = cboSpec.SelectedValue?.ToString();
+                    cboSpec.SuspendLayout();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
@@ -199,6 +200,7 @@ namespace Chummer.UI.Skills
                         if (cboSpec.SelectedIndex == -1)
                             cboSpec.Text = strOldSpec;
                     }
+                    cboSpec.ResumeLayout();
                     break;
                 case nameof(KnowledgeSkill.Type):
                     if (!cboSkill.Enabled)

@@ -740,7 +740,7 @@ namespace Chummer
                             strbldQualities.Append(')');
                         }
                     }
-                    strbldQualities.Append('\n');
+                    strbldQualities.Append(Environment.NewLine);
                 }
 
                 lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();
@@ -802,7 +802,7 @@ namespace Chummer
                             strbldQualities.Append(')');
                         }
                     }
-                    strbldQualities.Append('\n');
+                    strbldQualities.Append(Environment.NewLine);
                 }
 
                 lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();

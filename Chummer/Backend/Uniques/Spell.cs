@@ -461,7 +461,7 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip += "\n" + LanguageManager.GetString("String_Force", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intDV.ToString();
+                        strTip += Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intDV.ToString();
                     }
                     else
                     {
@@ -471,10 +471,10 @@ namespace Chummer
                 }
                 if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category) && o.Enabled))
                 {
-                    strTip += $"\n {LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
+                    strTip += $"{Environment.NewLine}{LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
                     strTip = _objCharacter.Improvements
                         .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category) && o.Enabled)
-                        .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
+                        .Aggregate(strTip, (current, imp) => current + $"{Environment.NewLine}{_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
                 }
 
                 return strTip;

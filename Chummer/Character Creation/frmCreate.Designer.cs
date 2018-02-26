@@ -1144,7 +1144,7 @@ namespace Chummer
             this.lblAttributes.Tag = "Label_Attributes";
             this.lblAttributes.Text = "Attributes";
             this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
         " character creation.");
             // 
             // lblNuyen
@@ -1416,7 +1416,7 @@ namespace Chummer
             this.lblBuildPrimaryAttributes.Tag = "Label_Attributes";
             this.lblBuildPrimaryAttributes.Text = "Attributes";
             this.tipTooltip.SetToolTip(this.lblBuildPrimaryAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
         " character creation.");
             // 
             // lblBuildNegativeQualities
@@ -1847,7 +1847,7 @@ namespace Chummer
             this.lblFoci.TabIndex = 92;
             this.lblFoci.Tag = "Label_BondedFoci";
             this.lblFoci.Text = "Bonded Foci";
-            this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
+            this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force.");
             // 
             // lblBuildAIAdvancedPrograms
             // 

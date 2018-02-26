@@ -150,7 +150,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += "\n\n" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":\n" + objCache.ErrorText;
+                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine + objCache.ErrorText;
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -158,8 +158,8 @@ namespace Chummer
                     else
                     {
                         objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
-                        objCharacterNode.ToolTipText = strFile.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>') + "\n\n" +
-                                                       LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":\n" +
+                        objCharacterNode.ToolTipText = strFile.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine +
+                                                       LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine +
                                                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
                         objCharacterNode.ForeColor = Color.Red;
                     }
@@ -480,7 +480,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += "\n\n" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":\n" + objCache.ErrorText;
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine + objCache.ErrorText;
             }
 
             return objNode;

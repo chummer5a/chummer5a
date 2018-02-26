@@ -266,7 +266,7 @@ namespace Chummer
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
                 "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
                 "<body style=\"width:100%;height:" + webBrowser1.Height.ToString() + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                strText.Replace("\n", "<br />") +
+                strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />") +
                 "</body></html>";
         }
 
@@ -377,7 +377,7 @@ namespace Chummer
             string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
-                string strReturn = $"File not found when attempting to load {_strSelectedSheet}\n";
+                string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
                 Log.Enter(strReturn);
                 MessageBox.Show(strReturn);
                 return;
@@ -393,7 +393,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                string strReturn = $"Error attempting to load {_strSelectedSheet}\n";
+                string strReturn = $"Error attempting to load {_strSelectedSheet}{Environment.NewLine}";
                 Log.Enter(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;

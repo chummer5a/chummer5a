@@ -343,7 +343,7 @@ namespace Chummer
             catch (Exception ex)
             {
                 if (!string.IsNullOrEmpty(ErrorMessage))
-                    ErrorMessage += "\n\n";
+                    ErrorMessage += Environment.NewLine + Environment.NewLine;
                 ErrorMessage += ex.ToString();
             }
             if (_objBaseChummerKey == null)

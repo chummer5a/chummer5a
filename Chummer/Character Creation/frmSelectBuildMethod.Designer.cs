@@ -135,7 +135,7 @@ namespace Chummer
             this.lblMaxAvail.Size = new System.Drawing.Size(70, 29);
             this.lblMaxAvail.TabIndex = 3;
             this.lblMaxAvail.Tag = "Label_SelectBP_MaxAvail";
-            this.lblMaxAvail.Text = "Maximum\r\nAvailability";
+            this.lblMaxAvail.Text = "Maximum" + System.Environment.NewLine + "Availability";
             this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // nudMaxAvail
@@ -189,7 +189,7 @@ namespace Chummer
             this.lblStartingKarma.Size = new System.Drawing.Size(70, 29);
             this.lblStartingKarma.TabIndex = 11;
             this.lblStartingKarma.Tag = "Label_SelectBP_StartingKarma";
-            this.lblStartingKarma.Text = "Starting\r\nKarma";
+            this.lblStartingKarma.Text = "Starting" + System.Environment.NewLine + "Karma";
             this.lblStartingKarma.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // lblDescription

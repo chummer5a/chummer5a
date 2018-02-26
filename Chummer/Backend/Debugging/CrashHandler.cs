@@ -150,7 +150,8 @@ namespace Chummer.Backend
             }
             catch(Exception nex)
             {
-                MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
+                MessageBox.Show("Failed to create crash report." + Environment.NewLine +
+                                "Here is some information to help the developers figure out why:" + Environment.NewLine + nex + Environment.NewLine + "Crash information:" + Environment.NewLine + ex);
             }
         }
     }

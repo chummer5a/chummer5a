@@ -162,8 +162,8 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(@Application.StartupPath);
-                Uri uriFile = new Uri(@_objContact.FileName);
+                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriFile = new Uri(_objContact.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
@@ -198,7 +198,7 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += "\n\n" + _objContact.Notes;
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }

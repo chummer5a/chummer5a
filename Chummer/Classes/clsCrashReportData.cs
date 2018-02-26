@@ -68,7 +68,7 @@ namespace Chummer
 
 
             report.Send();
-            MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
+            MessageBox.Show("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
         private readonly List<KeyValuePair<string, Stream>> values; 

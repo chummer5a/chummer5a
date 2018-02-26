@@ -257,7 +257,7 @@ namespace Chummer
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
-            objCyberwareLabelString.Append(objCyberware.DisplayName(GlobalOptions.Language) + "\n");
+            objCyberwareLabelString.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
 
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);

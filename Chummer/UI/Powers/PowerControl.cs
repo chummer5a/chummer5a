@@ -147,8 +147,8 @@ namespace Chummer
                 _objPower.Notes = frmPowerNotes.Notes;
 
             string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
-            if (_objPower.Notes != "")
-                strTooltip += "\n\n" + _objPower.Notes;
+            if (!string.IsNullOrEmpty(_objPower.Notes))
+                strTooltip += Environment.NewLine + Environment.NewLine + _objPower.Notes;
             tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
         #endregion

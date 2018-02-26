@@ -481,7 +481,7 @@ namespace Chummer
 
             if (lstDuplicateIDs.Count > 0)
             {
-                string strDuplicatesNames = string.Join("\n", lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
+                string strDuplicatesNames = string.Join(Environment.NewLine, lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
                 MessageBox.Show(
                     LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
                         .Replace("{0}", lstDuplicateIDs.Count.ToString())
@@ -491,7 +491,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                string strMalformedIdNames = string.Join("\n", lstItemsWithMalformedIDs);
+                string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
                 MessageBox.Show(
                     LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
                         .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())

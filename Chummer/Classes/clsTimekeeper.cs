@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ namespace Chummer
 
         public static void Log()
         {
-            StringBuilder sb = new StringBuilder("Time statistics\n");
+            StringBuilder sb = new StringBuilder("Time statistics" + Environment.NewLine);
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {

@@ -724,7 +724,7 @@ namespace Chummer.Backend.Skills
                 {
                     foreach (Cyberware cyberware in _objCharacter.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
                     {
-                        s.Append("\n");
+                        s.Append(Environment.NewLine);
                         s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort(GlobalOptions.Language));
                         if (cyberware.Grade.Name != "Standard")
                         {
@@ -746,7 +746,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
                 {
-                    s.Append("\n");
+                    s.Append(Environment.NewLine);
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                         s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
                     s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
@@ -767,7 +767,7 @@ namespace Chummer.Backend.Skills
                     {
                         foreach (Cyberware cyberware in _objCharacter.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
                         {
-                            s.Append("\n");
+                            s.Append(Environment.NewLine);
                             if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                                 s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
                             s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
@@ -840,14 +840,14 @@ namespace Chummer.Backend.Skills
                 string middle = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SkillGroup))
                 {
-                    middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}\n";
+                    middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}" + Environment.NewLine;
                 }
                 if (!string.IsNullOrEmpty(_strNotes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + ' ' + _strNotes.WordWrap(100) + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + ' ' + _strNotes.WordWrap(100) + Environment.NewLine + Environment.NewLine;
                 }
 
-                strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";
+                strReturn += $"{DisplayCategory(GlobalOptions.Language)}{Environment.NewLine}{middle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";
 
                 return strReturn;
             }
@@ -1129,7 +1129,9 @@ namespace Chummer.Backend.Skills
                 OnPropertyChanged(nameof(PoolModifiers));
             }
             //TODO: Doesn't work
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
+            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault ||
+                                             imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute ||
+                                             imp.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
             {
                 OnPropertyChanged(nameof(PoolToolTip));
             }

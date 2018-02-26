@@ -280,7 +280,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
                                 {
-                                    throw new PdfConvertException(string.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output: \r\n{1}", document.Url, error));
+                                    throw new PdfConvertException(string.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output:{1}{2}", document.Url, System.Environment.NewLine, error));
                                 }
                             }
                             else

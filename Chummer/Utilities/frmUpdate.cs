@@ -130,6 +130,7 @@ namespace Chummer
                                                     .Replace("&", "&amp;")
                                                     .Replace("<", "&lt;")
                                                     .Replace(">", "&gt;")
+                                                    .Replace(Environment.NewLine, "<br />")
                                                     .Replace("\n", "<br />") + "</font>";
             }
             DoVersionTextUpdate();
@@ -175,7 +176,9 @@ namespace Chummer
                 {
                     blnChummerVersionGotten = false;
                     string strException = ex.ToString();
-                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
                     if (intNewLineLocation != -1)
                         strException = strException.Substring(0, intNewLineLocation);
                     _strExceptionString = strException;
@@ -311,7 +314,9 @@ namespace Chummer
                 catch (WebException ex)
                 {
                     string strException = ex.ToString();
-                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
                     if (intNewLineLocation != -1)
                         strException = strException.Substring(0, intNewLineLocation);
                     _strExceptionString = strException;
@@ -322,7 +327,9 @@ namespace Chummer
                 catch (UriFormatException ex)
                 {
                     string strException = ex.ToString();
-                    int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
                     if (intNewLineLocation != -1)
                         strException = strException.Substring(0, intNewLineLocation);
                     _strExceptionString = strException;
@@ -508,12 +515,12 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             return true;
@@ -549,13 +556,13 @@ namespace Chummer
                         }
                         catch (IOException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
                         catch (NotSupportedException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
@@ -571,12 +578,12 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + strZipPath);
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + strZipPath);
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)
@@ -631,7 +638,9 @@ namespace Chummer
             catch (WebException ex)
             {
                 string strException = ex.ToString();
-                int intNewLineLocation = strException.IndexOf("\n", StringComparison.Ordinal);
+                int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                if (intNewLineLocation == -1)
+                    intNewLineLocation = strException.IndexOf('\n');
                 if (intNewLineLocation != -1)
                     strException = strException.Substring(0, intNewLineLocation);
                 // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed

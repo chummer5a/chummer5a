@@ -32,7 +32,7 @@ using static Chummer.Backend.Skills.SkillsSection;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayDebug()}")]
+    [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
     public class Improvement
     {
         private string DisplayDebug()
@@ -534,7 +534,19 @@ namespace Chummer
         public string ImprovedName
         {
             get => _strImprovedName;
-            set => _strImprovedName = value;
+            set
+            {
+                if (_strImprovedName != value)
+                {
+                    if (Enabled)
+                    {
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
+                    }
+
+                    _strImprovedName = value;
+                }
+            }
         }
 
         /// <summary>
@@ -554,12 +566,16 @@ namespace Chummer
             get => _objImprovementType;
             set
             {
-                if (Enabled)
+                if (_objImprovementType != value)
                 {
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, _objImprovementType));
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, value));
+                    if (Enabled)
+                    {
+                        ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
+                        ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
+                    }
+
+                    _objImprovementType = value;
                 }
-                _objImprovementType = value;
             }
         }
 
@@ -571,9 +587,12 @@ namespace Chummer
             get => _objImprovementSource;
             set
             {
-                _objImprovementSource = value;
-                if (Enabled)
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImprovementType.MatrixInitiativeDice));
+                if (_objImprovementSource != value)
+                {
+                    _objImprovementSource = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImprovementType.MatrixInitiativeDice, ImprovedName);
+                }
             }
         }
 
@@ -610,7 +629,15 @@ namespace Chummer
         public int Augmented
         {
             get => _intAug;
-            set => _intAug = value;
+            set
+            {
+                if (_intAug != value)
+                {
+                    _intAug = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
         }
 
         /// <summary>
@@ -619,7 +646,15 @@ namespace Chummer
         public int Value
         {
             get => _intVal;
-            set => _intVal = value;
+            set
+            {
+                if (_intVal != value)
+                {
+                    _intVal = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
         }
 
         /// <summary>
@@ -628,7 +663,15 @@ namespace Chummer
         public int Rating
         {
             get => _intRating;
-            set => _intRating = value;
+            set
+            {
+                if (_intRating != value)
+                {
+                    _intRating = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
         }
 
         /// <summary>
@@ -657,9 +700,12 @@ namespace Chummer
             get => _strUniqueName;
             set
             {
-                _strUniqueName = value;
-                if (Enabled)
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
+                if (_strUniqueName != value)
+                {
+                    _strUniqueName = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
             }
         }
 
@@ -671,9 +717,12 @@ namespace Chummer
             get => _blnAddToRating;
             set
             {
-                _blnAddToRating = value;
-                if (Enabled)
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
+                if (_blnAddToRating != value)
+                {
+                    _blnAddToRating = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
             }
         }
 
@@ -697,7 +746,7 @@ namespace Chummer
                 if (_blnEnabled != value)
                 {
                     _blnEnabled = value;
-                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
                 }
             }
         }
@@ -740,6 +789,67 @@ namespace Chummer
         #endregion
     }
 
+    public struct ImprovementDictionaryKey
+    {
+        private readonly Tuple<Character, Improvement.ImprovementType, string> _objTupleKey;
+
+        public Character CharacterObject => _objTupleKey.Item1;
+        public Improvement.ImprovementType ImprovementType => _objTupleKey.Item2;
+        public string ImprovementName => _objTupleKey.Item3;
+
+        public ImprovementDictionaryKey(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName)
+        {
+            _objTupleKey = new Tuple<Character, Improvement.ImprovementType, string>(objCharacter, eImprovementType, strImprovementName);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
+            {
+                return CharacterObject == objOtherImprovementDictionaryKey.CharacterObject &&
+                       ImprovementType == objOtherImprovementDictionaryKey.ImprovementType &&
+                       ImprovementName == objOtherImprovementDictionaryKey.ImprovementName;
+            }
+            if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
+            {
+                return CharacterObject == objOtherTuple.Item1 &&
+                       ImprovementType == objOtherTuple.Item2 &&
+                       ImprovementName == objOtherTuple.Item3;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return CharacterObject.GetHashCode() + ImprovementType.GetHashCode() + ImprovementName.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return _objTupleKey.ToString();
+        }
+
+        public static bool operator ==(ImprovementDictionaryKey x, object y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ImprovementDictionaryKey x, object y)
+        {
+            return !x.Equals(y);
+        }
+
+        public static bool operator ==(object x, ImprovementDictionaryKey y)
+        {
+            return x?.Equals(y) ?? y == null;
+        }
+
+        public static bool operator !=(object x, ImprovementDictionaryKey y)
+        {
+            return !(x?.Equals(y) ?? y == null);
+        }
+    }
+
     public static class ImprovementManager
     {
         // String that will be used to limit the selection in Pick forms.
@@ -748,7 +858,8 @@ namespace Chummer
         private static string s_StrSelectedValue = string.Empty;
         private static string s_StrForcedValue = string.Empty;
         private static readonly List<Improvement> s_LstTransaction = new List<Improvement>();
-        private static readonly Dictionary<Tuple<Character, Improvement.ImprovementType>, int> s_DictionaryCachedValues = new Dictionary<Tuple<Character, Improvement.ImprovementType>, int>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
         #region Properties
 
         /// <summary>
@@ -779,26 +890,45 @@ namespace Chummer
             set => s_StrForcedValue = value;
         }
 
-        public static void ClearCachedValue(Tuple<Character, Improvement.ImprovementType> objImprovementType)
+        public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "")
         {
-            if (s_DictionaryCachedValues.ContainsKey(objImprovementType))
-                s_DictionaryCachedValues[objImprovementType] = int.MinValue;
+            if (!string.IsNullOrEmpty(strImprovementName))
+            {
+                ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
+                if (s_DictionaryCachedValues.ContainsKey(objCheckKey))
+                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                else
+                    s_DictionaryCachedValues.Add(objCheckKey, int.MinValue);
+                if (s_DictionaryCachedAugmentedValues.ContainsKey(objCheckKey))
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+                else
+                    s_DictionaryCachedAugmentedValues.Add(objCheckKey, int.MinValue);
+            }
             else
-                s_DictionaryCachedValues.Add(objImprovementType, int.MinValue);
+            {
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+            }
         }
 
         public static void ClearCachedValues(Character objCharacter)
         {
-            foreach (Tuple<Character, Improvement.ImprovementType> objKey in s_DictionaryCachedValues.Keys.ToList())
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
             {
-                if (objKey.Item1 == objCharacter)
+                if (objKey.CharacterObject == objCharacter)
                     s_DictionaryCachedValues.Remove(objKey);
+            }
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
+            {
+                if (objKey.CharacterObject == objCharacter)
+                    s_DictionaryCachedAugmentedValues.Remove(objKey);
             }
         }
         #endregion
 
         #region Helper Methods
-
         /// <summary>
         /// Retrieve the total Improvement value for the specified ImprovementType.
         /// </summary>
@@ -821,26 +951,58 @@ namespace Chummer
             }
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
-            Tuple<Character, Improvement.ImprovementType> objCacheKey = new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovementType);
-            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && s_DictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+            if (!blnAddToRating && blnUnconditionalOnly)
             {
-                return intCachedValue;
+                if (!string.IsNullOrEmpty(strImprovedName))
+                {
+                    ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
+                    if (s_DictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    {
+                        return intCachedValue;
+                    }
+                }
+                else
+                {
+                    bool blnDoRecalculate = true;
+                    int intCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedValues)
+                    {
+                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
+                        {
+                            blnDoRecalculate = false;
+                            int intLoopCachedValue = objLoopCachedEntry.Value;
+                            if (intLoopCachedValue == int.MinValue)
+                            {
+                                blnDoRecalculate = true;
+                                break;
+                            }
+                            intCachedValue += intLoopCachedValue;
+                        }
+                    }
+                    if (!blnDoRecalculate)
+                    {
+                        return intCachedValue;
+                    }
+                }
             }
 
-            HashSet<string> lstUniqueName = new HashSet<string>();
-            HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
-            int intValue = 0;
+            Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
+            Dictionary<string, int> dicValues = new Dictionary<string, int>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
                 {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
                     bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                         !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
                           objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
                     // Ignore items that apply to a Skill's Rating.
                           objImprovement.AddToRating == blnAddToRating &&
                     // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == objImprovement.ImprovedName);
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
 
                     if (blnAllowed)
                     {
@@ -848,57 +1010,109 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string>{strUniqueName});
+                            }
 
                             // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                            }
+
+                            if (!dicValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicValues[strLoopImprovedName] += objImprovement.Value;
                         }
                         else
                         {
-                            intValue += objImprovement.Value;
+                            dicValues.Add(strLoopImprovedName, objImprovement.Value);
                         }
                     }
                 }
             }
 
-            if (lstUniqueName.Contains("precedence0"))
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
             {
-                // Retrieve only the highest precedence0 value.
-                // Run through the list of UniqueNames and pick out the highest value for each one.
-                int intHighest = (from strValues in lstUniquePair where strValues.Item1 == "precedence0" select strValues.Item2).Concat(new[] { int.MinValue }).Max();
-                if (lstUniqueName.Contains("precedence-1"))
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
                 {
-                    intHighest += lstUniquePair.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                    if (lstUniqueNames.Contains("precedence0"))
+                    {
+                        // Retrieve only the highest precedence0 value.
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == "precedence0")
+                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                        }
+                        if (lstUniqueNames.Contains("precedence-1"))
+                        {
+                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                        }
+                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                    }
+                    else if (lstUniqueNames.Contains("precedence1"))
+                    {
+                        // Retrieve all of the items that are precedence1 and nothing else.
+                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                    }
+                    else
+                    {
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        foreach (string strUniqueName in lstUniqueNames)
+                        {
+                            int intInnerLoopValue = int.MinValue;
+                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            {
+                                if (objLoopUniquePair.Item1 == strUniqueName)
+                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
+                            if (intInnerLoopValue != int.MinValue)
+                                intLoopValue += intInnerLoopValue;
+                        }
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicValues.Add(strLoopImprovedName, intLoopValue);
                 }
-                intValue = Math.Max(intValue, intHighest);
-            }
-            else if (lstUniqueName.Contains("precedence1"))
-            {
-                // Retrieve all of the items that are precedence1 and nothing else.
-                intValue = Math.Max(intValue, lstUniquePair.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
-            }
-            else
-            {
-                // Run through the list of UniqueNames and pick out the highest value for each one.
-                intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] { int.MinValue }).Max());
             }
 
             // Factor in Custom Improvements.
-            lstUniqueName.Clear();
-            lstUniquePair.Clear();
-            int intCustomValue = 0;
+            dicUniqueNames.Clear();
+            dicUniquePairs.Clear();
+            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
                 {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
                     bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                         !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
                           objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
                     // Ignore items that apply to a Skill's Rating.
                           objImprovement.AddToRating == blnAddToRating &&
                     // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == objImprovement.ImprovedName);
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
 
                     if (blnAllowed)
                     {
@@ -906,34 +1120,391 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
 
                             // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                            }
+
+                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicCustomValues[strLoopImprovedName] += objImprovement.Value;
                         }
                         else
                         {
-                            intCustomValue += objImprovement.Value;
+                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Value);
                         }
                     }
                 }
             }
 
-            // Run through the list of UniqueNames and pick out the highest value for each one.
-            intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] {int.MinValue}).Max());
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                    foreach (string strUniqueName in lstUniqueNames)
+                    {
+                        int intInnerLoopValue = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == strUniqueName)
+                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                        }
+                        if (intInnerLoopValue != int.MinValue)
+                            intLoopValue += intInnerLoopValue;
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                if (dicValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                }
+                else
+                {
+                    dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                }
+            }
+
+            int intReturn = 0;
 
             //Log.Exit("ValueOf");
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
-            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName))
+            if (!blnAddToRating && blnUnconditionalOnly)
             {
-                if (s_DictionaryCachedValues.ContainsKey(objCacheKey))
-                    s_DictionaryCachedValues[objCacheKey] = intValue + intCustomValue;
-                else
-                    s_DictionaryCachedValues.Add(objCacheKey, intValue + intCustomValue);
+                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                {
+                    string strLoopImprovedName = objLoopValuePair.Key;
+                    int intLoopValue = objLoopValuePair.Value;
+                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
+                    if (s_DictionaryCachedValues.ContainsKey(objLoopCacheKey))
+                        s_DictionaryCachedValues[objLoopCacheKey] = intLoopValue;
+                    else
+                        s_DictionaryCachedValues.Add(objLoopCacheKey, intLoopValue);
+                    intReturn += intLoopValue;
+                }
+            }
+            
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        public static int AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        {
+            //Log.Enter("AugmentedValueOf");
+            //Log.Info("objImprovementType = " + objImprovementType.ToString());
+            //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+            //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+
+            if (objCharacter == null)
+            {
+                //Log.Exit("AugmentedValueOf");
+                return 0;
             }
 
-            return intValue + intCustomValue;
+            // If we've got a value cached for the default AugmentedValueOf call for an improvementType, let's just return that
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                if (!string.IsNullOrEmpty(strImprovedName))
+                {
+                    ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
+                    if (s_DictionaryCachedAugmentedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    {
+                        return intCachedValue;
+                    }
+                }
+                else
+                {
+                    bool blnDoRecalculate = true;
+                    int intCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedAugmentedValues)
+                    {
+                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
+                        {
+                            blnDoRecalculate = false;
+                            int intLoopCachedValue = objLoopCachedEntry.Value;
+                            if (intLoopCachedValue == int.MinValue)
+                            {
+                                blnDoRecalculate = true;
+                                break;
+                            }
+                            intCachedValue += intLoopCachedValue;
+                        }
+                    }
+                    if (!blnDoRecalculate)
+                    {
+                        return intCachedValue;
+                    }
+                }
+            }
+
+            Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
+            Dictionary<string, int> dicValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
+
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
+
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                            }
+
+                            if (!dicValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
+                        }
+                        else
+                        {
+                            dicValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    if (lstUniqueNames.Contains("precedence0"))
+                    {
+                        // Retrieve only the highest precedence0 value.
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == "precedence0")
+                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                        }
+                        if (lstUniqueNames.Contains("precedence-1"))
+                        {
+                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                        }
+                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                    }
+                    else if (lstUniqueNames.Contains("precedence1"))
+                    {
+                        // Retrieve all of the items that are precedence1 and nothing else.
+                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                    }
+                    else
+                    {
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        foreach (string strUniqueName in lstUniqueNames)
+                        {
+                            int intInnerLoopValue = int.MinValue;
+                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            {
+                                if (objLoopUniquePair.Item1 == strUniqueName)
+                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
+                            if (intInnerLoopValue != int.MinValue)
+                                intLoopValue += intInnerLoopValue;
+                        }
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            // Factor in Custom Improvements.
+            dicUniqueNames.Clear();
+            dicUniquePairs.Clear();
+            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
+
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
+
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                            }
+
+                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicCustomValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
+                        }
+                        else
+                        {
+                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                    foreach (string strUniqueName in lstUniqueNames)
+                    {
+                        int intInnerLoopValue = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == strUniqueName)
+                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                        }
+                        if (intInnerLoopValue != int.MinValue)
+                            intLoopValue += intInnerLoopValue;
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                if (dicValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                }
+                else
+                {
+                    dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                }
+            }
+
+            int intReturn = 0;
+
+            //Log.Exit("AugmentedValueOf");
+            // If this is the default AugmentedValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                {
+                    string strLoopImprovedName = objLoopValuePair.Key;
+                    int intLoopValue = objLoopValuePair.Value;
+                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
+                    if (s_DictionaryCachedAugmentedValues.ContainsKey(objLoopCacheKey))
+                        s_DictionaryCachedAugmentedValues[objLoopCacheKey] = intLoopValue;
+                    else
+                        s_DictionaryCachedAugmentedValues.Add(objLoopCacheKey, intLoopValue);
+                    intReturn += intLoopValue;
+                }
+            }
+
+            return intReturn;
         }
 
         /// <summary>
@@ -1414,9 +1985,7 @@ namespace Chummer
                 // Enable the Improvement.
                 objImprovement.Enabled = true;
             }
-
-            bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
-            bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
+            
             bool blnCharacterHasSkillsoftAccess = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
@@ -1447,11 +2016,6 @@ namespace Chummer
                         //        _objCharacter.SkillsSection.Skills.Remove(skill);
                         //    }
                         //}
-                        break;
-                    case Improvement.ImprovementType.SwapSkillAttribute:
-                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                    case Improvement.ImprovementType.Activesoft:
-                        blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
@@ -1486,7 +2050,6 @@ namespace Chummer
                                     break;
                             }
                         }
-                        blnDoAttributeSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
@@ -1726,11 +2289,7 @@ namespace Chummer
                         break;
                 }
             }
-
-            if (blnDoSkillsSectionForceProperyChangedNotificationAll)
-                objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
-            if (blnDoAttributeSectionForceProperyChangedNotificationAll)
-                objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+            
             objCharacter.ImprovementHook(objImprovementList);
         }
 
@@ -1741,9 +2300,7 @@ namespace Chummer
                 // Disable the Improvement.
                 objImprovement.Enabled = false;
             }
-
-            bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
-            bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
+            
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
@@ -1775,11 +2332,6 @@ namespace Chummer
                         //        _objCharacter.SkillsSection.Skills.Remove(skill);
                         //    }
                         //}
-                        break;
-                    case Improvement.ImprovementType.SwapSkillAttribute:
-                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                    case Improvement.ImprovementType.Activesoft:
-                        blnDoSkillsSectionForceProperyChangedNotificationAll = blnDoSkillsSectionForceProperyChangedNotificationAll || objImprovement.Enabled;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         if (!blnHasDuplicate)
@@ -1816,7 +2368,6 @@ namespace Chummer
                                     break;
                             }
                         }
-                        blnDoAttributeSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
@@ -2101,11 +2652,7 @@ namespace Chummer
                         break;
                 }
             }
-
-            if (blnDoSkillsSectionForceProperyChangedNotificationAll)
-                objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
-            if (blnDoAttributeSectionForceProperyChangedNotificationAll)
-                objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+            
             objCharacter.ImprovementHook(objImprovementList);
         }
 
@@ -2157,11 +2704,9 @@ namespace Chummer
             {
                 // Remove the Improvement.
                 objCharacter.Improvements.Remove(objImprovement);
-                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
+                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
             }
             decimal decReturn = 0;
-            bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
-            bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
@@ -2194,11 +2739,6 @@ namespace Chummer
                     //        _objCharacter.SkillsSection.Skills.Remove(skill);
                     //    }
                     //}
-                        break;
-                    case Improvement.ImprovementType.SwapSkillAttribute:
-                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                    case Improvement.ImprovementType.Activesoft:
-                        blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         if (!blnHasDuplicate)
@@ -2245,7 +2785,6 @@ namespace Chummer
                                     break;
                             }
                         }
-                        blnDoAttributeSectionForceProperyChangedNotificationAll = blnDoAttributeSectionForceProperyChangedNotificationAll || objImprovement.Enabled;
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
@@ -2541,10 +3080,6 @@ namespace Chummer
                         break;
                 }
             }
-            if (blnDoSkillsSectionForceProperyChangedNotificationAll)
-                objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
-            if (blnDoAttributeSectionForceProperyChangedNotificationAll)
-                objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
             objCharacter.ImprovementHook(objImprovementList);
 
             Log.Exit("RemoveImprovements");
@@ -2627,7 +3162,7 @@ namespace Chummer
 
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);
-                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
+                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
 
                 // Add the Improvement to the Transaction List.
                 s_LstTransaction.Add(objImprovement);
@@ -2659,7 +3194,7 @@ namespace Chummer
             foreach (Improvement objImprovement in s_LstTransaction)
             {
                 RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
+                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
             }
 
             s_LstTransaction.Clear();

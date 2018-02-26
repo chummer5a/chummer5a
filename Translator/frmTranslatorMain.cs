@@ -208,14 +208,16 @@ namespace Translator
             catch (CultureNotFoundException)
             {
                 if (MessageBox.Show(
-                        "The language code you provided has a language code that does not comply with ISO 639-1 and/or a region code that does not comply with ISO 3166-1. This may cause issues with Chummer.\n\nAre you sure you wish to use the entered code?",
+                        "The language code you provided has a language code that does not comply with ISO 639-1 and/or a region code that does not comply with ISO 3166-1. This may cause issues with Chummer." +
+                        Environment.NewLine + Environment.NewLine + "Are you sure you wish to use the entered code?",
                         "Language Code Issue", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
                     return;
             }
 
             if (File.Exists(Path.Combine(PATH, "lang", strLowerCode + "_data.xml")) || File.Exists(Path.Combine(PATH, "lang", strLowerCode + ".xml")))
             {
-                DialogResult eDialogResult = MessageBox.Show("A translation already exists with the same code as the one you provided. Do you wish to rebuild the existing translation instead of clearing it and starting anew?",
+                DialogResult eDialogResult = MessageBox.Show("A translation already exists with the same code as the one you provided." +
+                                                             Environment.NewLine + Environment.NewLine + "Do you wish to rebuild the existing translation instead of clearing it and starting anew?",
                     "Localization Already Exists", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 switch (eDialogResult)
                 {

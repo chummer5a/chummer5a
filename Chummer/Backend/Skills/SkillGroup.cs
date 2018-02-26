@@ -309,30 +309,35 @@ namespace Chummer.Backend.Skills
         {
             if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
             {
-                if (_blnBaseBrokenOldValue != BaseUnbroken)
+                bool blnBaseUnbroken = BaseUnbroken;
+                if (_blnBaseBrokenOldValue != blnBaseUnbroken)
+                {
+                    _blnBaseBrokenOldValue = blnBaseUnbroken;
                     OnPropertyChanged(nameof(BaseUnbroken));
-
-                _blnBaseBrokenOldValue = BaseUnbroken;
+                }
             }
 
             if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base) ||
                 propertyChangedEventArgs.PropertyName == nameof(Skill.Karma))
             {
-                if (!KarmaUnbroken && _intSkillFromKarma > 0)
+                bool blnKarmaUnbroken = KarmaUnbroken;
+                if (!blnKarmaUnbroken && _intSkillFromKarma > 0)
                 {
                     _intSkillFromKarma = 0;
                     OnPropertyChanged(nameof(Karma));
                 }
-
-                if (_blnKarmaBrokenOldValue != KarmaUnbroken) {
+                
+                if (_blnKarmaBrokenOldValue != blnKarmaUnbroken)
+                {
+                    _blnKarmaBrokenOldValue = blnKarmaUnbroken;
                     OnPropertyChanged(nameof(KarmaUnbroken));
-}
-                _blnKarmaBrokenOldValue = KarmaUnbroken;
+                }
             }
 
-            if (_blnCareerIncreaseOldValue != CareerIncrease)
+            bool blnCareerIncrease = CareerIncrease;
+            if (_blnCareerIncreaseOldValue != blnCareerIncrease)
             {
-                _blnCareerIncreaseOldValue = CareerIncrease;
+                _blnCareerIncreaseOldValue = blnCareerIncrease;
                 OnPropertyChanged(nameof(CareerIncrease));
                 OnPropertyChanged(nameof(CareerCanIncrease));
             }

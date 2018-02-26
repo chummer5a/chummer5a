@@ -58,7 +58,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description;
+                return ((AssemblyDescriptionAttribute)attributes[0]).Description.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyProductAttribute)attributes[0]).Product;
+                return ((AssemblyProductAttribute)attributes[0]).Product.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
             }
         }
 
@@ -84,7 +84,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
+                return ((AssemblyCompanyAttribute)attributes[0]).Company.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
             }
         }
         #endregion
@@ -126,7 +126,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             textBoxDescription.Text = strReturn;
-            textBoxContributors.Text += "\n\r\n\r\n\r" + string.Join("\n\r\n\r", Properties.Contributors.Usernames) + "\n\r\n\r/u/Iridios";
+            textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
         }
         

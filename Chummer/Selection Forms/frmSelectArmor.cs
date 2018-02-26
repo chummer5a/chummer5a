@@ -383,16 +383,14 @@ namespace Chummer
                             StringBuilder strAccessories = new StringBuilder();
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
-                                strAccessories.Append(objMod.DisplayName(GlobalOptions.Language));
-                                strAccessories.Append('\n');
+                                strAccessories.AppendLine(objMod.DisplayName(GlobalOptions.Language));
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
-                                strAccessories.Append(objGear.DisplayName(GlobalOptions.Language));
-                                strAccessories.Append('\n');
+                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.Language));
                             }
                             if (strAccessories.Length > 0)
-                                strAccessories.Length -= 1;
+                                strAccessories.Length -= Environment.NewLine.Length;
                             SourceString strSource = new SourceString(objArmor.Source, objArmor.Page(GlobalOptions.Language));
                             NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 

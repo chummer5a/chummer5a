@@ -270,7 +270,7 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip += "\n" + LanguageManager.GetString("String_Level", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intFV.ToString();
+                        strTip += Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intFV.ToString();
                     }
                     else
                     {
@@ -280,10 +280,10 @@ namespace Chummer
                 }
                 if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
                 {
-                    strTip += $"\n {LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
+                    strTip += $"{Environment.NewLine}{LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
                     strTip = _objCharacter.Improvements
                         .Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled)
-                        .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
+                        .Aggregate(strTip, (current, imp) => current + $"{Environment.NewLine}{_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
                 }
 
                 return strTip;
