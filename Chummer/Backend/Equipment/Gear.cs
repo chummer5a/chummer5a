@@ -2250,9 +2250,14 @@ namespace Chummer.Backend.Equipment
         #region Methods
         public bool IsIdenticalToOtherGear(Gear objOtherGear)
         {
-            if (Name == objOtherGear.Name && Category == objOtherGear.Category && Rating == objOtherGear.Rating && Extra == objOtherGear.Extra && GearName == objOtherGear.GearName && Notes == objOtherGear.Notes)
+            if (Name == objOtherGear.Name &&
+                Category == objOtherGear.Category &&
+                Rating == objOtherGear.Rating &&
+                Extra == objOtherGear.Extra &&
+                GearName == objOtherGear.GearName &&
+                Notes == objOtherGear.Notes)
             {
-                if (Children.DeepMatch(objOtherGear.Children, x => x.Children, (x, y) => x.IsIdenticalToOtherGear(y)))
+                if (Children.DeepMatch(objOtherGear.Children, x => x.Children, (x, y) => x.Quantity == y.Quantity && x.IsIdenticalToOtherGear(y)))
                 {
                     return true;
                 }

@@ -5816,15 +5816,16 @@ namespace Chummer
         
         private void cmdGearIncreaseQty_Click(object sender, EventArgs e)
         {
-            string strSelectedLocation = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
-            bool blnAddAgain;
-            Gear objGear = CharacterObject.Gear.DeepFindById(strSelectedLocation);
-            do
+            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString());
+            if (objGear != null)
             {
-                // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = PickGear(strSelectedLocation, objGear.Category == "Ammunition", objGear, objGear.Name);
+                bool blnAddAgain;
+                do
+                {
+                    // Select the root Gear node then open the Select Gear window.
+                    blnAddAgain = PickGear(objGear.Parent?.InternalId ?? objGear.Location, objGear.Category == "Ammunition", objGear, objGear.Name);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
         }
 
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
@@ -16362,7 +16363,7 @@ namespace Chummer
             lblRemainingNuyen.Text = CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             tssKarma.Text = CharacterObject.Karma.ToString();
 
-            PopulateExpenseList();
+            PopulateExpenseList(null, EventArgs.Empty);
 
             // Movement.
             lblMovement.Text = CharacterObject.GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -17829,7 +17830,7 @@ namespace Chummer
                     return frmPickGear.AddAgain;
                 // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
                 foreach (Gear objPlugin in objStackWith.Children)
-                    decCost += (objPlugin.TotalCost * frmPickGear.SelectedQty);
+                    decCost += (objPlugin.TotalCost - objPlugin.OwnCost) * frmPickGear.SelectedQty;
             }
             if (!blnNullParent && !blnAmmoOnly)
                 decCost *= objSelectedGear.Quantity;
@@ -18888,7 +18889,7 @@ namespace Chummer
         /// Populate the Expense Log Lists.
         /// TODO: Change this so that it works off of ObservableCollection Events instead of needing repopulation
         /// </summary>
-        public void PopulateExpenseList()
+        public void PopulateExpenseList(object sender, EventArgs e)
         {
             lstKarma.Items.Clear();
             lstNuyen.Items.Clear();
@@ -20762,16 +20763,6 @@ namespace Chummer
             UpdateLimitModifier(treLimit);
         }
 
-        private void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateExpenseList();
-        }
-
-        private void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateExpenseList();
-        }
-
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
             int intNewAIProgramCost = CharacterObject.AIProgramKarmaCost;
@@ -20945,6 +20936,8 @@ namespace Chummer
             if (_blnLoading || CharacterObject.Ambidextrous)
                 return;
             CharacterObject.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
+
+            IsDirty = true;
         }
         
         private void picMugshot_SizeChanged(object sender, EventArgs e)

@@ -138,141 +138,140 @@ namespace Chummer
             if (_clientChangelogDownloader.IsBusy)
                 return;
             bool blnChummerVersionGotten = true;
-            {
-                LatestVersion = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                string strUpdateLocation = _blnPreferNightly
-                    ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
-                    : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+            string strError = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+            LatestVersion = strError;
+            string strUpdateLocation = _blnPreferNightly
+                ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
+                : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
 
-                HttpWebRequest request = null;
+            HttpWebRequest request = null;
+            try
+            {
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                blnChummerVersionGotten = false;
+            }
+            if (request == null)
+                blnChummerVersionGotten = false;
+            if (blnChummerVersionGotten)
+            {
+                request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+                request.Accept = "application/json";
+                request.Timeout = 5000;
+
+                // Get the response.
+                HttpWebResponse response = null;
                 try
                 {
-                    WebRequest objTemp = WebRequest.Create(strUpdateLocation);
-                    request = objTemp as HttpWebRequest;
+                    response = request.GetResponse() as HttpWebResponse;
                 }
-                catch (System.Security.SecurityException)
+                catch (WebException)
                 {
                     blnChummerVersionGotten = false;
                 }
-                if (request == null)
+
+                if (_workerConnectionLoader.CancellationPending)
+                {
+                    e.Cancel = true;
+                    response?.Close();
+                    return;
+                }
+
+                // Get the stream containing content returned by the server.
+                Stream dataStream = response?.GetResponseStream();
+                if (dataStream == null)
                     blnChummerVersionGotten = false;
                 if (blnChummerVersionGotten)
                 {
-                    request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-                    request.Accept = "application/json";
-                    request.Timeout = 5000;
-
-                    // Get the response.
-                    HttpWebResponse response = null;
-                    try
+                    if (_workerConnectionLoader.CancellationPending)
                     {
-                        response = request.GetResponse() as HttpWebResponse;
+                        e.Cancel = true;
+                        dataStream.Close();
+                        response.Close();
+                        return;
                     }
-                    catch (WebException)
-                    {
-                        blnChummerVersionGotten = false;
-                    }
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
+                    // Read the content.
 
                     if (_workerConnectionLoader.CancellationPending)
                     {
                         e.Cancel = true;
-                        response?.Close();
+                        reader.Close();
+                        response.Close();
                         return;
                     }
 
-                    // Get the stream containing content returned by the server.
-                    Stream dataStream = response?.GetResponseStream();
-                    if (dataStream == null)
-                        blnChummerVersionGotten = false;
-                    if (blnChummerVersionGotten)
+                    string responseFromServer = reader.ReadToEnd();
+
+                    if (_workerConnectionLoader.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        reader.Close();
+                        response.Close();
+                        return;
+                    }
+
+                    string[] stringSeparators = { "," };
+
+                    if (_workerConnectionLoader.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        reader.Close();
+                        response.Close();
+                        return;
+                    }
+
+                    string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                    bool blnFoundTag = false;
+                    bool blnFoundArchive = false;
+                    foreach (string line in result)
                     {
                         if (_workerConnectionLoader.CancellationPending)
                         {
                             e.Cancel = true;
-                            dataStream.Close();
-                            response.Close();
-                            return;
-                        }
-                        // Open the stream using a StreamReader for easy access.
-                        StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
-                        // Read the content.
-
-                        if (_workerConnectionLoader.CancellationPending)
-                        {
-                            e.Cancel = true;
                             reader.Close();
                             response.Close();
                             return;
                         }
-
-                        string responseFromServer = reader.ReadToEnd();
-
-                        if (_workerConnectionLoader.CancellationPending)
+                        if (!blnFoundTag && line.Contains("tag_name"))
                         {
-                            e.Cancel = true;
-                            reader.Close();
-                            response.Close();
-                            return;
+                            _strLatestVersion = line.Split(':')[1];
+                            LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"');
+                            blnFoundTag = true;
+                            if (blnFoundArchive)
+                                break;
                         }
-
-                        string[] stringSeparators = { "," };
-
-                        if (_workerConnectionLoader.CancellationPending)
+                        if (!blnFoundArchive && line.Contains("browser_download_url"))
                         {
-                            e.Cancel = true;
-                            reader.Close();
-                            response.Close();
-                            return;
+                            _strDownloadFile = line.Split(':')[2];
+                            _strDownloadFile = _strDownloadFile.Substring(2);
+                            _strDownloadFile = _strDownloadFile.Split('}')[0].FastEscape('\"');
+                            _strDownloadFile = "https://" + _strDownloadFile;
+                            blnFoundArchive = true;
+                            if (blnFoundTag)
+                                break;
                         }
-
-                        string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-                        bool blnFoundTag = false;
-                        bool blnFoundArchive = false;
-                        foreach (string line in result)
-                        {
-                            if (_workerConnectionLoader.CancellationPending)
-                            {
-                                e.Cancel = true;
-                                reader.Close();
-                                response.Close();
-                                return;
-                            }
-                            if (!blnFoundTag && line.Contains("tag_name"))
-                            {
-                                _strLatestVersion = line.Split(':')[1];
-                                LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"');
-                                blnFoundTag = true;
-                                if (blnFoundArchive)
-                                    break;
-                            }
-                            if (!blnFoundArchive && line.Contains("browser_download_url"))
-                            {
-                                _strDownloadFile = line.Split(':')[2];
-                                _strDownloadFile = _strDownloadFile.Substring(2);
-                                _strDownloadFile = _strDownloadFile.Split('}')[0].FastEscape('\"');
-                                _strDownloadFile = "https://" + _strDownloadFile;
-                                blnFoundArchive = true;
-                                if (blnFoundTag)
-                                    break;
-                            }
-                        }
-                        if (!blnFoundArchive || !blnFoundTag)
-                            blnChummerVersionGotten = false;
-                        // Cleanup the streams and the response.
-                        reader.Close();
                     }
-                    dataStream?.Close();
-                    response?.Close();
+                    if (!blnFoundArchive || !blnFoundTag)
+                        blnChummerVersionGotten = false;
+                    // Cleanup the streams and the response.
+                    reader.Close();
                 }
+                dataStream?.Close();
+                response?.Close();
             }
-            if (!blnChummerVersionGotten)
+            if (!blnChummerVersionGotten || LatestVersion == strError)
             {
                 MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
                 e.Cancel = true;
             }
-            else if (LatestVersion != LanguageManager.GetString("String_Error", GlobalOptions.Language))
+            else
             {
                 if (File.Exists(_strTempUpdatePath))
                 {

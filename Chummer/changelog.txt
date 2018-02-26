@@ -71,6 +71,9 @@ Application Changes:
 - Fixed an issue where changing the rating of a focus would not properly update the corresponding item in the focus list.
 - Fixed an issue where deleting sprites or spirits from anywhere other than the end of their lists would not cause the remaining controls to move up and fill in the empty space.
 - Removed the (currently non-functional) checkbox in the gear selection screen to make a grenade aerodynamic. Aerodynamic grenades now have separate gear entries.
+- Fixed an issue where changing a character's primary hand would not set the flag telling Chummer5a that there have been changes to the character that need to be saved.
+- Fixed an issue where increasing the quantity of gear in career mode would increase gear costs by the total cost of the current stack and then multiply costs by the current stack's quantity, instead of just increasing costs by the cost of the current stack's children and multiplying costs by the current stack's parent's quantity. Fixes #2527.
+- Fixed an issue where two gear items with children of differing quantities could still be treated as if they were identical pieces of gear.
 
 Data Changes:
 
