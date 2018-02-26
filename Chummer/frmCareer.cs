@@ -4952,7 +4952,24 @@ namespace Chummer
                                     CharacterObject.ComplexForms.Remove(objComplexForm);
                                 }
                                 else
-                                    return;
+                                {
+                                    InitiationGrade grade = CharacterObject.InitiationGrades.FindById(strSelectedId);
+                                    if (grade != null)
+                                    {
+                                        if (grade.Grade != CharacterObject.InitiateGrade)
+                                        {
+                                            MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            return;
+                                        }
+
+                                        string strMessage = LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language);
+                                        if (!CharacterObject.ConfirmDelete(strMessage))
+                                            return;
+                                        CharacterObject.InitiationGrades.Remove(grade);
+                                    }
+                                }
+
+                                return;
                             }
                         }
                     }
@@ -9736,94 +9753,8 @@ namespace Chummer
                         // Locate the Initiate Grade that was affected.
                         foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades.Where(x => x.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
-                            if (CharacterObject.MAGEnabled)
-                            {
-                                // Remove any Improvements created by the Grade.
-                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation, objGrade.InternalId);
-
-                                List<Art> lstArts = new List<Art>();
-                                foreach (Art objArt in CharacterObject.Arts)
-                                {
-                                    if (objArt.Grade == objGrade.Grade)
-                                    {
-                                        lstArts.Add(objArt);
-                                    }
-                                }
-                                foreach (Art objArt in lstArts)
-                                {
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Art, objArt.InternalId);
-                                    CharacterObject.Arts.Remove(objArt);
-                                }
-
-                                List<Metamagic> lstMetamagic = new List<Metamagic>();
-                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                                {
-                                    if (objMetamagic.Grade == objGrade.Grade)
-                                    {
-                                        lstMetamagic.Add(objMetamagic);
-                                    }
-                                }
-                                foreach (Metamagic objMetamagic in lstMetamagic)
-                                {
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                                    CharacterObject.Metamagics.Remove(objMetamagic);
-                                }
-
-                                List<Spell> lstSpells = new List<Spell>();
-                                foreach (Spell objSpell in CharacterObject.Spells)
-                                {
-                                    if (objSpell.Grade == objGrade.Grade)
-                                    {
-                                        lstSpells.Add(objSpell);
-                                    }
-                                }
-                                foreach (Spell objSpell in lstSpells)
-                                {
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId);
-                                    CharacterObject.Spells.Remove(objSpell);
-                                }
-
-                                // Remove the Grade from the character.
-                                CharacterObject.InitiationGrades.Remove(objGrade);
-                                CharacterObject.InitiateGrade -= 1;
-
-                                // Update any Metamagic Improvements the character might have.
-                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                                {
-                                    if (objMetamagic.Bonus != null)
-                                    {
-                                        // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                                        if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                                        {
-                                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Remove any Improvements created by the Grade.
-                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion, objGrade.InternalId);
-
-                                // Remove the Grade from the character.
-                                CharacterObject.InitiationGrades.Remove(objGrade);
-                                CharacterObject.SubmersionGrade -= 1;
-
-                                List<Metamagic> lstMetamagic = new List<Metamagic>();
-                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                                {
-                                    if (objMetamagic.Grade == objGrade.Grade)
-                                    {
-                                        lstMetamagic.Add(objMetamagic);
-                                    }
-                                }
-                                foreach (Metamagic objMetamagic in lstMetamagic)
-                                {
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                                    CharacterObject.Metamagics.Remove(objMetamagic);
-                                }
-                            }
+                            // Remove the Grade from the character.
+                            CharacterObject.InitiationGrades.Remove(objGrade);
                         }
                         break;
                     }
@@ -14755,150 +14686,6 @@ namespace Chummer
                 objStack.Bonded = true;
             }
             
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        private void cmdImproveInitiation_Click(object sender, EventArgs e)
-        {
-            if (CharacterObject.MAGEnabled)
-            {
-                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
-                    (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue))
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Make sure the character has enough Karma.
-                decimal decMultiplier = 1.0m;
-
-                int intKarmaExpense = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
-
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language).Replace("{0}", LanguageManager.GetString("String_InitiateGrade", GlobalOptions.Language)).Replace("{1}", (CharacterObject.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
-                    return;
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade + " 🡒 " + (CharacterObject.InitiateGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                // Create the Initiate Grade object.
-                InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                objGrade.Create(CharacterObject.InitiateGrade + 1, CharacterObject.RESEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                CharacterObject.InitiationGrades.AddWithSort(objGrade);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                objExpense.Undo = objUndo;
-
-                // Set the character's Initiate Grade.
-                CharacterObject.InitiateGrade += 1;
-
-                // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-
-                // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.Commit(CharacterObject);
-
-                // Update any Metamagic Improvements the character might have.
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objMetamagic.Bonus != null)
-                    {
-                        // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                        if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                        {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                        }
-                    }
-                }
-
-                int intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
-
-                string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-                tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-            }
-            else if (CharacterObject.RESEnabled)
-            {
-                // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Make sure the character has enough Karma.
-                decimal decMultiplier = 1.0m;
-
-                int intKarmaExpense = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
-
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language).Replace("{0}", LanguageManager.GetString("String_SubmersionGrade", GlobalOptions.Language)).Replace("{1}", (CharacterObject.SubmersionGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
-                    return;
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + ' ' + CharacterObject.SubmersionGrade + " 🡒 " + (CharacterObject.SubmersionGrade + 1), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                // Create the Initiate Grade object.
-                InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                objGrade.Create(CharacterObject.SubmersionGrade + 1, CharacterObject.RESEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                CharacterObject.InitiationGrades.AddWithSort(objGrade);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                objExpense.Undo = objUndo;
-
-                // Set the character's Submersion Grade.
-                CharacterObject.SubmersionGrade += 1;
-
-                // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-
-                // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                ImprovementManager.Commit(CharacterObject);
-
-                // Update any Echo Improvements the character might have.
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objMetamagic.Bonus != null)
-                    {
-                        // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                        if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                        {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                        }
-                    }
-                }
-
-                int intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
-
-                string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-                tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-            }
-
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;

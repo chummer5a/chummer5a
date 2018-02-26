@@ -4928,31 +4928,6 @@ namespace Chummer
                 InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                 objGrade.Create(CharacterObject.InitiateGrade + 1, CharacterObject.MAGEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
                 CharacterObject.InitiationGrades.AddWithSort(objGrade);
-
-                // Set the character's Initiate Grade.
-                CharacterObject.InitiateGrade += 1;
-
-                // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-
-                // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.Commit(CharacterObject);
-
-                // Update any Metamagic Improvements the character might have.
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objMetamagic.Bonus != null)
-                    {
-                        // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                        if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                        {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                        }
-                    }
-                }
             }
             else if (CharacterObject.RESEnabled)
             {
@@ -4973,30 +4948,6 @@ namespace Chummer
                 InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                 objGrade.Create(CharacterObject.SubmersionGrade + 1, CharacterObject.RESEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
                 CharacterObject.InitiationGrades.AddWithSort(objGrade);
-
-                // Set the character's Submersion Grade.
-                CharacterObject.SubmersionGrade += 1;
-
-                // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-
-                // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                ImprovementManager.Commit(CharacterObject);
-
-                // Update any Echo Improvements the character might have.
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objMetamagic.Bonus != null)
-                    {
-                        // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                        if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                        {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                        }
-                    }
-                }
             }
 
             IsCharacterUpdateRequested = true;
@@ -5038,84 +4989,6 @@ namespace Chummer
                     
                     if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
-
-                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                    // Arts
-                    List<Art> lstRemoveArts = new List<Art>();
-                    foreach (Art objArt in CharacterObject.Arts)
-                    {
-                        if (objArt.Grade == objGrade.Grade)
-                        {
-                            lstRemoveArts.Add(objArt);
-                        }
-                    }
-                    foreach (Art objArt in lstRemoveArts)
-                        CharacterObject.Arts.Remove(objArt);
-
-                    // Metamagics
-                    List<Metamagic> lstRemoveMetamagics = new List<Metamagic>();
-                    foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                    {
-                        if (objMetamagic.Grade == objGrade.Grade)
-                        {
-                            lstRemoveMetamagics.Add(objMetamagic);
-                        }
-                    }
-                    foreach (Metamagic objMetamagic in lstRemoveMetamagics)
-                    {
-                        CharacterObject.Metamagics.Remove(objMetamagic);
-                        ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-                    }
-
-                    // Enhancements
-                    List<Enhancement> lstRemoveEnhancements = new List<Enhancement>();
-                    foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
-                    {
-                        if (objEnhancement.Grade == objGrade.Grade)
-                        {
-                            lstRemoveEnhancements.Add(objEnhancement);
-                        }
-                    }
-                    foreach (Enhancement objEnhancement in lstRemoveEnhancements)
-                        CharacterObject.Enhancements.Remove(objEnhancement);
-
-                    // Spells
-                    List<Spell> lstRemoveSpells = new List<Spell>();
-                    foreach (Spell objSpell in CharacterObject.Spells)
-                    {
-                        if (objSpell.Grade == objGrade.Grade)
-                        {
-                            lstRemoveSpells.Add(objSpell);
-                        }
-                    }
-                    foreach (Spell objSpell in lstRemoveSpells)
-                        CharacterObject.Spells.Remove(objSpell);
-
-                    // Grade
-                    CharacterObject.InitiationGrades.Remove(objGrade);
-
-                    if (CharacterObject.MAGEnabled)
-                    {
-                        CharacterObject.InitiateGrade = objGrade.Grade - 1;
-                        // Remove any existing Initiation Improvements.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-
-                        // Create the replacement Improvement.
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                        ImprovementManager.Commit(CharacterObject);
-                    }
-                    else if (CharacterObject.RESEnabled)
-                    {
-                        CharacterObject.SubmersionGrade = objGrade.Grade - 1;
-
-                        // Remove any existing Initiation Improvements.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-
-                        // Create the replacement Improvement.
-                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                        ImprovementManager.Commit(CharacterObject);
-                    }
                 }
                 else
                 {

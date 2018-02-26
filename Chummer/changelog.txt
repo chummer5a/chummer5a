@@ -61,6 +61,7 @@ Application Changes:
 - Added a button to immediately delete the selected metamagic, initiation grade, art, enhancement, etc. in the metamagics tree instead of users having to always use the Delete button on their keyboard to perform the action.
 - Unhardcoded skill selection in the weaponcategorydv bonus/improvement so that it is no longer always RAW melee combat active skills.
 - Metagenetic Limit for Changelings is now provided by an improvement. Characters in create mode will need to Reapply Improvements to gain access to it.
+- Aligned the Initiation/Submersion methods between career and create modes. Fixes inability to delete Initiate/Submersion grades in career mode.
 
 Data Changes:
 
