@@ -226,7 +226,7 @@
       <limit>3</limit>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset precedence="0">1</thresholdoffset>
+          <thresholdoffset precedence="0">Rating</thresholdoffset>
         </conditionmonitor>
       </bonus>
       <forbidden>

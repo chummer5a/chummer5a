@@ -77,6 +77,8 @@ Application Changes:
 - If the updater fails to connect, it will now display the actual error that caused it to fail to connect.
 - Fixed an issue where a knowledge skill specialization would automatically end up getting selected from the list of suggested specializations whenever that list changes.
 - Fixed a bug where bonuses that would disallow specializations for active skills in career mode and/or knowledge skills in create or career modes would not work properly.
+- Qualities can now use Levels as Rating for quality bonuses. May be somewhat fragile, but passes initial tests.
+- Fixed Sprites and Spirits being created with RES/MAG*2 at creation incorrectly.
 
 Data Changes:
 
@@ -102,6 +104,7 @@ Data Changes:
 - Added separate entries for Aerodynamic versions of each grenade.
 - Fixed issues where some non-aerodynamic grenades would not benefit from the Non-Aerodynamic specialization on Throwing Weapons.
 - Fixed the range and specialization information of Harpoons to match that of Javelins.
+- Fixed the High Pain Tolerance quality to use Ratings for each level. 
 
 New Strings:
 

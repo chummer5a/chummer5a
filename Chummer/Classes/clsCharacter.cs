@@ -5485,9 +5485,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Maximum force of spirits summonable/bindable by the character
+        /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation. 
         /// </summary>
-        public int MaxSpiritForce => 2 * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
+        public int MaxSpiritForce => (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
 
         public void RefreshMaxSpiritForce(object sender, PropertyChangedEventArgs e)
         {
@@ -5496,9 +5496,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Maximum level of sprites compilable/registerable by the character
+        /// Maximum level of sprites compilable/registerable by the character. Limited to RES at creation. 
         /// </summary>
-        public int MaxSpriteLevel => 2 * RES.TotalValue;
+        public int MaxSpriteLevel => (Created ? 2 : 1) * RES.TotalValue;
 
         public void RefreshMaxSpriteLevel(object sender, PropertyChangedEventArgs e)
         {
