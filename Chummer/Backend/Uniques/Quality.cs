@@ -763,7 +763,8 @@ namespace Chummer
             if ((OriginSource == QualitySource.BuiltIn ||
                  OriginSource == QualitySource.Improvement ||
                  OriginSource == QualitySource.LifeModule ||
-                 OriginSource == QualitySource.Metatype) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                 OriginSource == QualitySource.Metatype ||
+                 OriginSource == QualitySource.MetatypeRemovable) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode

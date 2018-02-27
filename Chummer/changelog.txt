@@ -78,6 +78,7 @@ Application Changes:
 - Fixed an issue where a knowledge skill specialization would automatically end up getting selected from the list of suggested specializations whenever that list changes.
 - Fixed a bug where bonuses that would disallow specializations for active skills in career mode and/or knowledge skills in create or career modes would not work properly.
 - Fixed Sprites and Spirits being created with RES/MAG*2 at creation incorrectly.
+- Fixed a crash that would occur when toggling PP-related house rules in the Options menu. Fixes #2530.
 
 Data Changes:
 

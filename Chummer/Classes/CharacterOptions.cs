@@ -1140,7 +1140,7 @@ namespace Chummer
                 if (_blnMysAdeptAllowPPCareer != value)
                 {
                     _blnMysAdeptAllowPPCareer = value;
-                    _character.RefreshMysAdeptAllowPPCareer();
+                    _character?.RefreshMysAdeptAllowPPCareer();
                 }
             }
         }
@@ -1156,7 +1156,7 @@ namespace Chummer
                 if (_blnMysAdeptSecondMAGAttribute != value)
                 {
                     _blnMysAdeptSecondMAGAttribute = value;
-                    _character.RefreshUseMysticAdeptPPs();
+                    _character?.RefreshUseMysticAdeptPPs();
                 }
             }
         }
