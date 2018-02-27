@@ -286,9 +286,10 @@ namespace Chummer
                 WebRequest objTemp = WebRequest.Create(strUpdateLocation);
                 request = objTemp as HttpWebRequest;
             }
-            catch (System.Security.SecurityException)
+            catch (System.Security.SecurityException ex)
             {
                 Utils.CachedGitVersion = null;
+                Log.Error(ex);
                 return;
             }
             if (request == null)
@@ -312,9 +313,10 @@ namespace Chummer
             {
                 response = request.GetResponse() as HttpWebResponse;
             }
-            catch (WebException)
+            catch (WebException ex)
             {
                 Utils.CachedGitVersion = null;
+                Log.Error(ex);
                 return;
             }
 
