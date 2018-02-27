@@ -16012,7 +16012,7 @@
         <limitspellcategory />
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
-          <val>2</val>
+          <val>-2</val>
         </spellcategorydrain>
       </bonus>
       <required>

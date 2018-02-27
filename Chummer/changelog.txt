@@ -111,6 +111,7 @@ Data Changes:
 - Fixed an issue where Damage Compensators (2050) would use a regular threshold offset that applies separately to Physical and Stun condition monitors instead of one shared between them.
 - Fixed an issue where the Death Dealer quality would add the square of its rating to spell damage and drain rather than just its rating.
 - Corrected a typo in the name of "Orichalcum" (it was originally called "Orichalum").
+- Fixed Hedge Witch/Wizard increasing drain by 2 instead of decreasing drain by 2.
 
 New Strings:
 
