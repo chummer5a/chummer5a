@@ -81,6 +81,7 @@ Application Changes:
 - Fixed a crash that would occur when toggling PP-related house rules in the Options menu. Fixes #2530.
 - Fixed an issue where a spell's Limited and/or Extended status would not be properly reflected in the tooltip of its drain value.
 - Removed the "GitHub Issues" tab from the Options menu in non-Debug builds, as it only contained the "Upload Pastebin" button, which is non-functional outside of Debug builds.
+- Fixed an issue where spells and complex forms with drain exactly equal to drain and fading respectively would have their values displayed incorrectly.
 
 Data Changes:
 

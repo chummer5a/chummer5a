@@ -627,9 +627,9 @@ namespace Chummer
                     {
                         if (force)
                         {
-                            strReturn = $"F{xprResult:+0;-0;0}";
+                            strReturn = $"F{xprResult:+0;-0;}";
                         }
-                        else
+                        else if (xprResult.ToString() != "0")
                         {
                             strReturn += xprResult;
                         }
