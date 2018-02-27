@@ -73,8 +73,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
-        /// <param name="strValue">String value to convert.</param>
 #if DEBUG
+        /// <param name="strValue">String value to convert.</param>
         public static QualitySource ConvertToLifestyleQualitySource(string strValue)
         {
             switch (strValue)
