@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -43,6 +44,7 @@ namespace Chummer
     /// <summary>
     /// A Contact or Enemy.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
     public class Contact : INotifyPropertyChanged, IHasName, IHasMugshots
     {
         private string _strName = string.Empty;

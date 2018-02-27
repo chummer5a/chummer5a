@@ -20,6 +20,7 @@
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -70,6 +71,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;

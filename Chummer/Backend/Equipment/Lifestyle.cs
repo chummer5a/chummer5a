@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -36,10 +37,11 @@ namespace Chummer.Backend.Equipment
         Week = 1,
         Day = 2,
     }
-    
+
     /// <summary>
     /// Lifestyle.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode
     {
         // ReSharper disable once InconsistentNaming

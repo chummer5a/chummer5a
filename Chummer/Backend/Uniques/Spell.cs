@@ -19,6 +19,7 @@
 using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace Chummer
     /// <summary>
     /// A Magician Spell.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Spell : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;

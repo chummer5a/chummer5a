@@ -18,6 +18,7 @@
  */
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -33,6 +34,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
+    [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
     public class Power : INotifyPropertyChanged, IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;

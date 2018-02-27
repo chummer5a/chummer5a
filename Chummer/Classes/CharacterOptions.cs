@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -25,7 +26,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public class CharacterOptions
+    public class CharacterOptions : INotifyPropertyChanged
     {
         private readonly Character _character;
         private string _strFileName = "default.xml";
@@ -180,6 +181,8 @@ namespace Chummer
 
         // Sourcebook list.
         private readonly HashSet<string> _lstBooks = new HashSet<string>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
@@ -1374,7 +1377,14 @@ namespace Chummer
         public bool ArmorDegradation
         {
             get => _blnArmorDegradation;
-            set => _blnArmorDegradation = value;
+            set
+            {
+                if (_blnArmorDegradation != value)
+                {
+                    _blnArmorDegradation = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ArmorDegradation)));
+                }
+            }
         }
         
         /// <summary>

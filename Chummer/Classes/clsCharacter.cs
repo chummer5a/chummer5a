@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -42,10 +43,11 @@ namespace Chummer
         SumtoTen = 2,
         LifeModule = 3
     }
-    
+
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
+    [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class Character : INotifyPropertyChanged, IHasMugshots, IHasName
     {
         private XmlNode _oldSkillsBackup;

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -28,10 +29,11 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
-	/// <summary>
-	/// Vehicle Modification.
-	/// </summary>
-	public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode
+    /// <summary>
+    /// Vehicle Modification.
+    /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode
     {
 		private Guid _guiID;
 		private decimal _decMarkup;

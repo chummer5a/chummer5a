@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -43,6 +44,7 @@ namespace Chummer
     /// <summary>
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
+    [DebuggerDisplay("{Name}, \"{CritterName}\"")]
     public class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyPropertyChanged
     {
         private Guid _guiId;
