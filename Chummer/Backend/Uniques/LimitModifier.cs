@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -35,6 +36,7 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
     public class LimitModifier : IHasInternalId, IHasName
     {
         private Guid _guiID;

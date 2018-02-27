@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-using System.Xml;
+ using System.Diagnostics;
+ using System.Xml;
  using System.Globalization;
 
 namespace Chummer
@@ -91,6 +92,7 @@ namespace Chummer
     /// <summary>
     /// Undo information for an Expense Log Entry.
     /// </summary>
+    [DebuggerDisplay("{ObjectId}: {Qty.ToString()}, {Extra}")]
     public class ExpenseUndo
     {
         private string _strObjectId;
@@ -223,6 +225,7 @@ namespace Chummer
     /// <summary>
     /// Exense Log Entry.
     /// </summary>
+    [DebuggerDisplay("{Date.ToString()}: {Amount.ToString()}")]
     public class ExpenseLogEntry : IHasInternalId, IComparable
     {
         private Guid _guiID;

@@ -27,12 +27,14 @@ using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace Chummer.Backend.Equipment
 {
     /// <summary>
     /// A Weapon.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
     {
         private Guid _sourceID = Guid.Empty;

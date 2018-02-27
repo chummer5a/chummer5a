@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -27,6 +28,7 @@ namespace Chummer
     /// <summary>
     /// An Initiation Grade.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(Grade) + "}")]
     public class InitiationGrade : IHasInternalId, IComparable
     {
         private Guid _guiID;

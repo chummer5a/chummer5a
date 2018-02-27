@@ -18,11 +18,13 @@
  */
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 
 namespace Chummer
 {
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged
     {
         private Guid _guiID;

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Diagnostics;
 using System.Xml;
 using Chummer.Backend.Equipment;
 
@@ -25,6 +26,7 @@ namespace Chummer
     /// <summary>
     /// A Focus.
     /// </summary>
+    [DebuggerDisplay("{GearObject?.DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Focus : IHasInternalId
     {
         private Guid _guiID;

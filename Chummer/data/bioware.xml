@@ -3536,7 +3536,7 @@
       <cost>Rating * 50000</cost>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset>Rating</thresholdoffset>
+          <sharedthresholdoffset>Rating</sharedthresholdoffset>
         </conditionmonitor>
       </bonus>
       <forbidden>
@@ -3546,7 +3546,7 @@
       </forbidden>
       <rating>12</rating>
       <source>2050</source>
-      <page>205</page>
+      <page>206</page>
     </bioware>
     <bioware>
       <id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>

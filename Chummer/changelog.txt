@@ -77,6 +77,10 @@ Application Changes:
 - If the updater fails to connect, it will now display the actual error that caused it to fail to connect.
 - Fixed an issue where a knowledge skill specialization would automatically end up getting selected from the list of suggested specializations whenever that list changes.
 - Fixed a bug where bonuses that would disallow specializations for active skills in career mode and/or knowledge skills in create or career modes would not work properly.
+- Fixed Sprites and Spirits being created with RES/MAG*2 at creation incorrectly.
+- Fixed a crash that would occur when toggling PP-related house rules in the Options menu. Fixes #2530.
+- Fixed an issue where a spell's Limited and/or Extended status would not be properly reflected in the tooltip of its drain value.
+- Removed the "GitHub Issues" tab from the Options menu in non-Debug builds, as it only contained the "Upload Pastebin" button, which is non-functional outside of Debug builds.
 
 Data Changes:
 
@@ -102,6 +106,10 @@ Data Changes:
 - Added separate entries for Aerodynamic versions of each grenade.
 - Fixed issues where some non-aerodynamic grenades would not benefit from the Non-Aerodynamic specialization on Throwing Weapons.
 - Fixed the range and specialization information of Harpoons to match that of Javelins.
+- Fixed the High Pain Tolerance quality so that level effects no longer override each other due to precedence.
+- Fixed an issue where Damage Compensators (2050) would use a regular threshold offset that applies separately to Physical and Stun condition monitors instead of one shared between them.
+- Fixed an issue where the Death Dealer quality would add the square of its rating to spell damage and drain rather than just its rating.
+- Corrected a typo in the name of "Orichalcum" (it was originally called "Orichalum").
 
 New Strings:
 

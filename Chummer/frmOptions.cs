@@ -22,8 +22,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
- using System.Net;
- using Application = System.Windows.Forms.Application;
+#if DEBUG
+using System.Net;
+#endif
+using Application = System.Windows.Forms.Application;
 using System.Text;
 using Microsoft.Win32;
 
@@ -43,6 +45,11 @@ namespace Chummer
         public frmOptions()
         {
             InitializeComponent();
+#if !DEBUG
+            // tabPage3 only contains cmdUploadPastebin, which is not used if DEBUG is not enabled
+            // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
+            tabControl2.TabPages.Remove(tabPage3);
+#endif
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();

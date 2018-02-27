@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -26,6 +27,7 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;
@@ -73,8 +75,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
-        /// <param name="strValue">String value to convert.</param>
 #if DEBUG
+        /// <param name="strValue">String value to convert.</param>
         public static QualitySource ConvertToLifestyleQualitySource(string strValue)
         {
             switch (strValue)

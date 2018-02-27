@@ -226,7 +226,7 @@
       <limit>3</limit>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset precedence="0">1</thresholdoffset>
+          <thresholdoffset>1</thresholdoffset>
         </conditionmonitor>
       </bonus>
       <forbidden>
@@ -13308,11 +13308,11 @@
       <bonus>
         <spellcategorydamage>
           <category>Combat</category>
-          <val>Rating</val>
+          <val>1</val>
         </spellcategorydamage>
         <spellcategorydrain>
           <category>Combat</category>
-          <val>Rating</val>
+          <val>1</val>
         </spellcategorydrain>
       </bonus>
       <forbidden>

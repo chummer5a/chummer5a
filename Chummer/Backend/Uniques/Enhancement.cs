@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -26,6 +27,7 @@ namespace Chummer
     /// <summary>
     /// An Enhancement.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Enhancement : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;

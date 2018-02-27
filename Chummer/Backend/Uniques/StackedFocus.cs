@@ -19,6 +19,7 @@
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -29,6 +30,7 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
+    [DebuggerDisplay("{Name(GlobalOptions.DefaultLanguage)}")]
     public class StackedFocus
     {
         private Guid _guiID;
