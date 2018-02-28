@@ -81,6 +81,8 @@ Application Changes:
 - Fixed a crash that would occur when toggling PP-related house rules in the Options menu. Fixes #2530.
 - Fixed an issue where a spell's Limited and/or Extended status would not be properly reflected in the tooltip of its drain value.
 - Removed the "GitHub Issues" tab from the Options menu in non-Debug builds, as it only contained the "Upload Pastebin" button, which is non-functional outside of Debug builds.
+- Fixed an issue where spells and complex forms with drain exactly equal to drain and fading respectively would have their values displayed incorrectly.
+- Fixed an issue where Chummer5a could not properly connect to GitHub for updates due to a change in GitHub's security protocols.
 
 Data Changes:
 
@@ -110,6 +112,7 @@ Data Changes:
 - Fixed an issue where Damage Compensators (2050) would use a regular threshold offset that applies separately to Physical and Stun condition monitors instead of one shared between them.
 - Fixed an issue where the Death Dealer quality would add the square of its rating to spell damage and drain rather than just its rating.
 - Corrected a typo in the name of "Orichalcum" (it was originally called "Orichalum").
+- Fixed Hedge Witch/Wizard increasing drain by 2 instead of decreasing drain by 2.
 - Corrected the bonus for Natural Immunity to be based on Rating. Existing characters will need to Reapply Improvements or remove and re-add the Power. 
 
 New Strings:
