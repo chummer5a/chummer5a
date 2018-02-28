@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -1654,9 +1655,9 @@ namespace Chummer
 
         private static string s_StrSelectedValue = string.Empty;
         private static string s_StrForcedValue = string.Empty;
-        private static readonly List<Improvement> s_LstTransaction = new List<Improvement>();
-        private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
-        private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<Improvement>>(8, 10);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
 
         #region Properties
         /// <summary>
@@ -1692,14 +1693,10 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strImprovementName))
             {
                 ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
-                if (s_DictionaryCachedValues.ContainsKey(objCheckKey))
+                if (!s_DictionaryCachedValues.TryAdd(objCheckKey, int.MinValue))
                     s_DictionaryCachedValues[objCheckKey] = int.MinValue;
-                else
-                    s_DictionaryCachedValues.Add(objCheckKey, int.MinValue);
-                if (s_DictionaryCachedAugmentedValues.ContainsKey(objCheckKey))
+                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, int.MinValue))
                     s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
-                else
-                    s_DictionaryCachedAugmentedValues.Add(objCheckKey, int.MinValue);
             }
             else
             {
@@ -1715,13 +1712,14 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedValues.Remove(objKey);
+                    s_DictionaryCachedValues.TryRemove(objKey, out int _);
             }
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedAugmentedValues.Remove(objKey);
+                    s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
             }
+            s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
         }
         #endregion
 
@@ -2004,10 +2002,8 @@ namespace Chummer
                     string strLoopImprovedName = objLoopValuePair.Key;
                     int intLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (s_DictionaryCachedValues.ContainsKey(objLoopCacheKey))
+                    if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, intLoopValue))
                         s_DictionaryCachedValues[objLoopCacheKey] = intLoopValue;
-                    else
-                        s_DictionaryCachedValues.Add(objLoopCacheKey, intLoopValue);
                     intReturn += intLoopValue;
                 }
             }
@@ -2293,10 +2289,8 @@ namespace Chummer
                     string strLoopImprovedName = objLoopValuePair.Key;
                     int intLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (s_DictionaryCachedAugmentedValues.ContainsKey(objLoopCacheKey))
+                    if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, intLoopValue))
                         s_DictionaryCachedAugmentedValues[objLoopCacheKey] = intLoopValue;
-                    else
-                        s_DictionaryCachedAugmentedValues.Add(objLoopCacheKey, intLoopValue);
                     intReturn += intLoopValue;
                 }
             }
@@ -3087,7 +3081,7 @@ namespace Chummer
                 }
             }
 
-            objImprovementList.ImprovementHook();
+            objImprovementList.ProcessRelevantEvents();
         }
 
         public static void DisableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
@@ -3450,7 +3444,7 @@ namespace Chummer
                 }
             }
 
-            objImprovementList.ImprovementHook();
+            objImprovementList.ProcessRelevantEvents();
         }
 
         /// <summary>
@@ -3877,7 +3871,7 @@ namespace Chummer
                         break;
                 }
             }
-            objImprovementList.ImprovementHook();
+            objImprovementList.ProcessRelevantEvents();
 
             Log.Exit("RemoveImprovements");
             return decReturn;
@@ -3962,7 +3956,8 @@ namespace Chummer
                 ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
 
                 // Add the Improvement to the Transaction List.
-                s_LstTransaction.Add(objImprovement);
+                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<Improvement> {objImprovement}))
+                    s_DictionaryTransactions[objCharacter].Add(objImprovement);
             }
 
             Log.Exit("CreateImprovement");
@@ -3975,9 +3970,12 @@ namespace Chummer
         {
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
+            {
+                lstTransaction.ProcessRelevantEvents();
+                lstTransaction.Clear();
+            }
 
-            s_LstTransaction.ImprovementHook();
-            s_LstTransaction.Clear();
             Log.Exit("Commit");
         }
 
@@ -3987,14 +3985,18 @@ namespace Chummer
         private static void Rollback(Character objCharacter)
         {
             Log.Enter("Rollback");
-            // Remove all of the Improvements that were added.
-            foreach (Improvement objImprovement in s_LstTransaction)
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
             {
-                RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                // Remove all of the Improvements that were added.
+                foreach (Improvement objImprovement in lstTransaction)
+                {
+                    RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
+                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                }
+
+                lstTransaction.Clear();
             }
 
-            s_LstTransaction.Clear();
             Log.Exit("Rollback");
         }
 
@@ -4002,7 +4004,7 @@ namespace Chummer
         /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
         /// </summary>
         /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
-        public static void ImprovementHook(this IEnumerable<Improvement> lstImprovements)
+        public static void ProcessRelevantEvents(this IEnumerable<Improvement> lstImprovements)
         {
             // Create a hashset of events to fire to make sure we only ever fire each event once
             HashSet<Action> setEventsToFire = new HashSet<Action>();

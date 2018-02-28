@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Chummer.Annotations;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
@@ -37,15 +38,15 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character character)
         {
             _objCharacter = character;
-            _objCharacter.LOG.PropertyChanged += KnoChanged;
-            _objCharacter.INT.PropertyChanged += KnoChanged;
+            _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
+            _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
 
         }
 
         public void UnbindSkillsSection()
         {
-            _objCharacter.LOG.PropertyChanged -= KnoChanged;
-            _objCharacter.INT.PropertyChanged -= KnoChanged;
+            _objCharacter.LOG.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+            _objCharacter.INT.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
             _dicSkillBackups.Clear();
         }
 
@@ -740,13 +741,13 @@ namespace Chummer.Backend.Skills
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
-        private void KnoChanged(object sender, PropertyChangedEventArgs e)
+        
+        private void UpdateKnowledgePointsFromAttributes(object sender, PropertyChangedEventArgs e)
         {
-            if (PropertyChanged != null)
+            if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||
+                 (!_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.Value)))
             {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
             }
         }
 
