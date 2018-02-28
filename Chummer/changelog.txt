@@ -83,6 +83,9 @@ Application Changes:
 - Removed the "GitHub Issues" tab from the Options menu in non-Debug builds, as it only contained the "Upload Pastebin" button, which is non-functional outside of Debug builds.
 - Fixed an issue where spells and complex forms with drain exactly equal to drain and fading respectively would have their values displayed incorrectly.
 - Fixed an issue where Chummer5a could not properly connect to GitHub for updates due to a change in GitHub's security protocols.
+- Fixed various issues where bonuses/improvements that were skill-specific would not apply properly for exotic skills.
+- Fixed an issue where a skill could display a negative dicepool size if negative modifiers were large enough.
+- Fixed issues where tooltip texts for upgrading skills, attributes, and skill groups would not update properly.
 
 Data Changes:
 

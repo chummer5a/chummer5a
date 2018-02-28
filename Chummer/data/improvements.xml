@@ -598,16 +598,6 @@
       <page>The character can use Knowsoft and Linguasoft Skillsofts as though they had a direct neural link.</page>
     </improvement>
     <improvement>
-      <name>Essence</name>
-      <id>essence</id>
-      <internal>specificattribute</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<name>ESS</name><val>{val}</val><min>0</min><max>0</max><aug>0</aug>]]></xml>
-      <page>Adjusts the character's Essence by the value entered. Positive values increase Essence. Negative values decrease Essence.</page>
-    </improvement>
-    <improvement>
       <name>Essence Maximum</name>
       <id>essencemax</id>
       <internal>essencemax</internal>

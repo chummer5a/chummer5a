@@ -6065,7 +6065,6 @@ namespace Chummer
                 int intRating = Convert.ToInt32(objXmlArmor?["maxrating"]?.InnerText) > 1 ? frmPickArmorMod.SelectedRating : 0;
 
                 objMod.Create(objXmlArmor, intRating, lstWeapons);
-                objMod.Parent = objArmor;
                 if (objMod.InternalId.IsEmptyGuid())
                 {
                     frmPickArmorMod.Dispose();
@@ -12219,9 +12218,7 @@ namespace Chummer
             
             CharacterObject.ResetCachedEssence();
             // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
-            CharacterObject.RefreshRedliner();
             CharacterObject.RefreshEssenceLossImprovements();
-            CharacterObject.RefreshEncumbrance();
 
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             //if (_objCharacter.IgnoreRules == true)
@@ -16232,7 +16229,6 @@ namespace Chummer
                                 if (objXmlMod["rating"] != null)
                                     intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
                                 objMod.Create(objXmlModNode, intRating, lstWeapons);
-                                objMod.Parent = objArmor;
 
                                 foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
                                     AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);

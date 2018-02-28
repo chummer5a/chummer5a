@@ -53,7 +53,6 @@ namespace Chummer
             Dodge,
             Reach,
             Nuyen,
-            Essence,
             PhysicalCM,
             StunCM,
             UnarmedDV,
@@ -759,8 +758,805 @@ namespace Chummer
             get => _intOrder;
             set => _intOrder = value;
         }
-
         #endregion
+
+        #region Methods
+        /// <summary>
+        /// Get an enumerable of events to fire related to this specific improvement.
+        /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Action> GetRelevantPropertyChangers()
+        {
+            switch (ImproveType)
+            {
+                case ImprovementType.Attribute:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    bool blnIsBase = strTargetAttribute.EndsWith("Base");
+                    if (blnIsBase)
+                        strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
+                    if (AugmentedMaximum != 0 || Maximum != 0 || Minimum != 0)
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.AugmentedMetatypeLimits));
+                            }
+                        }
+                    }
+                    else if (Augmented != 0)
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.AttributeModifiers));
+                            }
+                        }
+                    }
+                    else if (!blnIsBase && Value != 0)
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                            }
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.Armor:
+                    break;
+                case ImprovementType.FireArmor:
+                    break;
+                case ImprovementType.ColdArmor:
+                    break;
+                case ImprovementType.ElectricityArmor:
+                    break;
+                case ImprovementType.AcidArmor:
+                    break;
+                case ImprovementType.FallingArmor:
+                    break;
+                case ImprovementType.Dodge:
+                    break;
+                case ImprovementType.Reach:
+                    break;
+                case ImprovementType.Nuyen:
+                    break;
+                case ImprovementType.PhysicalCM:
+                    break;
+                case ImprovementType.StunCM:
+                    break;
+                case ImprovementType.UnarmedDV:
+                    break;
+                case ImprovementType.InitiativeDice:
+                    break;
+                case ImprovementType.MatrixInitiative:
+                    break;
+                case ImprovementType.MatrixInitiativeDice:
+                    break;
+                case ImprovementType.LifestyleCost:
+                    break;
+                case ImprovementType.CMThreshold:
+                    break;
+                case ImprovementType.EnhancedArticulation:
+                    break;
+                case ImprovementType.WeaponCategoryDV:
+                    break;
+                case ImprovementType.WeaponCategoryDice:
+                    break;
+                case ImprovementType.CyberwareEssCostNonRetroactive:
+                    break;
+                case ImprovementType.CyberwareTotalEssMultiplierNonRetroactive:
+                    break;
+                case ImprovementType.SpecialTab:
+                    break;
+                case ImprovementType.Initiative:
+                    break;
+                case ImprovementType.LivingPersonaDeviceRating:
+                    break;
+                case ImprovementType.LivingPersonaProgramLimit:
+                    break;
+                case ImprovementType.LivingPersonaAttack:
+                    break;
+                case ImprovementType.LivingPersonaSleaze:
+                    break;
+                case ImprovementType.LivingPersonaDataProcessing:
+                    break;
+                case ImprovementType.LivingPersonaFirewall:
+                    break;
+                case ImprovementType.Smartlink:
+                    break;
+                case ImprovementType.BiowareEssCostNonRetroactive:
+                    break;
+                case ImprovementType.BiowareTotalEssMultiplierNonRetroactive:
+                    break;
+                case ImprovementType.GenetechCostMultiplier:
+                    break;
+                case ImprovementType.SoftWeave:
+                    break;
+                case ImprovementType.DisableBioware:
+                    break;
+                case ImprovementType.DisableCyberware:
+                    break;
+                case ImprovementType.DisableBiowareGrade:
+                    break;
+                case ImprovementType.DisableCyberwareGrade:
+                    break;
+                case ImprovementType.ConditionMonitor:
+                    break;
+                case ImprovementType.UnarmedDVPhysical:
+                    break;
+                case ImprovementType.Adapsin:
+                    break;
+                case ImprovementType.FreePositiveQualities:
+                    break;
+                case ImprovementType.FreeNegativeQualities:
+                    break;
+                case ImprovementType.FreeKnowledgeSkills:
+                {
+                    yield return () => _objCharacter.SkillsSection.OnPropertyChanged(nameof(SkillsSection.HasKnowledgePoints));
+                    yield return () => _objCharacter.SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPointsRemain));
+                }
+                    break;
+                case ImprovementType.NuyenMaxBP:
+                    break;
+                case ImprovementType.CMOverflow:
+                    break;
+                case ImprovementType.FreeSpiritPowerPoints:
+                    break;
+                case ImprovementType.AdeptPowerPoints:
+                    break;
+                case ImprovementType.ArmorEncumbrancePenalty:
+                    break;
+                case ImprovementType.Initiation:
+                    break;
+                case ImprovementType.Submersion:
+                    break;
+                case ImprovementType.Metamagic:
+                    break;
+                case ImprovementType.Echo:
+                    break;
+                case ImprovementType.Skillwire:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return () => objSkill.OnPropertyChanged(nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.DamageResistance:
+                    break;
+                case ImprovementType.RestrictedItemCount:
+                    break;
+                case ImprovementType.JudgeIntentions:
+                    break;
+                case ImprovementType.JudgeIntentionsOffense:
+                    break;
+                case ImprovementType.JudgeIntentionsDefense:
+                    break;
+                case ImprovementType.LiftAndCarry:
+                    break;
+                case ImprovementType.Memory:
+                    break;
+                case ImprovementType.Concealability:
+                    break;
+                case ImprovementType.SwapSkillAttribute:
+                case ImprovementType.SwapSkillSpecAttribute:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
+                                            (Skill)_objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.PoolToolTip));
+                    }
+                }
+                    break;
+                case ImprovementType.DrainResistance:
+                    break;
+                case ImprovementType.FadingResistance:
+                    break;
+                case ImprovementType.MatrixInitiativeDiceAdd:
+                    break;
+                case ImprovementType.InitiativeDiceAdd:
+                    break;
+                case ImprovementType.Composure:
+                    break;
+                case ImprovementType.UnarmedAP:
+                    break;
+                case ImprovementType.CMThresholdOffset:
+                    break;
+                case ImprovementType.CMSharedThresholdOffset:
+                    break;
+                case ImprovementType.Restricted:
+                    break;
+                case ImprovementType.Notoriety:
+                    break;
+                case ImprovementType.SpellCategory:
+                    break;
+                case ImprovementType.SpellCategoryDamage:
+                    break;
+                case ImprovementType.SpellCategoryDrain:
+                    break;
+                case ImprovementType.ThrowRange:
+                    break;
+                case ImprovementType.SkillsoftAccess:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills))
+                    {
+                        yield return () => objSkill.OnPropertyChanged(nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.AddSprite:
+                    break;
+                case ImprovementType.BlackMarketDiscount:
+                    break;
+                case ImprovementType.ComplexFormLimit:
+                    break;
+                case ImprovementType.SpellLimit:
+                    break;
+                case ImprovementType.QuickeningMetamagic:
+                    break;
+                case ImprovementType.BasicLifestyleCost:
+                    break;
+                case ImprovementType.ThrowSTR:
+                    break;
+                case ImprovementType.IgnoreCMPenaltyStun:
+                    break;
+                case ImprovementType.IgnoreCMPenaltyPhysical:
+                    break;
+                case ImprovementType.EssenceMax:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == "ESS")
+                        {
+                            yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.AdeptPower:
+                    break;
+                case ImprovementType.SpecificQuality:
+                    break;
+                case ImprovementType.MartialArt:
+                    break;
+                case ImprovementType.LimitModifier:
+                    break;
+                case ImprovementType.PhysicalLimit:
+                    break;
+                case ImprovementType.MentalLimit:
+                    break;
+                case ImprovementType.SocialLimit:
+                    break;
+                case ImprovementType.FriendsInHighPlaces:
+                    break;
+                case ImprovementType.Erased:
+                    break;
+                case ImprovementType.BornRich:
+                    break;
+                case ImprovementType.Fame:
+                    break;
+                case ImprovementType.MadeMan:
+                    break;
+                case ImprovementType.Overclocker:
+                    break;
+                case ImprovementType.RestrictedGear:
+                    break;
+                case ImprovementType.TrustFund:
+                    break;
+                case ImprovementType.ExCon:
+                    break;
+                case ImprovementType.ContactForceGroup:
+                    break;
+                case ImprovementType.Attributelevel:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                        {
+                            yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.FreeBase));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.AddContact:
+                    break;
+                case ImprovementType.Seeker:
+                    yield return () => _objCharacter.RefreshRedliner();
+                    break;
+                case ImprovementType.PublicAwareness:
+                    break;
+                case ImprovementType.PrototypeTranshuman:
+                    break;
+                case ImprovementType.Hardwire:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
+                                            (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.DealerConnection:
+                    break;
+                case ImprovementType.Skill:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroup:
+                case ImprovementType.BlockSkillDefault:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Where(x => x.SkillGroup == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategory:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillLinkedAttribute:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.Attribute == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillLevel:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.FreeKarma));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupLevel:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.FreeLevels));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Karma));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillBase:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.FreeBase));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupBase:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.FreeBase));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Karma));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.Skillsoft:
+                {
+                    KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.Activesoft:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.ReplaceAttribute:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                        {
+                            yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.AugmentedMetatypeLimits));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SpecialSkills:
+                    break;
+                case ImprovementType.SkillAttribute:
+                case ImprovementType.ReflexRecorderOptimization:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return () => objSkill.OnPropertyChanged(nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
+                case ImprovementType.Ambidextrous:
+                    break;
+                case ImprovementType.UnarmedReach:
+                    break;
+                case ImprovementType.SkillSpecialization:
+                    break;
+                case ImprovementType.NativeLanguageLimit:
+                    break;
+                case ImprovementType.AdeptPowerFreeLevels:
+                    break;
+                case ImprovementType.AdeptPowerFreePoints:
+                    break;
+                case ImprovementType.AIProgram:
+                    break;
+                case ImprovementType.CritterPowerLevel:
+                    break;
+                case ImprovementType.CritterPower:
+                    break;
+                case ImprovementType.SpellResistance:
+                    break;
+                case ImprovementType.LimitSpellCategory:
+                    break;
+                case ImprovementType.LimitSpellDescriptor:
+                    break;
+                case ImprovementType.LimitSpiritCategory:
+                    break;
+                case ImprovementType.WalkSpeed:
+                    break;
+                case ImprovementType.RunSpeed:
+                    break;
+                case ImprovementType.SprintSpeed:
+                    break;
+                case ImprovementType.WalkMultiplier:
+                    break;
+                case ImprovementType.RunMultiplier:
+                    break;
+                case ImprovementType.SprintBonus:
+                    break;
+                case ImprovementType.WalkMultiplierPercent:
+                    break;
+                case ImprovementType.RunMultiplierPercent:
+                    break;
+                case ImprovementType.SprintBonusPercent:
+                    break;
+                case ImprovementType.EssencePenalty:
+                case ImprovementType.EssencePenaltyT100:
+                case ImprovementType.EssencePenaltyMAGOnlyT100:
+                case ImprovementType.CyborgEssence:
+                case ImprovementType.CyberwareEssCost:
+                case ImprovementType.CyberwareTotalEssMultiplier:
+                case ImprovementType.BiowareEssCost:
+                case ImprovementType.BiowareTotalEssMultiplier:
+                case ImprovementType.BasicBiowareEssCost:
+                    // Immediately reset cached essence to make sure this fires off before any other property changers would
+                    _objCharacter.ResetCachedEssence();
+                    // TODO: Change essence loss improvement regeneration to take place only when Essence-related improvements or Cyberware is changed instead of on every character update.
+                    break;
+                case ImprovementType.FreeSpellsATT:
+                    break;
+                case ImprovementType.FreeSpells:
+                    break;
+                case ImprovementType.DrainValue:
+                    break;
+                case ImprovementType.FadingValue:
+                    break;
+                case ImprovementType.Spell:
+                    break;
+                case ImprovementType.ComplexForm:
+                    break;
+                case ImprovementType.Gear:
+                    break;
+                case ImprovementType.Weapon:
+                    break;
+                case ImprovementType.MentorSpirit:
+                    break;
+                case ImprovementType.Paragon:
+                    break;
+                case ImprovementType.FreeSpellsSkill:
+                    break;
+                case ImprovementType.DisableSpecializationEffects:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.PhysiologicalAddictionFirstTime:
+                    break;
+                case ImprovementType.PsychologicalAddictionFirstTime:
+                    break;
+                case ImprovementType.PhysiologicalAddictionAlreadyAddicted:
+                    break;
+                case ImprovementType.PsychologicalAddictionAlreadyAddicted:
+                    break;
+                case ImprovementType.StunCMRecovery:
+                    break;
+                case ImprovementType.PhysicalCMRecovery:
+                    break;
+                case ImprovementType.AddESStoStunCMRecovery:
+                    break;
+                case ImprovementType.AddESStoPhysicalCMRecovery:
+                    break;
+                case ImprovementType.MentalManipulationResist:
+                    break;
+                case ImprovementType.PhysicalManipulationResist:
+                    break;
+                case ImprovementType.ManaIllusionResist:
+                    break;
+                case ImprovementType.PhysicalIllusionResist:
+                    break;
+                case ImprovementType.DetectionSpellResist:
+                    break;
+                case ImprovementType.AddLimb:
+                {
+                    if (!_objCharacter.Options.DontUseCyberlimbCalculation && _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
+                            {
+                                yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                            }
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.StreetCredMultiplier:
+                    break;
+                case ImprovementType.StreetCred:
+                    break;
+                case ImprovementType.AttributeKarmaCostMultiplier:
+                case ImprovementType.AttributeKarmaCost:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        string strTargetAttribute = ImprovedName;
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.UpgradeKarmaCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            yield return () => objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.ActiveSkillKarmaCost:
+                case ImprovementType.ActiveSkillKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.KnowledgeSkillKarmaCost:
+                case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupKarmaCost:
+                case ImprovementType.SkillGroupKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                        if (objTargetGroup != null)
+                        {
+                            yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupDisable:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.IsDisabled));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Rating));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.BaseUnbroken));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.KarmaUnbroken));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Karma));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategorySpecializationKarmaCost:
+                case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CanAffordSpecialization));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategoryKarmaCost:
+                case ImprovementType.SkillCategoryKarmaCostMultiplier:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.UpgradeKarmaCost));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupCategoryDisable:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    {
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.IsDisabled));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Rating));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.BaseUnbroken));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.KarmaUnbroken));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Karma));
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                case ImprovementType.SkillGroupCategoryKarmaCost:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    {
+                        yield return () => objTargetGroup.OnPropertyChanged(nameof(SkillGroup.UpgradeKarmaCost));
+                    }
+                }
+                    break;
+                case ImprovementType.AttributePointCost:
+                case ImprovementType.AttributePointCostMultiplier:
+                    break;
+                case ImprovementType.ActiveSkillPointCost:
+                case ImprovementType.ActiveSkillPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillGroupPointCost:
+                case ImprovementType.SkillGroupPointCostMultiplier:
+                    break;
+                case ImprovementType.KnowledgeSkillPointCost:
+                case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillCategoryPointCost:
+                case ImprovementType.SkillCategoryPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillGroupCategoryPointCost:
+                case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                    break;
+                case ImprovementType.NewSpellKarmaCost:
+                case ImprovementType.NewSpellKarmaCostMultiplier:
+                    break;
+                case ImprovementType.NewComplexFormKarmaCost:
+                case ImprovementType.NewComplexFormKarmaCostMultiplier:
+                    break;
+                case ImprovementType.NewAIProgramKarmaCost:
+                case ImprovementType.NewAIProgramKarmaCostMultiplier:
+                    break;
+                case ImprovementType.NewAIAdvancedProgramKarmaCost:
+                case ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
+                    break;
+                case ImprovementType.BlockSkillSpecializations:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CanHaveSpecs));
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CanHaveSpecs));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.BlockSkillCategorySpecializations:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return () => objTargetSkill.OnPropertyChanged(nameof(Skill.CanHaveSpecs));
+                    }
+                }
+                    break;
+                case ImprovementType.FocusBindingKarmaCost:
+                    break;
+                case ImprovementType.FocusBindingKarmaMultiplier:
+                    break;
+                case ImprovementType.MagiciansWayDiscount:
+                    break;
+                case ImprovementType.BurnoutsWay:
+                    break;
+                case ImprovementType.ContactForcedLoyalty:
+                    break;
+                case ImprovementType.ContactMakeFree:
+                    break;
+                case ImprovementType.FreeWare:
+                    break;
+                case ImprovementType.WeaponAccuracy:
+                    break;
+                case ImprovementType.MetageneticLimit:
+                    break;
+            }
+        }
 
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
@@ -786,6 +1582,7 @@ namespace Chummer
 
             return nodImprovement;
         }
+        #endregion
         #endregion
     }
 
@@ -860,8 +1657,8 @@ namespace Chummer
         private static readonly List<Improvement> s_LstTransaction = new List<Improvement>();
         private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
         private static readonly Dictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new Dictionary<ImprovementDictionaryKey, int>((int)Improvement.ImprovementType.NumImprovementTypes);
-        #region Properties
 
+        #region Properties
         /// <summary>
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
         /// CharacterAttribute selection for Qualities like Metagenetic Improvement.
@@ -2289,8 +3086,8 @@ namespace Chummer
                         break;
                 }
             }
-            
-            objCharacter.ImprovementHook(objImprovementList);
+
+            objImprovementList.ImprovementHook();
         }
 
         public static void DisableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
@@ -2652,8 +3449,8 @@ namespace Chummer
                         break;
                 }
             }
-            
-            objCharacter.ImprovementHook(objImprovementList);
+
+            objImprovementList.ImprovementHook();
         }
 
         /// <summary>
@@ -3080,7 +3877,7 @@ namespace Chummer
                         break;
                 }
             }
-            objCharacter.ImprovementHook(objImprovementList);
+            objImprovementList.ImprovementHook();
 
             Log.Exit("RemoveImprovements");
             return decReturn;
@@ -3179,7 +3976,7 @@ namespace Chummer
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
 
-            objCharacter.ImprovementHook(s_LstTransaction);
+            s_LstTransaction.ImprovementHook();
             s_LstTransaction.Clear();
             Log.Exit("Commit");
         }
@@ -3201,6 +3998,21 @@ namespace Chummer
             Log.Exit("Rollback");
         }
 
+        /// <summary>
+        /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
+        public static void ImprovementHook(this IEnumerable<Improvement> lstImprovements)
+        {
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            HashSet<Action> setEventsToFire = new HashSet<Action>();
+            foreach (Improvement objImprovement in lstImprovements)
+            foreach (Action funcEventToFire in objImprovement.GetRelevantPropertyChangers())
+                setEventsToFire.Add(funcEventToFire);
+            // Fire each event once
+            foreach (Action funcEventToFire in setEventsToFire)
+                funcEventToFire.Invoke();
+        }
         #endregion
     }
 }

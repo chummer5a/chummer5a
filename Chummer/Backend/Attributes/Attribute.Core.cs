@@ -61,13 +61,11 @@ namespace Chummer.Backend.Attributes
 	        _strAbbrev = abbrev;
 	        MetatypeCategory = enumCategory;
 	        _objCharacter = character;
-			_objCharacter.AttributeImprovementEvent += OnImprovementEvent;
 			_objCharacter.PropertyChanged += OnCharacterChanged;
 		}
 
         public void UnbindAttribute()
         {
-            _objCharacter.AttributeImprovementEvent -= OnImprovementEvent;
             _objCharacter.PropertyChanged -= OnCharacterChanged;
         }
 
@@ -940,28 +938,40 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public bool CanUpgradeCareer => _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
-
         // Caching the value prevents calling the event multiple times. 
-        private bool _oldUpgrade;
+        private bool _blnCanUpgradeCareer;
+        public bool CanUpgradeCareer
+        {
+            get => _blnCanUpgradeCareer;
+            set
+            {
+                if (_blnCanUpgradeCareer != value)
+                {
+                    _blnCanUpgradeCareer = value;
+                    OnPropertyChanged(nameof(CanUpgradeCareer));
+                }
+            }
+        }
+        
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName != nameof(Character.Karma))
-                return;
-            if (_oldUpgrade != CanUpgradeCareer)
-            {
-                _oldUpgrade = CanUpgradeCareer;
-                OnPropertyChanged(nameof(CanUpgradeCareer));
-            }
+            if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
+                CanUpgradeCareer = _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
         }
 
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             foreach (string s in DependencyTree.Find(propertyName))
             {
                 var v = new PropertyChangedEventArgs(s);
                 PropertyChanged?.Invoke(this, v);
+                if (s == nameof(Value))
+                {
+                    OnPropertyChanged(nameof(UpgradeKarmaCost));
+                }
+                else if (s == nameof(UpgradeKarmaCost))
+                    CanUpgradeCareer = _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
             }
         }
 
@@ -1007,16 +1017,24 @@ namespace Chummer.Backend.Attributes
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
         private static readonly ReverseTree<string> DependencyTree =
-            new ReverseTree<string>(nameof(ToolTip),
-                new ReverseTree<string>(nameof(DisplayValue),
-                    new ReverseTree<string>(nameof(TotalValue),
-                        new ReverseTree<string>(nameof(AttributeModifiers)),
-                        new ReverseTree<string>(nameof(Karma)),
-                        new ReverseTree<string>(nameof(Base)),
-                        new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
-                            new ReverseTree<string>(nameof(TotalMinimum)),
-                            new ReverseTree<string>(nameof(TotalMaximum)),
-                            new ReverseTree<string>(nameof(TotalAugmentedMaximum))))));
+            new ReverseTree<string>(nameof(CharacterAttrib),
+                new ReverseTree<string>(nameof(ToolTip),
+                    new ReverseTree<string>(nameof(DisplayValue),
+                        new ReverseTree<string>(nameof(TotalValue),
+                            new ReverseTree<string>(nameof(AttributeModifiers)),
+                            new ReverseTree<string>(nameof(Value),
+                                new ReverseTree<string>(nameof(Karma)),
+                                new ReverseTree<string>(nameof(Base)),
+                                new ReverseTree<string>(nameof(FreeBase)),
+                                new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
+                                    new ReverseTree<string>(nameof(TotalMinimum),
+                                        new ReverseTree<string>(nameof(RawMinimum),
+                                            new ReverseTree<string>(nameof(MetatypeMinimum)))),
+                                    new ReverseTree<string>(nameof(TotalAugmentedMaximum),
+                                        new ReverseTree<string>(nameof(TotalMaximum),
+                                            new ReverseTree<string>(nameof(MetatypeMaximum))))))))),
+                new ReverseTree<string>(nameof(UpgradeToolTip),
+                    new ReverseTree<string>(nameof(UpgradeKarmaCost))));
         
         /// <summary>
         /// Translated abbreviation of the attribute.
@@ -1077,44 +1095,6 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                     return;
-            }
-        }
-
-        [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(ICollection<Improvement> improvements)
-        {
-            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && (imp.AugmentedMaximum != 0 || imp.Maximum != 0 || imp.Minimum != 0)))
-            {
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
-            }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReplaceAttribute && imp.ImprovedName == Abbrev))
-            {
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
-            }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
-            {
-                OnPropertyChanged(nameof(Base));
-            }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.Augmented != 0))
-            {
-                OnPropertyChanged(nameof(AttributeModifiers));
-            }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Value != 0))
-            {
-                OnPropertyChanged(nameof(TotalValue));
-            }
-        }
-
-        /// <summary>
-        /// Forces a particular event to fire.
-        /// </summary>
-        /// <param name="property"></param>
-        public void ForceEvent(string property)
-        {
-            foreach (string s in DependencyTree.Find(property))
-            {
-                var v = new PropertyChangedEventArgs(s);
-                PropertyChanged?.Invoke(this, v);
             }
         }
         #endregion

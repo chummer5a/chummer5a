@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -70,6 +71,51 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Armor.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstArmorMods.CollectionChanged += ArmorModsOnCollectionChanged;
+        }
+
+        private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            bool blnDoEncumbranceRefresh = false;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ArmorMod objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = true;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ArmorMod objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = true;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (ArmorMod objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = true;
+                    }
+                    foreach (ArmorMod objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = true;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    blnDoEncumbranceRefresh = true;
+                    break;
+            }
+            if (blnDoEncumbranceRefresh && Equipped)
+                _objCharacter?.RefreshEncumbrance();
         }
 
         /// Create an Armor from an XmlNode.
@@ -208,7 +254,6 @@ namespace Chummer.Backend.Equipment
                             ArmorMod objMod = new ArmorMod(_objCharacter);
 
                             objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
-                            objMod.Parent = this;
                             objMod.IncludedInArmor = true;
                             objMod.ArmorCapacity = "[0]";
                             objMod.Cost = "0";
@@ -224,7 +269,6 @@ namespace Chummer.Backend.Equipment
                                 Avail = "0",
                                 Source = _strSource,
                                 Page = _strPage,
-                                Parent = this,
                                 IncludedInArmor = true,
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
@@ -255,7 +299,6 @@ namespace Chummer.Backend.Equipment
                         ArmorMod objMod = new ArmorMod(_objCharacter);
 
                         objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
-                        objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
                         objMod.Cost = "0";
@@ -271,7 +314,6 @@ namespace Chummer.Backend.Equipment
                             Avail = "0",
                             Source = _strSource,
                             Page = _strPage,
-                            Parent = this,
                             IncludedInArmor = true,
                             ArmorCapacity = "[0]",
                             Cost = "0",
@@ -442,7 +484,6 @@ namespace Chummer.Backend.Equipment
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
                             objMod.Load(nodMod, blnCopy);
-                            objMod.Parent = this;
                             _lstArmorMods.Add(objMod);
                         }
             }
@@ -626,6 +667,7 @@ namespace Chummer.Backend.Equipment
             get => _intDamage;
             set
             {
+                int intOldValue = _intDamage;
                 _intDamage = value;
 
                 int intTotalArmor = Convert.ToInt32(ArmorValue);
@@ -641,6 +683,14 @@ namespace Chummer.Backend.Equipment
                     _intDamage = 0;
                 if (_intDamage > intTotalArmor)
                     _intDamage = intTotalArmor;
+
+                if (_intDamage != intOldValue)
+                {
+                    if (Equipped)
+                    {
+                        _objCharacter?.RefreshEncumbrance();
+                    }
+                }
             }
         }
 
@@ -650,7 +700,21 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => Math.Min(_intRating, MaxRating);
-            set => _intRating = Math.Min(value, MaxRating);
+            set
+            {
+                int intNewValue = Math.Min(value, MaxRating);
+                if (_intRating != intNewValue)
+                {
+                    _intRating = intNewValue;
+                    if (Equipped)
+                    {
+                        if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
+                        {
+                            _objCharacter?.RefreshEncumbrance();
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -868,6 +932,8 @@ namespace Chummer.Backend.Equipment
                             objGear.ChangeEquippedStatus(false);
                         }
                     }
+
+                    _objCharacter?.RefreshEncumbrance();
                 }
             }
         }
@@ -891,7 +957,7 @@ namespace Chummer.Backend.Equipment
                 int.TryParse(ArmorValue.Replace("Rating", Rating.ToString()), out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
-                intTotalArmor -= _intDamage;
+                intTotalArmor -= ArmorDamage;
 
                 return intTotalArmor;
             }
@@ -907,7 +973,7 @@ namespace Chummer.Backend.Equipment
                 int.TryParse(ArmorOverrideValue.Replace("Rating", Rating.ToString()), out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
-                intTotalArmor -= _intDamage;
+                intTotalArmor -= ArmorDamage;
 
                 return intTotalArmor;
             }

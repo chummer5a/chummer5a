@@ -467,7 +467,15 @@ namespace Chummer.Backend.Equipment
         public int Armor
         {
             get => _intArmorValue;
-            set => _intArmorValue = value;
+            set
+            {
+                if (_intArmorValue != value)
+                {
+                    _intArmorValue = value;
+                    if (Equipped && Parent?.Equipped == true)
+                        _objCharacter?.RefreshEncumbrance();
+                }
+            }
         }
 
         /// <summary>
@@ -585,6 +593,9 @@ namespace Chummer.Backend.Equipment
                             objGear.ChangeEquippedStatus(false);
                         }
                     }
+
+                    if (Parent?.Equipped == true)
+                        _objCharacter?.RefreshEncumbrance();
                 }
             }
         }

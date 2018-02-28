@@ -1852,55 +1852,46 @@ namespace Chummer.Classes
         {
             Log.Info("specificattribute");
 
-            if (bonusNode["name"]?.InnerText != "ESS")
-            {
-                // Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-                // Record the improvement.
-                int intMin = 0;
-                int intAug = 0;
-                int intMax = 0;
-                int intAugMax = 0;
-                string strAttribute = bonusNode["name"]?.InnerText;
+            // Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
+            // Record the improvement.
+            int intMin = 0;
+            int intAug = 0;
+            int intMax = 0;
+            int intAugMax = 0;
+            string strAttribute = bonusNode["name"]?.InnerText;
 
-                // Extract the modifiers.
-                string strTemp = bonusNode["min"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["val"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["max"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
+            // Extract the modifiers.
+            string strTemp = bonusNode["min"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["val"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["max"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+            {
+                if (strTemp.EndsWith("-natural"))
                 {
-                    if (strTemp.EndsWith("-natural"))
-                    {
-                        intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true)) -
-                                 _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
-                    }
-                    else
-                        intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true)) -
+                             _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
                 }
-                strTemp = bonusNode["aug"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-
-                string strUseUnique = _strUnique;
-                XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
-                if (xmlPrecedenceNode != null)
-                    strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
-
-                if (bonusNode["affectbase"] != null)
-                    strAttribute += "Base";
-
-                CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                    strUseUnique, 0, 1, intMin, intMax, intAug, intAugMax);
+                else
+                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
             }
-            else
-            {
-                string strTemp = bonusNode["val"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, _strUnique, Convert.ToInt32(strTemp));
-            }
+            strTemp = bonusNode["aug"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+
+            string strUseUnique = _strUnique;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
+
+            if (bonusNode["affectbase"] != null)
+                strAttribute += "Base";
+
+            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                strUseUnique, 0, 1, intMin, intMax, intAug, intAugMax);
         }
 
         // Add a paid increase to an attribute

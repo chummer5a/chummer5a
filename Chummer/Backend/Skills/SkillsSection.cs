@@ -23,7 +23,9 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Chummer.Annotations;
 
 namespace Chummer.Backend.Skills
 {
@@ -37,8 +39,6 @@ namespace Chummer.Backend.Skills
             _objCharacter = character;
             _objCharacter.LOG.PropertyChanged += KnoChanged;
             _objCharacter.INT.PropertyChanged += KnoChanged;
-            
-            _objCharacter.SkillImprovementEvent += CharacterOnImprovementEvent;
 
         }
 
@@ -46,21 +46,17 @@ namespace Chummer.Backend.Skills
         {
             _objCharacter.LOG.PropertyChanged -= KnoChanged;
             _objCharacter.INT.PropertyChanged -= KnoChanged;
-            
-            _objCharacter.SkillImprovementEvent -= CharacterOnImprovementEvent;
             _dicSkillBackups.Clear();
         }
 
-        private void CharacterOnImprovementEvent(ICollection<Improvement> improvements)
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null && improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
-            }
+            if (propertyName == nameof(KnowledgeSkillPointsRemain) || propertyName == nameof(HasKnowledgePoints))
+                OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         internal void AddSkills(FilterOptions skills, string strName = "")
         {
             List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
@@ -734,12 +730,12 @@ namespace Chummer.Backend.Skills
         {
             foreach (Skill objSkill in Skills)
             {
-                objSkill.ForceEvent(strName);
+                objSkill.OnPropertyChanged(strName);
             }
 
             foreach (KnowledgeSkill objSkill in KnowledgeSkills)
             {
-                objSkill.ForceEvent(strName);
+                objSkill.OnPropertyChanged(strName);
             }
         }
 
@@ -750,7 +746,6 @@ namespace Chummer.Backend.Skills
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
             }
         }

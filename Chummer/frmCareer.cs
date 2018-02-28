@@ -7463,7 +7463,6 @@ namespace Chummer
                     intRating = frmPickArmorMod.SelectedRating;
 
                 objMod.Create(objXmlArmor, intRating, lstWeapons);
-                objMod.Parent = objArmor;
                 if (objMod.InternalId.IsEmptyGuid())
                 {
                     frmPickArmorMod.Dispose();
@@ -16097,9 +16096,7 @@ namespace Chummer
 
             CharacterObject.ResetCachedEssence();
             // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
-            CharacterObject.RefreshRedliner();
             CharacterObject.RefreshEssenceLossImprovements();
-            CharacterObject.RefreshEncumbrance();
 
             int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
             string strESSFormat = "#,0";

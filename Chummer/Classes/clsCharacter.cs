@@ -22,6 +22,7 @@ using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -271,9 +272,154 @@ namespace Chummer
 
             SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
+
+            _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
+            _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
+
+            STR.PropertyChanged += RefreshEncumbranceFromSTR;
         }
 
-	    public AttributeSection AttributeSection { get; }
+        private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            bool blnDoEncumbranceRefresh = false;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Armor objNewItem in e.NewItems)
+                    {
+                        if (objNewItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            break;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Armor objOldItem in e.OldItems)
+                    {
+                        if (objOldItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            break;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Armor objOldItem in e.OldItems)
+                    {
+                        if (objOldItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            break;
+                        }
+                    }
+
+                    if (!blnDoEncumbranceRefresh)
+                    {
+                        foreach (Armor objNewItem in e.NewItems)
+                        {
+                            if (objNewItem.Equipped)
+                            {
+                                blnDoEncumbranceRefresh = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    blnDoEncumbranceRefresh = true;
+                    break;
+            }
+            if (blnDoEncumbranceRefresh)
+                RefreshEncumbrance();
+        }
+
+        private void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            bool blnDoCyberlimbAttributesRefresh = false;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    RefreshRedliner();
+                    if (!Options.DontUseCyberlimbCalculation)
+                    {
+                        foreach (Cyberware objNewItem in e.NewItems)
+                        {
+                            if (objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null && objNewItem.ParentVehicle == null &&
+                                !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) && !Options.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                            {
+                                blnDoCyberlimbAttributesRefresh = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    RefreshRedliner();
+                    if (!Options.DontUseCyberlimbCalculation)
+                    {
+                        foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null && objOldItem.ParentVehicle == null &&
+                                !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) && !Options.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                            {
+                                blnDoCyberlimbAttributesRefresh = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    RefreshRedliner();
+                    if (!Options.DontUseCyberlimbCalculation)
+                    {
+                        foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null && objOldItem.ParentVehicle == null &&
+                                !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) && !Options.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                            {
+                                blnDoCyberlimbAttributesRefresh = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnDoCyberlimbAttributesRefresh)
+                        {
+                            foreach (Cyberware objNewItem in e.NewItems)
+                            {
+                                if (objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null && objNewItem.ParentVehicle == null &&
+                                    !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) && !Options.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                {
+                                    blnDoCyberlimbAttributesRefresh = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    RefreshRedliner();
+                    blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
+                    break;
+            }
+
+            if (blnDoCyberlimbAttributesRefresh)
+            {
+                foreach (CharacterAttrib objCharacterAttrib in AttributeSection.AttributeList.Concat(AttributeSection.SpecialAttributeList))
+                {
+                    if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
+                    {
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                    }
+                }
+            }
+        }
+
+        public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
 
@@ -2045,12 +2191,8 @@ namespace Chummer
 
             // Refresh certain improvements
             Timekeeper.Finish("load_char_improvementrefreshers");
-            // Refresh Cyber-Singularity Seeker and Redliner
-            RefreshRedliner();
             // Refresh permanent attribute changes due to essence loss
             RefreshEssenceLossImprovements();
-            // Refresh (temporary) attribute changes due to armor encumbrance
-            RefreshEncumbrance();
             // Refresh dicepool modifiers due to filled condition monitor boxes
             RefreshWoundPenalties();
             Timekeeper.Finish("load_char_improvementrefreshers");
@@ -5329,7 +5471,7 @@ namespace Chummer
 
 #region Attributes
         /// <summary>
-        /// Get an CharacterAttribute by its name.
+        /// Get a CharacterAttribute by its name.
         /// </summary>
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
@@ -8889,12 +9031,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Refreshes Redliner and Cyber-Singularity Seeker. Returns false if RedlinerBonus has changed, otherwise returns true.
+        /// Refreshes Redliner and Cyber-Singularity Seeker.
         /// </summary>
-        /// <returns>False if RedlinerBonus has changed, True otherwise</returns>
-        public bool RefreshRedliner()
+        public void RefreshRedliner()
         {
-            int intOldRedlinerBonus = RedlinerBonus;
             List<string> lstSeekerAttributes = new List<string>();
             List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
@@ -8916,7 +9056,6 @@ namespace Chummer
             if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
             {
                 RedlinerBonus = 0;
-                return intOldRedlinerBonus == 0;
             }
             
             //Calculate bonus from cyberlimbs
@@ -8958,7 +9097,6 @@ namespace Chummer
                 }
             }
             ImprovementManager.Commit(this);
-            return intOldRedlinerBonus == RedlinerBonus;
         }
 
         public void RefreshEssenceLossImprovements()
@@ -9298,6 +9436,14 @@ namespace Chummer
             }
         }
 
+        public void RefreshEncumbranceFromSTR(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                RefreshEncumbrance();
+            }
+        }
+
         public void RefreshEncumbrance()
         {
             // Remove any Improvements from Armor Encumbrance.
@@ -9405,105 +9551,5 @@ namespace Chummer
         public HashSet<string> BannedWareGrades { get; } = new HashSet<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
-        //I also think this prevents GC. But there is no good way to do it...
-        internal event Action<ICollection<Improvement>> SkillImprovementEvent;
-        internal event Action<ICollection<Improvement>> AttributeImprovementEvent;
-
-        //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down.
-        public static readonly HashSet<Improvement.ImprovementType> SkillRelatedImprovements = new HashSet<Improvement.ImprovementType> {
-            Improvement.ImprovementType.FreeKnowledgeSkills,
-            Improvement.ImprovementType.Skillwire,
-            Improvement.ImprovementType.SwapSkillAttribute,
-            Improvement.ImprovementType.SkillsoftAccess,
-            Improvement.ImprovementType.Hardwire,
-            Improvement.ImprovementType.Skill,  //Improve pool of skill based on name
-            Improvement.ImprovementType.SkillGroup,  //Group
-            Improvement.ImprovementType.SkillCategory, //category
-            Improvement.ImprovementType.SkillAttribute, //attribute
-            Improvement.ImprovementType.SkillLinkedAttribute, //linked attribute
-            Improvement.ImprovementType.SkillLevel,  //Karma points in skill
-            Improvement.ImprovementType.SkillGroupLevel, //group
-            Improvement.ImprovementType.SkillBase,  //base points in skill
-            Improvement.ImprovementType.SkillGroupBase, //group
-            Improvement.ImprovementType.Skillsoft, //A skill gained from a knowsoft
-            Improvement.ImprovementType.Activesoft,
-            Improvement.ImprovementType.SpecialSkills,
-            Improvement.ImprovementType.ReflexRecorderOptimization,
-            Improvement.ImprovementType.BlockSkillDefault,
-            Improvement.ImprovementType.SkillSpecialization,
-            Improvement.ImprovementType.NativeLanguageLimit,
-            Improvement.ImprovementType.SwapSkillSpecAttribute,
-            Improvement.ImprovementType.FreeSpellsSkill,
-            Improvement.ImprovementType.DisableSpecializationEffects,
-            Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
-            Improvement.ImprovementType.SkillGroupKarmaCostMultiplier,
-            Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier,
-            Improvement.ImprovementType.ActiveSkillKarmaCost,
-            Improvement.ImprovementType.SkillGroupKarmaCost,
-            Improvement.ImprovementType.SkillGroupDisable,
-            Improvement.ImprovementType.KnowledgeSkillKarmaCost,
-            Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier,
-            Improvement.ImprovementType.SkillCategoryKarmaCost,
-            Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier,
-            Improvement.ImprovementType.SkillCategorySpecializationKarmaCost,
-            Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier,
-            Improvement.ImprovementType.SkillGroupCategoryDisable,
-            Improvement.ImprovementType.SkillGroupCategoryKarmaCost,
-            Improvement.ImprovementType.ActiveSkillPointCostMultiplier,
-            Improvement.ImprovementType.SkillGroupPointCostMultiplier,
-            Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier,
-            Improvement.ImprovementType.ActiveSkillPointCost,
-            Improvement.ImprovementType.SkillGroupPointCost,
-            Improvement.ImprovementType.KnowledgeSkillPointCost,
-            Improvement.ImprovementType.SkillCategoryPointCostMultiplier,
-            Improvement.ImprovementType.SkillCategoryPointCost,
-            Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier,
-            Improvement.ImprovementType.SkillGroupCategoryPointCost,
-            Improvement.ImprovementType.BlockSkillSpecializations,
-            Improvement.ImprovementType.BlockSkillCategorySpecializations,
-        };
-
-        //List of events that might be able to affect attributes. Changes to these types also invoke data bindings controlling skills, since their pools are controlled by attributes.
-        public static readonly HashSet<Improvement.ImprovementType> AttribRelatedImprovements = new HashSet<Improvement.ImprovementType> {
-            Improvement.ImprovementType.Attribute,
-            Improvement.ImprovementType.Essence,
-            Improvement.ImprovementType.EssenceMax,
-            Improvement.ImprovementType.Attributelevel,
-            Improvement.ImprovementType.Seeker,
-            Improvement.ImprovementType.ReplaceAttribute,
-            Improvement.ImprovementType.EssencePenalty,
-            Improvement.ImprovementType.EssencePenaltyT100,
-            Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
-            Improvement.ImprovementType.CyborgEssence,
-            Improvement.ImprovementType.FreeSpellsATT,
-            Improvement.ImprovementType.AddLimb,
-            Improvement.ImprovementType.CyberwareEssCost,
-            Improvement.ImprovementType.CyberwareTotalEssMultiplier,
-            Improvement.ImprovementType.BiowareEssCost,
-            Improvement.ImprovementType.BiowareTotalEssMultiplier,
-            Improvement.ImprovementType.BasicBiowareEssCost,
-            Improvement.ImprovementType.AttributeKarmaCostMultiplier,
-            Improvement.ImprovementType.AttributeKarmaCost,
-            Improvement.ImprovementType.AttributePointCostMultiplier,
-            Improvement.ImprovementType.AttributePointCost,
-        };
-
-        //To get when things change in improvementmanager
-        //Ugly, ugly done, but we cannot get events out of it today
-        // FUTURE REFACTOR HERE
-        [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        internal void ImprovementHook(ICollection<Improvement> lstTransaction)
-        {
-            if (lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
-            {
-                ResetCachedEssence();
-                AttributeImprovementEvent?.Invoke(lstTransaction);
-            }
-            else if (lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
-            {
-                SkillImprovementEvent?.Invoke(lstTransaction);
-            }
-        }
     }
 }

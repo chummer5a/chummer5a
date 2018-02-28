@@ -224,7 +224,7 @@ namespace Chummer.Backend.Attributes
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.ForceEvent(name);
+				att.OnPropertyChanged(name);
 			}
 		}
 

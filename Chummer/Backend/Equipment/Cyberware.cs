@@ -136,28 +136,139 @@ namespace Chummer.Backend.Equipment
 
         private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            bool blnDoCyberlimbAGIRefresh = false;
+            bool blnDoCyberlimbSTRRefresh = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Cyberware objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
+                        if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                            Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                        {
+                            if (InheritAttributes)
+                            {
+                                blnDoCyberlimbAGIRefresh = true;
+                                blnDoCyberlimbSTRRefresh = true;
+                            }
+                            else
+                            {
+                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                {
+                                    blnDoCyberlimbAGIRefresh = true;
+                                }
+                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                {
+                                    blnDoCyberlimbSTRRefresh = true;
+                                }
+                            }
+                        }
+                    }
+
                     this.RefreshMatrixAttributeArray();
+                    _objCharacter?.RefreshRedliner();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Cyberware objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
+                        if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                            Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                        {
+                            if (InheritAttributes)
+                            {
+                                blnDoCyberlimbAGIRefresh = true;
+                                blnDoCyberlimbSTRRefresh = true;
+                            }
+                            else
+                            {
+                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                {
+                                    blnDoCyberlimbAGIRefresh = true;
+                                }
+                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                {
+                                    blnDoCyberlimbSTRRefresh = true;
+                                }
+                            }
+                        }
+                    }
                     this.RefreshMatrixAttributeArray();
+                    _objCharacter?.RefreshRedliner();
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Cyberware objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
+                        if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                            Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                        {
+                            if (InheritAttributes)
+                            {
+                                blnDoCyberlimbAGIRefresh = true;
+                                blnDoCyberlimbSTRRefresh = true;
+                            }
+                            else
+                            {
+                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                {
+                                    blnDoCyberlimbAGIRefresh = true;
+                                }
+                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                {
+                                    blnDoCyberlimbSTRRefresh = true;
+                                }
+                            }
+                        }
+                    }
+
                     foreach (Cyberware objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
+                        if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                            Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                        {
+                            if (InheritAttributes)
+                            {
+                                blnDoCyberlimbAGIRefresh = true;
+                                blnDoCyberlimbSTRRefresh = true;
+                            }
+                            else
+                            {
+                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                {
+                                    blnDoCyberlimbAGIRefresh = true;
+                                }
+                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                {
+                                    blnDoCyberlimbSTRRefresh = true;
+                                }
+                            }
+                        }
+                    }
                     this.RefreshMatrixAttributeArray();
+                    _objCharacter?.RefreshRedliner();
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     this.RefreshMatrixAttributeArray();
+                    _objCharacter?.RefreshRedliner();
                     break;
+            }
+
+            if (blnDoCyberlimbAGIRefresh || blnDoCyberlimbSTRRefresh)
+            {
+                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    if ((blnDoCyberlimbAGIRefresh && objCharacterAttrib.Abbrev == "AGI") || (blnDoCyberlimbSTRRefresh && objCharacterAttrib.Abbrev == "STR"))
+                    {
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                    }
+                }
             }
         }
 
@@ -1150,12 +1261,39 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strName != value)
                 {
+                    string strOldValue = _strName;
                     _lstIncludeInPairBonus.Remove(_strName);
                     _lstIncludeInPairBonus.Add(value);
                     _strName = value;
+                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    {
+                        if (value == "Enhanced Agility" || value == "Customized Agility" || strOldValue == "Enhanced Agility" || strOldValue == "Customized Agility")
+                        {
+                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                            {
+                                if (objCharacterAttrib.Abbrev == "AGI")
+                                {
+                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                }
+                            }
+                        }
+                        if (value == "Enhanced Strength" || value == "Customized Strength" || strOldValue == "Enhanced Strength" || strOldValue == "Customized Strength")
+                        {
+                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                            {
+                                if (objCharacterAttrib.Abbrev == "STR")
+                                {
+                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        public bool InheritAttributes => _blnInheritAttributes;
 
         public Guid SourceID => _guiSourceID;
 
@@ -1220,7 +1358,25 @@ namespace Chummer.Backend.Equipment
         public string Category
         {
             get => _strCategory;
-            set => _strCategory = value;
+            set
+            {
+                if (_strCategory != value)
+                {
+                    string strOldValue = _strCategory;
+                    _strCategory = value;
+                    if ((value == "Cyberlimb" || strOldValue == "Cyberlimb") && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
+                            {
+                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1229,7 +1385,25 @@ namespace Chummer.Backend.Equipment
         public string LimbSlot
         {
             get => _strLimbSlot;
-            set => _strLimbSlot = value;
+            set
+            {
+                if (_strLimbSlot != value)
+                {
+                    string strOldValue = _strLimbSlot;
+                    _strLimbSlot = value;
+                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        (!string.IsNullOrWhiteSpace(value) && !_objCharacter.Options.ExcludeLimbSlot.Contains(value)) || (!string.IsNullOrWhiteSpace(strOldValue) && !_objCharacter.Options.ExcludeLimbSlot.Contains(strOldValue)))
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
+                            {
+                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1246,7 +1420,25 @@ namespace Chummer.Backend.Equipment
                 int.TryParse(_strLimbSlotCount, out int intReturn);
                 return intReturn;
             }
-            set => _strLimbSlotCount = value.ToString(GlobalOptions.InvariantCultureInfo);
+            set
+            {
+                string strNewValue = value.ToString(GlobalOptions.InvariantCultureInfo);
+                if (_strLimbSlotCount != strNewValue)
+                {
+                    _strLimbSlotCount = strNewValue;
+                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
+                            {
+                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1520,7 +1712,38 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => Math.Max(Math.Min(_intRating, MaxRating), MinRating);
-            set => _intRating = Math.Max(Math.Min(value, MaxRating), MinRating);
+            set
+            {
+                int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
+                if (_intRating != intNewValue)
+                {
+                    _intRating = intNewValue;
+                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    {
+                        if (Name == "Enhanced Agility" || Name == "Customized Agility")
+                        {
+                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                            {
+                                if (objCharacterAttrib.Abbrev == "AGI")
+                                {
+                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                }
+                            }
+                        }
+                        if (Name == "Enhanced Strength" || Name == "Customized Strength")
+                        {
+                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                            {
+                                if (objCharacterAttrib.Abbrev == "STR")
+                                {
+                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -2539,7 +2762,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnInheritAttributes)
+                if (InheritAttributes)
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
@@ -2590,7 +2813,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnInheritAttributes)
+                if (InheritAttributes)
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
@@ -2652,7 +2875,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnInheritAttributes)
+                if (InheritAttributes)
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
