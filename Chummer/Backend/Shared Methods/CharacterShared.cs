@@ -1200,6 +1200,52 @@ namespace Chummer
                                     CharacterObject.InitiateGrade++;
                                 }
                             }
+                            //TODO: Annoying boilerplate, but whatever. 
+                            if (CharacterObject.RESEnabled)
+                            {
+                                // Remove any existing Initiation Improvements.
+                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
+
+                                // Create the replacement Improvement.
+                                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
+                                ImprovementManager.Commit(CharacterObject);
+
+                                // Update any Echo Improvements the character might have.
+                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
+                                {
+                                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
+                                    if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
+                                    {
+                                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                                    }
+                                }
+                            }
+                            else if (CharacterObject.MAGEnabled)
+                            {
+                                // Remove any existing Initiation Improvements.
+                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
+
+                                // Create the replacement Improvement.
+                                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                                ImprovementManager.Commit(CharacterObject);
+
+                                // Update any Metamagic Improvements the character might have.
+                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
+                                {
+                                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
+                                    if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
+                                    {
+                                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Utils.BreakIfDebug();
+                            }
                         }
                         break;
                     case NotifyCollectionChangedAction.Remove:
