@@ -1256,7 +1256,7 @@
     </string>
     <string>
       <key>Menu_SpecialPossessInanimate</key>
-      <text>Possuir Habitar Receptáculo Inanimado</text>
+      <text>Possuir/Habitar Receptáculo Inanimado</text>
     </string>
     <string>
       <key>Menu_SpecialBPAvailLimit</key>
@@ -2284,7 +2284,7 @@
     </string>
     <string>
       <key>Message_ExtraKarma</key>
-      <text>Você tem {0} restante, mas só pode levar {1} para sua carreira.\nVocê tem certeza que quer perder estes pontos extras?</text>
+      <text>Você tem {0} Carma restante, mas só pode levar {1} para sua carreira.\nVocê tem certeza que quer perder estes pontos extras?</text>
     </string>
     <string>
       <key>MessageTitle_ExtraPoints</key>
@@ -4844,7 +4844,7 @@
     <!-- Region Other Info Tab -->
     <string>
       <key>Tip_CalculatedMovement</key>
-      <text>Andando: AGI × 2 ({0} m/TC) / ({1} km/h)\nCorrendo: AGI × 4 ({2} m/TC) / ({3} km/h)</text>
+      <text>Andar: AGI × 2 ({0} m/TC) / ({1} km/h)\nCorrer: AGI × 4 ({2} m/TC) / ({3} km/h)</text>
     </string>
     <string>
       <key>Label_OtherPhysicalCM</key>
