@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@
     </string>
     <string>
       <key>Button_Sort</key>
-      <text>Classficar</text>
+      <text>Classificar</text>
     </string>
     <string>
       <key>Button_Delay</key>
@@ -644,11 +644,11 @@
     </string>
     <string>
       <key>Label_Sleaze</key>
-      <text>Corrupção:</text>
+      <text>Subversão:</text>
     </string>
     <string>
       <key>Label_DataProcessing</key>
-      <text>Proc. de Dados:</text>
+      <text>Datagrama:</text>
     </string>
     <string>
       <key>Label_Firewall</key>
@@ -724,7 +724,7 @@
     </string>
     <string>
       <key>String_Force</key>
-      <text>Poder</text>
+      <text>Potência</text>
     </string>
     <string>
       <key>String_CyberlimbAttributeModifier</key>
@@ -1200,27 +1200,27 @@
     </string>
     <string>
       <key>Menu_SpecialAddCyberwareSuite</key>
-      <text>Adicionar Conjunto &amp;Cibernético</text>
+      <text>Adicionar Suíte &amp;Cibernético</text>
     </string>
     <string>
       <key>Menu_SpecialAddBiowareSuite</key>
-      <text>Adicionar Conjunto &amp;Biônico</text>
+      <text>Adicionar Suíte &amp;Biônico</text>
     </string>
     <string>
       <key>Menu_SpecialCreateCyberwareSuite</key>
-      <text>Criar Conjunto Cibernético</text>
+      <text>Criar Suíte Cibernética</text>
     </string>
     <string>
       <key>Menu_SpecialCreateBiowareSuite</key>
-      <text>Criar Conjunto Biônico</text>
+      <text>Criar Suíte Biônica</text>
     </string>
     <string>
       <key>Menu_SpecialAddPACKSKit</key>
-      <text>Adicionar Kit &amp;PACKS</text>
+      <text>Adicionar &amp;PACOTE</text>
     </string>
     <string>
       <key>Menu_SpecialCreatePACKSKit</key>
-      <text>Criar Kit PACKS</text>
+      <text>Criar PACOTE</text>
     </string>
     <string>
       <key>Menu_SpecialChangeMetatype</key>
@@ -1344,7 +1344,7 @@
     </string>
     <string>
       <key>Menu_BoltHole</key>
-      <text>&amp;Toca</text>
+      <text>&amp;Abrigo</text>
     </string>
     <string>
       <key>Menu_Safehouse</key>
@@ -1624,7 +1624,7 @@
     </string>
     <string>
       <key>Message_DeleteArmorLocation</key>
-      <text>Você tem certeza que quer excluir este Conjunto de Armadura? Todas as Armaduras neste conjunto serão movidas para o reservatório de Armaduras Selecionadas.</text>
+      <text>Você tem certeza que quer excluir este Conjunto de Armadura? Todas as Armaduras neste conjunto serão movidas para a área de Armaduras Selecionadas.</text>
     </string>
     <string>
       <key>Message_DeleteWeapon</key>
@@ -1632,7 +1632,7 @@
     </string>
     <string>
       <key>Message_DeleteWeaponLocation</key>
-      <text>Você tem certeza que quer excluir esta localização de Arma? Todas as Armas nesta localização serão movidas para o reservatório de Armas Selecionadas.</text>
+      <text>Você tem certeza que quer excluir esta localização de Arma? Todas as Armas nesta localização serão movidas para a área de Armas Selecionadas.</text>
     </string>
     <string>
       <key>Message_DeleteLifestyle</key>
@@ -1644,7 +1644,7 @@
     </string>
     <string>
       <key>Message_DeleteGearLocation</key>
-      <text>Você tem certeza que quer excluir esta localização de Equipamento? Todos os Equipamentos nesta localização serão movidos para o reservatório de Equipamentos Selecionadas.</text>
+      <text>Você tem certeza que quer excluir esta localização de Equipamento? Todos os Equipamentos nesta localização serão movidos para a área de Equipamentos Selecionados.</text>
     </string>
     <string>
       <key>Message_DeleteVehicle</key>
@@ -1704,7 +1704,7 @@
     </string>
     <string>
       <key>Message_DeleteMetatypeQuality</key>
-      <text>Você tem certeza que quer excluir esta Qualidade de Metatipo por {0}?</text>
+      <text>Você tem certeza que quer remover esta Qualidade de Metatipo por {0}?</text>
     </string>
     <string>
       <key>Message_DeleteKnowledgeSkill</key>
@@ -1724,7 +1724,7 @@
     </string>
     <string>
       <key>Message_DeleteImprovementGroup</key>
-      <text>Você tem certeza que quer excluir este Grupo de Melhoria? Todas as Melhorias neste grupo serão movidas para o reservatório de Melhorias Selecionadas.</text>
+      <text>Você tem certeza que quer excluir este Grupo de Melhoria? Todas as Melhorias neste grupo serão movidas para a área de Melhorias Selecionadas.</text>
     </string>
     <string>
       <key>Message_DeleteStackedFocus</key>
@@ -1853,10 +1853,6 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Não Foi Possível Remover Cibernético</text>
-    </string>
-    <string>
-      <key>Message_ComplexFormLimitCareer</key>
-      <text>Seu número de Formas Complexas não pode exceder seu valor de RES × 2.</text>
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
@@ -2148,7 +2144,7 @@
     </string>
     <string>
       <key>Message_FocusMaximumForce</key>
-      <text>O Poder total de todos os seus Focos vinculados não pode exceder cinco vezes seu valor de MAG.</text>
+      <text>A Potência total de todos os seus Focos vinculados não pode exceder cinco vezes seu valor de MAG.</text>
     </string>
     <string>
       <key>Message_FocusMaximumNumber</key>
@@ -2336,7 +2332,7 @@
     </string>
     <string>
       <key>Message_CyberwareGradeMismatch</key>
-      <text>Todos os Cibernéticos de um personagem devem ser da mesma Classe para criar um Conjunto Cibernético.</text>
+      <text>Todos os Cibernéticos de um personagem devem ser da mesma Classe para criar uma Suíte Cibernética.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareGradeMismatch</key>
@@ -2612,7 +2608,7 @@
     </string>
     <string>
       <key>Message_StackedFocusForce</key>
-      <text>Um Foco Empilhado não pode ter um Poder combinado maior do que 6.</text>
+      <text>Um Foco Empilhado não pode ter uma Potência combinada maior do que 6.</text>
     </string>
     <string>
       <key>MessageTitle_CannotStackFoci</key>
@@ -2864,7 +2860,7 @@
     </string>
     <string>
       <key>String_ExpensePurchaseCyberwareSuite</key>
-      <text>Conjunto Cibernético Comprado</text>
+      <text>Suíte Cibernética Comprada</text>
     </string>
     <string>
       <key>String_ExpensePurchaseWeapon</key>
@@ -3000,11 +2996,11 @@
     </string>
     <string>
       <key>String_ExpensePurchaseCyberwearGear</key>
-      <text>Equipamento de Cibernético Comprado</text>
+      <text>Equipamento Cibernético Comprado</text>
     </string>
     <string>
       <key>String_ExpenseSoldCyberwareGear</key>
-      <text>Equipamento de Cibernético Vendido</text>
+      <text>Equipamento Cibernético Vendido</text>
     </string>
     <string>
       <key>String_ExpenseAddPositiveQuality</key>
@@ -3196,7 +3192,7 @@
     </string>
     <string>
       <key>String_AmmoBreakAction</key>
-      <text>d</text>
+      <text>b</text>
     </string>
     <string>
       <key>String_AmmoBelt</key>
@@ -3228,7 +3224,7 @@
     </string>
     <string>
       <key>String_AmmoMagazine</key>
-      <text>pi</text>
+      <text>ai</text>
     </string>
     <string>
       <key>String_AmmoMuzzleLoad</key>
@@ -3598,11 +3594,11 @@
     </string>
     <string>
       <key>Node_SelectedPositiveQualities</key>
-      <text>Qualidades Positivas Selecionadas</text>
+      <text>Qualidades Positivas</text>
     </string>
     <string>
       <key>Node_SelectedNegativeQualities</key>
-      <text>Qualidades Negativas Selecionadas</text>
+      <text>Qualidades Negativas</text>
     </string>
     <string>
       <key>Tip_CommonAttributes</key>
@@ -3631,10 +3627,6 @@
     <string>
       <key>Tip_OptionsDontDoubleQualityPurchases</key>
       <text>Permitir que personagens em modo Carreira comprem Qualidades Positivas pelo preço normal em vez de dobrado.</text>
-    </string>
-    <string>
-      <key>Tip_OptionsExceptionalAttribute</key>
-      <text>Permitir que Pontos de Atributo sejam gastos no ponto de bônus concedido pela qualidade Atributo Excepcional.</text>
     </string>
     <string>
       <key>Tip_OptionsExceptionalNotMaxed</key>
@@ -3732,7 +3724,7 @@
     </string>
     <string>
       <key>Label_FreeKnowledgeSkills</key>
-      <text>Pontos Gratuitos de Perícias de Conhecimento Restantes:</text>
+      <text>Pontos de Perícias de Conhecimento Gratuitos Restantes:</text>
     </string>
     <string>
       <key>Label_CustomKnowledgeSkillsReminder</key>
@@ -3740,15 +3732,15 @@
     </string>
     <string>
       <key>Label_FreeContactPoints</key>
-      <text>Pontos Gratuitos de Contatos Restantes:</text>
+      <text>Pontos de Contatos Gratuitos Restantes:</text>
     </string>
     <string>
       <key>Label_FreeSkills</key>
-      <text>Pontos Gratuitos de Perícias Restantes:</text>
+      <text>Pontos de Perícias Gratuitos Restantes:</text>
     </string>
     <string>
       <key>Label_FreeSkillGroups</key>
-      <text>Grupos Gratuitos de Perícias Restantes:</text>
+      <text>Grupos de Perícias Gratuitos Restantes:</text>
     </string>
     <string>
       <key>Button_AddSkill</key>
@@ -3780,11 +3772,11 @@
     </string>
     <string>
       <key>Skill_SortDicepool</key>
-      <text>Pilha de dados</text>
+      <text>Pilha de Dados</text>
     </string>
     <string>
       <key>Skill_SortLowerDicepool</key>
-      <text>Pilha de dados menor</text>
+      <text>Pilha de Dados Menor</text>
     </string>
     <string>
       <key>Skill_SortAttributeValue</key>
@@ -3818,17 +3810,17 @@
     </string>
     <string>
       <key>Node_SelectedMartialArts</key>
-      <text>Artes Marciais Selecionadas</text>
+      <text>Artes Marciais</text>
     </string>
     <string>
       <key>Node_SelectedManeuvers</key>
-      <text>Manobras Selecionadas</text>
+      <text>Manobras</text>
     </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
     <string>
       <key>Label_SelectedSpells</key>
-      <text>Feitiços Selecionados</text>
+      <text>Feitiços</text>
     </string>
     <string>
       <key>Label_Spirits</key>
@@ -3864,7 +3856,7 @@
     </string>
     <string>
       <key>Label_ResistDrain</key>
-      <text>Resistir Dreno com:</text>
+      <text>Resiste Dreno com:</text>
     </string>
     <string>
       <key>Label_MentorSpirit</key>
@@ -3884,31 +3876,31 @@
     </string>
     <string>
       <key>Node_SelectedCombatSpells</key>
-      <text>Feitiços de Combate Selecionados</text>
+      <text>Feitiços de Combate</text>
     </string>
     <string>
       <key>Node_SelectedDetectionSpells</key>
-      <text>Feitiços de Detecção Selecionados</text>
+      <text>Feitiços de Detecção</text>
     </string>
     <string>
       <key>Node_SelectedHealthSpells</key>
-      <text>Feitiços de Saúde Selecionados</text>
+      <text>Feitiços de Saúde</text>
     </string>
     <string>
       <key>Node_SelectedIllusionSpells</key>
-      <text>Feitiços de Ilusão Selecionados</text>
+      <text>Feitiços de Ilusão</text>
     </string>
     <string>
       <key>Node_SelectedManipulationSpells</key>
-      <text>Feitiços de Manipulação Selecionados</text>
+      <text>Feitiços de Manipulação</text>
     </string>
     <string>
       <key>Node_SelectedGeomancyRituals</key>
-      <text>Rituais Selecionados</text>
+      <text>Rituais</text>
     </string>
     <string>
       <key>Node_SelectedEnchantments</key>
-      <text>Encantamentos Selecionados</text>
+      <text>Encantamentos</text>
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
@@ -3952,7 +3944,7 @@
     </string>
     <string>
       <key>Label_ResistFading</key>
-      <text>Resistir Enfraquecimento com:</text>
+      <text>Resiste Enfraquecimento com:</text>
     </string>
     <string>
       <key>Label_Paragon</key>
@@ -4168,11 +4160,11 @@
     </string>
     <string>
       <key>Node_SelectedCyberware</key>
-      <text>Cibernéticos Selecionados</text>
+      <text>Cibernéticos</text>
     </string>
     <string>
       <key>Node_SelectedBioware</key>
-      <text>Biônicos Selecionados</text>
+      <text>Biônicos</text>
     </string>
     <string>
       <key>Label_EssenceConsumption</key>
@@ -4438,7 +4430,7 @@
     </string>
     <string>
       <key>Label_GearQty</key>
-      <text>Quant do Equipamento:</text>
+      <text>Qtd do Equipamento:</text>
     </string>
     <string>
       <key>Label_ConditionMonitor</key>
@@ -4848,15 +4840,11 @@
       <key>Tip_Omae_Warning</key>
       <text>Omae está fora do controle dos desenvolvedores atuais e contém personagens antigos que podem não funcionar ou travar a versão atual do Chummer. Prossiga por sua conta e risco.</text>
     </string>
-    <string>
-      <key>Tip_BuildFoci</key>
-      <text>Cada Foco vinculado custa {0} Carma por ponto de Poder.</text>
-    </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
     <string>
       <key>Tip_CalculatedMovement</key>
-      <text>Andar: AGI × 2 ({0} m/TC) / ({1} km/h)\nCorrer: AGI × 4 ({2} m/TC) / ({3} km/h)</text>
+      <text>Andando: AGI × 2 ({0} m/TC) / ({1} km/h)\nCorrendo: AGI × 4 ({2} m/TC) / ({3} km/h)</text>
     </string>
     <string>
       <key>Label_OtherPhysicalCM</key>
@@ -5154,7 +5142,7 @@
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
-      <text>Ver descrição do Feitiço</text>
+      <text>Ver Descrição do Feitiço</text>
     </string>
     <string>
       <key>Tip_ImproveInitiateGrade</key>
@@ -5190,7 +5178,7 @@
     </string>
     <string>
       <key>Tip_RecoilAccessories</key>
-      <text> + {0} ({1} (Desdobrável))</text>
+      <text> + {0} ({1} (Utilizável))</text>
     </string>
     <string>
       <key>Tip_RemainingVehicleModCapacity</key>
@@ -5208,11 +5196,11 @@
     </string>
     <string>
       <key>String_Sleaze</key>
-      <text>Corrupção</text>
+      <text>Subversão</text>
     </string>
     <string>
       <key>String_DataProcessing</key>
-      <text>Processamento de Dados</text>
+      <text>Datagrama</text>
     </string>
     <!-- End Region -->
     <!-- Region Individual Form- and UserControl-specific strings below this point -->
@@ -5387,7 +5375,7 @@
     <!-- Region Spirits/Sprites -->
     <string>
       <key>Label_Spirit_Force</key>
-      <text>Poder:</text>
+      <text>Potência:</text>
     </string>
     <string>
       <key>Label_Spirit_ServicesOwed</key>
@@ -5449,27 +5437,27 @@
     <!-- Region Create Cyberware Suite Window -->
     <string>
       <key>Title_CreateCyberwareSuite</key>
-      <text>Criar Conjunto Cibernético</text>
+      <text>Criar Suíte Cibernética</text>
     </string>
     <string>
       <key>Title_CreateBiowareSuite</key>
-      <text>Criar Conjunto Biônico</text>
+      <text>Criar Suíte Biônica</text>
     </string>
     <string>
       <key>Label_CyberwareSuite_SuiteName</key>
-      <text>Nome do Conjunto:</text>
+      <text>Nome da Suíte:</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_SuiteName</key>
-      <text>Por favor, digite um nome para seu Conjunto.</text>
+      <text>Por favor, digite um nome para sua Suíte.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_SuiteName</key>
-      <text>Nome do Conjunto</text>
+      <text>Nome da Suíte</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_FileName</key>
-      <text>Por favor, digite um nome de arquivo para salvar o Conjunto.</text>
+      <text>Por favor, digite um nome de arquivo para salvar a Suíte.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_FileName</key>
@@ -5485,25 +5473,25 @@
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>Um Conjunto chamado "{0}" já existe em um arquivo de dados. Por favor, escolha um nome diferente.</text>
+      <text>Uma Suíte chamada "{0}" já existe em um arquivo de dados. Por favor, escolha um nome diferente.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
-      <text>Conjunto Já Existe</text>
+      <text>Suíte Já Existe</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_SuiteCreated</key>
-      <text>Conjunto "{0}" criado.</text>
+      <text>Suíte "{0}" criada.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_SuiteCreated</key>
-      <text>Conjunto Criado</text>
+      <text>Suíte Criada</text>
     </string>
     <!-- End Region-->
     <!-- Region Create PACKS Kit Window -->
     <string>
       <key>Title_CreatePACKSKit</key>
-      <text>Criar Kit PACKS</text>
+      <text>Criar Kit PACOTE</text>
     </string>
     <string>
       <key>Label_CreatePACKSKit_KitName</key>
@@ -5599,11 +5587,11 @@
     </string>
     <string>
       <key>Message_CreatePACKSKit_SuiteCreated</key>
-      <text>Kit PACKS "{0}" criado.</text>
+      <text>Kit PACOTE "{0}" criado.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_SuiteCreated</key>
-      <text>Kit PACKS Criado</text>
+      <text>Kit PACOTE Criado</text>
     </string>
     <!-- End Region-->
     <!-- Region Dice Hits Window -->
@@ -5639,7 +5627,7 @@
     </string>
     <string>
       <key>Checkbox_DiceRoller_CinematicGameplay</key>
-      <text>Sucesso com 4, 5, ou 6</text>
+      <text>Sucesso em 4, 5 ou 6</text>
     </string>
     <string>
       <key>Checkbox_DiceRoller_RushedJob</key>
@@ -5729,7 +5717,7 @@
     </string>
     <string>
       <key>String_WorkingForTheMan</key>
-      <text>Trabalhando para o Homem</text>
+      <text>Trabalhando para o Sistema</text>
     </string>
     <string>
       <key>String_WorkingForThePeople</key>
@@ -5757,7 +5745,7 @@
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Resultado de</text>
+      <text>Resultado de {0}D6: (</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->
@@ -6457,7 +6445,7 @@
     </string>
     <string>
       <key>Label_Options_Force</key>
-      <text>× Poder</text>
+      <text>× Potência</text>
     </string>
     <string>
       <key>Label_Options_ServicesOwed</key>
@@ -6561,7 +6549,7 @@
     </string>
     <string>
       <key>Label_Options_AnchoringFocus</key>
-      <text>Foco de Ancorar</text>
+      <text>Foco de Ancoramento</text>
     </string>
     <string>
       <key>Label_Options_BanishingFocus</key>
@@ -6569,7 +6557,7 @@
     </string>
     <string>
       <key>Label_Options_BindingFocus</key>
-      <text>Foco de Vincular</text>
+      <text>Foco de Vinculação</text>
     </string>
     <string>
       <key>Label_Options_CenteringFocus</key>
@@ -6581,7 +6569,7 @@
     </string>
     <string>
       <key>Label_Options_DisenchantingFocus</key>
-      <text>Foco de Desencantar</text>
+      <text>Foco de Desencantação</text>
     </string>
     <string>
       <key>Label_Options_FlexibleSignatureFocus</key>
@@ -6621,11 +6609,11 @@
     </string>
     <string>
       <key>Label_Options_SustainingFocus</key>
-      <text>Foco de Sustentar</text>
+      <text>Foco de Sustentação</text>
     </string>
     <string>
       <key>Label_Options_SymbolicLinkFocus</key>
-      <text>Foco de Ligação Simbólica</text>
+      <text>Foco de Elo Simbólico</text>
     </string>
     <string>
       <key>Label_Options_WeaponFocus</key>
@@ -6717,7 +6705,7 @@
     </string>
     <string>
       <key>Checkbox_Options_MaxSpiritForce</key>
-      <text>Máx. Nível de Poder de Espírito e de Adepto Místico baseado no total do Atributo MAG</text>
+      <text>Máx. Nível de Potência de Espírito e de Adepto Místico baseado no total do Atributo MAG</text>
     </string>
     <string>
       <key>Checkbox_Options_DefaultIncludeModifiers</key>
@@ -6901,11 +6889,11 @@
     </string>
     <string>
       <key>Checkbox_Option_AllowBiowareSuites</key>
-      <text>Permitir Conjuntos Biônicos</text>
+      <text>Permitir Suítes Biônicas</text>
     </string>
     <string>
       <key>Checkbox_Option_PrintNotes</key>
-      <text>Imprimir Nodos</text>
+      <text>Imprimir Observações</text>
     </string>
     <string>
       <key>Checkbox_Option_PrintToFileFirst</key>
@@ -7059,7 +7047,7 @@
     </string>
     <string>
       <key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
-      <text>Grades Gratuitas da Matriz</text>
+      <text>Grades da Matriz Gratuitas</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Entertainment</key>
@@ -7271,19 +7259,19 @@
     <!-- Region Select Cyberware Suite Window -->
     <string>
       <key>Title_SelectCyberwareSuite</key>
-      <text>Selecione um Conjunto Cibernético</text>
+      <text>Selecione uma Suíte Cibernética</text>
     </string>
     <string>
       <key>Title_SelectBiowareSuite</key>
-      <text>Selecione um Conjunto Biônico</text>
+      <text>Selecione uma Suíte Biônica</text>
     </string>
     <string>
       <key>Label_SelectCyberwareSuite_PartsInSuite</key>
-      <text>Partes neste Conjunto Cibernético:</text>
+      <text>Partes nesta Suíte Cibernética:</text>
     </string>
     <string>
       <key>Label_SelectBiowareSuite_PartsInSuite</key>
-      <text>Partes neste Conjunto Biônico:</text>
+      <text>Partes nesta Suíte Biônica:</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Exotic Skill Window -->
@@ -7402,7 +7390,7 @@
     </string>
     <string>
       <key>Title_SelectMentorSpirit_Paragon</key>
-      <text>Selecinar Campeão</text>
+      <text>Selecinar um Campeão</text>
     </string>
     <string>
       <key>Label_SelectMentorSpirit_Advantage</key>
@@ -7486,7 +7474,7 @@
     <!-- Region Select PACKS Kit Window -->
     <string>
       <key>Title_SelectPACKSKit</key>
-      <text>Selecione um Kit PACKS</text>
+      <text>Selecione um Kit PACOTE</text>
     </string>
     <string>
       <key>Label_SelectPACKSKit_Contents</key>
@@ -7578,7 +7566,7 @@
     </string>
     <string>
       <key>Message_DeletePACKSKit</key>
-      <text>Você tem certeza que quer excluir o Kit PACKS personalizado {0}?</text>
+      <text>Você tem certeza que quer excluir o Kit PACOTE personalizado {0}?</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Power Window -->
@@ -7792,7 +7780,7 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_ExtendedSpell</key>
-      <text>Feitiço Prolongado</text>
+      <text>Feitiço Extendido</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
@@ -7820,7 +7808,7 @@
     </string>
     <string>
       <key>Label_SelectVehicle_Discount</key>
-      <text>Desconto</text>
+      <text>Desconto:</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Vehicle Mod Window -->
@@ -7958,7 +7946,7 @@
     </string>
     <string>
       <key>Warning_Update_CouldNotConnect</key>
-      <text>Chummer não conseguiu conectar ao seviidor de atualização. Por favor, verifique suas configurações de Internet e Proxy.</text>
+      <text>Chummer não conseguiu conectar ao servidor de atualização. Por favor, verifique suas configurações de firewall e proxy.</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
@@ -8034,7 +8022,7 @@
     </string>
     <string>
       <key>Message_ImprovementName</key>
-      <text>Por favor digite um nome para esta Melhoria</text>
+      <text>Por favor digite um nome para esta Melhoria.</text>
     </string>
     <string>
       <key>MessageTitle_ImprovementName</key>
@@ -8406,7 +8394,7 @@
     </string>
     <string>
       <key>Checkbox_ShowOnlyAffordItems</key>
-      <text>Mostar Apenas Items Que Eu Consigo Comprar</text>
+      <text>Mostar Apenas Itens Que Eu Consigo Comprar</text>
     </string>
     <string>
       <key>String_Immune</key>
@@ -8494,7 +8482,7 @@
     </string>
     <string>
       <key>Label_Contact_PreferredPayment</key>
-      <text>Pagamento Preferido:</text>
+      <text>Pagamento Preferencial:</text>
     </string>
     <string>
       <key>Label_Contact_HobbiesVice</key>
@@ -8774,7 +8762,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_TrustFund</key>
-      <text>Fundo de Investimentos</text>
+      <text>Fundo de Investimento</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
@@ -8882,11 +8870,11 @@
     </string>
     <string>
       <key>String_WorkingForTheManPeople</key>
-      <text>Trabalhando pro Patrão/Povo</text>
+      <text>Trabalhando para o Sistema/Povo</text>
     </string>
     <string>
       <key>Label_Overclocker</key>
-      <text>Overclocker:</text>
+      <text>Turbinador:</text>
     </string>
     <string>
       <key>Checkbox_Options_EnemyKarmaQualityLimit</key>
@@ -8918,7 +8906,7 @@
     </string>
     <string>
       <key>String_MetamagicSkillType_matrix</key>
-      <text>perícia(s) de Matriz</text>
+      <text>perícia(s) da Matriz</text>
     </string>
     <string>
       <key>String_MetamagicSkillType_active</key>
@@ -8938,7 +8926,7 @@
     </string>
     <string>
       <key>String_LifeModules</key>
-      <text>Life Modules</text>
+      <text>Módulos de Vida</text>
     </string>
     <string>
       <key>Menu_Main_ChummerDiscord</key>
@@ -8946,15 +8934,259 @@
     </string>
     <string>
       <key>Message_DeleteVehicleLocationBase</key>
-      <text>Are you sure you want to delete this Vehicle location? All of the Vehicles in this location will be moved to the Selected Vehicle container.</text>
+      <text>Você tem certeza que quer excluir esta localização de Veículo? Todos os Veículos nesta localização serão movidos para a área de Veículos Selecionados.</text>
     </string>
     <string>
       <key>String_ReduceGear</key>
-      <text>Enter the number of items to remove.</text>
+      <text>Digite o número de itens para remover.</text>
     </string>
     <string>
       <key>Tip_LifeModule_Warning</key>
-      <text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+      <text>Módulos de Vida são atualmente um sistema experimental com características limitadas; ele está presente exclusivamente para fins de teste. Veja https://github.com/chummer5a/chummer5a/issues/2000 para detalhes sobre os problemas existentes. Prossiga por sua conta e risca.\nVocê quer continuar?</text>
+    </string>
+    <string>
+      <key>DialogFilter_Chum5</key>
+      <text>Arquivos do Chummer5 (*.chum5)|*.chum5</text>
+    </string>
+    <string>
+      <key>DialogFilter_Xml</key>
+      <text>Arquivos XML (*.xml)|*.xml</text>
+    </string>
+    <string>
+      <key>DialogFilter_Html</key>
+      <text>Arquivos HTML (*.htm;*.html)|*.htm;*.html</text>
+    </string>
+    <string>
+      <key>DialogFilter_Pdf</key>
+      <text>Arquivos PDF (*.pdf)|*.pdf</text>
+    </string>
+    <string>
+      <key>DialogFilter_Exe</key>
+      <text>Arquivos Executáveis (*.exe)|*.exe</text>
+    </string>
+    <string>
+      <key>DialogFilter_Json</key>
+      <text>Arquivos JSON (*.json)|*.json</text>
+    </string>
+    <string>
+      <key>DialogFilter_All</key>
+      <text>Todos os Arquivos(*.*)|*.*</text>
+    </string>
+    <string>
+      <key>String_Version</key>
+      <text>Versão</text>
+    </string>
+    <string>
+      <key>String_Unknown</key>
+      <text>Desconhecido</text>
+    </string>
+    <string>
+      <key>String_D6</key>
+      <text>D6</text>
+    </string>
+    <string>
+      <key>Title_ChooseCharacterPriorities</key>
+      <text>Escolha as Prioridades do Personagem</text>
+    </string>
+    <string>
+      <key>String_Level</key>
+      <text>Nível</text>
+    </string>
+    <string>
+      <key>About_Description_Text</key>
+      <text>Gerador de personagem para Shadowrun 5ª Editção\n\r\n\rObrigado a Keith pelo excelente trabalho que fez criando e mantendo Chummer para a 4ª Edição. Sem ele, nada disso seria possível.\n\r\n\rMuito obrigado a todos na comunidade Dumpshock por apoiar este projeto com todos os seus valiosos feedbacks, grandes ideias, avisos de bugs, e apontar meus erros bobos. E também muito obrigado a todos que dedicaram seu tempo traduzindo Chummer para outros idiomas!</text>
+    </string>
+    <string>
+      <key>About_Company_Text</key>
+      <text>Chummer original para a 4ª edição por Keith Rudolph.\n\rAtualização para o Chummer5 por Adam Schmidt: srchummer5@gmail.com\n\rAtualização para o Chummer5a pelo Anônimo fa/tg/uy: chummer5isalive@gmail.com\n\rAtualizações adicionais para 5a por Johannes Elgaard: joha4270@gmail.com</text>
+    </string>
+    <string>
+      <key>About_Copyright_Text</key>
+      <text>Copyright © Keith Rudolph 2013</text>
+    </string>
+    <string>
+      <key>About_Label_Contributors</key>
+      <text>Obrigado a Todos os Contribuidores do GitHub!</text>
+    </string>
+    <string>
+      <key>About_Label_Disclaimer</key>
+      <text>Aviso Legal</text>
+    </string>
+    <string>
+      <key>About_Label_Disclaimer_Text</key>
+      <text>Chummer é completamente não oficial e não é de forma alguma endossado por The Topps Company, Inc. ou Catalyst Game Labs. The Topps Company, Inc. tem a propriedade exclusiva dos nomes, logos, artes, marcas, fotografias, sons, audios, vídeos e/ou qualquer outro material proprietário usado em conexão com o jogo Shadowrun.\n\r\n\rA não ser que acordado por escrito, o desenvolvedor fornece o Trabalho (e cada Contribuidor fornece suas Contribuições) da forma "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, tanto expressas quanto implícitas, incluindo, sem limitações, quaisquer garantias ou condições de TÍTULO, NÃO-VIOLAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.\n\r\n\rAo utilizar Chummer Você concorda que Você possui legalmente uma cópia do livro de regras de Shadowrun e qualquer suplemento na qual as informações você selecionou para usar. Você é o único responsável por determinar a apropriabilidade do uso e redistribuição do conteúdo que Você criar e assume quaisquer riscos associados com Seu exercício de permissões sob esta Licença.\n\r\n\rChummer utiliza ícones do conjunto de ícones Silk feito por Mark James que está disponível em at www.famfamfam.com.</text>
+    </string>
+    <string>
+      <key>String_MutantCritter</key>
+      <text>Criatura Mutante</text>
+    </string>
+    <string>
+      <key>Tab_PhysicalConditionMonitor</key>
+      <text>Monitor de Condição Física</text>
+    </string>
+    <string>
+      <key>Tab_MatrixConditionMonitor</key>
+      <text>Monitor de Condição da Matriz</text>
+    </string>
+    <string>
+      <key>String_Cyberzombie</key>
+      <text>Ciberzumbi</text>
+    </string>
+    <string>
+      <key>Message_LowerMetatypeQualityLevel</key>
+      <text>Você tem certeza que quer remover um nível desta Qualidade de Metatipo por {0}?</text>
+    </string>
+    <string>
+      <key>Label_Flexibility</key>
+      <text>Flexibilidade:</text>
+    </string>
+    <string>
+      <key>Button_AddMod</key>
+      <text>Adicionar Mod</text>
+    </string>
+    <string>
+      <key>Button_DeleteMod</key>
+      <text>Excluir Mod</text>
+    </string>
+    <string>
+      <key>Node_AdditionalMods</key>
+      <text>Mods Adicionais</text>
+    </string>
+    <string>
+      <key>Title_CreateWeaponMount</key>
+      <text>Criar Suporte de Arma</text>
+    </string>
+    <string>
+      <key>String_EdgeUse</key>
+      <text>Uso de Edge</text>
+    </string>
+    <string>
+      <key>String_EssenceLoss</key>
+      <text>Perda de Essência</text>
+    </string>
+    <string>
+      <key>String_EssenceLossChargen</key>
+      <text>Perda de Essência (Geração de Personagem)</text>
+    </string>
+    <string>
+      <key>String_SpiritFettering</key>
+      <text>Aprisionamento de Espírito</text>
+    </string>
+    <string>
+      <key>String_AttributeLoss</key>
+      <text>Perda de Atributo</text>
+    </string>
+    <string>
+      <key>String_ComplexFormLevel</key>
+      <text>N</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetPersona</key>
+      <text>Persona</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetDevice</key>
+      <text>Dispositivo</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetFile</key>
+      <text>Arquivo</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetSprite</key>
+      <text>Sprite</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetHost</key>
+      <text>Central</text>
+    </string>
+    <string>
+      <key>String_ComplexFormTargetIC</key>
+      <text>GELO</text>
+    </string>
+    <string>
+      <key>Skill_NativeLanguageShort</key>
+      <text>N</text>
+    </string>
+    <string>
+      <key>Button_RemoveInitiateGrade</key>
+      <text>Remover Classe de Iniciado</text>
+    </string>
+    <string>
+      <key>Button_RemoveSubmersionGrade</key>
+      <text>Remover Classe de Submersão</text>
+    </string>
+    <string>
+      <key>Button_RemoveMetamagic</key>
+      <text>Remover Metamágica</text>
+    </string>
+    <string>
+      <key>Button_RemoveEcho</key>
+      <text>Remover Eco</text>
+    </string>
+    <string>
+      <key>Label_OtherCoreCM</key>
+      <text>Faixa de Dano do Núcleo:</text>
+    </string>
+    <string>
+      <key>Label_OtherMatrixCM</key>
+      <text>Faixa de Dano da Matriz:</text>
+    </string>
+    <string>
+      <key>Tip_ComplexFormFadingBase</key>
+      <text>Enfraquecimento Básico para</text>
+    </string>
+    <string>
+      <key>Tip_ComplexFormFadingSeeDescription</key>
+      <text>Veja Descrição da Forma Complexa</text>
+    </string>
+    <string>
+      <key>String_DeviceRating</key>
+      <text>Nível de Dispositivo</text>
+    </string>
+    <string>
+      <key>String_Power</key>
+      <text>Poder</text>
+    </string>
+    <string>
+      <key>Message_Options_SettingsName</key>
+      <text>Você deve dar um nome para seu arquivo de configurações.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_SettingsName</key>
+      <text>Configurações do Chummer</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ValidationResults</key>
+      <text>Resultados da Validação</text>
+    </string>
+    <string>
+      <key>Message_Options_ValidationResults</key>
+      <text>Os resultados foram escritos em {0}.</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Máximo Neoiene de Carma</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_CostPerDay</key>
+      <text>Custo/Dia:</text>
+    </string>
+    <string>
+      <key>Message_SelectGeneric_CareerOnlyRestriction</key>
+      <text>Você não pode selecionar este {0} porque seu personagem ainda não foi criado.</text>
+    </string>
+    <string>
+      <key>Warning_Update_CouldNotConnectException</key>
+      <text>Chummer não conseguiu conectar ao servidor de atualização. Por favor verifique suas configurações de firewall e proxy.\n\nMensagem de Erro:\n{0}.</text>
+    </string>
+    <string>
+      <key>Button_Export_SaveJsonAs</key>
+      <text>Salvar JSON como</text>
+    </string>
+    <string>
+      <key>String_TotalComparisonWithPointBuy</key>
+      <text>Total (Para Comparação com Compra por Pontos)</text>
     </string>
   </strings>
 </chummer>
