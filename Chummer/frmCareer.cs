@@ -18239,6 +18239,8 @@ namespace Chummer
             cboVehicleWeaponAmmo.Visible = blnDisplay;
             cmdFireVehicleWeapon.Visible = blnDisplay;
             cmdReloadVehicleWeapon.Visible = blnDisplay;
+            cmdFireVehicleWeapon.Enabled = blnDisplay;
+            cmdReloadVehicleWeapon.Enabled = blnDisplay;
             lblVehicleWeaponAmmoRemainingLabel.Visible = blnDisplay;
             lblVehicleWeaponAmmoRemaining.Visible = blnDisplay;
         }
