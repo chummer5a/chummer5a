@@ -1383,8 +1383,13 @@ namespace Chummer
             bool blnDoCheckForOrphanedImprovements = LastSavedVersion < new Version("5.198.0");
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
+                string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
                 // Do not load condition monitor improvements from older versions of Chummer
-                if (objXmlImprovement["improvementsource"]?.InnerText == "ConditionMonitor")
+                if (strImprovementSource == "ConditionMonitor")
+                    continue;
+
+                // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
+                if (_decEssenceAtSpecialStart == decimal.MinValue && (strImprovementSource == "EssenceLoss" || strImprovementSource == "EssenceLossChargen"))
                     continue;
 
                 if (blnDoCheckForOrphanedImprovements)
@@ -1392,13 +1397,13 @@ namespace Chummer
                     string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                     if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                     {
-                        // Hacky way to make sure we aren't loading in any orphaned improvements.
+                        // Hacky way to make sure this character isn't loading in any orphaned improvements.
                         // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
                         if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) == strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                             continue;
                     }
                 }
-
+                
                 Improvement objImprovement = new Improvement(this);
                 try
                 {
@@ -1497,7 +1502,7 @@ namespace Chummer
                     blnHasOldQualities = true;
                 }
             }
-            // If old Qualities are in use, they need to be converted before we can continue.
+            // If old Qualities are in use, they need to be converted before loading can continue.
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
 	        Timekeeper.Finish("load_char_quality");
@@ -1840,7 +1845,7 @@ namespace Chummer
                 objGear.Load(objXmlGear);
                 _lstGear.Add(objGear);
             }
-            // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
+            // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
             if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
@@ -1972,8 +1977,8 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_init");
-            // While we want to save expenses in create mode due to starting nuyen and starting karma being logged as expense log entries,
-            // we don't want to load them in create mode because they shouldn't be there.
+            // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
+            // they shouldn't get loaded in create mode because they shouldn't be there.
             if (Created)
             {
                 Timekeeper.Start("load_char_elog");
@@ -2158,7 +2163,7 @@ namespace Chummer
             Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
             if (objMentorQuality != null)
             {
-                // We don't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
+                // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
                 if (!Improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.MentorSpirit && imp.ImprovedName != string.Empty))
                 {
                     /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
@@ -3795,7 +3800,7 @@ namespace Chummer
                 intReturn += intTemp;
 
                 intTemp = 0;
-                // This is where we add in "Talent" qualities like Adept and Technomancer
+                // This is where "Talent" qualities like Adept and Technomancer get added in
                 foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
@@ -4528,7 +4533,7 @@ namespace Chummer
             InitiateGrade = 0;
             SubmersionGrade = 0;
             InitiationGrades.Clear();
-            // Metamagics/Echoes can add addition bonus metamagics/echoes, so we cannot use foreach or RemoveAll()
+            // Metamagics/Echoes can add addition bonus metamagics/echoes, so neither foreach nor RemoveAll() can be used
             for (int i = Metamagics.Count - 1; i >= 0; i--)
             {
                 if (i < Metamagics.Count)
@@ -4718,7 +4723,7 @@ namespace Chummer
         {
             if (Mugshots.Count > 0)
             {
-                // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
+                // Since IE is retarded and can't handle base64 images before IE9, the image needs to be dumped to a temporary directory and its information rewritten.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
                 // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
                 string strMugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
@@ -5573,15 +5578,17 @@ namespace Chummer
                     _blnMAGEnabled = value;
                     if (value)
                     {
+                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
                         if (Created)
                         {
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence(true);
                         }
-                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the MAG-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the MAG-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            // If we have any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            // If this character has any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "MAG" &&
                                                                                                     (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
                                                                                                      x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
@@ -6003,15 +6010,17 @@ namespace Chummer
                     _blnRESEnabled = value;
                     if (value)
                     {
+                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
                         if (Created)
                         {
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence();
                         }
-                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the RES-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the RES-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            // If we have any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            // If this character has any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "RES" &&
                                                                                                     (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
                                                                                                      x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
@@ -6076,15 +6085,17 @@ namespace Chummer
                     _blnDEPEnabled = value;
                     if (value)
                     {
+                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
                         if (Created)
                         {
                             ResetCachedEssence();
                             EssenceAtSpecialStart = Essence();
                         }
-                        // We need to calculate EssenceAtSpecialStart by assuming that the character took the DEP-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the DEP-enabling quality with the highest essence penalty first, as that would be the most optimal
                         else
                         {
-                            // If we have any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given), we have to assume those are taken first
+                            // If this character has any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "DEP" &&
                                                                                                     (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
                                                                                                      x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
@@ -6182,7 +6193,7 @@ namespace Chummer
         /// <summary>
         /// Character's Essence.
         /// </summary>
-        /// <param name="blnForMAGPenalty">Whether we are fetching Essence to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
+        /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
         public decimal Essence(bool blnForMAGPenalty = false)
         {
             if (!blnForMAGPenalty && _decCachedEssence != decimal.MinValue)
@@ -7227,7 +7238,7 @@ namespace Chummer
                 // calculate armor encumberance
                 int intSTRTotalValue = STR.TotalValue;
                 if (intTotalA > intSTRTotalValue + 1)
-                    return (intTotalA - intSTRTotalValue) / 2 * -1;  // we expect a negative number
+                    return (intSTRTotalValue - intTotalA) / 2;  // a negative number is expected
                 return 0;
             }
         }
@@ -7730,7 +7741,7 @@ namespace Chummer
             decimal decSprint = SprintingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false, strMovementType) / 100.0m;
             decimal decRun = RunningRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunMultiplier, false, strMovementType);
             decimal decWalk = WalkingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.WalkMultiplier, false, strMovementType);
-            // Everything else after this just multiplies values, so we can check for zeroes here
+            // Everything else after this just multiplies values, so zeroes can be checked for here
             if (decWalk == 0 && decRun == 0 && decSprint == 0)
             {
                 return "0";
@@ -9077,9 +9088,12 @@ namespace Chummer
                     i--;
                 }
             }
-            //Improvement manager defines the functions we need to manipulate improvements
+            //Improvement manager defines the functions needed to manipulate improvements
             //When the locals (someday) gets moved to this class, this can be removed and use
             //the local
+
+            if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                return;
 
             // Remove which qualites have been removed or which values have changed
             ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
@@ -9101,6 +9115,8 @@ namespace Chummer
 
         public void RefreshEssenceLossImprovements()
         {
+            // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
+            // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
             if (EssenceAtSpecialStart != decimal.MinValue)
             {
                 decimal decESS = Essence();
@@ -9116,6 +9132,8 @@ namespace Chummer
                 decimal decMetatypeMaximumESS = ESS.MetatypeMaximum;
                 int intMagMaxReduction = decimal.ToInt32(decimal.Ceiling(decMetatypeMaximumESS - decESSMag));
                 int intMaxReduction = decimal.ToInt32(decimal.Ceiling(decMetatypeMaximumESS - decESS));
+                // Character has the option set where essence loss just acts as an augmented malus, so just replace old essence loss improvements with new ones that apply an augmented malus
+                // equal to the amount by which the attribute's maximum would normally be reduced.
                 if (Options.SpecialKarmaCostBasedOnShownValue)
                 {
                     Improvement.ImprovementSource eEssenceLossSource = Created ? Improvement.ImprovementSource.EssenceLoss : Improvement.ImprovementSource.EssenceLossChargen;
@@ -9130,16 +9148,21 @@ namespace Chummer
                     {
                         ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
                         ImprovementManager.CreateImprovement(this, "MAGAdept", eEssenceLossSource, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                        // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
                         if (UseMysticAdeptPPs)
                             ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
                     }
                 }
+                // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
+                // plus the need to account for cases where a character will burn "past" 0 (i.e. to a current value that should be negative), but then upgrade to 1 afterwards.
                 else if (Created)
                 {
+                    // "Base" minimum reduction. This is the amount by which the character's special attribute minima would be reduced across career and create modes if there wasn't any funny business
                     int intMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESS));
                     int intMagMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESSMag));
 
                     // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
+                    // They are extra amounts by which the relevant attributes' karma levels should be burned
                     int intExtraRESBurn = Math.Max(0,
                         Math.Max(RES.Base + RES.FreeBase + RES.RawMinimum + RES.AttributeValueModifiers, RES.TotalMinimum) + RES.Karma - RES.TotalMaximum);
                     int intExtraDEPBurn = Math.Max(0,
@@ -9148,7 +9171,7 @@ namespace Chummer
                         Math.Max(MAG.Base + MAG.FreeBase + MAG.RawMinimum + MAG.AttributeValueModifiers, MAG.TotalMinimum) + MAG.Karma - MAG.TotalMaximum);
                     int intExtraMAGAdeptBurn = Math.Max(0,
                         Math.Max(MAGAdept.Base + MAGAdept.FreeBase + MAGAdept.RawMinimum + MAGAdept.AttributeValueModifiers, MAGAdept.TotalMinimum) + MAGAdept.Karma - MAGAdept.TotalMaximum);
-                    // Old values for minimum reduction from essence loss. These are used to determine if any karma needs to get burned.
+                    // Old values for minimum reduction from essence loss in career mode. These are used to determine if any karma needs to get burned.
                     int intOldRESCareerMinimumReduction = 0;
                     int intOldDEPCareerMinimumReduction = 0;
                     int intOldMAGCareerMinimumReduction = 0;
@@ -9157,6 +9180,8 @@ namespace Chummer
                     {
                         if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
                         {
+                            // Values get subtracted because negative modifier = positive reduction, positive modifier = negative reduction
+                            // Augmented values also get factored in in case the character is switching off the option to treat essence loss as an augmented malus
                             switch (objImprovement.ImprovedName)
                             {
                                 case "RES":
@@ -9178,7 +9203,8 @@ namespace Chummer
                     // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
 
-                    // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
+                    // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
+                    // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
                     int intRESMaximumReduction = intMaxReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss();
                     int intDEPMaximumReduction = intMaxReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss();
                     int intMAGMaximumReduction = intMagMaxReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss();
@@ -9187,18 +9213,25 @@ namespace Chummer
                     // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
                     if (intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
                     {
-                        int intRESMinimumReduction = intMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
-                        int intDEPMinimumReduction = intMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
+                        // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                        int intRESMinimumReduction;
+                        int intDEPMinimumReduction;
+                        // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
                         if (Options.ESSLossReducesMaximumOnly)
                         {
-                            intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + RES.TotalValue - RES.TotalMaximum);
-                            intDEPMinimumReduction = Math.Max(0, intDEPMinimumReduction + DEP.TotalValue - DEP.TotalMaximum);
+                            intRESMinimumReduction = Math.Max(0, intMinReduction + RES.TotalValue - RES.MaximumNoEssenceLoss(true));
+                            intDEPMinimumReduction = Math.Max(0, intMinReduction + DEP.TotalValue - DEP.MaximumNoEssenceLoss(true));
+                        }
+                        else
+                        {
+                            intRESMinimumReduction = intMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
+                            intDEPMinimumReduction = intMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
                         }
 
-                        // If our new reduction is less than our old one, we don't actually get any new values back
+                        // If our new reduction is less than our old one, the character doesn't actually get any new values back
                         intRESMinimumReduction = Math.Max(intRESMinimumReduction, intOldRESCareerMinimumReduction);
                         intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intOldDEPCareerMinimumReduction);
-                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
+                        // If our new reduction is greater than our old one and the character has karma levels to burn, do so instead of reducing minima.
                         intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReduction - intOldRESCareerMinimumReduction);
                         RES.Karma -= intExtraRESBurn;
                         intRESMinimumReduction -= intExtraRESBurn;
@@ -9214,33 +9247,40 @@ namespace Chummer
 
                     if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                     {
-                        int intMAGMinimumReduction = intMagMinReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss(true);
-                        int intMAGAdeptMinimumReduction = intMagMinReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss(true);
+                        // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                        int intMAGMinimumReduction;
+                        int intMAGAdeptMinimumReduction;
+                        // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
                         if (Options.ESSLossReducesMaximumOnly)
                         {
-                            intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + MAG.TotalValue - MAG.TotalMaximum);
-                            intMAGAdeptMinimumReduction = Math.Max(0, intMAGAdeptMinimumReduction + MAGAdept.TotalValue - MAGAdept.TotalMaximum);
+                            intMAGMinimumReduction = Math.Max(0, intMagMinReduction + MAG.TotalValue - MAG.MaximumNoEssenceLoss(true));
+                            intMAGAdeptMinimumReduction = Math.Max(0, intMagMinReduction + MAGAdept.TotalValue - MAGAdept.MaximumNoEssenceLoss(true));
+                        }
+                        else
+                        {
+                            intMAGMinimumReduction = intMagMinReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss(true);
+                            intMAGAdeptMinimumReduction = intMagMinReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss(true);
                         }
 
-                        // If our new reduction is less than our old one, we don't actually get any new values back
+                        // If our new reduction is less than our old one, the character doesn't actually get any new values back
                         intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intOldMAGCareerMinimumReduction);
                         intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intOldMAGAdeptCareerMinimumReduction);
-                        // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
-                        int intMAGDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
-                        if (intMAGDelta > 0 && UseMysticAdeptPPs)
+                        // Mystic Adept PPs may need to be burned away based on the change of our MAG attribute
+                        int intMAGMinimumReductionDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
+                        if (intMAGMinimumReductionDelta > 0 && UseMysticAdeptPPs)
                         {
                             // First burn away PPs gained during chargen...
-                            int intPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGDelta);
+                            int intPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
                             MysticAdeptPowerPoints -= intPPBurn;
                             // ... now burn away PPs gained from initiations.
-                            intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
-                            // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
+                            intPPBurn = Math.Min(intMAGMinimumReductionDelta - intPPBurn, ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
+                            // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                             if (intPPBurn != 0)
                                 ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
                         }
 
-                        // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                        intExtraMAGBurn += Math.Min(MAG.Karma, intMAGDelta);
+                        // If our new reduction is greater than our old one and the character has karma levels to burn, do so instead of reducing minima.
+                        intExtraMAGBurn += Math.Min(MAG.Karma, intMAGMinimumReductionDelta);
                         intExtraMAGAdeptBurn += Math.Min(MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
                         MAG.Karma -= intExtraMAGBurn;
                         intMAGMinimumReduction -= intExtraMAGBurn;
@@ -9254,6 +9294,7 @@ namespace Chummer
                             ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
                     }
                 }
+                // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes
                 else
                 {
                     int intMinReduction = decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart - decESS));
@@ -9408,9 +9449,9 @@ namespace Chummer
                     }
                 }
             }
+            // Otherwise any essence loss improvements that might have been left need to be deleted (e.g. character is in create mode and had access to special attributes, but that access was removed)
             else
             {
-                // Otherwise we need to delete any improvements that might have been created in an older version of Chummer
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
                 ImprovementManager.Commit(this);
@@ -9438,6 +9479,7 @@ namespace Chummer
 
         public void RefreshEncumbranceFromSTR(object sender, PropertyChangedEventArgs e)
         {
+            // Encumbrance is only affected by STR.TotalValue when it comes to attributes
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 RefreshEncumbrance();
@@ -9502,7 +9544,7 @@ namespace Chummer
         public bool IsMysticAdept => AdeptEnabled && MagicianEnabled;
 
         /// <summary>
-        /// Whether we are using special Mystic Adept PP rules (true) or calculate PPs from Mystic Adept's Adept MAG (false)
+        /// Whether this character is using special Mystic Adept PP rules (true) or calculate PPs from Mystic Adept's Adept MAG (false)
         /// </summary>
         public bool UseMysticAdeptPPs => IsMysticAdept && !Options.MysAdeptSecondMAGAttribute;
 
@@ -9521,7 +9563,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether we are a Mystic Adept uses PPs and can purchase PPs in career mode
+        /// Whether this character is a Mystic Adept uses PPs and can purchase PPs in career mode
         /// </summary>
         public bool MysAdeptAllowPPCareer => UseMysticAdeptPPs && Options.MysAdeptAllowPPCareer;
 

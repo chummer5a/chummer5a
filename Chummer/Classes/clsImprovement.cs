@@ -841,7 +841,14 @@ namespace Chummer
                     break;
                 case ImprovementType.LifestyleCost:
                     break;
+                case ImprovementType.CMThresholdOffset:
+                case ImprovementType.CMSharedThresholdOffset:
+                case ImprovementType.IgnoreCMPenaltyPhysical:
+                case ImprovementType.IgnoreCMPenaltyStun:
                 case ImprovementType.CMThreshold:
+                {
+                    yield return () => _objCharacter.RefreshWoundPenalties();
+                }
                     break;
                 case ImprovementType.EnhancedArticulation:
                     break;
@@ -969,10 +976,6 @@ namespace Chummer
                     break;
                 case ImprovementType.UnarmedAP:
                     break;
-                case ImprovementType.CMThresholdOffset:
-                    break;
-                case ImprovementType.CMSharedThresholdOffset:
-                    break;
                 case ImprovementType.Restricted:
                     break;
                 case ImprovementType.Notoriety:
@@ -1006,10 +1009,6 @@ namespace Chummer
                 case ImprovementType.BasicLifestyleCost:
                     break;
                 case ImprovementType.ThrowSTR:
-                    break;
-                case ImprovementType.IgnoreCMPenaltyStun:
-                    break;
-                case ImprovementType.IgnoreCMPenaltyPhysical:
                     break;
                 case ImprovementType.EssenceMax:
                 {
@@ -1071,7 +1070,9 @@ namespace Chummer
                 case ImprovementType.AddContact:
                     break;
                 case ImprovementType.Seeker:
+                {
                     yield return () => _objCharacter.RefreshRedliner();
+                }
                     break;
                 case ImprovementType.PublicAwareness:
                     break;
