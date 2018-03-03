@@ -8728,8 +8728,8 @@
       <conceal>0</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>8P</damage>
-      <ap>-1</ap>
+      <damage>7P</damage>
+      <ap>0</ap>
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>16(c)</ammo>
