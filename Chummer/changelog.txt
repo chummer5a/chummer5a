@@ -86,6 +86,7 @@ Application Changes:
 - Fixed various issues where bonuses/improvements that were skill-specific would not apply properly for exotic skills.
 - Fixed an issue where a skill could display a negative dicepool size if negative modifiers were large enough.
 - Fixed issues where tooltip texts for upgrading skills, attributes, and skill groups would not update properly.
+- Fixed the check for 'High Art' initiations to not apply if Street Grimoire isn't being used.
 
 Data Changes:
 
@@ -117,6 +118,7 @@ Data Changes:
 - Corrected a typo in the name of "Orichalcum" (it was originally called "Orichalum").
 - Fixed Hedge Witch/Wizard increasing drain by 2 instead of decreasing drain by 2.
 - Corrected the bonus for Natural Immunity to be based on Rating. Existing characters will need to Reapply Improvements or remove and re-add the Power. 
+- Removed the Fixation metamagic from Adept initiations, as they can't benefit from it.
 
 New Strings:
 

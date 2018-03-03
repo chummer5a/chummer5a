@@ -47,7 +47,7 @@
     <metamagic>
       <id>099af8f9-6d04-4aa5-8645-f7204a8bf9be</id>
       <name>Fixation</name>
-      <adept>True</adept>
+      <adept>False</adept>
       <magician>True</magician>
       <required>
         <allof>

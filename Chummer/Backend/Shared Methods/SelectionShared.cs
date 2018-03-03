@@ -672,7 +672,8 @@ namespace Chummer
                 case "metamagicart":
                 case "art":
                     {
-                        if (objCharacter.Options.IgnoreArt)
+                        //If we're either ignoring Art Requirements or Street Grimoire isn't enabled, perform the normal checks.
+                        if (objCharacter.Options.IgnoreArt || !objCharacter.Options.BookEnabled("SG"))
                         {
                             XmlDocument xmlMetamagicDoc = XmlManager.Load("metamagic.xml");
                             if (blnShowMessage)
