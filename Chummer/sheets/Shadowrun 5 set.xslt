@@ -254,21 +254,9 @@
               <div class="block" id="AttributesBlock">
             <table class="tablestyle" style="max-width: 100%;">
               <tr>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Physical"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Mental"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Special"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
+                <th width="25%"><xsl:value-of select="$lang.PhysicalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.MentalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.SpecialAttributes"/></th>
                 <th width="25%">
                   <xsl:value-of select="$lang.Initiative"/>
                 </th>
