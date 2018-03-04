@@ -3659,10 +3659,15 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard [SR5]</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Colt Cobra TZ-120</name>
@@ -3769,10 +3774,15 @@
         </gear>
         <gear>Flashlight</gear>
       </gears>
-      <mods>
-        <name>Mini Weapon Mount (Drone)</name>
-      </mods>
       <modslots>1</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Mini (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Defiance EX Shocker</name>
@@ -3883,10 +3893,15 @@
         <gear>SmartSafety Bracelet</gear>
         <gear>SmartSafety Bracelet</gear>
       </gears>
-      <mods>
-        <name>Small Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Small (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>a836d6d5-56f3-416c-a53f-2249af400580</id>
@@ -3911,10 +3926,17 @@
         </gear>
       </gears>
       <mods>
-        <name>Standard Weapon Mount (Drone)</name>
         <name>Immobile (Drone)</name>
       </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>68b2cf81-7fa0-4451-8096-96d9bd25c128</id>
@@ -4160,10 +4182,15 @@
         <gear>Plasma Torch</gear>
         <gear>Ink Pouch</gear>
       </gears>
-      <mods>
-        <name>Small Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Small</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>75b5192e-6d57-4ca3-b288-c733c1272cef</id>
@@ -4452,10 +4479,15 @@
         <gear rating="4" select="Legal Codes">Skill Autosoft</gear>
         <gear costfor="4">Ammo: Taser Dart</gear>
       </gears>
-      <mods>
-        <name>Mini Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Mini (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Yamaha Pulsar</name>
@@ -4509,9 +4541,14 @@
         </gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Underbarrel Grenade Launcher</name>
@@ -4689,10 +4726,15 @@
           <maxrating>5</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>70916e91-a7ee-477f-a4b0-14bc125c1034</id>
@@ -4718,10 +4760,15 @@
           <maxrating>6</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Heavy Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Heavy (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>e4f82e1e-1bcb-4857-a693-80cea860150e</id>
@@ -4747,10 +4794,15 @@
           <maxrating>6</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Heavy Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Heavy (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>83dae489-5d31-4d39-b6fa-aefc83b3ff20</id>
@@ -4779,10 +4831,15 @@
           <maxrating>6</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Large Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Large (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>0f1b635b-59d8-4b43-b809-76eae7f0048c</id>
@@ -4834,10 +4891,15 @@
           <maxrating>5</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Heavy Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Heavy (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
@@ -4955,9 +5017,21 @@
         <name>Drone Arm</name>
         <name>Drone Leg</name>
         <name>Drone Leg</name>
-        <name>Standard Weapon Mount (Drone)</name>
-        <name>Standard Weapon Mount (Drone)</name>
       </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>ca18775c-3535-40e1-be69-a07905add421</id>
@@ -7695,10 +7769,20 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>d28b349e-6580-4a04-8dfe-d09ebdb261f0</id>
@@ -7722,10 +7806,20 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <!-- End Region -->
     <!-- End Region -->
@@ -8378,11 +8472,16 @@
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
         <gear>Smartsoft</gear>
       </gears>
-      <mods>
-        <name>Small Weapon Mount (Drone)</name>
-      </mods>
       <modslots>1</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Small (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>41e04bbc-0987-45e8-84fe-f80441bc0ba3</id>
@@ -8465,11 +8564,16 @@
         <gear>Smartsoft</gear>
         <gear rating="5">[Weapon] Targeting Autosoft</gear>
       </gears>
-      <mods>
-        <name>Standard Weapon Mount (Drone)</name>
-      </mods>
       <modslots>2</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>02179e64-72e2-462c-9b53-dcbc9aceb9a4</id>
@@ -8494,11 +8598,18 @@
         </gear>
       </gears>
       <mods>
-        <name>Standard Weapon Mount (Drone)</name>
         <name>Flash-Pak</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
@@ -8554,12 +8665,22 @@
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
         <gear rating="3">Clearsight Autosoft</gear>
       </gears>
-      <mods>
-        <name>Large Weapon Mount (Drone)</name>
-        <name>Small Weapon Mount (Drone)</name>
-      </mods>
       <modslots>0</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Small (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Large (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>e338dcf9-3149-4519-9228-589354be5667</id>
@@ -8586,12 +8707,21 @@
         <gear rating="4">Clearsight Autosoft</gear>
       </gears>
       <mods>
-        <name>Huge Weapon Mount (Drone)</name>
         <name rating="3">ECM</name>
-        <name>Expanded Ammunition Bay</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Huge (Drone)</size>
+          <visibility>External</visibility>
+          <mods>
+            <mod>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</mod>
+          </mods>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>c4e56ddb-6369-4527-a537-9b8ade6d9ada</id>
@@ -8650,11 +8780,23 @@
       </gears>
       <mods>
         <name>Gecko Grips (Drone)</name>
-        <name>Large Weapon Mount (Drone)</name>
-        <name>Large Weapon Mount (Drone)</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Large (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Large (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>GE Vindicator Mini-Gun</name>
@@ -8690,7 +8832,6 @@
       </gears>
       <mods>
         <name>Touch Sensors</name>
-        <name>Mini Weapon Mount (Drone)</name>
         <name>Drone Arm</name>
         <name>Drone Arm</name>
         <name>Drone Leg</name>
@@ -8698,6 +8839,14 @@
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Mini (Drone)</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Yamaha Pulsar</name>
@@ -12040,13 +12189,13 @@
       <source>SR5</source>
       <avail>1</avail>
       <category>Control</category>
+      <cost>500</cost>
+      <slots>0</slots>
       <forbidden>
         <vehicledetails>
           <category operation="contains">Drones</category>
         </vehicledetails>
       </forbidden>
-      <cost>500</cost>
-      <slots>0</slots>
     </weaponmount>
     <weaponmount>
       <id>05995261-b645-48b5-9a54-9f26becc9d5d</id>

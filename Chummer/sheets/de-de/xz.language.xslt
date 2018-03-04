@@ -287,6 +287,7 @@
   <xsl:variable name="lang.MatrixHot"      select="'Matrix Heiß'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Matrix Schadensleiste'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Nahkampfwaffen'"/>
+  <xsl:variable name="lang.MentalAttributes"  select="'Geistige Attribute'"/>
   <xsl:variable name="lang.NotAddictedYet"  select="'Noch nicht abhängig'"/>
   <xsl:variable name="lang.Nothing2Show4Devices"    select="'Keine Geräte zur Liste'"/>
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'Keine Notizen zur Liste'"/>
@@ -295,9 +296,9 @@
   <xsl:variable name="lang.OtherArmor"      select="'Andere Panzerung'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>
-  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxine und Pathogene'"/>
   <xsl:variable name="lang.PersonalData"    select="'Charakterdaten'"/>
   <xsl:variable name="lang.PersonalLife"    select="'Privatleben'"/>
+  <xsl:variable name="lang.PhysicalAttributes"  select="'Körperliche Attribute'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natürliche Genesung Pool (1 Tag)'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Körperliche Schadensleiste'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Bevorzugte Zahlungsmethode'"/>
@@ -310,12 +311,14 @@
   <xsl:variable name="lang.RiggerInitiative"  select="'Rigger AR Initiative'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Fertigkeitsgruppe'"/>
   <xsl:variable name="lang.SkillGroups"    select="'Fertigkeitsgruppen'"/>
+  <xsl:variable name="lang.SpecialAttributes"  select="'Spezialattribute'"/>
   <xsl:variable name="lang.StreetCred"    select="'Straßenruf'"/>
   <xsl:variable name="lang.StreetName"    select="'Straßenname'"/>
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natürliche Genesung Pool (1 Stunde)'"/>
   <xsl:variable name="lang.StunTrack"    select="'Geistige Schadensleiste'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Wandlungsgrad'"/>
   <xsl:variable name="lang.TotalArmor"  select="'Insgesamt ausgestattete höchste Rüstung und Zubehör'"/>
+  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxine und Pathogene'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unbenannter Charakter'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Rumpf'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Fahrzeugkosten'"/>
