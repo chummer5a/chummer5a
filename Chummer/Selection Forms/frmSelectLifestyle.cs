@@ -136,6 +136,7 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            _blnAddAgain = false;
             AcceptForm();
         }
 
@@ -147,7 +148,7 @@ namespace Chummer
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void treQualities_AfterCheck(object sender, TreeViewEventArgs e)

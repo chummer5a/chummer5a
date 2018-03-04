@@ -91,6 +91,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            _blnAddAgain = false;
             AcceptForm();
         }
 
@@ -101,6 +102,7 @@ namespace Chummer
 
         private void lstTechniques_DoubleClick(object sender, EventArgs e)
         {
+            _blnAddAgain = false;
             AcceptForm();
         }
 

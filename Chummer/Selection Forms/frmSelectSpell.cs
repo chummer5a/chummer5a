@@ -154,65 +154,14 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (lstSpells.SelectedValue != null)
-            {
-                // Display the Spell information.
-                XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = \"" + lstSpells.SelectedValue.ToString() + "\"]");
-                // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-                int intSpellCount = 0;
-                int intRitualCount = 0;
-                int intAlchPrepCount = 0;
-
-                foreach (Spell objspell in _objCharacter.Spells)
-                {
-                    if (objspell.Alchemical)
-                    { intAlchPrepCount++; }
-                    else if (objspell.Category == "Rituals")
-                    { intRitualCount++; }
-                    else
-                    { intSpellCount++; }
-                }
-                if (!_objCharacter.IgnoreRules)
-                {
-                    if (!_objCharacter.Created)
-                    {
-                        int intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
-                        if (chkAlchemical.Checked)
-                        {
-                            if (intAlchPrepCount >= intSpellLimit)
-                            {
-                                MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return;
-                            }
-                        }
-                        else if (objXmlSpell?.SelectSingleNode("category")?.Value == "Rituals")
-                        {
-                            if (intRitualCount >= intSpellLimit)
-                            {
-                                MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return;
-                            }
-                        }
-                        else if (intSpellCount >= intSpellLimit)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language),
-                                LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                    }
-                    if (!objXmlSpell.RequirementsMet(_objCharacter, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
-                    {
-                        return;
-                    }
-                }
-                AcceptForm();
-            }
+            _blnAddAgain = false;
+            AcceptForm();
         }
 
         private void treSpells_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            _blnAddAgain = false;
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -233,7 +182,7 @@ namespace Chummer
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -414,6 +363,58 @@ namespace Chummer
             string strSelectedItem = lstSpells.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedItem))
                 return;
+
+            // Display the Spell information.
+            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = \"" + strSelectedItem + "\"]");
+            // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
+            // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
+            int intSpellCount = 0;
+            int intRitualCount = 0;
+            int intAlchPrepCount = 0;
+
+            foreach (Spell objspell in _objCharacter.Spells)
+            {
+                if (objspell.Alchemical)
+                { intAlchPrepCount++; }
+                else if (objspell.Category == "Rituals")
+                { intRitualCount++; }
+                else
+                { intSpellCount++; }
+            }
+            if (!_objCharacter.IgnoreRules)
+            {
+                if (!_objCharacter.Created)
+                {
+                    int intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
+                    if (chkAlchemical.Checked)
+                    {
+                        if (intAlchPrepCount >= intSpellLimit)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    else if (objXmlSpell?.SelectSingleNode("category")?.Value == "Rituals")
+                    {
+                        if (intRitualCount >= intSpellLimit)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    else if (intSpellCount >= intSpellLimit)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                if (!objXmlSpell.RequirementsMet(_objCharacter, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
+                {
+                    return;
+                }
+            }
+            
             _strSelectedSpell = strSelectedItem;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()

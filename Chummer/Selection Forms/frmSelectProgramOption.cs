@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -105,12 +105,19 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void lstOptions_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
+                AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -120,8 +127,11 @@ namespace Chummer
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 

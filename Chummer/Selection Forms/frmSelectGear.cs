@@ -276,6 +276,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
@@ -291,13 +292,14 @@ namespace Chummer
 
         private void lstGear_DoubleClick(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void nudGearQty_ValueChanged(object sender, EventArgs e)

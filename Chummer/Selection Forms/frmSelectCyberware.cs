@@ -366,6 +366,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
@@ -384,13 +385,14 @@ namespace Chummer
 
         private void lstCyberware_DoubleClick(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -1020,7 +1022,7 @@ namespace Chummer
                     bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
                     while (objParent != null && !blnAnyParentIsModular)
                     {
-                        objParent = CyberwareParent;
+                        objParent = objParent.Parent;
                         blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
                     }
 
@@ -1154,6 +1156,7 @@ namespace Chummer
             SelectedCyberware = strSelectedId;
             SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
+            Markup = nudMarkup.Value;
 
             if (nudESSDiscount.Visible)
                 SelectedESSDiscount = decimal.ToInt32(nudESSDiscount.Value);

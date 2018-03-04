@@ -66,7 +66,10 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -104,8 +107,11 @@ namespace Chummer
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 

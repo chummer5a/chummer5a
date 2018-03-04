@@ -56,12 +56,14 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
         private void lstPowers_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            AddAgain = false;
+            AcceptForm();
         }
 
         private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
@@ -111,7 +113,7 @@ namespace Chummer
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
