@@ -200,7 +200,6 @@ namespace Chummer.Backend.Skills
                         }
                 lstLoadingSkills.Sort(CompareSkills);
 
-
                 foreach (Skill objSkill in lstLoadingSkills)
                 {
                     string strName = objSkill.IsExoticSkill
@@ -218,6 +217,11 @@ namespace Chummer.Backend.Skills
                     });
                     if (blnDoAddToDictionary)
                         _dicSkills.Add(strName, objSkill);
+                }
+                // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
+                foreach (SkillGroup g in SkillGroups)
+                {
+                    g.DoRefreshCareerIncrease();
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 
