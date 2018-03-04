@@ -434,7 +434,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();
@@ -601,7 +601,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled)
                     return -1;
-                int intRating = SkillList.Min(x => x.TotalBaseRating);
+                int intRating = SkillList.Select(x => x.TotalBaseRating).DefaultIfEmpty().Min();
                 int intReturn;
                 int intOptionsCost;
                 if (intRating == 0)
