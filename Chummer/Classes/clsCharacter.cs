@@ -9227,17 +9227,43 @@ namespace Chummer
                             intRESMinimumReduction = intMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
                             intDEPMinimumReduction = intMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
                         }
-
-                        // If our new reduction is less than our old one, the character doesn't actually get any new values back
-                        intRESMinimumReduction = Math.Max(intRESMinimumReduction, intOldRESCareerMinimumReduction);
-                        intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intOldDEPCareerMinimumReduction);
-                        // If our new reduction is greater than our old one and the character has karma levels to burn, do so instead of reducing minima.
-                        intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReduction - intOldRESCareerMinimumReduction);
-                        RES.Karma -= intExtraRESBurn;
-                        intRESMinimumReduction -= intExtraRESBurn;
-                        intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReduction - intOldDEPCareerMinimumReduction);
-                        DEP.Karma -= intExtraDEPBurn;
-                        intDEPMinimumReduction -= intExtraDEPBurn;
+                        
+                        // If the new RES reduction is greater than the old one...
+                        int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
+                        if (intRESMinimumReductionDelta > 0)
+                        {
+                            // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                            if (intRESMinimumReduction > RES.Base + RES.FreeBase + RES.RawMinimum + RES.AttributeValueModifiers)
+                            {
+                                // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
+                                RES.Karma -= intExtraRESBurn;
+                            }
+                        }
+                        // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
+                        else
+                        {
+                            intRESMinimumReduction = intOldRESCareerMinimumReduction;
+                        }
+                        // If the new DEP reduction is greater than the old one...
+                        int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
+                        if (intDEPMinimumReductionDelta > 0)
+                        {
+                            // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                            if (intDEPMinimumReduction > DEP.Base + DEP.FreeBase + DEP.RawMinimum + DEP.AttributeValueModifiers)
+                            {
+                                // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
+                                DEP.Karma -= intExtraDEPBurn;
+                            }
+                        }
+                        // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
+                        else
+                        {
+                            intDEPMinimumReduction = intOldDEPCareerMinimumReduction;
+                        }
                         // Create Improvements
                         if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
                             ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intRESMaximumReduction);
@@ -9261,32 +9287,66 @@ namespace Chummer
                             intMAGMinimumReduction = intMagMinReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss(true);
                             intMAGAdeptMinimumReduction = intMagMinReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss(true);
                         }
-
-                        // If our new reduction is less than our old one, the character doesn't actually get any new values back
-                        intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intOldMAGCareerMinimumReduction);
-                        intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intOldMAGAdeptCareerMinimumReduction);
-                        // Mystic Adept PPs may need to be burned away based on the change of our MAG attribute
+                        
+                        // If the new MAG reduction is greater than the old one...
                         int intMAGMinimumReductionDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
-                        if (intMAGMinimumReductionDelta > 0 && UseMysticAdeptPPs)
+                        if (intMAGMinimumReductionDelta > 0)
                         {
-                            // First burn away PPs gained during chargen...
-                            int intPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
-                            MysticAdeptPowerPoints -= intPPBurn;
-                            // ... now burn away PPs gained from initiations.
-                            intPPBurn = Math.Min(intMAGMinimumReductionDelta - intPPBurn, ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
-                            // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
-                            if (intPPBurn != 0)
-                                ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                            // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                            if (intMAGMinimumReduction > MAG.Base + MAG.FreeBase + MAG.RawMinimum + MAG.AttributeValueModifiers)
+                            {
+                                // intMAGMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                // Besides, this only fires if intMAGMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                intExtraMAGBurn += Math.Min(MAG.Karma, intMAGMinimumReductionDelta);
+                                MAG.Karma -= intExtraMAGBurn;
+                            }
+
+                            // Mystic Adept PPs may need to be burned away based on the change of our MAG attribute
+                            if (UseMysticAdeptPPs)
+                            {
+                                // First burn away PPs gained during chargen...
+                                int intPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
+                                MysticAdeptPowerPoints -= intPPBurn;
+                                // ... now burn away PPs gained from initiations.
+                                intPPBurn = Math.Min(intMAGMinimumReductionDelta - intPPBurn, ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
+                                // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
+                                if (intPPBurn != 0)
+                                    ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                            }
+                        }
+                        // If the new MAG reduction is less than our old one, the character doesn't actually get any new values back
+                        else
+                        {
+                            intMAGMinimumReduction = intOldMAGCareerMinimumReduction;
                         }
 
-                        // If our new reduction is greater than our old one and the character has karma levels to burn, do so instead of reducing minima.
-                        intExtraMAGBurn += Math.Min(MAG.Karma, intMAGMinimumReductionDelta);
-                        intExtraMAGAdeptBurn += Math.Min(MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
-                        MAG.Karma -= intExtraMAGBurn;
-                        intMAGMinimumReduction -= intExtraMAGBurn;
+                        // Make sure we only attempt to burn MAGAdept karma levels if it's actually a separate attribute from MAG
                         if (MAGAdept != MAG)
-                            MAGAdept.Karma -= intExtraMAGAdeptBurn;
-                        intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
+                        {
+                            // If the new MAGAdept reduction is greater than the old one...
+                            int intMAGAdeptMinimumReductionDelta = intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction;
+                            if (intMAGAdeptMinimumReductionDelta > 0)
+                            {
+                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                                if (intMAGAdeptMinimumReduction > MAGAdept.Base + MAGAdept.FreeBase + MAGAdept.RawMinimum + MAGAdept.AttributeValueModifiers)
+                                {
+                                    // intMAGAdeptMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                    // Besides, this only fires if intMAGAdeptMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                    intExtraMAGAdeptBurn += Math.Min(MAGAdept.Karma, intMAGAdeptMinimumReductionDelta);
+                                    MAGAdept.Karma -= intExtraMAGAdeptBurn;
+                                }
+                            }
+                            // If the new MAGAdept reduction is less than our old one, the character doesn't actually get any new values back
+                            else
+                            {
+                                intMAGAdeptMinimumReduction = intOldMAGAdeptCareerMinimumReduction;
+                            }
+                        }
+                        // Otherwise make sure that if the new MAGAdept reduction is less than our old one, the character doesn't actually get any new values back
+                        else if (intMAGAdeptMinimumReduction < intOldMAGAdeptCareerMinimumReduction)
+                        {
+                            intMAGAdeptMinimumReduction = intOldMAGAdeptCareerMinimumReduction;
+                        }
                         // Create Improvements
                         if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
                             ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);

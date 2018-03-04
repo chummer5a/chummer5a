@@ -636,7 +636,7 @@ namespace Chummer.Backend.Skills
                 }
                 //If data file contains {4} this crashes but...
                 string upgradetext =
-                    $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} 🡒 {(intTotalBaseRating + 1)}";
+                    $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
