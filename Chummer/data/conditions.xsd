@@ -205,7 +205,7 @@
           <xs:element name="weaponmountdetails" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="control" type="xs:string" minOccurs="0" maxOccurs="1" />
+                <xs:element name="control" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="flexibility" type="xs:string" minOccurs="0" maxOccurs="1" />
                 <xs:element name="size" type="xs:string" minOccurs="0" maxOccurs="1" />
                 <xs:element name="visibility" type="xs:string" minOccurs="0" maxOccurs="1" />

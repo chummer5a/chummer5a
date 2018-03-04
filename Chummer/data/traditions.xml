@@ -511,6 +511,10 @@
         <spiritillusion>Spirit of Fire</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
+      <bonus>
+        <drainresist>2</drainresist>
+
+      </bonus>
     </tradition>
     <tradition>
       <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>

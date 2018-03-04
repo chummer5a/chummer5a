@@ -326,6 +326,20 @@ namespace Chummer.Backend.Equipment
                     objWeaponMountOption.Create(xmlDataNode);
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
+                xmlDataNode = xmlNode["mods"];
+                if (xmlDataNode == null) return;
+                using (XmlNodeList xmlModList = xmlDataNode.SelectNodes("mod"))
+                    if (xmlModList != null)
+                        foreach (XmlNode xmlModNode in xmlModList)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter)
+                            {
+                                Parent = Parent,
+                                WeaponMountParent = this
+                            };
+                            objMod.Load(xmlModNode);
+                            _lstMods.Add(objMod);
+                        }
             }
         }
         #endregion
