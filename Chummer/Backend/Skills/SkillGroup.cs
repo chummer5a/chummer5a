@@ -153,6 +153,7 @@ namespace Chummer.Backend.Skills
                 if (_blnCareerIncrease != value)
                 {
                     _blnCareerIncrease = value;
+
                     OnPropertyChanged(nameof(CareerIncrease));
                 }
             }
@@ -167,16 +168,31 @@ namespace Chummer.Backend.Skills
                     CareerIncrease = false;
                 else
                 {
-                    int intFirstSkillTotalBaseRating = _lstAffectedSkills[0].TotalBaseRating;
-                    if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
-                        CareerIncrease = false;
-                    else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                                                                  (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
-                        CareerIncrease = false;
-                    else
-                        CareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum;
+                    var firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                    if (firstOrDefault != null)
+                    {
+                        int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
+                        if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
+                            CareerIncrease = false;
+                        else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
+                                                                      (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                            CareerIncrease = false;
+                        else
+                            CareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum;
+                    }
+                }
+
+                if (CareerIncrease)
+                {
+                    var skill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                    foreach (var disabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                    {
+                        disabledSkill.Karma = skill.Karma;
+                        disabledSkill.Base = skill.Base;
+                    }
                 }
             }
+
             // CareerIncrease hasn't changed, so we will need to fire off UpgradeToolTip manually
             if (blnOldCareerIncrease == CareerIncrease)
                 OnPropertyChanged(nameof(UpgradeToolTip));
@@ -417,7 +433,7 @@ namespace Chummer.Backend.Skills
                 {
                     return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
-                return SkillList.Min(x => x.TotalBaseRating).ToString();
+                return SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString();
             }
         }
 
@@ -434,7 +450,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();
@@ -601,7 +617,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled)
                     return -1;
-                int intRating = SkillList.Select(x => x.TotalBaseRating).DefaultIfEmpty().Min();
+                int intRating = SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min();
                 int intReturn;
                 int intOptionsCost;
                 if (intRating == 0)
