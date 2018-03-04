@@ -21958,7 +21958,7 @@
 					</talent>
 					<talent>
 						<name>Technomancer - 4 Resonance/4 Complex Forms</name>
-						<translate>Technomancer - 4 Resonance/4 Complex Forms</translate>
+						<translate>Tecnomante - 4 Ressonância/4 Formas Complexas</translate>
 					</talent>
 				</talents>
 			</priority>
@@ -28841,7 +28841,7 @@
 				<specs>
 					<spec translate="Feitiçaria">Sorcery</spec>
 					<spec translate="Convocação">Conjuring</spec>
-					<spec translate="Encantar">Enchanting</spec>
+					<spec translate="Encantação">Enchanting</spec>
 					<spec translate="Focos">Foci</spec>
 					<spec translate="Mundo Astral">Astral World</spec>
 					<spec translate="Metaplanos">Metaplanes</spec>
@@ -28856,7 +28856,7 @@
 				<specs>
 					<spec translate="Feitiçaria">Sorcery</spec>
 					<spec translate="Convocação">Conjuring</spec>
-					<spec translate="Encantar">Enchanting</spec>
+					<spec translate="Encantação">Enchanting</spec>
 					<spec translate="Focos">Foci</spec>
 					<spec translate="Mundo Astral">Astral World</spec>
 					<spec translate="Metaplanos">Metaplanes</spec>
@@ -30674,7 +30674,7 @@
 			<name translate="Convocação">Conjuring</name>
 			<name translate="Quebra de Dados">Cracking</name>
 			<name translate="Eletrônica">Electronics</name>
-			<name translate="Encantar">Enchanting</name>
+			<name translate="Encantação">Enchanting</name>
 			<name translate="Armas de Fogo">Firearms</name>
 			<name translate="Influência">Influence</name>
 			<name translate="Engenharia">Engineering</name>
