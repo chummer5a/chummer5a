@@ -91,6 +91,7 @@ Application Changes:
 - Fixed an issue where canceling out of an "Add & More" prompt and then accepting a form through a method other than "Add & More" would still cause the form to think the user accepted the form via "Add & More".
 - Fixed an occasional issue with skillgroups causing a crash due to missing skill skills.
 - Implemented a DisplayAccuracy property for weapons, to be used by forms.
+- Implemented a Location field to allow mapping weapon mounts to specific locations on a vehicle.
 
 Data Changes:
 
@@ -124,6 +125,7 @@ Data Changes:
 - Corrected the bonus for Natural Immunity to be based on Rating. Existing characters will need to Reapply Improvements or remove and re-add the Power. 
 - Removed the Fixation metamagic from Adept initiations, as they can't benefit from it.
 - Fixed the data for drones to properly use weapon mounts instead of mods.
+- Added an amend entry for the Federated-Boeing PBY-70 Catalina II, which has additional weapon mounts in the German version of Rigger 5. Fixes #2555
 
 New Strings:
 

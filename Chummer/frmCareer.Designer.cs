@@ -1192,6 +1192,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2290,9 +2291,9 @@ namespace Chummer
             // cmsVehicleCyberware
             // 
             this.cmsVehicleCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.tsVehicleCyberwareAddAsPlugin,
-                this.tsVehicleCyberwareAddGear,
-                this.tsVehicleCyberwareNotes});
+            this.tsVehicleCyberwareAddAsPlugin,
+            this.tsVehicleCyberwareAddGear,
+            this.tsVehicleCyberwareNotes});
             this.cmsVehicleCyberware.Name = "cmsVehicleCyberware";
             this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 70);
             // 
@@ -6387,7 +6388,7 @@ namespace Chummer
             // 
             // treCritterPowers
             // 
-            this.treCritterPowers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treCritterPowers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treCritterPowers.HideSelection = false;
             this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
@@ -6485,7 +6486,7 @@ namespace Chummer
             // 
             // txtGroupNotes
             // 
-            this.txtGroupNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txtGroupNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.txtGroupNotes.Location = new System.Drawing.Point(418, 554);
             this.txtGroupNotes.Multiline = true;
@@ -6549,7 +6550,7 @@ namespace Chummer
             // 
             // treMetamagic
             // 
-            this.treMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treMetamagic.HideSelection = false;
             this.treMetamagic.Location = new System.Drawing.Point(8, 77);
@@ -7649,7 +7650,7 @@ namespace Chummer
             // 
             // treCyberware
             // 
-            this.treCyberware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treCyberware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treCyberware.HideSelection = false;
             this.treCyberware.Location = new System.Drawing.Point(8, 36);
@@ -7716,8 +7717,8 @@ namespace Chummer
             // 
             // tabStreetGearTabs
             // 
-            this.tabStreetGearTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabStreetGearTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabStreetGearTabs.Controls.Add(this.tabGear);
             this.tabStreetGearTabs.Controls.Add(this.tabArmor);
@@ -8379,7 +8380,7 @@ namespace Chummer
             // 
             // treFoci
             // 
-            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treFoci.CheckBoxes = true;
             this.treFoci.Location = new System.Drawing.Point(310, 348);
@@ -8530,7 +8531,7 @@ namespace Chummer
             // treGear
             // 
             this.treGear.AllowDrop = true;
-            this.treGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(6, 36);
@@ -8895,7 +8896,7 @@ namespace Chummer
             // treArmor
             // 
             this.treArmor.AllowDrop = true;
-            this.treArmor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treArmor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treArmor.HideSelection = false;
             this.treArmor.Location = new System.Drawing.Point(6, 36);
@@ -9831,7 +9832,7 @@ namespace Chummer
             // treWeapons
             // 
             this.treWeapons.AllowDrop = true;
-            this.treWeapons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treWeapons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treWeapons.HideSelection = false;
             this.treWeapons.Location = new System.Drawing.Point(6, 36);
@@ -10196,7 +10197,7 @@ namespace Chummer
             // treLifestyles
             // 
             this.treLifestyles.AllowDrop = true;
-            this.treLifestyles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treLifestyles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(6, 36);
@@ -12420,7 +12421,7 @@ namespace Chummer
             // treVehicles
             // 
             this.treVehicles.AllowDrop = true;
-            this.treVehicles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treVehicles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treVehicles.HideSelection = false;
             this.treVehicles.Location = new System.Drawing.Point(8, 36);
@@ -12944,8 +12945,8 @@ namespace Chummer
             // 
             // picMugshot
             // 
-            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.picMugshot.Location = new System.Drawing.Point(641, 260);
             this.picMugshot.Margin = new System.Windows.Forms.Padding(13);
@@ -12971,8 +12972,8 @@ namespace Chummer
             // 
             // splitKarmaNuyen
             // 
-            this.splitKarmaNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitKarmaNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitKarmaNuyen.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.splitKarmaNuyen.Location = new System.Drawing.Point(3, 3);
@@ -13052,7 +13053,7 @@ namespace Chummer
             // 
             // lstKarma
             // 
-            this.lstKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lstKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstKarma.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colKarmaDate,
@@ -13138,7 +13139,7 @@ namespace Chummer
             // 
             // lstNuyen
             // 
-            this.lstNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lstNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstNuyen.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colNuyenDate,
@@ -13266,8 +13267,8 @@ namespace Chummer
             // 
             // lstCalendar
             // 
-            this.lstCalendar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lstCalendar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstCalendar.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colCalendarDate,
@@ -13310,8 +13311,8 @@ namespace Chummer
             // 
             // txtGameNotes
             // 
-            this.txtGameNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtGameNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGameNotes.Location = new System.Drawing.Point(8, 9);
             this.txtGameNotes.Multiline = true;
@@ -13448,7 +13449,7 @@ namespace Chummer
             // treImprovements
             // 
             this.treImprovements.AllowDrop = true;
-            this.treImprovements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treImprovements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treImprovements.HideSelection = false;
             this.treImprovements.Location = new System.Drawing.Point(8, 35);
@@ -13547,8 +13548,8 @@ namespace Chummer
             // 
             // panContacts
             // 
-            this.panContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panContacts.AutoScroll = true;
             this.panContacts.Location = new System.Drawing.Point(3, 48);
@@ -13667,8 +13668,8 @@ namespace Chummer
             // 
             // panEnemies
             // 
-            this.panEnemies.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panEnemies.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panEnemies.AutoScroll = true;
             this.panEnemies.Location = new System.Drawing.Point(3, 48);
@@ -13878,7 +13879,7 @@ namespace Chummer
             // cmsVehicleCyberwareGear
             // 
             this.cmsVehicleCyberwareGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.tsVehicleCyberwareGearMenuAddAsPlugin});
+            this.tsVehicleCyberwareGearMenuAddAsPlugin});
             this.cmsVehicleCyberwareGear.Name = "cmsVehicleCyberwareGear";
             this.cmsVehicleCyberwareGear.Size = new System.Drawing.Size(148, 26);
             // 
@@ -14112,9 +14113,10 @@ namespace Chummer
             // 
             this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsWeaponMountWeapons,
-            this.tsVehicleWeaponMountNotes});
+            this.tsVehicleWeaponMountNotes,
+            this.tsWeaponMountLocation});
             this.cmsWeaponMount.Name = "cmsWeapon";
-            this.cmsWeaponMount.Size = new System.Drawing.Size(124, 48);
+            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 92);
             // 
             // tsWeaponMountWeapons
             // 
@@ -14124,7 +14126,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel});
             this.tsWeaponMountWeapons.Image = global::Chummer.Properties.Resources.award_star_add;
             this.tsWeaponMountWeapons.Name = "tsWeaponMountWeapons";
-            this.tsWeaponMountWeapons.Size = new System.Drawing.Size(123, 22);
+            this.tsWeaponMountWeapons.Size = new System.Drawing.Size(180, 22);
             this.tsWeaponMountWeapons.Tag = "Menu_Weapons";
             this.tsWeaponMountWeapons.Text = "&Weapons";
             // 
@@ -14162,6 +14164,14 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            // 
+            // tsWeaponMountLocation
+            // 
+            this.tsWeaponMountLocation.Image = global::Chummer.Properties.Resources.tag_red;
+            this.tsWeaponMountLocation.Name = "tsWeaponMountLocation";
+            this.tsWeaponMountLocation.Size = new System.Drawing.Size(180, 22);
+            this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
+            this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
             // frmCareer
             // 
@@ -15465,5 +15475,6 @@ namespace Chummer
         private CheckBox chkWeaponMatrixCM22;
         private CheckBox chkWeaponMatrixCM23;
         private CheckBox chkWeaponMatrixCM24;
+        private ToolStripMenuItem tsWeaponMountLocation;
     }
 }

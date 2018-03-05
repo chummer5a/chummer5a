@@ -53,6 +53,7 @@ namespace Chummer.Backend.Equipment
 		private int _intSlots;
 		private string _strCost = string.Empty;
         private string _strSourceId = string.Empty;
+        private string _strLocation = string.Empty;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -204,8 +205,9 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
 			objNode.TryGetStringFieldQuickly("cost", ref _strCost);
 			objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
-			objNode.TryGetStringFieldQuickly("source", ref _strSource);
-			objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
+		    objNode.TryGetStringFieldQuickly("source", ref _strSource);
+		    objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 
             XmlNode xmlChildrenNode = objNode["weapons"];
@@ -274,8 +276,9 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-			objWriter.WriteElementString("page", Page(strLanguageToPrint));
-			objWriter.WriteElementString("included", IncludedInVehicle.ToString());
+		    objWriter.WriteElementString("page", Page(strLanguageToPrint));
+		    objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("included", IncludedInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
 		    foreach (Weapon objWeapon in Weapons)
 		    {
@@ -326,6 +329,7 @@ namespace Chummer.Backend.Equipment
                     objWeaponMountOption.Create(xmlDataNode);
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
+                _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
                 xmlDataNode = xmlNode["mods"];
                 if (xmlDataNode == null) return;
                 using (XmlNodeList xmlModList = xmlDataNode.SelectNodes("mod"))
@@ -367,6 +371,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strName;
             set => _strName = value;
+        }
+
+        /// <summary>
+        /// Where the mount is physically located on the vehicle.
+        /// </summary>
+        public string Location
+        {
+            get => _strLocation;
+            set => _strLocation = value;
         }
 
         /// <summary>
@@ -696,6 +709,10 @@ namespace Chummer.Backend.Equipment
                 strReturn.Length -= 2;
                 if (blnCloseParantheses)
                     strReturn.Append(')');
+                if (!string.IsNullOrWhiteSpace(_strLocation))
+                {
+                    strReturn.Append($" - {Location}");
+                }
             }
 
             return strReturn.ToString();
