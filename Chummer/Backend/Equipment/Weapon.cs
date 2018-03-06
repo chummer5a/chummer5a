@@ -781,7 +781,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", WeaponType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
-            objWriter.WriteElementString("accuracy", TotalAccuracy.ToString(objCulture));
+            objWriter.WriteElementString("accuracy", DisplayAccuracy);
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage_english", CalculatedDamage(objCulture, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("rawdamage", Damage);
