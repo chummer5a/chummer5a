@@ -258,6 +258,7 @@ namespace Chummer
             _characterOptions.KarmaComplexFormSkillsoft = decimal.ToInt32(nudKarmaComplexFormSkillsoft.Value);
             _characterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
             _characterOptions.KarmaLeaveGroup = decimal.ToInt32(nudKarmaLeaveGroup.Value);
+            _characterOptions.KarmaMysticAdeptPowerPoint = (int)nudKarmaMysticAdeptPowerPoint.Value;
 
             // Focus costs
             _characterOptions.KarmaAlchemicalFocus = decimal.ToInt32(nudKarmaAlchemicalFocus.Value);
@@ -621,6 +622,7 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblKarmaEnemy.Width);
             intWidth = Math.Max(intWidth, lblKarmaCarryover.Width);
             intWidth = Math.Max(intWidth, lblKarmaInitiation.Width);
+            intWidth = Math.Max(intWidth, lblKarmaMysticAdeptPowerPoint.Width);
 
             nudKarmaSpecialization.Left = lblKarmaSpecialization.Left + intWidth + 6;
             nudKarmaKnowledgeSpecialization.Left = lblKarmaKnowledgeSpecialization.Left + intWidth + 6;
@@ -660,6 +662,7 @@ namespace Chummer
             lblKarmaInitiationBracket.Left = nudKarmaInitiation.Left - lblKarmaInitiationBracket.Width;
             lblKarmaInitiationExtra.Left = nudKarmaInitiation.Left + nudKarmaInitiation.Width + 6;
             nudKarmaInitiationFlat.Left = lblKarmaInitiationExtra.Left + lblKarmaInitiationExtra.Width + 6;
+            nudKarmaMysticAdeptPowerPoint.Left = lblKarmaMysticAdeptPowerPoint.Left + intWidth + 6;
 
             intWidth = Math.Max(lblKarmaMetamagic.Width, lblKarmaJoinGroup.Width);
             intWidth = Math.Max(intWidth, lblKarmaLeaveGroup.Width);
@@ -982,6 +985,7 @@ namespace Chummer
             nudKarmaSummoningFocus.Value = _characterOptions.KarmaSummoningFocus;
             nudKarmaSustainingFocus.Value = _characterOptions.KarmaSustainingFocus;
             nudKarmaWeaponFocus.Value = _characterOptions.KarmaWeaponFocus;
+            nudKarmaMysticAdeptPowerPoint.Value = _characterOptions.KarmaMysticAdeptPowerPoint;
         }
 
         private void SaveGlobalOptions()
@@ -1166,6 +1170,7 @@ namespace Chummer
             nudKarmaMetamagic.Value = 15;
             nudKarmaJoinGroup.Value = 5;
             nudKarmaLeaveGroup.Value = 1;
+            nudKarmaMysticAdeptPowerPoint.Value = 5;
         }
 
         private void RestoreDefaultKarmaFociValues()

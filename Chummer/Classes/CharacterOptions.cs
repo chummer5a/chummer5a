@@ -34,6 +34,7 @@ namespace Chummer
         private string _strImageFolder = string.Empty;
 
         // Settings.
+        // ReSharper disable once InconsistentNaming
         private bool _blnAllow2ndMaxAttribute;
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
@@ -145,6 +146,7 @@ namespace Chummer
         private int _intKarmaSpirit = 1;
         private int _intKarmaNewAIProgram = 5;
         private int _intKarmaNewAIAdvancedProgram = 8;
+        private int _intKarmaMysticAdeptPowerPoint = 5;
 
         // Karma Foci variables.
         // Enchanting
@@ -492,6 +494,8 @@ namespace Chummer
             objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString());
             // <karmaweaponfocus />
             objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString());
+            // <karmaweaponfocus />
+            objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString());
             // </karmacost>
             objWriter.WriteEndElement();
 
@@ -786,6 +790,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
                 objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
                 objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+                objXmlNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
 
                 // Attempt to load the Karma costs for Foci.
                 objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
@@ -1167,6 +1172,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public bool Allow2ndMaxAttribute
         {
             get => _blnAllow2ndMaxAttribute;
@@ -2072,6 +2078,16 @@ namespace Chummer
             get => _intKarmaWeaponFocus;
             set => _intKarmaWeaponFocus = value;
         }
+
+        /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept. 
+        /// </summary>
+        public int KarmaMysticAdeptPowerPoint
+        {
+            get => _intKarmaMysticAdeptPowerPoint;
+            set => _intKarmaMysticAdeptPowerPoint = value;
+        }
+
         #endregion
 
         #region Default Build

@@ -247,6 +247,7 @@ namespace Chummer
             this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
             this.chkCompensateSkillGroupKarmaDifference = new System.Windows.Forms.CheckBox();
             this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
@@ -285,7 +286,8 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
+            this.nudKarmaMysticAdeptPowerPoint = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -352,13 +354,14 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
             // 
             this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Location = new System.Drawing.Point(370, 636);
+            this.cmdOK.Location = new System.Drawing.Point(370, 670);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 5;
@@ -1027,7 +1030,7 @@ namespace Chummer
             this.tabControl1.Location = new System.Drawing.Point(0, 32);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(815, 602);
+            this.tabControl1.Size = new System.Drawing.Size(815, 632);
             this.tabControl1.TabIndex = 4;
             // 
             // tabGeneral
@@ -1888,6 +1891,8 @@ namespace Chummer
             // tabKarmaCosts
             // 
             this.tabKarmaCosts.BackColor = System.Drawing.SystemColors.Control;
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaMysticAdeptPowerPoint);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaMysticAdeptPowerPoint);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaInitiationFlat);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaKnowledgeSpecialization);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaKnowledgeSpecialization);
@@ -2010,7 +2015,7 @@ namespace Chummer
             this.tabKarmaCosts.Location = new System.Drawing.Point(4, 22);
             this.tabKarmaCosts.Name = "tabKarmaCosts";
             this.tabKarmaCosts.Padding = new System.Windows.Forms.Padding(3);
-            this.tabKarmaCosts.Size = new System.Drawing.Size(807, 576);
+            this.tabKarmaCosts.Size = new System.Drawing.Size(807, 606);
             this.tabKarmaCosts.TabIndex = 1;
             this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
             this.tabKarmaCosts.Text = "Karma Costs";
@@ -2873,6 +2878,18 @@ namespace Chummer
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
             // 
+            // chkNoArmorEncumbrance
+            // 
+            this.chkNoArmorEncumbrance.AutoSize = true;
+            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(458, 210);
+            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(139, 17);
+            this.chkNoArmorEncumbrance.TabIndex = 38;
+            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
+            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
+            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // chkEnemyKarmaQualityLimit
             // 
             this.chkEnemyKarmaQualityLimit.AutoSize = true;
@@ -3363,24 +3380,30 @@ namespace Chummer
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
-            // chkNoArmorEncumbrance
+            // nudKarmaMysticAdeptPowerPoint
             // 
-            this.chkNoArmorEncumbrance.AutoSize = true;
-            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(458, 210);
-            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(251, 17);
-            this.chkNoArmorEncumbrance.TabIndex = 38;
-            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
-            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
-            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(191, 576);
+            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
+            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
+            this.nudKarmaMysticAdeptPowerPoint.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // lblKarmaMysticAdeptPowerPoint
+            // 
+            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(8, 578);
+            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
+            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
+            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
             // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(815, 661);
+            this.ClientSize = new System.Drawing.Size(815, 695);
             this.Controls.Add(this.txtSettingName);
             this.Controls.Add(this.lblSettingName);
             this.Controls.Add(this.cboSetting);
@@ -3472,6 +3495,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3736,5 +3760,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkEnemyKarmaQualityLimit;
         private ElasticComboBox cboSheetLanguage;
         private System.Windows.Forms.CheckBox chkNoArmorEncumbrance;
+        private System.Windows.Forms.NumericUpDown nudKarmaMysticAdeptPowerPoint;
+        private System.Windows.Forms.Label lblKarmaMysticAdeptPowerPoint;
     }
 }

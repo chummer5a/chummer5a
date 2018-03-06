@@ -7626,6 +7626,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
       <text>Primary Tenant</text>
     </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_LPContribution</key>
+      <text>Contributes tp Lifestyle Points</text>
+    </string>
+    <string>
+      <key>Label_Options_KarmaMysticAdeptPowerPoint</key>
+      <text>Mystic Adept Power Point</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Armor Window -->
     <string>
