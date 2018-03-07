@@ -209,7 +209,7 @@ namespace Chummer
             if (blnRefreshWatch)
             {
                 objWatchNode = treCharacterList.FindNode("Watch", false);
-                if (lstWatch.Count > 0)
+                if (objWatchNode == null && lstWatch.Count > 0)
                 {
                     objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) {Tag = "Watch"};
                     blnAddWatchNode = true;
