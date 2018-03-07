@@ -410,13 +410,13 @@ namespace Chummer.Backend.Equipment
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
-                            if (!string.IsNullOrWhiteSpace(objWeaponMount.WeaponMountCategories) && objWeaponMount.WeaponMountCategories.Contains(objWeapon.Category) && objWeaponMount.Weapons.Count == 0)
-                            {
-                                objWeaponMount.Weapons.Add(objWeapon);
-                                foreach (Weapon objSubWeapon in objSubWeapons)
-                                    objWeaponMount.Weapons.Add(objSubWeapon);
-                                break;
-                            }
+                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.Category) &&
+                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
+                                objWeaponMount.Weapons.Count != 0) continue;
+                            objWeaponMount.Weapons.Add(objWeapon);
+                            foreach (Weapon objSubWeapon in objSubWeapons)
+                                objWeaponMount.Weapons.Add(objSubWeapon);
+                            break;
                         }
 
                         // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
