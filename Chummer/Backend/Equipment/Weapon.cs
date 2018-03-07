@@ -781,7 +781,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", WeaponType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
-            objWriter.WriteElementString("accuracy", DisplayAccuracy);
+            objWriter.WriteElementString("accuracy", DisplayAccuracy(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage_english", CalculatedDamage(objCulture, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("rawdamage", Damage);
@@ -3025,8 +3025,13 @@ namespace Chummer.Backend.Equipment
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks. 
         /// TODO: Databindable?
         /// </summary>
-        public string DisplayAccuracy =>
-            Convert.ToInt32(Accuracy) != TotalAccuracy ? $"{Accuracy} ({TotalAccuracy})" : $"{TotalAccuracy}";
+        public string DisplayAccuracy(CultureInfo objCulture, string strLanguage)
+        {
+            int intTotalAccuracy = TotalAccuracy;
+            if (!int.TryParse(Accuracy, out int intAccuracy) || intAccuracy != intTotalAccuracy)
+                return LanguageManager.TranslateExtra(Accuracy, strLanguage) + " (" + intTotalAccuracy.ToString(objCulture) + ')';
+            return intTotalAccuracy.ToString(objCulture);
+        }
         /// <summary>
         /// The slots the weapon has for modifications.
         /// </summary>

@@ -163,7 +163,7 @@ namespace Chummer
                 lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
                 lblWeaponRC.Text = _objSelectedWeapon.TotalRC;
                 lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy;
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
