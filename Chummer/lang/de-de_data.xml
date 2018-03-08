@@ -10292,10 +10292,28 @@
 				<translate>EvoTech Himitsu</translate>
 				<altpage>69</altpage>
 			</gear>
+			<gear>
+				<id>20424a16-ebec-4676-8b2f-51a388ef37d3</id>
+				<name>Lunchbox</name>
+				<translate>Butterbrotdose</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>3a88452b-a427-408e-9128-a43c5f372cce</id>
+				<name>Secret Compartment with Faraday Cage</name>
+				<translate>Geheimfach mit Faradayschen Käfig</translate>
+				<altpage>69</altpage>
+			</gear>
 			<gear translated="True">
 				<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
 				<name>MCT Blue Defender</name>
 				<translate>MCT Blue Defender</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>3a9b0eed-6b2e-411a-8220-a4e996df9fdd</id>
+				<name>Bracelet</name>
+				<translate>Armband</translate>
 				<altpage>69</altpage>
 			</gear>
 			<gear translated="True">
@@ -10308,6 +10326,12 @@
 				<id>784babc6-170b-4bcc-9572-699368e898de</id>
 				<name>Nixdorf Sekretar w/ Liebesekretar</name>
 				<translate>Siemens-Nixdorf Sekretär mit Liebessekretär</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>fd6188fc-d6ad-4ab3-82f8-fc7f53f49281</id>
+				<name>Love Life Management</name>
+				<translate>Liebessekretär</translate>
 				<altpage>69</altpage>
 			</gear>
 			<gear translated="True">
@@ -11391,9 +11415,21 @@
 				<altpage>438</altpage>
 			</gear>
 			<gear>
+				<id>922c2a9b-88a8-47bf-a3ac-378a0e86be9c</id>
+				<name>Grenade: Flash-Bang, Aerodynamic</name>
+				<translate>Granate: Schock, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</gear>
+			<gear>
 				<id>8e04c493-b04d-4511-ba68-7b2e0edbf3aa</id>
 				<name>Grenade: Flash-Pak</name>
 				<translate>Granate: Flash-Pack</translate>
+				<altpage>437</altpage>
+			</gear>
+			<gear>
+				<id>4d27ebbf-02e8-45e7-9c0a-7151f1e4faae</id>
+				<name>Grenade: Flash-Pak, Aerodynamic</name>
+				<translate>Granate: Flash-Pack, Aerodynamisch</translate>
 				<altpage>437</altpage>
 			</gear>
 			<gear>
@@ -11403,9 +11439,21 @@
 				<altpage>438</altpage>
 			</gear>
 			<gear>
+				<id>afde3ea3-2db2-4049-b54a-f471e8c11102</id>
+				<name>Grenade: Fragmentation, Aerodynamic</name>
+				<translate>Granate: Splitter, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</gear>
+			<gear>
 				<id>e61c5487-2074-4fc8-8da0-9891b15482e7</id>
 				<name>Grenade: High Explosive</name>
 				<translate>Granate: Spreng</translate>
+				<altpage>438</altpage>
+			</gear>
+			<gear>
+				<id>e7a602bd-33f4-485b-8a18-a253b7e73a77</id>
+				<name>Grenade: High Explosive, Aerodynamic</name>
+				<translate>Granate: Spreng, Aerodynamisch</translate>
 				<altpage>438</altpage>
 			</gear>
 			<gear>
@@ -11415,15 +11463,33 @@
 				<altpage>437</altpage>
 			</gear>
 			<gear>
+				<id>1ceef439-32d7-4e1b-a13b-0223dfadf784</id>
+				<name>Grenade: Gas, Aerodynamic</name>
+				<translate>Granate: Gas, Aerodynamisch</translate>
+				<altpage>437</altpage>
+			</gear>
+			<gear>
 				<id>84c6921e-dfa0-42ca-a01f-87c459ffc000</id>
 				<name>Grenade: Smoke</name>
 				<translate>Granate: Rauch</translate>
 				<altpage>438</altpage>
 			</gear>
 			<gear>
+				<id>13208e69-2cc6-43c4-98ff-e0295cdf3b68</id>
+				<name>Grenade: Smoke, Aerodynamic</name>
+				<translate>Granate: Rauch, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</gear>
+			<gear>
 				<id>f3472dc1-4c7b-403a-8001-6441bb65a687</id>
 				<name>Grenade: Thermal Smoke</name>
 				<translate>Granate: IR-Rauch</translate>
+				<altpage>437</altpage>
+			</gear>
+			<gear>
+				<id>2b58af45-2097-4607-a0d4-e251b64332af</id>
+				<name>Grenade: Thermal Smoke, Aerodynamic</name>
+				<translate>Granate: IR-Rauch, Aerodynamisch</translate>
 				<altpage>437</altpage>
 			</gear>
 			<gear>
@@ -12940,8 +13006,14 @@
 			</gear>
 			<gear>
 				<id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
-				<name>Paint Grenade</name>
-				<translate>Farbgranate</translate>
+				<name>Grenade: Paint</name>
+				<translate>Granate: Farbe</translate>
+				<altpage>102</altpage>
+			</gear>
+			<gear>
+				<id>ff32c75d-9cb8-499e-8926-eb0728b2748b</id>
+				<name>Grenade: Paint, Aerodynamic</name>
+				<translate>Granate: Farbe, Aerodynamisch</translate>
 				<altpage>102</altpage>
 			</gear>
 			<gear>
@@ -14116,8 +14188,8 @@
 			</gear>
 			<gear>
 				<id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
-				<name>Smokebomb</name>
-				<translate>Rauchbombe</translate>
+				<name>Grenade: Smokebomb</name>
+				<translate>Granate: Rauchbombe</translate>
 				<altpage>179</altpage>
 			</gear>
 			<gear>
@@ -14584,7 +14656,7 @@
 			</gear>
 			<gear>
 				<id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
-				<name>Orichalum</name>
+				<name>Orichalcum</name>
 				<translate>Orichalkum</translate>
 				<altpage>316</altpage>
 			</gear>
@@ -16584,6 +16656,12 @@
 				<translate>Cyberdynamix Special HardCore</translate>
 				<altpage>86</altpage>
 			</gear>
+			<gear>
+				<id>db03eec4-aa3b-4393-bf86-f8e3e6652264</id>
+				<name>Urban Brawl News</name>
+				<translate>Stadtkrieg-Newssoft</translate>
+				<altpage>86</altpage>
+			</gear>
 			<gear translated="True">
 				<id>69c65b09-ac94-4032-a491-3610a464d168</id>
 				<name>MCT Dusseldorf</name>
@@ -17019,26 +17097,26 @@
 			<gear>
 				<id>b524aaaf-4564-4cb5-9253-6dd1423ccb57</id>
 				<name>Decrease Sleaze Modification</name>
-				<translate>Decrease Sleaze Modification</translate>
-				<altpage>66</altpage>
+				<translate>Matrixattribut Senken (Schleicher)</translate>
+				<altpage>74</altpage>
 			</gear>
 			<gear>
 				<id>4a86c7b0-d9c0-4f4b-a972-b696baf866e8</id>
 				<name>Decrease Attack Modification</name>
-				<translate>Decrease Attack Modification</translate>
-				<altpage>66</altpage>
+				<translate>Matrixattribut Senken (Angriff)</translate>
+				<altpage>74</altpage>
 			</gear>
 			<gear>
 				<id>b05e47c8-6ec6-4b9e-aa51-e49f4021512f</id>
 				<name>Decrease Data Processing Modification</name>
-				<translate>Decrease Data Processing Modification</translate>
-				<altpage>66</altpage>
+				<translate>Matrixattribut Senken (Datenverarbeitung)</translate>
+				<altpage>74</altpage>
 			</gear>
 			<gear>
 				<id>8417c080-5faa-4c4d-be31-6ce4fa07574d</id>
 				<name>Decrease Firewall Modification</name>
-				<translate>Decrease Firewall Modification</translate>
-				<altpage>66</altpage>
+				<translate>Matrixattribut Senken (Firewall)</translate>
+				<altpage>74</altpage>
 			</gear>
 			<gear>
 				<id>02100ba4-7b39-4cdc-9e7a-6c6454d34dae</id>
@@ -17336,8 +17414,14 @@
 			</gear>
 			<gear>
 				<id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
-				<name>Halloweener Molotov Cocktail</name>
-				<translate>Halloweener Molotov Cocktail</translate>
+				<name>Grenade: Halloweener Molotov Cocktail</name>
+				<translate>Granate: Halloweener Molotov Cocktail</translate>
+				<altpage>29</altpage>
+			</gear>
+			<gear>
+				<id>089af282-4ffb-4aea-86e9-bac83474e27e</id>
+				<name>Grenade: Halloweener Molotov Cocktail, Aerodynamic</name>
+				<translate>Granate: Halloweener Molotov Cocktail, Aerodynamisch</translate>
 				<altpage>29</altpage>
 			</gear>
 			<gear>
@@ -20904,6 +20988,12 @@
 				<altpage>94</altpage>
 			</metamagic>
 			<metamagic>
+				<id>ef0f4461-4da9-4a24-b508-77f5c3a920d7</id>
+				<name>Movement</name>
+				<translate>Bewegung</translate>
+				<altpage>395</altpage>
+			</metamagic>
+			<metamagic>
 				<id>a3015186-c234-448c-811d-43c7d722abd2</id>
 				<name>Paradigm Shift: Insect Shaman</name>
 				<translate>Paradigmenwechsel: Insektenschamane</translate>
@@ -22599,24 +22689,24 @@
 		</metatypes>
 	</chummer>
 	<chummer file="options.xml">
-    <limbcounts>
-      <limb>
-        <name>4 (2 arms, 2 legs)</name>
-        <translate>4 (2 Arme, 2 Beine)</translate>
-      </limb>
-      <limb>
-        <name>5 (2 arms, 2 legs, skull)</name>
-        <translate>5 (2 Arme, 2 Beine, Schädel)</translate>
-      </limb>
-      <limb>
-        <name>5 (2 arms, 2 legs, torso)</name>
-        <translate>5 (2 Arme, 2 Beine, Torso)</translate>
-      </limb>
-      <limb>
-        <name>6 (2 arms, 2 legs, torso, skull)</name>
-        <translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
-      </limb>
-    </limbcounts>
+		<limbcounts>
+		  <limb>
+			<name>4 (2 arms, 2 legs)</name>
+			<translate>4 (2 Arme, 2 Beine)</translate>
+		  </limb>
+		  <limb>
+			<name>5 (2 arms, 2 legs, skull)</name>
+			<translate>5 (2 Arme, 2 Beine, Schädel)</translate>
+		  </limb>
+		  <limb>
+			<name>5 (2 arms, 2 legs, torso)</name>
+			<translate>5 (2 Arme, 2 Beine, Torso)</translate>
+		  </limb>
+		  <limb>
+			<name>6 (2 arms, 2 legs, torso, skull)</name>
+			<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
+		  </limb>
+		</limbcounts>
 	</chummer>
 	<chummer file="paragons.xml">
 		<categories>
@@ -25041,9 +25131,38 @@
 			</quality>
 			<quality>
 				<id>c15df7f5-2108-4be2-9500-86045221be0a</id>
-				<name>Rank</name>
-				<source>RF</source>
-				<translate>Rang</translate>
+				<name>Rank (Neither Military nor Law Enforcement) I</name>
+				<translate>Rang (weder Militär noch Strafverfolgung) I</translate>
+				<altpage>171</altpage>
+			</quality>
+			<quality>
+				<id>53bd1804-1029-4ebe-9464-a82d91be5dd9</id>
+				<name>Rank (Neither Military nor Law Enforcement) II</name>
+				<translate>Rang (weder Militär noch Strafverfolgung) II</translate>
+				<altpage>171</altpage>
+			</quality>
+			<quality>
+				<id>fe414583-aa74-4a50-8132-27887ec341d6</id>
+				<name>Rank (Neither Military nor Law Enforcement) III</name>
+				<translate>Rang (weder Militär noch Strafverfolgung) III</translate>
+				<altpage>171</altpage>
+			</quality>
+			<quality>
+				<id>49a9c3a8-538a-4d4e-a4e8-8bf837687d25</id>
+				<name>Rank (Military or Law Enforcement) I</name>
+				<translate>Rang (Militär oder Strafverfolgung) I</translate>
+				<altpage>171</altpage>
+			</quality>
+			<quality>
+				<id>6ccdc691-30cb-40f0-a283-6321703b018f</id>
+				<name>Rank (Military or Law Enforcement) II</name>
+				<translate>Rang (Militär oder Strafverfolgung) II</translate>
+				<altpage>171</altpage>
+			</quality>
+			<quality>
+				<id>aa9fbb62-1c5c-4c4f-acfd-34880cf61600</id>
+				<name>Rank (Military or Law Enforcement) III</name>
+				<translate>Rang (Militär oder Strafverfolgung) III</translate>
 				<altpage>171</altpage>
 			</quality>
 			<quality>
@@ -39016,9 +39135,21 @@
 				<altpage>438</altpage>
 			</weapon>
 			<weapon>
+				<id>96810fa9-62c5-4638-b2b4-000e0910bd9a</id>
+				<name>Grenade: Flash-Bang, Aerodynamic</name>
+				<translate>Granate: Schock, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</weapon>
+			<weapon>
 				<id>fdee91ef-c382-49c4-87f6-b9166b9bd9fa</id>
 				<name>Grenade: Flash-Pak</name>
 				<translate>Granate: Flash-Pack</translate>
+				<altpage>437</altpage>
+			</weapon>
+			<weapon>
+				<id>54a82bb7-aacb-4b74-83ea-bfb441a81d60</id>
+				<name>Grenade: Flash-Pak, Aerodynamic</name>
+				<translate>Granate: Flash-Pack, Aerodynamisch</translate>
 				<altpage>437</altpage>
 			</weapon>
 			<weapon>
@@ -39028,9 +39159,21 @@
 				<altpage>438</altpage>
 			</weapon>
 			<weapon>
+				<id>d05adb5b-68d2-4905-8609-35e8e23310c4</id>
+				<name>Grenade: Fragmentation, Aerodynamic</name>
+				<translate>Granate: Splitter, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</weapon>
+			<weapon>
 				<id>cbe5694e-9da3-4aad-a0a0-036087dbab55</id>
 				<name>Grenade: High Explosive</name>
 				<translate>Granate: Spreng</translate>
+				<altpage>438</altpage>
+			</weapon>
+			<weapon>
+				<id>12d26925-582e-488e-b5ed-5202c9a78e33</id>
+				<name>Grenade: High Explosive, Aerodynamic</name>
+				<translate>Granate: Spreng, Aerodynamisch</translate>
 				<altpage>438</altpage>
 			</weapon>
 			<weapon>
@@ -39040,15 +39183,33 @@
 				<altpage>437</altpage>
 			</weapon>
 			<weapon>
+				<id>a3fd9a2b-fc58-488b-be61-260bff2cfdca</id>
+				<name>Grenade: Gas, Aerodynamic</name>
+				<translate>Granate: Gas, Aerodynamisch</translate>
+				<altpage>437</altpage>
+			</weapon>
+			<weapon>
 				<id>aab70ade-8586-4539-a184-99cb63e7bfab</id>
 				<name>Grenade: Smoke</name>
 				<translate>Granate: Rauch</translate>
 				<altpage>438</altpage>
 			</weapon>
 			<weapon>
+				<id>d7a09743-bee3-4736-a8cd-913adb07eab5</id>
+				<name>Grenade: Smoke, Aerodynamic</name>
+				<translate>Granate: Rauch, Aerodynamisch</translate>
+				<altpage>438</altpage>
+			</weapon>
+			<weapon>
 				<id>691ba610-d99a-4a86-a010-e21fa17e924c</id>
 				<name>Grenade: Thermal Smoke</name>
 				<translate>Granate: IR-Rauch</translate>
+				<altpage>437</altpage>
+			</weapon>
+			<weapon>
+				<id>9f39a37c-b53c-4b22-be27-c5ff35f1bb93</id>
+				<name>Grenade: Thermal Smoke, Aerodynamic</name>
+				<translate>Granate: IR-Rauch, Aerodynamisch</translate>
 				<altpage>437</altpage>
 			</weapon>
 			<weapon>
@@ -39409,6 +39570,12 @@
 				<id>cbce4476-7c0b-448c-8e43-0d5c3293d25d</id>
 				<name>Grenade: Paint</name>
 				<translate>Granate: Farbe</translate>
+				<altpage>102</altpage>
+			</weapon>
+			<weapon>
+				<id>26ef6028-225a-40f5-9686-713155b991f4</id>
+				<name>Grenade: Paint, Aerodynamic</name>
+				<translate>Granate: Farbe, Aerodynamisch</translate>
 				<altpage>102</altpage>
 			</weapon>
 			<weapon>
@@ -40283,8 +40450,14 @@
 			</weapon>
 			<weapon>
 				<id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
-				<name>Smokebomb</name>
-				<translate>Rauchbombe</translate>
+				<name>Grenade: Smokebomb</name>
+				<translate>Granate: Rauchbombe</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon>
+				<id>4473b30c-1918-407a-923f-776f63610b24</id>
+				<name>Grenade: Smokebomb, Aerodynamic</name>
+				<translate>Granate: Rauchbombe, Aerodynamisch</translate>
 				<altpage>179</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -40382,6 +40555,12 @@
 				<name>Claws (Sasquatch)</name>
 				<translate>Klauen (Sasquatch)</translate>
 				<altpage>81</altpage>
+			</weapon>
+			<weapon>
+				<id>f24167cc-3be9-4956-be8f-2b7c0554bb15</id>
+				<name>Elemental Body</name>
+				<translate>Elementarer Körper</translate>
+				<altpage>197</altpage>
 			</weapon>
 			<weapon>
 				<id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
@@ -41039,8 +41218,14 @@
 			</weapon>
 			<weapon>
 				<id>8d9b4142-ba34-4ba8-96a0-27fc0889a225</id>
-				<name>Halloweener Molotov Cocktail</name>
-				<translate>Halloweener Molotov Cocktail</translate>
+				<name>Grenade: Halloweener Molotov Cocktail</name>
+				<translate>Granate: Halloweener Molotov Cocktail</translate>
+				<altpage>29</altpage>
+			</weapon>
+			<weapon>
+				<id>4a2b0090-3a9c-4b0b-9e6a-0181b210140d</id>
+				<name>Grenade: Halloweener Molotov Cocktail, Aerodynamic</name>
+				<translate>Granate: Halloweener Molotov Cocktail, Aerodynamisch</translate>
 				<altpage>29</altpage>
 			</weapon>
 			<weapon>
@@ -42108,12 +42293,6 @@
 				<name>Skillsoft Access</name>
 				<translate>Skillsoft Zugriff</translate>
 				<altpage>The character can use Knowsoft and Linguasoft Skillsofts as though they had a direct neural link.</altpage>
-			</improvement>
-			<improvement>
-				<id>essence</id>
-				<name>Essence</name>
-				<translate>Essenz</translate>
-				<altpage>Adjusts the character's Essence by the value entered. Positive values increase Essence. Negative values decrease Essence.</altpage>
 			</improvement>
 			<improvement>
 				<id>essencemax</id>

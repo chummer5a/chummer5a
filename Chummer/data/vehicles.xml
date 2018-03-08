@@ -8789,12 +8789,14 @@
           <flexibility>Fixed</flexibility>
           <size>Large (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>GE Vindicator Mini-Gun</allowedweapons>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
           <flexibility>Fixed</flexibility>
           <size>Large (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>GE Vindicator Mini-Gun</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>

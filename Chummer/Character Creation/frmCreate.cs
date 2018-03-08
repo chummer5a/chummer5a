@@ -6298,7 +6298,7 @@ namespace Chummer
             {
                 frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
                 {
-                    LimitToCategories = objMod == null ? objWeaponMount.WeaponMountCategories : objMod.WeaponMountCategories
+                    LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
                 };
                 frmPickWeapon.ShowDialog();
 
@@ -7808,6 +7808,26 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        private void tsWeaponMountLocation_Click(object sender, EventArgs e)
+        {
+            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle);
+            if (objWeaponMount == null)
+                return;
+            frmSelectText frmPickText = new frmSelectText
+            {
+                Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Language),
+                DefaultString = objWeaponMount.Location
+            };
+
+            frmPickText.ShowDialog(this);
+
+            if (frmPickText.DialogResult == DialogResult.Cancel)
+                return;
+
+            objWeaponMount.Location = frmPickText.SelectedValue;
+            treVehicles.SelectedNode.Text = objWeaponMount.DisplayName(GlobalOptions.Language);
         }
 
         private void tsVehicleName_Click(object sender, EventArgs e)
@@ -12911,7 +12931,7 @@ namespace Chummer
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
+                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponRC.Text = objWeapon.TotalRC;
                 lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponReach.Text = objWeapon.TotalReach.ToString();
@@ -14621,7 +14641,7 @@ namespace Chummer
                             lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                             lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
+                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                             lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);

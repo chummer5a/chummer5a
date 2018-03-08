@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1107,7 +1107,7 @@
 		</string>
 		<string>
 			<key>Message_ComplexFormLimit</key>
-			<text>Sie können nicht mehr Komplexe Formen beherrschen, als Ihrem doppelten Logik-Attribut entsprechen.</text>
+			<text>Sie können nicht mehr Komplexe Formen beherschen als zweimal ihr RES-Wert. Siehe Seite 98, SR5 Grundregelwerk (Errata).</text>
 		</string>
 		<string>
 			<key>MessageTitle_ComplexFormLimit</key>
@@ -2479,15 +2479,15 @@
 		</string>
 		<string>
 			<key>Tip_SkillsSkillGroups</key>
-			<text>Fertigkeitsgruppen kosten 10 GP pro Stufe.</text>
+			<text>Fertigkeitsgruppen kosten {0} Karma pro neue Stufe.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsActiveSkills</key>
-			<text>Fertigkeiten kosten 4 GP pro Stufe und 2 GP für eine Spezialisierung. Charaktere können eine Aktionsfertigkeit auf Stufe 6 oder zwei auf Stufe 5 haben. Der Rest muss 4 oder weniger betragen.</text>
+			<text>Fertigkeiten kosten {0} Karma pro neue Stufe und {1} Karma für eine Spezialisierung.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Charaktere erhalten (INT + LOG) × 3 freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten je 2 BP. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
+			<text>Charaktere erhalten (INT + LOG) × {0} freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten {1} Karma pro neue Stufe. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
 		</string>
 		<string>
 			<key>Skill_SortAlphabetical</key>
@@ -3178,10 +3178,6 @@
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
 			<text>Charaktere können maximal 35 GP für Nachteile erhalten. Dunkelrot markierte Nachteile zählen nicht in dieses Limit.</text>
-		</string>
-		<string>
-			<key>Tip_BuildFoci</key>
-			<text>Jeder gebundene Fokus kostet GP in Höhe seiner Kraftstufe.</text>
 		</string>
 		<string>
 			<key>Label_OtherPhysicalCM</key>
@@ -7021,10 +7017,6 @@
 			<text>Aktivierung dieser Hausregel erlaubt es Charakteren im Karrieremodus, Vorteile zu kaufen und Nachteile abzubauen, ohne dafür die doppelten Kosten zu zahlen. </text>
 		</string>
 		<string>
-			<key>Tip_OptionsExceptionalAttribute</key>
-			<text>Aktivierung dieser Hausregel erlaubt es, Attributspunkte auf ein durch Aussergewöhnliches Attribut erhöhtes Attribut zu verteilen.</text>
-		</string>
-		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
 			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
 		</string>
@@ -7486,7 +7478,7 @@
 		</string>
 		<string>
 			<key>Label_SpellDefenceManipMental</key>
-			<text>Manipulation - Mental</text>
+			<text>Manipulation - Geistig</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceManipPhysical</key>
@@ -8192,11 +8184,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactMultiplier</key>
-			<text>Connection-Punkte Charisma Multiplikator</text>
+			<text>Überschreibe Connection-Punkte Charisma Multiplikator</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_KnowledgeMultiplier</key>
-			<text>Wissensfertigkeitenpunkte (INT+LOG) Multiplikator</text>
+			<text>Überschreibe Wissensfertigkeitenpunkte (INT+LOG) Multiplikator</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SearchInCategoryOnly</key>
@@ -8551,10 +8543,6 @@
 			<text>Dies scheint der erste Start von Chummer zu sein, da keine Einstellungsdatei vorhanden ist. Möchten Sie den Optionsdialog jetzt öffnen?</text>
 		</string>
 		<string>
-			<key>Message_ComplexFormLimitCareer</key>
-			<text>Die Anzahl Komplexer Formen kann Ihre Resonanz × 2 nicht überschreiten.</text>
-		</string>
-		<string>
 			<key>Message_ConfirmKarmaExpenseLowerLevel</key>
 			<text>Möchten Sie wirklich {1} Karma für das Entfernen einer Stufe von {0} ausgeben?</text>
 		</string>
@@ -8768,7 +8756,7 @@
 		</string>
 		<string>
 			<key>String_ReduceGear</key>
-			<text>Gebe die Anazhl zu entfernender Elemente an.</text>
+			<text>Gebe die Anazhl zu entfernender Gegenstände an.</text>
 		</string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
@@ -8829,6 +8817,94 @@
 		<string>
 			<key>Treenode_Roster_WatchFolder</key>
 			<text>Überwachter Ordner</text>
+		</string>
+		<string>
+			<key>Button_RemoveEcho</key>
+			<text>Echo entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveInitiateGrade</key>
+			<text>Initiatengrad entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveMetamagic</key>
+			<text>Metamagie entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveSubmersionGrade</key>
+			<text>Wandlungsgrad entfernen</text>
+		</string>
+		<string>
+			<key>Label_OtherCoreCM</key>
+			<text>Kern Zustandsmonitor:</text>
+		</string>
+		<string>
+			<key>Label_OtherMatrixCM</key>
+			<text>Matrix Zustandsmonitor:</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_CareerOnlyRestriction</key>
+			<text>Sie können diese {0} nicht auswählen, weil der Charakter noch nicht erstellt wurde.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_ChargenRestriction</key>
+			<text>Sie können diese {0} nicht auswählen, weil der Charakter bereits erstellt wurde.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyle</key>
+			<text>Der Basislebensstilname für Lebensstil {0} wurde nicht gefunden. Bitte wählen Sie den entsprechenden Namen aus der folgenden Liste.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyleQuality</key>
+			<text>Die Qualität {0} konnte nicht gefunden werden. Bitte wählen Sie die entsprechende Qualität aus der folgenden Liste.</text>
+		</string>
+		<string>
+			<key>String_ComplexFormLevel</key>
+			<text>S</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetDevice</key>
+			<text>Gerät</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetFile</key>
+			<text>Datei</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetPersona</key>
+			<text>Persona</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetIC</key>
+			<text>IC</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetHost</key>
+			<text>Host</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetSprite</key>
+			<text>Sprite</text>
+		</string>
+		<string>
+			<key>String_DeviceRating</key>
+			<text>Gerätestufe</text>
+		</string>
+		<string>
+			<key>String_Level</key>
+			<text>Stufe</text>
+		</string>
+		<string>
+			<key>String_TotalComparisonWithPointBuy</key>
+			<text>Gesamt (Für Vergleich mit Punktekauf)</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingBase</key>
+			<text>Basis Schwund für</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingSeeDescription</key>
+			<text>Siehe Beschreibung der Komplexem Form</text>
 		</string>
 	</strings>
 </chummer>
