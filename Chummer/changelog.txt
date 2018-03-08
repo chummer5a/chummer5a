@@ -145,7 +145,6 @@ New Strings:
 - Button_RemoveEcho
 - Warning_Update_CouldNotConnectException
 - Label_Options_KarmaMysticAdeptPowerPoint
--
 
 Changed Strings:
 
