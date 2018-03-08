@@ -90,6 +90,7 @@ Application Changes:
 - Fixed an issue where changes to special attribute loss amounts in career mode would cause any and all karma levels associated with that special attribute to get burned away every time the character is updated until all karma levels have been burned for them.
 - Fixed an issue where canceling out of an "Add & More" prompt and then accepting a form through a method other than "Add & More" would still cause the form to think the user accepted the form via "Add & More".
 - Fixed an occasional issue with skillgroups causing a crash due to missing skill skills.
+- Implemented a number spinner for Mystic Adept Power Point costs.
 - Implemented a DisplayAccuracy property for weapons, to be used by forms.
 - Implemented a Location field to allow mapping weapon mounts to specific locations on a vehicle.
 - Weapon Mounts can now allow specific weapons to be mounted to them in addition to the normal category restrictions. This is not currently supported through the selection window and is intended solely for use with pre-built vehicles.
@@ -143,6 +144,8 @@ New Strings:
 - Button_RemoveMetamagic
 - Button_RemoveEcho
 - Warning_Update_CouldNotConnectException
+- Label_Options_KarmaMysticAdeptPowerPoint
+-
 
 Changed Strings:
 
