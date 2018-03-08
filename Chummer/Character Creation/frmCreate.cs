@@ -5986,13 +5986,7 @@ namespace Chummer
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        string strNuyenFormat = CharacterObjectOptions.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.NuyenDecimals);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -12251,24 +12245,16 @@ namespace Chummer
             decNuyen += Convert.ToDecimal(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen));
 
             lblNuyenTotal.Text = "= " + decNuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            
+            string strESSFormat = CharacterObjectOptions.EssenceFormat;
 
-            int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
-
-            string strESS = decimal.Round(CharacterObject.Essence(), intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            string strESS = CharacterObject.Essence().ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblESSMax.Text = strESS;
             tssEssence.Text = strESS;
 
-            lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblCyberwareESS.Text = CharacterObject.CyberwareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblBiowareESS.Text = CharacterObject.BiowareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblEssenceHoleESS.Text = CharacterObject.EssenceHole.ToString(strESSFormat, GlobalOptions.CultureInfo);
 
             if (CharacterObject.PrototypeTranshuman > 0)
             {
@@ -12282,7 +12268,7 @@ namespace Chummer
                     decPrototypeTranshumanESSUsed += objCyberware.CalculatedESS(false);
                 }
 
-                lblPrototypeTranshumanESS.Text = decimal.Round(decPrototypeTranshumanESSUsed, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo) + " / " + decimal.Round(CharacterObject.PrototypeTranshuman, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+                lblPrototypeTranshumanESS.Text = decPrototypeTranshumanESSUsed.ToString(strESSFormat, GlobalOptions.CultureInfo) + " / " + CharacterObject.PrototypeTranshuman.ToString(strESSFormat, GlobalOptions.CultureInfo);
             }
             else
             {
@@ -12662,16 +12648,8 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 return;
             }
-
-            int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
+            
+            string strESSFormat = CharacterObjectOptions.EssenceFormat;
 
             // Locate the selected piece of Cyberware.
             Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
@@ -12931,8 +12909,8 @@ namespace Chummer
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponRC.Text = objWeapon.TotalRC;
+                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
+                lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.CultureInfo, true);
                 lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                 lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -12991,9 +12969,9 @@ namespace Chummer
                     lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                     lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString();
+                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                     lblWeaponDamage.Text = string.Empty;
-                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString();
+                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                     lblWeaponRC.Text = objSelectedAccessory.RC;
                     lblWeaponAP.Text = string.Empty;
                     lblWeaponReach.Text = string.Empty;
@@ -13552,7 +13530,7 @@ namespace Chummer
                 nudGearQty.Increment = objGear.CostFor;
                 if (objGear.Name.StartsWith("Nuyen"))
                 {
-                    int intDecimalPlaces = CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.');
+                    int intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
                     if (intDecimalPlaces <= 0)
                     {
                         nudGearQty.DecimalPlaces = 0;
@@ -14641,7 +14619,7 @@ namespace Chummer
                             lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                             lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
                             lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                             lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -14793,7 +14771,7 @@ namespace Chummer
                                         nudVehicleGearQty.Enabled = !objGear.IncludedInParent;
                                         if (objGear.Name.StartsWith("Nuyen"))
                                         {
-                                            int intDecimalPlaces = CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.');
+                                            int intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
                                             if (intDecimalPlaces <= 0)
                                             {
                                                 nudGearQty.DecimalPlaces = 0;

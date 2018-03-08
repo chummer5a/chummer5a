@@ -5332,8 +5332,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
             {
-                string strFormat = CharacterObjectOptions.NuyenFormat;
-                intDecimalPlaces = Math.Max(0, strFormat.Length - 1 - strFormat.LastIndexOf('.'));
+                intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
             }
             else if (objGear.Category == "Currency")
             {
@@ -5396,7 +5395,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen"))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -5504,7 +5503,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen"))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -5583,7 +5582,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen"))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -5692,7 +5691,7 @@ namespace Chummer
                     int intDecimalPlaces = 0;
                     if (objSelectedGear.Name.StartsWith("Nuyen"))
                     {
-                        intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
+                        intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
                         // Need a for loop instead of a power system to maintain exact precision
                         for (int i = 0; i < intDecimalPlaces; ++i)
                             decMinimumAmount /= 10.0m;
@@ -5803,8 +5802,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
             {
-                string strFormat = CharacterObjectOptions.NuyenFormat;
-                intDecimalPlaces = Math.Max(0, strFormat.Length - 1 - strFormat.LastIndexOf('.'));
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
             }
             else if (objGear.Category == "Currency")
             {
@@ -7208,13 +7206,7 @@ namespace Chummer
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        string strNuyenFormat = CharacterObjectOptions.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.NuyenDecimals);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -16048,24 +16040,16 @@ namespace Chummer
             CharacterObject.ResetCachedEssence();
             // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
             CharacterObject.RefreshEssenceLossImprovements();
-
-            int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
             
-            string strESS = decimal.Round(CharacterObject.Essence(), intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            string strESSFormat = CharacterObjectOptions.EssenceFormat;
+            
+            string strESS = CharacterObject.Essence().ToString(strESSFormat, GlobalOptions.CultureInfo);
             lblESSMax.Text = strESS;
             tssEssence.Text = strESS;
 
-            lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblCyberwareESS.Text = CharacterObject.CyberwareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblBiowareESS.Text = CharacterObject.BiowareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblEssenceHoleESS.Text = CharacterObject.EssenceHole.ToString(strESSFormat, GlobalOptions.CultureInfo);
 
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -16468,16 +16452,8 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 return;
             }
-
-            int intESSDecimals = CharacterObjectOptions.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
+            
+            string strESSFormat = CharacterObjectOptions.EssenceFormat;
 
             Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
             // Locate the selected piece of Cyberware.
@@ -16821,8 +16797,8 @@ namespace Chummer
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponRC.Text = objWeapon.TotalRC;
+                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
+                lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.CultureInfo, true);
                 lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                 lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -16869,9 +16845,9 @@ namespace Chummer
                     lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                     lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                     lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                     lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString();
+                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                     lblWeaponDamage.Text = string.Empty;
                     lblWeaponRC.Text = objSelectedAccessory.RC;
                     lblWeaponAP.Text = string.Empty;
@@ -16955,7 +16931,7 @@ namespace Chummer
                         lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                         lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
                         lblWeaponConceal.Text = string.Empty;
                         lblWeaponDamage.Text = string.Empty;
                         lblWeaponRC.Text = string.Empty;
@@ -18559,7 +18535,7 @@ namespace Chummer
                             lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                             lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
                             lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                             lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -18589,7 +18565,7 @@ namespace Chummer
                             lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                             lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
                             lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                             lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
                             if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))

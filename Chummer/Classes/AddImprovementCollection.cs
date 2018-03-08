@@ -2000,7 +2000,6 @@ namespace Chummer.Classes
             Log.Info("activesoft");
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("activesoft = " + strNodeOuterXml);
-            Log.Info("Calling CreateImprovement");
             string strForcedValue = ForcedValue;
             Log.Info("_strForcedValue = " + strForcedValue);
 
@@ -2071,7 +2070,6 @@ namespace Chummer.Classes
         {
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("skillsoft = " + strNodeOuterXml);
-            Log.Info("Calling CreateImprovement");
             string strForcedValue = ForcedValue;
             Log.Info("_strForcedValue = " + strForcedValue);
 
@@ -3579,8 +3577,7 @@ namespace Chummer.Classes
             {
                 string strSelection = string.Empty;
                 ForcedValue = string.Empty;
-
-
+                
                 Log.Info("objXmlSpecificPower = " + bonusNode.OuterXml);
 
                 string strPowerName = bonusNode["name"]?.InnerText;
@@ -5917,6 +5914,37 @@ namespace Chummer.Classes
             Log.Info("weaponaccuracy = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["value"]?.InnerText, _intRating));
+        }
+
+        public void weaponskillaccuracy(XmlNode bonusNode)
+        {
+            Log.Info("weaponskillaccuracy");
+            Log.Info("weaponskillaccuracy = " + bonusNode.OuterXml);
+
+            string strForcedValue = ForcedValue;
+            Log.Info("_strForcedValue = " + strForcedValue);
+
+            XmlNode xmlSelectSkillNode = bonusNode["selectskill"];
+            if (xmlSelectSkillNode != null)
+            {
+                bool blnDummy = false;
+                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(xmlSelectSkillNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
+                if (blnDummy)
+                    throw new AbortedException();
+            }
+            else
+            {
+                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? (bonusNode["name"]?.InnerText ?? string.Empty) : strForcedValue;
+            }
+
+            string strVal = bonusNode["val"]?.InnerText;
+
+            if (_blnConcatSelectedValue && !string.IsNullOrEmpty(SelectedValue))
+                SourceName += " (" + SelectedValue + ')';
+            
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, strVal, _intRating));
         }
 
         public void metageneticlimit(XmlNode bonusNode)

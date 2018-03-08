@@ -184,13 +184,7 @@ namespace Chummer.Backend.Equipment
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
-                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                    if (intDecimalPlaces == -1)
-                        intDecimalPlaces = 0;
-                    else
-                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.NuyenDecimals);
                     if (decMax > 1000000)
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;

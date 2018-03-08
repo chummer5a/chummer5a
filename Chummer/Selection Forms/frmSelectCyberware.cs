@@ -749,15 +749,6 @@ namespace Chummer
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
             // Essence.
-            int intESSDecimals = _objCharacter.Options.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
             decimal decESS = 0;
             if (!chkPrototypeTranshuman.Checked)
             {
@@ -796,7 +787,7 @@ namespace Chummer
                         decESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
                 }
             }
-            lblEssence.Text = decESS.ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblEssence.Text = decESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
             if (objXmlCyberware.SelectSingleNode("addtoparentess") != null)
                 lblEssence.Text = '+' + lblEssence.Text;
 

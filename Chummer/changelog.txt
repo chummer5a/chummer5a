@@ -93,6 +93,8 @@ Application Changes:
 - Implemented a DisplayAccuracy property for weapons, to be used by forms.
 - Implemented a Location field to allow mapping weapon mounts to specific locations on a vehicle.
 - Weapon Mounts can now allow specific weapons to be mounted to them in addition to the normal category restrictions. This is not currently supported through the selection window and is intended solely for use with pre-built vehicles.
+- Unhardcoded the weapon skill accuracy increase given by the Enhanced Accuracy power so that it can now be used through weaponskillaccuracy bonus nodes.
+- Fixed an issue where bonus accuracy from Laser Sight (2050) would stack with smartgun accessories.
 
 Data Changes:
 
@@ -128,6 +130,8 @@ Data Changes:
 - Fixed the data for drones to properly use weapon mounts instead of mods.
 - Added an amend entry for the Federated-Boeing PBY-70 Catalina II, which has additional weapon mounts in the German version of Rigger 5. Fixes #2555
 - The Ruhrmetall Wolfspinne 8V2's weapons are now properly mountable in its weapon mounts. Existing characters with this vehicle may need to remove and re-add it.
+- Fixed an issue where the Enhanced Accuracy power could be taken for Unarmed Combat.
+- Fixed an issue where the accuracy bonus from multiple instances of the Enhanced Accuracy power taken for the same skill would stack with one another.
 
 New Strings:
 

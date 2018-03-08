@@ -140,7 +140,7 @@ namespace Chummer
             }
 
             lblCyberware.Text = objCyberwareLabelString.ToString();
-            lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
             lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblGrade.Text = objGrade.DisplayName(GlobalOptions.Language);
             _decCost = decTotalCost;

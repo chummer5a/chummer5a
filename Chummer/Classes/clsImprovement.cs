@@ -298,6 +298,7 @@ namespace Chummer
             ContactMakeFree,
             FreeWare,
             WeaponAccuracy,
+            WeaponSkillAccuracy,
             MetageneticLimit,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
@@ -1553,6 +1554,8 @@ namespace Chummer
                     break;
                 case ImprovementType.FreeWare:
                     break;
+                case ImprovementType.WeaponSkillAccuracy:
+                    break;
                 case ImprovementType.WeaponAccuracy:
                     break;
                 case ImprovementType.MetageneticLimit:
@@ -2551,9 +2554,15 @@ namespace Chummer
                 strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                     frmPickSkill.ExcludeCategory = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeSkillGroup = strTemp;
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                     frmPickSkill.LimitToSkill = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeSkill = strTemp;
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                     frmPickSkill.LinkedAttribute = strTemp;
