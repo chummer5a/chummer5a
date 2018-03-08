@@ -318,7 +318,7 @@
   <xsl:variable name="lang.StunTrack"    select="'Faixa de Dano de Atordoamento'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Classe de Submersão'"/>
   <xsl:variable name="lang.TotalArmor"  select="'Total de armaduras e acessórios mais altos equipados'"/>
-  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxinas e Patógenos'"/>
+  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxinas e Patogênicos'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Personagem Sem Nome'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Corpo'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Custo de Veículo'"/>
