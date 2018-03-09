@@ -1732,14 +1732,20 @@ namespace Chummer
             Timekeeper.Start("load_char_powers");
 
             // Powers.
+            bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
             List<ListItem> lstPowerOrder = new List<ListItem>();
             objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
             // Sort the Powers in alphabetical order.
             foreach (XmlNode xmlPower in objXmlNodeList)
             {
                 string strGuid = xmlPower["guid"]?.InnerText;
+                string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
+                if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
+                {
+                    _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                }
                 if (!string.IsNullOrEmpty(strGuid))
-                    lstPowerOrder.Add(new ListItem(strGuid, (xmlPower["name"]?.InnerText ?? string.Empty) + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                    lstPowerOrder.Add(new ListItem(strGuid, strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
                 else
                 {
                     Power objPower = new Power(this);
@@ -1748,7 +1754,7 @@ namespace Chummer
                 }
             }
             lstPowerOrder.Sort(CompareListItems.CompareNames);
-
+            
             foreach (ListItem objItem in lstPowerOrder)
             {
                 XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
@@ -2438,18 +2444,8 @@ namespace Chummer
             objWriter.WriteElementString("cyberwaredisabled", CyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", CritterEnabled.ToString());
-
-            int intESSDecimals = _objOptions.EssenceDecimals;
-            string strESSFormat = "#,0";
-            if (intESSDecimals > 0)
-            {
-                StringBuilder objESSFormat = new StringBuilder(".");
-                for (int i = 0; i < intESSDecimals; ++i)
-                    objESSFormat.Append('0');
-                strESSFormat += objESSFormat.ToString();
-            }
-
-            objWriter.WriteElementString("totaless", Essence().ToString(strESSFormat, objCulture));
+            
+            objWriter.WriteElementString("totaless", Essence().ToString(_objOptions.EssenceFormat, objCulture));
             // <tradition />
             string strTraditionName = MagicTradition;
             if (strTraditionName == "Custom")

@@ -218,7 +218,7 @@ namespace Chummer
                     }
                     if (strName.StartsWith("Nuyen"))
                     {
-                        int intDecimalPlaces = _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.');
+                        int intDecimalPlaces = _objCharacter.Options.NuyenDecimals;
                         if (intDecimalPlaces <= 0)
                         {
                             nudGearQty.DecimalPlaces = 0;
