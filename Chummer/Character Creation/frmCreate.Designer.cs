@@ -1160,7 +1160,7 @@ namespace Chummer
             this.lblAttributes.Tag = "Label_Attributes";
             this.lblAttributes.Text = "Attributes";
             this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
         " character creation.");
             // 
             // lblNuyen
@@ -1300,6 +1300,16 @@ namespace Chummer
             this.lblBuildFoci.Text = "Foci";
             this.tipTooltip.SetToolTip(this.lblBuildFoci, "Each bonded Focus costs a number of BP equal to its Force.");
             // 
+            // lblBuildMartialArts
+            // 
+            this.lblBuildMartialArts.AutoSize = true;
+            this.lblBuildMartialArts.Location = new System.Drawing.Point(3, 380);
+            this.lblBuildMartialArts.Name = "lblBuildMartialArts";
+            this.lblBuildMartialArts.Size = new System.Drawing.Size(85, 13);
+            this.lblBuildMartialArts.TabIndex = 79;
+            this.lblBuildMartialArts.Tag = "Tab_MartialArts";
+            this.lblBuildMartialArts.Text = "Martial Arts";
+            // 
             // lblBuildNuyen
             // 
             this.lblBuildNuyen.AutoSize = true;
@@ -1422,7 +1432,7 @@ namespace Chummer
             this.lblBuildPrimaryAttributes.Tag = "Label_Attributes";
             this.lblBuildPrimaryAttributes.Text = "Attributes";
             this.tipTooltip.SetToolTip(this.lblBuildPrimaryAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
         " character creation.");
             // 
             // lblBuildNegativeQualities
@@ -1448,6 +1458,36 @@ namespace Chummer
             this.lblBuildPositiveQualities.Text = "Positive Qualities";
             this.tipTooltip.SetToolTip(this.lblBuildPositiveQualities, "Characters may select up to 35 BP worth of Positive Qualities. Qualities in dark " +
         "red do not count towards the 35 BP limit.");
+            // 
+            // lblRiggingINILabel
+            // 
+            this.lblRiggingINILabel.AutoSize = true;
+            this.lblRiggingINILabel.Location = new System.Drawing.Point(3, 140);
+            this.lblRiggingINILabel.Name = "lblRiggingINILabel";
+            this.lblRiggingINILabel.Size = new System.Drawing.Size(112, 13);
+            this.lblRiggingINILabel.TabIndex = 75;
+            this.lblRiggingINILabel.Tag = "Label_OtherRiggingInit";
+            this.lblRiggingINILabel.Text = "Rigging Initiative (AR):";
+            // 
+            // lblMatrixINIHotLabel
+            // 
+            this.lblMatrixINIHotLabel.AutoSize = true;
+            this.lblMatrixINIHotLabel.Location = new System.Drawing.Point(3, 120);
+            this.lblMatrixINIHotLabel.Name = "lblMatrixINIHotLabel";
+            this.lblMatrixINIHotLabel.Size = new System.Drawing.Size(106, 13);
+            this.lblMatrixINIHotLabel.TabIndex = 73;
+            this.lblMatrixINIHotLabel.Tag = "Label_OtherMatrixInitVRHot";
+            this.lblMatrixINIHotLabel.Text = "Matrix Initiative (Hot):";
+            // 
+            // lblMatrixINIColdLabel
+            // 
+            this.lblMatrixINIColdLabel.AutoSize = true;
+            this.lblMatrixINIColdLabel.Location = new System.Drawing.Point(3, 100);
+            this.lblMatrixINIColdLabel.Name = "lblMatrixINIColdLabel";
+            this.lblMatrixINIColdLabel.Size = new System.Drawing.Size(110, 13);
+            this.lblMatrixINIColdLabel.TabIndex = 71;
+            this.lblMatrixINIColdLabel.Tag = "Label_OtherMatrixInitVRCold";
+            this.lblMatrixINIColdLabel.Text = "Matrix Initiative (Cold):";
             // 
             // lblMemoryLabel
             // 
@@ -1537,6 +1577,16 @@ namespace Chummer
             this.lblAstralINILabel.Tag = "Label_OtherAstralInit";
             this.lblAstralINILabel.Text = "Astral Initiative:";
             this.tipTooltip.SetToolTip(this.lblAstralINILabel, "Astral Initiative is calculated as INT x 2.");
+            // 
+            // lblMatrixINILabel
+            // 
+            this.lblMatrixINILabel.AutoSize = true;
+            this.lblMatrixINILabel.Location = new System.Drawing.Point(3, 80);
+            this.lblMatrixINILabel.Name = "lblMatrixINILabel";
+            this.lblMatrixINILabel.Size = new System.Drawing.Size(104, 13);
+            this.lblMatrixINILabel.TabIndex = 22;
+            this.lblMatrixINILabel.Tag = "Label_OtherMatrixInit";
+            this.lblMatrixINILabel.Text = "Matrix Initiative (AR):";
             // 
             // lblINILabel
             // 
@@ -1848,56 +1898,6 @@ namespace Chummer
             this.lblBuildPrepsBPLabel.Text = "Preparations";
             this.tipTooltip.SetToolTip(this.lblBuildPrepsBPLabel, "Each Spell costs 3 BP.");
             // 
-            // lblBuildMartialArts
-            // 
-            this.lblBuildMartialArts.AutoSize = true;
-            this.lblBuildMartialArts.Location = new System.Drawing.Point(3, 380);
-            this.lblBuildMartialArts.Name = "lblBuildMartialArts";
-            this.lblBuildMartialArts.Size = new System.Drawing.Size(59, 13);
-            this.lblBuildMartialArts.TabIndex = 79;
-            this.lblBuildMartialArts.Tag = "Tab_MartialArts";
-            this.lblBuildMartialArts.Text = "Martial Arts";
-            // 
-            // lblRiggingINILabel
-            // 
-            this.lblRiggingINILabel.AutoSize = true;
-            this.lblRiggingINILabel.Location = new System.Drawing.Point(3, 140);
-            this.lblRiggingINILabel.Name = "lblRiggingINILabel";
-            this.lblRiggingINILabel.Size = new System.Drawing.Size(112, 13);
-            this.lblRiggingINILabel.TabIndex = 75;
-            this.lblRiggingINILabel.Tag = "Label_OtherRiggingInit";
-            this.lblRiggingINILabel.Text = "Rigging Initiative (AR):";
-            // 
-            // lblMatrixINIHotLabel
-            // 
-            this.lblMatrixINIHotLabel.AutoSize = true;
-            this.lblMatrixINIHotLabel.Location = new System.Drawing.Point(3, 120);
-            this.lblMatrixINIHotLabel.Name = "lblMatrixINIHotLabel";
-            this.lblMatrixINIHotLabel.Size = new System.Drawing.Size(106, 13);
-            this.lblMatrixINIHotLabel.TabIndex = 73;
-            this.lblMatrixINIHotLabel.Tag = "Label_OtherMatrixInitVRHot";
-            this.lblMatrixINIHotLabel.Text = "Matrix Initiative (Hot):";
-            // 
-            // lblMatrixINIColdLabel
-            // 
-            this.lblMatrixINIColdLabel.AutoSize = true;
-            this.lblMatrixINIColdLabel.Location = new System.Drawing.Point(3, 100);
-            this.lblMatrixINIColdLabel.Name = "lblMatrixINIColdLabel";
-            this.lblMatrixINIColdLabel.Size = new System.Drawing.Size(110, 13);
-            this.lblMatrixINIColdLabel.TabIndex = 71;
-            this.lblMatrixINIColdLabel.Tag = "Label_OtherMatrixInitVRCold";
-            this.lblMatrixINIColdLabel.Text = "Matrix Initiative (Cold):";
-            // 
-            // lblMatrixINILabel
-            // 
-            this.lblMatrixINILabel.AutoSize = true;
-            this.lblMatrixINILabel.Location = new System.Drawing.Point(3, 80);
-            this.lblMatrixINILabel.Name = "lblMatrixINILabel";
-            this.lblMatrixINILabel.Size = new System.Drawing.Size(104, 13);
-            this.lblMatrixINILabel.TabIndex = 22;
-            this.lblMatrixINILabel.Tag = "Label_OtherMatrixInit";
-            this.lblMatrixINILabel.Text = "Matrix Initiative (AR):";
-            // 
             // lblAIProgramsAdvancedPrograms
             // 
             this.lblAIProgramsAdvancedPrograms.AutoSize = true;
@@ -2035,6 +2035,15 @@ namespace Chummer
             this.cmsCyberware.Name = "cmsCyberware";
             this.cmsCyberware.Size = new System.Drawing.Size(148, 70);
             // 
+            // cmsVehicleCyberware
+            // 
+            this.cmsVehicleCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.tsVehicleCyberwareAddAsPlugin,
+                this.tsVehicleCyberwareAddGear,
+                this.tsVehicleCyberwareNotes});
+            this.cmsVehicleCyberware.Name = "cmsVehicleCyberware";
+            this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 70);
+            // 
             // tsCyberwareAddAsPlugin
             // 
             this.tsCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
@@ -2061,15 +2070,6 @@ namespace Chummer
             this.tsCyberwareNotes.Tag = "Menu_Notes";
             this.tsCyberwareNotes.Text = "&Notes";
             this.tsCyberwareNotes.Click += new System.EventHandler(this.tsCyberwareNotes_Click);
-            // 
-            // cmsVehicleCyberware
-            // 
-            this.cmsVehicleCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleCyberwareAddAsPlugin,
-            this.tsVehicleCyberwareAddGear,
-            this.tsVehicleCyberwareNotes});
-            this.cmsVehicleCyberware.Name = "cmsVehicleCyberware";
-            this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 70);
             // 
             // tsVehicleCyberwareAddAsPlugin
             // 
@@ -2207,6 +2207,15 @@ namespace Chummer
             this.tsWeaponName.Text = "Name &Weapon";
             this.tsWeaponName.Click += new System.EventHandler(this.tsWeaponName_Click);
             // 
+            // tsWeaponMountLocation
+            // 
+            this.tsWeaponMountLocation.Image = global::Chummer.Properties.Resources.tag_red;
+            this.tsWeaponMountLocation.Name = "tsWeaponMountLocation";
+            this.tsWeaponMountLocation.Size = new System.Drawing.Size(208, 22);
+            this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
+            this.tsWeaponMountLocation.Text = "Rename &Location";
+            this.tsWeaponMountLocation.Click += new System.EventHandler(this.tsWeaponMountLocation_Click);
+            // 
             // tsWeaponNotes
             // 
             this.tsWeaponNotes.Image = global::Chummer.Properties.Resources.note_edit;
@@ -2215,15 +2224,6 @@ namespace Chummer
             this.tsWeaponNotes.Tag = "Menu_Notes";
             this.tsWeaponNotes.Text = "&Notes";
             this.tsWeaponNotes.Click += new System.EventHandler(this.tsWeaponNotes_Click);
-            // 
-            // tsWeaponMountLocation
-            // 
-            this.tsWeaponMountLocation.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsWeaponMountLocation.Name = "tsWeaponMountLocation";
-            this.tsWeaponMountLocation.Size = new System.Drawing.Size(180, 22);
-            this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
-            this.tsWeaponMountLocation.Text = "Rename &Location";
-            this.tsWeaponMountLocation.Click += new System.EventHandler(this.tsWeaponMountLocation_Click);
             // 
             // tsWeaponAddModification
             // 
@@ -2235,7 +2235,7 @@ namespace Chummer
             this.cmsGearButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsGearButtonAddAccessory});
             this.cmsGearButton.Name = "cmsGearButton";
-            this.cmsGearButton.Size = new System.Drawing.Size(153, 26);
+            this.cmsGearButton.Size = new System.Drawing.Size(153, 48);
             // 
             // tsGearButtonAddAccessory
             // 
@@ -2379,7 +2379,7 @@ namespace Chummer
             this.tsVehicleNotes,
             this.tsEditWeaponMount});
             this.cmsWeaponMount.Name = "cmsWeapon";
-            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 92);
+            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 70);
             // 
             // tsVehicleMountWeapon
             // 
@@ -3192,6 +3192,13 @@ namespace Chummer
             this.cmsCyberwareGear.Name = "cmsCyberwareGear";
             this.cmsCyberwareGear.Size = new System.Drawing.Size(148, 26);
             // 
+            // cmsVehicleCyberwareGear
+            // 
+            this.cmsVehicleCyberwareGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.tsVehicleCyberwareGearMenuAddAsPlugin});
+            this.cmsVehicleCyberwareGear.Name = "cmsVehicleCyberwareGear";
+            this.cmsVehicleCyberwareGear.Size = new System.Drawing.Size(148, 26);
+            // 
             // tsCyberwareGearMenuAddAsPlugin
             // 
             this.tsCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
@@ -3200,13 +3207,6 @@ namespace Chummer
             this.tsCyberwareGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsCyberwareGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsCyberwareGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsCyberwareGearMenuAddAsPlugin_Click);
-            // 
-            // cmsVehicleCyberwareGear
-            // 
-            this.cmsVehicleCyberwareGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleCyberwareGearMenuAddAsPlugin});
-            this.cmsVehicleCyberwareGear.Name = "cmsVehicleCyberwareGear";
-            this.cmsVehicleCyberwareGear.Size = new System.Drawing.Size(148, 26);
             // 
             // tsVehicleCyberwareGearMenuAddAsPlugin
             // 
@@ -3478,6 +3478,7 @@ namespace Chummer
             this.lblMetatypeSource.Size = new System.Drawing.Size(47, 13);
             this.lblMetatypeSource.TabIndex = 89;
             this.lblMetatypeSource.Text = "[Source]";
+            this.lblMetatypeSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetatypeSourceLabel
             // 
@@ -3519,6 +3520,7 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 65;
             this.lblQualitySource.Text = "[Source]";
+            this.lblQualitySource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblQualitySourceLabel
             // 
@@ -3693,6 +3695,7 @@ namespace Chummer
             this.lblLifeModuleSource.Size = new System.Drawing.Size(47, 13);
             this.lblLifeModuleSource.TabIndex = 103;
             this.lblLifeModuleSource.Text = "[Source]";
+            this.lblLifeModuleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblLifeModuleSourceLabel
             // 
@@ -3899,7 +3902,7 @@ namespace Chummer
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
-            this.treLimit.Size = new System.Drawing.Size(299, 0);
+            this.treLimit.Size = new System.Drawing.Size(299, 573);
             this.treLimit.TabIndex = 56;
             this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
             // 
@@ -3952,6 +3955,7 @@ namespace Chummer
             this.lblMartialArtSource.Size = new System.Drawing.Size(47, 13);
             this.lblMartialArtSource.TabIndex = 25;
             this.lblMartialArtSource.Text = "[Source]";
+            this.lblMartialArtSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMartialArtSourceLabel
             // 
@@ -3981,7 +3985,7 @@ namespace Chummer
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
-            this.treMartialArts.Size = new System.Drawing.Size(315, 0);
+            this.treMartialArts.Size = new System.Drawing.Size(315, 573);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
             this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
@@ -4066,6 +4070,7 @@ namespace Chummer
             this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
             this.lblTraditionSource.TabIndex = 155;
             this.lblTraditionSource.Text = "[Source]";
+            this.lblTraditionSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblTraditionSourceLabel
             // 
@@ -4316,6 +4321,7 @@ namespace Chummer
             this.lblSpellSource.Size = new System.Drawing.Size(47, 13);
             this.lblSpellSource.TabIndex = 88;
             this.lblSpellSource.Text = "[Source]";
+            this.lblSpellSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSpellSourceLabel
             // 
@@ -4532,7 +4538,7 @@ namespace Chummer
             this.panSpirits.AutoScroll = true;
             this.panSpirits.Location = new System.Drawing.Point(11, 449);
             this.panSpirits.Name = "panSpirits";
-            this.panSpirits.Size = new System.Drawing.Size(824, 0);
+            this.panSpirits.Size = new System.Drawing.Size(824, 156);
             this.panSpirits.TabIndex = 4;
             // 
             // cmdAddSpell
@@ -4661,6 +4667,7 @@ namespace Chummer
             this.cboStream.Name = "cboStream";
             this.cboStream.Size = new System.Drawing.Size(141, 21);
             this.cboStream.TabIndex = 101;
+            this.cboStream.Visible = true;
             this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
             // 
             // lblFadingAttributesValue
@@ -4700,6 +4707,7 @@ namespace Chummer
             this.lblStreamLabel.TabIndex = 100;
             this.lblStreamLabel.Tag = "Label_Stream";
             this.lblStreamLabel.Text = "Stream:";
+            this.lblStreamLabel.Visible = true;
             // 
             // lblComplexFormSource
             // 
@@ -4709,6 +4717,7 @@ namespace Chummer
             this.lblComplexFormSource.Size = new System.Drawing.Size(47, 13);
             this.lblComplexFormSource.TabIndex = 90;
             this.lblComplexFormSource.Text = "[Source]";
+            this.lblComplexFormSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblComplexFormSourceLabel
             // 
@@ -4768,7 +4777,7 @@ namespace Chummer
             this.panSprites.AutoScroll = true;
             this.panSprites.Location = new System.Drawing.Point(8, 445);
             this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(827, 0);
+            this.panSprites.Size = new System.Drawing.Size(827, 163);
             this.panSprites.TabIndex = 25;
             // 
             // cmdAddComplexForm
@@ -4842,6 +4851,7 @@ namespace Chummer
             this.lblAIProgramsSource.Size = new System.Drawing.Size(47, 13);
             this.lblAIProgramsSource.TabIndex = 90;
             this.lblAIProgramsSource.Text = "[Source]";
+            this.lblAIProgramsSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblAIProgramsSourceLabel
             // 
@@ -5000,6 +5010,7 @@ namespace Chummer
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
             this.lblCritterPowerSource.TabIndex = 14;
             this.lblCritterPowerSource.Text = "[Source]";
+            this.lblCritterPowerSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCritterPowerSourceLabel
             // 
@@ -5144,7 +5155,7 @@ namespace Chummer
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
-            this.treCritterPowers.Size = new System.Drawing.Size(333, 0);
+            this.treCritterPowers.Size = new System.Drawing.Size(333, 576);
             this.treCritterPowers.TabIndex = 0;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
             this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
@@ -5189,6 +5200,7 @@ namespace Chummer
             this.lblMetamagicSource.Size = new System.Drawing.Size(47, 13);
             this.lblMetamagicSource.TabIndex = 109;
             this.lblMetamagicSource.Text = "[Source]";
+            this.lblMetamagicSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetamagicSourceLabel
             // 
@@ -5235,7 +5247,7 @@ namespace Chummer
             this.treMetamagic.ShowNodeToolTips = true;
             this.treMetamagic.ShowPlusMinus = false;
             this.treMetamagic.ShowRootLines = false;
-            this.treMetamagic.Size = new System.Drawing.Size(351, 0);
+            this.treMetamagic.Size = new System.Drawing.Size(351, 530);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
             this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
@@ -5258,7 +5270,7 @@ namespace Chummer
             this.cmdDeleteMetamagic.AutoSize = true;
             this.cmdDeleteMetamagic.Location = new System.Drawing.Point(257, 35);
             this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
-            this.cmdDeleteMetamagic.Size = new System.Drawing.Size(123, 23);
+            this.cmdDeleteMetamagic.Size = new System.Drawing.Size(102, 23);
             this.cmdDeleteMetamagic.TabIndex = 94;
             this.cmdDeleteMetamagic.Tag = "Button_RemoveInitiateGrade";
             this.cmdDeleteMetamagic.Text = "&Remove Initiate Grade";
@@ -5616,6 +5628,7 @@ namespace Chummer
             this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
             this.lblCyberwareSource.TabIndex = 48;
             this.lblCyberwareSource.Text = "[Source]";
+            this.lblCyberwareSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCyberwareSourceLabel
             // 
@@ -5832,7 +5845,7 @@ namespace Chummer
             treeNode26});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
-            this.treCyberware.Size = new System.Drawing.Size(295, 0);
+            this.treCyberware.Size = new System.Drawing.Size(295, 572);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
             this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
@@ -5875,7 +5888,7 @@ namespace Chummer
             this.tabStreetGearTabs.Location = new System.Drawing.Point(3, 3);
             this.tabStreetGearTabs.Name = "tabStreetGearTabs";
             this.tabStreetGearTabs.SelectedIndex = 0;
-            this.tabStreetGearTabs.Size = new System.Drawing.Size(0, 0);
+            this.tabStreetGearTabs.Size = new System.Drawing.Size(839, 605);
             this.tabStreetGearTabs.TabIndex = 87;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
             // 
@@ -5925,7 +5938,7 @@ namespace Chummer
             this.tabGear.Controls.Add(this.cmdAddGear);
             this.tabGear.Location = new System.Drawing.Point(4, 22);
             this.tabGear.Name = "tabGear";
-            this.tabGear.Size = new System.Drawing.Size(0, 0);
+            this.tabGear.Size = new System.Drawing.Size(831, 579);
             this.tabGear.TabIndex = 3;
             this.tabGear.Tag = "Tab_Gear";
             this.tabGear.Text = "Gear";
@@ -6138,7 +6151,7 @@ namespace Chummer
             this.treFoci.ShowLines = false;
             this.treFoci.ShowPlusMinus = false;
             this.treFoci.ShowRootLines = false;
-            this.treFoci.Size = new System.Drawing.Size(308, 0);
+            this.treFoci.Size = new System.Drawing.Size(308, 228);
             this.treFoci.TabIndex = 91;
             this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
             this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
@@ -6151,6 +6164,7 @@ namespace Chummer
             this.lblGearSource.Size = new System.Drawing.Size(47, 13);
             this.lblGearSource.TabIndex = 74;
             this.lblGearSource.Text = "[Source]";
+            this.lblGearSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblGearSourceLabel
             // 
@@ -6348,7 +6362,7 @@ namespace Chummer
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode27});
             this.treGear.ShowNodeToolTips = true;
-            this.treGear.Size = new System.Drawing.Size(295, 0);
+            this.treGear.Size = new System.Drawing.Size(295, 540);
             this.treGear.TabIndex = 49;
             this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
             this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
@@ -6419,7 +6433,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(0, 0);
+            this.tabArmor.Size = new System.Drawing.Size(831, 579);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Armor";
@@ -6670,6 +6684,7 @@ namespace Chummer
             this.lblArmorSource.Size = new System.Drawing.Size(47, 13);
             this.lblArmorSource.TabIndex = 80;
             this.lblArmorSource.Text = "[Source]";
+            this.lblArmorSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblArmorSourceLabel
             // 
@@ -6834,7 +6849,7 @@ namespace Chummer
             this.tabWeapons.Controls.Add(this.cmdAddWeapon);
             this.tabWeapons.Location = new System.Drawing.Point(4, 22);
             this.tabWeapons.Name = "tabWeapons";
-            this.tabWeapons.Size = new System.Drawing.Size(0, 0);
+            this.tabWeapons.Size = new System.Drawing.Size(831, 579);
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
@@ -7208,6 +7223,7 @@ namespace Chummer
             this.lblWeaponSource.Size = new System.Drawing.Size(47, 13);
             this.lblWeaponSource.TabIndex = 69;
             this.lblWeaponSource.Text = "[Source]";
+            this.lblWeaponSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblWeaponSourceLabel
             // 
@@ -7478,7 +7494,7 @@ namespace Chummer
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(0, 0);
+            this.tabLifestyle.Size = new System.Drawing.Size(831, 579);
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyle";
@@ -7561,6 +7577,7 @@ namespace Chummer
             this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
+            this.lblLifestyleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblLifestyleSourceLabel
             // 
@@ -8419,6 +8436,7 @@ namespace Chummer
             this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
             this.lblVehicleSource.TabIndex = 60;
             this.lblVehicleSource.Text = "[Source]";
+            this.lblVehicleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblVehicleSourceLabel
             // 
@@ -8711,7 +8729,7 @@ namespace Chummer
             treeNode31});
             this.treVehicles.ShowNodeToolTips = true;
             this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(403, 0);
+            this.treVehicles.Size = new System.Drawing.Size(403, 572);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
             this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
@@ -9164,7 +9182,7 @@ namespace Chummer
             this.picMugshot.Margin = new System.Windows.Forms.Padding(13);
             this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.picMugshot.Size = new System.Drawing.Size(21, 31);
+            this.picMugshot.Size = new System.Drawing.Size(191, 340);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 20;
             this.picMugshot.TabStop = false;
@@ -9190,7 +9208,7 @@ namespace Chummer
             this.panImprovements.Location = new System.Drawing.Point(11, 9);
             this.panImprovements.Margin = new System.Windows.Forms.Padding(0);
             this.panImprovements.Name = "panImprovements";
-            this.panImprovements.Size = new System.Drawing.Size(0, 0);
+            this.panImprovements.Size = new System.Drawing.Size(831, 599);
             this.panImprovements.TabIndex = 0;
             // 
             // tabRelationships
@@ -9348,7 +9366,7 @@ namespace Chummer
             this.panContacts.AutoScroll = true;
             this.panContacts.Location = new System.Drawing.Point(3, 47);
             this.panContacts.Name = "panContacts";
-            this.panContacts.Size = new System.Drawing.Size(821, 537);
+            this.panContacts.Size = new System.Drawing.Size(821, 529);
             this.panContacts.TabIndex = 25;
             this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
             this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
@@ -9366,7 +9384,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+            this.tabEnemies.Size = new System.Drawing.Size(826, 579);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -9409,7 +9427,7 @@ namespace Chummer
             this.panEnemies.AutoScroll = true;
             this.panEnemies.Location = new System.Drawing.Point(3, 48);
             this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(6672, 5362);
+            this.panEnemies.Size = new System.Drawing.Size(840, 529);
             this.panEnemies.TabIndex = 41;
             this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
@@ -9435,7 +9453,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(178, 42);
+            this.tabPets.Size = new System.Drawing.Size(826, 579);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets and Cohorts";
@@ -9449,7 +9467,7 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(6, 36);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(6642, 5370);
+            this.panPets.Size = new System.Drawing.Size(810, 537);
             this.panPets.TabIndex = 24;
             // 
             // cmdAddPet
