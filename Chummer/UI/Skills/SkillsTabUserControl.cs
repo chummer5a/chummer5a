@@ -136,7 +136,7 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
-            intNameLabelWidth = _controls.Max(skill => skill.NameWidth);
+            intNameLabelWidth = _controls.Any() ? _controls.Max(skill => skill.NameWidth) : 0;
             foreach (SkillControl2 s in _controls)
             {
                 s.MoveControls(intNameLabelWidth);
@@ -146,7 +146,7 @@ namespace Chummer.UI.Skills
             lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
             if (!_objCharacter.Created)
             {
-                intRatingLabelWidth = _controls.Max(skill => skill.NudSkillWidth);
+                intRatingLabelWidth = _controls.Any() ? _controls.Max(skill => skill.NudSkillWidth) : 0;
                 lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             }
 

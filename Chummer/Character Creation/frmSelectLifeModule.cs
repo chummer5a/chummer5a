@@ -171,7 +171,7 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = selectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + ' ' + selectedNodeInfo["page"]?.InnerText;
+                lblSource.Text = (selectedNodeInfo["source"]?.InnerText ?? string.Empty) + ' ' + selectedNodeInfo["page"]?.InnerText;
 
                 lblStage.Text = selectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }

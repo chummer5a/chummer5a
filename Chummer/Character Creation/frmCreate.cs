@@ -316,10 +316,15 @@ namespace Chummer
             treFoci.Visible = CharacterObject.MAGEnabled;
             cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
 
+            // Check whether Build Method is Life Modules
             if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                cmdLifeModule.Visible = true;
                 btnCreateBackstory.Visible = CharacterObjectOptions.AutomaticBackstory;
+                RefreshLifeModules(treLifeModules, cmsQuality);
+            }
+            else
+            {
+                tabCharacterTabs.TabPages.Remove(tabLifeModules);
             }
             
             RefreshQualities(treQualities, cmsQuality);
@@ -352,6 +357,7 @@ namespace Chummer
             CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
             CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+            CharacterObject.LifeModules.CollectionChanged += LifeModuleCollectionChanged;
             CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
             CharacterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
@@ -685,6 +691,7 @@ namespace Chummer
                 CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
+                CharacterObject.LifeModules.CollectionChanged -= LifeModuleCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.LimitModifiers.CollectionChanged -= LimitModifierCollectionChanged;
@@ -5187,7 +5194,7 @@ namespace Chummer
             }
         }
 
-        private void cmdLifeModule_Click(object sender, EventArgs e)
+        private void cmdAddLifeModule_Click(object sender, EventArgs e)
         {
             XmlNode xmlStagesParentNode = XmlManager.Load("lifemodules.xml").SelectSingleNode("chummer/stages");
 
@@ -5204,12 +5211,11 @@ namespace Chummer
                         intStage -= 1;
                         break;
                     }
-                    if (!CharacterObject.Qualities.Any(x => x.Type == QualityType.LifeModule && x.Stage == xmlStageNode.InnerText))
+                    if (!CharacterObject.LifeModules.Any(x => x.Type == QualityType.LifeModule && x.Stage == xmlStageNode.InnerText))
                     {
                         break;
                     }
                 }
-                //i--; //Counter last increment
                 frmSelectLifeModule frmSelectLifeModule = new frmSelectLifeModule(CharacterObject, intStage);
                 frmSelectLifeModule.ShowDialog(this);
 
@@ -5227,20 +5233,17 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objLifeModule = new Quality(CharacterObject);
 
-                objLifeModule.Create(objXmlLifeModule, QualitySource.LifeModule, lstWeapons);
+                objLifeModule.Create(objXmlLifeModule, QualitySource.Selected, lstWeapons);
                 if (objLifeModule.InternalId.IsEmptyGuid())
                     continue;
 
-                //Is there any reason not to add it?
-                if (true)
-                {
-                    CharacterObject.Qualities.Add(objLifeModule);
+                CharacterObject.LifeModules.Add(objLifeModule);
 
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    CharacterObject.Weapons.Add(objWeapon);
                 }
+
 
                 //Stupid hardcoding but no sane way
                 //To do group skills (not that anything else is sane)
@@ -5250,6 +5253,15 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+        }
+
+        private void cmdDeleteLifeModule_Click(object sender, EventArgs e)
+        {
+            // Locate the selected Quality.
+            if (treLifeModules.SelectedNode?.Tag is Quality objSelectedQuality)
+            {
+                RemoveQuality(objSelectedQuality);
+            }
         }
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
@@ -5522,7 +5534,10 @@ namespace Chummer
             // Fix for legacy characters with old addqualities improvements.
             RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
 
-            CharacterObject.Qualities.Remove(objSelectedQuality);
+            if (objSelectedQuality.Type != QualityType.LifeModule)
+                CharacterObject.Qualities.Remove(objSelectedQuality);
+            else
+                CharacterObject.LifeModules.Remove(objSelectedQuality);
             return true;
         }
 
@@ -9247,9 +9262,33 @@ namespace Chummer
                 }
             }
         }
+        #endregion
+
+#region Addtional Life Module Tab Control Events
+        private void treLifeModules_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            // Locate the selected Quality.
+            Quality objLifeModule = treLifeModules.SelectedNode?.Tag as Quality;
+
+            if (objLifeModule == null)
+            {
+                lblLifeModuleSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblLifeModuleSource, null);
+                lblLifeModuleKarma.Text = string.Empty;
+                lblLifeModuleEffect.Text = string.Empty;
+            }
+            else
+            {
+                string strPage = objLifeModule.DisplayPage(GlobalOptions.Language);
+                lblLifeModuleSource.Text = CommonFunctions.LanguageBookShort(objLifeModule.Source, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblLifeModuleSource, CommonFunctions.LanguageBookLong(objLifeModule.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblLifeModuleKarma.Text = objLifeModule.BP.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+                lblLifeModuleEffect.Text = objLifeModule.LifeModuleEffect;
+            }
+        }
 #endregion
 
-#region Additional Cyberware Tab Control Events
+        #region Additional Cyberware Tab Control Events
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
@@ -11205,6 +11244,14 @@ namespace Chummer
             if (e.KeyCode == Keys.Delete)
             {
                 cmdDeleteQuality_Click(sender, e);
+            }
+        }
+
+        private void treLifeModules_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmdDeleteLifeModule_Click(sender, e);
             }
         }
 
@@ -18317,6 +18364,11 @@ namespace Chummer
         private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshQualities(treQualities, cmsQuality, notifyCollectionChangedEventArgs);
+        }
+
+        private void LifeModuleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshLifeModules(treLifeModules, cmsQuality, notifyCollectionChangedEventArgs);
         }
 
         private void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

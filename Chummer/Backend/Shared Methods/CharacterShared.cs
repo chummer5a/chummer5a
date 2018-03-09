@@ -1904,7 +1904,6 @@ namespace Chummer
         {
             TreeNode objPositiveQualityRoot = null;
             TreeNode objNegativeQualityRoot = null;
-            TreeNode objLifeModuleRoot = null;
 
             if (notifyCollectionChangedEventArgs == null)
             {
@@ -1935,7 +1934,6 @@ namespace Chummer
             {
                 objPositiveQualityRoot = treQualities.FindNodeByTag("Node_SelectedPositiveQualities", false);
                 objNegativeQualityRoot = treQualities.FindNodeByTag("Node_SelectedNegativeQualities", false);
-                objLifeModuleRoot = treQualities.FindNodeByTag("String_LifeModules", false);
                 bool blnDoNameRefresh = false;
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2030,7 +2028,8 @@ namespace Chummer
                             objPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedPositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities",
+                                    GlobalOptions.Language)
                             };
                             treQualities.Nodes.Insert(0, objPositiveQualityRoot);
                             objPositiveQualityRoot.Expand();
@@ -2043,28 +2042,15 @@ namespace Chummer
                             objNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedNegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities",
+                                    GlobalOptions.Language)
                             };
-                            treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
+                            treQualities.Nodes.Insert(objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
                             objNegativeQualityRoot.Expand();
                         }
                         objParentNode = objNegativeQualityRoot;
                         break;
-                    case QualityType.LifeModule:
-                        if (objLifeModuleRoot == null)
-                        {
-                            objLifeModuleRoot = new TreeNode
-                            {
-                                Tag = "String_LifeModules",
-                                Text = LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)
-                            };
-                            treQualities.Nodes.Add(objLifeModuleRoot);
-                            objLifeModuleRoot.Expand();
-                        }
-                        objParentNode = objLifeModuleRoot;
-                        break;
                 }
-
                 if (objParentNode != null)
                 {
                     if (blnSingleAdd)
@@ -2090,10 +2076,190 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Refreshes all the names of qualities in the nodes
+        /// Refreshes the list of qualities into the selected TreeNode. If the same number of 
         /// </summary>
-        /// <param name="treQualities">Treeview to insert the qualities into.</param>
-        protected void RefreshQualityNames(TreeView treQualities)
+        /// <param name="treLifeModules">Treeview to insert the qualities into.</param>
+        /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+        /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
+        protected void RefreshLifeModules(TreeView treLifeModules, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            TreeNode nodNationalityRoot = null;
+            TreeNode nodFormativeYearsRoot = null;
+            TreeNode nodTeenYearsRoot = null;
+            TreeNode nodFurtherEducationRoot = null;
+            TreeNode nodRealLifeRoot = null;
+
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                string strSelectedNode = treLifeModules.SelectedNode?.Tag.ToString();
+
+                // Create the root nodes.
+                treLifeModules.Nodes.Clear();
+
+                // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+                HashSet<string> strQualitiesToPrint = new HashSet<string>();
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                {
+                    strQualitiesToPrint.Add(objQuality.QualityId + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra);
+                }
+
+                // Add Qualities
+                foreach (Quality objQuality in _objCharacter.LifeModules)
+                {
+                    AddToTree(objQuality, false);
+                }
+
+                treLifeModules.SortCustom(strSelectedNode);
+            }
+            else
+            {
+                nodNationalityRoot = treLifeModules.FindNodeByTag("Node_SelectedNationalityModule", false);
+                nodFormativeYearsRoot = treLifeModules.FindNodeByTag("Node_SelectedFormativeYearsModule", false);
+                nodTeenYearsRoot = treLifeModules.FindNodeByTag("Node_SelectedTeenYearsModule", false);
+                nodFurtherEducationRoot = treLifeModules.FindNodeByTag("nodFurtherEducationRoot", false);
+                nodRealLifeRoot = treLifeModules.FindNodeByTag("Node_SelectedRealLifeModule", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objQuality);
+                        }
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objNode = treLifeModules.FindNodeByTag(objQuality);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                        }
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Reset:
+                    {
+                        RefreshLifeModules(treLifeModules, cmsQuality);
+                        break;
+                    }
+                }
+            }
+
+            void AddToTree(Quality objLifeModule, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objLifeModule.CreateTreeNode(cmsQuality);
+                if (objNode == null)
+                    return;
+                TreeNode objParentNode = null;
+                switch (objLifeModule.Stage)
+                {
+                    case "Nationality":
+                        if (nodNationalityRoot == null)
+                        {
+                            nodNationalityRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedNationalityModule",
+                                Text = LanguageManager.GetString("Node_SelectedNationalityModule",
+                                    GlobalOptions.Language)
+                            };
+                            treLifeModules.Nodes.Insert(0, nodNationalityRoot);
+                            nodNationalityRoot.Expand();
+                        }
+                        objParentNode = nodNationalityRoot;
+                        break;
+                    case "Formative Years":
+                        if (nodFormativeYearsRoot == null)
+                        {
+                            nodFormativeYearsRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedFormativeYearsModule",
+                                Text = LanguageManager.GetString("Node_SelectedFormativeYearsModule",
+                                    GlobalOptions.Language)
+                            };
+                            treLifeModules.Nodes.Insert(1, nodFormativeYearsRoot);
+                            nodFormativeYearsRoot.Expand();
+                        }
+                        objParentNode = nodFormativeYearsRoot;
+                        break;
+                    case "Teen Years":
+                        if (nodTeenYearsRoot == null)
+                        {
+                            nodTeenYearsRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedTeenYearsModule",
+                                Text = LanguageManager.GetString("Node_SelectedTeenYearsModule",
+                                    GlobalOptions.Language)
+                            };
+                            treLifeModules.Nodes.Insert(2, nodTeenYearsRoot);
+                            nodTeenYearsRoot.Expand();
+                        }
+                        objParentNode = nodTeenYearsRoot;
+                        break;
+                    case "Further Education":
+                        if (nodFurtherEducationRoot == null)
+                        {
+                            nodFurtherEducationRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedFurtherEducationModule",
+                                Text = LanguageManager.GetString("Node_SelectedFurtherEducationModule",
+                                    GlobalOptions.Language)
+                            };
+                            treLifeModules.Nodes.Insert(3, nodFurtherEducationRoot);
+                            nodFurtherEducationRoot.Expand();
+                        }
+                        objParentNode = nodFurtherEducationRoot;
+                        break;
+                    case "Real Life":
+                        if (nodRealLifeRoot == null)
+                        {
+                            nodRealLifeRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedRealLifeModule",
+                                Text = LanguageManager.GetString("Node_SelectedRealLifeModule",
+                                    GlobalOptions.Language)
+                            };
+                            treLifeModules.Nodes.Insert(4, nodRealLifeRoot);
+                            nodRealLifeRoot.Expand();
+                        }
+                        objParentNode = nodRealLifeRoot;
+                        break;
+                }
+
+                if (objParentNode != null)
+                {
+                    if (blnSingleAdd)
+                    {
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        treLifeModules.SelectedNode = objNode;
+                    }
+                    else
+                        objParentNode.Nodes.Add(objNode);
+                }
+            }
+        }
+
+        /// <summary>
+            /// Refreshes all the names of qualities in the nodes
+            /// </summary>
+            /// <param name="treQualities">Treeview to insert the qualities into.</param>
+            protected void RefreshQualityNames(TreeView treQualities)
         {
             TreeNode objSelectedNode = treQualities.SelectedNode;
             foreach (TreeNode objQualityTypeNode in treQualities.Nodes)

@@ -218,6 +218,7 @@ namespace Chummer
         private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
         private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
         private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
+        private readonly ObservableCollection<Quality> _lstLifeModules = new ObservableCollection<Quality>();
         private readonly ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
@@ -865,6 +866,15 @@ namespace Chummer
             // </qualities>
             objWriter.WriteEndElement();
 
+	        // <lifemodules>
+	        objWriter.WriteStartElement("lifemodules");
+	        foreach (Quality objQuality in _lstLifeModules)
+	        {
+	            objQuality.Save(objWriter);
+	        }
+	        // </qualities>
+	        objWriter.WriteEndElement();
+
             // <lifestyles>
             objWriter.WriteStartElement("lifestyles");
             foreach (Lifestyle objLifestyle in _lstLifestyles)
@@ -1506,7 +1516,8 @@ namespace Chummer
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
 	        Timekeeper.Finish("load_char_quality");
-			AttributeSection.Load(objXmlCharacter);
+            // TODO LifeModules: Load method for Life Modules + Converting
+            AttributeSection.Load(objXmlCharacter);
 			Timekeeper.Start("load_char_misc2");
 
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -3125,6 +3136,7 @@ namespace Chummer
             _lstCritterPowers.Clear();
             _lstInitiationGrades.Clear();
             _lstQualities.Clear();
+            _lstLifeModules.Clear();
             _lstCalendar.Clear();
 
             _lstMugshots.Clear();
@@ -3220,6 +3232,7 @@ namespace Chummer
             _lstCritterPowers.Clear();
             _lstInitiationGrades.Clear();
             _lstQualities.Clear();
+            _lstLifeModules.Clear();
             _lstCalendar.Clear();
 
             SkillsSection.Reset();
@@ -7002,6 +7015,11 @@ namespace Chummer
         public ObservableCollection<Quality> Qualities => _lstQualities;
 
         /// <summary>
+        /// Qualities (Positive and Negative).
+        /// </summary>
+        public ObservableCollection<Quality> LifeModules => _lstLifeModules;
+
+        /// <summary>
         /// Life modules
         /// </summary>
         //public IList<LifeModule> LifeModules
@@ -8288,6 +8306,7 @@ namespace Chummer
         /// <summary>
         /// Convert Qualities that are still saved in the old format.
         /// </summary>
+        //TODO LifeModules: (Try to) Convert old Modules
         private void ConvertOldQualities(XmlNodeList objXmlQualityList)
         {
             XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");

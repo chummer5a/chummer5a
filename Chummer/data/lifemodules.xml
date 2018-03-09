@@ -8760,7 +8760,7 @@
       <versions>
         <version>
           <id>8bb2073b-a4f6-4745-acd9-55d326c57497</id>
-          <name>Corp</name>
+          <name>Corporate</name>
           <story>$real was born in Berlin being part of one of the resident corps.</story>
           <bonus>
             <attributelevel>
@@ -8815,7 +8815,6 @@
               <name>History</name>
               <group>Street</group>
             </knowledgeskilllevel>
-
             <pushtext>Berlin</pushtext>
             <addqualities>
               <addquality>SINner (National)</addquality>

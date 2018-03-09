@@ -752,10 +752,74 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                if (_eQualityType == QualityType.LifeModule)
+                {
+                    _objCachedMyXmlNode = XmlManager.Load("lifemodules.xml", strLanguage).SelectSingleNode("/chummer/modules/module[id = \"" + QualityId +"\"]") ??
+                                          XmlManager.Load("lifemodules.xml", strLanguage).SelectSingleNode("/chummer/modules/module/versions/version[id = \"" + QualityId + "\"]");
+                }
+                else
+                {
+                    _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                }
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+
+        public string LifeModuleEffect
+        {
+            get
+            {
+                if (_eQualityType != QualityType.LifeModule || !_nodBonus.HasChildNodes)
+                {
+                    return string.Empty;
+                }
+
+                string attributes = LanguageManager.GetString("Label_Attributes", GlobalOptions.Language) + ":" + Environment.NewLine;
+                string skills = LanguageManager.GetString("Label_ActiveSkills", GlobalOptions.Language) + ":" + Environment.NewLine;
+                string knoSkills = LanguageManager.GetString("Label_KnowledgeSkills", GlobalOptions.Language) + ":" + Environment.NewLine;
+                string qualities = LanguageManager.GetString("String_Quality", GlobalOptions.Language) + ":" + Environment.NewLine;
+
+                foreach (XmlNode bonusNode in _nodBonus.ChildNodes)
+                {
+                    if (bonusNode.Name == "addqualities")
+                    {
+                        foreach (XmlNode qualityNode in bonusNode.ChildNodes)
+                        {
+                            qualities += "  " + qualityNode.InnerText + Environment.NewLine;
+                        }
+                        continue;
+                    }
+                    string s = bonusNode["name"]?.InnerText;
+                    if (bonusNode.Name == "knowledgeskilllevel")
+                    {
+                        if (s == null && bonusNode["options"] != null)
+                        {
+                            foreach (XmlNode optionsNode in bonusNode["options"].ChildNodes)
+                            {
+                                s += optionsNode.InnerText + "/";
+                            }
+                            s = s.Substring(0, s.Length - 1);
+                        }
+                        s += " (" + bonusNode["group"]?.InnerText + ")";
+                    }
+                    s += " +" + (bonusNode["val"]?.InnerText ?? "1");
+
+                    switch (bonusNode.Name)
+                    {
+                        case "attributelevel":
+                            attributes += "  " + s + Environment.NewLine;
+                            break;
+                        case "skilllevel":
+                            skills += "  " + s + Environment.NewLine;
+                            break;
+                        case "knowledgeskilllevel":
+                            knoSkills += "  " + s + Environment.NewLine;
+                            break;
+                    }
+                }
+                return attributes + skills + knoSkills + qualities;
+            }
         }
         #endregion
 

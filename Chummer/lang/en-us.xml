@@ -9195,5 +9195,39 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Message_NonGuidIdWarning</key>
       <text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
     </string>
+	<!-- Region Life Modules -->
+	<string>
+	  <key>Tab_LifeModules</key>
+	  <text>Life Modules</text>
+	</string>
+	<string>
+	  <key>Node_SelectedNationalityModule</key>
+	  <text>Selected 'Nationality' Module</text>
+	</string>
+	<string>
+	  <key>Node_SelectedFormativeYearsModule</key>
+	  <text>Selected 'Formative Years' Module</text>
+	</string>
+	<string>
+	  <key>Node_SelectedTeenYearsModule</key>
+	  <text>Selected 'Teen Years' Module</text>
+	</string>
+	<string>
+	  <key>Node_SelectedFurtherEducationModule</key>
+	  <text>Selected 'Further Education' Module</text>
+	</string>
+	<string>
+	  <key>Node_SelectedRealLifeModule</key>
+	  <text>Selected 'Real Life' Modules</text>
+	</string>
+	<string>
+	  <key>Button_Add_LifeModule</key>
+	  <text>Add Life Module</text>
+	</string>
+	<string>
+	  <key>Label_LifeModule_Effect</key>
+	  <text>Life Module Effects:</text>
+	</string>
+	<!-- End Region -->
   </strings>
 </chummer>
