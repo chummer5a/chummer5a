@@ -133,6 +133,7 @@ Data Changes:
 - The Ruhrmetall Wolfspinne 8V2's weapons are now properly mountable in its weapon mounts. Existing characters with this vehicle may need to remove and re-add it.
 - Fixed an issue where the Enhanced Accuracy power could be taken for Unarmed Combat.
 - Fixed an issue where the accuracy bonus from multiple instances of the Enhanced Accuracy power taken for the same skill would stack with one another.
+- Fixed an issue with the Enhanced Accuracy Power not properly creating a bonus.
 
 New Strings:
 

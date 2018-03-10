@@ -5937,7 +5937,7 @@ namespace Chummer.Classes
                 SelectedValue = string.IsNullOrEmpty(strForcedValue) ? (bonusNode["name"]?.InnerText ?? string.Empty) : strForcedValue;
             }
 
-            string strVal = bonusNode["val"]?.InnerText;
+            string strVal = bonusNode["value"]?.InnerText;
 
             if (_blnConcatSelectedValue && !string.IsNullOrEmpty(SelectedValue))
                 SourceName += " (" + SelectedValue + ')';

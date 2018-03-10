@@ -29,10 +29,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -72,6 +72,7 @@ namespace Chummer
             this.lblSecurityTotal = new System.Windows.Forms.Label();
             this.lblAreaTotal = new System.Windows.Forms.Label();
             this.lblComfortTotal = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -215,7 +216,6 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -376,22 +376,22 @@ namespace Chummer
             // 
             this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode5.Name = "nodPositiveLifestyleQualities";
-            treeNode5.Tag = "Label_SummaryPositiveQualities";
-            treeNode5.Text = "Positive Qualities";
-            treeNode6.Name = "nodNegativeLifestyleQualities";
-            treeNode6.Tag = "Label_SummaryNegativeQualities";
-            treeNode6.Text = "Negative Qualities";
-            treeNode7.Name = "nodLifestyleEntertainments";
-            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode7.Text = "Entertainments";
-            treeNode8.Name = "nodFreeMatrixGrids";
-            treeNode8.Text = "Free Matrix Grids";
+            treeNode1.Name = "nodPositiveLifestyleQualities";
+            treeNode1.Tag = "Label_SummaryPositiveQualities";
+            treeNode1.Text = "Positive Qualities";
+            treeNode2.Name = "nodNegativeLifestyleQualities";
+            treeNode2.Tag = "Label_SummaryNegativeQualities";
+            treeNode2.Text = "Negative Qualities";
+            treeNode3.Name = "nodLifestyleEntertainments";
+            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodFreeMatrixGrids";
+            treeNode4.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 286);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
@@ -438,7 +438,6 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 69;
             this.lblQualitySource.Text = "[Source]";
-            this.lblQualitySource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblQualitySourceLabel
             // 
@@ -479,8 +478,8 @@ namespace Chummer
             this.chkPrimaryTenant.Name = "chkPrimaryTenant";
             this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
             this.chkPrimaryTenant.TabIndex = 74;
-            this.chkPrimaryTenant.Text = "Primary Tenant";
             this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
+            this.chkPrimaryTenant.Text = "Primary Tenant";
             this.chkPrimaryTenant.UseVisualStyleBackColor = true;
             this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.chkPrimaryTenant_CheckedChanged);
             // 
@@ -517,6 +516,17 @@ namespace Chummer
             this.lblComfortTotal.Text = "[0]";
             this.lblComfortTotal.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(423, 225);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(142, 17);
+            this.checkBox1.TabIndex = 78;
+            this.checkBox1.Tag = "Label_SelectAdvancedLifestyle_LPContribution";
+            this.checkBox1.Text = "Quality Contributes to LP";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // frmSelectLifestyleAdvanced
             // 
             this.AcceptButton = this.cmdOK;
@@ -524,6 +534,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(572, 342);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.lblSecurityTotal);
             this.Controls.Add(this.lblAreaTotal);
             this.Controls.Add(this.lblComfortTotal);
@@ -652,5 +663,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSecurityTotal;
         private System.Windows.Forms.Label lblAreaTotal;
         private System.Windows.Forms.Label lblComfortTotal;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
