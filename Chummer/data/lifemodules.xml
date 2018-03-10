@@ -7296,8 +7296,8 @@
             <spanish>Spanish</spanish>
             <dutch>Dutch</dutch>
             <english>English</english>
-            <val>0</val>
           </options>
+		  <val>0</val>
           <group>Language</group>
         </knowledgeskilllevel>
         <knowledgeskilllevel>

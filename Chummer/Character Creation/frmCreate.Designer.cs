@@ -3737,7 +3737,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treLifeModules.HideSelection = false;
             this.treLifeModules.Indent = 15;
-            this.treLifeModules.Location = new System.Drawing.Point(8, 38);
+            this.treLifeModules.Location = new System.Drawing.Point(6, 38);
             this.treLifeModules.Name = "treLifeModules";
             treeNode3.Name = "nodNationalityRoot";
             treeNode3.Tag = "Node_SelectedNationalityModule";

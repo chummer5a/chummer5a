@@ -1515,8 +1515,21 @@ namespace Chummer
             // If old Qualities are in use, they need to be converted before loading can continue.
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
+            if (BuildMethod == CharacterBuildMethod.LifeModule)
+            {
+                objXmlNodeList = objXmlCharacter.SelectNodes("lifemodules/quality");
+                XmlNode xmlRootLifeModulesNode = XmlManager.Load("lifemodules.xml").SelectSingleNode("/chummer/modules");
+                foreach (XmlNode objXmlLifeModule in objXmlNodeList)
+                {
+                    if (objXmlLifeModule["name"] != null)
+                    {
+                        Quality objQuality = new Quality(this);
+                        objQuality.Load(objXmlLifeModule);
+                        _lstLifeModules.Add(objQuality);
+                    }
+                }
+            }
 	        Timekeeper.Finish("load_char_quality");
-            // TODO LifeModules: Load method for Life Modules + Converting
             AttributeSection.Load(objXmlCharacter);
 			Timekeeper.Start("load_char_misc2");
 
@@ -8302,7 +8315,6 @@ namespace Chummer
         /// <summary>
         /// Convert Qualities that are still saved in the old format.
         /// </summary>
-        //TODO LifeModules: (Try to) Convert old Modules
         private void ConvertOldQualities(XmlNodeList objXmlQualityList)
         {
             XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");

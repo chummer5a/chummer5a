@@ -5201,9 +5201,8 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                //from 1 to second highest life module order possible (ye hardcoding is bad, but extra stage is a niche case)
                 int intStage;
-                for (intStage = 1; intStage < 5; ++intStage)
+                for (intStage = 1; intStage < xmlStagesParentNode?.ChildNodes.Count; ++intStage)
                 {
                     XmlNode xmlStageNode = xmlStagesParentNode?.SelectSingleNode("stage[@order = \"" + intStage + "\"]");
                     if (xmlStageNode == null)
