@@ -40,6 +40,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private bool _blnRefresh = false;
 
         #region Control Events
         public frmSelectSpell(Character objCharacter)
@@ -218,10 +219,12 @@ namespace Chummer
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnRefresh) return;
             UpdateSpellInfo();
         }
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnRefresh) return;
             UpdateSpellInfo();
         }
         #endregion
@@ -448,6 +451,11 @@ namespace Chummer
         {
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
+            _blnRefresh = true;
+            if (!chkExtended.Visible && chkExtended.Checked)
+            {
+                chkExtended.Checked = false;
+            }
             if (!string.IsNullOrEmpty(strSelectedSpellId))
             {
                 xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = \"" + strSelectedSpellId + "\"]");
@@ -789,6 +797,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSource,
                 CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            _blnRefresh = false;
         }
         #endregion
     }

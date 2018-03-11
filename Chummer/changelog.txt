@@ -96,6 +96,7 @@ Application Changes:
 - Weapon Mounts can now allow specific weapons to be mounted to them in addition to the normal category restrictions. This is not currently supported through the selection window and is intended solely for use with pre-built vehicles.
 - Unhardcoded the weapon skill accuracy increase given by the Enhanced Accuracy power so that it can now be used through weaponskillaccuracy bonus nodes.
 - Fixed an issue where bonus accuracy from Laser Sight (2050) would stack with smartgun accessories.
+- Fixed a crash when switching between spells with the Extended tag and spells without it.
 
 Data Changes:
 
