@@ -184,11 +184,14 @@ namespace Chummer.Backend.Skills
 
                 if (CareerIncrease)
                 {
-                    var skill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
-                    foreach (var disabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                    Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                    if (objSkill != null)
                     {
-                        disabledSkill.Karma = skill.Karma;
-                        disabledSkill.Base = skill.Base;
+                        foreach (Skill objDisabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                        {
+                            objDisabledSkill.Karma = objSkill.Karma;
+                            objDisabledSkill.Base = objSkill.Base;
+                        }
                     }
                 }
             }

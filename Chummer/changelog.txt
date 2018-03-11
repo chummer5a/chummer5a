@@ -98,6 +98,9 @@ Application Changes:
 - Fixed an issue where bonus accuracy from Laser Sight (2050) would stack with smartgun accessories.
 - Fixed a crash when switching between spells with the Extended tag and spells without it.
 - Completed the implementation of Dedicated Spellslinger providing discounts with specialisations.
+- Fixed an issue where launching Chummer5a under Mono (in Linux) would cause the program to crash on certain builds.
+- Enabling logging in the options menu will now immediately enable logging, instead of requiring Chummer5a to restart before logging begins.
+- Fixed some crashes related to multi-threaded code and logging.
 
 Data Changes:
 

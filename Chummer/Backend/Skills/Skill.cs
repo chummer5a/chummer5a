@@ -1012,28 +1012,29 @@ namespace Chummer.Backend.Skills
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly ReverseTree<string> DependencyTree =
-            new ReverseTree<string>(nameof(Skill),
-                new ReverseTree<string>(nameof(PoolToolTip),
-                    new ReverseTree<string>(nameof(DisplayPool),
-                        new ReverseTree<string>(nameof(Pool),
-                            new ReverseTree<string>(nameof(PoolModifiers)),
-                            new ReverseTree<string>(nameof(AttributeModifiers)),
-                            new ReverseTree<string>(nameof(CanHaveSpecs),
-                                new ReverseTree<string>(nameof(Leveled),
-                                    new ReverseTree<string>(nameof(Rating),
-                                        new ReverseTree<string>(nameof(CyberwareRating)),
-                                        new ReverseTree<string>(nameof(TotalBaseRating),
-                                            new ReverseTree<string>(nameof(RatingModifiers)),
-                                            new ReverseTree<string>(nameof(LearnedRating),
-                                                new ReverseTree<string>(nameof(KarmaUnlocked),
-                                                    new ReverseTree<string>(nameof(Karma),
-                                                        new ReverseTree<string>(nameof(FreeKarma))
+        private static readonly DependancyGraph<string> DependencyTree =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(PoolToolTip),
+                    new DependancyGraphNode<string>(nameof(DisplayPool),
+                        new DependancyGraphNode<string>(nameof(Pool),
+                            new DependancyGraphNode<string>(nameof(PoolModifiers)),
+                            new DependancyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependancyGraphNode<string>(nameof(CanHaveSpecs),
+                                new DependancyGraphNode<string>(nameof(Leveled),
+                                    new DependancyGraphNode<string>(nameof(Rating),
+                                        new DependancyGraphNode<string>(nameof(CyberwareRating)),
+                                        new DependancyGraphNode<string>(nameof(TotalBaseRating),
+                                            new DependancyGraphNode<string>(nameof(RatingModifiers)),
+                                            new DependancyGraphNode<string>(nameof(LearnedRating),
+                                                new DependancyGraphNode<string>(nameof(KarmaUnlocked),
+                                                    new DependancyGraphNode<string>(nameof(Karma),
+                                                        new DependancyGraphNode<string>(nameof(FreeKarma)),
+                                                        new DependancyGraphNode<string>(nameof(Base))
                                                     )
                                                 ),
-                                                new ReverseTree<string>(nameof(BaseUnlocked),
-                                                    new ReverseTree<string>(nameof(Base),
-                                                        new ReverseTree<string>(nameof(FreeBase))
+                                                new DependancyGraphNode<string>(nameof(BaseUnlocked),
+                                                    new DependancyGraphNode<string>(nameof(Base),
+                                                        new DependancyGraphNode<string>(nameof(FreeBase))
                                                     )
                                                 )
                                             )
@@ -1044,8 +1045,13 @@ namespace Chummer.Backend.Skills
                         )
                     )
                 ),
-                new ReverseTree<string>(nameof(UpgradeToolTip),
-                    new ReverseTree<string>(nameof(UpgradeKarmaCost))
+                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependancyGraphNode<string>(nameof(Rating))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpecialization),
+                    new DependancyGraphNode<string>(nameof(Specialization))
                 )
             );
         #endregion
@@ -1055,22 +1061,19 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            foreach (string s in DependencyTree.Find(propertyName))
+            ICollection<string> lstNamesOfChangedProperties = DependencyTree.GetWithAllDependants(propertyName);
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                _intCachedFreeBase = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeKarma)))
+                _intCachedFreeKarma = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
+                CachedWareRating = int.MinValue;
+            if (PropertyChanged != null)
             {
-                if (s == nameof(FreeBase))
-                    _intCachedFreeBase = int.MinValue;
-                else if (s == nameof(FreeKarma))
-                    _intCachedFreeKarma = int.MinValue;
-                else if (s == nameof(CyberwareRating))
-                    CachedWareRating = int.MinValue;
-                else if (s == nameof(Rating))
-                    OnPropertyChanged(nameof(UpgradeKarmaCost));
-                else if (s == nameof(Base) && PropertyChanged != null)
+                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Karma)));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KarmaUnlocked)));
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(s));
             }
         }
 
@@ -1123,7 +1126,6 @@ namespace Chummer.Backend.Skills
         {
             _cachedStringSpec.Clear();
             OnPropertyChanged(nameof(Specialization));
-            OnPropertyChanged(nameof(DisplaySpecialization));
         }
     }
 }

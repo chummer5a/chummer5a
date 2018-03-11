@@ -492,7 +492,15 @@ namespace Chummer
         public static bool UseLogging
         {
             get => _blnUseLogging;
-            set => _blnUseLogging = value;
+            set
+            {
+                if (_blnUseLogging != value)
+                {
+                    _blnUseLogging = value;
+                    // Sets up logging if the option is changed during runtime
+                    Log.IsLoggerEnabled = value;
+                }
+            }
         }
 
         /// <summary>

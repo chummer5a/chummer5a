@@ -939,39 +939,39 @@ namespace Chummer.Backend.Attributes
         }
 
         // Caching the value prevents calling the event multiple times. 
-        private bool _blnCanUpgradeCareer;
+        private int _intCachedCanUpgradeCareer = -1;
         public bool CanUpgradeCareer
         {
-            get => _blnCanUpgradeCareer;
-            set
+            get
             {
-                if (_blnCanUpgradeCareer != value)
-                {
-                    _blnCanUpgradeCareer = value;
-                    OnPropertyChanged(nameof(CanUpgradeCareer));
-                }
+                if (_intCachedCanUpgradeCareer < 0)
+                    _intCachedCanUpgradeCareer = _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value ? 1 : 0;
+
+                return _intCachedCanUpgradeCareer > 0;
             }
         }
         
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
-                CanUpgradeCareer = _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
+            {
+                _intCachedCanUpgradeCareer = -1;
+                OnPropertyChanged(nameof(CanUpgradeCareer));
+            }
         }
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            foreach (string s in DependencyTree.Find(propertyName))
+            ICollection<string> lstNamesOfChangedProperties = DependencyTree.GetWithAllDependants(propertyName);
+            if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                _intCachedCanUpgradeCareer = -1;
+            if (PropertyChanged != null)
             {
-                var v = new PropertyChangedEventArgs(s);
-                PropertyChanged?.Invoke(this, v);
-                if (s == nameof(Value))
+                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
                 {
-                    OnPropertyChanged(nameof(UpgradeKarmaCost));
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
-                else if (s == nameof(UpgradeKarmaCost))
-                    CanUpgradeCareer = _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value;
             }
         }
 
@@ -1016,25 +1016,43 @@ namespace Chummer.Backend.Attributes
         //A tree of dependencies. Once some of the properties are changed, 
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly ReverseTree<string> DependencyTree =
-            new ReverseTree<string>(nameof(CharacterAttrib),
-                new ReverseTree<string>(nameof(ToolTip),
-                    new ReverseTree<string>(nameof(DisplayValue),
-                        new ReverseTree<string>(nameof(TotalValue),
-                            new ReverseTree<string>(nameof(AttributeModifiers)),
-                            new ReverseTree<string>(nameof(Value),
-                                new ReverseTree<string>(nameof(Karma)),
-                                new ReverseTree<string>(nameof(Base)),
-                                new ReverseTree<string>(nameof(FreeBase)),
-                                new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
-                                    new ReverseTree<string>(nameof(TotalMinimum),
-                                        new ReverseTree<string>(nameof(RawMinimum),
-                                            new ReverseTree<string>(nameof(MetatypeMinimum)))),
-                                    new ReverseTree<string>(nameof(TotalAugmentedMaximum),
-                                        new ReverseTree<string>(nameof(TotalMaximum),
-                                            new ReverseTree<string>(nameof(MetatypeMaximum))))))))),
-                new ReverseTree<string>(nameof(UpgradeToolTip),
-                    new ReverseTree<string>(nameof(UpgradeKarmaCost))));
+        private static readonly DependancyGraph<string> DependencyTree =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(ToolTip),
+                    new DependancyGraphNode<string>(nameof(DisplayValue),
+                        new DependancyGraphNode<string>(nameof(TotalValue),
+                            new DependancyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependancyGraphNode<string>(nameof(Value),
+                                new DependancyGraphNode<string>(nameof(Karma)),
+                                new DependancyGraphNode<string>(nameof(Base)),
+                                new DependancyGraphNode<string>(nameof(FreeBase)),
+                                new DependancyGraphNode<string>(nameof(AugmentedMetatypeLimits),
+                                    new DependancyGraphNode<string>(nameof(TotalMinimum),
+                                        new DependancyGraphNode<string>(nameof(RawMinimum),
+                                            new DependancyGraphNode<string>(nameof(MetatypeMinimum))
+                                        )
+                                    ),
+                                    new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum),
+                                        new DependancyGraphNode<string>(nameof(TotalMaximum),
+                                            new DependancyGraphNode<string>(nameof(MetatypeMaximum))
+                                        )
+                                    )
+                               )
+                            )
+                        )
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependancyGraphNode<string>(nameof(Value))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(CanUpgradeCareer),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependancyGraphNode<string>(nameof(Value)),
+                    new DependancyGraphNode<string>(nameof(TotalMaximum))
+                )
+            );
         
         /// <summary>
         /// Translated abbreviation of the attribute.
