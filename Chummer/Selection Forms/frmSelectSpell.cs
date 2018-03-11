@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -84,6 +85,7 @@ namespace Chummer
                 }
                 else if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
                 {
+                    Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
                     int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
@@ -91,6 +93,14 @@ namespace Chummer
                         intFreeTouchOnlySpells += intSkillValue;
                     else
                         intFreeGenericSpells += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                    foreach (SkillSpecialization spec in skill.Specializations)
+                    {
+                        if (_objCharacter.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
+                        {
+                            intFreeGenericSpells++;
+                        }
+                    }
                 }
             }
             int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range != "T");

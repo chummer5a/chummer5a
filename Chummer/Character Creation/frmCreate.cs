@@ -11694,13 +11694,23 @@ namespace Chummer
                 }
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
-                    int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill(imp.ImprovedName)?.TotalBaseRating ?? 0;
+                    Skill skill = CharacterObject.SkillsSection.GetActiveSkill(imp.ImprovedName);
+                    int intSkillValue = skill.TotalBaseRating;
+
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
                         limitModTouchOnly += intSkillValue;
                     else
                         limitMod += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                    foreach (SkillSpecialization spec in skill.Specializations)
+                    {
+                        if (CharacterObject.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
+                        {
+                            spells--;
+                        }
+                    }
                 }
 
                 if (nudMysticAdeptMAGMagician.Value > 0)
