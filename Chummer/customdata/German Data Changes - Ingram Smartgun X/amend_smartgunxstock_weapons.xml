@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <weapons>
+    <weapon>
+      <id>017d8327-3bce-420a-af24-a2bed3ab0e83</id>
+      <accessories>
+        <accessory amendoperation="addnode">
+          <name>Folding Stock</name>
+        </accessory>
+      </accessories>
+    </weapon>
+  </weapons>
+</chummer>

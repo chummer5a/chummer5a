@@ -140,7 +140,8 @@ Data Changes:
 - Fixed an issue where the Enhanced Accuracy power could be taken for Unarmed Combat.
 - Fixed an issue where the accuracy bonus from multiple instances of the Enhanced Accuracy power taken for the same skill would stack with one another.
 - Fixed an issue with the Enhanced Accuracy Power not properly creating a bonus.
-- Added an override file for the Poseidon Proteus's data processing and firewall being flipped.
+- Added a customdata file for the Poseidon Proteus's data processing and firewall being flipped in the German rulebook.
+- Added a customdata entry to provide the Ingram Smartgun X with a folding stock, per the German rulebook.
 
 New Strings:
 
