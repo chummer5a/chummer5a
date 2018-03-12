@@ -7806,7 +7806,10 @@ namespace Chummer
 
         private void tsWeaponMountLocation_Click(object sender, EventArgs e)
         {
-            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle);
+            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            if (objSelectedNode == null)
+                return;
+            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), out Vehicle _);
             if (objWeaponMount == null)
                 return;
             frmSelectText frmPickText = new frmSelectText
@@ -7821,7 +7824,7 @@ namespace Chummer
                 return;
 
             objWeaponMount.Location = frmPickText.SelectedValue;
-            treVehicles.SelectedNode.Text = objWeaponMount.DisplayName(GlobalOptions.Language);
+            objSelectedNode.Text = objWeaponMount.DisplayName(GlobalOptions.Language);
         }
 
         private void tsVehicleName_Click(object sender, EventArgs e)

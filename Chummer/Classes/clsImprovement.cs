@@ -4019,8 +4019,10 @@ namespace Chummer
             // Create a hashset of events to fire to make sure we only ever fire each event once
             HashSet<Action> setEventsToFire = new HashSet<Action>();
             foreach (Improvement objImprovement in lstImprovements)
-            foreach (Action funcEventToFire in objImprovement.GetRelevantPropertyChangers())
-                setEventsToFire.Add(funcEventToFire);
+            {
+                foreach (Action funcEventToFire in objImprovement.GetRelevantPropertyChangers())
+                    setEventsToFire.Add(funcEventToFire);
+            }
             // Fire each event once
             foreach (Action funcEventToFire in setEventsToFire)
                 funcEventToFire.Invoke();

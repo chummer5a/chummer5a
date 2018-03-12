@@ -599,8 +599,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
                 List<Weapon> lstWeapons = new List<Weapon>();
@@ -964,8 +963,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
                 List<Weapon> lstWeapons = new List<Weapon>();

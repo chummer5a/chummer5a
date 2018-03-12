@@ -38,7 +38,7 @@ namespace Chummer
 
             CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());
 
-            Log.Kill(); //Make sure log object is not used
+            Log.IsLoggerEnabled = false; //Make sure log object is not used
 
             try
             {

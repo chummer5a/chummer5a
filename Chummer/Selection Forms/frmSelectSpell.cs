@@ -41,7 +41,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private bool _blnRefresh = false;
+        private bool _blnRefresh;
 
         #region Control Events
         public frmSelectSpell(Character objCharacter)
