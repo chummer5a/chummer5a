@@ -98,6 +98,7 @@ Application Changes:
 - Fixed an issue where bonus accuracy from Laser Sight (2050) would stack with smartgun accessories.
 - Fixed a crash when switching between spells with the Extended tag and spells without it.
 - Completed the implementation of Dedicated Spellslinger providing discounts with specialisations.
+- Fixed an issue with shapeshifters not getting their qualities and powers properly.
 
 Data Changes:
 
