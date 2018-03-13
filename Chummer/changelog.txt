@@ -102,6 +102,7 @@ Application Changes:
 - Enabling logging in the options menu will now immediately enable logging, instead of requiring Chummer5a to restart before logging begins.
 - Fixed some crashes related to multi-threaded code and logging.
 - Fixed an issue with shapeshifters not getting their qualities and powers properly.
+- Fixed an issue with skill groups not being able to be increased with special points in priority mode if the bonus was provided by a specific priority selection.
 
 Data Changes:
 
@@ -142,6 +143,7 @@ Data Changes:
 - Fixed an issue with the Enhanced Accuracy Power not properly creating a bonus.
 - Added a customdata file for the Poseidon Proteus's data processing and firewall being flipped in the German rulebook.
 - Added a customdata entry to provide the Ingram Smartgun X with a folding stock, per the German rulebook.
+- Psychometry can now be taken by Adepts with the Astral Perception power.
 
 New Strings:
 

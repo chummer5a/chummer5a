@@ -94,6 +94,11 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Amount of Base that has been provided by non-Improvement sources.
+        /// </summary>
+        public int BasePoints => _intSkillFromSp;
+
+        /// <summary>
         /// Is it possible to increment this skill group from points
         /// Inverted to simplifly databinding
         /// </summary>
