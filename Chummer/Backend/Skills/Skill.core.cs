@@ -53,7 +53,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.BasePoints <= 0 || (!_objCharacter.Options.StrictSkillGroupsInCreateMode && _objCharacter.Options.UsePointsOnBrokenGroups));
+        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!_objCharacter.Options.StrictSkillGroupsInCreateMode && _objCharacter.Options.UsePointsOnBrokenGroups));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interprentation of the rules

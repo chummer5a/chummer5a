@@ -102,7 +102,6 @@ Application Changes:
 - Enabling logging in the options menu will now immediately enable logging, instead of requiring Chummer5a to restart before logging begins.
 - Fixed some crashes related to multi-threaded code and logging.
 - Fixed an issue with shapeshifters not getting their qualities and powers properly.
-- Fixed an issue with skill groups not being able to be increased with special points in priority mode if the bonus was provided by a specific priority selection.
 
 Data Changes:
 
