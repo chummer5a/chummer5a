@@ -860,6 +860,16 @@ namespace Chummer.Backend.Equipment
                 _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
                 _objCachedMyXmlNode = null;
             }
+            // Legacy shim for misformatted name of Reflex Recorder
+            if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version("5.198.31"))
+            {
+                // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
+                XmlNode xmlReflexRecorderNode = _objImprovementSource == Improvement.ImprovementSource.Bioware
+                    ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
+                    : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
+                if (xmlReflexRecorderNode == null)
+                    _strName = "Reflex Recorder";
+            }
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objNode.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
@@ -1738,7 +1748,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                string strRating = _strMinRating;
+                string strRating = MinRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
@@ -1774,7 +1784,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                string strRating = _strMaxRating;
+                string strRating = MaxRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
@@ -2275,7 +2285,7 @@ namespace Chummer.Backend.Equipment
 
             decimal decReturn;
 
-            string strESS = _strESS;
+            string strESS = ESS;
             if (strESS.StartsWith("FixedValues("))
             {
                 string[] strValues = strESS.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');

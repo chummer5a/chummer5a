@@ -6402,11 +6402,11 @@
           <rating>3</rating>
         </cyberware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Locksmith</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <cyberware>
@@ -6463,11 +6463,11 @@
           <rating>3</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Automatics</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>
@@ -6619,11 +6619,11 @@
           <rating>4</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>

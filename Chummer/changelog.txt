@@ -143,6 +143,7 @@ Data Changes:
 - Added a customdata file for the Poseidon Proteus's data processing and firewall being flipped in the German rulebook.
 - Added a customdata entry to provide the Ingram Smartgun X with a folding stock, per the German rulebook.
 - Psychometry can now be taken by Adepts with the Astral Perception power.
+- Fixed inconsistent naming format of Reflex Recorder that also caused Reflex Recorder Optimization to never properly detect the presence of Reflex Recorder.
 
 New Strings:
 
