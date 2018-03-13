@@ -102,6 +102,7 @@ Application Changes:
 - Enabling logging in the options menu will now immediately enable logging, instead of requiring Chummer5a to restart before logging begins.
 - Fixed some crashes related to multi-threaded code and logging.
 - Fixed an issue with shapeshifters not getting their qualities and powers properly.
+- Fixed an issue where Custom Item names would not properly display in non-English languages or get translated between languages should their names be translatable.
 
 Data Changes:
 
