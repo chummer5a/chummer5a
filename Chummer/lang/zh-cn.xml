@@ -6257,10 +6257,6 @@
 			<text>无法删除</text>
 		</string>
 		<string>
-			<key>Message_SelectLimitModifier</key>
-			<text>你必须选择一个界限才能添加调整。</text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectLimitModifier</key>
 			<text>选择界限调整</text>
 		</string>

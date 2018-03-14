@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1777,10 +1777,6 @@
     <string>
       <key>Message_SelectMartialArtTechnique</key>
       <text>Você deve selecionar uma Arte Marcial para adicionar uma Vantagem.</text>
-    </string>
-    <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Você deve selecionar um Limite para adicionar um Modificador.</text>
     </string>
     <string>
       <key>MessageTitle_SelectMartialArtTechnique</key>

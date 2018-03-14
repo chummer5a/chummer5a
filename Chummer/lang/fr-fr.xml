@@ -6736,10 +6736,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Impossible de supprimer</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Vous devez sélectionner une limite pour ajouter un modificateur</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectLimitModifier</key>
       <text>Sélectionnez une Limite modifiée</text>
     </string>

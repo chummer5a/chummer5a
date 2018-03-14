@@ -1952,10 +1952,6 @@
       <text>You must select a Martial Art to which to add a Technique.</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to which to add a Modifier.</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Select Martial Art</text>
     </string>

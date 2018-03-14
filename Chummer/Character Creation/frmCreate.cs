@@ -5561,18 +5561,7 @@ namespace Chummer
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            // Select the Limit node if we're currently on a child.
-            while (treLimit.SelectedNode != null && treLimit.SelectedNode.Level > 1)
-                treLimit.SelectedNode = treLimit.SelectedNode.Parent;
-
-            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level != 0)
-            {
-                //TODO: Why can't we just select the Limit Modifier in the Limit Modifier selection window?
-                MessageBox.Show(LanguageManager.GetString("Message_SelectLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier();
+            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
             frmPickLimitModifier.ShowDialog(this);
 
             if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
@@ -5580,9 +5569,7 @@ namespace Chummer
 
             // Create the new limit modifier.
             LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
-            string strLimit = treLimit.SelectedNode.Text;
-            string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
             if (objLimitModifier.InternalId.IsEmptyGuid())
                 return;
 

@@ -19963,36 +19963,23 @@ namespace Chummer
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            if (treLimit.SelectedNode != null)
-            {
-                // Select the Limit node if we're currently on a child.
-                if (treLimit.SelectedNode.Level > 1)
-                    treLimit.SelectedNode = treLimit.SelectedNode.Parent;
+            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
+            frmPickLimitModifier.ShowDialog(this);
 
-                frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier();
-                frmPickLimitModifier.ShowDialog(this);
+            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                return;
 
-                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                    return;
+            // Create the new limit modifier.
+            LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
+            if (objLimitModifier.InternalId.IsEmptyGuid())
+                return;
 
-                // Create the new limit modifier.
-                LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
-                string strLimit = treLimit.SelectedNode.Text;
-                string strCondition = frmPickLimitModifier.SelectedCondition;
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
-                if (objLimitModifier.InternalId.IsEmptyGuid())
-                    return;
-                
-                CharacterObject.LimitModifiers.Add(objLimitModifier);
+            CharacterObject.LimitModifiers.Add(objLimitModifier);
 
-                IsCharacterUpdateRequested = true;
+            IsCharacterUpdateRequested = true;
 
-                IsDirty = true;
-            }
-            else
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            IsDirty = true;
         }
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)

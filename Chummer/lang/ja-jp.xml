@@ -6869,10 +6869,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectLimitModifier</key>
       <text>Select Limit Modifier</text>
     </string>

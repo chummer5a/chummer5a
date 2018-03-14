@@ -272,7 +272,7 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                     return;
                 }
-                using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier))
+                using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
                     frmPickLimitModifier.ShowDialog(this);
 
@@ -283,9 +283,7 @@ namespace Chummer
                     _objCharacter.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
                     objLimitModifier = new LimitModifier(_objCharacter);
-                    string strLimit = treLimit.SelectedNode.Parent.Text;
-                    string strCondition = frmPickLimitModifier.SelectedCondition;
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
                     objLimitModifier.Guid = new Guid(strGuid);
 
                     _objCharacter.LimitModifiers.Add(objLimitModifier);
@@ -926,10 +924,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
-                foreach (TreeNode node in treLimit.Nodes)
-                {
-                    node.Nodes.Clear();
-                }
+                treLimit.Nodes.Clear();
 
                 // Add Limit Modifiers.
                 foreach (LimitModifier objLimitModifier in CharacterObject.LimitModifiers)
