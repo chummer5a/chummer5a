@@ -5567,6 +5567,7 @@ namespace Chummer
 
             if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level != 0)
             {
+                //TODO: Why can't we just select the Limit Modifier in the Limit Modifier selection window?
                 MessageBox.Show(LanguageManager.GetString("Message_SelectLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -18322,7 +18323,7 @@ namespace Chummer
 
         private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshLimitModifiers(treLimit, cmsLimitModifier);
+            RefreshLimitModifiers(treLimit, cmsLimitModifier, notifyCollectionChangedEventArgs);
         }
 
         private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

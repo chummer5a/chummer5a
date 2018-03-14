@@ -926,7 +926,10 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
-                treLimit.Nodes.Clear();
+                foreach (TreeNode node in treLimit.Nodes)
+                {
+                    node.Nodes.Clear();
+                }
 
                 // Add Limit Modifiers.
                 foreach (LimitModifier objLimitModifier in CharacterObject.LimitModifiers)
