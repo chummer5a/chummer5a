@@ -2445,7 +2445,10 @@ namespace Chummer.Classes
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
             int intBonus = strBonus == "Rating" ? _intRating : Convert.ToInt32(strBonus);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(strLimit, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
+            LimitModifier lm = new LimitModifier(_objCharacter);
+            lm.Create(_strFriendlyName,intBonus,strLimit,strCondition);
+            _objCharacter.LimitModifiers.Add(lm);
+            CreateImprovement(lm.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
                 _strFriendlyName, intBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
         }
 

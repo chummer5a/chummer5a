@@ -3723,6 +3723,13 @@ namespace Chummer
                             objCharacter.Metamagics.Remove(objMetamagic);
                         }
                         break;
+                    case Improvement.ImprovementType.LimitModifier:
+                        LimitModifier limitMod = objCharacter.LimitModifiers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (limitMod != null)
+                        {
+                            objCharacter.LimitModifiers.Remove(limitMod);
+                        }
+                        break;
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || ( x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
                         if (objCritterPower != null)
