@@ -13383,7 +13383,7 @@ namespace Chummer
                 if (objCharacterVehicle.WeaponMounts.Count > 0)
                 {
                     lstVehicles.Add(objCharacterVehicle);
-                    break;
+                    continue;
                 }
                 foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
                 {
@@ -13392,7 +13392,7 @@ namespace Chummer
                         objVehicleMod.Name.StartsWith("Mechanical Arm"))
                     {
                         lstVehicles.Add(objCharacterVehicle);
-                        break;
+                        continue;
                     }
                 }
             }

@@ -106,6 +106,7 @@ Application Changes:
 - When adding a new Limit Modifier, the Limit Modifier type is determined by a ComboBox selection in the Limit Modifier selection screen, rather than based on the currently selected Limit Modifier type node.
 - Fixed a bug that prevented Limit Modifiers from being edited properly.
 - The limit to which a Limit Modifier applies can now be changed when editing a Limit Modifier.
+- Fixed an issue with moving weapons from the character to vehicles only selecting the first vehicle with a weapon mount.
 
 Data Changes:
 
