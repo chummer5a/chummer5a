@@ -107,6 +107,7 @@ Application Changes:
 - Fixed a bug that prevented Limit Modifiers from being edited properly.
 - The limit to which a Limit Modifier applies can now be changed when editing a Limit Modifier.
 - Fixed an issue with moving weapons from the character to vehicles only selecting the first vehicle with a weapon mount.
+- Fixed an issue with armour bundles causing a crash when attempting to move items in or out of them.
 
 Data Changes:
 

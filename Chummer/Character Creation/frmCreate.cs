@@ -9492,7 +9492,7 @@ namespace Chummer
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
 
-            if (treWeapons.SelectedNode.Level == 1)
+            if (treArmor.SelectedNode.Level == 1)
                 CharacterObject.MoveArmorNode(intNewIndex, nodDestination, treArmor.SelectedNode);
             else
                 CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, treArmor.SelectedNode);
