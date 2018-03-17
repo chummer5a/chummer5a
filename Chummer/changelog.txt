@@ -151,6 +151,7 @@ Data Changes:
 - Psychometry can now be taken by Adepts with the Astral Perception power.
 - Fixed inconsistent naming format of Reflex Recorder that also caused Reflex Recorder Optimization to never properly detect the presence of Reflex Recorder.
 - Increased price of the gear "Ammo: Tracker Rounds, Stealth Tag" per RAW.
+- Weapons attached to weapon mounts are now properly added to character sheets.
 
 New Strings:
 
