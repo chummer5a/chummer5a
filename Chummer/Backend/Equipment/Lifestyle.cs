@@ -432,7 +432,7 @@ namespace Chummer.Backend.Equipment
             // Retrieve the free Grids for the Advanced Lifestyle if applicable.
             foreach (LifestyleQuality objQuality in FreeGrids)
             {
-                objWriter.WriteElementString("quality", objQuality.DisplayName(strLanguageToPrint));
+                objQuality.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
