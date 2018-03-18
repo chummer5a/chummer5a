@@ -2239,7 +2239,8 @@ namespace Chummer
             this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleName});
+            this.tsVehicleName,
+            this.tsVehicleNotes});
             this.cmsVehicle.Name = "cmsWeapon";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 136);
             // 
