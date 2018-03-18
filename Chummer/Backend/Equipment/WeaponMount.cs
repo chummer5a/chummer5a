@@ -754,6 +754,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Add a Weapon Mount to the TreeView
         /// </summary>
@@ -774,18 +775,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsVehicleWeaponMount
+                ContextMenuStrip = cmsVehicleWeaponMount,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (IncludedInVehicle)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // VehicleMods.
@@ -807,6 +800,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IncludedInVehicle)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 

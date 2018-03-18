@@ -2761,6 +2761,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Add a Vehicle to the TreeView.
         /// </summary>
@@ -2783,13 +2784,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsVehicle
+                ContextMenuStrip = cmsVehicle,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
@@ -2870,6 +2868,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (!string.IsNullOrEmpty(ParentID))
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Locate a piece of Cyberware within this vehicle based on a predicate.

@@ -971,6 +971,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
         {
             if (IncludedInWeapon && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -981,18 +982,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsWeaponAccessory
+                ContextMenuStrip = cmsWeaponAccessory,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (IncludedInWeapon)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Gear objGear in Gear)
@@ -1007,6 +1000,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IncludedInWeapon)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 }

@@ -31,6 +31,8 @@ namespace Chummer
 {
     public sealed class CrashReportData
     {
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)

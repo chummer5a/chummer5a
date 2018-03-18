@@ -236,6 +236,19 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
 
         #region Methods
@@ -246,13 +259,10 @@ namespace Chummer
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
                 Text = Text(GlobalOptions.Language),
-                Tag = InternalId
+                Tag = InternalId,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
 

@@ -972,11 +972,10 @@ namespace Chummer
                                 Name = strName,
                                 Text = strName,
                                 Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier
+                                ContextMenuStrip = cmsLimitModifier,
+                                ForeColor = objImprovement.PreferredColor,
+                                ToolTipText = objImprovement.Notes.WordWrap(100)
                             };
-                            if (!string.IsNullOrEmpty(objImprovement.Notes))
-                                objNode.ForeColor = Color.SaddleBrown;
-                            objNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
@@ -5430,11 +5429,10 @@ namespace Chummer
                                 Name = strName,
                                 Text = strName,
                                 Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier
+                                ContextMenuStrip = cmsLimitModifier,
+                                ForeColor = objImprovement.PreferredColor,
+                                ToolTipText = objImprovement.Notes.WordWrap(100)
                             };
-                            if (!string.IsNullOrEmpty(objImprovement.Notes))
-                                objNode.ForeColor = Color.SaddleBrown;
-                            objNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)

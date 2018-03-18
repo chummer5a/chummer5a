@@ -436,7 +436,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -447,18 +447,28 @@ namespace Chummer
                 Name = InternalId,
                 Text = DisplayName,
                 Tag = InternalId,
-                ContextMenuStrip = cmsComplexForm
+                ContextMenuStrip = cmsComplexForm,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (Grade != 0)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (Grade != 0)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

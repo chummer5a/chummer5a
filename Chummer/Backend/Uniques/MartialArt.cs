@@ -300,18 +300,10 @@ namespace Chummer
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsMartialArt
+                ContextMenuStrip = cmsMartialArt,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (IsQuality)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (MartialArtTechnique objTechnique in Techniques)
@@ -325,6 +317,22 @@ namespace Chummer
             }
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IsQuality)
+                {
+                    return SystemColors.GrayText;
+                }
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

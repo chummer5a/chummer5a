@@ -1572,21 +1572,26 @@ namespace Chummer
                 Tag = SourceName,
                 Text = CustomName,
                 ToolTipText = Notes.WordWrap(100),
-                ContextMenuStrip = cmsImprovement
+                ContextMenuStrip = cmsImprovement,
+                ForeColor = PreferredColor
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                if (Enabled)
-                    nodImprovement.ForeColor = Color.SaddleBrown;
-                else
-                    nodImprovement.ForeColor = Color.SandyBrown;
-            }
-            else if (Enabled)
-                nodImprovement.ForeColor = SystemColors.WindowText;
-            else
-                nodImprovement.ForeColor = SystemColors.GrayText;
-
             return nodImprovement;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    if (Enabled)
+                        return Color.SaddleBrown;
+                    return Color.SandyBrown;
+                }
+                if (Enabled)
+                    return SystemColors.WindowText;
+                return SystemColors.GrayText;
+            }
         }
         #endregion
         #endregion

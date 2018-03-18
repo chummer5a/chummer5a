@@ -3235,6 +3235,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Build up the Tree for the current piece of Cyberware and all of its children.
         /// </summary>
@@ -3249,14 +3250,11 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = SourceID == EssenceHoleGUID ? EssenceHoleGUID.ToString("D") : InternalId
+                Tag = SourceID == EssenceHoleGUID ? EssenceHoleGUID.ToString("D") : InternalId,
+                ContextMenuStrip = cmsCyberware,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = Notes.WordWrap(100);
-            objNode.ContextMenuStrip = cmsCyberware;
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Cyberware objChild in Children)
@@ -3278,6 +3276,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (!string.IsNullOrEmpty(ParentID))
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 }
