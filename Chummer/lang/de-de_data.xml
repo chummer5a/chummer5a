@@ -11405,7 +11405,7 @@
 			<gear translated="True">
 				<id>506dd9c6-ea57-4ae2-8887-81ce93e5a7b2</id>
 				<name>Ammo: Flare Rounds</name>
-				<translate>Munition: Leuchtgeschosse</translate>
+				<translate>Munition: Signalgeschosse</translate>
 				<altpage>55</altpage>
 			</gear>
 			<gear>
@@ -15423,7 +15423,7 @@
 			<gear>
 				<id>1b18e3df-3858-44c8-a3a0-feadc903d916</id>
 				<name>Prepaid Commlink (Cheap)</name>
-				<translate>Prepaid-Kommlink (billing)</translate>
+				<translate>Prepaid-Kommlink (billig)</translate>
 				<altpage>259</altpage>
 			</gear>
 			<gear>
