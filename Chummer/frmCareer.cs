@@ -7651,24 +7651,11 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Check for Improved Sensor bonus.
-                if (objMod.Bonus != null)
+                if (objMod.Bonus?["improvesensor"] != null)
                 {
-                    if (objMod.Bonus["selecttext"] != null)
-                    {
-                        frmSelectText frmPickText = new frmSelectText
-                        {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objMod.DisplayNameShort(GlobalOptions.Language))
-                        };
-                        frmPickText.ShowDialog(this);
-                        objMod.Extra = frmPickText.SelectedValue;
-                        frmPickText.Dispose();
-                    }
-                    if (objMod.Bonus["improvesensor"] != null)
-                    {
-                        objVehicle.ChangeVehicleSensor(treVehicles, true, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                    }
+                    objVehicle.ChangeVehicleSensor(treVehicles, true, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                 }
-                
+
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;

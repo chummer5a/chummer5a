@@ -468,7 +468,8 @@ namespace Chummer
             if (lstGridNodes != null)
             {
                 _objLifestyle.FreeGrids.Clear();
-                treLifestyleQualities.Nodes[3].Nodes.Clear();
+                TreeNode nodParent = treLifestyleQualities.Nodes[3];
+                nodParent.Nodes.Clear();
                 foreach (XmlNode xmlNode in lstGridNodes)
                 {
                     XmlNode xmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
@@ -485,7 +486,6 @@ namespace Chummer
                     TreeNode objLoopNode = objQuality.CreateTreeNode();
                     if (objLoopNode != null)
                     {
-                        TreeNode nodParent = treLifestyleQualities.Nodes[3];
                         nodParent.Nodes.Add(objQuality.CreateTreeNode());
                         nodParent.Expand();
                     }

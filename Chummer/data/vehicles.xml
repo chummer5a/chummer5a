@@ -10533,6 +10533,9 @@
       <cost>5000</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <bonus>
+        <selectskill />
+      </bonus>
     </mod>
     <!-- End Region -->
     <!-- Region Electromagnetic -->

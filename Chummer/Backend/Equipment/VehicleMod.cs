@@ -129,7 +129,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0)
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0, string strForcedValue = "")
         {
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
@@ -202,6 +203,20 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlMod?["bonus"];
             _nodWirelessBonus = objXmlMod?["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
+
+            if (Bonus != null)
+            {
+                ImprovementManager.ForcedValue = strForcedValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod, InternalId, Bonus, false, intRating, DisplayNameShort(GlobalOptions.Language), false))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
         }
 
         /// <summary>

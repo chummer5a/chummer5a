@@ -108,6 +108,10 @@ Application Changes:
 - The limit to which a Limit Modifier applies can now be changed when editing a Limit Modifier.
 - Fixed an issue with moving weapons from the character to vehicles only selecting the first vehicle with a weapon mount.
 - Fixed an issue with armour bundles causing a crash when attempting to move items in or out of them.
+- Fixed an issue where if a character's condition monitor threshold offset was greater than or equal to the regular number of condition monitor boxes they need filled per wound penalty, they would get "positive" wound modifiers applied (i.e. a dicepool bonus).
+- Fixed an issue where various UI elements in the advanced lifestyle selection screen would not get translated.
+- Added support for vehicle mods to get their Extra strings determined by any "select"-type bonus node, not just selecttext.
+- Added the ability to target items containing the "'" character (single apostrophe) in the xpathfilter attribute of the amend system. To do so, use the "&quot;" string where you'd want to insert a quotation mark as the delimiter in the XPath filter, which should free up the "'" character (single apostrophe) to be able to be used inside the delimiter without generating errors.
 
 Data Changes:
 
@@ -152,6 +156,8 @@ Data Changes:
 - Fixed inconsistent naming format of Reflex Recorder that also caused Reflex Recorder Optimization to never properly detect the presence of Reflex Recorder.
 - Increased price of the gear "Ammo: Tracker Rounds, Stealth Tag" per RAW.
 - Weapons attached to weapon mounts are now properly added to character sheets.
+- Fixed an issue where the Workshop vehicle mod would not have the user specify what type of workshop was being added.
+- Added hidden gear entries for Public Grid, Local Grid, and Global Grid. These entries are intended mainly to be used for TranslateExtra (which translates the Extra strings of any item) in tandem with grid subscriptions.
 
 New Strings:
 
@@ -164,6 +170,7 @@ New Strings:
 - Button_RemoveEcho
 - Warning_Update_CouldNotConnectException
 - Label_Options_KarmaMysticAdeptPowerPoint
+- Button_DeleteQuality
 
 Changed Strings:
 

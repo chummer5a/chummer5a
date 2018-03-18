@@ -260,15 +260,11 @@ namespace Chummer.Backend.Equipment
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
-                                    int intRating = 0;
+                                    string strForcedValue = objXmlVehicleMod.Attributes["select"]?.InnerText ?? string.Empty;
+                                    int.TryParse(objXmlVehicleMod.Attributes["rating"]?.InnerText, out int intRating);
 
-                                    if (objXmlVehicleMod.Attributes["rating"] != null)
-                                        int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
-
-                                    if (objXmlVehicleMod.Attributes["select"] != null)
-                                        objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
-
-                                    objMod.Create(objXmlMod, intRating, this);
+                                    objMod.Extra = strForcedValue;
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
                                     objMod.IncludedInVehicle = true;
 
                                     _lstVehicleMods.Add(objMod);

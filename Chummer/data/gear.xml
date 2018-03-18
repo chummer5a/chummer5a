@@ -5034,6 +5034,50 @@
       <cost>50</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Grids (Mainly for TranslateExtra) -->
+    <gear>
+      <id>b97df325-ff46-42e5-823e-d81f6df39d16</id>
+      <name>Public Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>43adba99-3484-43be-9ea8-7836c0afe2b9</id>
+      <name>Local Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>f52b018a-a80d-4fcb-87d3-50cf9db2347e</id>
+      <name>Global Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <!-- End Region -->
     <!-- Region RFID Tags -->
     <gear>
       <id>84bb92e7-ce13-4eb6-bf9e-15bf3887469c</id>
