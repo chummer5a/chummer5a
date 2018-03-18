@@ -1107,11 +1107,11 @@
 		</string>
 		<string>
 			<key>Message_ComplexFormLimit</key>
-			<text>Sie können nicht mehr Komplexe Formen beherschen als zweimal ihr RES-Wert. Siehe Seite 98, SR5 Grundregelwerk (Errata).</text>
+			<text>Sie können nicht mehr Komplexe Formen beherrschen als zweimal ihr RES-Wert. Siehe Seite 98, SR5 Grundregelwerk (Errata).</text>
 		</string>
 		<string>
 			<key>MessageTitle_ComplexFormLimit</key>
-			<text>Maximale Anzahl Complexe Formen</text>
+			<text>Maximale Anzahl Komplexer Formen</text>
 		</string>
 		<string>
 			<key>Message_CannotRemoveCyberweapon</key>
@@ -2403,11 +2403,11 @@
 		</string>
 		<string>
 			<key>Tip_CommonAttributesBase</key>
-			<text>Natürlicher Attributswert.</text>
+			<text>Natürliche Attributwerte.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
-			<text>Verstärkter Attributswert.</text>
+			<text>Verstärkte Attributwerte.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributesMetatypeLimits</key>
@@ -2557,7 +2557,7 @@
 		</string>
 		<string>
 			<key>Label_ResistDrain</key>
-			<text>Entzug wiederstehen:</text>
+			<text>Entzug widerstehen:</text>
 		</string>
 		<string>
 			<key>Label_MentorSpirit</key>
@@ -3009,7 +3009,7 @@
 		</string>
 		<string>
 			<key>Label_Height</key>
-			<text>Grösse:</text>
+			<text>Größe:</text>
 		</string>
 		<string>
 			<key>Label_Weight</key>
@@ -3373,7 +3373,7 @@
 		</string>
 		<string>
 			<key>Tip_CMDamageResistance</key>
-			<text>Anzahl der Würfel um den Schadenswiderstandswurf auszuwürfen</text>
+			<text>Anzahl der Würfel um den Schadenswiderstandswurf auszuwürfeln</text>
 		</string>
 		<string>
 			<key>Tip_CMRegainEdge</key>
@@ -3597,19 +3597,19 @@
 		</string>
 		<string>
 			<key>Tip_Spirit_LinkSpirit</key>
-			<text>Chummer Datei für diesen Sprite laden.</text>
+			<text>Diesen Geist mit einer Chummer Datei verknüpfen.</text>
 		</string>
 		<string>
 			<key>Tip_Sprite_LinkSprite</key>
-			<text>Chummer Datei für diesen Geist laden.</text>
+			<text>Diesen Sprite mit einer Chummer Datei verknüpfen.</text>
 		</string>
 		<string>
 			<key>Tip_Spirit_OpenFile</key>
-			<text>Chummer Datei für diesen Geist laden.</text>
+			<text>Verknüpfte Chummer Datei für diesen Geist öffnen.</text>
 		</string>
 		<string>
 			<key>Tip_Sprite_OpenFile</key>
-			<text>Chummer Datei für diesen Sprite laden.</text>
+			<text>Verknüpfte Chummer Datei für diesen Sprite öffnen.</text>
 		</string>
 		<string>
 			<key>Tip_Spirit_EditNotes</key>
@@ -5706,7 +5706,7 @@
 		</string>
 		<string>
 			<key>Checkbox_HealthSpell2</key>
-			<text>Erhöht die Inintiationsdurchgänge</text>
+			<text>Erhöht die Initiativdurchgänge</text>
 		</string>
 		<string>
 			<key>Checkbox_HealthSpell3</key>
@@ -6159,11 +6159,11 @@
 		<!-- Version 345 -->
 		<string>
 			<key>Checkbox_Metatype_PossessionTradition</key>
-			<text>Beschworen durch eine auf Bessessenheit basierenden Tradition</text>
+			<text>Beschworen durch eine auf Besessenheit basierenden Tradition</text>
 		</string>
 		<string>
 			<key>Tip_Metatype_PossessionTradition</key>
-			<text>Geister die durch eine Bessenseinheit basierenden Tradition beschworen wurden erhalten die mit der Besessenheit verbundenen Critter Kräfte anstelle der Materialisierung</text>
+			<text>Geister die durch eine Besessenheit basierenden Tradition beschworen wurden erhalten die mit der Besessenheit verbundenen Critter Kräfte anstelle der Materialisierung</text>
 		</string>
 		<!-- Version 347 -->
 		<string>
@@ -6444,7 +6444,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteWeaponLocation</key>
-			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptreiter verschoben.</text>
+			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptkontainer verschoben.</text>
 		</string>
 		<!-- Version 405 -->
 		<string>
@@ -6462,7 +6462,7 @@
 		<!-- Version 408 -->
 		<string>
 			<key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
-			<text>Frei Geister erhalten ihre Powerpunkte basierend auf ihrem MAG Attribute, nicht Edge</text>
+			<text>Frei Geister erhalten ihre Kraftpunkte basierend auf ihrem MAG Attribut, nicht Edge</text>
 		</string>
 		<!-- Version 413 -->
 		<string>
@@ -6471,7 +6471,7 @@
 		</string>
 		<string>
 			<key>Checkbox_DiceRoller_RushedJob</key>
-			<text>Hastige Arbeit (Glitch bei 1 und 2)</text>
+			<text>Hastige Arbeit (Patzer bei 1 und 2)</text>
 		</string>
 		<!-- Version 416 -->
 		<string>
@@ -6507,7 +6507,7 @@
 		</string>
 		<string>
 			<key>Tip_ActiveCommlink</key>
-			<text>Dieses ausgewählte Kommlink als das gerade aktive makieren. Die Matrix Initiative wird mit diesem Kommlink berechnet.</text>
+			<text>Dieses ausgewählte Kommlink als das gerade aktive markieren. Die Matrix Initiative wird mit diesem Kommlink berechnet.</text>
 		</string>
 		<!-- Version 429 -->
 		<string>
@@ -6546,7 +6546,7 @@
 		</string>
 		<string>
 			<key>Label_Options_EssenceDecimals</key>
-			<text>Nach wievielen Stellen hinter dem Komma soll für die Essenz-Berechnung gerundet werden?</text>
+			<text>Auf wie vielen Stellen hinter dem Komma soll für die Essenz-Berechnung gerundet werden?</text>
 		</string>
 		<!-- Version 445 -->
 		<string>
@@ -6634,7 +6634,7 @@
 		</string>
 		<string>
 			<key>String_DiceRoller_Failure</key>
-			<text>Fehlschalg</text>
+			<text>Fehlschlag</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LocalisedUpdatesOnly</key>
@@ -6930,7 +6930,7 @@
 		</string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
-			<text>You must undo the the entries for initiate grades above this one first.</text>
+			<text>Sie müssen zuerst die Einträge für Initiatengrade oberhalb dieses rückgängig machen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotHighestGrade</key>
@@ -6938,7 +6938,7 @@
 		</string>
 		<string>
 			<key>String_SpellAlchemical</key>
-			<text>Alchemisch</text>
+			<text>Alchemistisch</text>
 		</string>
 		<string>
 			<key>String_ExpenseLearnTechnique</key>
@@ -7014,7 +7014,7 @@
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
-			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
+			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute und das Metatyp-Limit zu steigern, wenn eines der Attribute durch Außergewöhnliches Attribut gesteigert wurde.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUsePointsOnBrokenGroups</key>
@@ -7186,7 +7186,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_Knucks</key>
-			<text>Schlagringe erhalten Boni, die Waffenlosenkampf betreffen</text>
+			<text>Schlagringe erhalten Boni, die waffenlosen Kampf betreffen</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleQualities</key>
@@ -7222,11 +7222,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+			<text>Begrenze Drohnen Panzerungsverbesserung auf Drohnen-Panzerung</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>
-			<text>Karmakosten zum erhohen von Spezialattributen wird bei Essenzverlust nicht reduziert</text>
+			<text>Karmakosten zum erhöhen von Spezialattributen wird bei Essenzverlust nicht reduziert</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
@@ -7242,7 +7242,7 @@
 		</string>
 		<string>
 			<key>Title_SelectArt</key>
-			<text>Select an Art</text>
+			<text>Wähle eine Kunst</text>
 		</string>
 		<string>
 			<key>Title_SelectEnhancement</key>
@@ -7290,7 +7290,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectArt_LimitList</key>
-			<text>Show only Arts I can take</text>
+			<text>Zeige nur Künste die ich wählen kann</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectEnhancement_LimitList</key>
@@ -8348,7 +8348,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
-			<text>Verdopple die Karmakosten von Vorteilen überhalb des Limits</text>
+			<text>Verdopple die Karmakosten von Vorteilen oberhalb des Limits</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKarmaContacts</key>
@@ -8500,7 +8500,7 @@
 		</string>
 		<string>
 			<key>Label_Overclocker</key>
-			<text>Übertackter:</text>
+			<text>Übertakter:</text>
 		</string>
 		<string>
 			<key>Label_PrototypeTranshuman</key>
@@ -8752,7 +8752,7 @@
 		</string>
 		<string>
 			<key>String_ReduceGear</key>
-			<text>Gebe die Anazhl zu entfernender Gegenstände an.</text>
+			<text>Gebe die Anzahl zu entfernender Gegenstände an.</text>
 		</string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
@@ -8901,6 +8901,10 @@
 		<string>
 			<key>Tip_ComplexFormFadingSeeDescription</key>
 			<text>Siehe Beschreibung der Komplexem Form</text>
+		</string>
+	    <string>
+			<key>Label_Options_KarmaMysticAdeptPowerPoint</key>
+			<text>Magieradept Kraftpunkt</text>
 		</string>
 	</strings>
 </chummer>
