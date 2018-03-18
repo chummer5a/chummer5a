@@ -441,7 +441,8 @@ namespace Chummer.Backend.Skills
                 {
                     return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
-                return SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString();
+
+                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString() : 0.ToString();
             }
         }
 
