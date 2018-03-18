@@ -443,14 +443,7 @@ namespace Chummer
                     chkTrustFund.Visible = false;
                     if (strBaseLifestyle == "Traveler")
                     {
-                        Random rndTavelerLp = MersenneTwister.SfmtRandom.Create();
-                        int intModuloTemp;
-                        do
-                        {
-                            intModuloTemp = rndTavelerLp.Next();
-                        }
-                        while (intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        _intTravelerRdmLP = 1 + intModuloTemp % 6;
+                        _intTravelerRdmLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     }
                 }
 
