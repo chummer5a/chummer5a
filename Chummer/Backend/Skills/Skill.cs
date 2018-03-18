@@ -1075,6 +1075,7 @@ namespace Chummer.Backend.Skills
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs propertyChangedEventArg)
