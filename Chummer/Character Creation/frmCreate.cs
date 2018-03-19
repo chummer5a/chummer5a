@@ -12111,10 +12111,8 @@ namespace Chummer
                 return;
 
             _blnSkipUpdate = true;
-            
-            CharacterObject.ResetCachedEssence();
-            // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
-            CharacterObject.RefreshEssenceLossImprovements();
+
+            // TODO: DataBind these wherever possible
 
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             //if (_objCharacter.IgnoreRules == true)

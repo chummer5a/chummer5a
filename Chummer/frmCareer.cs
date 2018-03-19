@@ -15927,10 +15927,8 @@ namespace Chummer
             
             _blnSkipUpdate = true;
 
-            CharacterObject.ResetCachedEssence();
-            // Refresh certain improvements. TODO: DataBind these or make them trigger off of events
-            CharacterObject.RefreshEssenceLossImprovements();
-            
+            // TODO: DataBind these wherever possible
+
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             
             string strESS = CharacterObject.Essence().ToString(strESSFormat, GlobalOptions.CultureInfo);

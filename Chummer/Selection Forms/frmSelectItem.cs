@@ -33,6 +33,7 @@ namespace Chummer
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
+        private string _strSelectItemOnLoad = string.Empty;
 
         #region Control Events
         public frmSelectItem()
@@ -251,6 +252,18 @@ namespace Chummer
                 if (cboAmmo.SelectedIndex != -1)
                     AcceptForm();
             }
+            if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
+            {
+                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                {
+                    string strOldSelected = cboAmmo.SelectedValue?.ToString();
+                    cboAmmo.SelectedValue = _strSelectItemOnLoad;
+                    if (cboAmmo.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
+                        cboAmmo.SelectedValue = strOldSelected;
+                }
+                else
+                    cboAmmo.Text = _strSelectItemOnLoad;
+            }
             cboAmmo.EndUpdate();
 
             if (cboAmmo.Items.Count < 0)
@@ -340,6 +353,7 @@ namespace Chummer
                     return cboAmmo.SelectedValue.ToString();
                 return cboAmmo.Text;
             }
+            set => _strSelectItemOnLoad = value;
         }
 
         /// <summary>

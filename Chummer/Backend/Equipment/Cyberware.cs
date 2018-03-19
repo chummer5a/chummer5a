@@ -138,6 +138,8 @@ namespace Chummer.Backend.Equipment
         {
             bool blnDoCyberlimbAGIRefresh = false;
             bool blnDoCyberlimbSTRRefresh = false;
+            bool blnDoEssenceImprovementsRefresh = false;
+            bool blnDoRedlinerRefresh = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -165,10 +167,13 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            blnDoEssenceImprovementsRefresh = true;
                     }
 
                     this.RefreshMatrixAttributeArray();
-                    _objCharacter?.RefreshRedliner();
+                    blnDoRedlinerRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Cyberware objOldItem in e.OldItems)
@@ -195,9 +200,12 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            blnDoEssenceImprovementsRefresh = true;
                     }
                     this.RefreshMatrixAttributeArray();
-                    _objCharacter?.RefreshRedliner();
+                    blnDoRedlinerRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Cyberware objOldItem in e.OldItems)
@@ -224,6 +232,9 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            blnDoEssenceImprovementsRefresh = true;
                     }
 
                     foreach (Cyberware objNewItem in e.NewItems)
@@ -250,13 +261,23 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                            blnDoEssenceImprovementsRefresh = true;
                     }
                     this.RefreshMatrixAttributeArray();
-                    _objCharacter?.RefreshRedliner();
+                    blnDoRedlinerRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Reset:
+                    blnDoEssenceImprovementsRefresh = true;
+                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        !string.IsNullOrWhiteSpace(LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                    {
+                        blnDoCyberlimbAGIRefresh = true;
+                        blnDoCyberlimbSTRRefresh = true;
+                    }
                     this.RefreshMatrixAttributeArray();
-                    _objCharacter?.RefreshRedliner();
+                    blnDoRedlinerRefresh = true;
                     break;
             }
 
@@ -270,6 +291,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            if (blnDoRedlinerRefresh)
+                _objCharacter?.RefreshRedliner();
+            if (blnDoEssenceImprovementsRefresh)
+                _objCharacter?.RefreshEssenceLossImprovements();
         }
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1736,6 +1761,8 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
+                    if (ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
                 }
             }
         }
@@ -1819,9 +1846,9 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_strForceGrade) && _strForceGrade != _objGrade.Name)
+                if (!string.IsNullOrWhiteSpace(ForceGrade) && ForceGrade != _objGrade.Name)
                 {
-                    return ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter);
+                    return ConvertToCyberwareGrade(ForceGrade, SourceType, _objCharacter);
                 }
                 return _objGrade;
             }
@@ -1829,7 +1856,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objGrade != value)
                 {
+                    bool blnGradeEssenceChanged = _objGrade.Essence == value.Essence;
                     _objGrade = value;
+                    if (blnGradeEssenceChanged && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
                     // Run through all of the child pieces and make sure their Grade matches.
                     foreach (Cyberware objChild in Children)
                     {
@@ -1863,7 +1893,15 @@ namespace Chummer.Backend.Equipment
         public int ESSDiscount
         {
             get => _intEssenceDiscount;
-            set => _intEssenceDiscount = value;
+            set
+            {
+                if (_intEssenceDiscount != value)
+                {
+                    _intEssenceDiscount = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         /// <summary>
@@ -1872,7 +1910,15 @@ namespace Chummer.Backend.Equipment
         public decimal ExtraESSAdditiveMultiplier
         {
             get => _decExtraESSAdditiveMultiplier;
-            set => _decExtraESSAdditiveMultiplier = value;
+            set
+            {
+                if (_decExtraESSAdditiveMultiplier != value)
+                {
+                    _decExtraESSAdditiveMultiplier = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         /// <summary>
@@ -1881,7 +1927,15 @@ namespace Chummer.Backend.Equipment
         public decimal ExtraESSMultiplicativeMultiplier
         {
             get => _decExtraESSMultiplicativeMultiplier;
-            set => _decExtraESSMultiplicativeMultiplier = value;
+            set
+            {
+                if (_decExtraESSMultiplicativeMultiplier != value)
+                {
+                    _decExtraESSMultiplicativeMultiplier = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         /// <summary>
@@ -1949,7 +2003,16 @@ namespace Chummer.Backend.Equipment
         public bool AddToParentESS
         {
             get => _blnAddToParentESS;
-            set => _blnAddToParentESS = value;
+            set
+            {
+                if (_blnAddToParentESS != value)
+                {
+                    bool blnOldValue = _blnAddToParentESS;
+                    _blnAddToParentESS = value;
+                    if ((Parent == null || AddToParentESS || blnOldValue) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         /// <summary>
@@ -2031,7 +2094,13 @@ namespace Chummer.Backend.Equipment
             get => _blnPrototypeTranshuman;
             set
             {
-                _blnPrototypeTranshuman = value;
+                if (_blnPrototypeTranshuman != value)
+                {
+                    _blnPrototypeTranshuman = value;
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.RefreshEssenceLossImprovements();
+                }
+
                 foreach (Cyberware objCyberware in Children)
                     objCyberware.PrototypeTranshuman = value;
             }
@@ -2310,9 +2379,9 @@ namespace Chummer.Backend.Equipment
             if (_blnSuite)
                 decESSMultiplier -= 0.1m;
 
-            if (_intEssenceDiscount != 0)
+            if (ESSDiscount != 0)
             {
-                decimal decDiscount = Convert.ToDecimal(_intEssenceDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
+                decimal decDiscount = Convert.ToDecimal(ESSDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
                 decTotalESSMultiplier *= 1.0m - decDiscount;
             }
             

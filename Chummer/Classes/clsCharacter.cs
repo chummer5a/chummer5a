@@ -277,6 +277,7 @@ namespace Chummer
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
 
             STR.PropertyChanged += RefreshEncumbranceFromSTR;
+            ESS.PropertyChanged += RefreshEssenceLossImprovementsFromESS;
         }
 
         private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -338,6 +339,7 @@ namespace Chummer
         private void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool blnDoCyberlimbAttributesRefresh = false;
+            bool blnDoEssenceImprovementsRefresh = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -354,7 +356,7 @@ namespace Chummer
                             }
                         }
                     }
-
+                    blnDoEssenceImprovementsRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     RefreshRedliner();
@@ -370,7 +372,7 @@ namespace Chummer
                             }
                         }
                     }
-
+                    blnDoEssenceImprovementsRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     RefreshRedliner();
@@ -399,11 +401,12 @@ namespace Chummer
                             }
                         }
                     }
-
+                    blnDoEssenceImprovementsRefresh = true;
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     RefreshRedliner();
                     blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
+                    blnDoEssenceImprovementsRefresh = true;
                     break;
             }
 
@@ -417,6 +420,9 @@ namespace Chummer
                     }
                 }
             }
+
+            if (blnDoEssenceImprovementsRefresh)
+                RefreshEssenceLossImprovements();
         }
 
         public AttributeSection AttributeSection { get; }
@@ -1068,6 +1074,8 @@ namespace Chummer
             return blnErrorFree;
         }
 
+        public bool IsLoading { get; set; }
+
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
@@ -1097,6 +1105,8 @@ namespace Chummer
             if (objXmlCharacter == null || xmlCharacterNavigator == null)
                 return false;
 
+            IsLoading = true;
+
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
 
             xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
@@ -1111,6 +1121,7 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Error);
+                IsLoading = false;
                 return false;
             }
 
@@ -1134,6 +1145,7 @@ namespace Chummer
 
                     if (result != DialogResult.Yes)
                     {
+                        IsLoading = false;
                         return false;
                     }
                 }
@@ -1143,7 +1155,10 @@ namespace Chummer
 
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
+            {
+                IsLoading = false;
                 return false;
+            }
 
             // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
             string strMissingBooks = string.Empty;
@@ -1161,6 +1176,7 @@ namespace Chummer
                 string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks, GlobalOptions.Language));
                 if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                 {
+                    IsLoading = false;
                     return false;
                 }
             }
@@ -1181,6 +1197,7 @@ namespace Chummer
                 string strMessage = LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language).Replace("{0}", strMissingSourceNames);
                 if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                 {
+                    IsLoading = false;
                     return false;
                 }
             }
@@ -1270,10 +1287,16 @@ namespace Chummer
                     frmPickBP.ShowDialog();
 
                     if (frmPickBP.DialogResult != DialogResult.OK)
+                    {
+                        IsLoading = false;
                         return false;
+                    }
                 }
                 else
+                {
+                    IsLoading = false;
                     return false;
+                }
             }
 
             xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
@@ -2202,6 +2225,7 @@ namespace Chummer
 
             // Refresh certain improvements
             Timekeeper.Finish("load_char_improvementrefreshers");
+            IsLoading = false;
             // Refresh permanent attribute changes due to essence loss
             RefreshEssenceLossImprovements();
             // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -6178,7 +6202,14 @@ namespace Chummer
         public decimal EssenceAtSpecialStart
         {
             get => _decEssenceAtSpecialStart;
-            set => _decEssenceAtSpecialStart = value;
+            set
+            {
+                if (_decEssenceAtSpecialStart != value)
+                {
+                    _decEssenceAtSpecialStart = value;
+                    RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         private decimal _decCachedEssence = decimal.MinValue;
@@ -7566,7 +7597,16 @@ namespace Chummer
         public string MetatypeCategory
         {
             get => _strMetatypeCategory;
-            set => _strMetatypeCategory = value;
+            set
+            {
+                if (_strMetatypeCategory != value)
+                {
+                    bool blnDoCyberzombieRefresh = _strMetatypeCategory == "Cyberzombie" || value == "Cyberzombie";
+                    _strMetatypeCategory = value;
+                    if (blnDoCyberzombieRefresh)
+                        RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         public int LimbCount(string strLimbSlot = "")
@@ -9111,6 +9151,10 @@ namespace Chummer
 
         public void RefreshEssenceLossImprovements()
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            ResetCachedEssence();
             // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
             // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
             if (EssenceAtSpecialStart != decimal.MinValue)
@@ -9539,6 +9583,15 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 RefreshEncumbrance();
+            }
+        }
+
+        public void RefreshEssenceLossImprovementsFromESS(object sender, PropertyChangedEventArgs e)
+        {
+            // Essence Loss effects are only affected by ESS.MetatypeMaximum when it comes to attributes
+            if (e.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
+            {
+                RefreshEssenceLossImprovements();
             }
         }
 

@@ -300,6 +300,7 @@ namespace Chummer
             WeaponAccuracy,
             WeaponSkillAccuracy,
             MetageneticLimit,
+            Tradition,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
@@ -1268,6 +1269,7 @@ namespace Chummer
                     // Immediately reset cached essence to make sure this fires off before any other property changers would
                     _objCharacter.ResetCachedEssence();
                     // TODO: Change essence loss improvement regeneration to take place only when Essence-related improvements or Cyberware is changed instead of on every character update.
+                    yield return () => _objCharacter.RefreshEssenceLossImprovements();
                     break;
                 case ImprovementType.FreeSpellsATT:
                     break;

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -295,6 +296,56 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Restricted, _strUnique);
+        }
+        
+        public void selecttradition(XmlNode bonusNode)
+        {
+            Log.Info("selecttradition");
+
+            // Populate the Magician Traditions list.
+            XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            List<ListItem> lstTraditions = new List<ListItem>();
+            if (xmlTraditionsBaseChummerNode != null)
+            {
+                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select("traditions/tradition[" + _objCharacter.Options.BookXPath() + "]"))
+                {
+                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstTraditions.Add(new ListItem(strName, xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                }
+            }
+
+            if (lstTraditions.Count > 1)
+            {
+                lstTraditions.Sort(CompareListItems.CompareNames);
+            }
+
+            frmSelectItem frmPickItem = new frmSelectItem
+            {
+                DropdownItems = lstTraditions,
+                SelectedItem = _objCharacter.MagicTradition
+            };
+            if (!string.IsNullOrEmpty(ForcedValue))
+                frmPickItem.ForceItem = ForcedValue;
+            frmPickItem.AllowAutoSelect = false;
+            frmPickItem.ShowDialog();
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickItem.DialogResult == DialogResult.Cancel)
+            {
+                throw new AbortedException();
+            }
+
+            SelectedValue = frmPickItem.SelectedName;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ')';
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            // Create the Improvement.
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName, Improvement.ImprovementType.Tradition, _strUnique);
         }
 
         public void cyberseeker(XmlNode bonusNode)

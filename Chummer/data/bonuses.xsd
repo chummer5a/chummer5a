@@ -720,6 +720,7 @@
       <xs:element name="selectspell" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectsprite" minOccurs="0" maxOccurs="1" />
       <xs:element name="selecttext" minOccurs="0" maxOccurs="1" />
+      <xs:element name="selecttradition" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />

@@ -61,6 +61,8 @@ namespace Chummer
                     return objImprovementAdder.disabletab;
                 case "SELECTRESTRICTED":
                     return objImprovementAdder.selectrestricted;
+                case "SELECTTRADITION":
+                    return objImprovementAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAdder.cyberseeker;
                 case "BLOCKSKILLGROUPDEFAULTING":
