@@ -115,6 +115,7 @@ Application Changes:
 - Added the ability to target items containing the "'" character (single apostrophe) in the xpathfilter attribute of the amend system. To do so, use the "&quot;" string where you'd want to insert a quotation mark as the delimiter in the XPath filter, which should free up the "'" character (single apostrophe) to be able to be used inside the delimiter without generating errors.
 - Live Custom Data now properly supports "override" and "amend" files in addition to "custom" files. Keep in mind that processing "amend" files can be especially time-consuming, so do please try to avoid using too many of them as live custom data if possible unless you're OK with Chummer5a becoming especially unresponsive.
 - Added support for bonuses that query the user to select a tradition.
+- When selecting a cyberware or bioware plugin, Essence cost is now only displayed as non-zero if the currently selected item would add to its parent's essence cost.
 
 Data Changes:
 
