@@ -56,6 +56,8 @@ namespace Chummer
                     }
                 }
             }
+            else
+                objReturn.Add(objKey);
 
             return objReturn;
         }
@@ -126,9 +128,14 @@ namespace Chummer
             {
                 if (!NodeDictionary.TryGetValue(objDownStreamNode.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
                 {
+                    bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
+                    if (blnTempLoopValueInitializing)
+                        objLoopValue.Initializing = true;
                     DependancyGraphNode<T> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode);
                     objExistingValue.DownStreamNodes.Add(objDownStreamNodeCopy);
                     objDownStreamNodeCopy.UpStreamNodes.Add(objExistingValue);
+                    if (blnTempLoopValueInitializing)
+                        objLoopValue.Initializing = false;
                 }
             }
 
@@ -137,9 +144,14 @@ namespace Chummer
             {
                 if (!NodeDictionary.TryGetValue(objUpStreamNode.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
                 {
+                    bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
+                    if (blnTempLoopValueInitializing)
+                        objLoopValue.Initializing = true;
                     DependancyGraphNode<T> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode);
                     objExistingValue.UpStreamNodes.Add(objUpStreamNodeCopy);
                     objUpStreamNodeCopy.DownStreamNodes.Add(objExistingValue);
+                    if (blnTempLoopValueInitializing)
+                        objLoopValue.Initializing = false;
                 }
             }
 
