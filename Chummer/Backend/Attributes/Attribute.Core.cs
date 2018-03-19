@@ -963,7 +963,7 @@ namespace Chummer.Backend.Attributes
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            ICollection<string> lstNamesOfChangedProperties = DependencyTree.GetWithAllDependants(propertyName);
+            ICollection<string> lstNamesOfChangedProperties = AttributeDependancyGraph.GetWithAllDependants(propertyName);
             if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                 _intCachedCanUpgradeCareer = -1;
             if (PropertyChanged != null)
@@ -1016,7 +1016,7 @@ namespace Chummer.Backend.Attributes
         //A tree of dependencies. Once some of the properties are changed, 
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependancyGraph<string> DependencyTree =
+        private static readonly DependancyGraph<string> AttributeDependancyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(ToolTip),
                     new DependancyGraphNode<string>(nameof(DisplayValue),

@@ -57,24 +57,18 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, 
                 DataSourceUpdateMode.OnPropertyChanged);
-            
-            PowerObject.PropertyChanged += Power_PropertyChanged;
-            PowerObject.CharacterObject.PropertyChanged += Power_PropertyChanged;
-            if (PowerObject.Name == "Improved Ability (skill)")
-            {
-                PowerObject.CharacterObject.SkillsSection.PropertyChanged += Power_PropertyChanged;
-            }
+            cmdDelete.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.DoesNotHaveFreeLevels), false,
+                DataSourceUpdateMode.OnPropertyChanged);
 
-            tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+            PowerObject.PropertyChanged += Power_PropertyChanged;
+
+            tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             MoveControls();
         }
 
         public void UnbindPowerControl()
         {
             PowerObject.PropertyChanged -= Power_PropertyChanged;
-            PowerObject.CharacterObject.PropertyChanged -= Power_PropertyChanged;
-            if (PowerObject.Name == "Improved Ability (skill)")
-                PowerObject.CharacterObject.SkillsSection.PropertyChanged -= Power_PropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -83,27 +77,9 @@ namespace Chummer
 
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            string strPropertyName = propertyChangedEventArgs?.PropertyName;
-            if (strPropertyName == nameof(PowerObject.FreeLevels) || strPropertyName == nameof(PowerObject.TotalRating))
+            if (propertyChangedEventArgs?.PropertyName == nameof(Power.ToolTip))
             {
-                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString(GlobalOptions.CultureInfo);
-                tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-                cmdDelete.Enabled = PowerObject.FreeLevels == 0;
-            }
-            if (strPropertyName == nameof(PowerObject.Name))
-            {
-                PowerObject.CharacterObject.SkillsSection.PropertyChanged -= Power_PropertyChanged;
-                if (PowerObject.Name == "Improved Ability (skill)")
-                    PowerObject.CharacterObject.SkillsSection.PropertyChanged += Power_PropertyChanged;
-            }
-            // Super hacky solution, but we need all values updated properly if maxima change for any reason
-            if (strPropertyName == nameof(PowerObject.TotalMaximumLevels))
-            {
-                nudRating.Maximum = PowerObject.TotalMaximumLevels;
-            }
-            else if (PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue) || strPropertyName == nameof(PowerObject.CharacterObject.MAGAdept.TotalValue))
-            {
-                PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
+                tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             }
         }
 
@@ -130,6 +106,7 @@ namespace Chummer
             PowerObject.Deleting = true;
             ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
             PowerObject.CharacterObject.Powers.Remove(PowerObject);
+            PowerObject.UnbindPower();
 
             if (frmParent is CharacterShared objParent)
                 objParent.IsCharacterUpdateRequested = true;

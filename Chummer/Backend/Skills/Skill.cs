@@ -1012,7 +1012,7 @@ namespace Chummer.Backend.Skills
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependancyGraph<string> DependencyTree =
+        private static readonly DependancyGraph<string> SkillDependencyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(PoolToolTip),
                     new DependancyGraphNode<string>(nameof(DisplayPool),
@@ -1029,12 +1029,14 @@ namespace Chummer.Backend.Skills
                                                 new DependancyGraphNode<string>(nameof(KarmaUnlocked),
                                                     new DependancyGraphNode<string>(nameof(Karma),
                                                         new DependancyGraphNode<string>(nameof(FreeKarma)),
+                                                        new DependancyGraphNode<string>(nameof(RatingMaximum)),
                                                         new DependancyGraphNode<string>(nameof(Base))
                                                     )
                                                 ),
                                                 new DependancyGraphNode<string>(nameof(BaseUnlocked),
                                                     new DependancyGraphNode<string>(nameof(Base),
-                                                        new DependancyGraphNode<string>(nameof(FreeBase))
+                                                        new DependancyGraphNode<string>(nameof(FreeBase)),
+                                                        new DependancyGraphNode<string>(nameof(RatingMaximum))
                                                     )
                                                 )
                                             )
@@ -1050,6 +1052,11 @@ namespace Chummer.Backend.Skills
                         new DependancyGraphNode<string>(nameof(Rating))
                     )
                 ),
+                new DependancyGraphNode<string>(nameof(CanUpgradeCareer),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependancyGraphNode<string>(nameof(RatingMaximum)),
+                    new DependancyGraphNode<string>(nameof(TotalBaseRating))
+                ),
                 new DependancyGraphNode<string>(nameof(DisplaySpecialization),
                     new DependancyGraphNode<string>(nameof(Specialization))
                 )
@@ -1061,7 +1068,7 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            ICollection<string> lstNamesOfChangedProperties = DependencyTree.GetWithAllDependants(propertyName);
+            ICollection<string> lstNamesOfChangedProperties = SkillDependencyGraph.GetWithAllDependants(propertyName);
             if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
             if (lstNamesOfChangedProperties.Contains(nameof(FreeKarma)))
@@ -1075,19 +1082,18 @@ namespace Chummer.Backend.Skills
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs propertyChangedEventArg)
         {
             if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Base))
             {
-                OnPropertyChanged(propertyChangedEventArg.PropertyName);
+                OnPropertyChanged(nameof(Base));
                 KarmaSpecForcedMightChange();
             }
             else if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
             {
-                OnPropertyChanged(propertyChangedEventArg.PropertyName);
+                OnPropertyChanged(nameof(Karma));
                 KarmaSpecForcedMightChange();
             }
         }

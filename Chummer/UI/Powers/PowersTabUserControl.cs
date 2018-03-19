@@ -162,8 +162,8 @@ namespace Chummer.UI.Powers
                 new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
                 new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
             };
-            //TODO: TRANSLATIONS
 
+            /*
             using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category"))
                 if (xmlPowerCategoryList != null)
                     foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
@@ -173,6 +173,7 @@ namespace Chummer.UI.Powers
                             $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
                             power => power.Category == strName));
                     }
+                    */
 
             return ret;
         }

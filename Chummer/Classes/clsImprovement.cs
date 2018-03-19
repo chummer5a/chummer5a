@@ -1658,6 +1658,18 @@ namespace Chummer
         }
     }
 
+    public class TransactingImprovement
+    {
+        public TransactingImprovement(Improvement objImprovement)
+        {
+            ImprovementObject = objImprovement;
+        }
+
+        public Improvement ImprovementObject { get; }
+
+        public bool IsCommitting { get; set; }
+    }
+
     public static class ImprovementManager
     {
         // String that will be used to limit the selection in Pick forms.
@@ -1665,7 +1677,7 @@ namespace Chummer
 
         private static string s_StrSelectedValue = string.Empty;
         private static string s_StrForcedValue = string.Empty;
-        private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<Improvement>>(8, 10);
+        private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
 
@@ -1729,7 +1741,7 @@ namespace Chummer
                 if (objKey.CharacterObject == objCharacter)
                     s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
             }
-            s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
+            s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
         }
         #endregion
 
@@ -3869,6 +3881,9 @@ namespace Chummer
                             }
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+
+                            if(objImprovedPower.Deleting)
+                                objImprovedPower.UnbindPower();
                         }
                         break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
@@ -3990,8 +4005,8 @@ namespace Chummer
                 ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
 
                 // Add the Improvement to the Transaction List.
-                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<Improvement> {objImprovement}))
-                    s_DictionaryTransactions[objCharacter].Add(objImprovement);
+                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<TransactingImprovement> { new TransactingImprovement(objImprovement) }))
+                    s_DictionaryTransactions[objCharacter].Add(new TransactingImprovement(objImprovement));
             }
 
             Log.Exit("CreateImprovement");
@@ -4004,9 +4019,18 @@ namespace Chummer
         {
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
-            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
-                lstTransaction.ProcessRelevantEvents();
+                List<Improvement> lstImprovementsToProcess = new List<Improvement>();
+                foreach (TransactingImprovement objLoopTransactingImprovement in lstTransaction)
+                {
+                    if (!objLoopTransactingImprovement.IsCommitting)
+                    {
+                        objLoopTransactingImprovement.IsCommitting = true;
+                        lstImprovementsToProcess.Add(objLoopTransactingImprovement.ImprovementObject);
+                    }
+                }
+                lstImprovementsToProcess.ProcessRelevantEvents();
                 lstTransaction.Clear();
             }
 
@@ -4019,13 +4043,13 @@ namespace Chummer
         private static void Rollback(Character objCharacter)
         {
             Log.Enter("Rollback");
-            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (Improvement objImprovement in lstTransaction)
+                foreach (TransactingImprovement objTransactingImprovement in lstTransaction)
                 {
-                    RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                    RemoveImprovements(objCharacter, objTransactingImprovement.ImprovementObject.ImproveSource, objTransactingImprovement.ImprovementObject.SourceName);
+                    ClearCachedValue(objCharacter, objTransactingImprovement.ImprovementObject.ImproveType, objTransactingImprovement.ImprovementObject.ImprovedName);
                 }
 
                 lstTransaction.Clear();

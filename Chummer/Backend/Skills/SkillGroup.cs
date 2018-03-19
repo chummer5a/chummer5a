@@ -342,6 +342,33 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
+        private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(DisplayRating),
+                    new DependancyGraphNode<string>(nameof(CareerIncrease)),
+                    new DependancyGraphNode<string>(nameof(Rating),
+                        new DependancyGraphNode<string>(nameof(Karma),
+                            new DependancyGraphNode<string>(nameof(RatingMaximum)),
+                            new DependancyGraphNode<string>(nameof(FreeLevels)),
+                            new DependancyGraphNode<string>(nameof(Base))
+                        ),
+                        new DependancyGraphNode<string>(nameof(Base),
+                            new DependancyGraphNode<string>(nameof(FreeBase)),
+                            new DependancyGraphNode<string>(nameof(RatingMaximum))
+                        )
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependancyGraphNode<string>(nameof(Rating))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(CareerCanIncrease),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependancyGraphNode<string>(nameof(CareerIncrease))
+                )
+            );
+
         private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
@@ -513,29 +540,30 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (propertyName == nameof(FreeLevels))
-                _intCachedFreeLevels = int.MinValue;
-            else if (propertyName == nameof(FreeBase))
+            ICollection<string> lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependants(propertyName);
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
-            else if (propertyName == nameof(IsDisabled))
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                _intCachedFreeLevels = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(IsDisabled)))
             {
                 _blnCachedGroupEnabledIsCached = false;
                 DoRefreshCareerIncrease();
             }
-            else if (propertyName == nameof(CareerIncrease))
-                OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (propertyName == nameof(UpgradeKarmaCost))
-            {
-                OnPropertyChanged(nameof(CareerCanIncrease));
-                OnPropertyChanged(nameof(UpgradeToolTip));
-            }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+            }
         }
 
         private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(CareerCanIncrease));
+            if (e.PropertyName == nameof(Character.Karma))
+                OnPropertyChanged(nameof(CareerCanIncrease));
         }
 
         public int CurrentSpCost()
