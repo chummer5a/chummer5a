@@ -27,8 +27,6 @@ namespace Chummer
     {
         private readonly frmChummerMain _frmMain;
         private readonly List<ListItem> _lstResults = new List<ListItem>(40);
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp;
 
         #region Control Events
         public frmDiceRoller(frmChummerMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)
@@ -84,23 +82,13 @@ namespace Chummer
                     int intResult;
                     do
                     {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intResult = 1 + _intModuloTemp % 6;
+                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    do
-                    {
-                        _intModuloTemp = _objRandom.Next();
-                    }
-                    while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                    int intResult = 1 + _intModuloTemp % 6;
+                    int intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
@@ -136,12 +124,7 @@ namespace Chummer
             }
             if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && decimal.ToInt32(nudDice.Value) % 2 == 0)
             {
-                do
-                {
-                    _intModuloTemp = _objRandom.Next();
-                }
-                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                int intBubbleDieResult = 1 + _intModuloTemp % 6;
+                int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                 _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + " (" + intBubbleDieResult.ToString() + ')'));
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {
@@ -245,23 +228,13 @@ namespace Chummer
                 {
                     do
                     {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intResult = 1 + _intModuloTemp % 6;
+                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    do
-                    {
-                        _intModuloTemp = _objRandom.Next();
-                    }
-                    while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                    intResult = 1 + _intModuloTemp % 6;
+                    intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
@@ -291,12 +264,7 @@ namespace Chummer
             }
             if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && decimal.ToInt32(nudDice.Value) % 2 == 0)
             {
-                do
-                {
-                    _intModuloTemp = _objRandom.Next();
-                }
-                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                int intBubbleDieResult = 1 + _intModuloTemp % 6;
+                int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                 _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + " (" + intBubbleDieResult.ToString() + ')'));
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {

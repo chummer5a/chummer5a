@@ -2239,7 +2239,8 @@ namespace Chummer
             this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleName});
+            this.tsVehicleName,
+            this.tsVehicleNotes});
             this.cmsVehicle.Name = "cmsWeapon";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 136);
             // 
@@ -10896,8 +10897,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsArmorGearNotes;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponAccessory;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAccessoryNotes;
-        private System.Windows.Forms.ContextMenuStrip cmsWeaponMod;
-        private System.Windows.Forms.ToolStripMenuItem tsWeaponModNotes;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponNotes;
         private System.Windows.Forms.ContextMenuStrip cmsGearPlugin;
         private System.Windows.Forms.ToolStripMenuItem tsGearPluginNotes;
@@ -10990,8 +10989,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponAccessoryNotes;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessoryGear;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponAccessoryGearMenuAddAsPlugin;
-        private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponMod;
-        private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponModNotes;
         private System.Windows.Forms.TabPage tabPets;
         private SplitButton cmdAddPet;
         private System.Windows.Forms.FlowLayoutPanel panPets;

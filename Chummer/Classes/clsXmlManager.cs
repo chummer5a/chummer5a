@@ -394,13 +394,13 @@ namespace Chummer
                                     string strFilter = string.Empty;
                                     string strId = objChild["id"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strId))
-                                        strFilter = "id = \"" + strId.Replace("&amp;", "&") + '\"';
+                                        strFilter = "id = \"" + strId.Replace("&amp;", "&").Replace("&quot;", "\"") + '\"';
                                     string strName = objChild["name"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
                                             strFilter += " and ";
-                                        strFilter += "name = \"" + strName.Replace("&amp;", "&") + '\"';
+                                        strFilter += "name = \"" + strName.Replace("&amp;", "&").Replace("&quot;", "\"") + '\"';
                                     }
                                     // Only do this if the child has the name or id field since this is what we must match on.
                                     if (!string.IsNullOrEmpty(strFilter))
@@ -623,7 +623,7 @@ namespace Chummer
                 XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                 if (objCustomXPath != null)
                 {
-                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&");
+                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&").Replace("&quot;", "\"");
                 }
                 else
                 {

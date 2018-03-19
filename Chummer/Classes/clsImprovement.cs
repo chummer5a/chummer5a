@@ -313,6 +313,7 @@ namespace Chummer
             Bioware,
             ArmorEncumbrance,
             Gear,
+            VehicleMod,
             Spell,
             Initiation,
             Submersion,
@@ -1571,21 +1572,26 @@ namespace Chummer
                 Tag = SourceName,
                 Text = CustomName,
                 ToolTipText = Notes.WordWrap(100),
-                ContextMenuStrip = cmsImprovement
+                ContextMenuStrip = cmsImprovement,
+                ForeColor = PreferredColor
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                if (Enabled)
-                    nodImprovement.ForeColor = Color.SaddleBrown;
-                else
-                    nodImprovement.ForeColor = Color.SandyBrown;
-            }
-            else if (Enabled)
-                nodImprovement.ForeColor = SystemColors.WindowText;
-            else
-                nodImprovement.ForeColor = SystemColors.GrayText;
-
             return nodImprovement;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    if (Enabled)
+                        return Color.SaddleBrown;
+                    return Color.SandyBrown;
+                }
+                if (Enabled)
+                    return SystemColors.WindowText;
+                return SystemColors.GrayText;
+            }
         }
         #endregion
         #endregion
@@ -2600,9 +2606,10 @@ namespace Chummer
         /// <param name="blnConcatSelectedValue">Whether or not any selected values should be concatinated with the SourceName string when storing.</param>
         /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
         /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
+        /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
         /// <returns>True if successfull</returns>
         public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
-            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
+            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
             Log.Enter("CreateImprovements");
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
@@ -2629,7 +2636,7 @@ namespace Chummer
             Log.Info("_strLimitSelection = " + s_StrLimitSelection);
 
             // If there is no character object, don't attempt to add any Improvements.
-            if (objCharacter == null)
+            if (objCharacter == null && blnAddImprovementsToCharacter)
             {
                 Log.Info("_objCharacter = Null");
                 Log.Exit("CreateImprovements");
@@ -2652,9 +2659,9 @@ namespace Chummer
                     {
                         LimitSelection = s_StrForcedValue;
                     }
-                    else if (objCharacter.Pushtext.Count != 0)
+                    else if (objCharacter?.Pushtext.Count != 0)
                     {
-                        LimitSelection = objCharacter.Pushtext.Pop();
+                        LimitSelection = objCharacter?.Pushtext.Pop();
                     }
 
                     Log.Info("_strForcedValue = " + SelectedValue);
@@ -2676,7 +2683,6 @@ namespace Chummer
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
-
                             Rollback(objCharacter);
                             ForcedValue = string.Empty;
                             LimitSelection = string.Empty;
@@ -2703,7 +2709,7 @@ namespace Chummer
                 foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
                     if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-                        strFriendlyName, bonusNode, strUnique))
+                        strFriendlyName, bonusNode, strUnique, !blnAddImprovementsToCharacter))
                     {
                         Rollback(objCharacter);
                         return false;
@@ -2712,9 +2718,20 @@ namespace Chummer
             }
 
             // If we've made it this far, everything went OK, so commit the Improvements.
-            Log.Info("Calling Commit");
-            Commit(objCharacter);
-            Log.Info("Returned from Commit");
+            
+            if (blnAddImprovementsToCharacter)
+            {
+                Log.Info("Calling Commit");
+                Commit(objCharacter);
+                Log.Info("Returned from Commit");
+            }
+            else
+            {
+                Log.Info("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
+                Rollback(objCharacter);
+                Log.Info("Returned from scheduled Rollback");
+            }
+
             // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
             s_StrForcedValue = string.Empty;
             s_StrLimitSelection = string.Empty;
@@ -2736,7 +2753,7 @@ namespace Chummer
         }
 
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
-            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
+            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
         {
             if (bonusNode == null)
                 return false;
@@ -2766,7 +2783,7 @@ namespace Chummer
                 s_StrLimitSelection = container.LimitSelection;
                 s_StrSelectedValue = container.SelectedValue;
             }
-            else if (bonusNode.ChildNodes.Count == 0)
+            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
                 return true;
             }

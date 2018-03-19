@@ -56,7 +56,6 @@ namespace Chummer.Backend.Equipment
         private int _intRoommates;
         private decimal _decPercentage = 100.0m;
         private bool _blnPurchased;
-        private int _intEntertainment;
         private int _intComforts;
         private int _intArea;
         private int _intSecurity;
@@ -176,7 +175,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("basearea", _intBaseArea.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("entertainment", _intEntertainment.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.InvariantCultureInfo));
@@ -432,7 +430,7 @@ namespace Chummer.Backend.Equipment
             // Retrieve the free Grids for the Advanced Lifestyle if applicable.
             foreach (LifestyleQuality objQuality in FreeGrids)
             {
-                objWriter.WriteElementString("quality", objQuality.DisplayName(strLanguageToPrint));
+                objQuality.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
@@ -613,14 +611,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _intBaseSecurity;
             set => _intBaseSecurity = value;
-        }
-        /// <summary>
-        /// Advance Lifestyle Comforts.
-        /// </summary>
-        public int Entertainment
-        {
-            get => _intEntertainment;
-            set => _intEntertainment = value;
         }
 
         /// <summary>
@@ -891,6 +881,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = guiTemp;
         }
 
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
             //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -901,15 +892,26 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle
+                ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 }

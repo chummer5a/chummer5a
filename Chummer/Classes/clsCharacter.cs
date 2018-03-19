@@ -9566,10 +9566,10 @@ namespace Chummer
             int intCMThreshold = CMThreshold;
             int intStunCMPenalty = Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled)
                 ? 0
-                : (StunCMThresholdOffset - intStunCMFilled) / intCMThreshold;
+                : Math.Min(0, StunCMThresholdOffset - intStunCMFilled) / intCMThreshold;
             int intPhysicalCMPenalty = Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical && objImprovement.Enabled)
                 ? 0
-                : (PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
+                : Math.Min(0, PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
 
             WoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
         }
@@ -9577,7 +9577,7 @@ namespace Chummer
         private int _intWoundModifier;
 
         /// <summary>
-        /// Dicepool penalties the character has from wounds.
+        /// Dicepool modifier the character has from wounds. Should be a non-positive number because wound modifiers are always penalties if they are not 0.
         /// </summary>
         public int WoundModifier
         {

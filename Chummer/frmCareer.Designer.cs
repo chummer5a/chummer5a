@@ -2574,13 +2574,13 @@ namespace Chummer
             // cmsVehicle
             // 
             this.cmsVehicle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleAddWeapon,
+            this.tsVehicleAddWeaponMount,
             this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleAddWeapon,
             this.tsVehicleName,
-            this.tsVehicleNotes,
-            this.tsVehicleAddWeaponMount});
+            this.tsVehicleNotes});
             this.cmsVehicle.Name = "cmsWeapon";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
             // 

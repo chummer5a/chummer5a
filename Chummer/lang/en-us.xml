@@ -3866,6 +3866,10 @@
       <key>Button_SwapQuality</key>
       <text>Swap Quality</text>
     </string>
+    <string>
+      <key>Button_DeleteQuality</key>
+      <text>Delete Quality</text>
+    </string>
 	<string>
 		<key>Label_QualityLevel</key>
 		<text>Quality Level:</text>

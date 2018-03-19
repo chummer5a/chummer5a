@@ -624,19 +624,7 @@ namespace Chummer
                 }
                 _lstMods.Add(objMod);
                 intSlots += objMod.CalculatedSlots;
-
-                // Check for Improved Sensor bonus.
-                if (objMod.Bonus?["selecttext"] != null)
-                {
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objMod.DisplayNameShort(GlobalOptions.Language))
-                    };
-                    frmPickText.ShowDialog(this);
-                    objMod.Extra = frmPickText.SelectedValue;
-                    frmPickText.Dispose();
-                }
-
+                
                 TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
 
                 if (objModsParentNode == null)

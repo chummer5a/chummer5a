@@ -310,11 +310,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            if (!_blnPrint) return;
+            if (!AllowPrint)
+                return;
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             string strLifestyleQualityType = Type.ToString();
@@ -447,10 +448,10 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
             return strReturn;
         }
@@ -502,9 +503,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (Free || FreeByLifestyle)
                     return 0;
-                if (!decimal.TryParse(_strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(_strCost, out bool blnIsSuccess);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out bool blnIsSuccess);
                     if (blnIsSuccess)
                         return Convert.ToDecimal(objProcess);
                 }
@@ -553,38 +554,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Comfort LP is increased/reduced by this Quality. 
         /// </summary>
-        public int Comfort
-        {
-            get => _comfort;
-            set => _comfort = value;
-        }
+        public int Comfort { get; set; }
 
         /// <summary>
         /// Comfort LP maximum is increased/reduced by this Quality. 
         /// </summary>
-        public int ComfortMaximum
-        {
-            get => _comfortMaximum;
-            set => _comfortMaximum = value;
-        }
+        public int ComfortMaximum { get; set; }
 
         /// <summary>
         /// Security LP value is increased/reduced by this Quality. 
         /// </summary>
-        public int SecurityMaximum
-        {
-            get => _securityMaximum;
-            set => _securityMaximum = value;
-        }
+        public int SecurityMaximum { get; set; }
 
         /// <summary>
         /// Security LP value is increased/reduced by this Quality. 
         /// </summary>
-        public int Security
-        {
-            get => _security;
-            set => _security= value;
-        }
+        public int Security { get; set; }
 
         /// <summary>
         /// Percentage by which the quality increases the overall Lifestyle Cost.
@@ -616,27 +601,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Area/Neighborhood LP Cost/Benefit of the Quality.
         /// </summary>
-        public int AreaMaximum
-        {
-            get => _areaMaximum;
-            set => _areaMaximum = value;
-        }
+        public int AreaMaximum { get; set; }
 
         /// <summary>
         /// Area/Neighborhood minimum is increased/reduced by this Quality. 
         /// </summary>
-        public int Area
-        {
-            get => _area;
-            set => _area = value;
-        }
-        
-        private int _area;
-        private int _comfort;
-        private int _security;
-        private int _areaMaximum;
-        private int _comfortMaximum;
-        private int _securityMaximum;
+        public int Area { get; set; }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -657,10 +627,10 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode()
         {
-            if (_objLifestyleQualitySource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            if (OriginSource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -668,17 +638,26 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 Tag = InternalId,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (_objLifestyleQualitySource == QualitySource.BuiltIn)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (OriginSource == QualitySource.BuiltIn)
+                {
+                    return SystemColors.GrayText;
+                }
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

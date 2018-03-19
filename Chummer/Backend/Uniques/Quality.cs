@@ -759,7 +759,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
@@ -774,26 +774,36 @@ namespace Chummer
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
-                ContextMenuStrip = cmsQuality
+                ContextMenuStrip = cmsQuality,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!Implemented)
-            {
-                objNode.ForeColor = Color.Red;
-            }
-            else if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (OriginSource == QualitySource.BuiltIn ||
-                OriginSource == QualitySource.Improvement ||
-                OriginSource == QualitySource.LifeModule ||
-                OriginSource == QualitySource.Metatype)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!Implemented)
+                {
+                    return Color.Red;
+                }
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (OriginSource == QualitySource.BuiltIn ||
+                    OriginSource == QualitySource.Improvement ||
+                    OriginSource == QualitySource.LifeModule ||
+                    OriginSource == QualitySource.Metatype)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
 
