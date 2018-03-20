@@ -545,8 +545,30 @@ namespace Chummer
                                 objNode.RemoveChild(objRemoveNode);
                             }
 
-                            // Append the entire child node to the new document.
-                            objDocElement?.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                            if (objDocElement?[objNode.Name] != null)
+                            {
+                                /* We need to do this to avoid creating multiple copies of the root node, ie
+                                    <chummer>
+                                        <metatypes>
+                                            <metatype>Standard</metatype>
+                                        </metatypes>
+                                        <metatypes>
+                                            <metatype>Custom</metatype>
+                                        </metatypes>
+                                    </chummer>
+                                    Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                */
+                                foreach (XmlNode childNode in objNode.ChildNodes)
+                                {
+                                    objDocElement?[objNode.Name].AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                }
+                            }
+                            else
+                            {
+                                // Append the entire child node to the new document.
+                                objDocElement?.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                            }
+
                             blnReturn = true;
                         }
             }

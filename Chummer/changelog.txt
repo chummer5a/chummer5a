@@ -116,6 +116,7 @@ Application Changes:
 - Live Custom Data now properly supports "override" and "amend" files in addition to "custom" files. Keep in mind that processing "amend" files can be especially time-consuming, so do please try to avoid using too many of them as live custom data if possible unless you're OK with Chummer5a becoming especially unresponsive.
 - Added support for bonuses that query the user to select a tradition.
 - When selecting a cyberware or bioware plugin, Essence cost is now only displayed as non-zero if the currently selected item would add to its parent's essence cost.
+- Fixed an issue that prevented custom metatypes from being properly selectable despite being visible in the appropriate form.
 
 Data Changes:
 
