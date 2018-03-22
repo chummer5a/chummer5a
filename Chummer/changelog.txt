@@ -117,6 +117,7 @@ Application Changes:
 - Added support for bonuses that query the user to select a tradition.
 - When selecting a cyberware or bioware plugin, Essence cost is now only displayed as non-zero if the currently selected item would add to its parent's essence cost.
 - Fixed an issue that prevented custom metatypes from being properly selectable despite being visible in the appropriate form.
+- Fixed behaviour that prevented knowledge skills with names that match default skills from having their Type changed.
 
 Data Changes:
 
