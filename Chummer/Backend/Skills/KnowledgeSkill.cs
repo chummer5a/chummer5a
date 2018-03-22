@@ -223,20 +223,25 @@ namespace Chummer.Backend.Skills
             get => _strType;
             set
             {
-                if (value != _strType)
-                {
-                    _strType = value;
+                if (value == _strType) return;
+                _strType = value;
 
-                    if (!LoadDefaultType())
+                //2018-22-03: Causes any attempt to alter the Type for skills with names that match
+                //default skills to reset to the default Type for that skill. If we want to disable
+                //that behaviour, better to disable it via the control.
+                /*if (!LoadDefaultType())
                     {
                         if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                         {
                             AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
                         }
-                    }
-
-                    OnPropertyChanged();
+                    }*/
+                if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
+                {
+                    AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
                 }
+
+                OnPropertyChanged();
             }
         }
 
