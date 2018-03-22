@@ -61,6 +61,7 @@ namespace Chummer
         private string _strCachedPowerPoints = string.Empty;
         private bool _blnLevelsEnabled;
         private int _intRating = 1;
+        private int _cachedLearnedRating;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Power(Character objCharacter)
@@ -908,7 +909,13 @@ namespace Chummer
         protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Skill.LearnedRating))
-                OnPropertyChanged(nameof(TotalMaximumLevels));
+            {
+                if (BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
+                {
+                    _cachedLearnedRating = ((Skill)sender).LearnedRating;
+                    OnPropertyChanged(nameof(TotalMaximumLevels));
+                }
+            }
         }
 
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
