@@ -589,7 +589,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.NotReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves

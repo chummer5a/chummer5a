@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode
+    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;

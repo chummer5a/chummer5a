@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

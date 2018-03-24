@@ -28,7 +28,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode
+    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private Guid _SourceGuid;

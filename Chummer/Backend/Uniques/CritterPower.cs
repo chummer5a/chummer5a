@@ -29,7 +29,7 @@ namespace Chummer
     /// A Critter Power.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class CritterPower : IHasInternalId, IHasName, IHasXmlNode
+    public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

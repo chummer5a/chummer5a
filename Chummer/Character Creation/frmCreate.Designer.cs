@@ -195,6 +195,7 @@ namespace Chummer
             this.tsVehicleSensorAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleName = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsWeaponMount = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleMountWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleMountWeaponAdd = new System.Windows.Forms.ToolStripMenuItem();
@@ -2357,14 +2358,23 @@ namespace Chummer
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // tsVehicleWeaponMountNotes
+            // 
+            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponMountNotes.Name = "tsVehicleMountWeaponNotes";
+            this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(180, 22);
+            this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
+            this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
             // cmsWeaponMount
             // 
             this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsWeaponMountLocation,
             this.tsVehicleMountWeapon,
-            this.tsVehicleNotes,
+            this.tsVehicleWeaponMountNotes,
             this.tsEditWeaponMount});
-            this.cmsWeaponMount.Name = "cmsWeapon";
+            this.cmsWeaponMount.Name = "cmsWeaponMount";
             this.cmsWeaponMount.Size = new System.Drawing.Size(181, 70);
             // 
             // tsVehicleMountWeapon
@@ -10892,6 +10902,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsCritterPowersNotes;
         private System.Windows.Forms.ToolStripMenuItem tsGearNotes;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponMountNotes;
         private System.Windows.Forms.ContextMenuStrip cmsLifestyleNotes;
         private System.Windows.Forms.ToolStripMenuItem tsLifestyleNotes;
         private System.Windows.Forms.ToolStripMenuItem tsArmorGearNotes;

@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;

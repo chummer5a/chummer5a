@@ -276,6 +276,7 @@
     <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
+    <Compile Include="Interfaces\IHasNotes.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
