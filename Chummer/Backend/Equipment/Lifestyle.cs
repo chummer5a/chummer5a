@@ -56,7 +56,6 @@ namespace Chummer.Backend.Equipment
         private int _intIncrements = 1;
         private int _intRoommates;
         private decimal _decPercentage = 100.0m;
-        private bool _blnPurchased;
         private int _intComforts;
         private int _intArea;
         private int _intSecurity;
@@ -170,7 +169,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("months", _intIncrements.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("roommates", _intRoommates.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("percentage", _decPercentage.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("area", _intArea.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("comforts", _intComforts.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("security", _intSecurity.ToString(GlobalOptions.InvariantCultureInfo));
@@ -245,7 +243,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
-            objNode.TryGetBoolFieldQuickly("purchased", ref _blnPurchased);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
             {
@@ -565,10 +562,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Lifestyle has been Purchased and no longer rented.
         /// </summary>
-        public bool Purchased
+        public bool Purchased => Increments >= IncrementsRequiredForPermanent;
+
+        public int IncrementsRequiredForPermanent
         {
-            get => _blnPurchased;
-            set => _blnPurchased = value;
+            get
+            {
+                switch (IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        return 3044; // 30.436875 days per month on average * 100 months, rounded up
+                    case LifestyleIncrement.Week:
+                        return 435; // 4.348125 weeks per month on average * 100 months, rounded up
+                    default:
+                        return 100;
+                }
+            }
         }
 
         /// <summary>

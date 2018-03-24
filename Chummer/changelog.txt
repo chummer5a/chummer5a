@@ -121,6 +121,7 @@ Application Changes:
 - Fixed an issue with reapplying improvements replacing Adapsin grades with standard ones.
 - Skills now properly get notified about Wound Modifier updates from Condition Monitor.
 - Random Lifestyle Points from Traveler lifestyle will now be saved and loaded with a given lifestyle instead of a random value being set every time the lifestyle is opened up for editing.
+- Fixed an issue where having more than 100 months' equivalent of a lifestyle paid would not correctly flag the lifestyle as being permanently purchased.
 
 Data Changes:
 

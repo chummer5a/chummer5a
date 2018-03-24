@@ -17980,29 +17980,25 @@ namespace Chummer
                 //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 string strIncrementString;
-                int intPermanentAmount;
                 // Change the Cost/Month label.
                 switch (objLifestyle.IncrementType)
                 {
                     case LifestyleIncrement.Day:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                        intPermanentAmount = 3044;
                         break;
                     case LifestyleIncrement.Week:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
-                        intPermanentAmount = 435;
                         break;
                     default:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
-                        intPermanentAmount = 100;
                         break;
                 }
                 lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
 
-                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo));
+                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
                 tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
                 tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
 
