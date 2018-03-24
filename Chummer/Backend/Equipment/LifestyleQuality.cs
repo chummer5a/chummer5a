@@ -518,7 +518,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CostString
         {
-            get => _strCost;
+            get => string.IsNullOrWhiteSpace(_strCost) ? "0" : _strCost;
             set => _strCost = value;
         }
 
