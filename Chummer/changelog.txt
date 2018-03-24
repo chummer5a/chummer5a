@@ -168,6 +168,7 @@ Data Changes:
 - Added hidden gear entries for Public Grid, Local Grid, and Global Grid. These entries are intended mainly to be used for TranslateExtra (which translates the Extra strings of any item) in tandem with grid subscriptions.
 - Fixed a bug where Alchemical Focus formulae and Disenchanting Focus formulae would apply bonuses that would normally require a focus to be bound.
 - Various magical supplies, formulae, foci, and reagents that previously did not query a text selection now require the user the select a tradition to which they are linked. This helps keep track of mismatched tradition penalties.
+- Added amend entries to provide replacement Garage qualities. tl;dr version for why is that this allows for language files to update the new name without forcing a rename of the base quality in the language file.
 
 New Strings:
 
