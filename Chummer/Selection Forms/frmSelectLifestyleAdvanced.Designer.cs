@@ -29,10 +29,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -378,23 +378,23 @@ namespace Chummer
             // 
             this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode5.Name = "nodPositiveLifestyleQualities";
-            treeNode5.Tag = "Label_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode5.Text = "Positive Qualities";
-            treeNode6.Name = "nodNegativeLifestyleQualities";
-            treeNode6.Tag = "Label_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode6.Text = "Negative Qualities";
-            treeNode7.Name = "nodLifestyleEntertainments";
-            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode7.Text = "Entertainments";
-            treeNode8.Name = "nodFreeMatrixGrids";
-            treeNode8.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode8.Text = "Free Matrix Grids";
+            treeNode1.Name = "nodPositiveLifestyleQualities";
+            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode1.Text = "Positive Qualities";
+            treeNode2.Name = "nodNegativeLifestyleQualities";
+            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode2.Text = "Negative Qualities";
+            treeNode3.Name = "nodLifestyleEntertainments";
+            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodFreeMatrixGrids";
+            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode4.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 286);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
@@ -584,6 +584,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAdvancedLifestyle";
             this.Text = "Build Advanced Lifestyle";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSelectLifestyleAdvanced_FormClosing);
             this.Load += new System.EventHandler(this.frmSelectAdvancedLifestyle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();

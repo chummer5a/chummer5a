@@ -7559,11 +7559,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Lifestyle:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Positive Qualities</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Negative Qualities</text>
     </string>
     <string>
@@ -7628,7 +7628,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
-      <text>Contributes tp Lifestyle Points</text>
+      <text>Contributes to Lifestyle Points</text>
     </string>
     <string>
       <key>Label_Options_KarmaMysticAdeptPowerPoint</key>

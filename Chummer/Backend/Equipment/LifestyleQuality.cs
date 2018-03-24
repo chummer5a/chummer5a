@@ -637,7 +637,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };

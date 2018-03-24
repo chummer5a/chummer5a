@@ -5515,11 +5515,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Niveau de vie avançés</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Traits positifs</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Traits négatifs</text>
     </string>
     <string>
