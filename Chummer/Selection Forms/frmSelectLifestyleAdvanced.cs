@@ -414,6 +414,12 @@ namespace Chummer
                 {
                     _objLifestyle.FreeGrids.Add(objQuality);
                 }
+
+                if (_objSourceLifestyle.AllowBonusLP)
+                {
+                    chkBonusLPRandomize.Checked = false;
+                    nudBonusLP.Value = _objSourceLifestyle.BonusLP;
+                }
             }
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
@@ -499,6 +505,13 @@ namespace Chummer
             RefreshSelectedLifestyle();
         }
 
+        private void nudBonusLP_ValueChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+            CalculateValues();
+        }
+
         private void nudPercentage_ValueChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -578,6 +591,10 @@ namespace Chummer
         {
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
             {
+                lblQualityLPLabel.Visible = true;
+                lblQualityCostLabel.Visible = true;
+                lblQualitySourceLabel.Visible = true;
+                chkQualityContributesLP.Visible = true;
                 lblQualityLp.Text = objQuality.LP.ToString();
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strPage = objQuality.Page(GlobalOptions.Language);
@@ -587,11 +604,34 @@ namespace Chummer
             }
             else
             {
+                lblQualityLPLabel.Visible = false;
+                lblQualityCostLabel.Visible = false;
+                lblQualitySourceLabel.Visible = false;
+                chkQualityContributesLP.Visible = false;
                 lblQualityLp.Text = string.Empty;
                 lblQualityCost.Text = string.Empty;
                 lblQualitySource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblQualitySource, null);
                 cmdDeleteQuality.Enabled = false;
+            }
+        }
+
+        private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
+                objQuality.ContributesLP = chkQualityContributesLP.Checked;
+        }
+
+        private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBonusLPRandomize.Checked)
+            {
+                nudBonusLP.Enabled = false;
+                nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+            }
+            else
+            {
+                nudBonusLP.Enabled = true;
             }
         }
         #endregion
@@ -636,6 +676,7 @@ namespace Chummer
             _objLifestyle.TrustFund = chkTrustFund.Checked;
             _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
             _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
+            _objLifestyle.BonusLP = decimal.ToInt32(nudBonusLP.Value);
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
@@ -647,6 +688,9 @@ namespace Chummer
 
         private void RefreshSelectedLifestyle()
         {
+            if (_blnSkipRefresh)
+                return;
+            
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             XmlNode xmlAspect = _objLifestyle.GetNode();
@@ -681,6 +725,32 @@ namespace Chummer
             {
                 chkTrustFund.Checked = false;
                 chkTrustFund.Visible = false;
+            }
+
+            if (_objLifestyle.AllowBonusLP)
+            {
+                lblBonusLP.Visible = true;
+                nudBonusLP.Visible = true;
+                chkBonusLPRandomize.Visible = true;
+
+                if (chkBonusLPRandomize.Checked)
+                {
+                    nudBonusLP.Enabled = false;
+                    _blnSkipRefresh = true;
+                    nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _blnSkipRefresh = false;
+                }
+                else
+                {
+                    nudBonusLP.Enabled = true;
+                }
+            }
+            else
+            {
+                lblBonusLP.Visible = false;
+                nudBonusLP.Visible = false;
+                nudBonusLP.Value = 0;
+                chkBonusLPRandomize.Visible = false;
             }
 
             CalculateValues();
@@ -789,7 +859,7 @@ namespace Chummer
             intLP -= intAreaValue;
             intLP -= intSecurityValue;
             intLP += intRoommatesValue;
-            intLP += _objLifestyle.TravelerRandomLP;
+            intLP += decimal.ToInt32(nudBonusLP.Value);
 
             if (strBaseLifestyle == "Street")
             {
@@ -839,7 +909,7 @@ namespace Chummer
             //txtLifestyleName.Left = intLeft + 6;
             //cboBaseLifestyle.Left = intLeft + 6;
 
-            lblQualityLp.Left = lblQualityBPLabel.Left + lblQualityBPLabel.Width + 6;
+            lblQualityLp.Left = lblQualityLPLabel.Left + lblQualityLPLabel.Width + 6;
             lblQualityCost.Left = lblQualityCostLabel.Left + lblQualityCostLabel.Width + 6;
             lblQualitySource.Left = lblQualitySourceLabel.Left + lblQualitySourceLabel.Width + 6;
         }

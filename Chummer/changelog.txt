@@ -122,6 +122,9 @@ Application Changes:
 - Skills now properly get notified about Wound Modifier updates from Condition Monitor.
 - Random Lifestyle Points from Traveler lifestyle will now be saved and loaded with a given lifestyle instead of a random value being set every time the lifestyle is opened up for editing.
 - Fixed an issue where having more than 100 months' equivalent of a lifestyle paid would not correctly flag the lifestyle as being permanently purchased.
+- Added the ability for any lifestyle to support bonus LP, not just Traveler, and if the user is editing a lifestyle that supports bonus LP, they can opt to manually edit the value or set it to a random 1D6 value.
+- Fixed an issue where the "Quality Contributes to LP" checkbox did not function properly in the advanced lifestyle selection window.
+- Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
 
 Data Changes:
 
@@ -187,6 +190,11 @@ New Strings:
 - Button_DeleteQuality
 - Node_SelectAdvancedLifestyle_PositiveQualities
 - Node_SelectAdvancedLifestyle_NegativeQualities
+- Label_BonusLP
+- Label_QualityLP
+- Label_QualityCost
+- Label_QualitySource
+- Checkbox_Randomize1D6
 
 Changed Strings:
 

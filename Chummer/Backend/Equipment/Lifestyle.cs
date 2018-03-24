@@ -62,7 +62,8 @@ namespace Chummer.Backend.Equipment
         private int _intBaseComforts;
         private int _intBaseArea;
         private int _intBaseSecurity;
-        private int _intTravelerRandomLP;
+        private int _intBonusLP;
+        private bool _blnAllowBonusLP;
         private bool _blnIsPrimaryTenant;
         private decimal _decCostForSecurity;
         private decimal _decCostForArea;
@@ -74,6 +75,7 @@ namespace Chummer.Backend.Equipment
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
         private readonly ObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ObservableCollection<LifestyleQuality>();
+        private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
 
@@ -138,6 +140,7 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyle.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
             objXmlLifestyle.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
             objXmlLifestyle.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
+            objXmlLifestyle.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objXmlLifestyle.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyle.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (!objXmlLifestyle.TryGetField("id", Guid.TryParse, out _sourceID))
@@ -151,6 +154,29 @@ namespace Chummer.Backend.Equipment
             string strTemp = string.Empty;
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
+
+            using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
+            {
+                if (lstGridNodes?.Count > 0)
+                {
+                    FreeGrids.Clear();
+                    XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                    foreach (XmlNode xmlNode in lstGridNodes)
+                    {
+                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
+                        LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                        string strPush = xmlNode.Attributes?["select"]?.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strPush))
+                        {
+                            _objCharacter.Pushtext.Push(strPush);
+                        }
+
+                        objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+
+                        FreeGrids.Add(objQuality);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -178,7 +204,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("travelerrandomlp", _intTravelerRandomLP.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowbonuslp", _blnAllowBonusLP.ToString());
+            objWriter.WriteElementString("bonuslp", _intBonusLP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
@@ -193,7 +220,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("freegrids");
-            foreach (LifestyleQuality objQuality in FreeGrids)
+            foreach (LifestyleQuality objQuality in _lstFreeGrids)
             {
                 objQuality.Save(objWriter);
             }
@@ -270,7 +297,10 @@ namespace Chummer.Backend.Equipment
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
-            objNode.TryGetInt32FieldQuickly("travelerrandomlp", ref _intTravelerRandomLP);
+            if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
+                GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+            if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
+                _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
             if (objNode["primarytenant"] == null)
@@ -300,7 +330,7 @@ namespace Chummer.Backend.Equipment
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
-                        FreeGrids.Add(objQuality);
+                        _lstFreeGrids.Add(objQuality);
                     }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -405,6 +435,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", StyleType.ToString());
             objWriter.WriteElementString("increment", IncrementType.ToString());
             objWriter.WriteElementString("sourceid", SourceID.ToString("D"));
+            objWriter.WriteElementString("bonuslp", BonusLP.ToString(objCulture));
             string strBaseLifestyle = string.Empty;
 
             // Retrieve the Advanced Lifestyle information if applicable.
@@ -446,7 +477,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public ObservableCollection<LifestyleQuality> FreeGrids { get; } = new ObservableCollection<LifestyleQuality>();
+        public ObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
 
         // ReSharper disable once InconsistentNaming
         public Guid SourceID
@@ -518,9 +549,9 @@ namespace Chummer.Backend.Equipment
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
+                return Page;
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
         }
 
         /// <summary>
@@ -592,7 +623,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _strBaseLifestyle = value;
                     XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
-                    //This needs a handler for translations, will fix later.
+                    // This needs a handler for translations, will fix later.
                     if (value == "Bolt Hole")
                     {
                         if (LifestyleQualities.All(x => x.Name != "Not a Home"))
@@ -606,15 +637,6 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        if (value == "Traveler")
-                        {
-                            RerollTravelerRandomLP();
-                        }
-                        else
-                        {
-                            _intTravelerRandomLP = 0;
-                        }
-
                         foreach (LifestyleQuality objQuality in LifestyleQualities.ToList())
                         {
                             //Bolt Holes automatically come with the Not a Home quality.
@@ -628,37 +650,7 @@ namespace Chummer.Backend.Equipment
                     XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + value + "\"]");
                     if (xmlLifestyle != null)
                     {
-                        if (xmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
-                        {
-                            SourceID = source;
-                        }
-                        else
-                        {
-                            Log.Warning(new object[] {"Missing id field for lifestyle xmlnode", xmlLifestyle});
-                            Utils.BreakIfDebug();
-                        }
-
-                        using (XmlNodeList lstGridNodes = xmlLifestyle.SelectNodes("freegrids/freegrid"))
-                        {
-                            if (lstGridNodes?.Count > 0)
-                            {
-                                FreeGrids.Clear();
-                                foreach (XmlNode xmlNode in lstGridNodes)
-                                {
-                                    XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
-                                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                    string strPush = xmlNode.Attributes?["select"]?.InnerText;
-                                    if (!string.IsNullOrWhiteSpace(strPush))
-                                    {
-                                        _objCharacter.Pushtext.Push(strPush);
-                                    }
-
-                                    objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-
-                                    FreeGrids.Add(objQuality);
-                                }
-                            }
-                        }
+                        Create(xmlLifestyle);
                     }
                 }
             }
@@ -667,12 +659,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.
         /// </summary>
-        public int TravelerRandomLP => _intTravelerRandomLP;
-
-        public void RerollTravelerRandomLP()
+        public int BonusLP
         {
-            _intTravelerRandomLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+            get => _intBonusLP;
+            set => _intBonusLP = value;
         }
+
+        public bool AllowBonusLP => _blnAllowBonusLP;
 
         /// <summary>
         /// Advance Lifestyle Comforts.
@@ -873,7 +866,7 @@ namespace Chummer.Backend.Equipment
                 d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
                 if (_eType == LifestyleType.Standard)
                    d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
-                d += _lstLifestyleQualities.Sum(lq => lq.Multiplier);
+                d += LifestyleQualities.Sum(lq => lq.Multiplier);
                 return d / 100;
             }
         }
@@ -901,7 +894,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has. 
         /// </summary>
-        public decimal BaseCostMultiplier => Convert.ToDecimal(_lstLifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
+        public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
@@ -917,7 +910,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decExtraAssetCost = 0;
                 decimal decContractCost = 0;
-                foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
+                foreach (LifestyleQuality objQuality in LifestyleQualities)
                 {
                     //Add the flat cost from Qualities.
                     if (objQuality.Type == QualityType.Contracts)
