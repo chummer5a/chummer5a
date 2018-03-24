@@ -119,6 +119,7 @@ Application Changes:
 - Fixed an issue that prevented custom metatypes from being properly selectable despite being visible in the appropriate form.
 - Fixed behaviour that prevented knowledge skills with names that match default skills from having their Type changed.
 - Fixed an issue with reapplying improvements replacing Adapsin grades with standard ones.
+- Skills now properly get notified about Wound Modifier updates from Condition Monitor.
 
 Data Changes:
 
