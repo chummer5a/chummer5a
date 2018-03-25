@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;

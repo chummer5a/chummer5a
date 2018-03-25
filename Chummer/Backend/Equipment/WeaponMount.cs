@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
 		private Guid _guiID;
 		private decimal _decMarkup;

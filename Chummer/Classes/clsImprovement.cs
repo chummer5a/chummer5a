@@ -3715,7 +3715,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         {
-                            if (!blnHasDuplicate)
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
                                 foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                                 {

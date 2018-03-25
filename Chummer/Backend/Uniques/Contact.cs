@@ -45,7 +45,7 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
-    public class Contact : INotifyPropertyChanged, IHasName, IHasMugshots
+    public class Contact : INotifyPropertyChanged, IHasName, IHasMugshots, IHasNotes
     {
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
@@ -692,7 +692,7 @@ namespace Chummer
         /// <summary>
         /// Contact Colour.
         /// </summary>
-        public Color Colour
+        public Color PreferredColor
         {
             get => _objColour;
             set
@@ -700,7 +700,7 @@ namespace Chummer
                 if (_objColour != value)
                 {
                     _objColour = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Colour)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreferredColor)));
                 }
             }
         }

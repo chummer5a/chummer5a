@@ -658,7 +658,7 @@
                   </div>
                   <xsl:call-template name="RowSummary">
                     <xsl:with-param name="text" select="$lang.ConditionMonitor"/>
-                    <xsl:with-param name="buttons" select="'CMBlock'"/>
+                    <xsl:with-param name="blockname" select="'CMBlock'"/>
                   </xsl:call-template>
                 </td>
               </tr>

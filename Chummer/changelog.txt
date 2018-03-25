@@ -118,6 +118,13 @@ Application Changes:
 - When selecting a cyberware or bioware plugin, Essence cost is now only displayed as non-zero if the currently selected item would add to its parent's essence cost.
 - Fixed an issue that prevented custom metatypes from being properly selectable despite being visible in the appropriate form.
 - Fixed behaviour that prevented knowledge skills with names that match default skills from having their Type changed.
+- Fixed an issue with reapplying improvements replacing Adapsin grades with standard ones.
+- Skills now properly get notified about Wound Modifier updates from Condition Monitor.
+- Random Lifestyle Points from Traveler lifestyle will now be saved and loaded with a given lifestyle instead of a random value being set every time the lifestyle is opened up for editing.
+- Fixed an issue where having more than 100 months' equivalent of a lifestyle paid would not correctly flag the lifestyle as being permanently purchased.
+- Added the ability for any lifestyle to support bonus LP, not just Traveler, and if the user is editing a lifestyle that supports bonus LP, they can opt to manually edit the value or set it to a random 1D6 value.
+- Fixed an issue where the "Quality Contributes to LP" checkbox did not function properly in the advanced lifestyle selection window.
+- Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
 
 Data Changes:
 
@@ -166,6 +173,8 @@ Data Changes:
 - Added hidden gear entries for Public Grid, Local Grid, and Global Grid. These entries are intended mainly to be used for TranslateExtra (which translates the Extra strings of any item) in tandem with grid subscriptions.
 - Fixed a bug where Alchemical Focus formulae and Disenchanting Focus formulae would apply bonuses that would normally require a focus to be bound.
 - Various magical supplies, formulae, foci, and reagents that previously did not query a text selection now require the user the select a tradition to which they are linked. This helps keep track of mismatched tradition penalties.
+- Added amend entries to provide replacement Garage qualities. tl;dr version for why is that this allows for language files to update the new name without forcing a rename of the base quality in the language file.
+- Fixed a typo in the "Contributes to Lifestyle Points" label.
 
 New Strings:
 
@@ -179,6 +188,13 @@ New Strings:
 - Warning_Update_CouldNotConnectException
 - Label_Options_KarmaMysticAdeptPowerPoint
 - Button_DeleteQuality
+- Node_SelectAdvancedLifestyle_PositiveQualities
+- Node_SelectAdvancedLifestyle_NegativeQualities
+- Label_BonusLP
+- Label_QualityLP
+- Label_QualityCost
+- Label_QualitySource
+- Checkbox_Randomize1D6
 
 Changed Strings:
 
@@ -186,11 +202,14 @@ Changed Strings:
 - Message_CyberwareSuite_DuplicateName
 - Message_ComplexFormLimit
 - Message_PriorityComplexFormLimit
+- Label_SelectAdvancedLifestyle_LPContribution
 
 Removed Strings:
 
 - Message_ComplexFormLimitCareer
 - Message_SelectLimitModifier
+- Label_SelectAdvancedLifestyle_PositiveQualities
+- Label_SelectAdvancedLifestyle_NegativeQualities
 
 Build 198
 

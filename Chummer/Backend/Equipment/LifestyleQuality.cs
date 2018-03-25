@@ -28,7 +28,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode
+    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private Guid _SourceGuid;
@@ -38,7 +38,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private bool _blnContributeToLimit = true;
+        private bool _blnContributeToLP = true;
         private bool _blnPrint = true;
         private int _intLP;
         private string _strCost = string.Empty;
@@ -124,7 +124,7 @@ namespace Chummer.Backend.Equipment
             }
             _objLifestyleQualitySource = objLifestyleQualitySource;
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
-            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             if (!objXmlLifestyleQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
@@ -182,7 +182,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("lp", _intLP.ToString());
-            objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("contributetolimit", _blnContributeToLP.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
             objWriter.WriteElementString("lifestylequalitytype", _objLifestyleQualityType.ToString());
             objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
@@ -218,7 +218,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
-            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
@@ -426,7 +426,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int LP
         {
-            get => Free ? 0 : _intLP;
+            get => Free || !ContributesLP ? 0 : _intLP;
             set => _intLP = value;
         }
 
@@ -518,7 +518,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CostString
         {
-            get => _strCost;
+            get => string.IsNullOrWhiteSpace(_strCost) ? "0" : _strCost;
             set => _strCost = value;
         }
 
@@ -529,6 +529,12 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnFree || OriginSource == QualitySource.BuiltIn;
             set => _blnFree = value;
+        }
+
+        public bool ContributesLP
+        {
+            get => _blnContributeToLP;
+            set => _blnContributeToLP = value;
         }
 
         /// <summary>
@@ -637,7 +643,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };

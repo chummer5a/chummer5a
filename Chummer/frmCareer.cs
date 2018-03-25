@@ -10835,53 +10835,33 @@ namespace Chummer
             string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-
-            Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-
-            if (objVehicle != null)
+            IHasNotes noteThing = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
+            if (noteThing == null)
             {
-                string strOldValue = objVehicle.Notes;
-                frmNotes frmItemNotes = new frmNotes
-                {
-                    Notes = strOldValue
-                };
-                frmItemNotes.ShowDialog(this);
-
-                if (frmItemNotes.DialogResult == DialogResult.OK)
-                {
-                    objVehicle.Notes = frmItemNotes.Notes;
-                    if (objVehicle.Notes != strOldValue)
-                    {
-                        IsDirty = true;
-                        
-                        treVehicles.SelectedNode.ForeColor = objVehicle.PreferredColor;
-                        treVehicles.SelectedNode.ToolTipText = objVehicle.Notes.WordWrap(100);
-                    }
-                }
+                noteThing = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
             }
-            else
+            if (noteThing == null)
             {
-                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
-                if (objMod != null)
+                noteThing = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
+            }
+
+            if (noteThing == null) return;
+            string strOldValue = noteThing.Notes;
+            frmNotes frmItemNotes = new frmNotes
+            {
+                Notes = noteThing.Notes
+            };
+            frmItemNotes.ShowDialog(this);
+
+            if (frmItemNotes.DialogResult == DialogResult.OK)
+            {
+                noteThing.Notes = frmItemNotes.Notes;
+                if (noteThing.Notes != strOldValue)
                 {
-                    string strOldValue = objMod.Notes;
-                    frmNotes frmItemNotes = new frmNotes
-                    {
-                        Notes = strOldValue
-                    };
-                    frmItemNotes.ShowDialog(this);
+                    IsDirty = true;
 
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
-                    {
-                        objMod.Notes = frmItemNotes.Notes;
-                        if (objMod.Notes != strOldValue)
-                        {
-                            IsDirty = true;
-
-                            treVehicles.SelectedNode.ForeColor = objMod.PreferredColor;
-                            treVehicles.SelectedNode.ToolTipText = objMod.Notes.WordWrap(100);
-                        }
-                    }
+                    treVehicles.SelectedNode.ForeColor = noteThing.PreferredColor;
+                    treVehicles.SelectedNode.ToolTipText = noteThing.Notes.WordWrap(100);
                 }
             }
         }
@@ -18000,29 +17980,25 @@ namespace Chummer
                 //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 string strIncrementString;
-                int intPermanentAmount;
                 // Change the Cost/Month label.
                 switch (objLifestyle.IncrementType)
                 {
                     case LifestyleIncrement.Day:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                        intPermanentAmount = 3044;
                         break;
                     case LifestyleIncrement.Week:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
-                        intPermanentAmount = 435;
                         break;
                     default:
                         lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
                         strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
-                        intPermanentAmount = 100;
                         break;
                 }
                 lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
 
-                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo));
+                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
                 tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
                 tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
 

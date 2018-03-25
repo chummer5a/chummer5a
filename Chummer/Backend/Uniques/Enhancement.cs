@@ -28,7 +28,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

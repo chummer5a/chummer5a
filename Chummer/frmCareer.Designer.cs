@@ -2581,7 +2581,7 @@ namespace Chummer
             this.tsVehicleAddSensor,
             this.tsVehicleName,
             this.tsVehicleNotes});
-            this.cmsVehicle.Name = "cmsWeapon";
+            this.cmsVehicle.Name = "cmsVehicle";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
             // 
             // tsVehicleAddMod
@@ -2687,6 +2687,15 @@ namespace Chummer
             this.tsVehicleNotes.Tag = "Menu_Notes";
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // tsVehicleWeaponMountNotes
+            // 
+            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponMountNotes.Name = "tsVehicleMountWeaponNotes";
+            this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(180, 22);
+            this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
+            this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // tsVehicleAddWeaponMount
             // 
@@ -14143,14 +14152,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
             this.tsVehicleWeaponMountAddUnderbarrel.Text = "Add Underbarrel Weapon";
             this.tsVehicleWeaponMountAddUnderbarrel.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
-            // 
-            // tsVehicleWeaponMountNotes
-            // 
-            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponMountNotes.Name = "tsVehicleWeaponMountNotes";
-            this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(123, 22);
-            this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
-            this.tsVehicleWeaponMountNotes.Text = "&Notes";
             // 
             // tsWeaponMountLocation
             // 

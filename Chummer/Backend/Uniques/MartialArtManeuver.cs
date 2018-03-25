@@ -28,7 +28,7 @@ namespace Chummer
     /// A Martial Art Maneuver.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode
+    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

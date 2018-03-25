@@ -252,7 +252,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves

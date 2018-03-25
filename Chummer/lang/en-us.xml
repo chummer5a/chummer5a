@@ -494,6 +494,26 @@
       <text>LP:</text>
     </string>
     <string>
+      <key>Label_BonusLP</key>
+      <text>Bonus LP:</text>
+    </string>
+    <string>
+      <key>Label_QualityLP</key>
+      <text>Quality LP:</text>
+    </string>
+    <string>
+      <key>Label_QualityCost</key>
+      <text>Quality Cost:</text>
+    </string>
+    <string>
+      <key>Label_QualitySource</key>
+      <text>Quality Source:</text>
+    </string>
+    <string>
+      <key>Checkbox_Randomize1D6</key>
+      <text>Randomize 1D6</text>
+    </string>
+    <string>
       <key>Label_KarmaRemaining</key>
       <text>Karma Remaining:</text>
     </string>
@@ -7571,11 +7591,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Lifestyle:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Positive Qualities</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Negative Qualities</text>
     </string>
     <string>
@@ -7640,7 +7660,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
-      <text>Contributes tp Lifestyle Points</text>
+      <text>Contributes to Lifestyle Points</text>
     </string>
     <string>
       <key>Label_Options_KarmaMysticAdeptPowerPoint</key>

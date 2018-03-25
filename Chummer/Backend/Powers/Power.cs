@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -37,7 +38,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
-    public class Power : INotifyPropertyChanged, IHasInternalId, IHasName, IHasXmlNode
+    public class Power : INotifyPropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private Guid _sourceID = Guid.Empty;
@@ -774,6 +775,19 @@ namespace Chummer
             }
 
             return strReturn;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
 
         #endregion

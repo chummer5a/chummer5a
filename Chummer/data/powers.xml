@@ -537,6 +537,10 @@
         </required>
       </adeptwayrequires>
       <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
         <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
