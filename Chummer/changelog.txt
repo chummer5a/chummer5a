@@ -125,6 +125,7 @@ Application Changes:
 - Added the ability for any lifestyle to support bonus LP, not just Traveler, and if the user is editing a lifestyle that supports bonus LP, they can opt to manually edit the value or set it to a random 1D6 value.
 - Fixed an issue where the "Quality Contributes to LP" checkbox did not function properly in the advanced lifestyle selection window.
 - Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
+- Changed power tab list display to autoresizing table
 
 Data Changes:
 
@@ -195,6 +196,9 @@ New Strings:
 - Label_QualityCost
 - Label_QualitySource
 - Checkbox_Randomize1D6
+- ColumnHeader_Notes
+- ColumnHeader_Power_Points
+- ColumnHeader_Action
 
 Changed Strings:
 

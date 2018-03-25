@@ -2918,6 +2918,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Button_AddPower</key>
       <text>&amp;Ajout Pouvoir</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Action</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Pts de Pouvoir</text>
+    </string>
     <!-- Technomancer Tab -->
     <string>
       <key>Label_ComplexForms</key>

@@ -3920,6 +3920,14 @@
       <key>Button_AddPower</key>
       <text>&amp;Adicionar Poder</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Ação</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Pontos de Poder</text>
+    </string>
     <!-- End Region -->
     <!-- Region Technomancer Tab -->
     <string>

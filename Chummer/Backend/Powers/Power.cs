@@ -803,7 +803,8 @@ namespace Chummer
                 int intReturn = MaxLevels;
                 if (intReturn == 0)
                 {
-                    intReturn = Math.Max(intReturn, MAGAttributeObject.TotalValue);
+                    // if unspecified, max rating = MAG
+                    intReturn = MAGAttributeObject.TotalValue;
                 }
                 if (BoostedSkill != null)
                 {
@@ -893,7 +894,7 @@ namespace Chummer
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             ICollection<string> lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(propertyName);
-            if (lstNamesOfChangedProperties.Contains(DisplayPoints))
+            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
                 _strCachedPowerPoints = string.Empty;
             if (PropertyChanged != null)
             {

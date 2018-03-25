@@ -3883,8 +3883,10 @@ namespace Chummer
                             }
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                            objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
+                                ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
 
-                            if(objImprovedPower.Deleting)
+                            if (objImprovedPower.Deleting)
                                 objImprovedPower.UnbindPower();
                         }
                         break;
