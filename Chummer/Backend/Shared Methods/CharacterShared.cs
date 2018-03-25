@@ -295,6 +295,32 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objNotes"></param>
+        protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        {
+            string strOldValue = objNotes.Notes;
+            frmNotes frmItemNotes = new frmNotes
+            {
+                Notes = strOldValue
+            };
+            frmItemNotes.ShowDialog(this);
+
+            if (frmItemNotes.DialogResult == DialogResult.OK)
+            {
+                objNotes.Notes = frmItemNotes.Notes;
+                if (objNotes.Notes != strOldValue)
+                {
+                    IsDirty = true;
+
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                }
+            }
+        }
+
         protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (notifyCollectionChangedEventArgs == null)
