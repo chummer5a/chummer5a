@@ -447,7 +447,7 @@ namespace Chummer.UI.Table
             get => _filter;
             set
             {
-                if (value != _filter && (value != null || _filter != _defaultFilter))
+                if (value != null || _filter != _defaultFilter)
                 {
                     _filter = value ?? _defaultFilter;
                     DoFilter();
