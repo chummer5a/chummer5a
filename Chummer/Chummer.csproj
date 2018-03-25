@@ -243,6 +243,7 @@
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
+    <Compile Include="Classes\ITranslatable.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
@@ -429,6 +430,57 @@
     </Compile>
     <Compile Include="UI\Skills\SkillsTabUserControl.Designer.cs">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\Alignment.cs" />
+    <Compile Include="UI\Table\ButtonTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\ButtonTableCell.Designer.cs">
+      <DependentUpon>ButtonTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.Designer.cs">
+      <DependentUpon>CheckBoxTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.Designer.cs">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.Designer.cs">
+      <DependentUpon>SpinnerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.Designer.cs">
+      <DependentUpon>TableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableColumn.cs" />
+    <Compile Include="UI\Table\TableColumnCollection.cs" />
+    <Compile Include="UI\Table\TableRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableRow.Designer.cs">
+      <DependentUpon>TableRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableView.Designer.cs">
+      <DependentUpon>TableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.Designer.cs">
+      <DependentUpon>TextTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
@@ -844,12 +896,6 @@
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Powers\PowerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Powers\PowerControl.Designer.cs">
-      <DependentUpon>PowerControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -977,6 +1023,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Table\TableRow.resx">
+      <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
@@ -1187,9 +1236,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
-      <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
       <DependentUpon>frmCreate.cs</DependentUpon>

@@ -345,6 +345,11 @@ namespace Chummer
                         }
                     }
                 }
+                else if (objChild is ITranslatable translatable)
+                {
+                    // let custom nodes determine how they want to be translated
+                    translatable.Translate();
+                }
             }
         }
 

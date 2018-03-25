@@ -2935,6 +2935,14 @@
       <key>Button_AddPower</key>
       <text>パワーを追加 (&amp;A)</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>行動</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>パワーポイント</text>
+    </string>
     <!-- Technomancer Tab -->
     <string>
       <key>Label_ComplexForms</key>
