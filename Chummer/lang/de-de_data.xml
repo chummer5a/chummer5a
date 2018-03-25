@@ -16762,7 +16762,25 @@
 				<id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
 				<name>SmartSafety Bracelet</name>
 				<translate>SmartSafety-Armband</translate>
-				<altpage>133</altpage>
+				<altpage>140</altpage>
+			</gear>
+			<gear>
+				<id>b97df325-ff46-42e5-823e-d81f6df39d16</id>
+				<name>Public Grid</name>
+				<translate>Öffentliches Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>43adba99-3484-43be-9ea8-7836c0afe2b9</id>
+				<name>Local Grid</name>
+				<translate>Lokales Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>f52b018a-a80d-4fcb-87d3-50cf9db2347e</id>
+				<name>Global Grid</name>
+				<translate>Globales Gitter</translate>
+				<altpage>231</altpage>
 			</gear>
 			<gear translated="True">
 				<id>45b1f2c4-99a3-421b-8c83-a7f574ecd39f</id>
