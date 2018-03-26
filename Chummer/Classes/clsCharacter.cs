@@ -2504,6 +2504,15 @@ namespace Chummer
             RefreshEssenceLossImprovements();
             // Refresh dicepool modifiers due to filled condition monitor boxes
             RefreshWoundPenalties();
+            // Refresh encumbrance penalties
+            RefreshEncumbrance();
+            // Curb Mystic Adept power points if the values that were loaded in would be illegal
+            if (MysticAdeptPowerPoints > 0)
+            {
+                int intMAGTotalValue = MAG.TotalValue;
+                if (MysticAdeptPowerPoints > intMAGTotalValue)
+                    MysticAdeptPowerPoints = intMAGTotalValue;
+            }
             Timekeeper.Finish("load_char_improvementrefreshers");
 
             //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
@@ -10040,6 +10049,9 @@ namespace Chummer
 
         public void RefreshEncumbrance()
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance);
             if (!Options.NoArmorEncumbrance)
@@ -10057,6 +10069,9 @@ namespace Chummer
 
         public void RefreshWoundPenalties()
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, PhysicalCM);
             int intStunCMFilled = Math.Min(StunCMFilled, StunCM);
             int intCMThreshold = CMThreshold;
@@ -10101,6 +10116,9 @@ namespace Chummer
 
         public void RefreshMysticAdeptPowerPointsFromMAG(object sender, PropertyChangedEventArgs e)
         {
+            // Don't hammer away with this method while this character is loading.
+            if (IsLoading)
+                return;
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 if (MysticAdeptPowerPoints > 0)
