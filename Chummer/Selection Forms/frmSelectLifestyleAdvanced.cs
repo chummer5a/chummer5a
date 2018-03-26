@@ -588,6 +588,7 @@ namespace Chummer
                 lblQualityCostLabel.Visible = true;
                 lblQualitySourceLabel.Visible = true;
                 chkQualityContributesLP.Visible = true;
+                chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
 
                 _blnSkipRefresh = true;
                 chkQualityContributesLP.Checked = objQuality.ContributesLP;
