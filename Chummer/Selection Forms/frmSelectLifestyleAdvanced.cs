@@ -588,6 +588,11 @@ namespace Chummer
                 lblQualityCostLabel.Visible = true;
                 lblQualitySourceLabel.Visible = true;
                 chkQualityContributesLP.Visible = true;
+
+                _blnSkipRefresh = true;
+                chkQualityContributesLP.Checked = objQuality.ContributesLP;
+                _blnSkipRefresh = false;
+
                 lblQualityLp.Text = objQuality.LP.ToString();
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strPage = objQuality.Page(GlobalOptions.Language);
@@ -611,8 +616,15 @@ namespace Chummer
 
         private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnSkipRefresh)
+                return;
+
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
+            {
                 objQuality.ContributesLP = chkQualityContributesLP.Checked;
+                lblQualityLp.Text = objQuality.LP.ToString();
+                CalculateValues();
+            }
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
