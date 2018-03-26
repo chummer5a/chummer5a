@@ -467,7 +467,10 @@ namespace Chummer.Backend.Equipment
                 {
                     _intArmorValue = value;
                     if (Equipped && Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }
@@ -589,7 +592,10 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }

@@ -114,8 +114,12 @@ namespace Chummer.Backend.Equipment
                     blnDoEncumbranceRefresh = true;
                     break;
             }
+
             if (blnDoEncumbranceRefresh && Equipped)
+            {
+                _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                 _objCharacter?.RefreshEncumbrance();
+            }
         }
 
         /// Create an Armor from an XmlNode.
@@ -682,6 +686,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Equipped)
                     {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
                     }
                 }
@@ -704,6 +709,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
                         {
+                            _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                             _objCharacter?.RefreshEncumbrance();
                         }
                     }
@@ -927,6 +933,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
+                    _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                     _objCharacter?.RefreshEncumbrance();
                 }
             }

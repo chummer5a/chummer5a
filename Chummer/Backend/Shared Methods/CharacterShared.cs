@@ -182,12 +182,10 @@ namespace Chummer
         /// <param name="lblCMArmor"></param>
         protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
         {
-            // Armor Ratings.
-            int intTotalArmorRating = _objCharacter.TotalArmorRating;
-            int intArmorRating = _objCharacter.ArmorRating;
-            lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
+                int intTotalArmorRating = _objCharacter.TotalArmorRating;
+                int intArmorRating = _objCharacter.ArmorRating;
                 string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ')';
                 if (intArmorRating != intTotalArmorRating)
                     strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
@@ -195,7 +193,6 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
                 {
-                    lblCMArmor.Text = intTotalArmorRating.ToString();
                     tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
                 }
             }
@@ -211,11 +208,6 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
         {
-            lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
-            lblMental.Text = _objCharacter.LimitMental.ToString();
-            lblSocial.Text = _objCharacter.LimitSocial.ToString();
-            lblAstral.Text = _objCharacter.LimitAstral.ToString();
-
             if (tipTooltip != null)
             {
                 StringBuilder objPhysical = new StringBuilder(

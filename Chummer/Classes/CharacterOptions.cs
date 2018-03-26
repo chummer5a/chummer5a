@@ -1154,7 +1154,7 @@ namespace Chummer
                 if (_blnMysAdeptAllowPPCareer != value)
                 {
                     _blnMysAdeptAllowPPCareer = value;
-                    _character?.RefreshMysAdeptAllowPPCareer();
+                    _character?.OnPropertyChanged(nameof(Character.MysAdeptAllowPPCareer));
                 }
             }
         }
@@ -1170,7 +1170,7 @@ namespace Chummer
                 if (_blnMysAdeptSecondMAGAttribute != value)
                 {
                     _blnMysAdeptSecondMAGAttribute = value;
-                    _character?.RefreshUseMysticAdeptPPs();
+                    _character?.OnPropertyChanged(nameof(Character.UseMysticAdeptPPs));
                 }
             }
         }
@@ -1405,7 +1405,14 @@ namespace Chummer
         public bool SpecialKarmaCostBasedOnShownValue
         {
             get => _blnSpecialKarmaCostBasedOnShownValue;
-            set => _blnSpecialKarmaCostBasedOnShownValue = value;
+            set
+            {
+                if (_blnSpecialKarmaCostBasedOnShownValue != value)
+                {
+                    _blnSpecialKarmaCostBasedOnShownValue = value;
+                    _character?.RefreshEssenceLossImprovements();
+                }
+            }
         }
 
         /// <summary>
@@ -1551,6 +1558,7 @@ namespace Chummer
                 {
                     _strNuyenFormat = value;
                     _intCachedNuyenDecimals = -1;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.DisplayNuyen), nameof(Character.DisplayCareerNuyen));
                 }
             }
         }
@@ -1618,6 +1626,7 @@ namespace Chummer
                 {
                     _strEssenceFormat = value;
                     _intCachedEssenceDecimals = -1;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
                 }
             }
         }
@@ -1628,7 +1637,14 @@ namespace Chummer
         public bool DontRoundEssenceInternally
         {
             get => _blnDoNotRoundEssenceInternally;
-            set => _blnDoNotRoundEssenceInternally = value;
+            set
+            {
+                if (_blnDoNotRoundEssenceInternally != value)
+                {
+                    _blnDoNotRoundEssenceInternally = value;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
+                }
+            }
         }
 
         /// <summary>
@@ -2215,7 +2231,14 @@ namespace Chummer
         public int KarmaMysticAdeptPowerPoint
         {
             get => _intKarmaMysticAdeptPowerPoint;
-            set => _intKarmaMysticAdeptPowerPoint = value;
+            set
+            {
+                if (_intKarmaMysticAdeptPowerPoint != value)
+                {
+                    _intKarmaMysticAdeptPowerPoint = value;
+                    _character?.OnPropertyChanged(nameof(Character.CanAffordCareerPP));
+                }
+            }
         }
 
         #endregion
@@ -2272,7 +2295,14 @@ namespace Chummer
         public bool UseTotalValueForFreeContacts
         {
             get => _blnUseTotalValueForFreeContacts;
-            set => _blnUseTotalValueForFreeContacts = value;
+            set
+            {
+                if (_blnUseTotalValueForFreeContacts != value)
+                {
+                    _blnUseTotalValueForFreeContacts = value;
+                    _character?.ResetCachedContactPoints();
+                }
+            }
         }
 
         /// <summary>
