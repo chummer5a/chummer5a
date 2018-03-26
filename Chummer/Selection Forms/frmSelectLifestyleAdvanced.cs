@@ -19,7 +19,6 @@
   using System;
 using System.Collections.Generic;
   using System.Collections.Specialized;
-  using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
  ﻿using Chummer.Backend.Equipment;
@@ -567,23 +566,17 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
+            if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
 
-            string strQualityId = treLifestyleQualities.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strQualityId))
+            if (treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality)
             {
-                LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FirstOrDefault(x => x.InternalId == strQualityId);
-                if (objQuality != null)
+                if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
                 {
-                    if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
-                    {
-                        return;
-                    }
-                    _objLifestyle.LifestyleQualities.Remove(objQuality);
-                    treLifestyleQualities.SelectedNode.Remove();
-                    CalculateValues();
+                    return;
                 }
+                _objLifestyle.LifestyleQualities.Remove(objQuality);
+                CalculateValues();
             }
         }
 
