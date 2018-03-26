@@ -127,6 +127,7 @@ Application Changes:
 - Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
 - Decrementing months/weeks/days from a lifestyle now generates an expense log entry to help keep track of things.
 - Editing a lifestyle in career mode now deducts from the character's nuyen if the lifestyle after changes has a greater total cost than before (e.g. it has 1 month paid and the user adds a quality to the lifestyle that has a nuyen cost). An expense log entry is now also generated after editing a lifestyle, regardless of whether nuyen is deducted or not.
+- Fixed an issue where recoil compensation from strength was displayed incorrectly.
 
 Data Changes:
 
