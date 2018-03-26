@@ -10656,7 +10656,7 @@ namespace Chummer
             }
             else if (objXmlTradition["name"]?.InnerText == "Custom")
             {
-                cboDrain.Visible = true;
+                cboDrain.Visible = !CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled;
                 lblTraditionName.Visible = true;
                 txtTraditionName.Visible = true;
                 lblSpiritCombat.Visible = true;

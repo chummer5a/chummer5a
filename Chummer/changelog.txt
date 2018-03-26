@@ -128,6 +128,7 @@ Application Changes:
 - Decrementing months/weeks/days from a lifestyle now generates an expense log entry to help keep track of things.
 - Editing a lifestyle in career mode now deducts from the character's nuyen if the lifestyle after changes has a greater total cost than before (e.g. it has 1 month paid and the user adds a quality to the lifestyle that has a nuyen cost). An expense log entry is now also generated after editing a lifestyle, regardless of whether nuyen is deducted or not.
 - Fixed an issue where recoil compensation from strength was displayed incorrectly.
+- Fixed a bug where drain attributes could be selected for a custom tradition of a physical adept (who would always drain with BOD + WIL regardless). This also fixes an associated bug where attempting to select drain attributes for a custom tradition on a physical adept would cause Chummer5a to freeze up and behave weirdly.
 
 Data Changes:
 
