@@ -203,67 +203,71 @@ namespace Chummer.Classes
         public void enabletab(XmlNode bonusNode)
         {
             Log.Info("enabletab");
-            foreach (XmlNode objXmlEnable in bonusNode.ChildNodes)
-            {
-                switch (objXmlEnable.InnerText)
-                {
-                    case "magician":
-                        _objCharacter.MagicianEnabled = true;
-                        Log.Info("magician");
-                        CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab", 0, 0);
-                        break;
-                    case "adept":
-                        _objCharacter.AdeptEnabled = true;
-                        Log.Info("adept");
-                        CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab",
-                            0, 0);
-                        break;
-                    case "technomancer":
-                        _objCharacter.TechnomancerEnabled = true;
-                        Log.Info("technomancer");
-                        CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab", 0, 0);
-                        break;
-                    case "advanced programs":
-                        _objCharacter.AdvancedProgramsEnabled = true;
-                        Log.Info("advanced programs");
-                        CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab", 0, 0);
-                        break;
-                    case "critter":
-                        _objCharacter.CritterEnabled = true;
-                        Log.Info("critter");
-                        CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab", 0, 0);
-                        break;
-                    case "initiation":
-                        _objCharacter.InitiationEnabled = true;
-                        Log.Info("initiation");
-                        CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "enabletab", 0, 0);
-                        break;
-                }
-            }
+            using (XmlNodeList xmlEnableList = bonusNode.SelectNodes("name"))
+                if (xmlEnableList?.Count > 0)
+                    foreach (XmlNode xmlEnable in xmlEnableList)
+                    {
+                        switch (xmlEnable.InnerText)
+                        {
+                            case "magician":
+                                _objCharacter.MagicianEnabled = true;
+                                Log.Info("magician");
+                                CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab", 0, 0);
+                                break;
+                            case "adept":
+                                _objCharacter.AdeptEnabled = true;
+                                Log.Info("adept");
+                                CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab",
+                                    0, 0);
+                                break;
+                            case "technomancer":
+                                _objCharacter.TechnomancerEnabled = true;
+                                Log.Info("technomancer");
+                                CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab", 0, 0);
+                                break;
+                            case "advanced programs":
+                                _objCharacter.AdvancedProgramsEnabled = true;
+                                Log.Info("advanced programs");
+                                CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab", 0, 0);
+                                break;
+                            case "critter":
+                                _objCharacter.CritterEnabled = true;
+                                Log.Info("critter");
+                                CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab", 0, 0);
+                                break;
+                            case "initiation":
+                                _objCharacter.InitiationEnabled = true;
+                                Log.Info("initiation");
+                                CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "enabletab", 0, 0);
+                                break;
+                        }
+                    }
         }
 
         // Disable a  tab.
         public void disabletab(XmlNode bonusNode)
         {
             Log.Info("disabletab");
-            foreach (XmlNode objXmlEnable in bonusNode.ChildNodes)
-            {
-                switch (objXmlEnable.InnerText)
-                {
-                    case "cyberware":
-                        _objCharacter.CyberwareDisabled = true;
-                        Log.Info("cyberware");
-                        CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                            "disabletab", 0, 0);
-                        break;
-                }
-            }
+            using (XmlNodeList xmlDisableList = bonusNode.SelectNodes("name"))
+                if (xmlDisableList?.Count > 0)
+                    foreach (XmlNode xmlDisable in xmlDisableList)
+                    {
+                        switch (xmlDisable.InnerText)
+                        {
+                            case "cyberware":
+                                _objCharacter.CyberwareDisabled = true;
+                                Log.Info("cyberware");
+                                CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "disabletab", 0, 0);
+                                break;
+                        }
+                    }
         }
 
         // Select Restricted (select Restricted items for Fake Licenses).

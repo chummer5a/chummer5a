@@ -131,6 +131,7 @@ Application Changes:
 - Fixed a bug where drain attributes could be selected for a custom tradition of a physical adept (who would always drain with BOD + WIL regardless). This also fixes an associated bug where attempting to select drain attributes for a custom tradition on a physical adept would cause Chummer5a to freeze up and behave weirdly.
 - Fixed an issue where the option to calculate contact points based off of total CHA value would sometimes not work.
 - Fixed issues where the tooltips and/or displayed values for Street Cred, Notoriety, and Public Awareness were sometimes incorrect or missing factors that contributed to the particular value.
+- Fixed an issue where the enabletab and disabletab bonus nodes would work off of any children nodes in a semi-chaotic fashion instead of checking only "name" nodes for tabs that should be affected.
 
 Data Changes:
 
