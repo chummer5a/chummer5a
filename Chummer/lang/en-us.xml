@@ -3249,6 +3249,14 @@
       <text>Purchased Lifestyle</text>
     </string>
     <string>
+      <key>String_ExpenseDecreaseLifestyle</key>
+      <text>Decremented Lifestyle</text>
+    </string>
+    <string>
+      <key>String_ExpenseModifiedLifestyle</key>
+      <text>Modified Lifestyle</text>
+    </string>
+    <string>
       <key>String_ExpensePurchaseCyberware</key>
       <text>Purchased Cyberware</text>
     </string>

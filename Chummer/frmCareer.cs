@@ -4078,7 +4078,7 @@ namespace Chummer
 
                 objLifestyle.Increments = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
-
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -5150,6 +5150,10 @@ namespace Chummer
             Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode?.Tag.ToString());
             if (objLifestyle == null)
                 return;
+
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(0, LanguageManager.GetString("String_ExpenseDecreaseLifestyle", GlobalOptions.Language) + ' ' + objLifestyle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
             objLifestyle.Increments -= 1;
             lblLifestyleMonths.Text = objLifestyle.Increments.ToString();
@@ -10835,15 +10839,9 @@ namespace Chummer
             string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            IHasNotes noteThing = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (noteThing == null)
-            {
-                noteThing = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
-            }
-            if (noteThing == null)
-            {
-                noteThing = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
-            }
+            IHasNotes noteThing = (CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId) ??
+                                   (IHasNotes) CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId)) ??
+                                  CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle _);
 
             if (noteThing == null) return;
             string strOldValue = noteThing.Notes;
@@ -12666,6 +12664,9 @@ namespace Chummer
             if (objLifestyle == null || string.IsNullOrEmpty(strGuid))
                 return;
 
+            string strOldLifestyleName = objLifestyle.DisplayName(GlobalOptions.Language);
+            decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
+
             if (objLifestyle.StyleType != LifestyleType.Standard)
             {
                 // Edit Advanced Lifestyle.
@@ -12692,9 +12693,22 @@ namespace Chummer
                 // Update the selected Lifestyle and refresh the list.
                 objLifestyle = frmPickLifestyle.SelectedLifestyle;
             }
-            objLifestyle.SetInternalId(strGuid);
             objLifestyle.Increments = intMonths;
+            
+            decimal decAmount = Math.Max(objLifestyle.TotalCost - decOldLifestyleTotalCost, 0);
+            if (decAmount > CharacterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
+
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(-decAmount, LanguageManager.GetString("String_ExpenseModifiedLifestyle", GlobalOptions.Language) + ' ' + strOldLifestyleName + " -> " + objLifestyle.DisplayName(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
             IsCharacterUpdateRequested = true;
 
