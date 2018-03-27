@@ -534,7 +534,7 @@ namespace Chummer
                 Name = InternalId,
                 ContextMenuStrip = cmsCritterPower,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };

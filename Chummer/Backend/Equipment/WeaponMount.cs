@@ -774,7 +774,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsVehicleWeaponMount,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

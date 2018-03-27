@@ -235,7 +235,7 @@ namespace Chummer
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
                 Text = DisplayName,
-                Tag = InternalId,
+                Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };

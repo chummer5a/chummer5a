@@ -277,7 +277,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsAIProgram,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

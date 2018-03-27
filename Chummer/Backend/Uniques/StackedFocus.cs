@@ -248,7 +248,7 @@ namespace Chummer
 
             objNode.Name = InternalId;
             objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.Language);
-            objNode.Tag = InternalId;
+            objNode.Tag = this;
             objNode.Checked = Bonded;
 
             return objNode;

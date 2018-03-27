@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -2493,7 +2493,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -2544,5 +2544,19 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
+                return false;
+
+            DeleteGear();
+            // If the Parent is populated, remove the item from its Parent.
+            if (Parent != null)
+                Parent.Children.Remove(this);
+            else
+                characterObject.Gear.Remove(this);
+            return true;
+        }
     }
 }

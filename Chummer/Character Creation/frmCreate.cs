@@ -31,6 +31,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using Chummer.Interfaces;
 
 namespace Chummer
 {
@@ -2050,302 +2051,7 @@ namespace Chummer
             {
                 selectedObject = treVehicles.SelectedNode?.Tag;
             }
-
-            switch (selectedObject)
-            {
-                case Lifestyle objCopyLifestyle:
-                {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyLifestyle.Save(objWriter);
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
-                    break;
-                }
-                case Armor objCopyArmor:
-                {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyArmor.Save(objWriter);
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
-
-                    if (!objCopyArmor.WeaponID.IsEmptyGuid())
-                    {
-                        // <weapons>
-                        objWriter.WriteStartElement("weapons");
-                        // Copy any Weapon that comes with the Gear.
-                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmor.InternalId))
-                        {
-                            objCopyWeapon.Save(objWriter);
-                        }
-
-                        objWriter.WriteEndElement();
-                    }
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    break;
-                }
-                case Gear objCopyGear:
-                {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyGear.Save(objWriter);
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
-
-                    if (!objCopyGear.WeaponID.IsEmptyGuid())
-                    {
-                        // <weapons>
-                        objWriter.WriteStartElement("weapons");
-                        // Copy any Weapon that comes with the Gear.
-                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
-                        {
-                            objCopyWeapon.Save(objWriter);
-                        }
-
-                        objWriter.WriteEndElement();
-                    }
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    break;
-                }
-                case Vehicle objCopyVehicle:
-                {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyVehicle.Save(objWriter);
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
-                    break;
-                }
-                case Cyberware objCopyCyberware:
-                {
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyCyberware.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
-
-                        if (!objCopyCyberware.WeaponID.IsEmptyGuid())
-                        {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
-                            {
-                                objCopyWeapon.Save(objWriter);
-                            }
-
-                            objWriter.WriteEndElement();
-                        }
-                        if (!objCopyCyberware.VehicleID.IsEmptyGuid())
-                        {
-                            // <weapons>
-                            objWriter.WriteStartElement("vehicles");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
-                            {
-                                objCopyVehicle.Save(objWriter);
-                            }
-
-                            objWriter.WriteEndElement();
-                        }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        GlobalOptions.Clipboard = objCharacterXML;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
-                    break;
-                }
-                case Weapon objCopyWeapon:
-                {
-                    // Do not let the user copy Gear or Cyberware Weapons.
-                    if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                        return;
-
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("character");
-
-                    objCopyWeapon.Save(objWriter);
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
-
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
-                        break;
-                }
-            }
+            CopyObject(selectedObject);
         }
 
         private void mnuEditPaste_Click(object sender, EventArgs e)
@@ -3931,16 +3637,11 @@ namespace Chummer
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
             // Delete the selected Lifestyle.
-            if (treLifestyles.SelectedNode != null && treLifestyles.SelectedNode.Level > 0)
+            if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)))
-                    return;
-                if (treLifestyles.SelectedNode.Tag is Lifestyle objLifestyle)
-                {
-                    CharacterObject.Lifestyles.Remove(objLifestyle);
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
-                }
+                if (!selectedObject.Remove(CharacterObject)) return;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
         }
 
@@ -3956,20 +3657,9 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode.Tag is Gear objSelectedGear)
+            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
-                    return;
-
-                objSelectedGear.DeleteGear();
-
-                Gear objParent = objSelectedGear.Parent;
-
-                // If the Parent is populated, remove the item from its Parent.
-                if (objParent != null)
-                    objParent.Children.Remove(objSelectedGear);
-                else
-                    CharacterObject.Gear.Remove(objSelectedGear);
+                objSelectedGear.Remove(CharacterObject);
             }
             else if (treGear.SelectedNode.Tag is string strLocation && treGear.SelectedNode.Level > 0)
             {
@@ -4215,27 +3905,13 @@ namespace Chummer
 
             IsDirty = true;
         }
-
         private void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(CharacterObject);
-            frmPickMartialArt.ShowDialog(this);
-
-            if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
-
-            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
-
-            MartialArt objMartialArt = new MartialArt(CharacterObject);
-            objMartialArt.Create(objXmlArt);
-            CharacterObject.MartialArts.Add(objMartialArt);
-            
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            if (MartialArt.Purchase(CharacterObject))
+            {
+                IsDirty = true;
+                IsCharacterUpdateRequested = true;
+            }
         }
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
@@ -4263,48 +3939,18 @@ namespace Chummer
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (treMartialArts.SelectedNode.Tag is MartialArt objMartialArt)
+            if (treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)
             {
-                // Delete the selected Martial Art.
-                if (objMartialArt.IsQuality) return;
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
-                    GlobalOptions.Language)))
-                    return;
-
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt,
-                    objMartialArt.InternalId);
-                // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
+                if (objSelectedNode.Remove(CharacterObject))
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject,
-                        Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
-
-                CharacterObject.MartialArts.Remove(objMartialArt);
-            }
-            else if (treMartialArts.SelectedNode.Tag is MartialArtTechnique objSelectedAdvantage)
-            {
-                // Find the selected Advantage object.
-                //TODO: Advantages should know what their parent is. 
-                objSelectedAdvantage = CharacterObject.MartialArts.FindMartialArtTechnique(objSelectedAdvantage.InternalId, out objMartialArt);
-                if (objSelectedAdvantage == null) return;
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
-                    GlobalOptions.Language)))
-                    return;
-
-                ImprovementManager.RemoveImprovements(CharacterObject,
-                    Improvement.ImprovementSource.MartialArtTechnique, objSelectedAdvantage.InternalId);
-
-                objMartialArt.Techniques.Remove(objSelectedAdvantage);
             }
             else
             {
                 return;
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
 #if LEGACY
@@ -4471,111 +4117,9 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            switch (treMetamagic.SelectedNode.Tag)
-            {
-                case InitiationGrade objGrade:
-                {
-                    string strMessage;
-                    // Stop if this isn't the highest grade
-                    if (CharacterObject.MAGEnabled)
-                    {
-                        if (objGrade.Grade != CharacterObject.InitiateGrade)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        strMessage = LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language);
-                    }
-                    else if (CharacterObject.RESEnabled)
-                    {
-                        if (objGrade.Grade != CharacterObject.SubmersionGrade)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        strMessage = LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language);
-                    }
-                    else
-                        return;
-
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-                    break;
-                }
-                case Art objArt:
-                {
-                    if (objArt.Grade <= 0)
-                        return;
-                    string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Arts.Remove(objArt);
-                    break;
-                }
-                case Metamagic objMetamagic:
-                {
-                    if (objMetamagic.Grade <= 0)
-                        return;
-                    string strMessage;
-                    if (CharacterObject.MAGEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
-                    else if (CharacterObject.RESEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
-                    else
-                        return;
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Metamagics.Remove(objMetamagic);
-                    ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-                    break;
-                }
-                case Enhancement objEnhancement:
-                {
-                    if (objEnhancement.Grade <= 0)
-                        return;
-                    string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Enhancements.Remove(objEnhancement);
-                    foreach (Power objPower in CharacterObject.Powers)
-                    {
-                        if (objPower.Enhancements.Contains(objEnhancement))
-                            objPower.Enhancements.Remove(objEnhancement);
-                    }
-
-                    break;
-                }
-                case Spell objSpell:
-                {
-                    if (objSpell.Grade <= 0)
-                        return;
-                    string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Spells.Remove(objSpell);
-                    break;
-                }
-                case ComplexForm objComplexForm:
-                {
-                    if (objComplexForm.Grade <= 0)
-                        return;
-                    string strMessage = LanguageManager.GetString("Message_DeleteComplexForm", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.ComplexForms.Remove(objComplexForm);
-                    break;
-                }
-                default:
-                    return;
-            }
-
+            if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject)) return;
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -4639,20 +4183,10 @@ namespace Chummer
 
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
-            // Locate the Complex Form that is selected in the tree.
-            if (treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm && objComplexForm.Grade == 0)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm", GlobalOptions.Language)))
-                    return;
-
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
-
-                CharacterObject.ComplexForms.Remove(objComplexForm);
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
+            if (!(treComplexForms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject)) return;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)

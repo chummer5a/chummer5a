@@ -969,7 +969,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

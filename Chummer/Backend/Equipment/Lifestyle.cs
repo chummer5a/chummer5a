@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -891,7 +891,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -913,5 +913,10 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
+        }
     }
 }

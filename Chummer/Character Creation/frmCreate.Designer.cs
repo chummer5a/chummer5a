@@ -2082,7 +2082,7 @@ namespace Chummer
             this.tsVehicleCyberwareNotes.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareNotes.Tag = "Menu_Notes";
             this.tsVehicleCyberwareNotes.Text = "&Notes";
-            this.tsVehicleCyberwareNotes.Click += new System.EventHandler(this.tsVehicleCyberwareNotes_Click);
+            this.tsVehicleCyberwareNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // cmsLifestyle
             // 

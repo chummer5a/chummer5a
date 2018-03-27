@@ -207,7 +207,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsMartialArtTechnique,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
