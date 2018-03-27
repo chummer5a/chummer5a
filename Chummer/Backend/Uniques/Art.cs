@@ -28,7 +28,7 @@ namespace Chummer
     /// An Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Art : IHasInternalId, IHasName, IHasXmlNode
+    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

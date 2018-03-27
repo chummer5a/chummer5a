@@ -597,6 +597,34 @@ namespace Chummer
             if (!CharacterObject.CritterEnabled)
                 tabCharacterTabs.TabPages.Remove(tabCritter);
 
+            lblCMPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.PhysicalCM), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblCMStun.DataBindings.Add("Text", CharacterObject, nameof(Character.StunCM), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMental.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitMental), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSocial.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitSocial), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblAstral.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitAstral), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblESSMax.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayEssence), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblCyberwareESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblBiowareESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayBiowareEssence), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblEssenceHoleESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayEssenceHole), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPrototypeTranshumanESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayPrototypeTranshumanEssenceUsed), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            chkPrototypeTranshuman.DataBindings.Add("Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPrototypeTranshumanESSLabel.DataBindings.Add("Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPrototypeTranshumanESS.DataBindings.Add("Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblAstralINI.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblArmor.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalArmorRating), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblRemainingNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            lblStreetCredTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalStreetCred), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblNotorietyTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalNotoriety), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPublicAwareTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalPublicAwareness), false, DataSourceUpdateMode.OnPropertyChanged);
+
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
@@ -7570,53 +7598,33 @@ namespace Chummer
             string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            VehicleMod objMod = null;
-            if (objVehicle == null)
+            IHasNotes noteThing = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
+            if (noteThing == null)
             {
-                objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
+                noteThing = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
+            }
+            if (noteThing == null)
+            {
+                noteThing = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle objVehicle);
             }
 
-            if (objVehicle != null)
+            if (noteThing == null) return;
+            string strOldValue = noteThing.Notes;
+            frmNotes frmItemNotes = new frmNotes
             {
-                string strOldValue = objVehicle.Notes;
-                frmNotes frmItemNotes = new frmNotes
-                {
-                    Notes = strOldValue
-                };
-                frmItemNotes.ShowDialog(this);
+                Notes = noteThing.Notes
+            };
+            frmItemNotes.ShowDialog(this);
 
-                if (frmItemNotes.DialogResult == DialogResult.OK)
-                {
-                    objVehicle.Notes = frmItemNotes.Notes;
-                    if (objVehicle.Notes != strOldValue)
-                    {
-                        IsDirty = true;
-                        
-                        treVehicles.SelectedNode.ForeColor = objVehicle.PreferredColor;
-                        treVehicles.SelectedNode.ToolTipText = objVehicle.Notes.WordWrap(100);
-                    }
-                }
-            }
-            else if (objMod != null)
+            if (frmItemNotes.DialogResult == DialogResult.OK)
             {
-                string strOldValue = objMod.Notes;
-                frmNotes frmItemNotes = new frmNotes
+                noteThing.Notes = frmItemNotes.Notes;
+                if (noteThing.Notes != strOldValue)
                 {
-                    Notes = strOldValue
-                };
-                frmItemNotes.ShowDialog(this);
+                    IsDirty = true;
 
-                if (frmItemNotes.DialogResult == DialogResult.OK)
-                {
-                    objMod.Notes = frmItemNotes.Notes;
-                    if (objMod.Notes != strOldValue)
-                    {
-                        IsDirty = true;
-
-                        treVehicles.SelectedNode.ForeColor = objMod.PreferredColor;
-                        treVehicles.SelectedNode.ToolTipText = objMod.Notes.WordWrap(100);
-                    }
+                    treVehicles.SelectedNode.ForeColor = noteThing.PreferredColor;
+                    treVehicles.SelectedNode.ToolTipText = noteThing.Notes.WordWrap(100);
                 }
             }
         }
@@ -10676,7 +10684,7 @@ namespace Chummer
             }
             else if (objXmlTradition["name"]?.InnerText == "Custom")
             {
-                cboDrain.Visible = true;
+                cboDrain.Visible = !CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled;
                 lblTraditionName.Visible = true;
                 txtTraditionName.Visible = true;
                 lblSpiritCombat.Visible = true;
@@ -12125,38 +12133,9 @@ namespace Chummer
             decNuyen += Convert.ToDecimal(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen));
 
             lblNuyenTotal.Text = "= " + decNuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+            tssEssence.Text = CharacterObject.DisplayEssence;
             
-            string strESSFormat = CharacterObjectOptions.EssenceFormat;
-
-            string strESS = CharacterObject.Essence().ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblESSMax.Text = strESS;
-            tssEssence.Text = strESS;
-
-            lblCyberwareESS.Text = CharacterObject.CyberwareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblBiowareESS.Text = CharacterObject.BiowareEssence.ToString(strESSFormat, GlobalOptions.CultureInfo);
-            lblEssenceHoleESS.Text = CharacterObject.EssenceHole.ToString(strESSFormat, GlobalOptions.CultureInfo);
-
-            if (CharacterObject.PrototypeTranshuman > 0)
-            {
-                chkPrototypeTranshuman.Visible = true;
-                lblPrototypeTranshumanESSLabel.Visible = true;
-                lblPrototypeTranshumanESS.Visible = true;
-
-                decimal decPrototypeTranshumanESSUsed = 0.0m;
-                foreach (Cyberware objCyberware in CharacterObject.Cyberware.Where(x => x.PrototypeTranshuman))
-                {
-                    decPrototypeTranshumanESSUsed += objCyberware.CalculatedESS(false);
-                }
-
-                lblPrototypeTranshumanESS.Text = decPrototypeTranshumanESSUsed.ToString(strESSFormat, GlobalOptions.CultureInfo) + " / " + CharacterObject.PrototypeTranshuman.ToString(strESSFormat, GlobalOptions.CultureInfo);
-            }
-            else
-            {
-                chkPrototypeTranshuman.Visible = false;
-                lblPrototypeTranshumanESSLabel.Visible = false;
-                lblPrototypeTranshumanESS.Visible = false;
-            }
-
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
@@ -12173,7 +12152,6 @@ namespace Chummer
             UpdateSkillRelatedInfo();
             
             // Update the Condition Monitor labels.
-            lblCMPhysical.Text = CharacterObject.PhysicalCM.ToString();
             bool blnIsAI = CharacterObject.DEPEnabled && CharacterObject.BOD.MetatypeMaximum == 0;
             if (blnIsAI)
             {
@@ -12181,7 +12159,7 @@ namespace Chummer
                 {
                     lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
                     lblCMStunLabel.Text = string.Empty;
-                    lblCMStun.Text = string.Empty;
+                    lblCMStun.Visible = false;
                     if (tipTooltip != null)
                     {
                         string strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(dicAttributeTotalValues["DEP"] + 1) / 2})";
@@ -12197,7 +12175,7 @@ namespace Chummer
                 else
                 {
                     lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
-                    lblCMStun.Text = CharacterObject.StunCM.ToString();
+                    lblCMStun.Visible = true;
 
                     if (tipTooltip != null)
                     {
@@ -12244,7 +12222,7 @@ namespace Chummer
             {
                 lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
                 lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
-                lblCMStun.Text = CharacterObject.StunCM.ToString();
+                lblCMStun.Visible = true;
                 if (tipTooltip != null)
                 {
                     string strCM = $"8 + ({CharacterObject.BOD.DisplayAbbrev}/2)({(dicAttributeTotalValues["BOD"] + 1) / 2})";
@@ -12265,10 +12243,7 @@ namespace Chummer
             UpdateSpellDefence(dicAttributeTotalValues);
 
             UpdateArmorRating(lblArmor, tipTooltip);
-
-            // Calculate Free Contacts Points. Free points = (CHA) * 2.
-            CharacterObject.ContactPoints = (CharacterObjectOptions.UseTotalValueForFreeContacts ? dicAttributeTotalValues["CHA"] : dicAttributeValues["CHA"]) * CharacterObjectOptions.FreeContactsMultiplier;
-
+            
             // Update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
             foreach (Spirit objSpirit in CharacterObject.Spirits)
             {
@@ -12289,7 +12264,7 @@ namespace Chummer
 
             int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
             int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;
-
+            
             // Initiative.
             lblINI.Text = CharacterObject.Initiative;
             string strInitText = LanguageManager.GetString("String_Initiative", GlobalOptions.Language);
@@ -12300,15 +12275,16 @@ namespace Chummer
             tipTooltip.SetToolTip(lblINI, strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
 
             // Astral Initiative.
-            lblAstralINI.Visible = CharacterObject.MAGEnabled;
+            lblAstralINI.Text = CharacterObject.AstralInitiative;
             if (CharacterObject.MAGEnabled)
             {
-                lblAstralINI.Text = CharacterObject.AstralInitiative;
                 strInit = $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeValues["INT"]}) × 2";
                 if (intINTAttributeModifiers > 0)
                     strInit += $"{strModifiers} ({intINTAttributeModifiers})";
                 tipTooltip.SetToolTip(lblAstralINI, strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.AstralInitiativeDice.ToString()));
             }
+            else
+                tipTooltip.SetToolTip(lblAstralINI, string.Empty);
 
             // Matrix Initiative (AR).
             lblMatrixINI.Text = CharacterObject.MatrixInitiative;
@@ -12395,7 +12371,11 @@ namespace Chummer
 
             cmdAddBioware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
-            UpdateReputation();
+
+            tipTooltip.SetToolTip(lblStreetCredTotal, CharacterObject.StreetCredTooltip);
+            tipTooltip.SetToolTip(lblNotorietyTotal, CharacterObject.NotorietyTooltip);
+            tipTooltip.SetToolTip(lblPublicAwareTotal, CharacterObject.PublicAwarenessTooltip);
+
             UpdateInitiationCost();
             UpdateMentorSpirits();
             UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
@@ -12480,9 +12460,8 @@ namespace Chummer
             CharacterObject.Nuyen = decNuyen - decDeductions;
             if (blnDoUIUpdate)
             {
-                lblRemainingNuyen.Text = CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                tssNuyenRemaining.Text = CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                //lblNuyenBP.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                tssNuyenRemaining.Text = CharacterObject.DisplayNuyen;
+                //lblNuyenBP.Text = CharacterObject.DisplayNuyen;
             }
 
             return CharacterObject.Nuyen;
@@ -14051,29 +14030,25 @@ namespace Chummer
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             string strIncrementString;
-            int intPermanentAmount;
             // Change the Cost/Month label.
             switch (objLifestyle.IncrementType)
             {
                 case LifestyleIncrement.Day:
                     lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
                     strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                    intPermanentAmount = 3044;
                     break;
                 case LifestyleIncrement.Week:
                     lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
                     strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
-                    intPermanentAmount = 435;
                     break;
                 default:
                     lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
                     strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
-                    intPermanentAmount = 100;
                     break;
             }
             lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
 
-            lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo));
+            lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
             lblLifestyleTotalCost.Left = lblLifestyleMonthsLabel.Left + lblLifestyleMonthsLabel.Width + 6;
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
@@ -17230,20 +17205,6 @@ namespace Chummer
             }
         }
         
-        /// <summary>
-        /// Update the Reputation fields.
-        /// </summary>
-        private void UpdateReputation()
-        {
-            lblStreetCredTotal.Text = CharacterObject.CalculatedStreetCred.ToString();
-            lblNotorietyTotal.Text = CharacterObject.CalculatedNotoriety.ToString();
-            lblPublicAwareTotal.Text = CharacterObject.CalculatedPublicAwareness.ToString();
-
-            tipTooltip.SetToolTip(lblStreetCredTotal, CharacterObject.StreetCredTooltip);
-            tipTooltip.SetToolTip(lblNotorietyTotal, CharacterObject.NotorietyTooltip);
-            tipTooltip.SetToolTip(lblPublicAwareTotal, CharacterObject.PublicAwarenessTooltip);
-        }
-
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>

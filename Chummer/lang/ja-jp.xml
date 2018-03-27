@@ -5552,11 +5552,11 @@
       <text>高度なライフスタイルを作成</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>有利な資質</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>不利な資質</text>
     </string>
     <string>

@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private readonly Character _objCharacter;

@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -2694,12 +2694,12 @@ namespace Chummer.Backend.Equipment
             if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                 intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
-            int intStrRC = ((intUseSTR - 1) / 3) + 1;
+            int intStrRC = (intUseSTR + 2) / 3;
 
-            intRCBase += intStrRC;
-            intRCFull += intStrRC;
+            intRCBase += intStrRC + 1;
+            intRCFull += intStrRC + 1;
             if (blnRefreshRCToolTip)
-                strRCTip += $" + {_objCharacter.STR.DisplayAbbrev} [{intUseSTR}] /3 = {intStrRC}]";
+                strRCTip += $" + {_objCharacter.STR.DisplayAbbrev} [{intUseSTR} / 3 = {intStrRC}]";
             // If the full RC is not higher than the base, only the base value is shown.
             strRC = intRCBase.ToString(objCulture);
             if (intRCFull > intRCBase)

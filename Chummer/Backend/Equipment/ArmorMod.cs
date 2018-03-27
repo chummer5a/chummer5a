@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -467,7 +467,10 @@ namespace Chummer.Backend.Equipment
                 {
                     _intArmorValue = value;
                     if (Equipped && Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }
@@ -589,7 +592,10 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }

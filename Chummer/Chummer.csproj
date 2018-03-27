@@ -139,6 +139,7 @@
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
     <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
+    <Compile Include="Interfaces\IHasNotes.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -1701,6 +1703,8 @@
     <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\amend_garagecapacity_lifestyles.xml" />
+    <Content Include="customdata\German Data Changes - Garage Capacity\custom_garagecapacity_lifestyles.xml" />
     <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

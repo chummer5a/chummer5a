@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <qualities>
+    <quality>
+      <id>c714a2dd-5570-40ee-8006-42ed533bf7c9</id>
+      <name>Cramped Garage (Car (Body 14 or Less))</name>
+      <category>Entertainment - Asset</category>
+      <lp>1</lp>
+      <allowed>Medium,High,Luxury</allowed>
+      <source>RF</source>
+      <cost>45</cost>
+      <page>221</page>
+    </quality>
+    <quality>
+      <id>58040d75-7861-4364-b10e-594b63f9b941</id>
+      <name>Cramped Garage (Car (Body 15 or More))</name>
+      <category>Entertainment - Asset</category>
+      <lp>2</lp>
+      <allowed>Medium,High,Luxury</allowed>
+      <source>RF</source>
+      <cost>90</cost>
+      <page>221</page>
+    </quality>
+    <quality>
+      <id>e3a4b05e-8506-4cd0-bc04-5b49812d5fd9</id>
+      <name>Garage (Car (Body 14 or Less))</name>
+      <category>Entertainment - Asset</category>
+      <lp>1</lp>
+      <allowed>Medium,High,Luxury</allowed>
+      <source>RF</source>
+      <cost>45</cost>
+      <page>221</page>
+    </quality>
+    <quality>
+      <id>a63933f8-c4d1-4332-add5-a684d4eff041</id>
+      <name>Garage (Car (Body 15 or More))</name>
+      <category>Entertainment - Asset</category>
+      <lp>2</lp>
+      <allowed>Medium,High,Luxury</allowed>
+      <source>RF</source>
+      <cost>90</cost>
+      <page>221</page>
+    </quality>
+  </qualities>
+</chummer>

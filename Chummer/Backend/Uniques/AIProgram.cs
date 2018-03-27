@@ -28,7 +28,7 @@ namespace Chummer
     /// An AI Program or Advanced Program.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode
+    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;

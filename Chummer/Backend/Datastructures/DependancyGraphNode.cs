@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -39,8 +41,26 @@ namespace Chummer
             
             foreach (DependancyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(this);
-                DownStreamNodes.Add(objDownStreamNode);
+                objDownStreamNode.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(this, null));
+                DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNode, null));
+            }
+        }
+
+        /// <summary>
+        /// Constructor used for to make a blueprint of a DependancyGraph.
+        /// Use this constructor when specifying arguments for a DependancyGraph constructor.
+        /// </summary>
+        /// <param name="objMyObject">Object associated with the current node</param>
+        /// <param name="funcDependancyCondition">Function that must return true at the time of collecting dependancies in order for the dependancy to register.</param>
+        /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
+        public DependancyGraphNode(T objMyObject, Func<bool> funcDependancyCondition, params DependancyGraphNode<T>[] lstDownStreamNodes)
+        {
+            MyObject = objMyObject;
+
+            foreach (DependancyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
+            {
+                objDownStreamNode.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(this, funcDependancyCondition));
+                DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNode, funcDependancyCondition));
             }
         }
 
@@ -75,12 +95,12 @@ namespace Chummer
         /// <summary>
         /// Collection of all items that depend on the object tied to this node.
         /// </summary>
-        public ICollection<DependancyGraphNode<T>> UpStreamNodes { get; } = new HashSet<DependancyGraphNode<T>>();
+        public ICollection<DependancyGraphNodeWithCondition<T>> UpStreamNodes { get; } = new HashSet<DependancyGraphNodeWithCondition<T>>();
 
         /// <summary>
         /// Collection of all items on which the object tied to this node depends.
         /// </summary>
-        public ICollection<DependancyGraphNode<T>> DownStreamNodes { get; } = new HashSet<DependancyGraphNode<T>>();
+        public ICollection<DependancyGraphNodeWithCondition<T>> DownStreamNodes { get; } = new HashSet<DependancyGraphNodeWithCondition<T>>();
 
         public override bool Equals(object obj)
         {

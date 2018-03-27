@@ -114,6 +114,26 @@
 			<text>LP:</text>
 		</string>
 		<string>
+			<key>Label_BonusLP</key>
+			<text>Bonus LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityLP</key>
+			<text>Gabe LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityCost</key>
+			<text>Gabe Kosten:</text>
+		</string>
+		<string>
+			<key>Label_QualitySource</key>
+			<text>Gabe Quelle:</text>
+		</string>
+		<string>
+			<key>Checkbox_Randomize1D6</key>
+			<text>Zufällig 1W6</text>
+		</string>
+		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>verbleibendes Karma:</text>
 		</string>
@@ -2382,6 +2402,10 @@
 			<text>Gabe austauschen</text>
 		</string>
 		<string>
+			<key>Button_DeleteQuality</key>
+			<text>Gabe entfernen</text>
+		</string>
+		<string>
 			<key>Button_AddContact</key>
 			<text>Connection &amp;hinzufügen</text>
 		</string>
@@ -2467,7 +2491,7 @@
 		</string>
 		<string>
 			<key>Label_CustomKnowledgeSkillsReminder</key>
-			<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+			<text>Denken sie daran, dass sie auch eigene Fertigkeiten und Spezialisierungen eintragen können!</text>
 		</string>
 		<string>
 			<key>Button_AddSkill</key>
@@ -4512,11 +4536,11 @@
 			<text>Erstelle erweiterten Lebensstil</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+			<key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
 			<text>Vorteile</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+			<key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
 			<text>Nachteile</text>
 		</string>
 		<string>
@@ -8113,6 +8137,10 @@
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Tenant</key>
 			<text>Hauptmieter</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_LPContribution</key>
+			<text>Trägt zu Lebensstilpunkten bei</text>
 		</string>
 		<string>
 			<key>Message_File_Cannot_Be_Accessed</key>

@@ -194,6 +194,7 @@
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
       <lp>2</lp>
+      <allowbonuslp>True</allowbonuslp>
       <multiplier>60</multiplier>
       <source>RF</source>
       <page>218</page>

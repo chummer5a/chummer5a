@@ -893,7 +893,7 @@ namespace Chummer
                 }
 
                 // Set free contact points
-                _objCharacter.ContactPoints = _objCharacter.CHA.Value * _objCharacter.ContactMultiplier;
+                _objCharacter.ResetCachedContactPoints();
 
                 // Set starting karma
                 _objCharacter.BuildKarma = _objCharacter.MaxKarma;

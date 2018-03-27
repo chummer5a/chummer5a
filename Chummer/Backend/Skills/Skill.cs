@@ -1113,6 +1113,11 @@ namespace Chummer.Backend.Skills
                     OnPropertyChanged(nameof(CanAffordSpecialization));
                 }
             }
+
+            if (propertyChangedEventArgs.PropertyName == nameof(Character.WoundModifier))
+            {
+                OnPropertyChanged(nameof(Pool));
+            }
         }
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)

@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -294,7 +294,7 @@ namespace Chummer.Backend.Equipment
             if (blnDoRedlinerRefresh)
                 _objCharacter?.RefreshRedliner();
             if (blnDoEssenceImprovementsRefresh)
-                _objCharacter?.RefreshEssenceLossImprovements();
+                _objCharacter?.OnPropertyChanged(EssencePropertyName);
         }
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1762,7 +1762,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     if (ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -1859,7 +1859,7 @@ namespace Chummer.Backend.Equipment
                     bool blnGradeEssenceChanged = _objGrade.Essence == value.Essence;
                     _objGrade = value;
                     if (blnGradeEssenceChanged && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                     // Run through all of the child pieces and make sure their Grade matches.
                     foreach (Cyberware objChild in Children)
                     {
@@ -1899,7 +1899,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _intEssenceDiscount = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -1916,7 +1916,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _decExtraESSAdditiveMultiplier = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -1933,7 +1933,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _decExtraESSMultiplicativeMultiplier = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -2010,7 +2010,7 @@ namespace Chummer.Backend.Equipment
                     bool blnOldValue = _blnAddToParentESS;
                     _blnAddToParentESS = value;
                     if ((Parent == null || AddToParentESS || blnOldValue) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }
         }
@@ -2098,11 +2098,27 @@ namespace Chummer.Backend.Equipment
                 {
                     _blnPrototypeTranshuman = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                        _objCharacter.RefreshEssenceLossImprovements();
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
 
                 foreach (Cyberware objCyberware in Children)
                     objCyberware.PrototypeTranshuman = value;
+            }
+        }
+
+        public string EssencePropertyName
+        {
+            get
+            {
+                if (PrototypeTranshuman)
+                    return nameof(Character.PrototypeTranshumanEssenceUsed);
+                if (SourceID.Equals(EssenceHoleGUID))
+                    return nameof(Character.EssenceHole);
+                if (SourceType == Improvement.ImprovementSource.Bioware)
+                    return nameof(Character.BiowareEssence);
+                if (SourceType == Improvement.ImprovementSource.Cyberware)
+                    return nameof(Character.CyberwareEssence);
+                return nameof(Character.Essence);
             }
         }
 

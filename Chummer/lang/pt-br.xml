@@ -7022,11 +7022,11 @@
       <text>Estilo de Vida:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Qualidades Positivas</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Qualidades Negativas</text>
     </string>
     <string>

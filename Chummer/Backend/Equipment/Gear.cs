@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
+    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _guiID;
         private string _SourceGuid;
