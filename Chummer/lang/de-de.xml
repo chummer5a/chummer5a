@@ -1111,7 +1111,7 @@
 		</string>
 		<string>
 			<key>Message_RegisteredSpriteLimit</key>
-			<text>Die Anzahl registrierter Sprites kann Ihr Charisma-Attribut nicht überschreiten.</text>
+			<text>Die Anzahl registrierter Sprites kann Ihr Logik-Attribut nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_RegisteredSpriteLimit</key>

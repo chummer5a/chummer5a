@@ -2033,7 +2033,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Your number of registered Sprites cannot exceed your CHA score.</text>
+      <text>Your number of registered Sprites cannot exceed your LOG score.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>

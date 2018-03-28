@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -3042,7 +3042,7 @@
 			<book>
 				<id>c4392cc2-8edd-4ae3-8198-b8c00e693c8b</id>
 				<name>The Complete Trog</name>
-				<translate>The Complete Trog</translate>
+				<translate>Mit Hauern und Hörnern</translate>
 				<altcode>TCT</altcode>
 			</book>
 			<book>
@@ -16674,7 +16674,7 @@
 				<translate>Armband</translate>
 				<altpage>86</altpage>
 			</gear>
-		    <gear>
+			<gear>
 				<id>403f8001-71a4-49c5-9ff3-00abd67e2e7a</id>
 				<name>Hardened Casing</name>
 				<translate>Gehärtetes Gehäuse</translate>
@@ -22708,22 +22708,22 @@
 	</chummer>
 	<chummer file="options.xml">
 		<limbcounts>
-		  <limb>
-			<name>4 (2 arms, 2 legs)</name>
-			<translate>4 (2 Arme, 2 Beine)</translate>
-		  </limb>
-		  <limb>
-			<name>5 (2 arms, 2 legs, skull)</name>
-			<translate>5 (2 Arme, 2 Beine, Schädel)</translate>
-		  </limb>
-		  <limb>
-			<name>5 (2 arms, 2 legs, torso)</name>
-			<translate>5 (2 Arme, 2 Beine, Torso)</translate>
-		  </limb>
-		  <limb>
-			<name>6 (2 arms, 2 legs, torso, skull)</name>
-			<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
-		  </limb>
+			<limb>
+				<name>4 (2 arms, 2 legs)</name>
+				<translate>4 (2 Arme, 2 Beine)</translate>
+			</limb>
+			<limb>
+				<name>5 (2 arms, 2 legs, skull)</name>
+				<translate>5 (2 Arme, 2 Beine, Schädel)</translate>
+			</limb>
+			<limb>
+				<name>5 (2 arms, 2 legs, torso)</name>
+				<translate>5 (2 Arme, 2 Beine, Torso)</translate>
+			</limb>
+			<limb>
+				<name>6 (2 arms, 2 legs, torso, skull)</name>
+				<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
+			</limb>
 		</limbcounts>
 	</chummer>
 	<chummer file="paragons.xml">
@@ -28399,83 +28399,94 @@
 				<translate>VolksSIN (Kriminell)</translate>
 				<altpage>148</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>f9b746ae-9112-4b84-ba8d-e0a852678a20</id>
 				<name>Black Forest Native</name>
-				<translate>Black Forest Native</translate>
+				<translate>Schwarzwaldgeboren</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>397eee55-11eb-4ede-bede-a8a13befa21c</id>
 				<name>Community Connection</name>
-				<translate>Community Connection</translate>
+				<translate>Gemeindeverbindungen</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>fd5468e4-a671-4c84-a9ec-590b94ae6ae3</id>
 				<name>Delicate Fingers</name>
-				<translate>Delicate Fingers</translate>
+				<translate>Schlanke Finger</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>9ad4e8e7-80d7-4941-96d5-9a1aaa1bd4c9</id>
 				<name>Human Lifespan</name>
-				<translate>Human Lifespan</translate>
+				<translate>Menschliche Lebensspanne</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>3a5b909e-7b37-471d-a24a-3fda7c18d837</id>
 				<name>Nasty Trog</name>
-				<translate>Nasty Trog</translate>
+				<translate>Gemeiner Trog</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>8d8dee2e-868b-4eda-87b5-959dd55304e0</id>
 				<name>Trog Artisan</name>
-				<translate>Trog Artisan</translate>
+				<translate>Trog-Handwerker</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>94d14ec2-7bcf-4728-8ff6-ef315da4c80c</id>
 				<name>Trog Historian</name>
-				<translate>Trog Historian</translate>
+				<translate>Trog-Historiker</translate>
 				<altpage>188</altpage>
 			</quality>
 			<quality>
 				<id>ac24ddb3-5e35-486c-a899-5b1bd11e9d86</id>
 				<name>Trog Leader</name>
-				<translate>Trog Leader</translate>
+				<translate>Trog-Anführer</translate>
 				<altpage>188</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>14b5b9c0-5180-47ec-8bf9-f422d3196744</id>
 				<name>Trog Networker</name>
-				<translate>Trog Networker</translate>
+				<translate>Trog-Netzwerker</translate>
 				<altpage>189</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>e4bceac5-8f1d-4090-90fc-ad5e94bca8d7</id>
 				<name>Bad Credit</name>
-				<translate>Bad Credit</translate>
+				<translate>Finanzprobleme</translate>
 				<altpage>189</altpage>
 			</quality>
 			<quality>
 				<id>0b28f554-8929-4b8b-b8c6-4203ca856b33</id>
 				<name>Elevated Stress</name>
-				<translate>Elevated Stress</translate>
+				<translate>Dauerstress</translate>
 				<altpage>189</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>13379299-27a2-4b5d-8938-6a54f49dc861</id>
 				<name>Force of Chaos</name>
-				<translate>Force of Chaos</translate>
+				<translate>Macht des Chaos</translate>
 				<altpage>189</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>ca4459b7-ea68-4b6c-9754-8bdcf3f4aef7</id>
 				<name>Trog Traitor</name>
-				<translate>Trog Traitor</translate>
+				<translate>Trog-Verräter</translate>
 				<altpage>189</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>ab862f1f-5ed3-4976-a781-bf63565faf26</id>
