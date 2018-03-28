@@ -31,7 +31,6 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
-using Chummer.Interfaces;
 
 namespace Chummer
 {
@@ -3181,17 +3180,10 @@ namespace Chummer
         private void cmdDeleteSpell_Click(object sender, EventArgs e)
         {
             // Locate the Spell that is selected in the tree.
-            if ((treSpells.SelectedNode?.Tag is Spell objSpell) && objSpell.Grade != 0)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language)))
-                    return;
-
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId);
-                CharacterObject.Spells.Remove(objSpell);
-
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if ((!(treSpells.SelectedNode?.Tag is Spell objSpell)) || objSpell.Grade == 0) return;
+            if (!objSpell.Remove(CharacterObject)) return;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdAddSpirit_Click(object sender, EventArgs e)
@@ -3236,62 +3228,10 @@ namespace Chummer
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
-                return;
-            // Locate the piece of Cyberware that is selected in the tree.
-            switch (treCyberware.SelectedNode?.Tag)
-            {
-                case Cyberware objCyberware:
-                    {
-                        if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !CharacterObject.IgnoreRules)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        {
-                            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
-                                return;
-                        }
-                        else
-                        {
-                            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
-                                return;
-                        }
-
-                        objCyberware.DeleteCyberware();
-
-                        // If the Parent is populated, remove the item from its Parent.
-                        Cyberware objParent = objCyberware.Parent;
-                        if (objParent != null)
-                            objParent.Children.Remove(objCyberware);
-                        else
-                            CharacterObject.Cyberware.Remove(objCyberware);
-                        break;
-                    }
-
-                case Gear objGear:
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
-                            return;
-
-                        objGear.DeleteGear();
-
-                        Gear objParent = objGear.Parent;
-                        if (objParent != null)
-                            objParent.Children.Remove(objGear);
-                        else
-                        {
-                            CharacterObject.Cyberware.FindCyberwareGear(objGear.InternalId,
-                                out Cyberware objParentCyberware);
-                            objParentCyberware.Gear.Remove(objGear);
-                        }
-                        break;
-                    }
-            }
+            if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject)) return;
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -3405,39 +3345,14 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            object objSelectedNode = treArmor.SelectedNode.Tag;
-            if (objSelectedNode == null)
+            if (treArmor.SelectedNode?.Tag == null)
                 return;
 
-            if (objSelectedNode is Armor objArmor)
+            if (treArmor.SelectedNode.Tag is ICanRemove selectedObject)
             {
-                objArmor.DeleteArmor();
-                CharacterObject.Armor.Remove(objArmor);
+                selectedObject.Remove(CharacterObject);
             }
-            else if (objSelectedNode is ArmorMod objMod)
-            {
-                objMod.DeleteArmorMod();
-                objMod.Parent.ArmorMods.Remove(objMod);
-            }
-            else if (objSelectedNode is Gear objGear)
-            {
-                Gear foundGear = CharacterObject.Armor.FindArmorGear(objGear.InternalId, out objArmor, out objMod);
-                if (objGear != null)
-                {
-                    objGear.DeleteGear();
-
-                    Gear objGearParent = objGear.Parent;
-                    if (objGearParent != null)
-                        objGearParent.Children.Remove(objGear);
-                    else if (objMod != null)
-                        objMod.Gear.Remove(objGear);
-                    else
-                        objArmor?.Gear.Remove(objGear);
-                }
-                else
-                    return;
-            }
-            else if (objSelectedNode is string strLocation)
+            else if (treArmor.SelectedNode.Tag is string strLocation)
             {
                 if (strLocation == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
                     return;
@@ -3520,88 +3435,29 @@ namespace Chummer
 
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
-            if (treWeapons.SelectedNode != null)
+            if (treWeapons.SelectedNode?.Tag is string strSelectedId)
             {
-                if (treWeapons.SelectedNode.Tag is string strSelectedId && treWeapons.SelectedNode.Level == 0)
+                if (strSelectedId == "Node_SelectedWeapons")
+                    return;
+
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponLocation", GlobalOptions.Language)))
+                    return;
+
+                foreach (Weapon objWeapon in CharacterObject.Weapons)
                 {
-                    if (strSelectedId == "Node_SelectedWeapons")
-                        return;
-
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponLocation", GlobalOptions.Language)))
-                        return;
-
-                    foreach (Weapon objWeapon in CharacterObject.Weapons)
-                    {
-                        if (objWeapon.Location == strSelectedId)
-                            objWeapon.Location = string.Empty;
-                    }
-                    // Remove the Weapon Location from the character, then remove the selected node.
-                    CharacterObject.WeaponLocations.Remove(strSelectedId);
+                    if (objWeapon.Location == strSelectedId)
+                        objWeapon.Location = string.Empty;
                 }
-                else if (treWeapons.SelectedNode.Tag is Weapon objWeapon)
-                {
-                    // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-                    if (objWeapon.Cyberware)
-                    {
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language),
-                            LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                // Remove the Weapon Location from the character, then remove the selected node.
+                CharacterObject.WeaponLocations.Remove(strSelectedId);
 
-                    if (objWeapon.Category == "Gear")
-                    {
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_CannotRemoveGearWeapon", GlobalOptions.Language),
-                            LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    if (objWeapon.Category.StartsWith("Quality"))
-                    {
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language),
-                            LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
-                        GlobalOptions.Language)))
-                        return;
-                    objWeapon.DeleteWeapon();
-
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else
-                        CharacterObject.Weapons.Remove(objWeapon);
-                }
-                else if (treWeapons.SelectedNode.Tag is WeaponAccessory objAccessory)
-                {
-                    objAccessory.DeleteWeaponAccessory();
-                    objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
-                }
-                else if (treWeapons.SelectedNode.Tag is Gear objSelectedGear)
-                {
-                    Gear objGear = CharacterObject.Weapons.FindWeaponGear(objSelectedGear.InternalId, out objAccessory);
-                    if (objGear != null)
-                    {
-                        objGear.DeleteGear();
-
-                        Gear objParent = objGear.Parent;
-                        if (objParent != null)
-                            objParent.Children.Remove(objGear);
-                        else
-                            objAccessory.Gear.Remove(objGear);
-                    }
-                    else
-                        return;
-                }
-                
                 IsCharacterUpdateRequested = true;
-
+                IsDirty = true;
+            }
+            else if (treWeapons.SelectedNode?.Tag is ICanRemove objselectedNode)
+            {
+                if (!objselectedNode.Remove(CharacterObject)) return;
+                IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
         }
@@ -3789,36 +3645,6 @@ namespace Chummer
                     }
                 }
             }
-            else if (treVehicles.SelectedNode.Tag is Vehicle objSelectedVehicle)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                    return;
-                objSelectedVehicle.DeleteVehicle();
-                CharacterObject.Vehicles.Remove(objSelectedVehicle);
-            }
-            else if (treVehicles.SelectedNode.Tag is WeaponMount objWeaponMount)
-            {
-                objWeaponMount.Parent.WeaponMounts.Remove(objWeaponMount);
-                objWeaponMount.DeleteWeaponMount();
-            }
-            else if (treVehicles.SelectedNode.Tag is Weapon objWeapon)
-            {
-                if (objWeapon.Category == "Gear")
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                objWeapon.DeleteWeapon();
-                if (objWeapon.Parent != null)
-                    objWeapon.Parent.Children.Remove(objWeapon);
-                else if (objWeapon.ParentMount != null)
-                    objWeapon.ParentMount.Weapons.Remove(objWeapon);
-                //else if (objWeapon.parent != null)
-                //    objWeaponMount.Weapons.Remove(objWeapon);
-                // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
-                else
-                    objWeapon.ParentVehicle.Weapons.Remove(objWeapon);
-            }
             else if (treVehicles.SelectedNode.Tag is VehicleMod objMod)
             {
                 // Check for Improved Sensor bonus.
@@ -3863,47 +3689,18 @@ namespace Chummer
                     objMod.WeaponMountParent.Mods.Remove(objMod);
                 else
                     objMod.Parent.Mods.Remove(objMod);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-            else if (treVehicles.SelectedNode.Tag is WeaponAccessory objAccessory)
+            else if (treVehicles.SelectedNode.Tag is ICanRemove selectedObject)
             {
-                objAccessory.DeleteWeaponAccessory();
-                objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
-            }
-            else if (treVehicles.SelectedNode.Tag is Cyberware objCyberware)
-            {
-                if (objCyberware.Parent != null)
-                    objCyberware.Parent.Children.Remove(objCyberware);
-                else
+                if (selectedObject.Remove(CharacterObject))
                 {
-                    objCyberware =
-                        CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objCyberware.InternalId,
-                            out objMod);
-                    objMod.Cyberware.Remove(objCyberware);
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
-
-                objCyberware.DeleteCyberware();
             }
-            else if (treVehicles.SelectedNode.Tag is Gear objGear)
-            {
-                if (objGear.Parent != null)
-                    objGear.Parent.Children.Remove(objGear);
-                else
-                {
-                    objGear = CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out objCyberware);
-                    if (objCyberware != null)
-                        objCyberware.Gear.Remove(objGear);
-                    else if (objWeaponAccessory != null)
-                        objWeaponAccessory.Gear.Remove(objGear);
-                    else
-                        objVehicle.Gear.Remove(objGear);
-                }
-
-                objGear.DeleteGear();
-            }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
         private void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
@@ -3946,10 +3743,6 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
                 }
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -4164,21 +3957,12 @@ namespace Chummer
 
         private void cmdDeleteCritterPower_Click(object sender, EventArgs e)
         {
-            // Locate the selected Critter Power.
-            if (treCritterPowers.SelectedNode?.Tag is CritterPower objPower && objPower.Grade == 0)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower", GlobalOptions.Language)))
-                    return;
+            // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
+            if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
+            if (!objCritterPower.Remove(CharacterObject)) return;
 
-                // Remove any Improvements that were created by the Critter Power.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
-
-                CharacterObject.CritterPowers.Remove(objPower);
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
@@ -4192,19 +3976,11 @@ namespace Chummer
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
         {
             // Delete the selected AI Program.
-            if (treAIPrograms.SelectedNode.Tag is AIProgram objProgram && objProgram.CanDelete)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram", GlobalOptions.Language)))
-                    return;
+            if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject)) return;
 
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
-
-                CharacterObject.AIPrograms.Remove(objProgram);
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdLifeModule_Click(object sender, EventArgs e)

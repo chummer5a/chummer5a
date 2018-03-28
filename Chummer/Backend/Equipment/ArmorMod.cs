@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1005,5 +1005,11 @@ namespace Chummer.Backend.Equipment
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            DeleteArmorMod();
+            return Parent.ArmorMods.Remove(this);
+        }
     }
 }

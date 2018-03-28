@@ -881,6 +881,31 @@ namespace Chummer.Backend.Equipment
                 _guiID = guiTemp;
         }
 
+        /// <summary>
+        /// Purchases an additional month of the selected lifestyle. 
+        /// </summary>
+        /// <param name="CharacterObject">Character to use.</param>
+        public void IncrementMonths(Character CharacterObject)
+        {
+            // Create the Expense Log Entry.
+            decimal decAmount = TotalMonthlyCost;
+                if (decAmount > CharacterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen -= decAmount;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
+            objExpense.Undo = objUndo;
+
+            Increments += 1;
+        }
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {

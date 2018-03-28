@@ -1,9 +1,22 @@
-/*  This file is part of Chummer5a.
+/*  This file
+s part of Chummer5a.
  *
- *  Chummer5a is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  Chu
+er5a is free software: you 
+n redistribute it 
+d/or modify
+ *  it under t
+ terms of the GNU
+eneral Public License a
+published by
+ *  the
+ree Software Foundati
+, either version 3 of the License
+or
+ *  (at your o
+using Chummer;
+
+n) any later version.
  *
  *  Chummer5a is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -4563,6 +4576,46 @@ namespace Chummer.Backend.Equipment
                 Guid = guid;
                 Ammo = ammo;
             }
+        }
+
+        public bool Remove(Character characterObject)
+        {
+            // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
+            if (Cyberware)
+            {
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
+            if (Category.StartsWith("Quality"))
+            {
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            if (Category == "Gear")
+            {
+                string message = LanguageManager.GetString(ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon", GlobalOptions.Language);
+                MessageBox.Show(message, LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            DeleteWeapon();
+            if (characterObject.Weapons.Any(weapon => weapon == this))
+            {
+                return characterObject.Weapons.Remove(this);
+            }
+            if (Parent != null)
+                return Parent.Children.Remove(this);
+            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
+            //else if (objWeapon.parent != null)
+            //    objWeaponMount.Weapons.Remove(objWeapon);
+            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -3364,5 +3364,44 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            if (SourceType == Improvement.ImprovementSource.Bioware)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+            else
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+            if (Parent == null)
+            {
+                characterObject.Cyberware.Remove(this);
+            }
+            if (Parent != null)
+                Parent.Children.Remove(this);
+            else
+            {
+                characterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                        out VehicleMod objMod);
+                objMod.Cyberware.Remove(this);
+            }
+
+            DeleteCyberware();
+            return true;
+        }
     }
 }

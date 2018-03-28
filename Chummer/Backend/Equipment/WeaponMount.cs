@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -819,6 +819,14 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponMount", GlobalOptions.Language)))
+                return false;
+            DeleteWeaponMount();
+            return Parent.WeaponMounts.Remove(this);
+        }
     }
 
     public class WeaponMountOption : IHasName, IHasXmlNode

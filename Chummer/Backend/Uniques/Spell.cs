@@ -906,7 +906,11 @@ namespace Chummer
         public bool Remove(Character characterObject)
         {
             string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
-            return characterObject.ConfirmDelete(strMessage) && characterObject.Spells.Remove(this);
+            if (!characterObject.ConfirmDelete(strMessage)) return false;
+            characterObject.Spells.Remove(this);
+            ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.Spell, InternalId);
+            return true;
+
         }
     }
 }
