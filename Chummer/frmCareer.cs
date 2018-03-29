@@ -596,6 +596,9 @@ namespace Chummer
             cmdArmorIncrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
             lblCMPenalty.DataBindings.Add("Text", CharacterObject, nameof(Character.WoundModifier), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblCMPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.PhysicalCM), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblCMStun.DataBindings.Add("Text", CharacterObject, nameof(Character.StunCM), false, DataSourceUpdateMode.OnPropertyChanged);
+
             lblPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
             lblMental.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitMental), false, DataSourceUpdateMode.OnPropertyChanged);
             lblSocial.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitSocial), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -15969,7 +15972,6 @@ namespace Chummer
             int intPhysicalCMThresholdOffset = CharacterObject.PhysicalCMThresholdOffset;
 
             // Update the Condition Monitor labels.
-            lblCMPhysical.Text = intCMPhysical.ToString();
             bool blnIsAI = CharacterObject.DEPEnabled && CharacterObject.BOD.MetatypeMaximum == 0;
             if (blnIsAI)
             {
