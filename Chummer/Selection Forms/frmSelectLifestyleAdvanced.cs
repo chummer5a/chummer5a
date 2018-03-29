@@ -873,6 +873,10 @@ namespace Chummer
                 decNuyen += intAreaValue * 50;
                 decNuyen += intSecurityValue * 50;
             }
+            else
+            {
+                intMultiplier += 10 * (intComfortsValue + intAreaValue + intSecurityValue);
+            }
 
             if (!chkTrustFund.Checked)
             {

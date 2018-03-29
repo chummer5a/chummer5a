@@ -433,7 +433,7 @@ namespace Chummer
                 // Multiples aren't allowed, so make sure the character does not already have it.
                 foreach (LifestyleQuality objQuality in _lstExistingQualities)
                 {
-                    if (objQuality.Name == objXmlQuality["name"].InnerText)
+                    if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
                             MessageBox.Show(LanguageManager.GetString("Message_SelectQuality_QualityLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

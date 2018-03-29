@@ -132,6 +132,8 @@ Application Changes:
 - Fixed an issue where the option to calculate contact points based off of total CHA value would sometimes not work.
 - Fixed issues where the tooltips and/or displayed values for Street Cred, Notoriety, and Public Awareness were sometimes incorrect or missing factors that contributed to the particular value.
 - Fixed an issue where the enabletab and disabletab bonus nodes would work off of any children nodes in a semi-chaotic fashion instead of checking only "name" nodes for tabs that should be affected.
+- Corrected Advanced Lifestyle cost calculation for increased Comforts, Area and Security values. Fixes #2625
+- Made the Garage Lifestyle qualities available multiple times per Lifestyle.
 
 Data Changes:
 
