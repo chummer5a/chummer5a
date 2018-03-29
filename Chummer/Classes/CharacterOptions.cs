@@ -1095,7 +1095,14 @@ namespace Chummer
         public bool AllowInitiationInCreateMode
         {
             get => _blnAllowInitiationInCreateMode;
-            set => _blnAllowInitiationInCreateMode = value;
+            set
+            {
+                if (_blnAllowInitiationInCreateMode != value)
+                {
+                    _blnAllowInitiationInCreateMode = value;
+                    _character?.OnPropertyChanged(nameof(Character.AddInitiationsAllowed));
+                }
+            }
         }
 
         /// <summary>
@@ -1680,7 +1687,14 @@ namespace Chummer
         public bool UnrestrictedNuyen
         {
             get => _blnUnrestrictedNuyen;
-            set => _blnUnrestrictedNuyen = value;
+            set
+            {
+                if (_blnUnrestrictedNuyen != value)
+                {
+                    _blnUnrestrictedNuyen = value;
+                    _character?.OnPropertyChanged(nameof(Character.TotalNuyenMaximumBP));
+                }
+            }
         }
 
         /// <summary>
@@ -2300,7 +2314,7 @@ namespace Chummer
                 if (_blnUseTotalValueForFreeContacts != value)
                 {
                     _blnUseTotalValueForFreeContacts = value;
-                    _character?.ResetCachedContactPoints();
+                    _character?.OnPropertyChanged(nameof(Character.ContactPoints));
                 }
             }
         }

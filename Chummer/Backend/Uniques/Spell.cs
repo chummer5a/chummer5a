@@ -190,9 +190,9 @@ namespace Chummer
         {
             objWriter.WriteStartElement("spell");
             if (Limited)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("String_SpellLimited", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("String_SpellLimited", strLanguageToPrint) + ')');
             else if (Alchemical)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint) + ')');
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -444,6 +444,7 @@ namespace Chummer
             get
             {
                 StringBuilder strTip = new StringBuilder(LanguageManager.GetString("Tip_SpellDrainBase", GlobalOptions.Language));
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 int intMAG = _objCharacter.MAG.TotalValue;
                 string strDV = DV;
                 for (int i = 1; i <= intMAG * 2; i++)
@@ -467,7 +468,7 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intDV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intDV.ToString());
                     }
                     else
                     {
@@ -485,7 +486,7 @@ namespace Chummer
                     strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
                     foreach (Improvement objLoopImprovement in lstDrainImprovements)
                     {
-                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value:0;-0;0})");
+                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objLoopImprovement.Value:0;-0;0})");
                     }
                 }
 
@@ -731,13 +732,13 @@ namespace Chummer
             string strReturn = DisplayNameShort(strLanguage);
 
             if (Limited)
-                strReturn += " (" + LanguageManager.GetString("String_SpellLimited", strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_SpellLimited", strLanguage) + ')';
             if (Alchemical)
-                strReturn += " (" + LanguageManager.GetString("String_SpellAlchemical", strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_SpellAlchemical", strLanguage) + ')';
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
             return strReturn;
         }
@@ -819,21 +820,22 @@ namespace Chummer
         {
             get
             {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 string strReturn = string.Empty;
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
-                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + " (" + intPool.ToString() + ')';
+                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(Category))
-                        strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ": " + DisplayCategory(GlobalOptions.Language) + " (2)";
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ':' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 // Include any Improvements to the Spell Category.
                 int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category);
                 if (intSpellImprovements != 0)
-                    strReturn += " + " + DisplayCategory(GlobalOptions.Language) + " (" + intSpellImprovements.ToString() + ')';
+                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + intSpellImprovements.ToString(GlobalOptions.CultureInfo) + ')';
 
                 return strReturn;
             }
@@ -868,9 +870,9 @@ namespace Chummer
             if (blnAddCategory)
             {
                 if (Category == "Rituals")
-                    strText = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + ' ' + strText;
-                if (Category == "Enchantments")
-                    strText = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + ' ' + strText;
+                    strText = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+                else if (Category == "Enchantments")
+                    strText = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             }
             TreeNode objNode = new TreeNode
             {

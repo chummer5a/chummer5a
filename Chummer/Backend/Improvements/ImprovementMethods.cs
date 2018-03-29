@@ -231,8 +231,6 @@ namespace Chummer
                     return objImprovementAdder.mademan;
                 case "FAME":
                     return objImprovementAdder.fame;
-                case "BORNRICH":
-                    return objImprovementAdder.bornrich;
                 case "ERASED":
                     return objImprovementAdder.erased;
                 case "OVERCLOCKER":

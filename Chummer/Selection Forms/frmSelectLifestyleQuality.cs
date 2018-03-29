@@ -152,8 +152,9 @@ namespace Chummer
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -519,7 +520,7 @@ namespace Chummer
                                     if (objXmlCheck["metagenetic"]?.InnerText == bool.TrueString)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                         break;
                                     }
                                 }

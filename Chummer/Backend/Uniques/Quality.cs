@@ -295,7 +295,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -423,12 +423,13 @@ namespace Chummer
         {
             if (AllowPrint)
             {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 string strRatingString = string.Empty;
                 if (intRating > 1)
-                    strRatingString = ' ' + intRating.ToString(objCulture);
+                    strRatingString = strSpaceCharacter + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = " (" + GetSourceName(strLanguageToPrint) + ')';
+                    strSourceName = strSpaceCharacter + '(' + GetSourceName(strLanguageToPrint) + ')';
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
@@ -622,19 +623,20 @@ namespace Chummer
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             int intLevels = Levels;
             if (intLevels > 1)
-                strReturn += ' ' + intLevels.ToString(GlobalOptions.CultureInfo);
+                strReturn += strSpaceCharacter + intLevels.ToString(objCulture);
 
             return strReturn;
         }
@@ -772,7 +774,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = cmsQuality,
                 ForeColor = PreferredColor,

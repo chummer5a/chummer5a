@@ -427,11 +427,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 

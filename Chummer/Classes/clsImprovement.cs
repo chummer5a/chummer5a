@@ -149,7 +149,6 @@ namespace Chummer
             SocialLimit,
             FriendsInHighPlaces,
             Erased,
-            BornRich,
             Fame,
             MadeMan,
             Overclocker,
@@ -959,6 +958,9 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.NuyenMaxBP:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalNuyenMaximumBP));
+                }
                     break;
                 case ImprovementType.CMOverflow:
                 {
@@ -1122,8 +1124,6 @@ namespace Chummer
                 case ImprovementType.FriendsInHighPlaces:
                     break;
                 case ImprovementType.Erased:
-                    break;
-                case ImprovementType.BornRich:
                     break;
                 case ImprovementType.Fame:
                     break;
@@ -3012,9 +3012,6 @@ namespace Chummer
                                 case "Critter":
                                     objCharacter.CritterEnabled = true;
                                     break;
-                                case "Initiation":
-                                    objCharacter.InitiationEnabled = true;
-                                    break;
                             }
                         }
                         // Determine if access to any special tabs has been regained
@@ -3024,6 +3021,9 @@ namespace Chummer
                             {
                                 case "Cyberware":
                                     objCharacter.CyberwareDisabled = true;
+                                    break;
+                                case "Initiation":
+                                    objCharacter.InitiationForceDisabled = true;
                                     break;
                             }
                         }
@@ -3047,9 +3047,6 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Erased:
                         objCharacter.Erased = true;
-                        break;
-                    case Improvement.ImprovementType.BornRich:
-                        objCharacter.BornRich = true;
                         break;
                     case Improvement.ImprovementType.Fame:
                         objCharacter.Fame = true;
@@ -3332,9 +3329,6 @@ namespace Chummer
                                     case "Critter":
                                         objCharacter.CritterEnabled = false;
                                         break;
-                                    case "Initiation":
-                                        objCharacter.InitiationEnabled = false;
-                                        break;
                                 }
                             }
                             // Determine if access to any special tabs has been regained
@@ -3344,6 +3338,9 @@ namespace Chummer
                                 {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
                                         break;
                                 }
                             }
@@ -3375,10 +3372,6 @@ namespace Chummer
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
                             objCharacter.Erased = false;
-                        break;
-                    case Improvement.ImprovementType.BornRich:
-                        if (!blnHasDuplicate)
-                            objCharacter.BornRich = false;
                         break;
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)
@@ -3749,9 +3742,6 @@ namespace Chummer
                                     case "Critter":
                                         objCharacter.CritterEnabled = false;
                                         break;
-                                    case "Initiation":
-                                        objCharacter.InitiationEnabled = false;
-                                        break;
                                 }
                             }
                             // Determine if access to any special tabs has been regained
@@ -3761,6 +3751,9 @@ namespace Chummer
                                 {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
                                         break;
                                 }
                             }
@@ -3792,10 +3785,6 @@ namespace Chummer
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
                             objCharacter.Erased = false;
-                        break;
-                    case Improvement.ImprovementType.BornRich:
-                        if (!blnHasDuplicate)
-                            objCharacter.BornRich = false;
                         break;
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)

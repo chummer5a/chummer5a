@@ -417,7 +417,9 @@ namespace Chummer
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
 
                     string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
-                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate) ? " (" + strMetatypeTranslate + ')' : " (" + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
+                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
+                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
+                        : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
                 }
             }
             else
@@ -444,7 +446,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                     {
-                        strMetatype += " (" + LinkedCharacter.Metavariant + ')';
+                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LinkedCharacter.Metavariant + ')';
                     }
                     return strMetatype;
                 }

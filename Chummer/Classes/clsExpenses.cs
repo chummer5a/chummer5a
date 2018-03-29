@@ -395,7 +395,7 @@ namespace Chummer
         public string DisplayReason(string strLanguage)
         {
             if (Refund)
-                return Reason + " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+                return Reason + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
             return Reason;
         }
 

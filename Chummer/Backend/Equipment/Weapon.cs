@@ -775,13 +775,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", WeaponType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
-            objWriter.WriteElementString("accuracy", DisplayAccuracy(objCulture));
+            objWriter.WriteElementString("accuracy", DisplayAccuracy(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage_english", CalculatedDamage(objCulture, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("rawdamage", Damage);
             objWriter.WriteElementString("ap", TotalAP(strLanguageToPrint));
             objWriter.WriteElementString("mode", CalculatedMode(strLanguageToPrint));
-            objWriter.WriteElementString("rc", TotalRC(objCulture));
+            objWriter.WriteElementString("rc", TotalRC(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("ammo", CalculatedAmmo(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("ammo_english", CalculatedAmmo(objCulture, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
@@ -858,7 +858,7 @@ namespace Chummer.Backend.Equipment
             //objWriter.WriteElementString("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
             //objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
-            objWriter.WriteElementString("dicepool", GetDicePool(objCulture));
+            objWriter.WriteElementString("dicepool", GetDicePool(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("skill", Skill?.Name);
 
             if (_objCharacter.Options.PrintNotes)
@@ -1506,7 +1506,7 @@ namespace Chummer.Backend.Equipment
             string strDamage = Damage;
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
-
+            
             int intUseSTR = 0;
             int intUseAGI = 0;
             if (strDamage.Contains("STR") || strDamage.Contains("AGI"))
@@ -1946,6 +1946,7 @@ namespace Chummer.Backend.Equipment
                     intAmmoBonus += objMod.AmmoBonus;
                 }
             }
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             foreach (string strAmmo in strAmmos)
             {
                 string strThisAmmo = strAmmo;
@@ -1981,14 +1982,14 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strPrepend))
                         strThisAmmo = strPrepend + strThisAmmo;
                 }
-                strReturn += strThisAmmo + ' ';
+                strReturn += strThisAmmo + strSpaceCharacter;
             }
             strReturn = strReturn.Trim();
 
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.CheapReplace(" or ", () => ' ' + LanguageManager.GetString("String_Or", strLanguage) + ' ')
+                strReturn = strReturn.CheapReplace(" or ", () => strSpaceCharacter + LanguageManager.GetString("String_Or", strLanguage) + strSpaceCharacter)
                     .CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage))
                     .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage))
                     .CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage))
@@ -2516,8 +2517,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        public string TotalRC(CultureInfo objCulture, bool blnRefreshRCToolTip = false)
+        public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             string strRCBase = "0";
             string strRCFull;
             string strRC = RC;
@@ -2547,10 +2549,10 @@ namespace Chummer.Backend.Equipment
                 strRCFull = strRC;
             }
 
-            string strRCTip = "1 ";
+            string strRCTip = "1" + strSpaceCharacter;
             if (blnRefreshRCToolTip && strRCBase != "0")
             {
-                strRCTip += "+ " + LanguageManager.GetString("Label_Base", GlobalOptions.Language) + "(" + strRCBase + ')';
+                strRCTip += '+' + strSpaceCharacter + LanguageManager.GetString("Label_Base", GlobalOptions.Language) + '(' + strRCBase + ')';
             }
             
             int.TryParse(strRCBase, out int intRCBase);
@@ -2569,7 +2571,7 @@ namespace Chummer.Backend.Equipment
                     intRCFull += intLoopRCBonus;
 
                     if (blnRefreshRCToolTip)
-                        strRCTip += " + " + objGear.DisplayName(GlobalOptions.Language) + " (" + strRCBonus + ')';
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language) + strSpaceCharacter + '(' + strRCBonus + ')';
                 }
             }
 
@@ -2602,7 +2604,7 @@ namespace Chummer.Backend.Equipment
                         intRCBase += intLoopRCBonus;
                     }
                     if (blnRefreshRCToolTip)
-                        strRCTip += " + " + objAccessory.DisplayName(GlobalOptions.Language) + " (" + objAccessory.RC + ')';
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + objAccessory.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(' + objAccessory.RC + ')';
                 }
             }
 
@@ -2614,7 +2616,7 @@ namespace Chummer.Backend.Equipment
                     intRCBase += objRCGroup.Item2;
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += $" + {objRCGroup.Item1} ({objRCGroup.Item2})";
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + objRCGroup.Item1 + strSpaceCharacter + '(' + objRCGroup.Item2.ToString() + ')';
                 }
             }
 
@@ -2625,7 +2627,7 @@ namespace Chummer.Backend.Equipment
                     // Add in the Recoil Group bonuses.
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += " +  " + LanguageManager.GetString("Tip_RecoilAccessories", GlobalOptions.Language).Replace("{0}", objRCGroup.Item1).Replace("{1}", objRCGroup.Item2.ToString());
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_RecoilAccessories", GlobalOptions.Language).Replace("{0}", objRCGroup.Item1).Replace("{1}", objRCGroup.Item2.ToString());
                 }
             }
 
@@ -2699,12 +2701,13 @@ namespace Chummer.Backend.Equipment
             intRCBase += intStrRC + 1;
             intRCFull += intStrRC + 1;
             if (blnRefreshRCToolTip)
-                strRCTip += $" + {_objCharacter.STR.DisplayAbbrev} [{intUseSTR} / 3 = {intStrRC}]";
+                strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.STR.DisplayAbbrev + strSpaceCharacter +
+                    '[' + intUseSTR.ToString() + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString() + strSpaceCharacter + '=' + strSpaceCharacter + intStrRC.ToString() + ']';
             // If the full RC is not higher than the base, only the base value is shown.
             strRC = intRCBase.ToString(objCulture);
             if (intRCFull > intRCBase)
             {
-                strRC += ' ' + intRCFull.ToString(objCulture);
+                strRC += strSpaceCharacter + intRCFull.ToString(objCulture);
             }
 
             if (blnRefreshRCToolTip)
@@ -3012,11 +3015,11 @@ namespace Chummer.Backend.Equipment
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks. 
         /// TODO: Databindable?
         /// </summary>
-        public string DisplayAccuracy(CultureInfo objCulture)
+        public string DisplayAccuracy(CultureInfo objCulture, string strLanguage)
         {
             int intTotalAccuracy = TotalAccuracy;
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
-                return intAccuracy.ToString(objCulture) + " (" + intTotalAccuracy.ToString(objCulture) + ')';
+                return intAccuracy.ToString(objCulture) + LanguageManager.GetString("String_Space", strLanguage) + '(' + intTotalAccuracy.ToString(objCulture) + ')';
             return intTotalAccuracy.ToString(objCulture);
         }
         /// <summary>
@@ -3368,7 +3371,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
-        public string GetDicePool(CultureInfo objCulture)
+        public string GetDicePool(CultureInfo objCulture, string strLanguage)
         {
             string strExtra = string.Empty;
             int intDicePool = 0;
@@ -3427,7 +3430,7 @@ namespace Chummer.Backend.Equipment
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
                                 if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                                    strExtra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
+                                    strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
                             }
                         }
                         
@@ -3632,10 +3635,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 // Locate the Active Skill to be used.
                 string strKey = strSkill;
                 if (!string.IsNullOrEmpty(strSpec))
-                    strKey += " (" + strSpec + ')';
+                    strKey += strSpaceCharacter + '(' + strSpec + ')';
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
                 int intDicePool = 0;
                 if (objSkill != null)
@@ -3643,12 +3647,12 @@ namespace Chummer.Backend.Equipment
                     intDicePool = objSkill.Pool;
                 }
 
-                string strReturn = strSkill + " (" + intDicePool.ToString() + ')';
+                string strReturn = strSkill + strSpaceCharacter + '(' + intDicePool.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (!string.IsNullOrEmpty(objSkill?.Specialization) && !objSkill.IsExoticSkill)
                 {
                     if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                        strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + " (2)";
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 return strReturn;

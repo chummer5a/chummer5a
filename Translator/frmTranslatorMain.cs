@@ -849,7 +849,7 @@ namespace Translator
                     for (int i = xmlArmorNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlArmorNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlArmorNode.Attributes.RemoveAt(i);
                     }
 
@@ -958,7 +958,7 @@ namespace Translator
                     for (int i = xmlArmorModNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlArmorModNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlArmorModNode.Attributes.RemoveAt(i);
                     }
 
@@ -1132,7 +1132,7 @@ namespace Translator
                     for (int i = xmlBiowareNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlBiowareNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlBiowareNode.Attributes.RemoveAt(i);
                     }
 
@@ -1241,7 +1241,7 @@ namespace Translator
                     for (int i = xmlGradeNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlGradeNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlGradeNode.Attributes.RemoveAt(i);
                     }
 
@@ -1367,7 +1367,7 @@ namespace Translator
                             for (int i = xmlBookNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlBookNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlBookNode.Attributes.RemoveAt(i);
                             }
 
@@ -1500,7 +1500,7 @@ namespace Translator
                             for (int i = xmlComplexFormNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlComplexFormNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlComplexFormNode.Attributes.RemoveAt(i);
                             }
 
@@ -1977,7 +1977,7 @@ namespace Translator
                             for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlPowerNode.Attributes.RemoveAt(i);
                             }
 
@@ -2153,7 +2153,7 @@ namespace Translator
                             for (int i = xmlMetatypeNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMetatypeNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMetatypeNode.Attributes.RemoveAt(i);
                             }
 
@@ -2327,7 +2327,7 @@ namespace Translator
                     for (int i = xmlCyberwareNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlCyberwareNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlCyberwareNode.Attributes.RemoveAt(i);
                     }
 
@@ -2436,7 +2436,7 @@ namespace Translator
                     for (int i = xmlGradeNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlGradeNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlGradeNode.Attributes.RemoveAt(i);
                     }
 
@@ -2577,7 +2577,7 @@ namespace Translator
                             for (int i = xmlEchoNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlEchoNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlEchoNode.Attributes.RemoveAt(i);
                             }
 
@@ -2694,7 +2694,7 @@ namespace Translator
                             for (int i = xmlGameplayOptionNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlGameplayOptionNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlGameplayOptionNode.Attributes.RemoveAt(i);
                             }
 
@@ -2870,7 +2870,7 @@ namespace Translator
                             for (int i = xmlGearNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlGearNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlGearNode.Attributes.RemoveAt(i);
                             }
 
@@ -3003,7 +3003,7 @@ namespace Translator
                             for (int i = xmlImprovementNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlImprovementNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlImprovementNode.Attributes.RemoveAt(i);
                             }
 
@@ -3242,7 +3242,7 @@ namespace Translator
                     for (int i = xmlLifestyleNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlLifestyleNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlLifestyleNode.Attributes.RemoveAt(i);
                     }
 
@@ -3351,7 +3351,7 @@ namespace Translator
                     for (int i = xmlQualityNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlQualityNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlQualityNode.Attributes.RemoveAt(i);
                     }
 
@@ -3525,7 +3525,7 @@ namespace Translator
                             for (int i = xmlMartialArtNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMartialArtNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMartialArtNode.Attributes.RemoveAt(i);
                             }
 
@@ -3636,7 +3636,7 @@ namespace Translator
                             for (int i = xmlTechniqueNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlTechniqueNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlTechniqueNode.Attributes.RemoveAt(i);
                             }
 
@@ -3857,7 +3857,7 @@ namespace Translator
                             for (int i = xmlMentorNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMentorNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMentorNode.Attributes.RemoveAt(i);
                             }
 
@@ -3992,7 +3992,7 @@ namespace Translator
                             for (int i = xmlMetamagicNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMetamagicNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMetamagicNode.Attributes.RemoveAt(i);
                             }
 
@@ -4103,7 +4103,7 @@ namespace Translator
                             for (int i = xmlArtNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlArtNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlArtNode.Attributes.RemoveAt(i);
                             }
 
@@ -4282,7 +4282,7 @@ namespace Translator
                             for (int i = xmlMetatypeNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMetatypeNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMetatypeNode.Attributes.RemoveAt(i);
                             }
 
@@ -4426,7 +4426,7 @@ namespace Translator
                     for (int i = xmlLimbOptionNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlLimbOptionNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlLimbOptionNode.Attributes.RemoveAt(i);
                     }
 
@@ -4505,7 +4505,7 @@ namespace Translator
                     for (int i = xmlPDFArgumentNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlPDFArgumentNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlPDFArgumentNode.Attributes.RemoveAt(i);
                     }
 
@@ -4757,7 +4757,7 @@ namespace Translator
                     for (int i = xmlParagonNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlParagonNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlParagonNode.Attributes.RemoveAt(i);
                     }
 
@@ -4900,7 +4900,7 @@ namespace Translator
                             for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlPowerNode.Attributes.RemoveAt(i);
                             }
 
@@ -5011,7 +5011,7 @@ namespace Translator
                             for (int i = xmlEnhancementNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlEnhancementNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlEnhancementNode.Attributes.RemoveAt(i);
                             }
 
@@ -5172,7 +5172,7 @@ namespace Translator
                             for (int i = xmlPriorityNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlPriorityNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlPriorityNode.Attributes.RemoveAt(i);
                             }
 
@@ -5364,7 +5364,7 @@ namespace Translator
                             for (int i = xmlProgramNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlProgramNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlProgramNode.Attributes.RemoveAt(i);
                             }
 
@@ -5477,7 +5477,7 @@ namespace Translator
                             for (int i = xmlRangeNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlRangeNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlRangeNode.Attributes.RemoveAt(i);
                             }
 
@@ -5653,7 +5653,7 @@ namespace Translator
                             for (int i = xmlQualityNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlQualityNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlQualityNode.Attributes.RemoveAt(i);
                             }
 
@@ -5894,7 +5894,7 @@ namespace Translator
                     for (int i = xmlSkillNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlSkillNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlSkillNode.Attributes.RemoveAt(i);
                     }
 
@@ -5922,7 +5922,7 @@ namespace Translator
                             for (int i = xmlSkillNodeSpecsParent.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlSkillNodeSpecsParent.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlSkillNodeSpecsParent.Attributes.RemoveAt(i);
                             }
 
@@ -6069,7 +6069,7 @@ namespace Translator
                     for (int i = xmlKnowledgeSkillNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlKnowledgeSkillNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlKnowledgeSkillNode.Attributes.RemoveAt(i);
                     }
 
@@ -6097,7 +6097,7 @@ namespace Translator
                             for (int i = xmlSkillNodeSpecsParent.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlSkillNodeSpecsParent.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlSkillNodeSpecsParent.Attributes.RemoveAt(i);
                             }
 
@@ -6304,7 +6304,7 @@ namespace Translator
                             for (int i = xmlSpellNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlSpellNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlSpellNode.Attributes.RemoveAt(i);
                             }
 
@@ -6427,7 +6427,7 @@ namespace Translator
                             for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlPowerNode.Attributes.RemoveAt(i);
                             }
 
@@ -6562,7 +6562,7 @@ namespace Translator
                             for (int i = xmlTraditionNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlTraditionNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlTraditionNode.Attributes.RemoveAt(i);
                             }
 
@@ -6673,7 +6673,7 @@ namespace Translator
                             for (int i = xmlSpiritNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlSpiritNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlSpiritNode.Attributes.RemoveAt(i);
                             }
 
@@ -6806,7 +6806,7 @@ namespace Translator
                     for (int i = xmlTraditionNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlTraditionNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlTraditionNode.Attributes.RemoveAt(i);
                     }
 
@@ -6915,7 +6915,7 @@ namespace Translator
                     for (int i = xmlSpiritNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlSpiritNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlSpiritNode.Attributes.RemoveAt(i);
                     }
 
@@ -7006,7 +7006,7 @@ namespace Translator
                     for (int i = xmlDrainAttributeNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlDrainAttributeNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlDrainAttributeNode.Attributes.RemoveAt(i);
                     }
 
@@ -7219,7 +7219,7 @@ namespace Translator
                     for (int i = xmlVehicleNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlVehicleNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlVehicleNode.Attributes.RemoveAt(i);
                     }
 
@@ -7328,7 +7328,7 @@ namespace Translator
                     for (int i = xmlVehicleModNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlVehicleModNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlVehicleModNode.Attributes.RemoveAt(i);
                     }
 
@@ -7437,7 +7437,7 @@ namespace Translator
                     for (int i = xmlWeaponMountNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlWeaponMountNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlWeaponMountNode.Attributes.RemoveAt(i);
                     }
 
@@ -7546,7 +7546,7 @@ namespace Translator
                     for (int i = xmlWeaponMountModNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlWeaponMountModNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlWeaponMountModNode.Attributes.RemoveAt(i);
                     }
 
@@ -7730,7 +7730,7 @@ namespace Translator
                             for (int i = xmlMetatypeNode.Attributes.Count - 1; i >= 0; --i)
                             {
                                 XmlAttribute xmlAttribute = xmlMetatypeNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                     xmlMetatypeNode.Attributes.RemoveAt(i);
                             }
 
@@ -7904,7 +7904,7 @@ namespace Translator
                     for (int i = xmlWeaponNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlWeaponNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlWeaponNode.Attributes.RemoveAt(i);
                     }
 
@@ -8013,7 +8013,7 @@ namespace Translator
                     for (int i = xmlAccessoryNode.Attributes.Count - 1; i >= 0; --i)
                     {
                         XmlAttribute xmlAttribute = xmlAccessoryNode.Attributes[i];
-                        if (xmlAttribute.Name != "translated")
+                        if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                             xmlAccessoryNode.Attributes.RemoveAt(i);
                     }
 
@@ -8132,7 +8132,7 @@ namespace Translator
                                 for (int i = xmlSubItem.Attributes.Count - 1; i >= 0; --i)
                                 {
                                     XmlAttribute xmlAttribute = xmlSubItem.Attributes[i];
-                                    if (xmlAttribute.Name != "translated")
+                                    if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
                                         xmlSubItem.Attributes.RemoveAt(i);
                                 }
                             }

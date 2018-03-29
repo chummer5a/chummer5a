@@ -695,10 +695,10 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
 		{
             StringBuilder strReturn = new StringBuilder(DisplayNameShort(strLanguage));
-            
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (WeaponMountOptions.Count > 0)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
@@ -706,15 +706,15 @@ namespace Chummer.Backend.Equipment
                     {
                         blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                     }
                 }
-                strReturn.Length -= 2;
+                strReturn.Length -= 1 + strSpaceCharacter.Length;
                 if (blnCloseParantheses)
                     strReturn.Append(')');
-                if (!string.IsNullOrWhiteSpace(_strLocation))
+                if (!string.IsNullOrWhiteSpace(Location))
                 {
-                    strReturn.Append($" - {Location}");
+                    strReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter + Location);
                 }
             }
 

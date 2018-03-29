@@ -507,7 +507,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;

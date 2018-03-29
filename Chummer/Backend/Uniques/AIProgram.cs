@@ -172,7 +172,7 @@ namespace Chummer
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
                     strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
-                strReturn += " (" + strExtra + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
         }

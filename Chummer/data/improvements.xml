@@ -71,11 +71,11 @@
       <page>Enables the character's 'Complex Forms and Sprites' tab, allowing them to purchase Complex Forms and compile Sprites. The character is flagged as a Technomancer for the purposes of quality requirements, but does not receive access to the Submersion tab, unlock their Resonance attribute or receive any of the Resonance skills. Incompatible with improvements that enable the Spells and Spirits tab.</page>
     </improvement>
     <improvement>
-      <name>Enable Initiation/Submersion Tab</name>
-      <id>enableinitiationtab</id>
-      <internal>enabletab</internal>
+      <name>Force Disable Initiation/Submersion Tab</name>
+      <id>disableinitiationtab</id>
+      <internal>disabletab</internal>
       <xml><![CDATA[<name>initiation</name>]]></xml>
-      <page>Enables the character's Adept Powers tab, allowing them to buy spells and bind spirits. The character receives access to the Initiation tab, or the Submersion tab for Technomancers.</page>
+      <page>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</page>
     </improvement>
     <improvement>
       <name>Enable Spells and Spirits Tab</name>

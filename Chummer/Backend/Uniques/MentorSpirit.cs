@@ -296,12 +296,12 @@ namespace Chummer
         /// </summary>
         public string DisplayAdvantage(string strLanguage)
         {
-            string strReturn = _strAdvantage;
+            string strReturn = Advantage;
 
             if (!string.IsNullOrEmpty(_strExtra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             }
 
             return strReturn;
