@@ -684,7 +684,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            strbldQualities.Append(" (");
+                            strbldQualities.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
                             strbldQualities.Append(LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language));
                             strbldQualities.Append(')');
                         }
@@ -695,7 +695,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            strbldQualities.Append(" (");
+                            strbldQualities.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
                             strbldQualities.Append(strSelect);
                             strbldQualities.Append(')');
                         }
@@ -746,7 +746,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            strbldQualities.Append(" (");
+                            strbldQualities.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
                             strbldQualities.Append(LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language));
                             strbldQualities.Append(')');
                         }
@@ -757,7 +757,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            strbldQualities.Append(" (");
+                            strbldQualities.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
                             strbldQualities.Append(strSelect);
                             strbldQualities.Append(')');
                         }

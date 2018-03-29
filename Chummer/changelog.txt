@@ -132,6 +132,10 @@ Application Changes:
 - Fixed an issue where the option to calculate contact points based off of total CHA value would sometimes not work.
 - Fixed issues where the tooltips and/or displayed values for Street Cred, Notoriety, and Public Awareness were sometimes incorrect or missing factors that contributed to the particular value.
 - Fixed an issue where the enabletab and disabletab bonus nodes would work off of any children nodes in a semi-chaotic fashion instead of checking only "name" nodes for tabs that should be affected.
+- Fixed an issue where magic users who were neither adepts nor had any magician abilities could not select a tradition.
+- The Initiation tab now defaults to being enabled if the user has either magic or resonance enabled, and now works through the disabletab bonus as an opt-out instead of the enabletab bonus as an opt-in.
+- Fixed an issue where switching from a mystic adept to a physical adept when the character had spells and/or rituals that could still be used by a physical adept would still cause the character to lose access to those spells.
+- Unhardcoded the Born Rich bonus.
 
 Data Changes:
 
@@ -204,6 +208,8 @@ New Strings:
 - Checkbox_Randomize1D6
 - String_ExpenseDecreaseLifestyle
 - String_ExpenseModifiedLifestyle
+- String_Space
+- Tip_Skill_OffHand
 
 Changed Strings:
 
@@ -212,6 +218,7 @@ Changed Strings:
 - Message_ComplexFormLimit
 - Message_PriorityComplexFormLimit
 - Label_SelectAdvancedLifestyle_LPContribution
+- String_Of
 
 Removed Strings:
 

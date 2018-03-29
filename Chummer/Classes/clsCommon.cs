@@ -802,7 +802,30 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strPDFAppPath))
                 return;
 
-            string[] strTemp = strSource.Split(' ');
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string[] strTemp;
+            if (!string.IsNullOrEmpty(strSpaceCharacter))
+                strTemp = strSource.Split(strSpaceCharacter[0]);
+            else if (strSource.StartsWith("SR5"))
+            {
+                strTemp = new string[] { "SR5", strSource.Substring(3) };
+            }
+            else if (strSource.StartsWith("R5"))
+            {
+                strTemp = new string[] { "R5", strSource.Substring(3) };
+            }
+            else
+            {
+                int i = strSource.Length - 1;
+                for (; i >= 0; --i)
+                {
+                    if (!char.IsNumber(strSource, i))
+                    {
+                        break;
+                    }
+                }
+                strTemp = new string[] { strSource.Substring(0, i), strSource.Substring(i) };
+            }
             if (strTemp.Length < 2)
                 return;
             if (!int.TryParse(strTemp[1], out int intPage))

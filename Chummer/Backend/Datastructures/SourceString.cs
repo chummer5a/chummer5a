@@ -61,17 +61,17 @@ namespace Chummer
 
         public string ToString(string strLanguage)
         {
-            return DisplayCode(strLanguage) + ' ' + _intPage.ToString();
+            return DisplayCode(strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + Page.ToString();
         }
 
         public string DisplayCode(string strLanguage)
         {
-            if (!string.IsNullOrWhiteSpace(_strCode))
+            if (!string.IsNullOrWhiteSpace(Code))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + _strCode + "\"]/altcode");
-                return objXmlBook?.InnerText ?? _strCode;
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + Code + "\"]/altcode");
+                return objXmlBook?.InnerText ?? Code;
             }
-            return _strCode;
+            return Code;
         }
 
         public int CompareTo(object obj)

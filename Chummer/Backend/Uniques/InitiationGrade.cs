@@ -200,23 +200,24 @@ namespace Chummer
         /// </summary>
         public string Text(string strLanguage)
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
-            strReturn.Append(' ');
+            strReturn.Append(strSpaceCharacter);
             strReturn.Append(Grade.ToString());
             if (Group || Ordeal)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 if (Group)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Ordeal)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Schooling)
                 {

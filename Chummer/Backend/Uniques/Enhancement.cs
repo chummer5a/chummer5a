@@ -73,7 +73,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += " (" + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
             }
@@ -283,7 +283,7 @@ namespace Chummer
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
-                strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + ' ' + strText;
+                strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,

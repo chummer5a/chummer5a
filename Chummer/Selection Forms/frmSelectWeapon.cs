@@ -162,10 +162,10 @@ namespace Chummer
                 lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
-                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, true);
+                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                 tipTooltip.SetToolTip(lblWeaponRC, _objSelectedWeapon.RCToolTip);
                 lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
@@ -182,7 +182,8 @@ namespace Chummer
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
 
                 string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + strPage;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
                 // Build a list of included Accessories and Modifications that come with the weapon.
                 StringBuilder strAccessories = new StringBuilder();
@@ -195,7 +196,7 @@ namespace Chummer
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
 
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -260,13 +261,13 @@ namespace Chummer
 
                     string strID = objWeapon.SourceID.ToString("D");
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
-                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
-                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo);
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strAP = objWeapon.TotalAP(GlobalOptions.Language);
                     if (strAP == "-")
                         strAP = "0";
-                    string strRC = objWeapon.TotalRC(CultureInfo.CurrentCulture);
+                    string strRC = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                     string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strMode = objWeapon.CalculatedMode(GlobalOptions.Language);
                     string strReach = objWeapon.TotalReach.ToString();

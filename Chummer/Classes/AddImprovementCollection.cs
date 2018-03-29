@@ -240,12 +240,6 @@ namespace Chummer.Classes
                                 CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
-                            case "initiation":
-                                _objCharacter.InitiationEnabled = true;
-                                Log.Info("initiation");
-                                CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
-                                    "enabletab", 0, 0);
-                                break;
                         }
                     }
         }
@@ -264,6 +258,12 @@ namespace Chummer.Classes
                                 _objCharacter.CyberwareDisabled = true;
                                 Log.Info("cyberware");
                                 CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
+                                    "disabletab", 0, 0);
+                                break;
+                            case "initiation":
+                                _objCharacter.InitiationForceDisabled = true;
+                                Log.Info("cyberware");
+                                CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
                         }
@@ -3134,16 +3134,6 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Fame, _strUnique);
             _objCharacter.Fame = true;
-        }
-
-        // Check for BornRich modifiers.
-        public void bornrich(XmlNode bonusNode)
-        {
-            Log.Info("BornRich");
-            Log.Info("BornRich = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BornRich, _strUnique);
-            _objCharacter.BornRich = true;
         }
 
         // Check for Erased modifiers.

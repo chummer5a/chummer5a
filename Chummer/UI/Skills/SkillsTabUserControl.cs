@@ -59,7 +59,7 @@ namespace Chummer.UI.Skills
 
         private void UpdateKnoSkillRemaining()
         {
-            lblKnowledgeSkillPoints.Text = $"{_objCharacter.SkillsSection.KnowledgeSkillPointsRemain} {LanguageManager.GetString("String_Of", GlobalOptions.Language)} {_objCharacter.SkillsSection.KnowledgeSkillPoints}";
+            lblKnowledgeSkillPoints.Text = $"{_objCharacter.SkillsSection.KnowledgeSkillPointsRemain}{LanguageManager.GetString("String_Of", GlobalOptions.Language)}{_objCharacter.SkillsSection.KnowledgeSkillPoints}";
         }
 
         private Character _objCharacter;
