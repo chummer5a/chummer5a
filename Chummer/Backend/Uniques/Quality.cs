@@ -815,7 +815,7 @@ namespace Chummer
                             if (bonusNode["spec"] != null)
                             {
                                 xmlSkillNode = xmlSkillDocument.SelectSingleNode("/chummer/skills/skill/specs/spec[. = \"" + bonusNode["spec"].InnerText + "\"]");
-                                skills += " (" + (xmlSkillNode?.Attributes?["translate"].Value ?? bonusNode["spec"]?.InnerText) + ' ' + LanguageManager.GetString("String_ExpenseSpecialization", strLanguage) + ")";
+                                skills += " (" + (xmlSkillNode?.Attributes?["translate"]?.Value ?? bonusNode["spec"]?.InnerText) + ' ' + LanguageManager.GetString("String_ExpenseSpecialization", strLanguage) + ")";
                             }
                             skills += " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
                             break;
@@ -830,13 +830,13 @@ namespace Chummer
                                 s = s?.Substring(0, s.Length - 1);
                             }
                             XmlNode xmlCategoryNode = xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" + bonusNode["group"]?.InnerText + "\"]");
-                            s += " (" + (xmlCategoryNode?.Attributes?["translate"].Value ?? bonusNode["group"]?.InnerText) + ")";
+                            s += " (" + (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) + ")";
                             s += " +" + (bonusNode["val"]?.InnerText ?? "1");
                             knoSkills += "  " + s + Environment.NewLine;
                             break;
                         case "skillgrouplevel":
                             XmlNode xmlSkillGroupNode = xmlSkillDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + bonusNode["name"]?.InnerText + "\"]");
-                            skillGroups += "  " + (xmlSkillGroupNode?.Attributes?["translate"].Value ?? bonusNode["name"]?.InnerText);
+                            skillGroups += "  " + (xmlSkillGroupNode?.Attributes?["translate"]?.Value ?? bonusNode["name"]?.InnerText);
                             skillGroups += " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
                             break;
                     }
