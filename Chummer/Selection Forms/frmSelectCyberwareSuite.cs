@@ -73,7 +73,7 @@ namespace Chummer
 
         private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.DEPEnabled)
+            if (_objCharacter.IsAI)
                 return;
             
             IList<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);

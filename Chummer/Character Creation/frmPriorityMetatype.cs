@@ -893,7 +893,7 @@ namespace Chummer
                 }
 
                 // Set free contact points
-                _objCharacter.ContactPoints = _objCharacter.CHA.Value * _objCharacter.ContactMultiplier;
+                _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
 
                 // Set starting karma
                 _objCharacter.BuildKarma = _objCharacter.MaxKarma;
@@ -1014,6 +1014,7 @@ namespace Chummer
 
         void RefreshSelectedMetatype()
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
@@ -1085,14 +1086,14 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.Value;
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ')';
+                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1110,10 +1111,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(' ');
-                            strQualities.Append(objLoopQuality.Value.ToString());
+                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(", ");
+                        strQualities.Append(',' + strSpaceCharacter);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -1148,14 +1149,14 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
                         strQuality = xmlQuality.Value;
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ')';
+                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1173,10 +1174,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(' ');
-                            strQualities.Append(objLoopQuality.Value.ToString());
+                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(", ");
+                        strQualities.Append(',' + strSpaceCharacter);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();

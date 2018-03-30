@@ -189,12 +189,12 @@ namespace Chummer
             if (strLanguage != GlobalOptions.DefaultLanguage)
                 strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
-                string strExtra = _strExtra;
+                string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(_strExtra, strLanguage);
-                strReturn += " (" + strExtra + ')';
+                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -261,6 +261,7 @@ namespace Chummer
                 StringBuilder strTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase", GlobalOptions.Language));
                 int intRES = _objCharacter.RES.TotalValue;
                 string strFV = FV;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 for (int i = 1; i <= intRES * 2; i++)
                 {
                     // Calculate the Complex Form's Fading for the current Level.
@@ -273,7 +274,7 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intFV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intFV.ToString());
                     }
                     else
                     {
@@ -289,7 +290,7 @@ namespace Chummer
                     strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
                     {
-                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value:0;-0;0})");
+                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objLoopImprovement.Value:0;-0;0})");
                     }
                 }
 

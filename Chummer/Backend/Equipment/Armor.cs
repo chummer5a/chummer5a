@@ -114,8 +114,12 @@ namespace Chummer.Backend.Equipment
                     blnDoEncumbranceRefresh = true;
                     break;
             }
+
             if (blnDoEncumbranceRefresh && Equipped)
+            {
+                _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                 _objCharacter?.RefreshEncumbrance();
+            }
         }
 
         /// Create an Armor from an XmlNode.
@@ -682,6 +686,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Equipped)
                     {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
                     }
                 }
@@ -704,6 +709,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
                         {
+                            _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                             _objCharacter?.RefreshEncumbrance();
                         }
                     }
@@ -927,6 +933,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
+                    _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                     _objCharacter?.RefreshEncumbrance();
                 }
             }
@@ -1341,13 +1348,13 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(ArmorName))
-                strReturn += " (\"" + ArmorName + "\")";
+                strReturn += strSpaceCharacter + "(\"" + ArmorName + "\")";
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
-            if (!string.IsNullOrEmpty(_strExtra))
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 

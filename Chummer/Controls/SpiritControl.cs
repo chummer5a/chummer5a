@@ -485,10 +485,12 @@ namespace Chummer
             string strForce = LanguageManager.GetString("String_Force", GlobalOptions.Language);
             if (_objSpirit.EntityType == SpiritType.Sprite)
                 strForce = LanguageManager.GetString("String_Rating", GlobalOptions.Language);
+
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
-                FileName = strCritterName + " (" + strForce + ' ' + _objSpirit.Force.ToString() + ").chum5"
+                FileName = strCritterName + strSpaceCharacter + '(' + strForce + strSpaceCharacter + _objSpirit.Force.ToString() + ").chum5"
             };
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {

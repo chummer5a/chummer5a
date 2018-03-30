@@ -194,6 +194,7 @@
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
       <lp>2</lp>
+      <allowbonuslp>True</allowbonuslp>
       <multiplier>60</multiplier>
       <source>RF</source>
       <page>218</page>
@@ -414,6 +415,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>18000</cost>
       <page>221</page>
@@ -424,6 +426,7 @@
       <category>Entertainment - Asset</category>
       <lp>3</lp>
       <allowed>High, Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>4500</cost>
       <page>221</page>
@@ -434,6 +437,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>45</cost>
       <page>221</page>
@@ -444,6 +448,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>90</cost>
       <page>221</page>
@@ -454,6 +459,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>9000</cost>
       <page>221</page>
@@ -464,6 +470,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>20000</cost>
       <page>221</page>
@@ -474,6 +481,7 @@
       <category>Entertainment - Asset</category>
       <lp>3</lp>
       <allowed>High, Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>5000</cost>
       <page>221</page>
@@ -484,6 +492,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
       <page>221</page>
@@ -494,6 +503,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>221</page>
@@ -502,6 +512,7 @@
       <id>67e41d1f-78a9-417b-88d4-94eeb58fa4ff</id>
       <name>Garage (Helicopter)</name>
       <category>Entertainment - Asset</category>
+	  <allowmultiple />
       <lp>4</lp>
       <allowed>Luxury</allowed>
       <source>RF</source>
@@ -1356,6 +1367,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>SFB</source>
       <cost>180</cost>
       <page>20</page>
@@ -1366,6 +1378,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>SFB</source>
       <cost>200</cost>
       <page>20</page>

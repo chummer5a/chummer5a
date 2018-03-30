@@ -208,7 +208,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                if (_objCharacter.DEPEnabled && Abbrev == "EDG")
+                if (_objCharacter.IsAI && Abbrev == "EDG")
                     return _objCharacter.DEP.TotalValue;
 
                 int intReturn = _intMetatypeMax;
@@ -289,10 +289,19 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        private int _intCachedValue = int.MinValue;
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
         /// </summary>
-        public int Value => Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
+        public int Value
+        {
+            get
+            {
+                if (_intCachedValue == int.MinValue)
+                    _intCachedValue = Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
+                return _intCachedValue;
+            }
+        }
 
         /// <summary>
         /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
@@ -497,10 +506,19 @@ namespace Chummer.Backend.Attributes
             return intReturn;
         }
 
+        private int _intCachedTotalValue = int.MinValue;
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
-        public int TotalValue => CalculatedTotalValue();
+        public int TotalValue
+        {
+            get
+            {
+                if (_intCachedTotalValue == int.MinValue)
+                    _intCachedTotalValue = CalculatedTotalValue();
+                return _intCachedTotalValue;
+            }
+        }
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
@@ -583,7 +601,7 @@ namespace Chummer.Backend.Attributes
         public string DisplayNameShort(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + " (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
@@ -591,7 +609,7 @@ namespace Chummer.Backend.Attributes
         public string DisplayNameLong(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + " (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
@@ -601,9 +619,9 @@ namespace Chummer.Backend.Attributes
         public string GetDisplayNameFormatted(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + " (" + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ") (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ") (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
-            return DisplayNameLong(strLanguage) + " (" + DisplayNameShort(strLanguage) + ')';
+            return DisplayNameLong(strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + DisplayNameShort(strLanguage) + ')';
         }
 
         /// <summary>
@@ -616,6 +634,10 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public string AugmentedMetatypeLimits => $"{TotalMinimum} / {TotalMaximum} ({TotalAugmentedMaximum})";
 
+        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
+            LanguageManager.GetString("String_Of", GlobalOptions.Language) +
+            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language)
+            + LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
         #endregion
 
         #region Methods
@@ -663,7 +685,7 @@ namespace Chummer.Backend.Attributes
                         else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                         {
                             int intValue = objImprovement.Augmented * objImprovement.Rating;
-                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + " (" +
+                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
                                            (intValue).ToString() + ')';
                             intBaseValue += intValue;
                         }
@@ -684,7 +706,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strNewModifier = " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ')';
+                                strNewModifier = " + " + strValues.Item3 + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strValues.Item2.ToString() + ')';
                             }
                         }
                     }
@@ -695,7 +717,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item1 == "precedence-1")
                             {
                                 intHighest += strValues.Item2;
-                                strNewModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ')';
+                                strNewModifier += " + " + strValues.Item3 + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strValues.Item2.ToString() + ')';
                             }
                         }
                     }
@@ -712,7 +734,7 @@ namespace Chummer.Backend.Attributes
                     {
                         if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
                         {
-                            strNewModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ')';
+                            strNewModifier += " + " + strValues.Item3 + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strValues.Item2.ToString() + ')';
                             intHighest += strValues.Item2;
                         }
                     }
@@ -732,7 +754,7 @@ namespace Chummer.Backend.Attributes
                                 if (strValues.Item2 > intHighest)
                                 {
                                     intHighest = strValues.Item2;
-                                    strModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ')';
+                                    strModifier += " + " + strValues.Item3 + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strValues.Item2.ToString() + ')';
                                 }
                             }
                         }
@@ -758,7 +780,7 @@ namespace Chummer.Backend.Attributes
                         }
                         else
                         {
-                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + " (" +
+                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
                                                (objImprovement.Augmented * objImprovement.Rating).ToString() + ')';
                         }
                     }
@@ -775,7 +797,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ')';
+                                strModifier += " + " + strValues.Item3 + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strValues.Item2.ToString() + ')';
                             }
                         }
                     }
@@ -790,7 +812,7 @@ namespace Chummer.Backend.Attributes
                         if (objCyberware.Category == "Cyberlimb")
                         {
                             strCyberlimb.Append(Environment.NewLine);
-                            strCyberlimb.Append(objCyberware.DisplayName(GlobalOptions.Language) + " (");
+                            strCyberlimb.Append(objCyberware.DisplayName(GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
                             strCyberlimb.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString() : objCyberware.TotalStrength.ToString());
                             strCyberlimb.Append(')');
                         }
@@ -804,7 +826,7 @@ namespace Chummer.Backend.Attributes
                 }
                 */
 
-                return DisplayAbbrev + " (" + Value.ToString() + ')' + strModifier;
+                return DisplayAbbrev + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + Value.ToString() + ')' + strModifier;
             }
         }
 
@@ -966,6 +988,10 @@ namespace Chummer.Backend.Attributes
             ICollection<string> lstNamesOfChangedProperties = AttributeDependancyGraph.GetWithAllDependants(propertyName);
             if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                 _intCachedCanUpgradeCareer = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(Value)))
+                _intCachedValue = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalValue)))
+                _intCachedTotalValue = int.MinValue;
             if (PropertyChanged != null)
             {
                 foreach (string strPropertyToChange in lstNamesOfChangedProperties)
@@ -1020,6 +1046,7 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(ToolTip),
                     new DependancyGraphNode<string>(nameof(DisplayValue),
+                        new DependancyGraphNode<string>(nameof(HasModifiers)),
                         new DependancyGraphNode<string>(nameof(TotalValue),
                             new DependancyGraphNode<string>(nameof(AttributeModifiers)),
                             new DependancyGraphNode<string>(nameof(Value),
@@ -1051,6 +1078,10 @@ namespace Chummer.Backend.Attributes
                     new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
                     new DependancyGraphNode<string>(nameof(Value)),
                     new DependancyGraphNode<string>(nameof(TotalMaximum))
+                ),
+                new DependancyGraphNode<string>(nameof(CareerRemainingString),
+                    new DependancyGraphNode<string>(nameof(TotalValue)),
+                    new DependancyGraphNode<string>(nameof(Value))
                 )
             );
         
@@ -1062,7 +1093,7 @@ namespace Chummer.Backend.Attributes
         public string GetDisplayAbbrev(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + " (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return LanguageManager.GetString($"String_Attribute{Abbrev}Short", strLanguage);
         }

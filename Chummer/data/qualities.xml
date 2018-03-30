@@ -2585,7 +2585,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <bornrich />
+		<nuyenmaxbp>30</nuyenmaxbp>
       </bonus>
       <source>RF</source>
       <page>145</page>

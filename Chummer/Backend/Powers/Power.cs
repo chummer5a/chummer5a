@@ -435,7 +435,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -978,10 +978,11 @@ namespace Chummer
         {
             get
             {
-                StringBuilder strbldModifier = new StringBuilder("Rating (" + Rating.ToString() + " × " + PointsPerLevel + ')');
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder strbldModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    strbldModifier.Append(" + " + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + " (" + objImprovement.Rating.ToString() + ')');
+                    strbldModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return strbldModifier.ToString();
