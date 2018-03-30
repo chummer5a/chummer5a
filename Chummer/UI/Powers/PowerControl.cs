@@ -62,7 +62,7 @@ namespace Chummer
 
             PowerObject.PropertyChanged += Power_PropertyChanged;
 
-            tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             MoveControls();
         }
 
@@ -79,7 +79,7 @@ namespace Chummer
         {
             if (propertyChangedEventArgs?.PropertyName == nameof(Power.ToolTip))
             {
-                tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(_objPower.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objPower.Notes;
-            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
         #endregion
 

@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -83,7 +82,6 @@ namespace Chummer
             this.lstWeapon = new System.Windows.Forms.ListBox();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvc_Name = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dgvc_Dice = new Chummer.DataGridViewTextBoxColumnTranslated();
@@ -605,20 +603,6 @@ namespace Chummer
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // dgvc_Guid
             // 
             this.dgvc_Guid.DataPropertyName = "WeaponGuid";
@@ -866,7 +850,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDamageLabel;
         private System.Windows.Forms.ListBox lstWeapon;
         private System.Windows.Forms.Timer tmrSearch;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvc_Guid;
         private DataGridViewTextBoxColumnTranslated dgvc_Name;

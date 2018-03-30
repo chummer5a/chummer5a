@@ -268,6 +268,7 @@ namespace Chummer
             WIL.PropertyChanged += RefreshWILDependentProperties;
             MAG.PropertyChanged += RefreshMAGDependentProperties;
             RES.PropertyChanged += RefreshRESDependentProperties;
+            DEP.PropertyChanged += RefreshDEPDependentProperties;
             ESS.PropertyChanged += RefreshESSDependentProperties;
 
             CharacterDependencyGraph =
@@ -7918,6 +7919,8 @@ namespace Chummer
             set => _decStartingNuyen = value;
         }
 
+        public decimal StartingNuyenModifiers => Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen));
+
         /// <summary>
         /// Number of Build Points put into Nuyen.
         /// </summary>
@@ -10230,6 +10233,12 @@ namespace Chummer
         {
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(MaxSpriteLevel));
+        }
+
+        public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (IsAI && e.PropertyName == nameof(CharacterAttrib.TotalValue))
+                EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
         }
 
         public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)

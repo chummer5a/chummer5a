@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                toolTip1?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -32,7 +31,6 @@ namespace Chummer
             this.nudKarma = new System.Windows.Forms.NumericUpDown();
             this.cmdOK = new System.Windows.Forms.Button();
             this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cboBuildMethod = new System.Windows.Forms.ComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
@@ -88,23 +86,7 @@ namespace Chummer
             this.chkIgnoreRules.TabIndex = 5;
             this.chkIgnoreRules.Tag = "Checkbox_SelectBP_IgnoreRules";
             this.chkIgnoreRules.Text = "Ignore Character Creation Rules";
-            this.toolTip1.SetToolTip(this.chkIgnoreRules, "When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intend" +
-        "ed for Game Master/NPC use only.");
             this.chkIgnoreRules.UseVisualStyleBackColor = true;
-            // 
-            // toolTip1
-            // 
-            this.toolTip1.AllowLinksHandling = true;
-            this.toolTip1.AutoPopDelay = 10000;
-            this.toolTip1.BaseStylesheet = null;
-            this.toolTip1.InitialDelay = 250;
-            this.toolTip1.IsBalloon = true;
-            this.toolTip1.MaximumSize = new System.Drawing.Size(0, 0);
-            this.toolTip1.OwnerDraw = true;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.TooltipCssClass = "htmltooltip";
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "Chummer Help";
             // 
             // cmdCancel
             // 
@@ -275,7 +257,6 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudKarma;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.CheckBox chkIgnoreRules;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip1;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;

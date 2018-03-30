@@ -191,12 +191,12 @@ namespace Chummer
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 
@@ -294,12 +294,12 @@ namespace Chummer
                     {
                         string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                        tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                        GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                     }
                     else
                     {
                         lblSource.Text = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                        tipTooltip.SetToolTip(lblSource, LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
+                        GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
                     }
 
                     // Add the flat costs from qualities

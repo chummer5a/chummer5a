@@ -21,7 +21,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -73,7 +72,6 @@ namespace Chummer
             this.tssNuyenRemaining = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.lblAttributesAug = new System.Windows.Forms.Label();
             this.lblAttributesBase = new System.Windows.Forms.Label();
             this.lblAttributesMetatype = new System.Windows.Forms.Label();
@@ -1089,20 +1087,6 @@ namespace Chummer
             this.dlgSaveFile.Filter = "Chummer Character|*.sr5";
             this.dlgSaveFile.Title = "Save Character";
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // lblAttributesAug
             // 
             this.lblAttributesAug.AutoSize = true;
@@ -1112,7 +1096,6 @@ namespace Chummer
             this.lblAttributesAug.TabIndex = 55;
             this.lblAttributesAug.Tag = "Label_ValAugmented";
             this.lblAttributesAug.Text = "Val (Aug)";
-            this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
             // 
             // lblAttributesBase
             // 
@@ -1123,7 +1106,6 @@ namespace Chummer
             this.lblAttributesBase.TabIndex = 54;
             this.lblAttributesBase.Tag = "String_Points";
             this.lblAttributesBase.Text = "Points";
-            this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
             // 
             // lblAttributesMetatype
             // 
@@ -1134,7 +1116,6 @@ namespace Chummer
             this.lblAttributesMetatype.TabIndex = 53;
             this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
             this.lblAttributesMetatype.Text = "Metatype Limits";
-            this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
             // 
             // lblAttributes
             // 
@@ -1145,9 +1126,6 @@ namespace Chummer
             this.lblAttributes.TabIndex = 5;
             this.lblAttributes.Tag = "Label_Attributes";
             this.lblAttributes.Text = "Attributes";
-            this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
-        " character creation.");
             // 
             // lblNuyen
             // 
@@ -1158,7 +1136,6 @@ namespace Chummer
             this.lblNuyen.TabIndex = 16;
             this.lblNuyen.Tag = "Label_Nuyen";
             this.lblNuyen.Text = "Nuyen";
-            this.tipTooltip.SetToolTip(this.lblNuyen, "The amount of Nuyen your character has to purchase equipment. 1 BP = 5,000¥.");
             // 
             // lblSpirits
             // 
@@ -1169,7 +1146,6 @@ namespace Chummer
             this.lblSpirits.TabIndex = 0;
             this.lblSpirits.Tag = "Label_Spirits";
             this.lblSpirits.Text = "Spirits";
-            this.tipTooltip.SetToolTip(this.lblSpirits, "Each Service a Spirit owes costs 1 BP.");
             // 
             // lblComplexForms
             // 
@@ -1180,7 +1156,6 @@ namespace Chummer
             this.lblComplexForms.TabIndex = 28;
             this.lblComplexForms.Tag = "Label_ComplexForms";
             this.lblComplexForms.Text = "Complex Forms";
-            this.tipTooltip.SetToolTip(this.lblComplexForms, "Complex Forms cost a number of BP equal to their Rating.");
             // 
             // lblSprites
             // 
@@ -1191,7 +1166,6 @@ namespace Chummer
             this.lblSprites.TabIndex = 24;
             this.lblSprites.Tag = "Label_Sprites";
             this.lblSprites.Text = "Sprites";
-            this.tipTooltip.SetToolTip(this.lblSprites, "Each Service a Sprite owes costs 1 BP.");
             // 
             // chkArmorEquipped
             // 
@@ -1203,8 +1177,6 @@ namespace Chummer
             this.chkArmorEquipped.TabIndex = 78;
             this.chkArmorEquipped.Tag = "Checkbox_Equipped";
             this.chkArmorEquipped.Text = "Equipped";
-            this.tipTooltip.SetToolTip(this.chkArmorEquipped, "Equipped Armor and Armor Mods are factored into Armor Encumbrance and a character" +
-        "\'s highest Armor Ratings.");
             this.chkArmorEquipped.UseVisualStyleBackColor = true;
             this.chkArmorEquipped.CheckedChanged += new System.EventHandler(this.chkArmorEquipped_CheckedChanged);
             // 
@@ -1218,7 +1190,6 @@ namespace Chummer
             this.chkWeaponAccessoryInstalled.TabIndex = 72;
             this.chkWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
             this.chkWeaponAccessoryInstalled.Text = "Installed";
-            this.tipTooltip.SetToolTip(this.chkWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
             this.chkWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
             this.chkWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkWeaponAccessoryInstalled_CheckedChanged);
             // 
@@ -1232,7 +1203,6 @@ namespace Chummer
             this.chkVehicleWeaponAccessoryInstalled.TabIndex = 74;
             this.chkVehicleWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
             this.chkVehicleWeaponAccessoryInstalled.Text = "Installed";
-            this.tipTooltip.SetToolTip(this.chkVehicleWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
             this.chkVehicleWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
             this.chkVehicleWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkVehicleWeaponAccessoryInstalled_CheckedChanged);
             // 
@@ -1245,9 +1215,6 @@ namespace Chummer
             this.lblNotoriety.TabIndex = 84;
             this.lblNotoriety.Tag = "Label_Notoriety";
             this.lblNotoriety.Text = "Notoriety:";
-            this.tipTooltip.SetToolTip(this.lblNotoriety, "Notoriety is typically gained through Qualities and can be further adjusted by Ga" +
-        "me Masters. Notoriety can be reduced by 1 point by burning 2 points of Street Cr" +
-        "ed.");
             // 
             // lblStreetCred
             // 
@@ -1258,8 +1225,6 @@ namespace Chummer
             this.lblStreetCred.TabIndex = 82;
             this.lblStreetCred.Tag = "Label_StreetCred";
             this.lblStreetCred.Text = "Street Cred:";
-            this.tipTooltip.SetToolTip(this.lblStreetCred, "Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further ad" +
-        "justed by Game Masters.");
             // 
             // chkCharacterCreated
             // 
@@ -1270,9 +1235,6 @@ namespace Chummer
             this.chkCharacterCreated.TabIndex = 62;
             this.chkCharacterCreated.Tag = "Checkbox_Created";
             this.chkCharacterCreated.Text = "Mark character as Created";
-            this.tipTooltip.SetToolTip(this.chkCharacterCreated, "Once a character has been saved as Created it cannot be further modified using th" +
-        "e Build system. The character is put into Career mode where it can be improved w" +
-        "ith Karma and used for play.");
             this.chkCharacterCreated.UseVisualStyleBackColor = true;
             // 
             // lblBuildFoci
@@ -1284,7 +1246,6 @@ namespace Chummer
             this.lblBuildFoci.TabIndex = 81;
             this.lblBuildFoci.Tag = "Label_SummaryFoci";
             this.lblBuildFoci.Text = "Foci";
-            this.tipTooltip.SetToolTip(this.lblBuildFoci, "Each bonded Focus costs a number of BP equal to its Force.");
             // 
             // lblBuildMartialArts
             // 
@@ -1305,7 +1266,6 @@ namespace Chummer
             this.lblBuildNuyen.TabIndex = 76;
             this.lblBuildNuyen.Tag = "Label_SummaryNuyen";
             this.lblBuildNuyen.Text = "Nuyen";
-            this.tipTooltip.SetToolTip(this.lblBuildNuyen, "The amount of Nuyen your character has to purchase equipment. 1 BP = 5,000¥.");
             // 
             // lblBuildEnemies
             // 
@@ -1316,8 +1276,6 @@ namespace Chummer
             this.lblBuildEnemies.TabIndex = 75;
             this.lblBuildEnemies.Tag = "Label_SummaryEnemies";
             this.lblBuildEnemies.Text = "Enemies";
-            this.tipTooltip.SetToolTip(this.lblBuildEnemies, "Enemies are the opposite of Contacts. Each Enemy counts towards your Negative Qua" +
-        "lities BP amount.");
             // 
             // lblBuildComplexForms
             // 
@@ -1328,7 +1286,6 @@ namespace Chummer
             this.lblBuildComplexForms.TabIndex = 72;
             this.lblBuildComplexForms.Tag = "Label_SummaryComplexForms";
             this.lblBuildComplexForms.Text = "Complex Forms";
-            this.tipTooltip.SetToolTip(this.lblBuildComplexForms, "Complex Forms cost a number of BP equal to their Rating.");
             // 
             // lblBuildSprites
             // 
@@ -1339,7 +1296,6 @@ namespace Chummer
             this.lblBuildSprites.TabIndex = 71;
             this.lblBuildSprites.Tag = "Label_SummarySprites";
             this.lblBuildSprites.Text = "Sprites";
-            this.tipTooltip.SetToolTip(this.lblBuildSprites, "Each Service a Sprite owes costs 1 BP.");
             // 
             // lblBuildSpirits
             // 
@@ -1350,7 +1306,6 @@ namespace Chummer
             this.lblBuildSpirits.TabIndex = 70;
             this.lblBuildSpirits.Tag = "Label_SummarySpirits";
             this.lblBuildSpirits.Text = "Spirits";
-            this.tipTooltip.SetToolTip(this.lblBuildSpirits, "Each Service a Spirit owes costs 1 BP.");
             // 
             // lblBuildSpells
             // 
@@ -1361,7 +1316,6 @@ namespace Chummer
             this.lblBuildSpells.TabIndex = 69;
             this.lblBuildSpells.Tag = "Label_SummarySpells";
             this.lblBuildSpells.Text = "Spells";
-            this.tipTooltip.SetToolTip(this.lblBuildSpells, "Each Spell costs 3 BP.");
             // 
             // lblBuildKnowledgeSkills
             // 
@@ -1372,8 +1326,6 @@ namespace Chummer
             this.lblBuildKnowledgeSkills.TabIndex = 64;
             this.lblBuildKnowledgeSkills.Tag = "Label_SummaryKnowledgeSkills";
             this.lblBuildKnowledgeSkills.Text = "Knowledge Skills";
-            this.tipTooltip.SetToolTip(this.lblBuildKnowledgeSkills, "Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skil" +
-        "ls including Languages. Additional Knowledge Skill points cost 2 BP each.");
             // 
             // lblBuildActiveSkills
             // 
@@ -1384,7 +1336,6 @@ namespace Chummer
             this.lblBuildActiveSkills.TabIndex = 63;
             this.lblBuildActiveSkills.Tag = "Label_SummaryActiveSkills";
             this.lblBuildActiveSkills.Text = "Active Skills";
-            this.tipTooltip.SetToolTip(this.lblBuildActiveSkills, "Skills cost 4 BP per point and 2 BP for a Specialization.");
             // 
             // lblBuildSkillGroups
             // 
@@ -1395,7 +1346,6 @@ namespace Chummer
             this.lblBuildSkillGroups.TabIndex = 62;
             this.lblBuildSkillGroups.Tag = "Label_SummarySkillGroups";
             this.lblBuildSkillGroups.Text = "Skill Groups";
-            this.tipTooltip.SetToolTip(this.lblBuildSkillGroups, "Skill Groups cost 10 BP per point.");
             // 
             // lblBuildContacts
             // 
@@ -1406,7 +1356,6 @@ namespace Chummer
             this.lblBuildContacts.TabIndex = 59;
             this.lblBuildContacts.Tag = "Label_SummaryContacts";
             this.lblBuildContacts.Text = "Contacts";
-            this.tipTooltip.SetToolTip(this.lblBuildContacts, "Each point of Connection or Loyalty costs 1 BP.");
             // 
             // lblBuildPrimaryAttributes
             // 
@@ -1417,9 +1366,6 @@ namespace Chummer
             this.lblBuildPrimaryAttributes.TabIndex = 57;
             this.lblBuildPrimaryAttributes.Tag = "Label_Attributes";
             this.lblBuildPrimaryAttributes.Text = "Attributes";
-            this.tipTooltip.SetToolTip(this.lblBuildPrimaryAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
-        "uding EDG, MAG, and RES)." + Environment.NewLine + "Only one attribute may be at its Maximum value during" +
-        " character creation.");
             // 
             // lblBuildNegativeQualities
             // 
@@ -1430,8 +1376,6 @@ namespace Chummer
             this.lblBuildNegativeQualities.TabIndex = 54;
             this.lblBuildNegativeQualities.Tag = "Label_SummaryNegativeQualities";
             this.lblBuildNegativeQualities.Text = "Negative Qualities";
-            this.tipTooltip.SetToolTip(this.lblBuildNegativeQualities, "Characters may select up to -35 BP worth of Negative Qualities. Qualities in dark" +
-        " red do not count towards the -35 BP limit.");
             // 
             // lblBuildPositiveQualities
             // 
@@ -1442,8 +1386,6 @@ namespace Chummer
             this.lblBuildPositiveQualities.TabIndex = 50;
             this.lblBuildPositiveQualities.Tag = "Label_SummaryPositiveQualities";
             this.lblBuildPositiveQualities.Text = "Positive Qualities";
-            this.tipTooltip.SetToolTip(this.lblBuildPositiveQualities, "Characters may select up to 35 BP worth of Positive Qualities. Qualities in dark " +
-        "red do not count towards the 35 BP limit.");
             // 
             // lblRiggingINILabel
             // 
@@ -1484,7 +1426,6 @@ namespace Chummer
             this.lblMemoryLabel.TabIndex = 50;
             this.lblMemoryLabel.Tag = "Label_OtherMemory";
             this.lblMemoryLabel.Text = "Memory:";
-            this.tipTooltip.SetToolTip(this.lblMemoryLabel, "Memory is calculated as LOG + WIL.");
             // 
             // lblLiftCarryLabel
             // 
@@ -1495,7 +1436,6 @@ namespace Chummer
             this.lblLiftCarryLabel.TabIndex = 48;
             this.lblLiftCarryLabel.Tag = "Label_OtherLiftAndCarry";
             this.lblLiftCarryLabel.Text = "Lift and Carry:";
-            this.tipTooltip.SetToolTip(this.lblLiftCarryLabel, "Lift and Carry is calculated as STR + BOD.");
             // 
             // lblJudgeIntentionsLabel
             // 
@@ -1506,7 +1446,6 @@ namespace Chummer
             this.lblJudgeIntentionsLabel.TabIndex = 46;
             this.lblJudgeIntentionsLabel.Tag = "Label_OtherJudgeIntention";
             this.lblJudgeIntentionsLabel.Text = "Judge Intentions:";
-            this.tipTooltip.SetToolTip(this.lblJudgeIntentionsLabel, "Judge Intentions is calculated as INT + CHA.");
             // 
             // lblComposureLabel
             // 
@@ -1517,7 +1456,6 @@ namespace Chummer
             this.lblComposureLabel.TabIndex = 44;
             this.lblComposureLabel.Tag = "Label_OtherCmposure";
             this.lblComposureLabel.Text = "Composure:";
-            this.tipTooltip.SetToolTip(this.lblComposureLabel, "Composure is calculated as WIL + CHA.");
             // 
             // lblRemainingNuyenLabel
             // 
@@ -1528,7 +1466,6 @@ namespace Chummer
             this.lblRemainingNuyenLabel.TabIndex = 36;
             this.lblRemainingNuyenLabel.Tag = "Label_OtherNuyenRemain";
             this.lblRemainingNuyenLabel.Text = "Nuyen Remaining:";
-            this.tipTooltip.SetToolTip(this.lblRemainingNuyenLabel, "The amount of Nuyen you have left to purchase gear.");
             // 
             // lblESS
             // 
@@ -1539,8 +1476,6 @@ namespace Chummer
             this.lblESS.TabIndex = 34;
             this.lblESS.Tag = "Label_OtherEssence";
             this.lblESS.Text = "Essence:";
-            this.tipTooltip.SetToolTip(this.lblESS, "Characters start with 6 Essence which is decreased by adding Cyberware and Biowar" +
-        "e.");
             // 
             // lblArmorLabel
             // 
@@ -1551,7 +1486,6 @@ namespace Chummer
             this.lblArmorLabel.TabIndex = 70;
             this.lblArmorLabel.Tag = "Label_ArmorValueShort";
             this.lblArmorLabel.Text = "Armor:";
-            this.tipTooltip.SetToolTip(this.lblArmorLabel, "Only the highest single Armor value is used to determine your Armor Rating.");
             // 
             // lblAstralINILabel
             // 
@@ -1562,7 +1496,6 @@ namespace Chummer
             this.lblAstralINILabel.TabIndex = 23;
             this.lblAstralINILabel.Tag = "Label_OtherAstralInit";
             this.lblAstralINILabel.Text = "Astral Initiative:";
-            this.tipTooltip.SetToolTip(this.lblAstralINILabel, "Astral Initiative is calculated as INT x 2.");
             // 
             // lblMatrixINILabel
             // 
@@ -1583,7 +1516,6 @@ namespace Chummer
             this.lblINILabel.TabIndex = 20;
             this.lblINILabel.Tag = "Label_OtherInit";
             this.lblINILabel.Text = "Initiative:";
-            this.tipTooltip.SetToolTip(this.lblINILabel, "Initiative is calculated as REA + INT.");
             // 
             // lblCMStunLabel
             // 
@@ -1594,7 +1526,6 @@ namespace Chummer
             this.lblCMStunLabel.TabIndex = 19;
             this.lblCMStunLabel.Tag = "Label_OtherStunCM";
             this.lblCMStunLabel.Text = "Stun Condition Track:";
-            this.tipTooltip.SetToolTip(this.lblCMStunLabel, "Stun CM is calculated as 8 + (WIL / 2).");
             // 
             // lblCMPhysicalLabel
             // 
@@ -1605,7 +1536,6 @@ namespace Chummer
             this.lblCMPhysicalLabel.TabIndex = 18;
             this.lblCMPhysicalLabel.Tag = "Label_OtherPhysicalCM";
             this.lblCMPhysicalLabel.Text = "Physical Condition Track:";
-            this.tipTooltip.SetToolTip(this.lblCMPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // label33
             // 
@@ -1616,7 +1546,6 @@ namespace Chummer
             this.label33.TabIndex = 108;
             this.label33.Tag = "Label_Spirits";
             this.label33.Text = "Spirits";
-            this.tipTooltip.SetToolTip(this.label33, "Each Service a Spirit owes costs 1 BP.");
             // 
             // lblSelectedSpells
             // 
@@ -1627,7 +1556,6 @@ namespace Chummer
             this.lblSelectedSpells.TabIndex = 2;
             this.lblSelectedSpells.Tag = "Label_SelectedSpells";
             this.lblSelectedSpells.Text = "Selected Spells";
-            this.tipTooltip.SetToolTip(this.lblSelectedSpells, "Each Spell costs 3 BP.");
             // 
             // label7
             // 
@@ -1638,7 +1566,6 @@ namespace Chummer
             this.label7.TabIndex = 92;
             this.label7.Tag = "String_Karma";
             this.label7.Text = "Karma";
-            this.tipTooltip.SetToolTip(this.label7, "Base Attribute value.");
             // 
             // lblSpellDefenceIndirectDodgeLabel
             // 
@@ -1649,7 +1576,6 @@ namespace Chummer
             this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
             this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
             this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIndirectSoakLabel
             // 
@@ -1660,7 +1586,6 @@ namespace Chummer
             this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
             this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
             this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectSoakLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDirectSoakManaLabel
             // 
@@ -1671,7 +1596,6 @@ namespace Chummer
             this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
             this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
             this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDirectSoakPhysicalLabel
             // 
@@ -1682,7 +1606,6 @@ namespace Chummer
             this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
             this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
             this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttBODLabel
             // 
@@ -1693,7 +1616,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
             this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
             this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttBODLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDetectionLabel
             // 
@@ -1704,7 +1626,6 @@ namespace Chummer
             this.lblSpellDefenceDetectionLabel.TabIndex = 33;
             this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
             this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDetectionLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttAGILabel
             // 
@@ -1715,7 +1636,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
             this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
             this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttAGILabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttSTRLabel
             // 
@@ -1726,7 +1646,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
             this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
             this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttSTRLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttREALabel
             // 
@@ -1737,7 +1656,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
             this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
             this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttREALabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttWILLabel
             // 
@@ -1748,7 +1666,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
             this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
             this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttWILLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttLOGLabel
             // 
@@ -1759,7 +1676,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
             this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
             this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttLOGLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttINTLabel
             // 
@@ -1770,7 +1686,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
             this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
             this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttINTLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttCHALabel
             // 
@@ -1781,7 +1696,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
             this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
             this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttCHALabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lbllSpellDefenceManipPhysicalLabel
             // 
@@ -1792,7 +1706,6 @@ namespace Chummer
             this.lbllSpellDefenceManipPhysicalLabel.TabIndex = 59;
             this.lbllSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
             this.lbllSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
-            this.tipTooltip.SetToolTip(this.lbllSpellDefenceManipPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceManipMentalLabel
             // 
@@ -1803,7 +1716,6 @@ namespace Chummer
             this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
             this.lblSpellDefenceManipMentalLabel.Tag = "Label_SpellDefenceManipMental";
             this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceManipMentalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIllusionPhysicalLabel
             // 
@@ -1814,7 +1726,6 @@ namespace Chummer
             this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
             this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
             this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIllusionManaLabel
             // 
@@ -1825,7 +1736,6 @@ namespace Chummer
             this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
             this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
             this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblCounterspellingDiceLabel
             // 
@@ -1838,7 +1748,6 @@ namespace Chummer
             this.lblCounterspellingDiceLabel.TabIndex = 62;
             this.lblCounterspellingDiceLabel.Tag = "Label_CounterspellingDice";
             this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
-            this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblFoci
             // 
@@ -1849,7 +1758,6 @@ namespace Chummer
             this.lblFoci.TabIndex = 92;
             this.lblFoci.Tag = "Label_BondedFoci";
             this.lblFoci.Text = "Bonded Foci";
-            this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force.");
             // 
             // lblBuildAIAdvancedPrograms
             // 
@@ -1860,7 +1768,6 @@ namespace Chummer
             this.lblBuildAIAdvancedPrograms.TabIndex = 87;
             this.lblBuildAIAdvancedPrograms.Tag = "Label_SummaryAIAdvancedPrograms";
             this.lblBuildAIAdvancedPrograms.Text = "Advanced Programs";
-            this.tipTooltip.SetToolTip(this.lblBuildAIAdvancedPrograms, "Each Martial Art Maneuver costs 2 BP.");
             // 
             // lblBuildRitualsBPLabel
             // 
@@ -1871,7 +1778,6 @@ namespace Chummer
             this.lblBuildRitualsBPLabel.TabIndex = 133;
             this.lblBuildRitualsBPLabel.Tag = "Label_SummaryRituals";
             this.lblBuildRitualsBPLabel.Text = "Rituals";
-            this.tipTooltip.SetToolTip(this.lblBuildRitualsBPLabel, "Each Spell costs 3 BP.");
             // 
             // lblBuildPrepsBPLabel
             // 
@@ -1882,7 +1788,6 @@ namespace Chummer
             this.lblBuildPrepsBPLabel.TabIndex = 131;
             this.lblBuildPrepsBPLabel.Tag = "Label_SummaryPreparations";
             this.lblBuildPrepsBPLabel.Text = "Preparations";
-            this.tipTooltip.SetToolTip(this.lblBuildPrepsBPLabel, "Each Spell costs 3 BP.");
             // 
             // lblAIProgramsAdvancedPrograms
             // 
@@ -10517,7 +10422,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetatypeLabel;
         private System.Windows.Forms.Label lblMetatype;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.TabControl tabCharacterTabs;
         private System.Windows.Forms.TabPage tabCommon;
         private System.Windows.Forms.TabPage tabMagician;

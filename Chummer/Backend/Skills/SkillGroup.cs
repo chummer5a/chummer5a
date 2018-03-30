@@ -345,27 +345,36 @@ namespace Chummer.Backend.Skills
         private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(DisplayRating),
-                    new DependancyGraphNode<string>(nameof(CareerIncrease)),
+                    new DependancyGraphNode<string>(nameof(CareerIncrease),
+                        new DependancyGraphNode<string>(nameof(RatingMaximum)),
+                        new DependancyGraphNode<string>(nameof(IsDisabled))
+                    ),
                     new DependancyGraphNode<string>(nameof(Rating),
                         new DependancyGraphNode<string>(nameof(Karma),
-                            new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                            new DependancyGraphNode<string>(nameof(FreeLevels)),
-                            new DependancyGraphNode<string>(nameof(Base))
+                            new DependancyGraphNode<string>(nameof(IsDisabled)),
+                            new DependancyGraphNode<string>(nameof(FreeLevels))
                         ),
                         new DependancyGraphNode<string>(nameof(Base),
-                            new DependancyGraphNode<string>(nameof(FreeBase)),
-                            new DependancyGraphNode<string>(nameof(RatingMaximum))
+                            new DependancyGraphNode<string>(nameof(IsDisabled)),
+                            new DependancyGraphNode<string>(nameof(FreeBase))
                         )
                     )
                 ),
                 new DependancyGraphNode<string>(nameof(UpgradeToolTip),
                     new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependancyGraphNode<string>(nameof(IsDisabled)),
                         new DependancyGraphNode<string>(nameof(Rating))
                     )
                 ),
                 new DependancyGraphNode<string>(nameof(CareerCanIncrease),
                     new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
                     new DependancyGraphNode<string>(nameof(CareerIncrease))
+                ),
+                new DependancyGraphNode<string>(nameof(KarmaUnbroken),
+                    new DependancyGraphNode<string>(nameof(IsDisabled))
+                ),
+                new DependancyGraphNode<string>(nameof(BaseUnbroken),
+                    new DependancyGraphNode<string>(nameof(IsDisabled))
                 )
             );
 
@@ -541,14 +550,33 @@ namespace Chummer.Backend.Skills
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            ICollection<string> lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependants(propertyName);
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
             if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
             if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
                 _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(IsDisabled)))
+            if (lstNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
             {
                 _blnCachedGroupEnabledIsCached = false;
                 DoRefreshCareerIncrease();

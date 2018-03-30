@@ -18,7 +18,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }

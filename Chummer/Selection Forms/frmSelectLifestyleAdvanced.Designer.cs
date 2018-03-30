@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -49,7 +48,6 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.nudRoommates = new System.Windows.Forms.NumericUpDown();
             this.lblRoommates = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cboBaseLifestyle = new System.Windows.Forms.ComboBox();
             this.Label_SelectAdvancedLifestyle_Base_Lifestyle = new System.Windows.Forms.Label();
             this.nudSecurity = new System.Windows.Forms.NumericUpDown();
@@ -248,20 +246,6 @@ namespace Chummer
             this.lblRoommates.TabIndex = 14;
             this.lblRoommates.Tag = "Label_SelectLifestyle_Roommates";
             this.lblRoommates.Text = "Roommates:";
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // cboBaseLifestyle
             // 
@@ -706,7 +690,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.NumericUpDown nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.ComboBox cboBaseLifestyle;
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Base_Lifestyle;
         private System.Windows.Forms.NumericUpDown nudSecurity;

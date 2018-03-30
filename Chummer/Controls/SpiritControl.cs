@@ -78,24 +78,24 @@ namespace Chummer
                     DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
             else
             {
                 chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
 
             _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
@@ -211,7 +211,7 @@ namespace Chummer
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Application.StartupPath);
@@ -238,7 +238,7 @@ namespace Chummer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 _objSpirit.FileName = openFileDialog.FileName;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
                 ContactDetailChanged?.Invoke(this, e);
             }
         }
@@ -291,7 +291,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
 
                 ContactDetailChanged?.Invoke(this, e);
             }
@@ -675,7 +675,7 @@ namespace Chummer
 
             // Link the newly-created Critter to the Spirit.
             _objSpirit.FileName = strOpenFile;
-            tipTooltip.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
             ContactDetailChanged?.Invoke(this, null);
 
             Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);

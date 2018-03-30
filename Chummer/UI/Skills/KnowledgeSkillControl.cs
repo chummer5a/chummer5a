@@ -144,10 +144,10 @@ namespace Chummer.UI.Skills
             cboSkill.EndUpdate();
             cboSpec.EndUpdate();
 
-            tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
-            tipTooltip.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
-            tipTooltip.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
-            tipTooltip.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skill.SkillToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
         }
 
         public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -162,25 +162,25 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(Skill.PoolToolTip);
                 case nameof(Skill.SkillToolTip):
-                    tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);  //is this the best way?
-                    //tipTooltip.SetToolTip(this, skill.SkillToolTip);
-                    //tipTooltip.SetToolTip(lblAttribute, skill.SkillToolTip);
-                    //tipTooltip.SetToolTip(lblCareerSpec, skill.SkillToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skill.SkillToolTip);  //is this the best way?
+                    //GlobalOptions.ToolTipProcessor.SetToolTip(this, skill.SkillToolTip);
+                    //GlobalOptions.ToolTipProcessor.SetToolTip(lblAttribute, skill.SkillToolTip);
+                    //GlobalOptions.ToolTipProcessor.SetToolTip(lblCareerSpec, skill.SkillToolTip);
                     if (all)
                         goto case nameof(Skill.AddSpecToolTip);
                     break;
                 case nameof(Skill.AddSpecToolTip):
-                    tipTooltip.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
                     if (all)
                         goto case nameof(Skill.PoolToolTip);
                     break;
                 case nameof(Skill.PoolToolTip):
-                    tipTooltip.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
                     if (all)
                         goto case nameof(Skill.UpgradeToolTip);
                     break;
                 case nameof(Skill.UpgradeToolTip):
-                    tipTooltip.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
                     if (all)
                         goto case nameof(Skill.CGLSpecializations);
                     break;

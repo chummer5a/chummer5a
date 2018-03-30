@@ -35,7 +35,6 @@ namespace Chummer
     public partial class frmCharacterRoster : Form
     {
         private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
-        private readonly HtmlToolTip tipTooltip = new HtmlToolTip();
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
         private bool _blnSkipUpdate;
@@ -540,7 +539,7 @@ namespace Chummer
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
                 lblSettings.Text = objCache.SettingsFile;
-                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -576,7 +575,7 @@ namespace Chummer
                 lblCharacterAlias.Text = string.Empty;
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
-                tipTooltip.SetToolTip(lblFilePath, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, string.Empty);
                 lblSettings.Text = string.Empty;
                 picMugshot.Image = null;
             }

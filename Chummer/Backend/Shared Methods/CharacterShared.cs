@@ -178,24 +178,20 @@ namespace Chummer
         /// Update the label and tooltip for the character's Armor Rating.
         /// </summary>
         /// <param name="lblArmor"></param>
-        /// <param name="tipTooltip"></param>
         /// <param name="lblCMArmor"></param>
-        protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
+        protected void UpdateArmorRating(Label lblArmor, Label lblCMArmor = null)
         {
-            if (tipTooltip != null)
+            int intTotalArmorRating = _objCharacter.TotalArmorRating;
+            int intArmorRating = _objCharacter.ArmorRating;
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + intArmorRating.ToString(GlobalOptions.CultureInfo) + ')';
+            if (intArmorRating != intTotalArmorRating)
+                strArmorToolTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' +
+                                   (intTotalArmorRating - intArmorRating).ToString(GlobalOptions.CultureInfo) + ')';
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblArmor, strArmorToolTip);
+            if (lblCMArmor != null)
             {
-                int intTotalArmorRating = _objCharacter.TotalArmorRating;
-                int intArmorRating = _objCharacter.ArmorRating;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + intArmorRating.ToString(GlobalOptions.CultureInfo) + ')';
-                if (intArmorRating != intTotalArmorRating)
-                    strArmorToolTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' +
-                                       (intTotalArmorRating - intArmorRating).ToString(GlobalOptions.CultureInfo) + ')';
-                tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
-                if (lblCMArmor != null)
-                {
-                    tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
-                }
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblCMArmor, strArmorToolTip);
             }
         }
 
@@ -206,45 +202,41 @@ namespace Chummer
         /// <param name="lblMental"></param>
         /// <param name="lblSocial"></param>
         /// <param name="lblAstral"></param>
-        /// <param name="tipTooltip"></param>
-        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
+        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral)
         {
-            if (tipTooltip != null)
-            {
-                StringBuilder objPhysical = new StringBuilder(
+            StringBuilder objPhysical = new StringBuilder(
                     $"({_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] * 2) + {_objCharacter.BOD.DisplayAbbrev} [{_objCharacter.BOD.TotalValue}] + {_objCharacter.REA.DisplayAbbrev} [{_objCharacter.REA.TotalValue}] / 3");
-                StringBuilder objMental = new StringBuilder(
-                    $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3");
-                StringBuilder objSocial = new StringBuilder(
-                    $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence().ToString(GlobalOptions.CultureInfo)}] / 3");
+            StringBuilder objMental = new StringBuilder(
+                $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3");
+            StringBuilder objSocial = new StringBuilder(
+                $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence().ToString(GlobalOptions.CultureInfo)}] / 3");
 
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+            {
+                if (objLoopImprovement.Enabled)
                 {
-                    if (objLoopImprovement.Enabled)
+                    switch (objLoopImprovement.ImproveType)
                     {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.PhysicalLimit:
-                                objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                                break;
-                            case Improvement.ImprovementType.MentalLimit:
-                                objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                                break;
-                            case Improvement.ImprovementType.SocialLimit:
-                                objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
-                                break;
-                        }
+                        case Improvement.ImprovementType.PhysicalLimit:
+                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                            break;
+                        case Improvement.ImprovementType.MentalLimit:
+                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                            break;
+                        case Improvement.ImprovementType.SocialLimit:
+                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
+                            break;
                     }
                 }
-
-                tipTooltip.SetToolTip(lblPhysical, objPhysical.ToString());
-                tipTooltip.SetToolTip(lblMental, objMental.ToString());
-                tipTooltip.SetToolTip(lblSocial, objSocial.ToString());
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                tipTooltip.SetToolTip(lblAstral, LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + strSpaceCharacter + '(' +
-                    LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) + ',' + strSpaceCharacter +
-                    LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Language) + ')');
             }
+
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblPhysical, objPhysical.ToString());
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblMental, objMental.ToString());
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblSocial, objSocial.ToString());
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblAstral, LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + strSpaceCharacter + '(' +
+                LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) + ',' + strSpaceCharacter +
+                LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Language) + ')');
         }
 
         /// <summary>

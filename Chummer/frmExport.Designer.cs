@@ -18,7 +18,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                htmlToolTip1?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -37,7 +36,6 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.rtbText = new System.Windows.Forms.RichTextBox();
-            this.htmlToolTip1 = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // lblExport
@@ -96,14 +94,6 @@ namespace Chummer
             this.rtbText.MouseLeave += new System.EventHandler(this.rtbText_Leave);
             this.rtbText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtbText_MouseUp);
             // 
-            // htmlToolTip1
-            // 
-            this.htmlToolTip1.AllowLinksHandling = true;
-            this.htmlToolTip1.BaseStylesheet = null;
-            this.htmlToolTip1.MaximumSize = new System.Drawing.Size(0, 0);
-            this.htmlToolTip1.OwnerDraw = true;
-            this.htmlToolTip1.TooltipCssClass = "htmltooltip";
-            // 
             // frmExport
             // 
             this.AcceptButton = this.cmdOK;
@@ -137,6 +127,5 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         private System.Windows.Forms.RichTextBox rtbText;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip htmlToolTip1;
     }
 }

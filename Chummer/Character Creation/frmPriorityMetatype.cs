@@ -219,8 +219,8 @@ namespace Chummer
             }
             
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
-            tipTooltip.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
             
             List<ListItem> lstMethods = new List<ListItem>
             {

@@ -16,17 +16,28 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public sealed class ButtonWithToolTip : Button
     {
-        private readonly ToolTip _tt;
+        private ToolTip _tt;
+        public ToolTip ToolTipObject
+        {
+            get => _tt;
+            private set
+            {
+                if (_tt != value)
+                {
+                    _tt?.Hide(this);
+                    _tt = value;
+                }
+            }
+        }
 
         private string _strToolTipText = string.Empty;
-        public string TooltipText
+        public string ToolTipText
         {
             get => _strToolTipText;
             set
@@ -34,46 +45,24 @@ namespace Chummer
                 if (_strToolTipText != value)
                 {
                     _strToolTipText = value;
-                    if (!string.IsNullOrEmpty(value))
-                        _tt.SetToolTip(this, value);
+                    _tt.SetToolTip(this, value);
                 }
             }
         }
 
-        public ButtonWithToolTip() : this(null) { }
+        public ButtonWithToolTip() : this(GlobalOptions.ToolTipProcessor) { }
 
         public ButtonWithToolTip(ToolTip objToolTip)
         {
-            _tt = objToolTip ?? new ToolTip
-            {
-                AutoPopDelay = 1500,
-                InitialDelay = 400,
-                UseAnimation = true,
-                UseFading = true,
-                Active = true
-            };
-
-            MouseEnter += Label_MouseEnter;
-            MouseLeave += Label_MouseLeave;
+            ToolTipObject = objToolTip;
         }
-
-        private void Label_MouseEnter(object sender, EventArgs ea)
-        {
-            if (!string.IsNullOrEmpty(TooltipText))
-            {
-                _tt.Show(TooltipText, Parent);
-            }
-        }
-        private void Label_MouseLeave(object sender, EventArgs ea)
-        {
-            _tt.Hide(this);
-        }
-
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _tt?.Dispose();
+                if (_tt != null && _tt != GlobalOptions.ToolTipProcessor)
+                    _tt.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -86,7 +86,7 @@ namespace Chummer
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
 
-            toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
 
             if (blnUseCurrentValues)
             {
