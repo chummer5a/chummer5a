@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -3402,6 +3402,23 @@ namespace Chummer.Backend.Equipment
 
             DeleteCyberware();
             return true;
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            string strEntry = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
+            decAmount += DeleteCyberware() * percentage;
+            objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+
+            if (Parent != null)
+                Parent.Children.Remove(this);
+            else
+                characterObject.Cyberware.Remove(this);
         }
     }
 }

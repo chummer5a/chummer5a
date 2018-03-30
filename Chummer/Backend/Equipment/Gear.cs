@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
+    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes//, ICanSell
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -76,7 +76,7 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMFilled;
         private string _strForcedValue = string.Empty;
         private bool _blnAllowRename;
-
+        private IHasChildren<Gear> _iRemovalParent;
         private string _strAttack = string.Empty;
         private string _strSleaze = string.Empty;
         private string _strDataProcessing = string.Empty;
@@ -2558,5 +2558,82 @@ namespace Chummer.Backend.Equipment
                 characterObject.Gear.Remove(this);
             return true;
         }
+        /*
+                public void Sell(Character characterObject, decimal percentage)
+                {
+                    decimal decOriginal = 0;
+                    decimal decNewCost = 0;
+                    if (CharacterObject.Gear.Any(gear => gear == this))
+                    {
+                        CharacterObject.Gear.Remove(this);
+                        decOriginal = TotalCost;
+                    }
+                    else if (Parent != null)
+                    {
+                        decOriginal = TotalCost;
+                        Parent.Children.Remove(this);
+                        decNewCost = TotalCost;
+                    }
+                    else
+                    {
+                        CharacterObject.Cyberware.FindCyberwareGear(InternalId, out Cyberware objCyberware);
+                        if (objCyberware != null)
+                        {
+                            objCyberware.Gear.Remove(this);
+                            decOriginal = TotalCost;
+                        }
+                        else
+                        {
+                            CharacterObject.Armor.FindArmorGear(InternalId, out Armor objArmor, out ArmorMod objMod);
+
+                            decOriginal = objMod?.TotalCost ?? objArmor.TotalCost;
+                            decNewCost = objMod?.TotalCost ?? objArmor.TotalCost;
+                            if (objArmor != null)
+                            {
+                                objArmor.Gear.Remove(this);
+                            }
+                            else if (objMod != null)
+                            {
+                                objMod.Gear.Remove(this);
+                            }
+                            else
+                            {
+                                CharacterObject.Weapons.FindWeaponGear(InternalId, out WeaponAccessory objAccessory);
+                                {
+                                    if (objAccessory != null)
+                                    {
+                                        objAccessory.Gear.Remove(this);
+                                    }
+                                    else
+                                    {
+                                        CharacterObject.Vehicles.FindVehicleGear(InternalId, out Vehicle objVehicle,
+                                            out objAccessory, out objCyberware);
+                                        if (objVehicle != null)
+                                        {
+                                            objVehicle.Gear.Remove(this);
+                                        }
+                                        else if (objAccessory != null)
+                                        {
+                                            objAccessory.Gear.Remove(this);
+                                        }
+                                        else
+                                        {
+                                            objCyberware?.Gear.Remove(this);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Create the Expense Log Entry for the sale.
+                    decimal decAmount = (decOriginal - decNewCost) * percentage;
+                    decAmount += DeleteGear() * percentage;
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
+                    objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                    CharacterObject.Nuyen += decAmount;
+                    //TODO: I really don't like this. Ideally need some kind of interface-based parent for removal operations.
+                }*/
     }
 }

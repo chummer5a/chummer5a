@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -826,6 +826,11 @@ namespace Chummer.Backend.Equipment
                 return false;
             DeleteWeaponMount();
             return Parent.WeaponMounts.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
         }
     }
 

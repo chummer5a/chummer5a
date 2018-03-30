@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3155,6 +3155,11 @@ namespace Chummer.Backend.Equipment
                 return false;
             DeleteVehicle();
             return characterObject.Vehicles.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
         }
     }
 }

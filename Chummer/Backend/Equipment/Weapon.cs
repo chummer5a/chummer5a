@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanRemove
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -383,6 +383,7 @@ namespace Chummer.Backend.Equipment
                             objGear.MinRating = intGearRating;
                             objGear.MaxRating = intGearRating;
                             objGear.ParentID = InternalId;
+
                             if (!string.IsNullOrEmpty(strChildForceSource))
                                 objGear.Source = strChildForceSource;
                             if (!string.IsNullOrEmpty(strChildForcePage))
@@ -4616,6 +4617,11 @@ namespace Chummer.Backend.Equipment
             //else if (objWeapon.parent != null)
             //    objWeaponMount.Weapons.Remove(objWeapon);
             // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
         }
     }
 }

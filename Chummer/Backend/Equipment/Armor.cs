@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -341,6 +341,7 @@ namespace Chummer.Backend.Equipment
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
+                    objGear.RemovalParent = this;
                     _lstGear.Add(objGear);
                 }
             }
@@ -1506,6 +1507,20 @@ namespace Chummer.Backend.Equipment
         {
             DeleteArmor();
             return characterObject.Armor.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            if (characterObject.Created) return;
+            characterObject.Armor.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteArmor() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
         }
     }
 }

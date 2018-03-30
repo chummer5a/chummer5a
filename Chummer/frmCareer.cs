@@ -4243,9 +4243,7 @@ namespace Chummer
             if (objSelectedNode == null)
                 return;
 
-            ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(objSelectedNode.Tag.ToString());
-
-            if (objComplexForm != null)
+            if (objSelectedNode is ComplexForm objComplexForm)
             {
                 // Make sure the character has enough Karma.
                 int intKarmaCost = CharacterObjectOptions.KarmaImproveComplexForm;
@@ -4340,10 +4338,7 @@ namespace Chummer
         private void cmdGearSplitQty_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treGear.SelectedNode;
-            if (objSelectedNode == null)
-                return;
-            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(objSelectedNode.Tag.ToString());
-            if (objSelectedGear == null)
+            if (!(objSelectedNode?.Tag is Gear objSelectedGear))
                 return;
 
             decimal decMinimumAmount = 1.0m;
@@ -4402,10 +4397,7 @@ namespace Chummer
         private void cmdGearMergeQty_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treGear.SelectedNode;
-            if (objSelectedNode == null)
-                return;
-            Gear objGear = CharacterObject.Gear.DeepFindById(objSelectedNode.Tag.ToString());
-            if (objGear == null)
+            if (!(objSelectedNode?.Tag is Gear objGear))
                 return;
             List<Gear> lstGear = new List<Gear>();
 
@@ -4527,10 +4519,7 @@ namespace Chummer
                 return;
 
             TreeNode objSelectedNode = treGear.SelectedNode;
-            if (objSelectedNode == null)
-                return;
-            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(objSelectedNode.Tag.ToString());
-            if (objSelectedGear == null)
+            if (!(objSelectedNode?.Tag is Gear objSelectedGear))
                 return;
 
             decimal decMinimumAmount = 1.0m;
@@ -4613,13 +4602,10 @@ namespace Chummer
         private void cmdVehicleMoveToInventory_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            string strSelectedId = objSelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out Vehicle objVehicle, out WeaponMount objMount, out VehicleMod objMod);
-            if (objWeapon != null)
+            if (objSelectedNode?.Tag is Weapon objWeapon)
             {
+                CharacterObject.Vehicles.FindVehicleWeapon(objWeapon.InternalId, out Vehicle objVehicle, out WeaponMount objMount, out VehicleMod objMod);
                 // Move the Weapons from the Vehicle Mod (or Vehicle) to the character.
                 Weapon objParent = objWeapon.Parent;
                 if (objParent != null)
@@ -4635,94 +4621,91 @@ namespace Chummer
 
                 objWeapon.ParentVehicle = null;
             }
-            else
+            else if (objSelectedNode?.Tag is Gear objSelectedGear)
             {
                 // Locate the selected Gear.
-                Gear objSelectedGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+                CharacterObject.Vehicles.FindVehicleGear(objSelectedGear.InternalId, out Vehicle objVehicle,
+                    out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
 
-                if (objSelectedGear != null)
+                decimal decMinimumAmount = 1.0m;
+                int intDecimalPlaces = 0;
+                if (objSelectedGear.Name.StartsWith("Nuyen"))
                 {
-                    decimal decMinimumAmount = 1.0m;
-                    int intDecimalPlaces = 0;
-                    if (objSelectedGear.Name.StartsWith("Nuyen"))
+                    intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                    // Need a for loop instead of a power system to maintain exact precision
+                    for (int i = 0; i < intDecimalPlaces; ++i)
+                        decMinimumAmount /= 10.0m;
+                }
+                else if (objSelectedGear.Category == "Currency")
+                {
+                    intDecimalPlaces = 2;
+                    decMinimumAmount = 0.01m;
+                }
+
+                decimal decMove;
+                if (objSelectedGear.Quantity == decMinimumAmount)
+                    decMove = decMinimumAmount;
+                else
+                {
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
                     {
-                        intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
-                        // Need a for loop instead of a power system to maintain exact precision
-                        for (int i = 0; i < intDecimalPlaces; ++i)
-                            decMinimumAmount /= 10.0m;
-                    }
-                    else if (objSelectedGear.Category == "Currency")
-                    {
-                        intDecimalPlaces = 2;
-                        decMinimumAmount = 0.01m;
-                    }
+                        Minimum = decMinimumAmount,
+                        Maximum = objSelectedGear.Quantity,
+                        Description = LanguageManager.GetString("String_MoveGear", GlobalOptions.Language)
+                    };
+                    frmPickNumber.ShowDialog(this);
 
-                    decimal decMove;
-                    if (objSelectedGear.Quantity == decMinimumAmount)
-                        decMove = decMinimumAmount;
-                    else
-                    {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
-                        {
-                            Minimum = decMinimumAmount,
-                            Maximum = objSelectedGear.Quantity,
-                            Description = LanguageManager.GetString("String_MoveGear", GlobalOptions.Language)
-                        };
-                        frmPickNumber.ShowDialog(this);
+                    if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                        return;
 
-                        if (frmPickNumber.DialogResult == DialogResult.Cancel)
-                            return;
+                    decMove = frmPickNumber.SelectedValue;
+                }
 
-                        decMove = frmPickNumber.SelectedValue;
-                    }
+                // See if the character already has a matching piece of Gear.
+                Gear objFoundGear = CharacterObject.Gear.FirstOrDefault(x => objSelectedGear.IsIdenticalToOtherGear(x));
 
-                    // See if the character already has a matching piece of Gear.
-                    Gear objFoundGear = CharacterObject.Gear.FirstOrDefault(x => objSelectedGear.IsIdenticalToOtherGear(x));
+                if (objFoundGear == null)
+                {
+                    // Create a new piece of Gear.
+                    Gear objGear = new Gear(CharacterObject);
 
-                    if (objFoundGear == null)
-                    {
-                        // Create a new piece of Gear.
-                        Gear objGear = new Gear(CharacterObject);
+                    objGear.Copy(objSelectedGear);
 
-                        objGear.Copy(objSelectedGear);
-                        
-                        objGear.Quantity = decMove;
-                        
-                        CharacterObject.Gear.Add(objGear);
+                    objGear.Quantity = decMove;
 
-                        AddGearImprovements(objGear);
-                    }
-                    else
-                    {
-                        // Everything matches up, so just increase the quantity.
-                        objFoundGear.Quantity += decMove;
-                        TreeNode objFoundNode = treGear.FindNode(objFoundGear.InternalId);
-                        if (objFoundNode != null)
-                            objFoundNode.Text = objFoundGear.DisplayName(GlobalOptions.Language);
-                    }
+                    CharacterObject.Gear.Add(objGear);
 
-                    // Update the selected item.
-                    objSelectedGear.Quantity -= decMove;
-                    if (objSelectedGear.Quantity <= 0)
-                    {
-                        Gear objParent = objSelectedGear.Parent;
-                        if (objParent != null)
-                            objParent.Children.Remove(objSelectedGear);
-                        else if (objWeaponAccessory != null)
-                            objWeaponAccessory.Gear.Remove(objSelectedGear);
-                        else if (objCyberware != null)
-                            objCyberware.Gear.Remove(objSelectedGear);
-                        else
-                            objVehicle?.Gear.Remove(objSelectedGear);
-
-                        objSelectedGear.DeleteGear();
-                    }
-                    else
-                        objSelectedNode.Text = objSelectedGear.DisplayName(GlobalOptions.Language);
+                    AddGearImprovements(objGear);
                 }
                 else
-                    return;
+                {
+                    // Everything matches up, so just increase the quantity.
+                    objFoundGear.Quantity += decMove;
+                    TreeNode objFoundNode = treGear.FindNode(objFoundGear.InternalId);
+                    if (objFoundNode != null)
+                        objFoundNode.Text = objFoundGear.DisplayName(GlobalOptions.Language);
+                }
+
+                // Update the selected item.
+                objSelectedGear.Quantity -= decMove;
+                if (objSelectedGear.Quantity <= 0)
+                {
+                    Gear objParent = objSelectedGear.Parent;
+                    if (objParent != null)
+                        objParent.Children.Remove(objSelectedGear);
+                    else if (objWeaponAccessory != null)
+                        objWeaponAccessory.Gear.Remove(objSelectedGear);
+                    else if (objCyberware != null)
+                        objCyberware.Gear.Remove(objSelectedGear);
+                    else
+                        objVehicle?.Gear.Remove(objSelectedGear);
+
+                    objSelectedGear.DeleteGear();
+                }
+                else
+                    objSelectedNode.Text = objSelectedGear.DisplayName(GlobalOptions.Language);
             }
+            else return;
             
             IsCharacterUpdateRequested = true;
 
@@ -4731,27 +4714,19 @@ namespace Chummer
         
         private void cmdGearIncreaseQty_Click(object sender, EventArgs e)
         {
-            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString());
-            if (objGear != null)
+            if (!(treGear.SelectedNode?.Tag is Gear objGear)) return;
+            bool blnAddAgain;
+            do
             {
-                bool blnAddAgain;
-                do
-                {
-                    // Select the root Gear node then open the Select Gear window.
-                    blnAddAgain = PickGear(objGear.Parent?.InternalId ?? objGear.Location, objGear.Category == "Ammunition", objGear, objGear.Name);
-                } while (blnAddAgain);
-            }
+                // Select the root Gear node then open the Select Gear window.
+                blnAddAgain = PickGear(objGear.Parent?.InternalId ?? objGear.Location, objGear.Category == "Ammunition", objGear, objGear.Name);
+            } while (blnAddAgain);
         }
 
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            if (objSelectedNode == null)
-                return;
-            // Locate the currently selected piece of Gear.
-            Gear objGear = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
-            if (objGear == null)
-                return;
+            if (!(objSelectedNode.Tag is Gear objGear)) return;
             Gear objParent = objGear.Parent;
 
             int intDecimalPlaces = 0;
@@ -4788,6 +4763,7 @@ namespace Chummer
             }
             else
             {
+                CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
                 // Remove the Gear if its quantity has been reduced to 0.
                 if (objParent != null)
                     objParent.Children.Remove(objGear);
@@ -5754,45 +5730,36 @@ namespace Chummer
         private void cmdDeleteImprovement_Click(object sender, EventArgs e)
         {
             TreeNode nodSelectedImprovement = treImprovements.SelectedNode;
-            if (nodSelectedImprovement != null)
+            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
             {
-                string strSelectedId = nodSelectedImprovement.Tag.ToString();
-                if (nodSelectedImprovement.Level == 0)
-                {
-                    if (strSelectedId == "Node_SelectedImprovements")
-                        return;
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement", GlobalOptions.Language)))
+                    return;
 
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup", GlobalOptions.Language)))
-                        return;
+                // Remove the Improvement from the character.
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Custom, objImprovement.SourceName);
 
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.CustomGroup == strSelectedId)
-                        {
-                            objImprovement.CustomGroup = string.Empty;
-                        }
-                    }
-
-                    // Remove the Group from the character, then remove the selected node.
-                    CharacterObject.ImprovementGroups.Remove(strSelectedId);
-                }
-                else
-                {
-                    Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
-
-                    if (objImprovement != null)
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement", GlobalOptions.Language)))
-                            return;
-
-                        // Remove the Improvement from the character.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Custom, objImprovement.SourceName);
-
-                        IsCharacterUpdateRequested = true;
-                    }
-                }
-                IsDirty = true;
+                IsCharacterUpdateRequested = true;
             }
+            else if (treImprovements.SelectedNode.Level > 0 && treImprovements.SelectedNode?.Tag is string strSelectedId)
+            {
+                if (strSelectedId == "Node_SelectedImprovements")
+                    return;
+
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup", GlobalOptions.Language)))
+                    return;
+
+                foreach (Improvement imp in CharacterObject.Improvements)
+                {
+                    if (imp.CustomGroup == strSelectedId)
+                    {
+                        imp.CustomGroup = string.Empty;
+                    }
+                }
+
+                // Remove the Group from the character, then remove the selected node.
+                CharacterObject.ImprovementGroups.Remove(strSelectedId);
+            }
+            IsDirty = true;
         }
 
         private void cmdAddArmorBundle_Click(object sender, EventArgs e)
@@ -5834,8 +5801,7 @@ namespace Chummer
 
         private void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (treArmor.SelectedNode?.Tag is string strSelectedId)
             {
                 // Un-equip all of the Armor in the Armor Bundle.
                 foreach (Armor objArmor in CharacterObject.Armor)
@@ -5853,52 +5819,44 @@ namespace Chummer
 
         private void cmdImprovementsEnableAll_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
             // Enable all of the Improvements in the Improvement Group.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (!(treImprovements.SelectedNode?.Tag is string strSelectedId)) return;
+            List<Improvement> lstImprovementsEnabled = new List<Improvement>();
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
-                List<Improvement> lstImprovementsEnabled = new List<Improvement>();
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                if (!objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
                 {
-                    if (!objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
-                    {
-                        lstImprovementsEnabled.Add(objImprovement);
-                    }
+                    lstImprovementsEnabled.Add(objImprovement);
                 }
-                if (lstImprovementsEnabled.Count > 0)
-                {
-                    ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
+            }
+            if (lstImprovementsEnabled.Count > 0)
+            {
+                ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
 
-                    IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
 
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
         }
 
         private void cmdImprovementsDisableAll_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
             // Disable all of the Improvements in the Improvement Group.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (!(treImprovements.SelectedNode?.Tag is string strSelectedId)) return;
+            List<Improvement> lstImprovementsDisabled = new List<Improvement>();
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
-                List<Improvement> lstImprovementsDisabled = new List<Improvement>();
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
                 {
-                    if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
-                    {
-                        lstImprovementsDisabled.Add(objImprovement);
-                    }
-                }
-                if (lstImprovementsDisabled.Count > 0)
-                {
-                    ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
+                    lstImprovementsDisabled.Add(objImprovement);
                 }
             }
+
+            if (lstImprovementsDisabled.Count <= 0) return;
+            ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdRollSpell_Click(object sender, EventArgs e)
@@ -5934,8 +5892,7 @@ namespace Chummer
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
             // Make sure a Vehicle is selected.
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
-            if (objVehicle  == null)
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6004,43 +5961,11 @@ namespace Chummer
         private void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Enable and disable menu items
-            if (treMetamagic.SelectedNode.Level == 0)
+            if (treMetamagic.SelectedNode.Tag is InitiationGrade objGrade)
             {
-                bool blnHasArt = false;
-                bool blnHasBonus = false;
-                int intGrade = 0;
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
-                {
-                    if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                    {
-                        intGrade = objGrade.Grade;
-                        break;
-                    }
-                }
-                foreach (Art objGradeArt in CharacterObject.Arts)
-                {
-                    if (objGradeArt.Grade == intGrade)
-                    {
-                        blnHasArt = true;
-                        break;
-                    }
-                }
-                foreach (Metamagic objGradeMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objGradeMetamagic.Grade == intGrade)
-                    {
-                        blnHasBonus = true;
-                        break;
-                    }
-                }
-                foreach (Spell objGradeSpell in CharacterObject.Spells)
-                {
-                    if (objGradeSpell.Grade == intGrade)
-                    {
-                        blnHasBonus = true;
-                        break;
-                    }
-                }
+                int intGrade = objGrade.Grade;
+                bool blnHasArt = CharacterObject.Arts.Any(art => art.Grade == intGrade);
+                bool blnHasBonus = CharacterObject.Metamagics.Any(bonus => bonus.Grade == intGrade) || CharacterObject.Spells.Any(spell => spell.Grade == intGrade);
                 tsMetamagicAddArt.Enabled = !blnHasArt;
                 tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
             }
@@ -6049,10 +5974,8 @@ namespace Chummer
         
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
-            Cyberware objCyberware = !string.IsNullOrEmpty(strSelectedId) ? CharacterObject.Cyberware.DeepFindById(strSelectedId) : null;
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (objCyberware == null)
+            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6067,10 +5990,8 @@ namespace Chummer
 
         private void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
-            Cyberware objCyberware = !string.IsNullOrEmpty(strSelectedId) ? CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId) : null;
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (objCyberware == null)
+            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6086,16 +6007,12 @@ namespace Chummer
 
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treWeapons.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode  == null || objSelectedNode.Level <= 0)
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Locate the Weapon that is selected in the Tree.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
 
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
@@ -6298,7 +6215,7 @@ namespace Chummer
 
         private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
-            string strSelectedLocation = treArmor.SelectedNode?.Tag.ToString();
+            if (!(treArmor.SelectedNode?.Tag is string strSelectedLocation)) return;
             bool blnAddAgain;
             do
             {
@@ -6314,14 +6231,11 @@ namespace Chummer
 
             TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode == null || objSelectedNode.Level == 0)
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Locate the Armor that is selected in the tree.
-            Armor objArmor = CharacterObject.Armor.FindById(objSelectedNode.Tag.ToString());
 
             // Open the Armor XML file and locate the selected Armor.
             XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
@@ -6457,13 +6371,12 @@ namespace Chummer
 
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+            if (!(objSelectedNode.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString());
             // Open the Vehicles XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
@@ -6622,7 +6535,8 @@ namespace Chummer
 
         private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            if (!(treVehicles.SelectedNode?.Tag is IHasInternalId selectedObject)) return;
+            string strSelectedId = selectedObject.InternalId;
             // Make sure that a Weapon Mount has been selected.
             // Attempt to locate the selected VehicleMod.
             VehicleMod objMod = null;
@@ -6738,7 +6652,7 @@ namespace Chummer
 
         private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle)) return;
             frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(objVehicle, CharacterObject)
             {
                 AllowDiscounts = true
@@ -6791,10 +6705,7 @@ namespace Chummer
 
         private void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
-            // Attempt to locate the selected VehicleWeapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(objSelectedNode.Tag.ToString());
-            if (objWeapon == null)
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6974,8 +6885,7 @@ namespace Chummer
         private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            Weapon objSelectedWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
-            if (objSelectedWeapon == null)
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6984,7 +6894,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddUnderbarrelWeapon(objSelectedWeapon, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon", GlobalOptions.Language));
+                blnAddAgain = AddUnderbarrelWeapon(objWeapon, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon", GlobalOptions.Language));
             }
             while (blnAddAgain);
         }
@@ -7007,43 +6917,39 @@ namespace Chummer
                 if (treMartialArts.SelectedNode.Level > 1)
                     treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
 
-                MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
+                if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt)) return;
+                frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
+                frmPickMartialArtTechnique.ShowDialog(this);
 
-                if (objMartialArt != null)
+                if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
+                    return;
+
+                // Open the Martial Arts XML file and locate the selected piece.
+                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+
+                if (xmlTechnique != null)
                 {
-                    frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
-                    frmPickMartialArtTechnique.ShowDialog(this);
-
-                    if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
+                    // Create the Improvements for the Advantage if there are any.
+                    MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
+                    objAdvantage.Create(xmlTechnique);
+                    if (objAdvantage.InternalId.IsEmptyGuid())
                         return;
 
-                    // Open the Martial Arts XML file and locate the selected piece.
-                    XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+                    objMartialArt.Techniques.Add(objAdvantage);
 
-                    if (xmlTechnique != null)
-                    {
-                        // Create the Improvements for the Advantage if there are any.
-                        MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                        objAdvantage.Create(xmlTechnique);
-                        if (objAdvantage.InternalId.IsEmptyGuid())
-                            return;
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
+                    objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                    CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
 
-                        objMartialArt.Techniques.Add(objAdvantage);
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
+                    objEntry.Undo = objUndo;
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objEntry);
-                        CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
+                    IsCharacterUpdateRequested = true;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
-                        objEntry.Undo = objUndo;
-
-                        IsCharacterUpdateRequested = true;
-
-                        IsDirty = true;
-                    }
+                    IsDirty = true;
                 }
             }
             else
@@ -7056,8 +6962,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Locate the selected Vehicle.
-            Vehicle objSelectedVehicle = objSelectedNode?.Level > 0 ? CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString()) : null;
-            if (objSelectedVehicle == null)
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7184,16 +7089,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (objSelectedNode == null || objSelectedNode.Level < 2)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Locate the Vehicle Sensor Gear.
-            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory _, out Cyberware _);
-            if (objSensor == null)
-            // Make sure the Sensor was found.
+            if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7286,10 +7182,15 @@ namespace Chummer
                 frmPickGear.Dispose();
                 
                 objSensor.Children.Add(objGear);
-                
-                foreach (Weapon objWeapon in lstWeapons)
+
+                if (lstWeapons.Count > 0)
                 {
-                    objVehicle.Weapons.Add(objWeapon);
+                    CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
+                        out WeaponAccessory _, out Cyberware _);
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        objVehicle.Weapons.Add(objWeapon);
+                    }
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -7306,8 +7207,7 @@ namespace Chummer
         private void cmsAmmoSingleShot_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
-
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
             if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -7323,7 +7223,7 @@ namespace Chummer
         private void cmsAmmoShortBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
 
             if (objWeapon.AmmoRemaining == 0)
             {
@@ -7356,7 +7256,7 @@ namespace Chummer
         private void cmsAmmoLongBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
 
             if (objWeapon.AmmoRemaining == 0)
             {
@@ -7404,7 +7304,7 @@ namespace Chummer
         private void cmsAmmoFullBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
 
             if (objWeapon.AmmoRemaining == 0)
             {
@@ -7428,7 +7328,7 @@ namespace Chummer
         private void cmsAmmoSuppressiveFire_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
 
             if (objWeapon.AmmoRemaining == 0)
             {
@@ -7452,9 +7352,9 @@ namespace Chummer
         private void cmsVehicleAmmoSingleShot_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon == null || objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -7469,9 +7369,9 @@ namespace Chummer
         private void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon == null || objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -7502,9 +7402,9 @@ namespace Chummer
         private void cmsVehicleAmmoLongBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon == null || objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -7545,9 +7445,9 @@ namespace Chummer
         private void cmsVehicleAmmoFullBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon == null || objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -7569,9 +7469,9 @@ namespace Chummer
         private void cmsVehicleAmmoSuppressiveFire_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon == null || objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -7592,170 +7492,99 @@ namespace Chummer
 
         private void tsCyberwareSell_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode?.Level > 0)
+            if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
-                // Locate the piece of Cyberware that is selected in the tree.
-                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
-
-                if (objCyberware != null)
+                if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
                 {
-                    if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    frmSellItem frmSell = new frmSellItem();
-                    frmSell.ShowDialog(this);
-
-                    if (frmSell.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = objCyberware.TotalCost * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
-                    decAmount += objCyberware.DeleteCyberware() * frmSell.SellPercent;
-                    objExpense.Create(decAmount, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-
-                    Cyberware objParent = objCyberware.Parent;
-                    if (objParent != null)
-                        objParent.Children.Remove(objCyberware);
-                    else
-                        CharacterObject.Cyberware.Remove(objCyberware);
-
-                    IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
+
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
+                objCyberware.Sell(CharacterObject, frmSell.SellPercent);
+
+                IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+            }
+            else if (treCyberware.SelectedNode?.Tag is Gear objGear)
+            {
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
+
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
+
+                // Create the Expense Log Entry for the sale.
+                decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
+                decAmount += objGear.DeleteGear() * frmSell.SellPercent;
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
+                objExpense.Create(decAmount, strEntry + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                CharacterObject.Nuyen += decAmount;
+
+                Gear objParent = objGear.Parent;
+                if (objParent != null)
+                    objParent.Children.Remove(objGear);
                 else
                 {
-                    // Locate the selected piece of Gear.
-                    Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), out objCyberware);
-
-                    if (objGear != null)
-                    {
-                        frmSellItem frmSell = new frmSellItem();
-                        frmSell.ShowDialog(this);
-
-                        if (frmSell.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        // Create the Expense Log Entry for the sale.
-                        decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                        decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
-                        objExpense.Create(decAmount, strEntry + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen += decAmount;
-
-                        Gear objParent = objGear.Parent;
-                        if (objParent != null)
-                            objParent.Children.Remove(objGear);
-                        else
-                            objCyberware.Gear.Remove(objGear);
-                    }
-                    else
-                        return;
+                    CharacterObject.Cyberware.FindCyberwareGear(objGear.InternalId, out objCyberware);
+                    objCyberware.Gear.Remove(objGear);
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
+            
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void tsArmorSell_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
-            // Delete the selected piece of Armor.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (treArmor.SelectedNode?.Tag is ICanSell selectedObject)
             {
-                // Locate the piece of Armor that is selected in the tree.
-                Armor objArmor = CharacterObject.Armor.FindById(strSelectedId);
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
 
-                if (objArmor != null)
-                {
-                    frmSellItem frmSell = new frmSellItem();
-                    frmSell.ShowDialog(this);
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
 
-                    if (frmSell.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    CharacterObject.Armor.Remove(objArmor);
-
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = objArmor.TotalCost * frmSell.SellPercent;
-                    decAmount += objArmor.DeleteArmor() * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-                }
-                else
-                {
-                    // Locate the ArmorMod that is selected in the tree.
-                    ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(strSelectedId);
-                    if (objArmorMod != null)
-                    {
-                        // Record the cost of the Armor with the ArmorMod.
-                        decimal decOriginal = objArmorMod.Parent.TotalCost;
-
-                        frmSellItem frmSell = new frmSellItem();
-                        frmSell.ShowDialog(this);
-
-                        if (frmSell.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        objArmorMod.Parent.ArmorMods.Remove(objArmorMod);
-
-                        // Create the Expense Log Entry for the sale.
-                        decimal decAmount = (decOriginal - objArmorMod.Parent.TotalCost) * frmSell.SellPercent;
-                        decAmount += objArmorMod.DeleteArmorMod() * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + ' ' + objArmorMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen += decAmount;
-                    }
-                    else
-                    {
-                        Gear objGear = CharacterObject.Armor.FindArmorGear(strSelectedId, out objArmor, out objArmorMod);
-
-                        if (objGear != null)
-                        {
-                            // Record the cost of the Armor with the ArmorMod.
-                            decimal decOriginal = objArmorMod?.TotalCost ?? objArmor.TotalCost;
-
-                            frmSellItem frmSell = new frmSellItem();
-                            frmSell.ShowDialog(this);
-
-                            if (frmSell.DialogResult == DialogResult.Cancel)
-                                return;
-
-                            Gear objParent = objGear.Parent;
-                            if (objParent != null)
-                                objParent.Children.Remove(objGear);
-                            else if (objArmorMod != null)
-                                objArmorMod.Gear.Remove(objGear);
-                            else
-                                objArmor.Gear.Remove(objGear);
-
-                            // Create the Expense Log Entry for the sale.
-                            decimal decNewCost = objArmorMod?.TotalCost ?? objArmor.TotalCost;
-                            decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                            decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Nuyen += decAmount;
-                        }
-                    }
-                }
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
+                selectedObject.Sell(CharacterObject, frmSell.SellPercent);
             }
+            else if (treArmor.SelectedNode?.Tag is Gear objGear)
+            {
+                CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objArmor, out ArmorMod objMod);
+                // Record the cost of the Armor with the ArmorMod.
+                decimal decOriginal = objMod?.TotalCost ?? objArmor.TotalCost;
+
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
+
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
+
+                Gear objParent = objGear.Parent;
+                if (objParent != null)
+                    objParent.Children.Remove(objGear);
+                else if (objMod != null)
+                    objMod.Gear.Remove(objGear);
+                else
+                    objArmor.Gear.Remove(objGear);
+
+                // Create the Expense Log Entry for the sale.
+                decimal decNewCost = objMod?.TotalCost ?? objArmor.TotalCost;
+                decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
+                decAmount += objGear.DeleteGear() * frmSell.SellPercent;
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                CharacterObject.Nuyen += decAmount;
+
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void tsWeaponSell_Click(object sender, EventArgs e)
