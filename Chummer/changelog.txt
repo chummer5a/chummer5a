@@ -1,4 +1,4 @@
-Future Build 199
+Build 199
 
 Application Changes:
 
@@ -120,6 +120,7 @@ Application Changes:
 - Fixed behaviour that prevented knowledge skills with names that match default skills from having their Type changed.
 - Fixed an issue with reapplying improvements replacing Adapsin grades with standard ones.
 - Skills now properly get notified about Wound Modifier updates from Condition Monitor.
+- Moved the logic for toggling Prototype Transhuman-affected bioware from Character into the Improvement system. Resolves an issue with Reapply Improvements permanently disabling the Cyberware's bonus. Existing characters that have been affected by this behaviour will need to amend it manually. 
 
 Data Changes:
 

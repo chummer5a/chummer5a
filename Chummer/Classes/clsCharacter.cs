@@ -8089,10 +8089,6 @@ namespace Chummer
             {
                 if (value <= 0)
                 {
-                    if (_decPrototypeTranshuman > 0)
-                        foreach (Cyberware objCyberware in Cyberware)
-                            if (objCyberware.PrototypeTranshuman)
-                                objCyberware.PrototypeTranshuman = false;
                     _decPrototypeTranshuman = 0;
                 }
                 else

@@ -3679,7 +3679,16 @@ namespace Chummer
                                 objCharacter.PrototypeTranshuman = 0;
                         }
                         else
+                        {
                             objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+
+                            if (objCharacter.PrototypeTranshuman <= 0 && !blnReapplyImprovements)
+                            {
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                                    if (objCyberware.PrototypeTranshuman)
+                                        objCyberware.PrototypeTranshuman = false;
+                            }
+                        }
                         break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
