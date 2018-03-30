@@ -742,7 +742,7 @@
 				<translate>Schwere Panzerung, Teilpanzer</translate>
 				<altpage>192</altpage>
 			</armor>
-			<armor>
+			<armor translated="True">
 				<id>e3ab6aec-a4ef-4a04-92fe-ffca02ebd92a</id>
 				<name>Shiawase Arms Simoom</name>
 				<translate>Shiawase Arms Simoom</translate>
@@ -9510,7 +9510,7 @@
 			<cyberware>
 				<id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
 				<name>Essence Antihole</name>
-				<translate>Essence Antihole</translate>
+				<translate>Essenz Antiloch</translate>
 				<altpage>0</altpage>
 			</cyberware>
 			<cyberware>
@@ -10162,7 +10162,7 @@
 			<category translate="Autosofts" translated="True">Autosofts</category>
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
-			<category translate="Metatype-Specific">Metatype-Specific</category>
+			<category translate="Metatyp-spezifisch">Metatype-Specific</category>
 			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
 		</categories>
 		<gears>
@@ -10994,17 +10994,17 @@
 				<translate>Kamikaze</translate>
 				<altpage>413</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>e485ecf1-d8b2-4183-9bae-00c8629156b6</id>
 				<name>Laés</name>
 				<translate>Laés</translate>
-				<altpage>83</altpage>
+				<altpage>204</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>81bba329-35d0-44f6-ad81-7df558810e84</id>
 				<name>Leäl</name>
 				<translate>Leäl</translate>
-				<altpage>83</altpage>
+				<altpage>204</altpage>
 			</gear>
 			<gear translated="True">
 				<id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
@@ -11030,11 +11030,11 @@
 				<translate>Psyche</translate>
 				<altpage>414</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>93245f7f-2391-440c-b9ae-d0a5c8549fb2</id>
 				<name>Slab</name>
 				<translate>Slab</translate>
-				<altpage>82</altpage>
+				<altpage>205</altpage>
 			</gear>
 			<gear translated="True">
 				<id>3a946800-be1e-4bbb-899a-c3d1c48a3a31</id>
@@ -11252,11 +11252,11 @@
 				<translate>Quecksilberkamera</translate>
 				<altpage>250</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>691af444-8ffc-406b-9999-4ff2058eff1f</id>
 				<name>DMSO</name>
-				<translate>DMSO-Gelpacks</translate>
-				<altpage>88</altpage>
+				<translate>DMSO</translate>
+				<altpage>204</altpage>
 			</gear>
 			<gear>
 				<id>5fae16cf-c68c-46e8-91b2-ca5220824ba5</id>
@@ -11849,7 +11849,7 @@
 			<gear>
 				<id>ded12d46-347a-424f-9e18-0d8c8cdfa48e</id>
 				<name>Binary Explosives</name>
-				<translate>Binary Explosives</translate>
+				<translate>Binäre Sprengstoffe</translate>
 				<altpage>193</altpage>
 			</gear>
 			<gear>
@@ -11933,50 +11933,50 @@
 			<gear>
 				<id>7c034499-0089-48e5-b63d-a7da067c8353</id>
 				<name>Houdini Machine I</name>
-				<translate>Houdini Machine I</translate>
-				<altpage>172</altpage>
+				<translate>Houdini-Maschine I</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>73923b5b-0ab2-4735-9a06-db42317c6bc2</id>
 				<name>Houdini Machine II</name>
-				<translate>Houdini Machine II</translate>
-				<altpage>172</altpage>
+				<translate>Houdini-Maschine II</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>563e2286-6ceb-40e8-81aa-acd29ce3ff82</id>
 				<name>Ambulance Gurney</name>
-				<translate>Ambulance Gurney</translate>
-				<altpage>173</altpage>
+				<translate>Fahrbare Krankentrage</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>902585b9-5806-41cf-8498-e47444284236</id>
 				<name>Body Bag</name>
-				<translate>Body Bag</translate>
-				<altpage>173</altpage>
+				<translate>Leichensack</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>5da1b0fa-3315-4fcd-a339-6db8e163cbab</id>
 				<name>Fake DocWagon Wrist Band</name>
-				<translate>Fake DocWagon Wrist Band</translate>
-				<altpage>173</altpage>
+				<translate>Gefälschtes DocWagon-Armband</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>5d2fc041-c0cf-4a90-8918-be487a781e13</id>
 				<name>Stimtouch Hosiery</name>
-				<translate>Stimtouch Hosiery</translate>
-				<altpage>178</altpage>
+				<translate>StimTouch-Strumpfware</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>234e4665-b483-43a1-bc89-8f1bfe1661b7</id>
 				<name>Laced Lipstick</name>
-				<translate>Laced Lipstick</translate>
-				<altpage>178</altpage>
+				<translate>Vergifteter Lippenstift</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>1ecebb15-6ced-464e-9e36-2cd217e4bc63</id>
 				<name>Uniforms</name>
-				<translate>Uniforms</translate>
-				<altpage>178</altpage>
+				<translate>Uniformen</translate>
+				<altpage>201</altpage>
 			</gear>
 			<gear>
 				<id>d589142e-a71f-4cd9-b916-967168721eea</id>
@@ -13163,38 +13163,38 @@
 			<gear>
 				<id>d7fc6610-8ec3-45eb-8a8d-c664c84db56f</id>
 				<name>Caldwell Lily Extract</name>
-				<translate>Caldwell Lily Extract</translate>
-				<altpage>188</altpage>
+				<translate>Caldwell-Seerosen-Extrakt</translate>
+				<altpage>203</altpage>
 			</gear>
 			<gear>
 				<id>8ea29de5-c231-46c8-ab47-a73041b40c69</id>
 				<name>Caldwell Lily Extract, Concentrated</name>
-				<translate>Caldwell Lily Extract, Concentrated</translate>
-				<altpage>188</altpage>
+				<translate>Caldwell-Seerosen-Extrakt, Konzentrat</translate>
+				<altpage>203</altpage>
 			</gear>
 			<gear>
 				<id>eb9d3cd6-be58-4efe-824c-92f87e91b784</id>
 				<name>Chloral Hydrate</name>
-				<translate>Chloral Hydrate</translate>
-				<altpage>188</altpage>
+				<translate>Chloralhydrat</translate>
+				<altpage>203</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1b088196-df34-4b51-a712-197167610f0f</id>
 				<name>Chloroform</name>
 				<translate>Chloroform</translate>
-				<altpage>188</altpage>
+				<altpage>203</altpage>
 			</gear>
 			<gear>
 				<id>8cb8086b-3171-4a60-bee4-2996e29d5156</id>
 				<name>Liquid Nutrients</name>
-				<translate>Liquid Nutrients</translate>
-				<altpage>189</altpage>
+				<translate>Flüssignährstoffe</translate>
+				<altpage>204</altpage>
 			</gear>
 			<gear>
 				<id>8461fd87-ea93-4edb-92a1-4a20ad444471</id>
 				<name>Normal Saline</name>
-				<translate>Normal Saline</translate>
-				<altpage>189</altpage>
+				<translate>Isotonische Kochsalzlösung</translate>
+				<altpage>204</altpage>
 			</gear>
 			<gear translated="True">
 				<id>483ca04a-8522-4d12-96ab-4e21dd9a4300</id>
@@ -14193,6 +14193,12 @@
 				<altpage>179</altpage>
 			</gear>
 			<gear>
+				<id>32d933f1-638e-4022-bed7-7cf846cb4f20</id>
+				<name>Grenade: Smokebomb, Aerodynamic</name>
+				<translate>Granate: Rauchbombe, Aerodynamisch</translate>
+				<altpage>179</altpage>
+			</gear>
+			<gear>
 				<id>df3efeef-661f-41fd-9007-01ba7db42dee</id>
 				<name>Dynamite</name>
 				<translate>Dynamit</translate>
@@ -14510,10 +14516,10 @@
 				<translate>C-Quadrat</translate>
 				<altpage>179</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>af0ca7ad-a17e-418f-b7ef-baa9c54a9b8d</id>
 				<name>Quickdraw Quiver</name>
-				<translate>Schnellziehköcher</translate>
+				<translate>Schnellzieh-Köcher</translate>
 				<altpage>179</altpage>
 			</gear>
 			<gear>
@@ -14696,7 +14702,7 @@
 				<translate>Novaskorpion-Gift</translate>
 				<altpage>187</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>27d1ca7b-c51c-4368-878d-688ed456c7cf</id>
 				<name>Tetrodotoxin</name>
 				<translate>Tetrodotoxin</translate>
@@ -15162,16 +15168,16 @@
 				<translate>Persona-Firmware</translate>
 				<altpage>74</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f56affe6-0159-4f7a-ba4d-b5283bd25c44</id>
 				<name>Electronic Parts</name>
-				<translate>Teilsatz</translate>
+				<translate>Teilesatz</translate>
 				<altpage>74</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ec53ae4e-086f-4817-8cc2-ec574aa7cd51</id>
 				<name>Electronic Parts, Five-Pack</name>
-				<translate>Fünf Teilsätze</translate>
+				<translate>Fünf Teilesätze</translate>
 				<altpage>74</altpage>
 			</gear>
 			<gear>
@@ -16479,8 +16485,8 @@
 			<gear>
 				<id>39042c0a-4b22-4762-8d56-623033860178</id>
 				<name>Arrow: Monotip Head</name>
-				<translate>Arrow: Monotip Head</translate>
-				<altpage>187</altpage>
+				<translate>Pfeil: Monopfeil</translate>
+				<altpage>179</altpage>
 			</gear>
 			<gear>
 				<id>0dbcca24-c152-47c5-bae2-8feadff22321</id>
@@ -17673,6 +17679,18 @@
 				<altpage>226</altpage>
 			</quality>
 			<quality>
+				<id>c714a2dd-5570-40ee-8006-42ed533bf7c9</id>
+				<name>Cramped Garage (Car (Body 14 or Less))</name>
+				<translate>Beengte Garage (Auto, Rumpf 14 oder weniger)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>58040d75-7861-4364-b10e-594b63f9b941</id>
+				<name>Cramped Garage (Car (Body 15 or More))</name>
+				<translate>Beengte Garage (Auto, Rumpf 15 oder mehr)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
 				<id>10a65174-a6a3-467b-b66e-6a837bf0e11b</id>
 				<name>Cramped Garage (Helicopter)</name>
 				<translate>Beengte Garage (Helikopter)</translate>
@@ -17700,6 +17718,18 @@
 				<id>9e7cea76-8f2e-4d87-a5ce-60395a8d701f</id>
 				<name>Garage (Car (Body 5 or More))</name>
 				<translate>Garage (Auto, Rumpf 5 oder mehr)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>e3a4b05e-8506-4cd0-bc04-5b49812d5fd9</id>
+				<name>Garage (Car (Body 14 or Less))</name>
+				<translate>Garage (Auto Rumpf 14 oder weniger)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>a63933f8-c4d1-4332-add5-a684d4eff041</id>
+				<name>Garage (Car (Body 15 or More))</name>
+				<translate>Garage (Auto, Rumpf 15 oder mehr)</translate>
 				<altpage>226</altpage>
 			</quality>
 			<quality>
@@ -18104,10 +18134,10 @@
 				<translate>Wenig Wohnraum</translate>
 				<altpage>137</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
 				<name>Rough Neighborhood</name>
-				<translate>Rauhe Wohngegend</translate>
+				<translate>Raue Wohngegend</translate>
 				<altpage>137</altpage>
 			</quality>
 			<quality>
@@ -23060,11 +23090,11 @@
 				<translate>Perfekte Körpersprache</translate>
 				<altpage>204</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
 				<name>Light Touch</name>
 				<translate>Leichte Berührung</translate>
-				<altpage>209</altpage>
+				<altpage>207</altpage>
 			</power>
 			<power translated="True">
 				<id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
@@ -23333,8 +23363,8 @@
 			<power>
 				<id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
 				<name>Mimic</name>
-				<translate>Mimic</translate>
-				<altpage>191</altpage>
+				<translate>Imitation</translate>
+				<altpage>207</altpage>
 			</power>
 			<power>
 				<id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id>
@@ -23348,11 +23378,11 @@
 				<translate>Erhöhtes Potenzial (Körperlich)</translate>
 				<altpage>309</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
 				<name>Commanding Voice</name>
-				<page>207</page>
 				<translate>Gebieterischer Ton</translate>
+				<altpage>207</altpage>
 			</power>
 			<!--<power>
 				<id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
@@ -23384,7 +23414,7 @@
 				<translate>Fokussiertes Bogenschießen</translate>
 				<altpage>183</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
 				<name>Kiai</name>
 				<translate>Kiai</translate>
@@ -30668,10 +30698,10 @@
 					<spec translate="VIP">VIP</spec>
 				</specs>
 			</skill>
-			<skill>
+			<skill translated="True">
 				<id>fe3ccfd5-9e14-4e0a-962d-f9601fc24950</id>
 				<name>Shadow Community</name>
-				<translate>Shadow Community</translate>
+				<translate>Schattengemeinde</translate>
 				<specs>
 					<spec translate="Turf">Turf</spec>
 					<spec translate="Politik">Politics</spec>
@@ -31585,10 +31615,10 @@
 					<spec translate="Unternehmenssicherheit">Corporate Security</spec>
 				</specs>
 			</skill>
-			<skill>
+			<skill translated="True">
 				<id>7592dc37-0d4f-4790-a1a8-188601b0d137</id>
 				<name>Corporation: DocWagon</name>
-				<translate>Konzern: Brackhaven Investments</translate>
+				<translate>Konzern: DocWagon</translate>
 				<specs>
 					<spec translate="Denny Coleman">Denny Coleman</spec>
 					<spec translate="Seattle Operationen">Seattle Operations</spec>
@@ -32877,11 +32907,11 @@
 				<translate>Heilen</translate>
 				<altpage>283</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>ad128cba-aa39-4433-ab1e-9259e19778f6</id>
 				<name>Hibernate</name>
 				<translate>Winterschlaf</translate>
-				<altpage>112</altpage>
+				<altpage>206</altpage>
 			</spell>
 			<spell translated="True">
 				<id>c72c3fe1-61b1-4a5d-8c15-2bca2c6c904d</id>
@@ -32895,17 +32925,17 @@
 				<translate>Reflexe Steigern</translate>
 				<altpage>282</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>d3431ff8-e33f-4cd4-a185-4817b5cce2f8</id>
 				<name>Intoxication</name>
 				<translate>Vollrausch</translate>
-				<altpage>112</altpage>
+				<altpage>206</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>e55eccaa-107d-4cee-b0fb-d10abb2d1f35</id>
 				<name>Nutrition</name>
 				<translate>Ernährung</translate>
-				<altpage>110</altpage>
+				<altpage>205</altpage>
 			</spell>
 			<spell>
 				<id>5ac26e0f-3c01-43a7-a6d4-46f9193851ea</id>
@@ -33972,8 +34002,8 @@
 			<spell>
 				<id>b683e8f4-ca91-4c64-932d-757754069a1f</id>
 				<name>Convince</name>
-				<translate>Convince</translate>
-				<altpage>189</altpage>
+				<translate>Überzeugen</translate>
+				<altpage>206</altpage>
 			</spell>
 			<spell>
 				<id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
@@ -34017,7 +34047,7 @@
 				<translate>Wiedergänger</translate>
 				<altpage>124</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>bd2bfef0-9de4-4870-9822-cdd504f7560f</id>
 				<name>Zombie</name>
 				<translate>Zombie</translate>
@@ -34736,13 +34766,13 @@
 				<translate>Psionische Tradition</translate>
 				<altpage>5</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>acbf5a08-cd21-410d-8d04-4e12cca8a927</id>
 				<name>Obeah</name>
 				<translate>Obeah</translate>
 				<altpage>125</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>81789f32-779d-488e-ac76-d1005b5a2d2a</id>
 				<name>Santeria</name>
 				<translate>Santeria</translate>
@@ -35373,8 +35403,8 @@
 			<vehicle>
 				<id>1f011f9a-42bb-401d-938d-592a4759a502</id>
 				<name>Chrysler-Nissan Journey (Car)</name>
-				<translate>Chrysler-Nissan Journey (Car)</translate>
-				<altpage>186</altpage>
+				<translate>Chrysler-Nissan Journey (Pkw)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d7695e8c-1eab-4fe3-8b37-406cc73ca1d6</id>
@@ -35385,14 +35415,14 @@
 			<vehicle>
 				<id>7eb50773-4291-42af-af27-1ac469f8470c</id>
 				<name>Honda Artemis (Car)</name>
-				<translate>Honda Artemis (Car)</translate>
-				<altpage>186</altpage>
+				<translate>Honda Artemis (Pkw)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</id>
 				<name>Saeder-Krupp LT-21 (Delivery Van)</name>
-				<translate>Saeder-Krupp LT-21 (Delivery Van)</translate>
-				<altpage>186</altpage>
+				<translate>Saeder-Krupp LT-21 (Lieferwagen)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>72a204fc-e4f7-4e00-9d14-7f338fb86817</id>
@@ -35403,20 +35433,20 @@
 			<vehicle>
 				<id>9f6115e6-b52b-40d8-94d5-c4874de4858b</id>
 				<name>Dodge Ram Industrial (Large) (Garbage Truck)</name>
-				<translate>Dodge Ram Industrial (Large) (Garbage Truck)</translate>
-				<altpage>186</altpage>
+				<translate>Dodge Ram Industrial (breit) (Müllwagen)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>53afa8ff-2903-4167-8ed4-ae6d833d1547</id>
 				<name>Dodge Ram Industrial (Narrow) (Garbage Truck)</name>
-				<translate>Dodge Ram Industrial (Narrow) (Garbage Truck)</translate>
-				<altpage>186</altpage>
+				<translate>Dodge Ram Industrial (schmall) (Müllwagen)</translate>
+				<altpage>188</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</id>
 				<name>Esprit Industries Watcher (SUV)</name>
 				<translate>Esprit Industries Watcher (SUV)</translate>
-				<altpage>186</altpage>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>71600577-7cce-4f6b-9854-531460d9400a</id>
@@ -35430,17 +35460,17 @@
 				<translate>Rover Modell 2072</translate>
 				<altpage>470</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>f73f5dbf-f812-4a04-a441-98a3cc37d23a</id>
 				<name>GMC Endurance (Van)</name>
 				<translate>GMC Endurance (Van)</translate>
-				<altpage>186</altpage>
+				<altpage>188</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</id>
 				<name>GMC Sidewinder (SUV)</name>
 				<translate>GMC Sidewinder (SUV)</translate>
-				<altpage>186</altpage>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0ed17686-7ac3-48de-88d2-bc8738a00afa</id>
@@ -35451,14 +35481,14 @@
 			<vehicle>
 				<id>81505035-7043-4841-a952-3763e9e7ddc5</id>
 				<name>Conestoga Trailblazer (Moving Truck)</name>
-				<translate>Conestoga Trailblazer (Moving Truck)</translate>
-				<altpage>186</altpage>
+				<translate>Conestoga Trailblazer (Möbelwagen)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>f4b1800d-7542-477c-b007-094e6a989ece</id>
 				<name>Conestoga Trailblazer w/Trailer (Moving Truck)</name>
-				<translate>Conestoga Trailblazer w/Trailer (Moving Truck)</translate>
-				<altpage>186</altpage>
+				<translate>Conestoga Trailblazer mit Anhänger (Möbelwagen)</translate>
+				<altpage>188</altpage>
 			</vehicle>
 			<vehicle>
 				<id>7e5d30f4-ef09-4a95-8bb5-a9128557e1b0</id>
@@ -35499,8 +35529,8 @@
 			<vehicle>
 				<id>10a55a19-7f86-4942-830f-212b9975280e</id>
 				<name>Cyberspace Designs Dragonfly (Small)</name>
-				<translate>Cyberspace Designs Dragonfly (Small)</translate>
-				<altpage>179</altpage>
+				<translate>Cyberspace Designs Dragonfly</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>c8f7e6c0-85e6-4feb-9ef0-0aeca5fba76b</id>
@@ -35511,14 +35541,14 @@
 			<vehicle>
 				<id>3fc823bd-bff7-4838-8f94-11c1e55c380a</id>
 				<name>Bust-A-Move (2nd Generation) (Medium)</name>
-				<translate>Bust-A-Move (2nd Generation) (Medium)</translate>
-				<altpage>179</altpage>
+				<translate>Bust-A-Move (zweite Generation)</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
 				<name>Transys Office Maid (Medium)</name>
-				<translate>Transys Office Maid (Medium)</translate>
-				<altpage>179</altpage>
+				<translate>Transys Office Maid</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6c6893fd-a69f-4346-885b-c6ae85679d35</id>
@@ -35529,20 +35559,20 @@
 			<vehicle>
 				<id>b627c28f-e67e-4a34-9808-af81fad2acf9</id>
 				<name>GMC Snatch'n'Grab (Large)</name>
-				<translate>GMC Snatch'n'Grab (Large)</translate>
-				<altpage>179</altpage>
+				<translate>GMC Snatch'n'Grab</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
 				<name>Modified Dassault Janatorial Drone (Large)</name>
-				<translate>Modified Dassault Janatorial Drone (Large)</translate>
-				<altpage>179</altpage>
+				<translate>Modifizierte Dassault Hausmeisterdrohne</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</id>
 				<name>Modified Renraku Manservant-3 (Large)</name>
-				<translate>Modified Renraku Manservant-3 (Large)</translate>
-				<altpage>180</altpage>
+				<translate>Modifizierte Renraku Manservant-3</translate>
+				<altpage>193</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a8c39fd9-d219-4772-9f8e-49b1d0975733</id>
@@ -36745,13 +36775,13 @@
 				<translate>MCT-Nissan Roto-Drohne (Asphaltkrieger)</translate>
 				<altpage>147</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>57f83415-4b13-47d2-8a80-20483d356a09</id>
 				<name>Cocotaxi</name>
 				<translate>Cocotaxi</translate>
 				<altpage>134</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b5f962ae-d541-4271-812b-3a4d0eb812e4</id>
 				<name>Camellos</name>
 				<translate>Camellos</translate>
@@ -36784,7 +36814,7 @@
 			<vehicle>
 				<id>c2fa6792-1ed9-437c-a7d2-b9ff79c44fd2</id>
 				<name>Mitsuhama Akiyama (Medium)</name>
-				<translate>Mitsuhama Akiyama (Medium)</translate>
+				<translate>Mitsuhama Akiyama</translate>
 				<altpage>182</altpage>
 			</vehicle>
 			<vehicle>
@@ -37211,9 +37241,9 @@
 		<mods>
 			<mod>
 				<id>6a8805ee-2e3b-4010-8671-c196a1c44b51</id>
-				<name>Chameleon Coating</name>
-				<translate>Chamäleonüberzug</translate>
-				<altpage>142</altpage>
+				<name>Chameleon Coating[Stolen Souls]</name>
+				<translate>Chamäleonfarbe [Gestohlene Seelen]</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
@@ -37230,32 +37260,32 @@
 			<mod>
 				<id>984d5035-6edd-4b57-9454-d368cb455c2a</id>
 				<name>Dash Light Bar</name>
-				<translate>Dash Light Bar</translate>
-				<altpage>176</altpage>
+				<translate>Armaturenbrett-Leuchtbalken</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>281bedc2-c73b-427b-9dec-c54edf764cdd</id>
 				<name>Emergency Light Bar</name>
-				<translate>Emergency Light Bar</translate>
-				<altpage>176</altpage>
+				<translate>Blaulichtbalken</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</id>
 				<name>Siren</name>
-				<translate>Siren</translate>
-				<altpage>176</altpage>
+				<translate>Martinshorn</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>80b43bd8-ce5b-4cd3-a413-7d32b342f43e</id>
 				<name>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</name>
-				<translate>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</translate>
-				<altpage>177</altpage>
+				<translate>Schmuggelfach (Zwerg, Mensch, Elf oder Ork)</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>f0307b24-6e2e-48c0-a80a-bb35cebb34ea</id>
 				<name>Smuggling Compartment (Troll)</name>
-				<translate>Smuggling Compartment (Troll)</translate>
-				<altpage>177</altpage>
+				<translate>Schmuggelfach (Troll)</translate>
+				<altpage>202</altpage>
 			</mod>
 			<mod>
 				<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
@@ -38288,12 +38318,6 @@
 				<name>Daihatsu-Caterpillar Horseman Cargo Pod</name>
 				<translate>Daihatsu-Caterpillar Horseman Frachtmodul</translate>
 				<altpage>43</altpage>
-			</mod>
-			<mod>
-				<id>6a8805ee-2e3b-4010-8671-c196a1c44b51</id>
-				<name>Chameleon Coating[Stolen Souls]</name>
-				<translate>Chameleon Coating[Stolen Souls]</translate>
-				<altpage>174</altpage>
 			</mod>
 		</mods>
 		<weaponmounts>
@@ -40471,11 +40495,11 @@
 				<translate>Betäubungs-Dongle</translate>
 				<altpage>70</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>4f1d1416-5af6-4853-a1b3-2bb44a132d8f</id>
 				<name>Stimtouch Hosiery</name>
 				<translate>StimTouch-Strumpfware</translate>
-				<altpage>206</altpage>
+				<altpage>201</altpage>
 			</weapon>
 			<weapon>
 				<id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
@@ -40765,7 +40789,7 @@
 				<translate>Dynamischer Compoundbogen</translate>
 				<altpage>172</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
 				<name>Cavalier Arms Adder Silvergun</name>
 				<translate>Cavalier Arms Adder Silvergun</translate>
@@ -40777,13 +40801,13 @@
 				<translate>Flammenarmband</translate>
 				<altpage>176</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>82aa8d25-179a-4c21-9a3c-61a171705f65</id>
 				<name>Shiawase Arms Simoom</name>
 				<translate>Shiawase Arms Simoom</translate>
 				<altpage>176</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>176ab92a-0c00-48fe-a994-668903407fbf</id>
 				<name>Ares Armatus</name>
 				<translate>Ares Armatus</translate>
@@ -40795,13 +40819,13 @@
 				<translate>Plasstahlkappenstiefel</translate>
 				<altpage>171</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
 				<name>Colt Manhunter</name>
-				<translate>Colt Manhunter</translate>
+				<translate>Colt Manhunter A1</translate>
 				<altpage>170</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>d36e75cc-73bc-4de3-9d9c-a236284e9d76</id>
 				<name>Lemat 2072</name>
 				<translate>Lemat 2072</translate>
@@ -40948,20 +40972,20 @@
 			<weapon>
 				<id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
 				<name>Mounted Crossbow</name>
-				<translate>Mounted Crossbow</translate>
-				<altpage>182</altpage>
+				<translate>Montierte Armbrust</translate>
+				<altpage>174</altpage>
 			</weapon>
 			<weapon>
 				<id>7914b526-90a1-4691-93bf-1eace51b914f</id>
 				<name>Underbarrel Shotgun</name>
-				<translate>Underbarrel Shotgun</translate>
-				<altpage>182</altpage>
+				<translate>Unterlauf-Schrotflinte</translate>
+				<altpage>174</altpage>
 			</weapon>
 			<weapon>
 				<id>fafa3c46-6ced-4cbd-b236-2c5abbae141e</id>
 				<name>Underbarrel Laser</name>
-				<translate>Underbarrel Laser</translate>
-				<altpage>182</altpage>
+				<translate>Unterlauf-Laser</translate>
+				<altpage>174</altpage>
 			</weapon>
 			<weapon>
 				<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
@@ -41640,8 +41664,8 @@
 			<accessory>
 				<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 				<name>Personalized Grip</name>
-				<translate>Personalized Grip</translate>
-				<altpage>182</altpage>
+				<translate>Angepasster Griff</translate>
+				<altpage>172</altpage>
 			</accessory>
 			<accessory>
 				<id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
@@ -41781,10 +41805,10 @@
 				<translate>Keramik-/Plasstahlkomponenten</translate>
 				<altpage>173</altpage>
 			</accessory>
-			<accessory>
+			<accessory translated="True">
 				<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
 				<name>Chameleon Coating (Pistol)</name>
-				<translate>Chamäleonüberzug</translate>
+				<translate>Chamäleonüberzug (Pistole)</translate>
 				<altpage>172</altpage>
 			</accessory>
 			<accessory>
@@ -41835,10 +41859,10 @@
 				<translate>Montierte Armbrust</translate>
 				<altpage>174</altpage>
 			</accessory>
-			<accessory>
+			<accessory translated="True">
 				<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
 				<name>Underbarrel Laser</name>
-				<translate>Unterlauflaser</translate>
+				<translate>Unterlauf-Laser</translate>
 				<altpage>174</altpage>
 			</accessory>
 			<accessory>
@@ -41865,10 +41889,10 @@
 				<translate>Persönlicher Stil</translate>
 				<altpage>174</altpage>
 			</accessory>
-			<accessory>
+			<accessory translated="True">
 				<id>225d5411-953e-4537-9e97-40bced059bd3</id>
 				<name>Sawed Off/Shortbarrel</name>
-				<translate>Abgesägter Lauf</translate>
+				<translate>Abgesägter/Kurzer Lauf</translate>
 				<altpage>172</altpage>
 			</accessory>
 			<accessory>
@@ -41916,8 +41940,8 @@
 			<accessory>
 				<id>f277db83-e5f0-47c8-a465-e0307105796f</id>
 				<name>Collapsible Traditional Bow</name>
-				<translate>Collapsible Traditional Bow</translate>
-				<altpage>197</altpage>
+				<translate>Faltbarer Traditioneller Bogen</translate>
+				<altpage>171</altpage>
 			</accessory>
 			<accessory>
 				<id>e6b1550c-c392-4e85-b618-04f8a09b8020</id>
@@ -42408,10 +42432,10 @@
 				<altpage>Enables the character's 'Complex Forms and Sprites' tab, allowing them to purchase Complex Forms and compile Sprites. The character is flagged as a Technomancer for the purposes of quality requirements, but does not receive access to the Submersion tab, unlock their Resonance attribute or receive any of the Resonance skills. Incompatible with improvements that enable the Spells and Spirits tab.</altpage>
 			</improvement>
 			<improvement>
-				<id>enableinitiationtab</id>
-				<name>Enable Initiation/Submersion Tab</name>
-				<translate>Enable Initiation/Submersion Tab</translate>
-				<altpage>Enables the character's Adept Powers tab, allowing them to buy spells and bind spirits. The character receives access to the Initiation tab, or the Submersion tab for Technomancers.</altpage>
+				<id>disableinitiationtab</id>
+				<name>Force Disable Initiation/Submersion Tab</name>
+				<translate>Force Disable Initiation/Submersion Tab</translate>
+				<altpage>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</altpage>
 			</improvement>
 			<improvement>
 				<id>enablecrittertab</id>
@@ -43056,7 +43080,7 @@
 			</range>
 			<range>
 				<name>Shotguns (slug)</name>
-				<translate>Shotguns (slug)</translate>
+				<translate>Schrotflinten (Flinte)</translate>
 			</range>
 			<range translated="True">
 				<name>Shotguns (flechette)</name>
