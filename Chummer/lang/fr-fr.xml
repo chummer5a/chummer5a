@@ -45,7 +45,7 @@
     </string>
     <string>
       <key>String_Of</key>
-      <text>sur</text>
+      <text> sur </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -1258,7 +1258,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de CHR.</text>
+      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -5515,11 +5515,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Niveau de vie avançés</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Traits positifs</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Traits négatifs</text>
     </string>
     <string>
@@ -6734,10 +6734,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Impossible de supprimer</text>
-    </string>
-    <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Vous devez sélectionner une limite pour ajouter un modificateur</text>
     </string>
     <string>
       <key>MessageTitle_SelectLimitModifier</key>

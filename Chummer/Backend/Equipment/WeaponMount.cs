@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -695,10 +695,10 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
 		{
             StringBuilder strReturn = new StringBuilder(DisplayNameShort(strLanguage));
-            
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (WeaponMountOptions.Count > 0)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
@@ -706,15 +706,15 @@ namespace Chummer.Backend.Equipment
                     {
                         blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                     }
                 }
-                strReturn.Length -= 2;
+                strReturn.Length -= 1 + strSpaceCharacter.Length;
                 if (blnCloseParantheses)
                     strReturn.Append(')');
-                if (!string.IsNullOrWhiteSpace(_strLocation))
+                if (!string.IsNullOrWhiteSpace(Location))
                 {
-                    strReturn.Append($" - {Location}");
+                    strReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter + Location);
                 }
             }
 
@@ -754,6 +754,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Add a Weapon Mount to the TreeView
         /// </summary>
@@ -774,18 +775,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsVehicleWeaponMount
+                ContextMenuStrip = cmsVehicleWeaponMount,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (IncludedInVehicle)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // VehicleMods.
@@ -807,6 +800,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IncludedInVehicle)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 

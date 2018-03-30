@@ -67,7 +67,7 @@ namespace Chummer
             else
             {
                 if (!string.IsNullOrEmpty(_strLimitToCategories))
-                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[category = " + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
                 else
                 {
                     string strFilter = "not(exotic)";

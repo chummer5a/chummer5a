@@ -31,9 +31,6 @@ namespace Chummer
         private readonly ConcurrentDictionary<string, string> persistenceDictionary = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
 
-        private readonly object _objRandomLock = new object();
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -213,19 +210,8 @@ namespace Chummer
                                     strNames[i] = xmlLoopNode.Name;
                                     ++i;
                                 }
-
-                                int intModuloTemp = 1;
-                                if (strNames.Length > 1)
-                                {
-                                    int intModuloCheck = int.MaxValue - int.MaxValue % strNames.Length;
-                                    do
-                                    {
-                                        lock (_objRandomLock)
-                                            intModuloTemp = _objRandom.Next();
-                                    }
-                                    while (intModuloTemp >= intModuloCheck); // Modulo bias removal
-                                }
-                                strSelectedNodeName = strNames[intModuloTemp % strNames.Length];
+                                
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                             }
                         }
                         else if (xmlUserMacroFirstChild.Name == "persistent")
@@ -241,19 +227,8 @@ namespace Chummer
                                     strNames[i] = xmlLoopNode.Name;
                                     ++i;
                                 }
-
-                                int intModuloTemp = 1;
-                                if (strNames.Length > 1)
-                                {
-                                    int intModuloCheck = int.MaxValue - int.MaxValue % strNames.Length;
-                                    do
-                                    {
-                                        lock (_objRandomLock)
-                                            intModuloTemp = _objRandom.Next();
-                                    }
-                                    while (intModuloTemp >= intModuloCheck); // Modulo bias removal
-                                }
-                                strSelectedNodeName = strNames[intModuloTemp % strNames.Length];
+                                
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
                                     persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
                             }

@@ -17,6 +17,27 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
+
+<!-- Documentation of the tags used in armor.xml
+
+<armor> a container for a single tradition
+	<name> Human readable name
+	<source> The Rulebook of this armor
+	<page> reference to the page in the rulebook the armor is described in
+	<category> the category of the armor as specified in <categories>
+	<armor> the actual armor value of the armor
+	<armorcapacity> ?
+	<avail> availability of the armor
+	<cost> price in NewYen or "Variable(nn-mm)"
+	<gears> container for included gear
+	<bonus> container for bonus from the armor
+		<limitmodifier> container for modifier to a single limit
+			<limit> the limit to be modified
+			<value> the modifier
+			<condition> textual description of the condition of the modifier
+	<addmodcategory> the category of available modifications/addons to the armor
+-->
+
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema armor.xsd">
   <version>0</version>
   <categories>

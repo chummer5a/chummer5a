@@ -219,15 +219,15 @@ namespace Chummer
                 else
                     strBonus = _intBonus.ToString();
 
-                string strReturn = DisplayNameShort + " [" + strBonus + ']';
+                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += " (" + _strCondition + ')';
+                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
                 return strReturn;
             }
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objNode = new TreeNode
@@ -235,14 +235,24 @@ namespace Chummer
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
                 Text = DisplayName,
-                Tag = InternalId
+                Tag = InternalId,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

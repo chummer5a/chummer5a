@@ -28,6 +28,7 @@ using System.IO;
 using System.Windows.Forms;
  using Microsoft.Win32;
 using iTextSharp.text.pdf;
+ using MersenneTwister;
 
 namespace Chummer
 {
@@ -178,6 +179,8 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+
+        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
         // Omae Information.
         private static bool _omaeEnabled;
@@ -492,7 +495,15 @@ namespace Chummer
         public static bool UseLogging
         {
             get => _blnUseLogging;
-            set => _blnUseLogging = value;
+            set
+            {
+                if (_blnUseLogging != value)
+                {
+                    _blnUseLogging = value;
+                    // Sets up logging if the option is changed during runtime
+                    Log.IsLoggerEnabled = value;
+                }
+            }
         }
 
         /// <summary>

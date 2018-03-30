@@ -279,8 +279,9 @@ namespace Chummer
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 
                 Grade objForcedGrade = null;
                 if (!string.IsNullOrEmpty(strForceGrade))
@@ -749,47 +750,55 @@ namespace Chummer
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
             // Essence.
-            decimal decESS = 0;
-            if (!chkPrototypeTranshuman.Checked)
+            bool blnAddToParentESS = objXmlCyberware.SelectSingleNode("addtoparentess") != null;
+            if (_objParentNode == null || blnAddToParentESS)
             {
-                // Place the Essence cost multiplier in a variable that can be safely modified.
-                decimal decCharacterESSModifier = 1.0m;
-
-                if (!blnForceNoESSModifier)
+                decimal decESS = 0;
+                if (!chkPrototypeTranshuman.Checked)
                 {
-                    decCharacterESSModifier = CharacterESSMultiplier;
-                    // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
-                    if (strSelectCategory == "Basic")
-                        decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                    // Place the Essence cost multiplier in a variable that can be safely modified.
+                    decimal decCharacterESSModifier = 1.0m;
 
-                    if (nudESSDiscount.Visible)
+                    if (!blnForceNoESSModifier)
                     {
-                        decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
-                        decCharacterESSModifier *= (1.0m - decDiscountModifier);
+                        decCharacterESSModifier = CharacterESSMultiplier;
+                        // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
+                        if (strSelectCategory == "Basic")
+                            decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+
+                        if (nudESSDiscount.Visible)
+                        {
+                            decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
+                            decCharacterESSModifier *= (1.0m - decDiscountModifier);
+                        }
+
+                        decCharacterESSModifier -= (1 - _decESSMultiplier);
+
+                        decCharacterESSModifier *= CharacterTotalESSMultiplier;
                     }
 
-                    decCharacterESSModifier -= (1 - _decESSMultiplier);
+                    string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
+                    if (strEss.StartsWith("FixedValues("))
+                    {
+                        string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                    }
 
-                    decCharacterESSModifier *= CharacterTotalESSMultiplier;
-                }
-                string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
-                if (strEss.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                    {
+                        decESS = decCharacterESSModifier * Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
+                        if (!_objCharacter.Options.DontRoundEssenceInternally)
+                            decESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+                    }
                 }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-                if (blnIsSuccess)
-                {
-                    decESS = decCharacterESSModifier * Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
-                    if (!_objCharacter.Options.DontRoundEssenceInternally)
-                        decESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-                }
+                lblEssence.Text = decESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
+                if (blnAddToParentESS)
+                    lblEssence.Text = '+' + lblEssence.Text;
             }
-            lblEssence.Text = decESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
-            if (objXmlCyberware.SelectSingleNode("addtoparentess") != null)
-                lblEssence.Text = '+' + lblEssence.Text;
+            else
+                lblEssence.Text = (0.0m).ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -881,7 +890,7 @@ namespace Chummer
             }
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
             
-            if (_objCharacter.DEPEnabled && ParentVehicle == null)
+            if (_objCharacter.IsAI && ParentVehicle == null)
                 strFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
             else if (_objParentNode != null)
                 strFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";

@@ -5552,11 +5552,11 @@
       <text>高度なライフスタイルを作成</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>有利な資質</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>不利な資質</text>
     </string>
     <string>
@@ -6867,10 +6867,6 @@
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Cannot Delete</text>
-    </string>
-    <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
     </string>
     <string>
       <key>MessageTitle_SelectLimitModifier</key>

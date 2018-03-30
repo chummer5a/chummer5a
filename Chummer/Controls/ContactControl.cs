@@ -460,6 +460,7 @@ namespace Chummer
                         }
             }
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypeList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
@@ -474,7 +475,7 @@ namespace Chummer
                             {
                                 string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
                                 if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                             }
                         }
                     }
@@ -589,7 +590,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.NotReadOnly), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves

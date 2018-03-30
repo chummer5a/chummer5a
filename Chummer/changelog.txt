@@ -96,6 +96,48 @@ Application Changes:
 - Weapon Mounts can now allow specific weapons to be mounted to them in addition to the normal category restrictions. This is not currently supported through the selection window and is intended solely for use with pre-built vehicles.
 - Unhardcoded the weapon skill accuracy increase given by the Enhanced Accuracy power so that it can now be used through weaponskillaccuracy bonus nodes.
 - Fixed an issue where bonus accuracy from Laser Sight (2050) would stack with smartgun accessories.
+- Fixed a crash when switching between spells with the Extended tag and spells without it.
+- Completed the implementation of Dedicated Spellslinger providing discounts with specialisations.
+- Fixed an issue where launching Chummer5a under Mono (in Linux) would cause the program to crash on certain builds.
+- Enabling logging in the options menu will now immediately enable logging, instead of requiring Chummer5a to restart before logging begins.
+- Fixed some crashes related to multi-threaded code and logging.
+- Fixed an issue with shapeshifters not getting their qualities and powers properly.
+- Fixed an issue where Custom Item names would not properly display in non-English languages or get translated between languages should their names be translatable.
+- When adding a new Limit Modifier, the Limit Modifier type is determined by a ComboBox selection in the Limit Modifier selection screen, rather than based on the currently selected Limit Modifier type node.
+- Fixed a bug that prevented Limit Modifiers from being edited properly.
+- The limit to which a Limit Modifier applies can now be changed when editing a Limit Modifier.
+- Limit modifiers from improvements are now properly tracked and removed if the source of the limit modifier is removed. Removed redundant treenodes from the Limits tab.
+- Fixed an issue with moving weapons from the character to vehicles only selecting the first vehicle with a weapon mount.
+- Fixed an issue with armour bundles causing a crash when attempting to move items in or out of them.
+- Fixed an issue where if a character's condition monitor threshold offset was greater than or equal to the regular number of condition monitor boxes they need filled per wound penalty, they would get "positive" wound modifiers applied (i.e. a dicepool bonus).
+- Fixed an issue where various UI elements in the advanced lifestyle selection screen would not get translated.
+- Added support for vehicle mods to get their Extra strings determined by any "select"-type bonus node, not just selecttext.
+- Added the ability to target items containing the "'" character (single apostrophe) in the xpathfilter attribute of the amend system. To do so, use the "&quot;" string where you'd want to insert a quotation mark as the delimiter in the XPath filter, which should free up the "'" character (single apostrophe) to be able to be used inside the delimiter without generating errors.
+- Live Custom Data now properly supports "override" and "amend" files in addition to "custom" files. Keep in mind that processing "amend" files can be especially time-consuming, so do please try to avoid using too many of them as live custom data if possible unless you're OK with Chummer5a becoming especially unresponsive.
+- Added support for bonuses that query the user to select a tradition.
+- When selecting a cyberware or bioware plugin, Essence cost is now only displayed as non-zero if the currently selected item would add to its parent's essence cost.
+- Fixed an issue that prevented custom metatypes from being properly selectable despite being visible in the appropriate form.
+- Fixed behaviour that prevented knowledge skills with names that match default skills from having their Type changed.
+- Fixed an issue with reapplying improvements replacing Adapsin grades with standard ones.
+- Skills now properly get notified about Wound Modifier updates from Condition Monitor.
+- Random Lifestyle Points from Traveler lifestyle will now be saved and loaded with a given lifestyle instead of a random value being set every time the lifestyle is opened up for editing.
+- Fixed an issue where having more than 100 months' equivalent of a lifestyle paid would not correctly flag the lifestyle as being permanently purchased.
+- Added the ability for any lifestyle to support bonus LP, not just Traveler, and if the user is editing a lifestyle that supports bonus LP, they can opt to manually edit the value or set it to a random 1D6 value.
+- Fixed an issue where the "Quality Contributes to LP" checkbox did not function properly in the advanced lifestyle selection window.
+- Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
+- Decrementing months/weeks/days from a lifestyle now generates an expense log entry to help keep track of things.
+- Editing a lifestyle in career mode now deducts from the character's nuyen if the lifestyle after changes has a greater total cost than before (e.g. it has 1 month paid and the user adds a quality to the lifestyle that has a nuyen cost). An expense log entry is now also generated after editing a lifestyle, regardless of whether nuyen is deducted or not.
+- Fixed an issue where recoil compensation from strength was displayed incorrectly.
+- Fixed a bug where drain attributes could be selected for a custom tradition of a physical adept (who would always drain with BOD + WIL regardless). This also fixes an associated bug where attempting to select drain attributes for a custom tradition on a physical adept would cause Chummer5a to freeze up and behave weirdly.
+- Fixed an issue where the option to calculate contact points based off of total CHA value would sometimes not work.
+- Fixed issues where the tooltips and/or displayed values for Street Cred, Notoriety, and Public Awareness were sometimes incorrect or missing factors that contributed to the particular value.
+- Fixed an issue where the enabletab and disabletab bonus nodes would work off of any children nodes in a semi-chaotic fashion instead of checking only "name" nodes for tabs that should be affected.
+- Fixed an issue where magic users who were neither adepts nor had any magician abilities could not select a tradition.
+- The Initiation tab now defaults to being enabled if the user has either magic or resonance enabled, and now works through the disabletab bonus as an opt-out instead of the enabletab bonus as an opt-in.
+- Fixed an issue where switching from a mystic adept to a physical adept when the character had spells and/or rituals that could still be used by a physical adept would still cause the character to lose access to those spells.
+- Unhardcoded the Born Rich bonus.
+- Corrected Advanced Lifestyle cost calculation for increased Comforts, Area and Security values. Fixes #2625
+- Made the Garage Lifestyle qualities available multiple times per Lifestyle
 
 Data Changes:
 
@@ -133,6 +175,19 @@ Data Changes:
 - The Ruhrmetall Wolfspinne 8V2's weapons are now properly mountable in its weapon mounts. Existing characters with this vehicle may need to remove and re-add it.
 - Fixed an issue where the Enhanced Accuracy power could be taken for Unarmed Combat.
 - Fixed an issue where the accuracy bonus from multiple instances of the Enhanced Accuracy power taken for the same skill would stack with one another.
+- Fixed an issue with the Enhanced Accuracy Power not properly creating a bonus.
+- Added a customdata file for the Poseidon Proteus's data processing and firewall being flipped in the German rulebook.
+- Added a customdata entry to provide the Ingram Smartgun X with a folding stock, per the German rulebook.
+- Psychometry can now be taken by Adepts with the Astral Perception power.
+- Fixed inconsistent naming format of Reflex Recorder that also caused Reflex Recorder Optimization to never properly detect the presence of Reflex Recorder.
+- Increased price of the gear "Ammo: Tracker Rounds, Stealth Tag" per RAW.
+- Weapons attached to weapon mounts are now properly added to character sheets.
+- Fixed an issue where the Workshop vehicle mod would not have the user specify what type of workshop was being added.
+- Added hidden gear entries for Public Grid, Local Grid, and Global Grid. These entries are intended mainly to be used for TranslateExtra (which translates the Extra strings of any item) in tandem with grid subscriptions.
+- Fixed a bug where Alchemical Focus formulae and Disenchanting Focus formulae would apply bonuses that would normally require a focus to be bound.
+- Various magical supplies, formulae, foci, and reagents that previously did not query a text selection now require the user the select a tradition to which they are linked. This helps keep track of mismatched tradition penalties.
+- Added amend entries to provide replacement Garage qualities. tl;dr version for why is that this allows for language files to update the new name without forcing a rename of the base quality in the language file.
+- Fixed a typo in the "Contributes to Lifestyle Points" label.
 
 New Strings:
 
@@ -145,6 +200,18 @@ New Strings:
 - Button_RemoveEcho
 - Warning_Update_CouldNotConnectException
 - Label_Options_KarmaMysticAdeptPowerPoint
+- Button_DeleteQuality
+- Node_SelectAdvancedLifestyle_PositiveQualities
+- Node_SelectAdvancedLifestyle_NegativeQualities
+- Label_BonusLP
+- Label_QualityLP
+- Label_QualityCost
+- Label_QualitySource
+- Checkbox_Randomize1D6
+- String_ExpenseDecreaseLifestyle
+- String_ExpenseModifiedLifestyle
+- String_Space
+- Tip_Skill_OffHand
 
 Changed Strings:
 
@@ -152,10 +219,15 @@ Changed Strings:
 - Message_CyberwareSuite_DuplicateName
 - Message_ComplexFormLimit
 - Message_PriorityComplexFormLimit
+- Label_SelectAdvancedLifestyle_LPContribution
+- String_Of
 
 Removed Strings:
 
 - Message_ComplexFormLimitCareer
+- Message_SelectLimitModifier
+- Label_SelectAdvancedLifestyle_PositiveQualities
+- Label_SelectAdvancedLifestyle_NegativeQualities
 
 Build 198
 

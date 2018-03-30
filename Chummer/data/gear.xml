@@ -485,7 +485,7 @@
       <source>RG</source>
       <page>55</page>
       <avail>8R</avail>
-      <cost>75</cost>
+      <cost>150</cost>
       <costfor>10</costfor>
     </gear>
     <gear>
@@ -5034,6 +5034,50 @@
       <cost>50</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Grids (Mainly for TranslateExtra) -->
+    <gear>
+      <id>b97df325-ff46-42e5-823e-d81f6df39d16</id>
+      <name>Public Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>43adba99-3484-43be-9ea8-7836c0afe2b9</id>
+      <name>Local Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>f52b018a-a80d-4fcb-87d3-50cf9db2347e</id>
+      <name>Global Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <!-- End Region -->
     <!-- Region RFID Tags -->
     <gear>
       <id>84bb92e7-ce13-4eb6-bf9e-15bf3887469c</id>
@@ -7937,6 +7981,7 @@
           <name>Alchemy</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7953,6 +7998,7 @@
           <name>Disenchanting</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7964,6 +8010,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7974,6 +8023,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7984,6 +8036,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7994,6 +8049,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -8009,6 +8067,7 @@
           <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
+        <selecttradition />
       </bonus>
       <cost>Rating * 18000</cost>
     </gear>
@@ -8040,6 +8099,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8050,6 +8112,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8065,6 +8130,7 @@
           <name>Combat</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8076,6 +8142,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8086,6 +8155,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8096,6 +8168,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8111,6 +8186,7 @@
           <name>Detection</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8122,6 +8198,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8132,6 +8211,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8142,6 +8224,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8157,6 +8242,7 @@
           <name>Health</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8168,6 +8254,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8178,6 +8267,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8188,6 +8280,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8203,6 +8298,7 @@
           <name>Illusion</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8214,6 +8310,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8224,6 +8323,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8234,6 +8336,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8249,6 +8354,7 @@
           <name>Manipulation</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8260,6 +8366,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8325,10 +8434,7 @@
       <page>318</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Alchemy</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8341,10 +8447,7 @@
       <page>319</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Disenchanting</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8356,6 +8459,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8366,6 +8472,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8376,6 +8485,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8386,6 +8498,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8396,6 +8511,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4500</cost>
     </gear>
     <gear>
@@ -8406,6 +8524,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 750</cost>
     </gear>
     <gear>
@@ -8416,6 +8537,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8426,6 +8550,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8436,6 +8563,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8446,6 +8576,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8456,6 +8589,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8466,6 +8602,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8476,6 +8615,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8486,6 +8628,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8496,6 +8641,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8506,6 +8654,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8516,6 +8667,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8526,6 +8680,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8536,6 +8693,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8546,6 +8706,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8556,6 +8719,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8566,6 +8732,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8576,6 +8745,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8586,6 +8758,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8596,6 +8771,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8606,6 +8784,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8755,6 +8936,9 @@
       <page>326</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>ef37af30-1204-4918-af66-dfbdd33cd045</id>
@@ -8765,6 +8949,9 @@
       <page>317</page>
       <avail>0</avail>
       <cost>20</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
@@ -8775,6 +8962,9 @@
       <page>24</page>
       <avail>6</avail>
       <cost>350</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
@@ -8785,6 +8975,9 @@
       <page>24</page>
       <avail>8</avail>
       <cost>4500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
@@ -8804,6 +8997,9 @@
       <source>SG</source>
       <page>212</page>
       <avail>4</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>2000</cost>
     </gear>
     <gear>
@@ -8874,6 +9070,9 @@
       <source>SG</source>
       <page>213</page>
       <avail>Rating * Rating</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>Rating * 1500</cost>
     </gear>
     <gear>

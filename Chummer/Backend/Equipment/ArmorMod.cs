@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -427,11 +427,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -467,7 +467,10 @@ namespace Chummer.Backend.Equipment
                 {
                     _intArmorValue = value;
                     if (Equipped && Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }
@@ -589,7 +592,10 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (Parent?.Equipped == true)
+                    {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
+                    }
                 }
             }
         }
@@ -959,7 +965,7 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
         {
             if (IncludedInArmor && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -970,13 +976,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear
+                ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (IncludedInArmor)
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Gear objGear in Gear)
@@ -989,6 +992,23 @@ namespace Chummer.Backend.Equipment
                 objNode.Expand();
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IncludedInArmor)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

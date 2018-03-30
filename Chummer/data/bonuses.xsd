@@ -475,7 +475,6 @@
       <xs:element name="mademan" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="magicianswaydiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="manaillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="manamanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="matrixinitiative" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="matrixinitiativedice" minOccurs="0" maxOccurs="1">
@@ -490,6 +489,7 @@
       <xs:element name="matrixinitiativediceadd" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="memory" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="mentallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="mentalmanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="movementreplace" minOccurs="0" maxOccurs="8">
         <xs:complexType>
           <xs:sequence>
@@ -720,6 +720,7 @@
       <xs:element name="selectspell" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectsprite" minOccurs="0" maxOccurs="1" />
       <xs:element name="selecttext" minOccurs="0" maxOccurs="1" />
+      <xs:element name="selecttradition" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />

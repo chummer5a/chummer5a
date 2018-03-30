@@ -94,6 +94,11 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Amount of Base that has been provided by non-Improvement sources.
+        /// </summary>
+        public int BasePoints => _intSkillFromSp;
+
+        /// <summary>
         /// Is it possible to increment this skill group from points
         /// Inverted to simplifly databinding
         /// </summary>
@@ -184,11 +189,14 @@ namespace Chummer.Backend.Skills
 
                 if (CareerIncrease)
                 {
-                    var skill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
-                    foreach (var disabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                    Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                    if (objSkill != null)
                     {
-                        disabledSkill.Karma = skill.Karma;
-                        disabledSkill.Base = skill.Base;
+                        foreach (Skill objDisabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                        {
+                            objDisabledSkill.Karma = objSkill.Karma;
+                            objDisabledSkill.Base = objSkill.Base;
+                        }
                     }
                 }
             }
@@ -334,6 +342,33 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
+        private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(DisplayRating),
+                    new DependancyGraphNode<string>(nameof(CareerIncrease)),
+                    new DependancyGraphNode<string>(nameof(Rating),
+                        new DependancyGraphNode<string>(nameof(Karma),
+                            new DependancyGraphNode<string>(nameof(RatingMaximum)),
+                            new DependancyGraphNode<string>(nameof(FreeLevels)),
+                            new DependancyGraphNode<string>(nameof(Base))
+                        ),
+                        new DependancyGraphNode<string>(nameof(Base),
+                            new DependancyGraphNode<string>(nameof(FreeBase)),
+                            new DependancyGraphNode<string>(nameof(RatingMaximum))
+                        )
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependancyGraphNode<string>(nameof(Rating))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(CareerCanIncrease),
+                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependancyGraphNode<string>(nameof(CareerIncrease))
+                )
+            );
+
         private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
@@ -433,7 +468,8 @@ namespace Chummer.Backend.Skills
                 {
                     return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
-                return SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString();
+
+                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString() : 0.ToString();
             }
         }
 
@@ -443,7 +479,10 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (string.IsNullOrEmpty(_strToolTip))
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + ' ' + string.Join(", ", _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
+                {
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
+                }
                 return _strToolTip;
             }
         }
@@ -504,29 +543,30 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (propertyName == nameof(FreeLevels))
-                _intCachedFreeLevels = int.MinValue;
-            else if (propertyName == nameof(FreeBase))
+            ICollection<string> lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependants(propertyName);
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
-            else if (propertyName == nameof(IsDisabled))
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                _intCachedFreeLevels = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(IsDisabled)))
             {
                 _blnCachedGroupEnabledIsCached = false;
                 DoRefreshCareerIncrease();
             }
-            else if (propertyName == nameof(CareerIncrease))
-                OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (propertyName == nameof(UpgradeKarmaCost))
-            {
-                OnPropertyChanged(nameof(CareerCanIncrease));
-                OnPropertyChanged(nameof(UpgradeToolTip));
-            }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+            }
         }
 
         private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(CareerCanIncrease));
+            if (e.PropertyName == nameof(Character.Karma))
+                OnPropertyChanged(nameof(CareerCanIncrease));
         }
 
         public int CurrentSpCost()

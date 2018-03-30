@@ -182,20 +182,18 @@ namespace Chummer
         /// <param name="lblCMArmor"></param>
         protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
         {
-            // Armor Ratings.
-            int intTotalArmorRating = _objCharacter.TotalArmorRating;
-            int intArmorRating = _objCharacter.ArmorRating;
-            lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ')';
+                int intTotalArmorRating = _objCharacter.TotalArmorRating;
+                int intArmorRating = _objCharacter.ArmorRating;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + intArmorRating.ToString(GlobalOptions.CultureInfo) + ')';
                 if (intArmorRating != intTotalArmorRating)
-                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                                       (intTotalArmorRating - intArmorRating).ToString() + ')';
+                    strArmorToolTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' +
+                                       (intTotalArmorRating - intArmorRating).ToString(GlobalOptions.CultureInfo) + ')';
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
                 {
-                    lblCMArmor.Text = intTotalArmorRating.ToString();
                     tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
                 }
             }
@@ -211,11 +209,6 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
         {
-            lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
-            lblMental.Text = _objCharacter.LimitMental.ToString();
-            lblSocial.Text = _objCharacter.LimitSocial.ToString();
-            lblAstral.Text = _objCharacter.LimitAstral.ToString();
-
             if (tipTooltip != null)
             {
                 StringBuilder objPhysical = new StringBuilder(
@@ -247,8 +240,9 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblPhysical, objPhysical.ToString());
                 tipTooltip.SetToolTip(lblMental, objMental.ToString());
                 tipTooltip.SetToolTip(lblSocial, objSocial.ToString());
-                tipTooltip.SetToolTip(lblAstral, LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + " (" +
-                    LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) + ", " +
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                tipTooltip.SetToolTip(lblAstral, LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + strSpaceCharacter + '(' +
+                    LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) + ',' + strSpaceCharacter +
                     LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Language) + ')');
             }
         }
@@ -272,7 +266,7 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                     return;
                 }
-                using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier))
+                using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
                     frmPickLimitModifier.ShowDialog(this);
 
@@ -283,9 +277,7 @@ namespace Chummer
                     _objCharacter.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
                     objLimitModifier = new LimitModifier(_objCharacter);
-                    string strLimit = treLimit.SelectedNode.Parent.Text;
-                    string strCondition = frmPickLimitModifier.SelectedCondition;
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
                     objLimitModifier.Guid = new Guid(strGuid);
 
                     _objCharacter.LimitModifiers.Add(objLimitModifier);
@@ -974,11 +966,10 @@ namespace Chummer
                                 Name = strName,
                                 Text = strName,
                                 Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier
+                                ContextMenuStrip = cmsLimitModifier,
+                                ForeColor = objImprovement.PreferredColor,
+                                ToolTipText = objImprovement.Notes.WordWrap(100)
                             };
-                            if (!string.IsNullOrEmpty(objImprovement.Notes))
-                                objNode.ForeColor = Color.SaddleBrown;
-                            objNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
@@ -2266,7 +2257,7 @@ namespace Chummer
             {
                 foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                 {
-                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.Language);
+                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
             treQualities.SortCustom(objSelectedNode?.Tag);
@@ -5134,7 +5125,7 @@ namespace Chummer
                     TreeNode nodFocus = treFoci.FindNode(objFocusGear.InternalId);
                     if (nodFocus != null)
                     {
-                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                     }
                 }
                     break;
@@ -5150,7 +5141,7 @@ namespace Chummer
                                     TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
                                     if (nodFocus != null)
                                     {
-                                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                        nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                     }
                                     break;
                                 }
@@ -5598,11 +5589,10 @@ namespace Chummer
                                 Name = strName,
                                 Text = strName,
                                 Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier
+                                ContextMenuStrip = cmsLimitModifier,
+                                ForeColor = objImprovement.PreferredColor,
+                                ToolTipText = objImprovement.Notes.WordWrap(100)
                             };
-                            if (!string.IsNullOrEmpty(objImprovement.Notes))
-                                objNode.ForeColor = Color.SaddleBrown;
-                            objNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
@@ -6447,8 +6437,9 @@ namespace Chummer
             
             int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
             int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            string strEnemyPoints = intEnemyMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            string strQualityPoints = intQualityMax.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strEnemyPoints = intEnemyMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strQualityPoints = intQualityMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
@@ -6929,11 +6920,6 @@ namespace Chummer
 
         protected ObservableCollection<CharacterAttrib> SpecialAttributes => _lstSpecialAttributes;
 
-        protected void ForceUpdateWindowTitle(object sender, EventArgs e)
-        {
-            UpdateWindowTitle(false);
-        }
-
         protected virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
@@ -6965,8 +6951,9 @@ namespace Chummer
         {
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
-            
-            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objOptions.Name + ')';
+
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strTitle = _objCharacter.CharacterName + strSpaceCharacter + '-' + strSpaceCharacter + FormMode + strSpaceCharacter + '(' + _objOptions.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.DoThreadSafe(() => Text = strTitle);
@@ -7098,7 +7085,7 @@ namespace Chummer
         protected string GetTraditionDrainToolTip(Improvement.ImprovementType eDrainType)
         {
             string strDrain = eDrainType == Improvement.ImprovementType.FadingResistance ? _objCharacter.TechnomancerFading : _objCharacter.TraditionDrain;
-            
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             StringBuilder objTip = new StringBuilder(strDrain);
 
             // Update the Fading CharacterAttribute Value.
@@ -7107,7 +7094,7 @@ namespace Chummer
                 objTip.CheapReplace(strAttribute, () =>
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    return objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue + ')';
+                    return objAttrib.DisplayAbbrev + strSpaceCharacter + '(' + objAttrib.TotalValue + ')';
                 });
             }
 
@@ -7115,8 +7102,8 @@ namespace Chummer
             if (intBonusDrain != 0)
             {
                 if (objTip.Length > 0)
-                    objTip.Append(" + ");
-                objTip.Append(LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ')');
+                    objTip.Append(strSpaceCharacter + '+' + strSpaceCharacter);
+                objTip.Append(LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + intBonusDrain.ToString() + ')');
             }
 
             return objTip.ToString();

@@ -25,7 +25,7 @@
     //  The SettingsLoaded event is raised after the setting values are loaded.
     //  The SettingsSaving event is raised before the setting values are saved.
     internal sealed partial class Settings {
-        
+        /*
         public Settings() {
             // // To add event handlers for saving and changing settings, uncomment the lines below:
             //
@@ -42,5 +42,6 @@
         private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {
             // Add code to handle the SettingsSaving event here.
         }
+        */
     }
 }

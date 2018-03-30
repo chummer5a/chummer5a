@@ -36,6 +36,8 @@ namespace Chummer
             this.lblBonusLabel = new System.Windows.Forms.Label();
             this.lblCondition = new System.Windows.Forms.Label();
             this.txtCondition = new System.Windows.Forms.TextBox();
+            this.cboLimit = new System.Windows.Forms.ComboBox();
+            this.lblLimit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,10 +55,11 @@ namespace Chummer
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(79, 12);
+            this.txtName.Location = new System.Drawing.Point(79, 38);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(167, 20);
             this.txtName.TabIndex = 0;
+            this.txtName.TextChanged += new System.EventHandler(this.ToggleOKEnabled);
             // 
             // cmdOK
             // 
@@ -71,19 +74,14 @@ namespace Chummer
             // 
             // nudBonus
             // 
-            this.nudBonus.Location = new System.Drawing.Point(79, 64);
-            this.nudBonus.Maximum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
+            this.nudBonus.Location = new System.Drawing.Point(79, 90);
             this.nudBonus.Minimum = new decimal(new int[] {
-            20,
+            100,
             0,
             0,
             -2147483648});
             this.nudBonus.Name = "nudBonus";
-            this.nudBonus.Size = new System.Drawing.Size(40, 20);
+            this.nudBonus.Size = new System.Drawing.Size(57, 20);
             this.nudBonus.TabIndex = 2;
             this.nudBonus.Value = new decimal(new int[] {
             1,
@@ -94,7 +92,7 @@ namespace Chummer
             // lblNameLabel
             // 
             this.lblNameLabel.AutoSize = true;
-            this.lblNameLabel.Location = new System.Drawing.Point(10, 15);
+            this.lblNameLabel.Location = new System.Drawing.Point(10, 41);
             this.lblNameLabel.Name = "lblNameLabel";
             this.lblNameLabel.Size = new System.Drawing.Size(38, 13);
             this.lblNameLabel.TabIndex = 9;
@@ -104,7 +102,7 @@ namespace Chummer
             // lblBonusLabel
             // 
             this.lblBonusLabel.AutoSize = true;
-            this.lblBonusLabel.Location = new System.Drawing.Point(10, 66);
+            this.lblBonusLabel.Location = new System.Drawing.Point(10, 92);
             this.lblBonusLabel.Name = "lblBonusLabel";
             this.lblBonusLabel.Size = new System.Drawing.Size(40, 13);
             this.lblBonusLabel.TabIndex = 10;
@@ -114,7 +112,7 @@ namespace Chummer
             // lblCondition
             // 
             this.lblCondition.AutoSize = true;
-            this.lblCondition.Location = new System.Drawing.Point(10, 41);
+            this.lblCondition.Location = new System.Drawing.Point(10, 67);
             this.lblCondition.Name = "lblCondition";
             this.lblCondition.Size = new System.Drawing.Size(54, 13);
             this.lblCondition.TabIndex = 12;
@@ -123,10 +121,30 @@ namespace Chummer
             // 
             // txtCondition
             // 
-            this.txtCondition.Location = new System.Drawing.Point(79, 38);
+            this.txtCondition.Location = new System.Drawing.Point(79, 64);
             this.txtCondition.Name = "txtCondition";
             this.txtCondition.Size = new System.Drawing.Size(167, 20);
             this.txtCondition.TabIndex = 1;
+            // 
+            // cboLimit
+            // 
+            this.cboLimit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLimit.FormattingEnabled = true;
+            this.cboLimit.Location = new System.Drawing.Point(79, 11);
+            this.cboLimit.Name = "cboLimit";
+            this.cboLimit.Size = new System.Drawing.Size(167, 21);
+            this.cboLimit.TabIndex = 13;
+            this.cboLimit.SelectedIndexChanged += new System.EventHandler(this.ToggleOKEnabled);
+            // 
+            // lblLimit
+            // 
+            this.lblLimit.AutoSize = true;
+            this.lblLimit.Location = new System.Drawing.Point(10, 14);
+            this.lblLimit.Name = "lblLimit";
+            this.lblLimit.Size = new System.Drawing.Size(31, 13);
+            this.lblLimit.TabIndex = 14;
+            this.lblLimit.Tag = "String_Limit";
+            this.lblLimit.Text = "Limit:";
             // 
             // frmSelectLimitModifier
             // 
@@ -134,7 +152,9 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(339, 98);
+            this.ClientSize = new System.Drawing.Size(339, 115);
+            this.Controls.Add(this.lblLimit);
+            this.Controls.Add(this.cboLimit);
             this.Controls.Add(this.lblCondition);
             this.Controls.Add(this.txtCondition);
             this.Controls.Add(this.lblBonusLabel);
@@ -148,7 +168,6 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_EnterLimitModifier";
             this.Text = "Enter a Limit Modifier";
-            this.Load += new System.EventHandler(this.frmSelectLimitModifier_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -165,5 +184,7 @@ namespace Chummer
         internal System.Windows.Forms.Label lblBonusLabel;
         internal System.Windows.Forms.Label lblCondition;
         private System.Windows.Forms.TextBox txtCondition;
+        private System.Windows.Forms.ComboBox cboLimit;
+        internal System.Windows.Forms.Label lblLimit;
     }
 }

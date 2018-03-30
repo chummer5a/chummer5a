@@ -389,7 +389,7 @@ namespace Chummer
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
-                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.Language));
+                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
@@ -510,10 +510,11 @@ namespace Chummer
                 lblArmor.Text = _objSelectedArmor.DisplayName(GlobalOptions.Language);
 
                 string strPage = _objSelectedArmor.Page(GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' + strPage;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
                 tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 
                 lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
                 lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;

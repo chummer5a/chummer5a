@@ -31,7 +31,7 @@ namespace Chummer
     /// A Technomancer Program or Complex Form.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode
+    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -189,12 +189,12 @@ namespace Chummer
             if (strLanguage != GlobalOptions.DefaultLanguage)
                 strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
-                string strExtra = _strExtra;
+                string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(_strExtra, strLanguage);
-                strReturn += " (" + strExtra + ')';
+                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -261,6 +261,7 @@ namespace Chummer
                 StringBuilder strTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase", GlobalOptions.Language));
                 int intRES = _objCharacter.RES.TotalValue;
                 string strFV = FV;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 for (int i = 1; i <= intRES * 2; i++)
                 {
                     // Calculate the Complex Form's Fading for the current Level.
@@ -273,7 +274,7 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + ' ' + i.ToString() + ": " + intFV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intFV.ToString());
                     }
                     else
                     {
@@ -289,7 +290,7 @@ namespace Chummer
                     strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
                     {
-                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value:0;-0;0})");
+                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objLoopImprovement.Value:0;-0;0})");
                     }
                 }
 
@@ -436,7 +437,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -447,18 +448,28 @@ namespace Chummer
                 Name = InternalId,
                 Text = DisplayName,
                 Tag = InternalId,
-                ContextMenuStrip = cmsComplexForm
+                ContextMenuStrip = cmsComplexForm,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (Grade != 0)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (Grade != 0)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

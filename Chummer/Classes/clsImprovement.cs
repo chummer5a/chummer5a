@@ -149,7 +149,6 @@ namespace Chummer
             SocialLimit,
             FriendsInHighPlaces,
             Erased,
-            BornRich,
             Fame,
             MadeMan,
             Overclocker,
@@ -300,6 +299,7 @@ namespace Chummer
             WeaponAccuracy,
             WeaponSkillAccuracy,
             MetageneticLimit,
+            Tradition,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
@@ -313,6 +313,7 @@ namespace Chummer
             Bioware,
             ArmorEncumbrance,
             Gear,
+            VehicleMod,
             Spell,
             Initiation,
             Submersion,
@@ -811,44 +812,86 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.Armor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalArmorRating));
+                }
                     break;
                 case ImprovementType.FireArmor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalFireArmorRating));
+                }
                     break;
                 case ImprovementType.ColdArmor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalColdArmorRating));
+                }
                     break;
                 case ImprovementType.ElectricityArmor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalElectricityArmorRating));
+                }
                     break;
                 case ImprovementType.AcidArmor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalAcidArmorRating));
+                }
                     break;
                 case ImprovementType.FallingArmor:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalFallingArmorRating));
+                }
                     break;
                 case ImprovementType.Dodge:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalBonusDodgeRating));
+                }
                     break;
                 case ImprovementType.Reach:
                     break;
                 case ImprovementType.Nuyen:
                     break;
                 case ImprovementType.PhysicalCM:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
                     break;
                 case ImprovementType.StunCM:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.StunCM));
+                }
                     break;
                 case ImprovementType.UnarmedDV:
                     break;
+                case ImprovementType.InitiativeDiceAdd:
                 case ImprovementType.InitiativeDice:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.InitiativeDice));
+                }
                     break;
                 case ImprovementType.MatrixInitiative:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                }
                     break;
+                case ImprovementType.MatrixInitiativeDiceAdd:
                 case ImprovementType.MatrixInitiativeDice:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeDice));
+                }
                     break;
                 case ImprovementType.LifestyleCost:
                     break;
-                case ImprovementType.CMThresholdOffset:
-                case ImprovementType.CMSharedThresholdOffset:
-                case ImprovementType.IgnoreCMPenaltyPhysical:
-                case ImprovementType.IgnoreCMPenaltyStun:
                 case ImprovementType.CMThreshold:
                 {
-                    yield return () => _objCharacter.RefreshWoundPenalties();
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CMThreshold));
+                }
+                    break;
+                case ImprovementType.IgnoreCMPenaltyPhysical:
+                case ImprovementType.IgnoreCMPenaltyStun:
+                case ImprovementType.CMThresholdOffset:
+                case ImprovementType.CMSharedThresholdOffset:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CMThresholdOffsets));
                 }
                     break;
                 case ImprovementType.EnhancedArticulation:
@@ -864,6 +907,9 @@ namespace Chummer
                 case ImprovementType.SpecialTab:
                     break;
                 case ImprovementType.Initiative:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.InitiativeValue));
+                }
                     break;
                 case ImprovementType.LivingPersonaDeviceRating:
                     break;
@@ -912,8 +958,14 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.NuyenMaxBP:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalNuyenMaximumBP));
+                }
                     break;
                 case ImprovementType.CMOverflow:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CMOverflow));
+                }
                     break;
                 case ImprovementType.FreeSpiritPowerPoints:
                     break;
@@ -942,14 +994,30 @@ namespace Chummer
                 case ImprovementType.RestrictedItemCount:
                     break;
                 case ImprovementType.JudgeIntentions:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.JudgeIntentions));
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.JudgeIntentionsResist));
+                    }
                     break;
                 case ImprovementType.JudgeIntentionsOffense:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.JudgeIntentions));
+                }
                     break;
                 case ImprovementType.JudgeIntentionsDefense:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.JudgeIntentionsResist));
+                }
                     break;
                 case ImprovementType.LiftAndCarry:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.LiftAndCarry));
+                }
                     break;
                 case ImprovementType.Memory:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.Memory));
+                }
                     break;
                 case ImprovementType.Concealability:
                     break;
@@ -966,20 +1034,28 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.DrainResistance:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TraditionDrainValue));
+                }
                     break;
                 case ImprovementType.FadingResistance:
-                    break;
-                case ImprovementType.MatrixInitiativeDiceAdd:
-                    break;
-                case ImprovementType.InitiativeDiceAdd:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TechnomancerFadingValue));
+                }
                     break;
                 case ImprovementType.Composure:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.Composure));
+                }
                     break;
                 case ImprovementType.UnarmedAP:
                     break;
                 case ImprovementType.Restricted:
                     break;
                 case ImprovementType.Notoriety:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CalculatedNotoriety));
+                }
                     break;
                 case ImprovementType.SpellCategory:
                     break;
@@ -1031,16 +1107,23 @@ namespace Chummer
                 case ImprovementType.LimitModifier:
                     break;
                 case ImprovementType.PhysicalLimit:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.LimitPhysical));
+                }
                     break;
                 case ImprovementType.MentalLimit:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.LimitMental));
+                }
                     break;
                 case ImprovementType.SocialLimit:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.LimitSocial));
+                }
                     break;
                 case ImprovementType.FriendsInHighPlaces:
                     break;
                 case ImprovementType.Erased:
-                    break;
-                case ImprovementType.BornRich:
                     break;
                 case ImprovementType.Fame:
                     break;
@@ -1076,6 +1159,9 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.PublicAwareness:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CalculatedPublicAwareness));
+                }
                     break;
                 case ImprovementType.PrototypeTranshuman:
                     break;
@@ -1230,6 +1316,9 @@ namespace Chummer
                 case ImprovementType.CritterPower:
                     break;
                 case ImprovementType.SpellResistance:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.SpellResistance));
+                }
                     break;
                 case ImprovementType.LimitSpellCategory:
                     break;
@@ -1266,7 +1355,7 @@ namespace Chummer
                 case ImprovementType.BasicBiowareEssCost:
                     // Immediately reset cached essence to make sure this fires off before any other property changers would
                     _objCharacter.ResetCachedEssence();
-                    // TODO: Change essence loss improvement regeneration to take place only when Essence-related improvements or Cyberware is changed instead of on every character update.
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.Essence));
                     break;
                 case ImprovementType.FreeSpellsATT:
                     break;
@@ -1301,20 +1390,36 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.PhysiologicalAddictionFirstTime:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PhysiologicalAddictionResistFirstTime));
+                }
                     break;
                 case ImprovementType.PsychologicalAddictionFirstTime:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PsychologicalAddictionResistFirstTime));
+                }
                     break;
                 case ImprovementType.PhysiologicalAddictionAlreadyAddicted:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PhysiologicalAddictionResistAlreadyAddicted));
+                }
                     break;
                 case ImprovementType.PsychologicalAddictionAlreadyAddicted:
-                    break;
-                case ImprovementType.StunCMRecovery:
-                    break;
-                case ImprovementType.PhysicalCMRecovery:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PsychologicalAddictionResistAlreadyAddicted));
+                }
                     break;
                 case ImprovementType.AddESStoStunCMRecovery:
+                case ImprovementType.StunCMRecovery:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.StunCMNaturalRecovery));
+                }
                     break;
                 case ImprovementType.AddESStoPhysicalCMRecovery:
+                case ImprovementType.PhysicalCMRecovery:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCMNaturalRecovery));
+                }
                     break;
                 case ImprovementType.MentalManipulationResist:
                     break;
@@ -1341,8 +1446,14 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.StreetCredMultiplier:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.CalculatedStreetCred));
+                }
                     break;
                 case ImprovementType.StreetCred:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.TotalStreetCred));
+                }
                     break;
                 case ImprovementType.AttributeKarmaCostMultiplier:
                 case ImprovementType.AttributeKarmaCost:
@@ -1571,21 +1682,26 @@ namespace Chummer
                 Tag = SourceName,
                 Text = CustomName,
                 ToolTipText = Notes.WordWrap(100),
-                ContextMenuStrip = cmsImprovement
+                ContextMenuStrip = cmsImprovement,
+                ForeColor = PreferredColor
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                if (Enabled)
-                    nodImprovement.ForeColor = Color.SaddleBrown;
-                else
-                    nodImprovement.ForeColor = Color.SandyBrown;
-            }
-            else if (Enabled)
-                nodImprovement.ForeColor = SystemColors.WindowText;
-            else
-                nodImprovement.ForeColor = SystemColors.GrayText;
-
             return nodImprovement;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    if (Enabled)
+                        return Color.SaddleBrown;
+                    return Color.SandyBrown;
+                }
+                if (Enabled)
+                    return SystemColors.WindowText;
+                return SystemColors.GrayText;
+            }
         }
         #endregion
         #endregion
@@ -1652,6 +1768,18 @@ namespace Chummer
         }
     }
 
+    public class TransactingImprovement
+    {
+        public TransactingImprovement(Improvement objImprovement)
+        {
+            ImprovementObject = objImprovement;
+        }
+
+        public Improvement ImprovementObject { get; }
+
+        public bool IsCommitting { get; set; }
+    }
+
     public static class ImprovementManager
     {
         // String that will be used to limit the selection in Pick forms.
@@ -1659,7 +1787,7 @@ namespace Chummer
 
         private static string s_StrSelectedValue = string.Empty;
         private static string s_StrForcedValue = string.Empty;
-        private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<Improvement>>(8, 10);
+        private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
 
@@ -1723,7 +1851,7 @@ namespace Chummer
                 if (objKey.CharacterObject == objCharacter)
                     s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
             }
-            s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
+            s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
         }
         #endregion
 
@@ -2600,9 +2728,10 @@ namespace Chummer
         /// <param name="blnConcatSelectedValue">Whether or not any selected values should be concatinated with the SourceName string when storing.</param>
         /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
         /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
+        /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
         /// <returns>True if successfull</returns>
         public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
-            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
+            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
             Log.Enter("CreateImprovements");
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
@@ -2629,7 +2758,7 @@ namespace Chummer
             Log.Info("_strLimitSelection = " + s_StrLimitSelection);
 
             // If there is no character object, don't attempt to add any Improvements.
-            if (objCharacter == null)
+            if (objCharacter == null && blnAddImprovementsToCharacter)
             {
                 Log.Info("_objCharacter = Null");
                 Log.Exit("CreateImprovements");
@@ -2652,9 +2781,9 @@ namespace Chummer
                     {
                         LimitSelection = s_StrForcedValue;
                     }
-                    else if (objCharacter.Pushtext.Count != 0)
+                    else if (objCharacter?.Pushtext.Count != 0)
                     {
-                        LimitSelection = objCharacter.Pushtext.Pop();
+                        LimitSelection = objCharacter?.Pushtext.Pop();
                     }
 
                     Log.Info("_strForcedValue = " + SelectedValue);
@@ -2676,7 +2805,6 @@ namespace Chummer
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
-
                             Rollback(objCharacter);
                             ForcedValue = string.Empty;
                             LimitSelection = string.Empty;
@@ -2703,7 +2831,7 @@ namespace Chummer
                 foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
                     if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-                        strFriendlyName, bonusNode, strUnique))
+                        strFriendlyName, bonusNode, strUnique, !blnAddImprovementsToCharacter))
                     {
                         Rollback(objCharacter);
                         return false;
@@ -2712,9 +2840,20 @@ namespace Chummer
             }
 
             // If we've made it this far, everything went OK, so commit the Improvements.
-            Log.Info("Calling Commit");
-            Commit(objCharacter);
-            Log.Info("Returned from Commit");
+            
+            if (blnAddImprovementsToCharacter)
+            {
+                Log.Info("Calling Commit");
+                Commit(objCharacter);
+                Log.Info("Returned from Commit");
+            }
+            else
+            {
+                Log.Info("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
+                Rollback(objCharacter);
+                Log.Info("Returned from scheduled Rollback");
+            }
+
             // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
             s_StrForcedValue = string.Empty;
             s_StrLimitSelection = string.Empty;
@@ -2736,7 +2875,7 @@ namespace Chummer
         }
 
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
-            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
+            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
         {
             if (bonusNode == null)
                 return false;
@@ -2766,7 +2905,7 @@ namespace Chummer
                 s_StrLimitSelection = container.LimitSelection;
                 s_StrSelectedValue = container.SelectedValue;
             }
-            else if (bonusNode.ChildNodes.Count == 0)
+            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
                 return true;
             }
@@ -2873,9 +3012,6 @@ namespace Chummer
                                 case "Critter":
                                     objCharacter.CritterEnabled = true;
                                     break;
-                                case "Initiation":
-                                    objCharacter.InitiationEnabled = true;
-                                    break;
                             }
                         }
                         // Determine if access to any special tabs has been regained
@@ -2885,6 +3021,9 @@ namespace Chummer
                             {
                                 case "Cyberware":
                                     objCharacter.CyberwareDisabled = true;
+                                    break;
+                                case "Initiation":
+                                    objCharacter.InitiationForceDisabled = true;
                                     break;
                             }
                         }
@@ -2908,9 +3047,6 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Erased:
                         objCharacter.Erased = true;
-                        break;
-                    case Improvement.ImprovementType.BornRich:
-                        objCharacter.BornRich = true;
                         break;
                     case Improvement.ImprovementType.Fame:
                         objCharacter.Fame = true;
@@ -3193,9 +3329,6 @@ namespace Chummer
                                     case "Critter":
                                         objCharacter.CritterEnabled = false;
                                         break;
-                                    case "Initiation":
-                                        objCharacter.InitiationEnabled = false;
-                                        break;
                                 }
                             }
                             // Determine if access to any special tabs has been regained
@@ -3205,6 +3338,9 @@ namespace Chummer
                                 {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
                                         break;
                                 }
                             }
@@ -3236,10 +3372,6 @@ namespace Chummer
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
                             objCharacter.Erased = false;
-                        break;
-                    case Improvement.ImprovementType.BornRich:
-                        if (!blnHasDuplicate)
-                            objCharacter.BornRich = false;
                         break;
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)
@@ -3610,9 +3742,6 @@ namespace Chummer
                                     case "Critter":
                                         objCharacter.CritterEnabled = false;
                                         break;
-                                    case "Initiation":
-                                        objCharacter.InitiationEnabled = false;
-                                        break;
                                 }
                             }
                             // Determine if access to any special tabs has been regained
@@ -3622,6 +3751,9 @@ namespace Chummer
                                 {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
                                         break;
                                 }
                             }
@@ -3654,10 +3786,6 @@ namespace Chummer
                         if (!blnHasDuplicate)
                             objCharacter.Erased = false;
                         break;
-                    case Improvement.ImprovementType.BornRich:
-                        if (!blnHasDuplicate)
-                            objCharacter.BornRich = false;
-                        break;
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)
                             objCharacter.Fame = false;
@@ -3684,7 +3812,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         {
-                            if (!blnHasDuplicate)
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
                                 foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                                 {
@@ -3721,6 +3849,13 @@ namespace Chummer
                         {
                             decReturn += RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
                             objCharacter.Metamagics.Remove(objMetamagic);
+                        }
+                        break;
+                    case Improvement.ImprovementType.LimitModifier:
+                        LimitModifier limitMod = objCharacter.LimitModifiers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (limitMod != null)
+                        {
+                            objCharacter.LimitModifiers.Remove(limitMod);
                         }
                         break;
                     case Improvement.ImprovementType.CritterPower:
@@ -3845,6 +3980,9 @@ namespace Chummer
                             }
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+
+                            if(objImprovedPower.Deleting)
+                                objImprovedPower.UnbindPower();
                         }
                         break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
@@ -3966,8 +4104,8 @@ namespace Chummer
                 ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
 
                 // Add the Improvement to the Transaction List.
-                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<Improvement> {objImprovement}))
-                    s_DictionaryTransactions[objCharacter].Add(objImprovement);
+                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<TransactingImprovement> { new TransactingImprovement(objImprovement) }))
+                    s_DictionaryTransactions[objCharacter].Add(new TransactingImprovement(objImprovement));
             }
 
             Log.Exit("CreateImprovement");
@@ -3980,9 +4118,18 @@ namespace Chummer
         {
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
-            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
-                lstTransaction.ProcessRelevantEvents();
+                List<Improvement> lstImprovementsToProcess = new List<Improvement>();
+                foreach (TransactingImprovement objLoopTransactingImprovement in lstTransaction)
+                {
+                    if (!objLoopTransactingImprovement.IsCommitting)
+                    {
+                        objLoopTransactingImprovement.IsCommitting = true;
+                        lstImprovementsToProcess.Add(objLoopTransactingImprovement.ImprovementObject);
+                    }
+                }
+                lstImprovementsToProcess.ProcessRelevantEvents();
                 lstTransaction.Clear();
             }
 
@@ -3995,13 +4142,13 @@ namespace Chummer
         private static void Rollback(Character objCharacter)
         {
             Log.Enter("Rollback");
-            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<Improvement> lstTransaction))
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (Improvement objImprovement in lstTransaction)
+                foreach (TransactingImprovement objTransactingImprovement in lstTransaction)
                 {
-                    RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                    RemoveImprovements(objCharacter, objTransactingImprovement.ImprovementObject.ImproveSource, objTransactingImprovement.ImprovementObject.SourceName);
+                    ClearCachedValue(objCharacter, objTransactingImprovement.ImprovementObject.ImproveType, objTransactingImprovement.ImprovementObject.ImprovedName);
                 }
 
                 lstTransaction.Clear();
@@ -4019,8 +4166,10 @@ namespace Chummer
             // Create a hashset of events to fire to make sure we only ever fire each event once
             HashSet<Action> setEventsToFire = new HashSet<Action>();
             foreach (Improvement objImprovement in lstImprovements)
-            foreach (Action funcEventToFire in objImprovement.GetRelevantPropertyChangers())
-                setEventsToFire.Add(funcEventToFire);
+            {
+                foreach (Action funcEventToFire in objImprovement.GetRelevantPropertyChangers())
+                    setEventsToFire.Add(funcEventToFire);
+            }
             // Fire each event once
             foreach (Action funcEventToFire in setEventsToFire)
                 funcEventToFire.Invoke();

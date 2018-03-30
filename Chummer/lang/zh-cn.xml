@@ -4932,11 +4932,11 @@
 			<text>创建生活方式</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+			<key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
 			<text>正面特质</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+			<key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
 			<text>负面特质</text>
 		</string>
 		<string>
@@ -6255,10 +6255,6 @@
 		<string>
 			<key>MessageTitle_CannotDeleteLimitModifier</key>
 			<text>无法删除</text>
-		</string>
-		<string>
-			<key>Message_SelectLimitModifier</key>
-			<text>你必须选择一个界限才能添加调整。</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectLimitModifier</key>

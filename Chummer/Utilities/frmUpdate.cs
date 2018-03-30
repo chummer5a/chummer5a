@@ -389,15 +389,16 @@ namespace Chummer
             Version.TryParse(strLatestVersion, out Version objLatestVersion);
             int intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), strLatestVersion) + ' ' +
+                lblUpdaterStatus.Text = string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), strLatestVersion) + strSpaceCharacter +
                                         string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), _strCurrentVersion);
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language) + ' ' +
-                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), _strCurrentVersion) + ' ' +
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language) + strSpaceCharacter +
+                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), _strCurrentVersion) + strSpaceCharacter +
                                         string.Format(LanguageManager.GetString("String_Latest_Version", GlobalOptions.Language), LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable", GlobalOptions.Language), strLatestVersion);
                 if (intResult < 0)
                 {
@@ -407,7 +408,7 @@ namespace Chummer
                 cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += ' ' + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
+                lblUpdaterStatus.Text += strSpaceCharacter + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)

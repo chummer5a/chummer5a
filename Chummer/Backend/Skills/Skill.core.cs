@@ -117,9 +117,8 @@ namespace Chummer.Backend.Skills
                 //if old != base, base changed
                 if (intOld != _intBase)
                     OnPropertyChanged(nameof(Base));
-
                 //if max is changed, karma was too
-                if (intMax != 0)
+                else if (intMax != 0)
                     OnPropertyChanged(nameof(Karma));
                 KarmaSpecForcedMightChange();
             }

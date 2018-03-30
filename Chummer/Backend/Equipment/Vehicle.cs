@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -260,15 +260,11 @@ namespace Chummer.Backend.Equipment
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
-                                    int intRating = 0;
+                                    string strForcedValue = objXmlVehicleMod.Attributes["select"]?.InnerText ?? string.Empty;
+                                    int.TryParse(objXmlVehicleMod.Attributes["rating"]?.InnerText, out int intRating);
 
-                                    if (objXmlVehicleMod.Attributes["rating"] != null)
-                                        int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
-
-                                    if (objXmlVehicleMod.Attributes["select"] != null)
-                                        objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
-
-                                    objMod.Create(objXmlMod, intRating, this);
+                                    objMod.Extra = strForcedValue;
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
                                     objMod.IncludedInVehicle = true;
 
                                     _lstVehicleMods.Add(objMod);
@@ -2765,6 +2761,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Add a Vehicle to the TreeView.
         /// </summary>
@@ -2787,13 +2784,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsVehicle
+                ContextMenuStrip = cmsVehicle,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
@@ -2874,6 +2868,24 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (!string.IsNullOrEmpty(ParentID))
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Locate a piece of Cyberware within this vehicle based on a predicate.

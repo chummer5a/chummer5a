@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -114,8 +114,12 @@ namespace Chummer.Backend.Equipment
                     blnDoEncumbranceRefresh = true;
                     break;
             }
+
             if (blnDoEncumbranceRefresh && Equipped)
+            {
+                _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                 _objCharacter?.RefreshEncumbrance();
+            }
         }
 
         /// Create an Armor from an XmlNode.
@@ -682,6 +686,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Equipped)
                     {
+                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                         _objCharacter?.RefreshEncumbrance();
                     }
                 }
@@ -704,6 +709,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
                         {
+                            _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                             _objCharacter?.RefreshEncumbrance();
                         }
                     }
@@ -927,6 +933,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
+                    _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                     _objCharacter?.RefreshEncumbrance();
                 }
             }
@@ -1341,13 +1348,13 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(ArmorName))
-                strReturn += " (\"" + ArmorName + "\")";
+                strReturn += strSpaceCharacter + "(\"" + ArmorName + "\")";
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
-            if (!string.IsNullOrEmpty(_strExtra))
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -1446,6 +1453,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        #region UI Methods
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
@@ -1462,11 +1470,10 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsArmor
+                ContextMenuStrip = cmsArmor,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (ArmorMod objMod in ArmorMods)
@@ -1486,6 +1493,20 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        #endregion
         #endregion
     }
 }

@@ -537,6 +537,10 @@
         </required>
       </adeptwayrequires>
       <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
         <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
@@ -768,10 +772,10 @@
       <action>Complex</action>
       <adeptway>.5</adeptway>
       <bonus>
-        <selecttext />
         <addweapon>
           <name>Elemental Body</name>
         </addweapon>
+        <selecttext />
       </bonus>
       <required>
         <oneof>
@@ -1507,14 +1511,14 @@
       <page>24</page>
       <adeptway>0.5</adeptway>
       <bonus>
-        <walkmultiplier>
-          <category>Swim</category>
-          <percent>100</percent>
-        </walkmultiplier>
         <sprintbonus>
           <category>Swim</category>
           <val>200</val>
         </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -1536,14 +1540,14 @@
       <page>24</page>
       <adeptway>0.5</adeptway>
       <bonus>
-        <walkmultiplier>
-          <category>Swim</category>
-          <percent>100</percent>
-        </walkmultiplier>
         <sprintbonus>
           <category>Swim</category>
           <val>400</val>
         </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
       </bonus>
       <required>
         <oneof>

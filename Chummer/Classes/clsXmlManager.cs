@@ -161,12 +161,19 @@ namespace Chummer
                     {
                         objXmlFile.Load(objStreamReader);
                     }
-                    using (XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*"))
+
+                    if (objDocElement != null)
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        using (XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*"))
                         {
-                            // Append the entire child node to the new document.
-                            objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
+                            if (xmlNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objNode in xmlNodeList)
+                                {
+                                    // Append the entire child node to the new document.
+                                    objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
+                                }
+                            }
                         }
                     }
                 }
@@ -182,136 +189,7 @@ namespace Chummer
                 {
                     foreach (string strLoopPath in s_LstDataDirectories)
                     {
-                        foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName))
-                        {
-                            try
-                            {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                                {
-                                    objXmlFile.Load(objStreamReader);
-                                }
-                            }
-                            catch (IOException)
-                            {
-                                continue;
-                            }
-                            catch (XmlException)
-                            {
-                                continue;
-                            }
-                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-                            {
-                                foreach (XmlNode objType in objNode.ChildNodes)
-                                {
-                                    string strFilter = string.Empty;
-                                    XmlNode xmlIdNode = objType["id"];
-                                    if (xmlIdNode != null)
-                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
-                                    else
-                                    {
-                                        xmlIdNode = objType["name"];
-                                        if (xmlIdNode != null)
-                                            strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
-                                    }
-                                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-                                    XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
-                                    foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
-                                    {
-                                        if (!string.IsNullOrEmpty(strFilter))
-                                            strFilter += " and ";
-                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
-                                    }
-                                    if (!string.IsNullOrEmpty(strFilter))
-                                    {
-                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
-                                        if (objItem != null)
-                                            objItem.InnerXml = objType.InnerXml;
-                                    }
-                                }
-                            }
-                        }
-
-                        // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-                        foreach (string strFile in Directory.GetFiles(strLoopPath, "custom*_" + strFileName))
-                        {
-                            try
-                            {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                                {
-                                    objXmlFile.Load(objStreamReader);
-                                }
-                            }
-                            catch (IOException)
-                            {
-                                continue;
-                            }
-                            catch (XmlException)
-                            {
-                                continue;
-                            }
-                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-                            {
-                                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                                List<XmlNode> lstDelete = new List<XmlNode>();
-                                foreach (XmlNode objChild in objNode.ChildNodes)
-                                {
-                                    XmlNode objParentNode = objChild.ParentNode;
-                                    if (objParentNode != null)
-                                    {
-                                        string strFilter = string.Empty;
-                                        XmlNode xmlIdNode = objChild["id"];
-                                        if (xmlIdNode != null)
-                                            strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
-                                        XmlNode xmlNameNode = objChild["name"];
-                                        if (xmlNameNode != null)
-                                        {
-                                            if (!string.IsNullOrEmpty(strFilter))
-                                                strFilter += " and ";
-                                            strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + '\"';
-                                        }
-                                        // Only do this if the child has the name or id field since this is what we must match on.
-                                        if (!string.IsNullOrEmpty(strFilter))
-                                        {
-                                            XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
-                                            if (objItem != null)
-                                                lstDelete.Add(objChild);
-                                        }
-                                    }
-                                }
-                                // Remove the offending items from the node we're about to merge in.
-                                foreach (XmlNode objRemoveNode in lstDelete)
-                                {
-                                    objNode.RemoveChild(objRemoveNode);
-                                }
-
-                                // Append the entire child node to the new document.
-                                objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
-                            }
-                        }
-
-                        // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
-                        foreach (string strFile in Directory.GetFiles(strLoopPath, "amend*_" + strFileName))
-                        {
-                            try
-                            {
-                                using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                                {
-                                    objXmlFile.Load(objStreamReader);
-                                }
-                            }
-                            catch (IOException)
-                            {
-                                continue;
-                            }
-                            catch (XmlException)
-                            {
-                                continue;
-                            }
-                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-                            {
-                                AmendNodeChildern(objDoc, objNode, "/chummer");
-                            }
-                        }
+                        DoProcessCustomDataFiles(objXmlFile, objDoc, strLoopPath, strFileName);
                     }
                 }
 
@@ -324,10 +202,12 @@ namespace Chummer
                     if (objDataDoc != null)
                     {
                         XmlNode xmlBaseChummerNode = objDoc.SelectSingleNode("/chummer");
-                        foreach (XmlNode objType in objDataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]/*"))
-                        {
-                            AppendTranslations(objDoc, objType, xmlBaseChummerNode);
-                        }
+                        using (XmlNodeList xmlTranslationTypeNodeList = objDataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]/*"))
+                            if (xmlTranslationTypeNodeList?.Count > 0)
+                                foreach (XmlNode objType in xmlTranslationTypeNodeList)
+                                {
+                                    AppendTranslations(objDoc, objType, xmlBaseChummerNode);
+                                }
                     }
                 }
 
@@ -352,90 +232,37 @@ namespace Chummer
                 else
                     objDoc = objReference.XmlContent;
             }
-            
+
+            if (objDoc == null)
+                objDoc = new XmlDocument();
             if (strFileName == "improvements.xml")
                 return objDoc;
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
-            if (GlobalOptions.LiveCustomData && objDoc != null)
+            if (GlobalOptions.LiveCustomData)
             {
-                XmlElement objDocElement = objDoc.DocumentElement;
                 strPath = Path.Combine(Application.StartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
                 {
-                    foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName, SearchOption.AllDirectories))
-                    {
-                        try
-                        {
-                            using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                            {
-                                objXmlFile.Load(objStreamReader);
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (XmlException)
-                        {
-                            continue;
-                        }
-                        foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-                        {
-                            blnHasLiveCustomData = true;
-                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                            List<XmlNode> lstDelete = new List<XmlNode>();
-                            foreach (XmlNode objChild in objNode.ChildNodes)
-                            {
-                                XmlNode objParentNode = objChild.ParentNode;
-                                if (objParentNode != null)
-                                {
-                                    string strFilter = string.Empty;
-                                    string strId = objChild["id"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strId))
-                                        strFilter = "id = \"" + strId.Replace("&amp;", "&") + '\"';
-                                    string strName = objChild["name"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strName))
-                                    {
-                                        if (!string.IsNullOrEmpty(strFilter))
-                                            strFilter += " and ";
-                                        strFilter += "name = \"" + strName.Replace("&amp;", "&") + '\"';
-                                    }
-                                    // Only do this if the child has the name or id field since this is what we must match on.
-                                    if (!string.IsNullOrEmpty(strFilter))
-                                    {
-                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
-                                        if (objItem != null)
-                                            lstDelete.Add(objChild);
-                                    }
-                                }
-                            }
-                            // Remove the offending items from the node we're about to merge in.
-                            foreach (XmlNode objRemoveNode in lstDelete)
-                            {
-                                objNode.RemoveChild(objRemoveNode);
-                            }
-
-                            // Append the entire child node to the new document.
-                            objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
-                        }
-                    }
+                    blnHasLiveCustomData = DoProcessCustomDataFiles(objXmlFile, objDoc, strPath, strFileName, SearchOption.AllDirectories);
                 }
             }
 
             // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
             if (!objReference.DuplicatesChecked || blnHasLiveCustomData)
             {
-                foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
-                {
-                    // Only process nodes that have children and are not the version node
-                    if (objNode.Name != "version" && objNode.HasChildNodes)
-                    {
-                        // Parse the node into an XDocument for LINQ parsing.
-                        CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
-                    }
-                }
+                using (XmlNodeList xmlNodeList = objDoc.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            // Only process nodes that have children and are not the version node
+                            if (objNode.Name != "version" && objNode.HasChildNodes)
+                            {
+                                // Parse the node into an XDocument for LINQ parsing.
+                                CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
+                            }
+                        }
 
                 objReference.DuplicatesChecked = true;
             }
@@ -601,6 +428,180 @@ namespace Chummer
             }
         }
 
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.TopDirectoryOnly)
+        {
+            bool blnReturn = false;
+            XmlElement objDocElement = xmlDataDoc.DocumentElement;
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            foreach (XmlNode objType in objNode.ChildNodes)
+                            {
+                                string strFilter = string.Empty;
+                                XmlNode xmlIdNode = objType["id"];
+                                if (xmlIdNode != null)
+                                    strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                else
+                                {
+                                    xmlIdNode = objType["name"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                }
+                                // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
+                                if (objAmendingNodeExtraIds?.Count > 0)
+                                {
+                                    foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                    {
+                                        if (!string.IsNullOrEmpty(strFilter))
+                                            strFilter += " and ";
+                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(strFilter))
+                                {
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
+                                    if (objItem != null)
+                                    {
+                                        objItem.InnerXml = objType.InnerXml;
+                                        blnReturn = true;
+                                    }
+                                }
+                            }
+                        }
+            }
+
+            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "custom*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                            List<XmlNode> lstDelete = new List<XmlNode>();
+                            foreach (XmlNode objChild in objNode.ChildNodes)
+                            {
+                                XmlNode objParentNode = objChild.ParentNode;
+                                if (objParentNode != null)
+                                {
+                                    string strFilter = string.Empty;
+                                    XmlNode xmlIdNode = objChild["id"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                    XmlNode xmlNameNode = objChild["name"];
+                                    if (xmlNameNode != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(strFilter))
+                                            strFilter += " and ";
+                                        strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + '\"';
+                                    }
+                                    // Only do this if the child has the name or id field since this is what we must match on.
+                                    if (!string.IsNullOrEmpty(strFilter))
+                                    {
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                            lstDelete.Add(objChild);
+                                    }
+                                }
+                            }
+                            // Remove the offending items from the node we're about to merge in.
+                            foreach (XmlNode objRemoveNode in lstDelete)
+                            {
+                                objNode.RemoveChild(objRemoveNode);
+                            }
+
+                            if (objDocElement?[objNode.Name] != null)
+                            {
+                                /* We need to do this to avoid creating multiple copies of the root node, ie
+                                    <chummer>
+                                        <metatypes>
+                                            <metatype>Standard</metatype>
+                                        </metatypes>
+                                        <metatypes>
+                                            <metatype>Custom</metatype>
+                                        </metatypes>
+                                    </chummer>
+                                    Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                */
+                                foreach (XmlNode childNode in objNode.ChildNodes)
+                                {
+                                    objDocElement?[objNode.Name].AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                }
+                            }
+                            else
+                            {
+                                // Append the entire child node to the new document.
+                                objDocElement?.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                            }
+
+                            blnReturn = true;
+                        }
+            }
+
+            // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "amend*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer") || blnReturn;
+                        }
+            }
+
+            return blnReturn;
+        }
+
         /// <summary>
         /// Deep search a document to amend with a new node.
         /// If Attributes exist for the amending node, the Attributes for the original node will all be overwritten.
@@ -608,8 +609,10 @@ namespace Chummer
         /// <param name="objDoc">Document element in which to operate.</param>
         /// <param name="objAmendingNode">The amending (new) node.</param>
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
-        private static void AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath)
+        /// <returns>True if any amends were made, False otherwise.</returns>
+        private static bool AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath)
         {
+            bool blnReturn = false;
             string strFilter = string.Empty;
             string strOperation = string.Empty;
             bool blnAddIfNotFound = true;
@@ -623,7 +626,7 @@ namespace Chummer
                 XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                 if (objCustomXPath != null)
                 {
-                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&");
+                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&").Replace("&quot;", "\"");
                 }
                 else
                 {
@@ -674,20 +677,24 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strFilter))
                 strFilter = '[' + strFilter + ']';
 
+            // AddNode operation will always add this node in its current state.
+            // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
             if (strOperation == "addnode")
             {
                 using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
                 {
-                    if (xmlParentNodeList != null)
+                    if (xmlParentNodeList?.Count > 0)
                     {
                         foreach (XmlNode xmlParentNode in xmlParentNodeList)
                         {
                             xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
                         }
+
+                        blnReturn = true;
                     }
                 }
 
-                return;
+                return blnReturn;
             }
 
             string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
@@ -715,6 +722,8 @@ namespace Chummer
             {
                 // These operations are supported
                 case "remove":
+                    // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
+                    // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
                 case "replace":
                 case "append":
                     break;
@@ -743,11 +752,11 @@ namespace Chummer
                 // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
                 if (strOperation == "recurse")
                 {
-                    if (lstElementChildren != null)
+                    if (lstElementChildren?.Count > 0)
                     {
                         foreach (XmlNode objChild in lstElementChildren)
                         {
-                            AmendNodeChildern(objDoc, objChild, strNewXPath);
+                            blnReturn = AmendNodeChildern(objDoc, objChild, strNewXPath);
                         }
                     }
                 }
@@ -809,7 +818,7 @@ namespace Chummer
                                     {
                                         using (XmlNodeList xmlGrandParentNodeList = objDoc.SelectNodes(strXPath))
                                         {
-                                            if (xmlGrandParentNodeList != null)
+                                            if (xmlGrandParentNodeList?.Count > 0)
                                             {
                                                 foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
                                                 {
@@ -825,6 +834,8 @@ namespace Chummer
                             }
                         }
                     }
+
+                    blnReturn = true;
                 }
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
@@ -832,15 +843,18 @@ namespace Chummer
             {
                 using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
                 {
-                    if (xmlParentNodeList != null)
+                    if (xmlParentNodeList?.Count > 0)
                     {
                         foreach (XmlNode xmlParentNode in xmlParentNodeList)
                         {
                             xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
                         }
+                        blnReturn = true;
                     }
                 }
             }
+
+            return blnReturn;
         }
 
         /// <summary>

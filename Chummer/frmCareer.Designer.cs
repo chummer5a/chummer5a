@@ -2574,14 +2574,14 @@ namespace Chummer
             // cmsVehicle
             // 
             this.cmsVehicle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleAddWeapon,
+            this.tsVehicleAddWeaponMount,
             this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleAddWeapon,
             this.tsVehicleName,
-            this.tsVehicleNotes,
-            this.tsVehicleAddWeaponMount});
-            this.cmsVehicle.Name = "cmsWeapon";
+            this.tsVehicleNotes});
+            this.cmsVehicle.Name = "cmsVehicle";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
             // 
             // tsVehicleAddMod
@@ -2687,6 +2687,15 @@ namespace Chummer
             this.tsVehicleNotes.Tag = "Menu_Notes";
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // tsVehicleWeaponMountNotes
+            // 
+            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponMountNotes.Name = "tsVehicleMountWeaponNotes";
+            this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(180, 22);
+            this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
+            this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // tsVehicleAddWeaponMount
             // 
@@ -5054,19 +5063,6 @@ namespace Chummer
             this.treLimit.HideSelection = false;
             this.treLimit.Location = new System.Drawing.Point(3, 35);
             this.treLimit.Name = "treLimit";
-            treeNode3.Name = "trePhysicalRoot";
-            treeNode3.Tag = "Node_Physical";
-            treeNode3.Text = "Physical";
-            treeNode4.Name = "treMentalRoot";
-            treeNode4.Tag = "Node_Mental";
-            treeNode4.Text = "Mental";
-            treeNode5.Name = "treSocialRoot";
-            treeNode5.Tag = "Node_Social";
-            treeNode5.Text = "Social";
-            this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5});
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
@@ -14156,14 +14152,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
             this.tsVehicleWeaponMountAddUnderbarrel.Text = "Add Underbarrel Weapon";
             this.tsVehicleWeaponMountAddUnderbarrel.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
-            // 
-            // tsVehicleWeaponMountNotes
-            // 
-            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponMountNotes.Name = "tsVehicleWeaponMountNotes";
-            this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(123, 22);
-            this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
-            this.tsVehicleWeaponMountNotes.Text = "&Notes";
             // 
             // tsWeaponMountLocation
             // 

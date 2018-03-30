@@ -45,7 +45,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyPropertyChanged
+    public class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyPropertyChanged, IHasNotes
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -582,7 +582,7 @@ namespace Chummer
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(FetteringCost * -1,
-                                LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + ' ' + Name,
+                                LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
                                 ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Karma -= FetteringCost;
@@ -604,12 +604,30 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Colour used by the Spirit's control in UI.
+        /// Placeholder to prevent me having to deal with multiple interfaces.
+        /// </summary>
+        public Color PreferredColor
+        {
+            get => _objColour;
+            set
+            {
+                if (_objColour != value)
+                {
+                    _objColour = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreferredColor)));
+                }
+            }
+        }
+
         public string InternalId => _guiId.ToString("D");
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
+        private Color _objColour;
 
         public XmlNode GetNode()
         {

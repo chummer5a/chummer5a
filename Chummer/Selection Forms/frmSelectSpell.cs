@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -40,6 +41,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private bool _blnRefresh;
 
         #region Control Events
         public frmSelectSpell(Character objCharacter)
@@ -83,6 +85,7 @@ namespace Chummer
                 }
                 else if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
                 {
+                    Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
                     int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
@@ -90,6 +93,14 @@ namespace Chummer
                         intFreeTouchOnlySpells += intSkillValue;
                     else
                         intFreeGenericSpells += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                    foreach (SkillSpecialization spec in skill.Specializations)
+                    {
+                        if (_objCharacter.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
+                        {
+                            intFreeGenericSpells++;
+                        }
+                    }
                 }
             }
             int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range != "T");
@@ -218,10 +229,12 @@ namespace Chummer
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnRefresh) return;
             UpdateSpellInfo();
         }
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnRefresh) return;
             UpdateSpellInfo();
         }
         #endregion
@@ -448,6 +461,11 @@ namespace Chummer
         {
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
+            _blnRefresh = true;
+            if (!chkExtended.Visible && chkExtended.Checked)
+            {
+                chkExtended.Checked = false;
+            }
             if (!string.IsNullOrEmpty(strSelectedSpellId))
             {
                 xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = \"" + strSelectedSpellId + "\"]");
@@ -784,11 +802,12 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
             tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            _blnRefresh = false;
         }
         #endregion
     }

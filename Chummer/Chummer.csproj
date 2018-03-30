@@ -90,22 +90,29 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.Core.1.5.1-beta1\lib\net45\HtmlRenderer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.6\lib\net45\HtmlRenderer.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlRenderer.WinForms, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.1-beta1\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.0.6\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.12\lib\itextsharp.dll</HintPath>
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="MersenneTwister, Version=1.0.6146.4688, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
       <HintPath>..\packages\MersenneTwister.1.0.5\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -132,17 +139,21 @@
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
     <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraph.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
     <Compile Include="Backend\Datastructures\TaggedObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
@@ -152,7 +163,7 @@
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
-    <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
@@ -266,6 +277,7 @@
     <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
+    <Compile Include="Interfaces\IHasNotes.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -1691,6 +1703,8 @@
     <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\amend_garagecapacity_lifestyles.xml" />
+    <Content Include="customdata\German Data Changes - Garage Capacity\custom_garagecapacity_lifestyles.xml" />
     <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1698,6 +1712,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Ingram Smartgun X\amend_smartgunxstock_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Poseidon RCC\amend_poseidonrcc_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">
@@ -1772,7 +1792,12 @@
     <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml" />
+    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions Animal Prices\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\sheets.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -29,7 +29,7 @@ namespace Chummer
     /// A Metamagic or Echo.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode
+    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -81,7 +81,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += " (" + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
@@ -301,7 +301,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMetamagic, bool blnAddCategory = false)
         {
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -309,25 +309,35 @@ namespace Chummer
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
-                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + ' ' + strText;
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = strText,
                 Tag = InternalId,
-                ContextMenuStrip = cmsMetamagic
+                ContextMenuStrip = cmsMetamagic,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (Grade == -1)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (Grade == -1)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }
