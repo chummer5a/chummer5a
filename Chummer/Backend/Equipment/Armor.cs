@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
-                    objGear.RemovalParent = this;
+                    objGear.ParentObject = this;
                     _lstGear.Add(objGear);
                 }
             }
@@ -1522,5 +1522,7 @@ namespace Chummer.Backend.Equipment
             characterObject.ExpenseEntries.AddWithSort(objExpense);
             characterObject.Nuyen += decAmount;
         }
+
+        public TaggedObservableCollection<Gear> Children => Gear;
     }
 }

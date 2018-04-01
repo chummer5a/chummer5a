@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes//, ICanSell
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
-        private Gear _objParent;
+        private object _objParent;
         private bool _blnDiscountCost;
         private string _strGearName = string.Empty;
         private string _strParentID = string.Empty;
@@ -76,7 +76,6 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMFilled;
         private string _strForcedValue = string.Empty;
         private bool _blnAllowRename;
-        private IHasChildren<Gear> _iRemovalParent;
         private string _strAttack = string.Empty;
         private string _strSleaze = string.Empty;
         private string _strDataProcessing = string.Empty;
@@ -1432,8 +1431,8 @@ namespace Chummer.Backend.Equipment
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
                     if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                     {
                         int intTotalChildrenValue = 0;
@@ -1528,11 +1527,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Gear.
         /// </summary>
-        public Gear Parent
+        public object Parent
         {
             get => _objParent;
             set => _objParent = value;
         }
+
+        public IHasChildrenAndCost<Gear> ParentObject { get; set; }
 
         /// <summary>
         /// Whether or not the Gear's cost should be discounted by 10% through the Black Market Pipeline Quality.
@@ -1930,9 +1931,9 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     if (strCostExpression.Contains("Gear Cost"))
-                        decGearCost = Parent.CalculatedCost;
+                        decGearCost = ((Gear) Parent).CalculatedCost;
                     if (strCostExpression.Contains("Parent Cost"))
-                        decParentCost = Parent.OwnCostPreMultipliers;
+                        decParentCost = ((Gear)Parent).OwnCostPreMultipliers;
                 }
                 decimal decTotalChildrenCost = 0;
                 if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
@@ -2000,7 +2001,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
-                int intParentMultiplier = _objParent?.ChildCostMultiplier ?? 1;
+                int intParentMultiplier = ((Gear)Parent)?.ChildCostMultiplier ?? 1;
 
                 decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
@@ -2013,7 +2014,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public decimal OwnCost => (OwnCostPreMultipliers * Parent?.ChildCostMultiplier ?? 1) / CostFor;
+        public decimal OwnCost => (OwnCostPreMultipliers * ((Gear)Parent)?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
@@ -2553,87 +2554,37 @@ namespace Chummer.Backend.Equipment
             DeleteGear();
             // If the Parent is populated, remove the item from its Parent.
             if (Parent != null)
-                Parent.Children.Remove(this);
+                ParentObject.Children.Remove(this);
             else
                 characterObject.Gear.Remove(this);
             return true;
         }
-        /*
-                public void Sell(Character characterObject, decimal percentage)
-                {
-                    decimal decOriginal = 0;
-                    decimal decNewCost = 0;
-                    if (CharacterObject.Gear.Any(gear => gear == this))
-                    {
-                        CharacterObject.Gear.Remove(this);
-                        decOriginal = TotalCost;
-                    }
-                    else if (Parent != null)
-                    {
-                        decOriginal = TotalCost;
-                        Parent.Children.Remove(this);
-                        decNewCost = TotalCost;
-                    }
-                    else
-                    {
-                        CharacterObject.Cyberware.FindCyberwareGear(InternalId, out Cyberware objCyberware);
-                        if (objCyberware != null)
-                        {
-                            objCyberware.Gear.Remove(this);
-                            decOriginal = TotalCost;
-                        }
-                        else
-                        {
-                            CharacterObject.Armor.FindArmorGear(InternalId, out Armor objArmor, out ArmorMod objMod);
 
-                            decOriginal = objMod?.TotalCost ?? objArmor.TotalCost;
-                            decNewCost = objMod?.TotalCost ?? objArmor.TotalCost;
-                            if (objArmor != null)
-                            {
-                                objArmor.Gear.Remove(this);
-                            }
-                            else if (objMod != null)
-                            {
-                                objMod.Gear.Remove(this);
-                            }
-                            else
-                            {
-                                CharacterObject.Weapons.FindWeaponGear(InternalId, out WeaponAccessory objAccessory);
-                                {
-                                    if (objAccessory != null)
-                                    {
-                                        objAccessory.Gear.Remove(this);
-                                    }
-                                    else
-                                    {
-                                        CharacterObject.Vehicles.FindVehicleGear(InternalId, out Vehicle objVehicle,
-                                            out objAccessory, out objCyberware);
-                                        if (objVehicle != null)
-                                        {
-                                            objVehicle.Gear.Remove(this);
-                                        }
-                                        else if (objAccessory != null)
-                                        {
-                                            objAccessory.Gear.Remove(this);
-                                        }
-                                        else
-                                        {
-                                            objCyberware?.Gear.Remove(this);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = (decOriginal - decNewCost) * percentage;
-                    decAmount += DeleteGear() * percentage;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
-                    objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-                    //TODO: I really don't like this. Ideally need some kind of interface-based parent for removal operations.
-                }*/
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            decimal decOriginal = 0;
+            decimal decNewCost = 0;
+            if (CharacterObject.Gear.Any(gear => gear == this))
+            {
+                CharacterObject.Gear.Remove(this);
+                decOriginal = TotalCost;
+            }
+            else if (ParentObject != null)
+            {
+                decOriginal = ParentObject.TotalCost;
+                ParentObject.Children.Remove(this);
+                decNewCost = ParentObject.TotalCost;
+            }
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = (decOriginal - decNewCost) * percentage;
+            decAmount += DeleteGear() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
+            objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen += decAmount;
+        }
     }
 }
