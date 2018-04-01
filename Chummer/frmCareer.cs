@@ -1083,7 +1083,7 @@ namespace Chummer
                         else
                         {
                             cmdAddSpell.Enabled = false;
-                            if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
@@ -1107,8 +1107,8 @@ namespace Chummer
                         {
                             cmdAddSpell.Enabled = CharacterObject.MagicianEnabled;
                             tabCharacterTabs.TabPages.Remove(tabAdept);
-                            
-                            if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
+
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
