@@ -6517,7 +6517,7 @@ namespace Chummer
             }
         }
 
-        public bool IsAI => DEPEnabled && BOD.MetatypeMaximum == 0;
+        public bool IsAI => DEPEnabled /*&& BOD.MetatypeMaximum == 0*/;
 
         /// <summary>
         /// Submersion Grade.
