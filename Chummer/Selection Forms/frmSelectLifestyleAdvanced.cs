@@ -441,6 +441,7 @@ namespace Chummer
                 nudSecurity.Value = _objSourceLifestyle.Security;
                 cboBaseLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
                 chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+                chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
             }
 
             cboBaseLifestyle.EndUpdate();
@@ -862,12 +863,15 @@ namespace Chummer
 
             //calculate the total LP
             xmlNode = _objLifestyle.GetNode();
-            intLP += Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            int intBaseLP = Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            intLP += intBaseLP;
             intLP -= intComfortsValue;
             intLP -= intAreaValue;
             intLP -= intSecurityValue;
             intLP += intRoommatesValue;
             intLP += decimal.ToInt32(nudBonusLP.Value);
+
+            intLP = Math.Min(intLP, intBaseLP * 2);
 
             if (strBaseLifestyle == "Street")
             {

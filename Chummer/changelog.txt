@@ -3,6 +3,7 @@ Future Build 200
 Application Changes:
 
 - Fixed a bug where changing tabs would often mark a character as having changes that need to be saved.
+- Implemented a cap on Lifestyle Points from assorted sources for Advanced Lifestyles; currently this is hardcoded to the base LP * 2. Closes #2640
 
 Build 199
 
