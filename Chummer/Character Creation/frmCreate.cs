@@ -14833,6 +14833,14 @@ namespace Chummer
                 }
 
             }
+
+            //Check if the character is created via Life Modules and that a Nationality is selected
+            if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule &&
+                CharacterObject.LifeModules.All(x => x.Stage != "Nationality"))
+            {
+                //TODO LifeModules at Least a Nationality has to be selected
+            }
+
             int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (i < 0)
