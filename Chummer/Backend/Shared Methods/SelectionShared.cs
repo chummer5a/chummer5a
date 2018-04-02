@@ -250,6 +250,23 @@ namespace Chummer
                 }
             }
 
+            if (objCharacter.BuildMethod == CharacterBuildMethod.LifeModule && (xmlNode.Name == "module" || xmlNode.Name == "version"))
+            {
+                if (xmlNode["stage"] != null &&
+                    objCharacter.LifeModules.Any(x => x.Stage != "Real Life" && x.Stage == xmlNode["stage"]?.InnerText))
+                {
+                    if (blnShowMessage)
+                    {
+                        MessageBox.Show(
+                            LanguageManager.GetString("MessageTitle_SelectLifeModule_Restriction", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language)
+                                .Replace("{0}", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    return false;
+                }
+            }
+
             XmlNode xmlForbiddenNode = xmlNode["forbidden"];
             if (xmlForbiddenNode != null)
             {

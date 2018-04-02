@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -35,7 +36,6 @@ namespace Chummer
         private string _selectedId;
         private Regex searchRegex;
 
-
         private string _strWorkStage;
         
         public frmSelectLifeModule(Character objCharacter, int stage)
@@ -45,6 +45,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
+            // Load the Quality information.
         }
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
@@ -121,13 +122,13 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            DialogResult = DialogResult.OK;
+            AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            DialogResult = DialogResult.OK;
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -142,6 +143,22 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + intWidth + 6;
 
             lblSearch.Left = txtSearch.Left - 6 - lblSearch.Width;
+        }
+
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
+        {
+            if (string.IsNullOrEmpty(_selectedId))
+                return;
+
+            XmlNode objNode = SelectedNode;
+
+            if (objNode == null || !objNode.RequirementsMet(_objCharacter, LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)))
+                return;
+
+            DialogResult = DialogResult.OK;
         }
 
         private void treModules_AfterSelect(object sender, TreeViewEventArgs e)

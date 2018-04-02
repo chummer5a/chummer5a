@@ -9272,6 +9272,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <key>Label_LifeModule_Effect</key>
 	  <text>Life Module Effects:</text>
 	</string>
+	<string>
+	  <key>MessageTitle_SelectLifeModule_Restriction</key>
+	  <text>You have already selected a Life Module of that stage and can select only one.</text>
+	</string>
 	<!-- End Region -->
   </strings>
 </chummer>
