@@ -8367,6 +8367,36 @@
       <modslots>0</modslots>
       <seats>0</seats>
     </vehicle>
+	<vehicle>
+      <id>cd05b23c-f14d-4d76-8037-ec5d99c90cb0</id>
+      <name>Jena Robotnik Araneus</name>
+      <page>59</page>
+      <source>SAG</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>12</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>5000</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Gecko Grips (Drone)</name>
+        <name rating="1">Realistic Features</name>
+		<name select="Engineering laser">Special Equipment</name>
+      </mods>
+      <modslots>0</modslots>
+      <seats>0</seats>
+    </vehicle>
     <vehicle>
       <id>bc48ec25-84ce-435a-a418-ddbac5f7507c</id>
       <name>Messerschmitt-Kawasaki Hugin</name>

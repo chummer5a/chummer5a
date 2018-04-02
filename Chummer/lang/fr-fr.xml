@@ -45,7 +45,7 @@
     </string>
     <string>
       <key>String_Of</key>
-      <text> sur </text>
+      <text xml:space="preserve"> sur </text>
     </string>
     <string>
       <key>String_Remaining</key>

@@ -271,29 +271,35 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
+            if (XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strBaseLifestyle}\"]") == null && XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strName}\"]") != null)
+            {
+                string baselifestyle = _strName;
+                _strName = _strBaseLifestyle;
+                _strBaseLifestyle = baselifestyle;
+            }
             if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
             {
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
-                {
-                    List<ListItem> lstQualities = new List<ListItem>();
-                    using (XmlNodeList xmlLifestyleList = XmlManager.Load("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
-                        if (xmlLifestyleList != null)
-                            foreach (XmlNode xmlLifestyle in xmlLifestyleList)
-                            {
-                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                                lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
-                            }
-                    frmSelectItem frmSelect = new frmSelectItem
                     {
-                        GeneralItems = lstQualities,
-                        Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
-                    };
-                    frmSelect.ShowDialog();
-                    if (frmSelect.DialogResult == DialogResult.Cancel)
-                        return;
-                    _strBaseLifestyle = frmSelect.SelectedItem;
-                }
+                        List<ListItem> lstQualities = new List<ListItem>();
+                        using (XmlNodeList xmlLifestyleList = XmlManager.Load("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
+                            if (xmlLifestyleList != null)
+                                foreach (XmlNode xmlLifestyle in xmlLifestyleList)
+                                {
+                                    string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                                    lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
+                                }
+                        frmSelectItem frmSelect = new frmSelectItem
+                        {
+                            GeneralItems = lstQualities,
+                            Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
+                        };
+                        frmSelect.ShowDialog();
+                        if (frmSelect.DialogResult == DialogResult.Cancel)
+                            return;
+                        _strBaseLifestyle = frmSelect.SelectedItem;
+                    }
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";

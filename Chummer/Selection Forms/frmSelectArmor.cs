@@ -512,7 +512,7 @@ namespace Chummer
                 string strPage = _objSelectedArmor.Page(GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                tipTooltip.SetToolTip(lblSource,
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
                     CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter +
                     LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 
@@ -539,7 +539,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
                 lblArmor.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
 
                 lblArmorValue.Text = string.Empty;
                 lblCapacity.Text = string.Empty;

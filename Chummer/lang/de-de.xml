@@ -43,7 +43,11 @@
 		</string>
 		<string>
 			<key>String_Of</key>
-			<text> von </text>
+			<text xml:space="preserve"> von </text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"> </text>
 		</string>
 		<string>
 			<key>String_Remaining</key>
@@ -1938,6 +1942,14 @@
 			<text>Gekaufter Lebensstil</text>
 		</string>
 		<string>
+			<key>String_ExpenseDecreaseLifestyle</key>
+			<text>Verringerter Lebensstil</text>
+		</string>
+		<string>
+			<key>String_ExpenseModifiedLifestyle</key>
+			<text>Modifizierter Lebensstil</text>
+		</string>
+		<string>
 			<key>String_ExpensePurchaseCyberware</key>
 			<text>Gekaufte Cyberware</text>
 		</string>
@@ -3594,6 +3606,10 @@
 		<string>
 			<key>Tip_Skill_Wounds</key>
 			<text>Wunden</text>
+		</string>
+		<string>
+			<key>Tip_Skill_OffHand</key>
+			<text>Nebenhand</text>
 		</string>
 		<string>
 			<key>Tip_SkillGroup_Skills</key>

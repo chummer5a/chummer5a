@@ -18,7 +18,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -74,7 +73,6 @@ namespace Chummer
             this.lstArmor = new System.Windows.Forms.ListBox();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ArmorName = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.Armor = new Chummer.DataGridViewTextBoxColumnTranslated();
@@ -510,20 +508,6 @@ namespace Chummer
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // Guid
             // 
             this.Guid.DataPropertyName = "ArmorGuid";
@@ -691,7 +675,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmorLabel;
         private System.Windows.Forms.ListBox lstArmor;
         private System.Windows.Forms.Timer tmrSearch;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
         private DataGridViewTextBoxColumnTranslated ArmorName;

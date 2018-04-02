@@ -16,7 +16,6 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
                 UnbindKnowledgeSkillControl();
             }
             base.Dispose(disposing);
@@ -41,7 +40,6 @@ namespace Chummer.UI.Skills
             this.lblSpec = new System.Windows.Forms.Label();
             this.btnCareerIncrease = new System.Windows.Forms.Button();
             this.btnAddSpec = new System.Windows.Forms.Button();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.nudSkill = new NumericUpDownEx();
             this.nudKarma = new NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
@@ -159,20 +157,6 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // nudSkill
             // 
             this.nudSkill.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
@@ -240,6 +224,5 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblSpec;
         private System.Windows.Forms.Button btnCareerIncrease;
         private System.Windows.Forms.Button btnAddSpec;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

@@ -163,7 +163,7 @@ namespace Chummer
                 lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
                 lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                tipTooltip.SetToolTip(lblWeaponRC, _objSelectedWeapon.RCToolTip);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponRC, _objSelectedWeapon.RCToolTip);
                 lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
@@ -196,7 +196,7 @@ namespace Chummer
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
 
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -207,7 +207,7 @@ namespace Chummer
                 lblWeaponAP.Text = string.Empty;
                 lblWeaponMode.Text = string.Empty;
                 lblWeaponRC.Text = string.Empty;
-                tipTooltip.SetToolTip(lblWeaponRC, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponRC, string.Empty);
                 lblWeaponAmmo.Text = string.Empty;
                 lblWeaponAccuracy.Text = string.Empty;
                 lblWeaponCost.Text = string.Empty;
@@ -215,7 +215,7 @@ namespace Chummer
                 lblTest.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblIncludedAccessories.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
             _blnSkipUpdate = false;
         }

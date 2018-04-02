@@ -406,7 +406,7 @@ namespace Chummer
                     string strModPage = objMod.Page(GlobalOptions.Language);
                     lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + strSpaceCharacter + strModPage;
 
-                    tipTooltip.SetToolTip(lblSource,
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
                         CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + strSpaceCharacter +
                         LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strModPage);
                     return;
@@ -495,7 +495,7 @@ namespace Chummer
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-            tipTooltip.SetToolTip(lblSource,
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
                 CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
         }

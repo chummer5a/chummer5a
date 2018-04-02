@@ -20,7 +20,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -34,7 +33,6 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.pnlMetatypes = new System.Windows.Forms.Panel();
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.cboPossessionMethod = new System.Windows.Forms.ComboBox();
@@ -72,15 +70,6 @@ namespace Chummer
             this.pnlMetatypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.SuspendLayout();
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // pnlMetatypes
             // 
@@ -507,8 +496,7 @@ namespace Chummer
         }
 
         #endregion
-
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        
         private System.Windows.Forms.Panel pnlMetatypes;
         private System.Windows.Forms.CheckBox chkBloodSpirit;
         private System.Windows.Forms.ComboBox cboPossessionMethod;

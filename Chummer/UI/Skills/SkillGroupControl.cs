@@ -38,7 +38,7 @@ namespace Chummer.UI.Skills
             lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
             _skillGroup.PropertyChanged += SkillGroup_PropertyChanged;
-            tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skillGroup.ToolTip);
 
             if (_skillGroup.CharacterObject.Created)
             {
@@ -47,7 +47,7 @@ namespace Chummer.UI.Skills
 
                 btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
-                tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
+                GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
 
                 lblGroupRating.Visible = true;
                 lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -101,11 +101,11 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(SkillGroup.ToolTip);
                 case nameof(SkillGroup.ToolTip):
-                    tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skillGroup.ToolTip);
                     if (all) { goto case nameof(Skill.UpgradeToolTip); }
                     break;
                 case nameof(SkillGroup.UpgradeToolTip):
-                    tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
                     break;
             }
         }

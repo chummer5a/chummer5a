@@ -1,4 +1,12 @@
-Future Build 199
+Future Build 200
+
+Application Changes:
+
+- Fixed a bug where changing tabs would often mark a character as having changes that need to be saved.
+- Implemented a cap on Lifestyle Points from assorted sources for Advanced Lifestyles; currently this is hardcoded to the base LP * 2. Closes #2640
+- Fixed an issue with old lifestyles not loading properly.
+
+Build 199
 
 Application Changes:
 
@@ -138,6 +146,7 @@ Application Changes:
 - Unhardcoded the Born Rich bonus.
 - Corrected Advanced Lifestyle cost calculation for increased Comforts, Area and Security values. Fixes #2625
 - Made the Garage Lifestyle qualities available multiple times per Lifestyle
+- Moved the logic for toggling Prototype Transhuman-affected bioware from Character into the Improvement system. Resolves an issue with Reapply Improvements permanently disabling the Cyberware's bonus. Existing characters that have been affected by this behaviour will need to amend it manually. 
 
 Data Changes:
 

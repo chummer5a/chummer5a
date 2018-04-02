@@ -182,6 +182,21 @@ namespace Chummer
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
+        public static ToolTip ToolTipProcessor { get; } = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip
+        {
+            AllowLinksHandling = true,
+            AutoPopDelay = 3600000,
+            BaseStylesheet = null,
+            InitialDelay = 250,
+            IsBalloon = false,
+            MaximumSize = new System.Drawing.Size(0, 0),
+            OwnerDraw = true,
+            ReshowDelay = 100,
+            TooltipCssClass = "htmltooltip",
+            //UseAnimation = true,
+            //UseFading = true
+        };
+
         // Omae Information.
         private static bool _omaeEnabled;
         private static string _strOmaeUserName = string.Empty;

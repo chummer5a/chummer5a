@@ -441,6 +441,7 @@ namespace Chummer
                 nudSecurity.Value = _objSourceLifestyle.Security;
                 cboBaseLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
                 chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+                chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
             }
 
             cboBaseLifestyle.EndUpdate();
@@ -599,7 +600,7 @@ namespace Chummer
                 string strPage = objQuality.Page(GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblQualitySource.Text = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
             }
             else
@@ -611,7 +612,7 @@ namespace Chummer
                 lblQualityLp.Text = string.Empty;
                 lblQualityCost.Text = string.Empty;
                 lblQualitySource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblQualitySource, null);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, null);
                 cmdDeleteQuality.Enabled = false;
             }
         }
@@ -709,18 +710,18 @@ namespace Chummer
                 {
                     string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
@@ -862,12 +863,15 @@ namespace Chummer
 
             //calculate the total LP
             xmlNode = _objLifestyle.GetNode();
-            intLP += Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            int intBaseLP = Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            intLP += intBaseLP;
             intLP -= intComfortsValue;
             intLP -= intAreaValue;
             intLP -= intSecurityValue;
             intLP += intRoommatesValue;
             intLP += decimal.ToInt32(nudBonusLP.Value);
+
+            intLP = Math.Min(intLP, intBaseLP * 2);
 
             if (strBaseLifestyle == "Street")
             {
