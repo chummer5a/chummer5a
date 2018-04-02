@@ -2107,7 +2107,7 @@ namespace Chummer
                 nodNationalityRoot = treLifeModules.FindNodeByTag("Node_SelectedNationalityModule", false);
                 nodFormativeYearsRoot = treLifeModules.FindNodeByTag("Node_SelectedFormativeYearsModule", false);
                 nodTeenYearsRoot = treLifeModules.FindNodeByTag("Node_SelectedTeenYearsModule", false);
-                nodFurtherEducationRoot = treLifeModules.FindNodeByTag("nodFurtherEducationRoot", false);
+                nodFurtherEducationRoot = treLifeModules.FindNodeByTag("Node_SelectedFurtherEducationModule", false);
                 nodRealLifeRoot = treLifeModules.FindNodeByTag("Node_SelectedRealLifeModule", false);
                 switch (notifyCollectionChangedEventArgs.Action)
                 {

@@ -39,7 +39,6 @@ namespace Chummer
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblStageLabel = new System.Windows.Forms.Label();
-            this.lblStage = new System.Windows.Forms.Label();
             this.chkLimitList = new System.Windows.Forms.CheckBox();
             this.cboStage = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
@@ -133,7 +132,6 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 23;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -154,15 +152,6 @@ namespace Chummer
             this.lblStageLabel.TabIndex = 24;
             this.lblStageLabel.Tag = "Label_Stage";
             this.lblStageLabel.Text = "Stage:";
-            // 
-            // lblStage
-            // 
-            this.lblStage.AutoSize = true;
-            this.lblStage.Location = new System.Drawing.Point(344, 84);
-            this.lblStage.Name = "lblStage";
-            this.lblStage.Size = new System.Drawing.Size(41, 13);
-            this.lblStage.TabIndex = 25;
-            this.lblStage.Text = "[Stage]";
             // 
             // chkLimitList
             // 
@@ -186,7 +175,6 @@ namespace Chummer
             this.cboStage.Name = "cboStage";
             this.cboStage.Size = new System.Drawing.Size(158, 21);
             this.cboStage.TabIndex = 27;
-            this.cboStage.Visible = false;
             this.cboStage.SelectionChangeCommitted += new System.EventHandler(this.cboStage_SelectionChangeCommitted);
             // 
             // frmSelectLifeModule
@@ -194,9 +182,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(517, 454);
-            this.Controls.Add(this.cboStage);
             this.Controls.Add(this.chkLimitList);
-            this.Controls.Add(this.lblStage);
             this.Controls.Add(this.lblStageLabel);
             this.Controls.Add(this.lblBP);
             this.Controls.Add(this.lblBPLabel);
@@ -208,6 +194,7 @@ namespace Chummer
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.treModules);
+            this.Controls.Add(this.cboStage);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectLifeModule";
@@ -233,7 +220,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblStageLabel;
-        private System.Windows.Forms.Label lblStage;
         private System.Windows.Forms.CheckBox chkLimitList;
         private System.Windows.Forms.ComboBox cboStage;
     }

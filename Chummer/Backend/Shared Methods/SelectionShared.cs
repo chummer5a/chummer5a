@@ -252,18 +252,25 @@ namespace Chummer
 
             if (objCharacter.BuildMethod == CharacterBuildMethod.LifeModule && (xmlNode.Name == "module" || xmlNode.Name == "version"))
             {
-                if (xmlNode["stage"] != null &&
-                    objCharacter.LifeModules.Any(x => x.Stage != "Real Life" && x.Stage == xmlNode["stage"]?.InnerText))
+                if (objCharacter.LifeModules.Any(x => x.Stage != "Real Life" && x.Stage == xmlNode["stage"]?.InnerText))
                 {
-                    if (blnShowMessage)
+                    //Special case that allows for a specific second Life Module if a specific module was already selected
+                    if (!((xmlNode["name"]?.GetAttribute("parentName") == "State University" || xmlNode["name"]?.InnerText == "State University") &&
+                          objCharacter.LifeModules.Any(x => x.ParentName == "Community College") &&
+                          objCharacter.LifeModules.All(x => x.ParentName != "State University")))
                     {
-                        MessageBox.Show(
-                            LanguageManager.GetString("MessageTitle_SelectLifeModule_Restriction", GlobalOptions.Language),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language)
-                                .Replace("{0}", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (blnShowMessage)
+                        {
+                            MessageBox.Show(
+                                LanguageManager.GetString("MessageTitle_SelectLifeModule_Restriction",
+                                    GlobalOptions.Language),
+                                LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language)
+                                    .Replace("{0}",
+                                        LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        return false;
                     }
-                    return false;
                 }
             }
 

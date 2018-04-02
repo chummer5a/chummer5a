@@ -71,7 +71,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
     {
         private Guid _guiID;
@@ -99,8 +99,6 @@ namespace Chummer
         private Guid _guiWeaponID;
         private Guid _guiQualityId;
         private string _strStage;
-
-        public string Stage => _strStage;
 
         #region Helper Methods
         /// <summary>
@@ -490,6 +488,16 @@ namespace Chummer
         }
 
         /// <summary>
+        /// LifeModule's parent's name.
+        /// </summary>
+        public string ParentName => _strParentName;
+
+        /// <summary>
+        /// LifeModule's stage
+        /// </summary>
+        public string Stage => _strStage;
+
+        /// <summary>
         /// Does the quality come from being a Changeling?
         /// </summary>
         public bool Metagenetic => _blnMetagenetic;
@@ -780,7 +788,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualityType != QualityType.LifeModule || _nodBonus != null && !_nodBonus.HasChildNodes)
+                if (_eQualityType != QualityType.LifeModule || _nodBonus == null || (_nodBonus == null & !_nodBonus.HasChildNodes))
                 {
                     return string.Empty;
                 }
@@ -824,18 +832,30 @@ namespace Chummer
                             skills += LanguageManager.GetString("String_Space", strLanguage) + '+' + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
                             break;
                         case "knowledgeskilllevel":
-                            string s = bonusNode["name"]?.InnerText; //TODO LifeModules Theme translation
-                            if (s == null && bonusNode["options"] != null)
+                            XmlNode xmlCategoryNode = xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" + bonusNode["group"]?.InnerText + "\"]");
+                            string s = LanguageManager.GetString("String_Space", strLanguage) +
+                                       (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) + ':' +
+                                       LanguageManager.GetString("String_Space", strLanguage); 
+                            s += bonusNode["name"]?.InnerText; //TODO LifeModules Theme translation
+                            if (bonusNode["options"] != null)
                             {
                                 foreach (XmlNode optionsNode in bonusNode["options"].ChildNodes)
                                 {
                                     s += LanguageManager.TranslateExtra(optionsNode.InnerText, strLanguage) + "/";
                                 }
-                                s = s?.Substring(0, s.Length - 1);
+                                s = s.Substring(0, s.Length - 1);
                             }
-                            XmlNode xmlCategoryNode = xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" + bonusNode["group"]?.InnerText + "\"]");
-                            s += LanguageManager.GetString("String_Space", strLanguage) + '(' + (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) + ")";
-                            s += LanguageManager.GetString("String_Space", strLanguage) + '+' + (bonusNode["val"]?.InnerText ?? "1");
+                            if (bonusNode["group"]?.InnerText == "Language" &&
+                                (bonusNode["val"]?.InnerText ?? "1") == "0")
+                            {
+                                //Native Language
+                                s += LanguageManager.GetString("String_Space", strLanguage) + 'N';
+                            }
+                            else
+                            {
+                                s += LanguageManager.GetString("String_Space", strLanguage) + '+' +
+                                     (bonusNode["val"]?.InnerText ?? "1");
+                            }
                             knoSkills += indent + s + Environment.NewLine;
                             break;
                         case "skillgrouplevel":
