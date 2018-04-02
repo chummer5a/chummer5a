@@ -208,9 +208,8 @@ namespace Chummer.Backend.Skills
             get
             {
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
-                return (_objCharacter.Created  || _objCharacter.IgnoreRules
-                    ? 12
-                    : (IsKnowledgeSkill && _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + intOtherBonus;
+                return (_objCharacter.Created  || _objCharacter.IgnoreRules ? 12
+                    : (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule ? (IsKnowledgeSkill ? 9 : 7) : 6)) + intOtherBonus;
             }
         }
 
