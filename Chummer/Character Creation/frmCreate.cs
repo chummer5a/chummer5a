@@ -518,8 +518,8 @@ namespace Chummer
             foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
             
-            nudNuyen.DataBindings.Add("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP), false, DataSourceUpdateMode.OnPropertyChanged);
             nudNuyen.DataBindings.Add("Value", CharacterObject, nameof(Character.NuyenBP), false, DataSourceUpdateMode.OnPropertyChanged);
+            nudNuyen.DataBindings.Add("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP), false, DataSourceUpdateMode.OnPropertyChanged);
 
             lblCMPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.PhysicalCM), false, DataSourceUpdateMode.OnPropertyChanged);
             lblCMStun.DataBindings.Add("Text", CharacterObject, nameof(Character.StunCM), false, DataSourceUpdateMode.OnPropertyChanged);
