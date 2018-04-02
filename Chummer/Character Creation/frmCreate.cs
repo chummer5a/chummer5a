@@ -8960,7 +8960,7 @@ namespace Chummer
             if (objLifeModule == null)
             {
                 lblLifeModuleSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblLifeModuleSource, null);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblLifeModuleSource, null);
                 lblLifeModuleKarma.Text = string.Empty;
                 lblLifeModuleEffect.Text = string.Empty;
             }
@@ -8968,7 +8968,7 @@ namespace Chummer
             {
                 string strPage = objLifeModule.DisplayPage(GlobalOptions.Language);
                 lblLifeModuleSource.Text = CommonFunctions.LanguageBookShort(objLifeModule.Source, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblLifeModuleSource, CommonFunctions.LanguageBookLong(objLifeModule.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblLifeModuleSource, CommonFunctions.LanguageBookLong(objLifeModule.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 lblLifeModuleKarma.Text = objLifeModule.BP.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
                 lblLifeModuleEffect.Text = objLifeModule.LifeModuleEffect;
             }
