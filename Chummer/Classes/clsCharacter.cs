@@ -227,10 +227,10 @@ namespace Chummer
         private readonly ObservableCollection<ExpenseLogEntry> _lstExpenseLog = new ObservableCollection<ExpenseLogEntry>();
         private readonly ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
         private readonly ObservableCollection<InitiationGrade> _lstInitiationGrades = new ObservableCollection<InitiationGrade>();
-        private readonly ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstVehicleLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstWeaponLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstVehicleLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
         private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
@@ -972,36 +972,36 @@ namespace Chummer
 
             // <locations>
             objWriter.WriteStartElement("gearlocations");
-            foreach (string strLocation in _lstGearLocations)
+            foreach (Location objLocation in _lstGearLocations)
             {
-                objWriter.WriteElementString("gearlocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </locations>
             objWriter.WriteEndElement();
 
             // <armorbundles>
             objWriter.WriteStartElement("armorlocations");
-            foreach (string strBundle in _lstArmorLocations)
+            foreach (Location objLocation in _lstArmorLocations)
             {
-                objWriter.WriteElementString("armorlocation", strBundle);
+                objLocation.Save(objWriter);
             }
             // </armorbundles>
             objWriter.WriteEndElement();
 
             // <vehiclelocations>
             objWriter.WriteStartElement("vehiclelocations");
-            foreach (string strLocation in _lstVehicleLocations)
+            foreach (Location objLocation in _lstVehicleLocations)
             {
-                objWriter.WriteElementString("vehiclelocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </vehiclelocations>
             objWriter.WriteEndElement();
 
             // <weaponlocations>
             objWriter.WriteStartElement("weaponlocations");
-            foreach (string strLocation in _lstWeaponLocations)
+            foreach (Location objLocation in _lstWeaponLocations)
             {
-                objWriter.WriteElementString("weaponlocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </weaponlocations>
             objWriter.WriteEndElement();
@@ -2040,28 +2040,36 @@ namespace Chummer
             XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                _lstGearLocations.Add(objXmlLocation.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstGearLocations.Add(objLocation);
             }
             objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                _lstGearLocations.Add(objXmlLocation.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstGearLocations.Add(objLocation);
             }
 
             Timekeeper.Finish("load_char_loc");
             Timekeeper.Start("load_char_abundle");
 
             // Armor Bundles.
-            XmlNodeList objXmlBundleList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
-            foreach (XmlNode objXmlBundle in objXmlBundleList)
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                _lstArmorLocations.Add(objXmlBundle.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstArmorLocations.Add(objLocation);
             }
 
-            objXmlBundleList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
-            foreach (XmlNode objXmlBundle in objXmlBundleList)
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                _lstArmorLocations.Add(objXmlBundle.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstArmorLocations.Add(objLocation);
             }
 
             Timekeeper.Finish("load_char_abundle");
@@ -2071,7 +2079,9 @@ namespace Chummer
             XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
             foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
             {
-                _lstVehicleLocations.Add(objXmlLocation.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstVehicleLocations.Add(objLocation);
             }
 
             Timekeeper.Finish("load_char_vloc");
@@ -2081,7 +2091,9 @@ namespace Chummer
             XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
             foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
             {
-                _lstWeaponLocations.Add(objXmlLocation.InnerText);
+                Location objLocation = new Location(this);
+                objLocation.Load(objXmlLocation);
+                _lstWeaponLocations.Add(objLocation);
             }
 
             Timekeeper.Finish("load_char_wloc");
@@ -7039,22 +7051,22 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public ObservableCollection<string> GearLocations => _lstGearLocations;
+        public ObservableCollection<Location> GearLocations => _lstGearLocations;
 
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public ObservableCollection<string> ArmorLocations => _lstArmorLocations;
+        public ObservableCollection<Location> ArmorLocations => _lstArmorLocations;
 
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public ObservableCollection<string> VehicleLocations => _lstVehicleLocations;
+        public ObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public ObservableCollection<string> WeaponLocations => _lstWeaponLocations;
+        public ObservableCollection<Location> WeaponLocations => _lstWeaponLocations;
 
         /// <summary>
         /// Improvement Groups.

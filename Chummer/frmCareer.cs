@@ -5783,12 +5783,12 @@ namespace Chummer
         private void cmdArmorEquipAll_Click(object sender, EventArgs e)
         {
             string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (treArmor.SelectedNode?.Tag is Location selectedLocation)
             {
                 // Equip all of the Armor in the Armor Bundle.
                 foreach (Armor objArmor in CharacterObject.Armor)
                 {
-                    if (objArmor.Location == strSelectedId || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
+                    if (objArmor.Location == selectedLocation || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
                     {
                         objArmor.Equipped = true;
                     }

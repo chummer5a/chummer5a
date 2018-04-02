@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _location;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
@@ -414,7 +414,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _location.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
@@ -433,13 +433,24 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _strLocation = string.Empty;
+                _location = null;
             }
             else
             {
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
-                objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+                if (!string.IsNullOrWhiteSpace(objNode["location"].InnerText))
+                {
+                    if (!objNode.TryGetField("location", Guid.TryParse, out Guid _locationGuid))
+                    {
+                        foreach (Location armorLocation in _objCharacter.ArmorLocations)
+                        {
+                            if (armorLocation.Name != objNode["location"].InnerText) continue;
+                            Location = armorLocation.InternalId;
+                            break;
+                        }
+                    }
+                }
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))

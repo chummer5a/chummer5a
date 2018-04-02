@@ -262,7 +262,7 @@ namespace Chummer
             if (treLimit.SelectedNode.Level > 0)
             {
                 TreeNode objSelectedNode = treLimit.SelectedNode;
-                string strGuid = objSelectedNode?.Tag.ToString();
+                string strGuid = (objSelectedNode?.Tag as IHasInternalId).InternalId;
                 if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                     return;
                 LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
@@ -424,8 +424,8 @@ namespace Chummer
             TreeNode objEnchantmentsNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedId = treSpells.SelectedNode?.Tag.ToString();
-                string strSelectedMetamagicId = treMetamagic.SelectedNode?.Tag.ToString();
+                string strSelectedId = (treSpells.SelectedNode?.Tag as IHasInternalId).InternalId;
+                string strSelectedMetamagicId = (treMetamagic.SelectedNode?.Tag as IHasInternalId).InternalId;
 
                 // Clear the default nodes of entries.
                 treSpells.Nodes.Clear();
@@ -681,7 +681,7 @@ namespace Chummer
             TreeNode objParentNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedId = treAIPrograms.SelectedNode?.Tag.ToString();
+                string strSelectedId = (treAIPrograms.SelectedNode?.Tag as IHasInternalId).InternalId;
 
                 treAIPrograms.Nodes.Clear();
 
@@ -795,9 +795,9 @@ namespace Chummer
             TreeNode objParentNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
-                string strSelectedMetamagicId = treMetamagic.SelectedNode?.Tag.ToString();
-                
+                string strSelectedId = (treComplexForms.SelectedNode?.Tag as IHasInternalId).InternalId;
+                string strSelectedMetamagicId = (treMetamagic.SelectedNode?.Tag as IHasInternalId).InternalId;
+
                 treComplexForms.Nodes.Clear();
 
                 // Add Complex Forms.
@@ -944,7 +944,7 @@ namespace Chummer
 
         protected void RefreshLimitModifiers(TreeView treLimit, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treLimit.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treLimit.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
 
@@ -1168,7 +1168,7 @@ namespace Chummer
         {
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
+                string strSelectedId = (treMetamagic.SelectedNode?.Tag as IHasInternalId).InternalId;
                 TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
                 lstRootNodes.Clear();
                 
@@ -1792,7 +1792,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedId = treCritterPowers.SelectedNode?.Tag.ToString();
+                string strSelectedId = (treCritterPowers.SelectedNode?.Tag as IHasInternalId).InternalId;
                 treCritterPowers.Nodes.Clear();
                 // Add the Critter Powers that exist.
                 foreach (CritterPower objPower in _objCharacter.CritterPowers)
@@ -1931,7 +1931,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
-                string strSelectedNode = treQualities.SelectedNode?.Tag.ToString();
+                string strSelectedNode = (treQualities.SelectedNode?.Tag as IHasInternalId).InternalId;
 
                 // Create the root nodes.
                 treQualities.Nodes.Clear();
@@ -2153,7 +2153,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treWeapons.FindNode("Node_SelectedWeapons", false);
 
@@ -2285,7 +2285,7 @@ namespace Chummer
 
         protected void RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = null;
 
@@ -2495,7 +2495,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenWeaponsCollectionChanged(false, treWeapons, objWeapon);
@@ -2515,7 +2515,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent.FindNode(objWeapon.InternalId)?.Remove();
@@ -2590,7 +2590,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
@@ -2614,7 +2614,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
@@ -2657,7 +2657,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treArmor.FindNode("Node_SelectedArmor", false);
 
@@ -2789,7 +2789,7 @@ namespace Chummer
 
         protected void RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = null;
 
@@ -3011,7 +3011,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objArmorMod.Gear.RemoveTaggedCollectionChanged(treArmor);
@@ -3033,7 +3033,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
@@ -3074,7 +3074,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treGear.FindNode("Node_SelectedGear", false);
 
@@ -3206,8 +3206,8 @@ namespace Chummer
 
         protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
-            
+            string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId).InternalId;
+
             TreeNode nodRoot = null;
             
             if (notifyCollectionChangedEventArgs == null)
@@ -3397,7 +3397,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenGearsCollectionChanged(false, treGear, objGear);
@@ -3417,7 +3417,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent.FindNode(objGear.InternalId)?.Remove();
@@ -3481,7 +3481,7 @@ namespace Chummer
         
         protected void RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode objCyberwareRoot = null;
             TreeNode objBiowareRoot = null;
@@ -3721,7 +3721,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenCyberwareCollectionChanged(false, treCyberware, objCyberware);
@@ -3741,7 +3741,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent.FindNode(objCyberware.InternalId)?.Remove();
@@ -3785,7 +3785,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treVehicles.FindNode("Node_SelectedVehicles", false);
 
@@ -3920,7 +3920,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treVehicles.FindNode(objVehicle.InternalId);
             if (nodRoot == null)
@@ -4077,7 +4077,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
@@ -4107,7 +4107,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
@@ -4210,7 +4210,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objWeaponMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
@@ -4253,7 +4253,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
                         {
                             nodParent?.FindNode(objWeaponMount.InternalId)?.Remove();
@@ -4303,7 +4303,7 @@ namespace Chummer
 
         protected void RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = null;
 
@@ -4599,7 +4599,7 @@ namespace Chummer
 
         public void RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treFoci.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treFoci.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             if (notifyCollectionChangedEventArgs == null)
             {
@@ -5022,8 +5022,8 @@ namespace Chummer
         
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
-            
+            string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId).InternalId;
+
             TreeNode objMartialArtsParentNode = null;
             TreeNode objQualityNode = null;
 
@@ -5200,7 +5200,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
+                        string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId).InternalId;
 
                         nodMartialArt.Nodes.Clear();
 
@@ -5247,8 +5247,8 @@ namespace Chummer
         /// </summary>
         protected void RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
-            
+            string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId).InternalId;
+
             TreeNode objRoot;
 
             if (notifyCollectionChangedEventArgs == null)
@@ -5542,7 +5542,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
+            string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId).InternalId;
 
             TreeNode nodRoot = treImprovements.FindNode("Node_SelectedImprovements", false);
 
@@ -5674,8 +5674,7 @@ namespace Chummer
 
         protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treLifestyles.SelectedNode?.Tag.ToString();
-            
+            string strSelectedId = (treLifestyles.SelectedNode?.Tag as IHasInternalId).InternalId;
             TreeNode objParentNode = null;
 
             if (notifyCollectionChangedEventArgs == null)
