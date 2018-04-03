@@ -2918,11 +2918,13 @@
       <category>Positive</category>
       <bonus>
         <mademan />
-        <selectcontact>
+        <addcontact>
           <forcedloyalty>3</forcedloyalty>
-          <type>group</type>
           <free />
-        </selectcontact>
+          <group />
+		  <forcegroup />
+		  <canwrite />
+        </addcontact>
       </bonus>
       <source>RF</source>
       <page>148</page>

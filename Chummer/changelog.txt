@@ -5,6 +5,7 @@ Application Changes:
 - Fixed a bug where changing tabs would often mark a character as having changes that need to be saved.
 - Implemented a cap on Lifestyle Points from assorted sources for Advanced Lifestyles; currently this is hardcoded to the base LP * 2. Closes #2640
 - Fixed an issue with old lifestyles not loading properly.
+- Changed MadeMan from selectcontact to addcontact and added backwards compatibility to convert old characters
 
 Build 199
 
