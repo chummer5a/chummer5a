@@ -44,13 +44,13 @@ namespace Chummer
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
-                if (objGear.Parent != null)
+                if (objGear.Parent is Gear objParent)
                 {
-                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort(GlobalOptions.Language)))
+                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
-                        if (!string.IsNullOrEmpty(objGear.Parent.Location))
-                            strName += " @ " + objGear.Parent.Location;
+                        strName += " (" + objParent.DisplayNameShort(GlobalOptions.Language);
+                        if (!string.IsNullOrEmpty(objParent.Location))
+                            strName += " @ " + objParent.Location;
                         strName += ')';
                     }
                 }
