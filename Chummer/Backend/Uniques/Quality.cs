@@ -823,13 +823,14 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
+                
+                string attributes = string.Empty;
+                string skillGroups = string.Empty;
+                string skills = string.Empty;
+                string knoSkills = string.Empty;
+                string qualities = string.Empty;
 
                 string strLanguage = GlobalOptions.Language;
-                string attributes = LanguageManager.GetString("Label_Attributes", strLanguage) + ":" + Environment.NewLine;
-                string skillGroups = LanguageManager.GetString("Label_SkillGroups", strLanguage) + ":" + Environment.NewLine;
-                string skills = LanguageManager.GetString("Label_ActiveSkills", strLanguage) + ":" + Environment.NewLine;
-                string knoSkills = LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) + ":" + Environment.NewLine;
-                string qualities = LanguageManager.GetString("String_Quality", strLanguage) + ":" + Environment.NewLine;
                 string indent = LanguageManager.GetString("String_Space", strLanguage) +
                                 LanguageManager.GetString("String_Space", strLanguage);
 
@@ -850,7 +851,8 @@ namespace Chummer
                     switch (bonusNode.Name)
                     {
                         case "attributelevel":
-                            attributes += indent + LanguageManager.TranslateExtra(bonusNode["name"]?.InnerText, strLanguage) + " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
+                            attributes +=
+                                indent + LanguageManager.GetString("String_Attribute" + bonusNode["name"]?.InnerText + "Long", strLanguage) + " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
                             break;
                         case "skilllevel":
                             XmlNode xmlSkillNode = xmlSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + bonusNode["name"]?.InnerText + "\"]");
@@ -903,7 +905,34 @@ namespace Chummer
                             break;
                     }
                 }
-                return attributes + skillGroups + skills + knoSkills + qualities;
+
+                string work = string.Empty;
+                if (!string.IsNullOrEmpty(attributes))
+                {
+                    work += LanguageManager.GetString("Label_Attributes", strLanguage) + ":" + Environment.NewLine;
+                    work += attributes;
+                }
+                if (!string.IsNullOrEmpty(skillGroups))
+                {
+                    work += LanguageManager.GetString("Label_SkillGroups", strLanguage) + ":" + Environment.NewLine;
+                    work += skillGroups;
+                }
+                if (!string.IsNullOrEmpty(skills))
+                {
+                    work += LanguageManager.GetString("Label_ActiveSkills", strLanguage) + ":" + Environment.NewLine;
+                    work += skills;
+                }
+                if (!string.IsNullOrEmpty(knoSkills))
+                {
+                    work += LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) + ":" + Environment.NewLine;
+                    work += knoSkills;
+                }
+                if (!string.IsNullOrEmpty(qualities))
+                {
+                    work += LanguageManager.GetString("String_Quality", strLanguage) + ":" + Environment.NewLine;
+                    work += qualities;
+                }
+                return work;
             }
         }
         #endregion
