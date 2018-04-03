@@ -7054,7 +7054,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
           <addquality>Quick Healer</addquality>
         </addqualities>
       </bonus>

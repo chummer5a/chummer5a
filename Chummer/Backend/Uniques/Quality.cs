@@ -108,6 +108,7 @@ namespace Chummer
         private Guid _guiWeaponID;
         private Guid _guiQualityId;
         private LifeModuleStage _eLifeModuleStage;
+        private string _strLifeModuleEffect = string.Empty;
 
         #region Helper Methods
         /// <summary>
@@ -217,12 +218,6 @@ namespace Chummer
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
             _blnMutant = objXmlQuality["mutant"] != null;
 
-            if (_eQualityType == QualityType.LifeModule)
-            {
-                _eLifeModuleStage = ConvertToLifeModuleStage(objXmlQuality["stage"]?.InnerText);
-                _strParentName = objXmlQuality["name"]?.GetAttribute("parentName") ?? string.Empty;
-            }
-
             if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
             {
                 _guiQualityId = guiTemp;
@@ -313,6 +308,13 @@ namespace Chummer
                     _guiID = Guid.Empty;
                     return;
                 }
+            }
+
+            if (_eQualityType == QualityType.LifeModule)
+            {
+                _eLifeModuleStage = ConvertToLifeModuleStage(objXmlQuality["stage"]?.InnerText);
+                _strParentName = objXmlQuality["name"]?.GetAttribute("parentName") ?? string.Empty;
+                _strLifeModuleEffect = GetLifeModuleEffect();
             }
 
             if (string.IsNullOrEmpty(Notes))
@@ -815,126 +817,143 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
 
-        public string LifeModuleEffect
+        public string LifeModuleEffect => _strLifeModuleEffect;
+
+        private string GetLifeModuleEffect()
         {
-            get
+            if (_eQualityType != QualityType.LifeModule || _nodBonus == null || _nodBonus == null & !_nodBonus.HasChildNodes)
+                return string.Empty;
+            
+            string attributes = string.Empty;
+            string skillGroups = string.Empty;
+            string skills = string.Empty;
+            string knoSkills = string.Empty;
+            string qualities = string.Empty;
+
+            string strLanguage = GlobalOptions.Language;
+            string indent = LanguageManager.GetString("String_Space", strLanguage) +
+                            LanguageManager.GetString("String_Space", strLanguage);
+
+            foreach (XmlNode bonusNode in _nodBonus.ChildNodes)
             {
-                if (_eQualityType != QualityType.LifeModule || _nodBonus == null || (_nodBonus == null & !_nodBonus.HasChildNodes))
+                if (bonusNode.Name == "addqualities")
                 {
-                    return string.Empty;
-                }
-                
-                string attributes = string.Empty;
-                string skillGroups = string.Empty;
-                string skills = string.Empty;
-                string knoSkills = string.Empty;
-                string qualities = string.Empty;
-
-                string strLanguage = GlobalOptions.Language;
-                string indent = LanguageManager.GetString("String_Space", strLanguage) +
-                                LanguageManager.GetString("String_Space", strLanguage);
-
-                foreach (XmlNode bonusNode in _nodBonus.ChildNodes)
-                {
-                    if (bonusNode.Name == "addqualities")
+                    foreach (XmlNode qualityNode in bonusNode.ChildNodes)
                     {
-                        foreach (XmlNode qualityNode in bonusNode.ChildNodes)
+                        string qualityName = qualityNode.InnerText;
+                        XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
+                            .SelectSingleNode("/chummer/qualities/quality[name = \"" + qualityName + "\"]");
+                        qualities += indent + (xmlQualityNode?["translate"]?.InnerText ?? qualityName);
+                        if (qualityNode.Attributes?["rating"] != null)
+                            qualities += LanguageManager.GetString("String_Space", strLanguage) +
+                                         qualityNode.Attributes?["rating"].InnerText;
+                        qualities += Environment.NewLine;
+                    }
+                    continue;
+                }
+                XmlDocument xmlSkillDocument = XmlManager.Load("skills.xml", strLanguage);
+                switch (bonusNode.Name)
+                {
+                    case "attributelevel":
+                        attributes +=
+                            indent + LanguageManager.GetString(
+                                "String_Attribute" + bonusNode["name"]?.InnerText + "Long", strLanguage) + " +" +
+                            (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
+                        break;
+                    case "skilllevel":
+                        XmlNode xmlSkillNode =
+                            xmlSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" +
+                                                              bonusNode["name"]?.InnerText + "\"]");
+                        skills += indent + (xmlSkillNode?["translate"]?.InnerText ?? bonusNode["name"]?.InnerText);
+                        if (bonusNode["spec"] != null)
                         {
-                            string qualityName = qualityNode.InnerText;
-                            XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
-                                .SelectSingleNode("/chummer/qualities/quality[name = \"" + qualityName + "\"]");
-                            qualities += "  " + (xmlQualityNode?["translate"]?.InnerText ?? qualityName) + Environment.NewLine;
+                            xmlSkillNode =
+                                xmlSkillDocument.SelectSingleNode("/chummer/skills/skill/specs/spec[. = \"" +
+                                                                  bonusNode["spec"].InnerText + "\"]");
+                            skills += LanguageManager.GetString("String_Space", strLanguage) + '(' +
+                                      (xmlSkillNode?.Attributes?["translate"]?.Value ?? bonusNode["spec"]?.InnerText) +
+                                      ' ' + LanguageManager.GetString("String_ExpenseSpecialization", strLanguage) +
+                                      ")";
                         }
-                        continue;
-                    }
-                    XmlDocument xmlSkillDocument = XmlManager.Load("skills.xml", strLanguage);
-                    switch (bonusNode.Name)
-                    {
-                        case "attributelevel":
-                            attributes +=
-                                indent + LanguageManager.GetString("String_Attribute" + bonusNode["name"]?.InnerText + "Long", strLanguage) + " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
-                            break;
-                        case "skilllevel":
-                            XmlNode xmlSkillNode = xmlSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + bonusNode["name"]?.InnerText + "\"]");
-                            skills += indent + (xmlSkillNode?["translate"]?.InnerText ?? bonusNode["name"]?.InnerText);
-                            if (bonusNode["spec"] != null)
-                            {
-                                xmlSkillNode = xmlSkillDocument.SelectSingleNode("/chummer/skills/skill/specs/spec[. = \"" + bonusNode["spec"].InnerText + "\"]");
-                                skills += LanguageManager.GetString("String_Space", strLanguage) + '(' + (xmlSkillNode?.Attributes?["translate"]?.Value ?? bonusNode["spec"]?.InnerText) + ' ' + LanguageManager.GetString("String_ExpenseSpecialization", strLanguage) + ")";
-                            }
-                            skills += LanguageManager.GetString("String_Space", strLanguage) + '+' + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
-                            break;
-                        case "knowledgeskilllevel":
-                            XmlNode xmlCategoryNode = xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" + bonusNode["group"]?.InnerText + "\"]");
-                            string s = LanguageManager.GetString("String_Space", strLanguage) +
-                                       (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) + ':' +
-                                       LanguageManager.GetString("String_Space", strLanguage);
-                            if (bonusNode["name"] != null)
-                            {
-                                s += bonusNode["name"].InnerText;
-                            }
-                            else if (bonusNode["theme"] != null)
-                            {
-                                s += '[' + bonusNode["theme"].InnerText + ']';
-                            }
-                            else if (bonusNode["options"] != null)
-                            {
-                                foreach (XmlNode optionsNode in bonusNode["options"].ChildNodes)
-                                {
-                                    s += LanguageManager.TranslateExtra(optionsNode.InnerText, strLanguage) + "/";
-                                }
-                                s = s.Substring(0, s.Length - 1);
-                            }
-                            if (bonusNode["group"]?.InnerText == "Language" &&
-                                (bonusNode["val"]?.InnerText ?? "1") == "0")
-                            {
-                                //Native Language
-                                s += LanguageManager.GetString("String_Space", strLanguage) + 'N';
-                            }
-                            else
-                            {
-                                s += LanguageManager.GetString("String_Space", strLanguage) + '+' +
-                                     (bonusNode["val"]?.InnerText ?? "1");
-                            }
-                            knoSkills += indent + s + Environment.NewLine;
-                            break;
-                        case "skillgrouplevel":
-                            XmlNode xmlSkillGroupNode = xmlSkillDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + bonusNode["name"]?.InnerText + "\"]");
-                            skillGroups += indent + (xmlSkillGroupNode?.Attributes?["translate"]?.Value ?? bonusNode["name"]?.InnerText);
-                            skillGroups += LanguageManager.GetString("String_Space", strLanguage) + '+' + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
-                            break;
-                    }
+                        skills += LanguageManager.GetString("String_Space", strLanguage) + '+' +
+                                  (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
+                        break;
+                    case "knowledgeskilllevel":
+                        XmlNode xmlCategoryNode =
+                            xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" +
+                                                              bonusNode["group"]?.InnerText + "\"]");
+                        string s = LanguageManager.GetString("String_Space", strLanguage) +
+                                   (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) +
+                                   ':' +
+                                   LanguageManager.GetString("String_Space", strLanguage);
+                        if (bonusNode["name"] != null)
+                        {
+                            s += bonusNode["name"].InnerText;
+                        }
+                        else if (bonusNode["theme"] != null)
+                        {
+                            s += '[' + bonusNode["theme"].InnerText + ']';
+                        }
+                        else if (bonusNode["options"] != null)
+                        {
+                            s = bonusNode["options"].ChildNodes.Cast<XmlNode>().Aggregate(s, (current, optionsNode) => current + (LanguageManager.TranslateExtra(optionsNode.InnerText, strLanguage) + "/"));
+                            s = s.Substring(0, s.Length - 1);
+                        }
+                        if (bonusNode["group"]?.InnerText == "Language" &&
+                            (bonusNode["val"]?.InnerText ?? "1") == "0")
+                        {
+                            //Native Language
+                            s += LanguageManager.GetString("String_Space", strLanguage) + 'N';
+                        }
+                        else
+                        {
+                            s += LanguageManager.GetString("String_Space", strLanguage) + '+' +
+                                 (bonusNode["val"]?.InnerText ?? "1");
+                        }
+                        knoSkills += indent + s + Environment.NewLine;
+                        break;
+                    case "skillgrouplevel":
+                        XmlNode xmlSkillGroupNode =
+                            xmlSkillDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" +
+                                                              bonusNode["name"]?.InnerText + "\"]");
+                        skillGroups += indent + (xmlSkillGroupNode?.Attributes?["translate"]?.Value ??
+                                                 bonusNode["name"]?.InnerText);
+                        skillGroups += LanguageManager.GetString("String_Space", strLanguage) + '+' +
+                                       (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
+                        break;
                 }
-
-                string work = string.Empty;
-                if (!string.IsNullOrEmpty(attributes))
-                {
-                    work += LanguageManager.GetString("Label_Attributes", strLanguage) + ":" + Environment.NewLine;
-                    work += attributes;
-                }
-                if (!string.IsNullOrEmpty(skillGroups))
-                {
-                    work += LanguageManager.GetString("Label_SkillGroups", strLanguage) + ":" + Environment.NewLine;
-                    work += skillGroups;
-                }
-                if (!string.IsNullOrEmpty(skills))
-                {
-                    work += LanguageManager.GetString("Label_ActiveSkills", strLanguage) + ":" + Environment.NewLine;
-                    work += skills;
-                }
-                if (!string.IsNullOrEmpty(knoSkills))
-                {
-                    work += LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) + ":" + Environment.NewLine;
-                    work += knoSkills;
-                }
-                if (!string.IsNullOrEmpty(qualities))
-                {
-                    work += LanguageManager.GetString("String_Quality", strLanguage) + ":" + Environment.NewLine;
-                    work += qualities;
-                }
-                return work;
             }
+
+            string work = string.Empty;
+            if (!string.IsNullOrEmpty(attributes))
+            {
+                work += LanguageManager.GetString("Label_Attributes", strLanguage) + ":" + Environment.NewLine;
+                work += attributes;
+            }
+            if (!string.IsNullOrEmpty(skillGroups))
+            {
+                work += LanguageManager.GetString("Label_SkillGroups", strLanguage) + ":" + Environment.NewLine;
+                work += skillGroups;
+            }
+            if (!string.IsNullOrEmpty(skills))
+            {
+                work += LanguageManager.GetString("Label_ActiveSkills", strLanguage) + ":" + Environment.NewLine;
+                work += skills;
+            }
+            if (!string.IsNullOrEmpty(knoSkills))
+            {
+                work += LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) + ":" + Environment.NewLine;
+                work += knoSkills;
+            }
+            if (!string.IsNullOrEmpty(qualities))
+            {
+                work += LanguageManager.GetString("String_Quality", strLanguage) + ":" + Environment.NewLine;
+                work += qualities;
+            }
+            return work;
         }
+
+
         #endregion
 
         #region UI Methods
