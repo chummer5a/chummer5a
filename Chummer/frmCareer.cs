@@ -15837,7 +15837,7 @@ namespace Chummer
             _blnSkipUpdate = true;
 
             // TODO: DataBind these wherever possible
-
+            CharacterObject.ResetCachedEssence();
             tssEssence.Text = CharacterObject.DisplayEssence;
             
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
