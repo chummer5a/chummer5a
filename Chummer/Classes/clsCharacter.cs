@@ -3316,8 +3316,8 @@ namespace Chummer
                     if (objReturnGear != null)
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                        if (objReturnGear.Parent != null)
-                            strGearReturn += " (" + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')'; 
+                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            strGearReturn += " (" + parent.DisplayNameShort(strLanguage) + ')'; 
                         return strGearReturn;
                     }
                     foreach (Weapon objWeapon in Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -3328,8 +3328,8 @@ namespace Chummer
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                if (objReturnGear.Parent != null)
-                                    strGearReturn += " (" + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    strGearReturn += " (" + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                                 else
                                     strGearReturn += " (" + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ')';
                                 return strGearReturn;
@@ -3342,8 +3342,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objArmor.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += " (" + objArmor.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += " (" + objArmor.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3355,8 +3355,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objCyberware.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += " (" + objCyberware.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += " (" + objCyberware.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3368,8 +3368,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3382,8 +3382,8 @@ namespace Chummer
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                    if (objReturnGear.Parent != null)
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
@@ -3400,8 +3400,8 @@ namespace Chummer
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                        if (objReturnGear.Parent != null)
-                                            strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                            strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                                         else
                                             strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ')';
                                         return strGearReturn;
@@ -3414,8 +3414,8 @@ namespace Chummer
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                    if (objReturnGear.Parent != null)
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objCyberware.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objCyberware.DisplayNameShort(strLanguage) + ", " + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objCyberware.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
@@ -4071,10 +4071,10 @@ namespace Chummer
                 return;
 
             // Remove the Gear from the character.
-            if (objGear.Parent == null)
-                Gear.Remove(objGear);
+            if (objGear.Parent is IHasChildren<Gear> parent)
+                parent.Children.Remove(objGear);
             else
-                objGear.Parent.Children.Remove(objGear);
+                Gear.Remove(objGear);
 
             if (objDestination.Level == 0)
             {
@@ -4135,8 +4135,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            GearLocations.Move(GearLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4158,9 +4158,7 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strSelectedId = nodLifestyleNode.Tag.ToString();
-            Lifestyle objLifestyle = Lifestyles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (objLifestyle != null)
+            if (nodLifestyleNode.Tag is Lifestyle objLifestyle)
                 Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
         }
 
@@ -4207,8 +4205,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            ArmorLocations.Move(ArmorLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4254,8 +4252,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            WeaponLocations.Move(WeaponLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4300,15 +4298,11 @@ namespace Chummer
             if (objGear == null)
                 return;
 
-            Gear objOldParent = objGear.Parent;
-            string strDestinationId = nodDestination.Tag.ToString();
-            // Make sure the destination is another piece of Gear or a Location.
-            Gear objDestinationGear = Vehicles.FindVehicleGear(strDestinationId);
-            if (objDestinationGear != null)
+            if (nodDestination.Tag is Gear objDestinationGear)
             {
                 // Remove the Gear from the Vehicle.
-                if (objOldParent != null)
-                    objOldParent.Children.Remove(objGear);
+                if (objGear.Parent is IHasChildren<Gear> parent)
+                    parent.Children.Remove(objGear);
                 else if (objOldCyberware != null)
                     objOldCyberware.Gear.Remove(objGear);
                 else if (objOldWeaponAccessory != null)
@@ -4334,13 +4328,11 @@ namespace Chummer
                 Vehicle objDestinationVehicle = Vehicles.FindById(nodVehicleNode.Tag.ToString());
 
                 // Determine if this is a Location in the destination Vehicle.
-                string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == strDestinationId);
-
-                if (!string.IsNullOrEmpty(strDestinationLocation))
+                if (nodDestination.Tag is Location objLocation)
                 {
                     // Remove the Gear from the Vehicle.
-                    if (objOldParent != null)
-                        objOldParent.Children.Remove(objGear);
+                    if (objGear.Parent is IHasChildren<Gear> parent)
+                        parent.Children.Remove(objGear);
                     else if (objOldCyberware != null)
                         objOldCyberware.Gear.Remove(objGear);
                     else if (objOldWeaponAccessory != null)
@@ -4349,7 +4341,7 @@ namespace Chummer
                         objOldVehicle.Gear.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
-                    objGear.Location = strDestinationLocation;
+                    objGear.Location = objLocation.InternalId;
                 }
             }
         }

@@ -2162,28 +2162,21 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            TreeNode objLocation = new TreeNode
-                            {
-                                Tag = strLocation,
-                                Text = strLocation,
-                                ContextMenuStrip = cmsWeaponLocation
-                            };
-                            treWeapons.Nodes.Insert(intNewIndex, objLocation);
+                            treWeapons.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsWeaponLocation));
                             intNewIndex += 1;
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treWeapons.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode nodLocation = treWeapons.FindNode(objLocation.InternalId, false);
+                            if (nodLocation != null)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                if (nodLocation.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -2194,13 +2187,14 @@ namespace Chummer
                                         };
                                         treWeapons.Nodes.Insert(0, nodRoot);
                                     }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
                                     {
-                                        TreeNode nodWeapon = objLocation.Nodes[i];
+                                        TreeNode nodWeapon = nodLocation.Nodes[i];
                                         nodWeapon.Remove();
                                         nodRoot.Nodes.Add(nodWeapon);
                                     }
                                 }
+                                objLocation.Remove(_objCharacter);
                             }
                         }
                     }
@@ -2250,31 +2244,29 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        foreach (string strLocation in _objCharacter.WeaponLocations)
+                        foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
-                            TreeNode objLocation = treWeapons.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode nodLocation = treWeapons.FindNode(objLocation.InternalId, false);
+                            if (nodLocation == null) continue;
+                            if (nodLocation.Nodes.Count > 0)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                if (nodRoot == null)
                                 {
-                                    if (nodRoot == null)
+                                    nodRoot = new TreeNode
                                     {
-                                        nodRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectedWeapons",
-                                            Text = LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language)
-                                        };
-                                        treWeapons.Nodes.Insert(0, nodRoot);
-                                    }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
-                                    {
-                                        TreeNode nodWeapon = objLocation.Nodes[i];
-                                        nodWeapon.Remove();
-                                        nodRoot.Nodes.Add(nodWeapon);
-                                    }
+                                        Tag = "Node_SelectedWeapons",
+                                        Text = LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language)
+                                    };
+                                    treWeapons.Nodes.Insert(0, nodRoot);
+                                }
+                                for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                {
+                                    TreeNode nodWeapon = nodLocation.Nodes[i];
+                                    nodWeapon.Remove();
+                                    nodRoot.Nodes.Add(nodWeapon);
                                 }
                             }
+                            objLocation.Remove(_objCharacter);
                         }
                     }
                     break;
@@ -2294,15 +2286,9 @@ namespace Chummer
                 treWeapons.Nodes.Clear();
 
                 // Start by populating Locations.
-                foreach (string strLocation in CharacterObject.WeaponLocations)
+                foreach (Location objLocation in CharacterObject.WeaponLocations)
                 {
-                    TreeNode objLocation = new TreeNode
-                    {
-                        Tag = strLocation,
-                        Text = strLocation,
-                        ContextMenuStrip = cmsWeaponLocation
-                    };
-                    treWeapons.Nodes.Add(objLocation);
+                    treWeapons.Nodes.Add(objLocation.CreateTreeNode(cmsWeaponLocation));
                 }
                 foreach (Weapon objWeapon in CharacterObject.Weapons)
                 {
@@ -2754,13 +2740,12 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        foreach (string strLocation in _objCharacter.ArmorLocations)
+                        foreach (Location objLocation in _objCharacter.ArmorLocations)
                         {
-                            TreeNode objLocation = treArmor.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode nodLocation = treArmor.FindNode(objLocation.InternalId, false);
+                            if (nodLocation != null)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                if (nodLocation.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -2771,13 +2756,14 @@ namespace Chummer
                                         };
                                         treArmor.Nodes.Insert(0, nodRoot);
                                     }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
                                     {
-                                        TreeNode nodArmor = objLocation.Nodes[i];
+                                        TreeNode nodArmor = nodLocation.Nodes[i];
                                         nodArmor.Remove();
                                         nodRoot.Nodes.Add(nodArmor);
                                     }
                                 }
+                                objLocation.Remove(CharacterObject);
                             }
                         }
                     }
@@ -2798,15 +2784,9 @@ namespace Chummer
                 treArmor.Nodes.Clear();
                 
                 // Start by adding Locations.
-                foreach (string strLocation in CharacterObject.ArmorLocations)
+                foreach (Location objLocation in CharacterObject.ArmorLocations)
                 {
-                    TreeNode objLocation = new TreeNode
-                    {
-                        Tag = strLocation,
-                        Text = strLocation,
-                        ContextMenuStrip = cmsArmorLocation
-                    };
-                    treArmor.Nodes.Add(objLocation);
+                    treArmor.Nodes.Add(objLocation.CreateTreeNode(cmsArmorLocation));
                 }
 
                 // Add Armor.
@@ -3171,13 +3151,13 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        foreach (string strLocation in _objCharacter.GearLocations)
+                        foreach (Location objLocation in _objCharacter.GearLocations)
                         {
-                            TreeNode objLocation = treGear.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode nodLocation = treGear.FindNode(objLocation.InternalId, false);
+                            if (nodLocation != null)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                nodLocation.Remove();
+                                if (nodLocation.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -3188,14 +3168,16 @@ namespace Chummer
                                         };
                                         treGear.Nodes.Insert(0, nodRoot);
                                     }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
                                     {
-                                        TreeNode nodGear = objLocation.Nodes[i];
+                                        TreeNode nodGear = nodLocation.Nodes[i];
                                         nodGear.Remove();
                                         nodRoot.Nodes.Add(nodGear);
                                     }
                                 }
                             }
+
+                            _objCharacter.GearLocations.Remove(objLocation);
                         }
                     }
                     break;
@@ -3215,15 +3197,9 @@ namespace Chummer
                 treGear.Nodes.Clear();
 
                 // Start by populating Locations.
-                foreach (string strLocation in CharacterObject.GearLocations)
+                foreach (Location objLocation in CharacterObject.GearLocations)
                 {
-                    TreeNode objLocation = new TreeNode
-                    {
-                        Tag = strLocation,
-                        Text = strLocation,
-                        ContextMenuStrip = cmsGearLocation
-                    };
-                    treGear.Nodes.Add(objLocation);
+                    treGear.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation));
                 }
 
                 // Add Gear.
@@ -3882,31 +3858,29 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        foreach (string strLocation in _objCharacter.VehicleLocations)
+                        foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
-                            TreeNode objLocation = treVehicles.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode nodLocation = treVehicles.FindNode(objLocation.InternalId, false);
+                            if (nodLocation == null) continue;
+                            if (nodLocation.Nodes.Count > 0)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                if (nodRoot == null)
                                 {
-                                    if (nodRoot == null)
+                                    nodRoot = new TreeNode
                                     {
-                                        nodRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectedVehicles",
-                                            Text = LanguageManager.GetString("Node_SelectedVehicles", GlobalOptions.Language)
-                                        };
-                                        treVehicles.Nodes.Insert(0, nodRoot);
-                                    }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
-                                    {
-                                        TreeNode nodVehicle = objLocation.Nodes[i];
-                                        nodVehicle.Remove();
-                                        nodRoot.Nodes.Add(nodVehicle);
-                                    }
+                                        Tag = "Node_SelectedVehicles",
+                                        Text = LanguageManager.GetString("Node_SelectedVehicles", GlobalOptions.Language)
+                                    };
+                                    treVehicles.Nodes.Insert(0, nodRoot);
+                                }
+                                for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                {
+                                    TreeNode nodWeapon = nodLocation.Nodes[i];
+                                    nodWeapon.Remove();
+                                    nodRoot.Nodes.Add(nodWeapon);
                                 }
                             }
+                            objLocation.Remove(_objCharacter);
                         }
                     }
                     break;
@@ -4312,15 +4286,9 @@ namespace Chummer
                 treVehicles.Nodes.Clear();
 
                 // Start by populating Locations.
-                foreach (string strLocation in CharacterObject.VehicleLocations)
+                foreach (Location objLocation in CharacterObject.VehicleLocations)
                 {
-                    TreeNode objLocation = new TreeNode
-                    {
-                        Tag = strLocation,
-                        Text = strLocation,
-                        ContextMenuStrip = cmsVehicleLocation
-                    };
-                    treVehicles.Nodes.Add(objLocation);
+                    treVehicles.Nodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
                 }
 
                 // Add Vehicles.

@@ -201,16 +201,16 @@ namespace Chummer
 
         #region Methods
 
-        public bool Remove()
+        public bool Remove(Character objCharacter)
         {
             // Find the selected Advantage object.
             //TODO: Advantages should know what their parent is. 
-            _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
-            if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+            objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
+            if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                 GlobalOptions.Language)))
                 return false;
 
-            ImprovementManager.RemoveImprovements(_objCharacter,
+            ImprovementManager.RemoveImprovements(objCharacter,
                 Improvement.ImprovementSource.MartialArtTechnique, InternalId);
 
             objMartialArt.Techniques.Remove(this);

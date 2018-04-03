@@ -450,6 +450,7 @@ namespace Chummer.Backend.Equipment
                             break;
                         }
                     }
+                    else Location = _locationGuid.ToString();
                 }
             }
 
@@ -1374,6 +1375,7 @@ namespace Chummer.Backend.Equipment
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
+        private string _strLocation;
 
         public XmlNode GetNode()
         {

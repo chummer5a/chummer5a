@@ -1025,5 +1025,19 @@ namespace Chummer.Backend.Equipment
             DeleteWeaponAccessory();
             return Parent.WeaponAccessories.Remove(this);
         }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            if (characterObject.Created || IncludedInWeapon) return;
+            Parent.WeaponAccessories.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteWeaponAccessory() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+        }
     }
 }

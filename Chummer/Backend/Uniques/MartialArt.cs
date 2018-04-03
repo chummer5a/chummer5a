@@ -22,7 +22,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Interfaces;
 
 namespace Chummer
 {
@@ -358,7 +357,7 @@ namespace Chummer
             return true;
         }
 
-        public bool Remove()
+        public bool Remove(Character objCharacter)
         {
             // Delete the selected Martial Art.
             if (IsQuality) return false;
@@ -394,5 +393,6 @@ namespace Chummer
             }
         }
         #endregion
+
     }
 }

@@ -2978,8 +2978,7 @@ namespace Chummer
 
                 objGear.DeleteGear();
 
-                Gear objParent = objGear.Parent;
-                if (objParent != null)
+                if (objGear.Parent is IHasChildren<Gear> objParent)
                 {
                     objParent.Children.Remove(objGear);
                 }
@@ -3144,24 +3143,6 @@ namespace Chummer
             {
                 selectedObject.Remove(CharacterObject);
             }
-            else if (objSelectedNode is string strLocation)
-            {
-                if (strLocation == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
-                    return;
-
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmorLocation", GlobalOptions.Language)))
-                    return;
-
-                foreach (Armor armor in CharacterObject.Armor)
-                {
-                    if (armor.Location == strLocation)
-                        armor.Location = string.Empty;
-                }
-
-                // Remove the Location from the character
-                CharacterObject.ArmorLocations.Remove(strLocation);
-                return;
-            }
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -3255,74 +3236,13 @@ namespace Chummer
         {
             // Delete the selected Weapon.
             if (treWeapons.SelectedNode == null) return;
-            if (treWeapons.SelectedNode.Tag is string strSelectedId)
+
+            // Locate the Weapon that is selected in the tree.
+            if (treWeapons.SelectedNode.Tag is ICanRemove objRemovable)
             {
-                if (strSelectedId == "Node_SelectedWeapons")
-                    return;
-
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponLocation", GlobalOptions.Language)))
-                    return;
-
-                foreach (Weapon objWeapon in CharacterObject.Weapons)
-                {
-                    if (objWeapon.Location == strSelectedId)
-                        objWeapon.Location = string.Empty;
-                }
-                // Remove the Weapon Location from the character, then remove the selected node.
-                CharacterObject.WeaponLocations.Remove(strSelectedId);
+                objRemovable.Remove(CharacterObject);
             }
-            else
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon", GlobalOptions.Language)))
-                    return;
 
-                // Locate the Weapon that is selected in the tree.
-                if (treWeapons.SelectedNode.Tag is Weapon objWeapon)
-                {
-                    // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-                    if (objWeapon.Cyberware)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-                    if (objWeapon.Category == "Gear")
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-                    if (objWeapon.Category.StartsWith("Quality"))
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    objWeapon.DeleteWeapon();
-
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else
-                        CharacterObject.Weapons.Remove(objWeapon);
-                }
-                else if (treWeapons.SelectedNode.Tag is WeaponAccessory objAccessory)
-                {
-                    objAccessory.DeleteWeaponAccessory();
-                    objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
-                }
-                else if (treWeapons.SelectedNode.Tag is Gear objGear)
-                {
-                    // Locate the Accessory that is selected in the tree.
-                    objGear.DeleteGear();
-                    Gear objParent = objGear.Parent;
-                    if (objParent != null)
-                        objParent.Children.Remove(objGear);
-                    else
-                    {
-                        CharacterObject.Weapons.FindWeaponGear(objGear.InternalId, out objAccessory);
-                        objAccessory.Gear.Remove(objGear);
-                    }
-                }
-            }
-                
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -3383,21 +3303,6 @@ namespace Chummer
             if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear)
             {
                 objSelectedGear.Remove(CharacterObject);
-            }
-            else if (treGear.SelectedNode.Tag is string strLocation && treGear.SelectedNode.Level > 0)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation",
-                    GlobalOptions.Language)))
-                    return;
-
-                foreach (Gear objGear in CharacterObject.Gear)
-                {
-                    if (objGear.Location == strLocation)
-                        objGear.Location = string.Empty;
-                }
-
-                // Remove the Location from the character.
-                CharacterObject.GearLocations.Remove(strLocation);
             }
             else
             {
@@ -3501,49 +3406,7 @@ namespace Chummer
                 return;
             }
 
-            if (treVehicles.SelectedNode.Tag is string strSelectedId)
-            {
-                if (strSelectedId == "Node_SelectedVehicles")
-                    return;
-
-                if (objSelectedNode.Level == 0)
-                {
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase",
-                        GlobalOptions.Language)))
-                        return;
-
-                    foreach (Vehicle v in CharacterObject.Vehicles)
-                    {
-                        if (v.Location == strSelectedId)
-                            v.Location = string.Empty;
-                    }
-
-                    // Remove the Location from the character, then remove the selected node.
-                    CharacterObject.VehicleLocations.Remove(strSelectedId);
-                }
-                else
-                {
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocation", GlobalOptions.Language)))
-                        return;
-
-                    TreeNode objVehicleNode = objSelectedNode;
-                    while (objVehicleNode.Level > 1)
-                        objVehicleNode = objVehicleNode.Parent;
-
-                    if (objVehicleNode.Tag is Vehicle v)
-                    {
-                        foreach (Gear objGear in v.Gear)
-                        {
-                            if (objGear.Location == strSelectedId)
-                                objGear.Location = string.Empty;
-                        }
-
-                        // Remove the Location from the vehicle, then remove the selected node.
-                        v.Locations.Remove(strSelectedId);
-                    }
-                }
-            }
-            else if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
+            if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
                 selectedObject.Remove(CharacterObject);
             }
@@ -3621,8 +3484,8 @@ namespace Chummer
             }
             else if (treVehicles.SelectedNode.Tag is Gear objGear)
             {
-                if (objGear.Parent != null)
-                    objGear.Parent.Children.Remove(objGear);
+                if (objGear.Parent is Gear objParent)
+                    objParent.Children.Remove(objGear);
                 else
                 {
                     objGear = CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out objCyberware);
@@ -4280,7 +4143,6 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treGear.SelectedNode;
             if (!(objSelectedNode.Tag is Gear objGear)) return;
-            Gear objParent = objGear.Parent;
             
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
@@ -4320,7 +4182,7 @@ namespace Chummer
                 objGear.DeleteGear();
 
                 // Remove the Gear if its quantity has been reduced to 0.
-                if (objParent != null)
+                if (objGear.Parent is Gear objParent)
                 {
                     objParent.Children.Remove(objGear);
                 }
@@ -4483,9 +4345,8 @@ namespace Chummer
             // If the quantity has reached 0, delete the item and any Weapons it created.
             if (objGear.Quantity <= 0)
             {
-                Gear objParent = objGear.Parent;
                 // Remove the Gear if its quantity has been reduced to 0.
-                if (objParent != null)
+                if (objGear.Parent is Gear objParent)
                 {
                     objParent.Children.Remove(objGear);
                 }
@@ -4584,8 +4445,7 @@ namespace Chummer
             objSelectedGear.Quantity -= decMove;
             if (objSelectedGear.Quantity <= 0)
             {
-                Gear objParent = objSelectedGear.Parent;
-                if (objParent != null)
+                if (objSelectedGear.Parent is Gear objParent)
                     objParent.Children.Remove(objSelectedGear);
                 else
                     CharacterObject.Gear.Remove(objSelectedGear);
@@ -4690,8 +4550,7 @@ namespace Chummer
                 objSelectedGear.Quantity -= decMove;
                 if (objSelectedGear.Quantity <= 0)
                 {
-                    Gear objParent = objSelectedGear.Parent;
-                    if (objParent != null)
+                    if (objSelectedGear.Parent is Gear objParent)
                         objParent.Children.Remove(objSelectedGear);
                     else if (objWeaponAccessory != null)
                         objWeaponAccessory.Gear.Remove(objSelectedGear);
@@ -4719,7 +4578,16 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = PickGear(objGear.Parent?.InternalId ?? objGear.Location, objGear.Category == "Ammunition", objGear, objGear.Name);
+                string strGuid = string.Empty;
+                if (objGear.Location != string.Empty)
+                {
+                    strGuid = objGear.Location;
+                }
+                if (objGear.Parent is Gear parent)
+                {
+                    strGuid = parent.InternalId;
+                }
+                blnAddAgain = PickGear(strGuid, objGear.Category == "Ammunition", objGear, objGear.Name);
             } while (blnAddAgain);
         }
 
@@ -4727,7 +4595,6 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             if (!(objSelectedNode.Tag is Gear objGear)) return;
-            Gear objParent = objGear.Parent;
 
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
@@ -4765,7 +4632,7 @@ namespace Chummer
             {
                 CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
                 // Remove the Gear if its quantity has been reduced to 0.
-                if (objParent != null)
+                if (objGear.Parent is Gear objParent)
                     objParent.Children.Remove(objGear);
                 else if (objWeaponAccessory != null)
                     objWeaponAccessory.Gear.Remove(objGear);
@@ -5439,7 +5306,9 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            CharacterObject.GearLocations.Add(strLocation);
+            Location objLocation = new Location(CharacterObject);
+            objLocation.Name = strLocation;
+            CharacterObject.GearLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5457,7 +5326,9 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            CharacterObject.WeaponLocations.Add(strLocation);
+            Location objLocation = new Location(CharacterObject);
+            objLocation.Name = strLocation;
+            CharacterObject.WeaponLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5775,46 +5646,73 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            CharacterObject.ArmorLocations.Add(strLocation);
+            Location objLocation = new Location(CharacterObject);
+            objLocation.Name = strLocation;
+            CharacterObject.ArmorLocations.Add(objLocation);
 
             IsDirty = true;
         }
 
         private void cmdArmorEquipAll_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
             if (treArmor.SelectedNode?.Tag is Location selectedLocation)
             {
                 // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in CharacterObject.Armor)
+                foreach (Armor objArmor in selectedLocation.Children)
                 {
-                    if (objArmor.Location == selectedLocation || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
+                    if (objArmor.Location == selectedLocation.InternalId)
                     {
                         objArmor.Equipped = true;
                     }
                 }
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
+            else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+            {
+                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
+                    objArmor.Equipped == false && string.IsNullOrWhiteSpace(objArmor.Location)))
+                {
+                    objArmor.Equipped = true;
+                }
+            }
+            else
+            {
+                return;
+
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode?.Tag is string strSelectedId)
+            if (treArmor.SelectedNode?.Tag is Location selectedLocation)
             {
-                // Un-equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in CharacterObject.Armor)
+                // Equip all of the Armor in the Armor Bundle.
+                foreach (Armor objArmor in selectedLocation.Children)
                 {
-                    if (objArmor.Location == strSelectedId || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
+                    if (objArmor.Location == selectedLocation.InternalId)
                     {
                         objArmor.Equipped = false;
                     }
                 }
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
+            else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+            {
+                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
+                    objArmor.Equipped == true && string.IsNullOrWhiteSpace(objArmor.Location)))
+                {
+                    objArmor.Equipped = false;
+                }
+            }
+            else
+            {
+                return;
+
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdImprovementsEnableAll_Click(object sender, EventArgs e)
@@ -7526,8 +7424,7 @@ namespace Chummer
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Nuyen += decAmount;
 
-                Gear objParent = objGear.Parent;
-                if (objParent != null)
+                if (objGear.Parent is Gear objParent)
                     objParent.Children.Remove(objGear);
                 else
                 {
@@ -7564,8 +7461,7 @@ namespace Chummer
                 if (frmSell.DialogResult == DialogResult.Cancel)
                     return;
 
-                Gear objParent = objGear.Parent;
-                if (objParent != null)
+                if (objGear.Parent is Gear objParent)
                     objParent.Children.Remove(objGear);
                 else if (objMod != null)
                     objMod.Gear.Remove(objGear);
@@ -7666,8 +7562,7 @@ namespace Chummer
                             if (frmSell.DialogResult == DialogResult.Cancel)
                                 return;
 
-                            Gear objParent = objGear.Parent;
-                            if (objParent != null)
+                            if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else
                                 objAccessory.Gear.Remove(objGear);
@@ -7699,7 +7594,6 @@ namespace Chummer
                     Gear objGear = CharacterObject.Gear.DeepFindById(strSelectedId);
                     if (objGear == null)
                         return;
-                    Gear objParent = objGear.Parent;
 
                     frmSellItem frmSell = new frmSellItem();
                     frmSell.ShowDialog(this);
@@ -7714,9 +7608,9 @@ namespace Chummer
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen += decAmount;
-                    
+
                     // If the Parent is populated, remove the item from its Parent.
-                    if (objParent != null)
+                    if (objGear.Parent is Gear objParent)
                         objParent.Children.Remove(objGear);
                     else
                         CharacterObject.Gear.Remove(objGear);
@@ -7942,8 +7836,7 @@ namespace Chummer
 
                                             // Record the original value of the vehicle.
                                             decimal decOriginal = objVehicle.TotalCost + objGear.DeleteGear();
-                                            Gear objParent = objGear.Parent;
-                                            if (objParent != null)
+                                            if (objGear.Parent is Gear objParent)
                                                 objParent.Children.Remove(objGear);
                                             else if (objCyberware != null)
                                                 objCyberware.Gear.Remove(objGear);
@@ -8680,8 +8573,7 @@ namespace Chummer
 
                         if (objGear.Quantity <= 0)
                         {
-                            Gear objParent = objGear.Parent;
-                            if (objParent != null)
+                            if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
                                 objWeaponAccessory.Gear.Remove(objGear);
@@ -8769,8 +8661,7 @@ namespace Chummer
                             // Remove the Gear if its Qty has been reduced to 0.
                             if (objGear.Quantity <= 0)
                             {
-                                Gear objParent = objGear.Parent;
-                                if (objParent != null)
+                                if (objGear.Parent is Gear objParent)
                                     objParent.Children.Remove(objGear);
                                 else if (objWeaponAccessory != null)
                                     objWeaponAccessory.Gear.Remove(objGear);
@@ -8938,8 +8829,7 @@ namespace Chummer
                             {
                                 objGear.DeleteGear();
 
-                                Gear objParent = objGear.Parent;
-                                if (objParent != null)
+                                if (objGear.Parent is Gear objParent)
                                     objParent.Children.Remove(objGear);
                                 else if (objArmorMod != null)
                                     objArmorMod.Gear.Remove(objGear);
@@ -8986,8 +8876,7 @@ namespace Chummer
                         {
                             objGear.DeleteGear();
 
-                            Gear objParent = objGear.Parent;
-                            if (objParent != null)
+                            if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
                                 objWeaponAccessory.Gear.Remove(objGear);
@@ -9012,8 +8901,7 @@ namespace Chummer
                         {
                             objGear.DeleteGear();
 
-                            Gear objParent = objGear.Parent;
-                            if (objParent != null)
+                            if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
                                 objWeaponAccessory.Gear.Remove(objGear);
@@ -9518,66 +9406,34 @@ namespace Chummer
 
         private void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
+            if (!(treGear.SelectedNode.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
+                DefaultString = objLocation.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
-
-            string strNewLocation = frmPickText.SelectedValue;
-
-            string strSelectedText = treGear.SelectedNode.Text;
-            for (int i = 0; i < CharacterObject.GearLocations.Count; ++i)
-            {
-                string strLocation = CharacterObject.GearLocations[i];
-                if (strLocation == strSelectedText)
-                {
-                    foreach (Gear objGear in CharacterObject.Gear)
-                    {
-                        if (objGear.Location == strLocation)
-                            objGear.Location = strNewLocation;
-                    }
-
-                    CharacterObject.GearLocations[i] = strNewLocation;
-                    break;
-                }
-            }
+            objLocation.Name = frmPickText.SelectedValue;
 
             IsDirty = true;
         }
 
         private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
+            if (!(treWeapons.SelectedNode.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
+                DefaultString = objLocation.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
-
-            string strNewLocation = frmPickText.SelectedValue;
-
-            string strSelectedText = treWeapons.SelectedNode.Text;
-            for (int i = 0; i < CharacterObject.WeaponLocations.Count; ++i)
-            {
-                string strLocation = CharacterObject.WeaponLocations[i];
-                if (strLocation == strSelectedText)
-                {
-                    foreach (Weapon objWeapon in CharacterObject.Weapons)
-                    {
-                        if (objWeapon.Location == strLocation)
-                            objWeapon.Location = strNewLocation;
-                    }
-
-                    CharacterObject.WeaponLocations[i] = strNewLocation;
-                    break;
-                }
-            }
+            objLocation.Name = frmPickText.SelectedValue;
 
             IsDirty = true;
         }
@@ -9643,33 +9499,17 @@ namespace Chummer
 
         private void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
+            if (!(treArmor.SelectedNode.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
+                DefaultString = objLocation.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
-
-            string strNewLocation = frmPickText.SelectedValue;
-
-            string strSelectedText = treArmor.SelectedNode.Text;
-            for (int i = 0; i < CharacterObject.ArmorLocations.Count; ++i)
-            {
-                string strLocation = CharacterObject.ArmorLocations[i];
-                if (strLocation == strSelectedText)
-                {
-                    foreach (Armor objArmor in CharacterObject.Armor)
-                    {
-                        if (objArmor.Location == strLocation)
-                            objArmor.Location = strNewLocation;
-                    }
-
-                    CharacterObject.ArmorLocations[i] = strNewLocation;
-                    break;
-                }
-            }
+            objLocation.Name = frmPickText.SelectedValue;
 
             IsDirty = true;
         }
@@ -10397,65 +10237,17 @@ namespace Chummer
 
         private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
+            if (!(treVehicles.SelectedNode.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
+                DefaultString = objLocation.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
-
-            // Determine if this is a Location.
-            TreeNode objVehicleNode = treVehicles.SelectedNode;
-            string strOldLocation = objVehicleNode.Tag.ToString();
-            do
-            {
-                objVehicleNode = objVehicleNode.Parent;
-            } while (objVehicleNode.Level > 1);
-
-            // Get a reference to the affected Vehicle.
-            string strSelectedId = objVehicleNode.Tag.ToString();
-            Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            
-            string strNewLocation = frmPickText.SelectedValue;
-            
-            if (objVehicle != null)
-            {
-                for (int i = 0; i < objVehicle.Locations.Count; ++i)
-                {
-                    string strLocation = objVehicle.Locations[i];
-                    if (strLocation == strOldLocation)
-                    {
-                        foreach (Gear objGear in objVehicle.Gear)
-                        {
-                            if (objGear.Location == strLocation)
-                                objGear.Location = strNewLocation;
-                        }
-
-                        objVehicle.Locations[i] = strNewLocation;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < CharacterObject.VehicleLocations.Count; ++i)
-                {
-                    string strLocation = CharacterObject.VehicleLocations[i];
-                    if (strLocation == strOldLocation)
-                    {
-                        foreach (Vehicle objLoopVehicle in CharacterObject.Vehicles)
-                        {
-                            if (objLoopVehicle.Location == strLocation)
-                                objLoopVehicle.Location = strNewLocation;
-                        }
-
-                        CharacterObject.VehicleLocations[i] = strNewLocation;
-                        break;
-                    }
-                }
-            }
+            objLocation.Name = frmPickText.SelectedValue;
 
             IsDirty = true;
         }
@@ -11163,7 +10955,7 @@ namespace Chummer
                         if (objChild.InternalId == objWeapon.AmmoLoaded)
                         {
                             // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-                            if (objChild.Parent.Name.StartsWith("Spare Clip") || objChild.Parent.Name.StartsWith("Speed Loader"))
+                            if (objChild.Parent is Gear parent && (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
                             {
                                 Gear objNewGear = new Gear(CharacterObject);
                                 objNewGear.Copy(objChild);
@@ -11197,9 +10989,8 @@ namespace Chummer
 
                 if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
                 {
-                    Gear objParent = objSelectedAmmo.Parent;
                     // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
-                    if (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader"))
+                    if (objSelectedAmmo.Parent is Gear objParent && (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
                     {
                         if (objParent.Quantity > 0)
                             objParent.Quantity -= 1;
@@ -15422,7 +15213,7 @@ namespace Chummer
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                         if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
                         {
-                            if (objGear.Parent?.IsCommlink == true)
+                            if (objGear.Parent is IHasMatrixAttributes commlink && commlink.IsCommlink == true)
                             {
                                 chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                             }
@@ -16857,7 +16648,7 @@ namespace Chummer
 
                                         lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
                                         cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-                                        cmdVehicleMoveToInventory.Enabled = objGear.ParentID != objGear.Parent?.InternalId && objGear.ParentID != objVehicle?.InternalId && objGear.ParentID != objAccessory?.InternalId && objGear.ParentID != objCyberware?.InternalId;
+                                        cmdVehicleMoveToInventory.Enabled = !objGear.IncludedInParent;
                                         
                                         lblVehicleGearQtyLabel.Visible = true;
                                         lblVehicleGearQty.Visible = true;
