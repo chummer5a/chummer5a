@@ -252,7 +252,8 @@ namespace Chummer
 
             if (objCharacter.BuildMethod == CharacterBuildMethod.LifeModule && (xmlNode.Name == "module" || xmlNode.Name == "version"))
             {
-                if (objCharacter.LifeModules.Any(x => x.Stage != "Real Life" && x.Stage == xmlNode["stage"]?.InnerText))
+                Enum.TryParse(xmlNode["stage"]?.InnerText.Trim(), out LifeModuleStage stage);
+                if (objCharacter.LifeModules.Any(x => x.Stage != LifeModuleStage.RealLife && x.Stage == stage))
                 {
                     //Special case that allows for a specific second Life Module if a specific module was already selected
                     if (!((xmlNode["name"]?.GetAttribute("parentName") == "State University" || xmlNode["name"]?.InnerText == "State University") &&

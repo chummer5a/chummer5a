@@ -5044,13 +5044,7 @@ namespace Chummer
                 int intStage;
                 for (intStage = 1; intStage < xmlStagesParentNode?.ChildNodes.Count; ++intStage)
                 {
-                    XmlNode xmlStageNode = xmlStagesParentNode?.SelectSingleNode("stage[@order = \"" + intStage + "\"]");
-                    if (xmlStageNode == null)
-                    {
-                        intStage -= 1;
-                        break;
-                    }
-                    if (!CharacterObject.LifeModules.Any(x => x.Type == QualityType.LifeModule && x.Stage == xmlStageNode.InnerText))
+                    if (!CharacterObject.LifeModules.Any(x => x.Type == QualityType.LifeModule && (int)x.Stage == intStage))
                     {
                         break;
                     }
@@ -14824,10 +14818,23 @@ namespace Chummer
             }
 
             //Check if the character is created via Life Modules and that a Nationality is selected
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule &&
-                CharacterObject.LifeModules.All(x => x.Stage != "Nationality"))
+            if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                //TODO LifeModules at Least a Nationality has to be selected
+                if (CharacterObject.LifeModules.All(x => x.Stage != LifeModuleStage.Nationality))
+                {
+                    strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_LifeModules_MissingNationality", GlobalOptions.Language);
+                    blnValid = false;
+                }
+                foreach (var lifeModule in CharacterObject.LifeModules)
+                {
+                    if (lifeModule.Stage >= LifeModuleStage.TeenYears &&
+                        !CharacterObject.LifeModules.Any(x => x.Stage < lifeModule.Stage))
+                    {
+                        strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_LifeModules_NotConsecutive", GlobalOptions.Language);
+                        blnValid = false;
+                        break;
+                    }
+                }
             }
 
             int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);

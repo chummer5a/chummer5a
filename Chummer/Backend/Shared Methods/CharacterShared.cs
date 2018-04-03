@@ -2142,7 +2142,7 @@ namespace Chummer
                 TreeNode objParentNode = null;
                 switch (objLifeModule.Stage)
                 {
-                    case "Nationality":
+                    case LifeModuleStage.Nationality:
                         if (nodNationalityRoot == null)
                         {
                             nodNationalityRoot = new TreeNode
@@ -2156,7 +2156,7 @@ namespace Chummer
                         }
                         objParentNode = nodNationalityRoot;
                         break;
-                    case "Formative Years":
+                    case LifeModuleStage.FormativeYears:
                         if (nodFormativeYearsRoot == null)
                         {
                             nodFormativeYearsRoot = new TreeNode
@@ -2170,7 +2170,7 @@ namespace Chummer
                         }
                         objParentNode = nodFormativeYearsRoot;
                         break;
-                    case "Teen Years":
+                    case LifeModuleStage.TeenYears:
                         if (nodTeenYearsRoot == null)
                         {
                             nodTeenYearsRoot = new TreeNode
@@ -2184,7 +2184,7 @@ namespace Chummer
                         }
                         objParentNode = nodTeenYearsRoot;
                         break;
-                    case "Further Education":
+                    case LifeModuleStage.FurtherEducation:
                         if (nodFurtherEducationRoot == null)
                         {
                             nodFurtherEducationRoot = new TreeNode
@@ -2198,7 +2198,7 @@ namespace Chummer
                         }
                         objParentNode = nodFurtherEducationRoot;
                         break;
-                    case "Real Life":
+                    case LifeModuleStage.RealLife:
                         if (nodRealLifeRoot == null)
                         {
                             nodRealLifeRoot = new TreeNode

@@ -68,6 +68,15 @@ namespace Chummer
         MetatypeRequired = 0x10,
     }
 
+    public enum LifeModuleStage
+    {
+        Nationality = 1,
+        FormativeYears = 2,
+        TeenYears = 3,
+        FurtherEducation = 4,
+        RealLife = 5
+    }
+
     /// <summary>
     /// A Quality.
     /// </summary>
@@ -98,7 +107,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
         private Guid _guiQualityId;
-        private string _strStage;
+        private LifeModuleStage _eLifeModuleStage;
 
         #region Helper Methods
         /// <summary>
@@ -144,6 +153,29 @@ namespace Chummer
                     return QualitySource.Selected;
             }
         }
+
+        /// <summary>
+        /// Convert a string to a QualitySource.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static LifeModuleStage ConvertToLifeModuleStage(string strValue)
+        {
+            if (string.IsNullOrEmpty(strValue))
+                return default(LifeModuleStage);
+            switch (strValue)
+            {
+                case "Nationality":
+                    return LifeModuleStage.Nationality;
+                case "FormativeYears":
+                    return LifeModuleStage.FormativeYears;
+                case "TeenYears":
+                    return LifeModuleStage.TeenYears;
+                case "FurtherEducation":
+                    return LifeModuleStage.FurtherEducation;
+                default:
+                    return LifeModuleStage.RealLife;
+            }
+        }
         #endregion
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -187,7 +219,7 @@ namespace Chummer
 
             if (_eQualityType == QualityType.LifeModule)
             {
-                objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
+                _eLifeModuleStage = ConvertToLifeModuleStage(objXmlQuality["stage"]?.InnerText);
                 _strParentName = objXmlQuality["name"]?.GetAttribute("parentName") ?? string.Empty;
             }
 
@@ -351,10 +383,9 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             if (_eQualityType == QualityType.LifeModule)
             {
-                objWriter.WriteElementString("stage", _strStage);
+                objWriter.WriteElementString("stage", _eLifeModuleStage.ToString());
                 objWriter.WriteElementString("parentName", _strParentName);
             }
-
             if (!_guiQualityId.Equals(Guid.Empty))
             {
                 objWriter.WriteElementString("id", _guiQualityId.ToString("D"));
@@ -409,7 +440,7 @@ namespace Chummer
 
             if (_eQualityType == QualityType.LifeModule)
             {
-                objNode.TryGetStringFieldQuickly("stage", ref _strStage);
+                _eLifeModuleStage = ConvertToLifeModuleStage(objNode["stage"]?.InnerText);
                 objNode.TryGetStringFieldQuickly("parentName", ref _strParentName);
             }
         }
@@ -495,7 +526,7 @@ namespace Chummer
         /// <summary>
         /// LifeModule's stage
         /// </summary>
-        public string Stage => _strStage;
+        public LifeModuleStage Stage => _eLifeModuleStage;
 
         /// <summary>
         /// Does the quality come from being a Changeling?
@@ -835,9 +866,16 @@ namespace Chummer
                             XmlNode xmlCategoryNode = xmlSkillDocument.SelectSingleNode("/chummer/categories/category[. = \"" + bonusNode["group"]?.InnerText + "\"]");
                             string s = LanguageManager.GetString("String_Space", strLanguage) +
                                        (xmlCategoryNode?.Attributes?["translate"]?.Value ?? bonusNode["group"]?.InnerText) + ':' +
-                                       LanguageManager.GetString("String_Space", strLanguage); 
-                            s += bonusNode["name"]?.InnerText; //TODO LifeModules Theme translation
-                            if (bonusNode["options"] != null)
+                                       LanguageManager.GetString("String_Space", strLanguage);
+                            if (bonusNode["name"] != null)
+                            {
+                                s += bonusNode["name"].InnerText;
+                            }
+                            else if (bonusNode["theme"] != null)
+                            {
+                                s += '[' + bonusNode["theme"].InnerText + ']';
+                            }
+                            else if (bonusNode["options"] != null)
                             {
                                 foreach (XmlNode optionsNode in bonusNode["options"].ChildNodes)
                                 {

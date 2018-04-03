@@ -9273,9 +9273,21 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <text>Life Module Effects:</text>
 	</string>
 	<string>
-	  <key>MessageTitle_SelectLifeModule_Restriction</key>
+	  <key>String_Theme</key>
+	  <text>Theme</text>
+	</string>
+	<string>
+	  <key>Message_SelectLifeModule_Restriction</key>
 	  <text>You have already selected a Life Module of that stage and can select only one.</text>
 	</string>
+	<string>
+      <key>Message_LifeModules_MissingNationality</key>
+      <text>You have to select a Life Module of the Nationality stage.</text>
+    </string>
+	<string>
+      <key>Message_LifeModules_NotConsecutive</key>
+      <text>Life Modules must be selected consecutively, you must not skip any stage.</text>
+    </string>
 	<!-- End Region -->
   </strings>
 </chummer>
