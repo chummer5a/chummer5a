@@ -378,6 +378,8 @@ namespace Chummer
             {
                 strValue = strValue.Replace("InitiativePass","InitiativeDice");
             }
+            if (strValue == "ContactForceLoyalty")
+                strValue = "ContactForcedLoyalty";
             return (ImprovementType) Enum.Parse(typeof (ImprovementType), strValue);
         }
 
