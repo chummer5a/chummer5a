@@ -1630,6 +1630,49 @@ namespace Chummer.Classes
                 _strUnique);
         }
 
+        // Add a specific Gear to the Character.
+        public void naturalweapon(XmlNode bonusNode)
+        {
+            Log.Info("naturalweapon");
+
+            Log.Info("naturalweapon = " + bonusNode.OuterXml);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ')';
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Adding Weapon");
+
+            Weapon objWeapon = new Weapon(_objCharacter);
+            objWeapon.Name = bonusNode["name"]?.InnerText;
+            objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
+            objWeapon.WeaponType = "Melee";
+            objWeapon.Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText);
+            objWeapon.Accuracy = bonusNode["accuracy"]?.InnerText;
+            objWeapon.Damage = bonusNode["damage"]?.InnerText;
+            objWeapon.AP = bonusNode["ap"]?.InnerText;
+            objWeapon.Mode = "0";
+            objWeapon.RC = "0";
+            objWeapon.Concealability = 0;
+            objWeapon.Avail = "0";
+            objWeapon.Cost = "0";
+            objWeapon.UseSkill = bonusNode["useskill"]? .InnerText ?? string.Empty;
+            objWeapon.Source = bonusNode["source"].InnerText ?? "SR5";
+            objWeapon.Page = bonusNode["page"]?.InnerText ?? "0";
+
+            objWeapon.ParentID = SourceName;
+
+            _objCharacter.Weapons.Add(objWeapon);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objWeapon.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Weapon,
+                _strUnique);
+        }
+
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
         {
