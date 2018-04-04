@@ -11949,7 +11949,8 @@ namespace Chummer
             decNuyen += nudNuyen.Value * CharacterObjectOptions.NuyenPerBP;
 
             lblNuyenTotal.Text = "= " + decNuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
+            
+            CharacterObject.ResetCachedEssence();
             tssEssence.Text = CharacterObject.DisplayEssence;
             
             Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);

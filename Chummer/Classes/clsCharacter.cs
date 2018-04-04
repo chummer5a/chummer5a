@@ -1805,6 +1805,23 @@ namespace Chummer
                                 _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                             }
                         }
+                        if (LastSavedVersion <= new Version("5.200.0") && objQuality.Name == "Made Man" &&
+                            objQuality.Bonus["selectcontact"] != null)
+                        {
+                            string selectedContactGUID = Improvements
+                                .FirstOrDefault(x => x.SourceName == objQuality.InternalId &&
+                                                     x.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty)
+                                .ImprovedName;
+                            objQuality.Bonus = xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Made Man\"]/bonus");
+                            objQuality.Extra = string.Empty;
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                            MadeMan = true;
+                            ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.MadeMan, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.AddContact, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.ContactForcedLoyalty, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.ContactForceGroup, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.ContactMakeFree, objQuality.DisplayNameShort(GlobalOptions.Language));
+                        }
                     }
                 }
                 else
@@ -1883,6 +1900,9 @@ namespace Chummer
                 Contact objContact = new Contact(this);
                 objContact.Load(xmlContact);
                 _lstContacts.Add(objContact);
+                if (MadeMan && LastSavedVersion <= new Version("5.200.0") &&
+                    Improvements.Any(x => x.ImprovedName == objContact.GUID && x.ImproveType == Improvement.ImprovementType.ContactForceGroup))
+                    objContact.GroupEnabled = false;
             }
 
             Timekeeper.Finish("load_char_contacts");
