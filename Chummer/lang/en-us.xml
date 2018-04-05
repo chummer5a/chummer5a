@@ -549,6 +549,10 @@
       <key>Label_Speed</key>
       <text>Speed:</text>
     </string>
+	<string>
+      <key>String_Handling</key>
+      <text>Handling</text>
+    </string>
     <string>
       <key>Label_Response</key>
       <text>Response:</text>
@@ -576,6 +580,10 @@
     <string>
       <key>Label_Sensor</key>
       <text>Sensor:</text>
+    </string>
+	<string>
+      <key>String_Sensor</key>
+      <text>Sensor</text>
     </string>
     <string>
       <key>Label_Avail</key>
@@ -2956,7 +2964,7 @@
       <text>Alchemical</text>
     </string>
     <string>
-      <key>String_AttributePilot</key>
+      <key>String_Pilot</key>
       <text>Pilot</text>
     </string>
     <string>

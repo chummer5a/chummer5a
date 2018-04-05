@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Windows.Navigation;
 using System.Xml;
 using Chummer.Classes;
 
@@ -553,6 +554,8 @@ namespace Chummer
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
                     return objImprovementAdder.metageneticlimit;
+                case "NATURALWEAPON":
+                    return objImprovementAdder.naturalweapon;
                 // No method matches, return a null pointer
                 default:
                     return null;

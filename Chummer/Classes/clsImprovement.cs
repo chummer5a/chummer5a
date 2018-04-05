@@ -937,8 +937,14 @@ namespace Chummer
                 case ImprovementType.SoftWeave:
                     break;
                 case ImprovementType.DisableBioware:
+                    {
+                        yield return () => _objCharacter.OnPropertyChanged(nameof(Character.AddBiowareEnabled));
+                    }
                     break;
                 case ImprovementType.DisableCyberware:
+                    {
+                        yield return () => _objCharacter.OnPropertyChanged(nameof(Character.AddCyberwareEnabled));
+                    }
                     break;
                 case ImprovementType.DisableBiowareGrade:
                     break;
@@ -973,6 +979,9 @@ namespace Chummer
                 case ImprovementType.FreeSpiritPowerPoints:
                     break;
                 case ImprovementType.AdeptPowerPoints:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.PowerPointsTotal));
+                }
                     break;
                 case ImprovementType.ArmorEncumbrancePenalty:
                     break;
@@ -1087,6 +1096,9 @@ namespace Chummer
                 case ImprovementType.SpellLimit:
                     break;
                 case ImprovementType.QuickeningMetamagic:
+                {
+                    yield return () => _objCharacter.OnPropertyChanged(nameof(Character.QuickeningEnabled));
+                }
                     break;
                 case ImprovementType.BasicLifestyleCost:
                     break;

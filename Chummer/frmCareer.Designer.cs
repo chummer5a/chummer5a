@@ -207,7 +207,7 @@ namespace Chummer
             this.tsWeaponAddModification = new System.Windows.Forms.ToolStripMenuItem();
             this.tsBoltHole = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSafehouse = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblArmor = new System.Windows.Forms.Label();
+            this.lblArmor = new LabelWithToolTip();
             this.panStunCM = new System.Windows.Forms.Panel();
             this.lblStunCMLabel = new System.Windows.Forms.Label();
             this.chkStunCM18 = new System.Windows.Forms.CheckBox();
@@ -280,7 +280,7 @@ namespace Chummer
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
             this.lblEDGInfo = new System.Windows.Forms.Label();
             this.lblCMDamageResistancePool = new System.Windows.Forms.Label();
-            this.lblCMArmor = new System.Windows.Forms.Label();
+            this.lblCMArmor = new LabelWithToolTip();
             this.label1 = new System.Windows.Forms.Label();
             this.lblCMPenalty = new System.Windows.Forms.Label();
             this.tabDefences = new System.Windows.Forms.TabPage();
@@ -405,13 +405,13 @@ namespace Chummer
             this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
             this.tabLimits = new System.Windows.Forms.TabPage();
             this.lblAstralLabel = new System.Windows.Forms.Label();
-            this.lblAstral = new System.Windows.Forms.Label();
+            this.lblAstral = new LabelWithToolTip();
             this.lblSocialLimitLabel = new System.Windows.Forms.Label();
-            this.lblSocial = new System.Windows.Forms.Label();
+            this.lblSocial = new LabelWithToolTip();
             this.lblMentalLimitLabel = new System.Windows.Forms.Label();
-            this.lblMental = new System.Windows.Forms.Label();
+            this.lblMental = new LabelWithToolTip();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
-            this.lblPhysical = new System.Windows.Forms.Label();
+            this.lblPhysical = new LabelWithToolTip();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.treLimit = new System.Windows.Forms.TreeView();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
@@ -442,7 +442,7 @@ namespace Chummer
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
             this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.cboTradition = new System.Windows.Forms.ComboBox();
-            this.lblDrainAttributesValue = new System.Windows.Forms.Label();
+            this.lblDrainAttributesValue = new LabelWithToolTip();
             this.lblDrainAttributes = new System.Windows.Forms.Label();
             this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
             this.lblTraditionLabel = new System.Windows.Forms.Label();
@@ -483,7 +483,7 @@ namespace Chummer
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
             this.cmdRollFading = new System.Windows.Forms.Button();
             this.cboStream = new System.Windows.Forms.ComboBox();
-            this.lblFadingAttributesValue = new System.Windows.Forms.Label();
+            this.lblFadingAttributesValue = new LabelWithToolTip();
             this.lblFadingAttributes = new System.Windows.Forms.Label();
             this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
             this.lblStreamLabel = new System.Windows.Forms.Label();
@@ -1038,9 +1038,9 @@ namespace Chummer
             this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.nudMugshotIndex = new System.Windows.Forms.NumericUpDown();
-            this.lblPublicAwareTotal = new System.Windows.Forms.Label();
-            this.lblNotorietyTotal = new System.Windows.Forms.Label();
-            this.lblStreetCredTotal = new System.Windows.Forms.Label();
+            this.lblPublicAwareTotal = new LabelWithToolTip();
+            this.lblNotorietyTotal = new LabelWithToolTip();
+            this.lblStreetCredTotal = new LabelWithToolTip();
             this.lblCharacterName = new System.Windows.Forms.Label();
             this.txtCharacterName = new System.Windows.Forms.TextBox();
             this.txtPlayerName = new System.Windows.Forms.TextBox();
@@ -4673,7 +4673,6 @@ namespace Chummer
             this.txtAlias.Name = "txtAlias";
             this.txtAlias.Size = new System.Drawing.Size(270, 20);
             this.txtAlias.TabIndex = 89;
-            this.txtAlias.TextChanged += new System.EventHandler(this.txtAlias_TextChanged);
             // 
             // lblAlias
             // 
@@ -12547,6 +12546,7 @@ namespace Chummer
             this.lblStreetCredTotal.TabIndex = 79;
             this.lblStreetCredTotal.Tag = "Label_StreetCred";
             this.lblStreetCredTotal.Text = "[0]";
+            this.lblStreetCredTotal.TextChanged += AdjustBurnStreetCredButtonLocation;
             // 
             // lblCharacterName
             // 
@@ -12564,7 +12564,6 @@ namespace Chummer
             this.txtCharacterName.Name = "txtCharacterName";
             this.txtCharacterName.Size = new System.Drawing.Size(100, 20);
             this.txtCharacterName.TabIndex = 78;
-            this.txtCharacterName.TextChanged += new System.EventHandler(this.txtCharacterName_TextChanged);
             // 
             // txtPlayerName
             // 
@@ -12572,7 +12571,6 @@ namespace Chummer
             this.txtPlayerName.Name = "txtPlayerName";
             this.txtPlayerName.Size = new System.Drawing.Size(100, 20);
             this.txtPlayerName.TabIndex = 66;
-            this.txtPlayerName.TextChanged += new System.EventHandler(this.txtPlayerName_TextChanged);
             // 
             // txtNotes
             // 
@@ -12582,7 +12580,6 @@ namespace Chummer
             this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtNotes.Size = new System.Drawing.Size(618, 100);
             this.txtNotes.TabIndex = 25;
-            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtConcept
@@ -12593,7 +12590,6 @@ namespace Chummer
             this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtConcept.Size = new System.Drawing.Size(618, 100);
             this.txtConcept.TabIndex = 19;
-            this.txtConcept.TextChanged += new System.EventHandler(this.txtConcept_TextChanged);
             this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtBackground
@@ -12604,7 +12600,7 @@ namespace Chummer
             this.txtBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtBackground.Size = new System.Drawing.Size(618, 96);
             this.txtBackground.TabIndex = 17;
-            this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
+            this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtDescription
             // 
@@ -12614,7 +12610,6 @@ namespace Chummer
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDescription.Size = new System.Drawing.Size(618, 101);
             this.txtDescription.TabIndex = 15;
-            this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
             this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtSkin
@@ -12623,7 +12618,6 @@ namespace Chummer
             this.txtSkin.Name = "txtSkin";
             this.txtSkin.Size = new System.Drawing.Size(100, 20);
             this.txtSkin.TabIndex = 13;
-            this.txtSkin.TextChanged += new System.EventHandler(this.txtSkin_TextChanged);
             // 
             // txtWeight
             // 
@@ -12631,7 +12625,6 @@ namespace Chummer
             this.txtWeight.Name = "txtWeight";
             this.txtWeight.Size = new System.Drawing.Size(100, 20);
             this.txtWeight.TabIndex = 11;
-            this.txtWeight.TextChanged += new System.EventHandler(this.txtWeight_TextChanged);
             // 
             // txtHeight
             // 
@@ -12639,7 +12632,6 @@ namespace Chummer
             this.txtHeight.Name = "txtHeight";
             this.txtHeight.Size = new System.Drawing.Size(100, 20);
             this.txtHeight.TabIndex = 9;
-            this.txtHeight.TextChanged += new System.EventHandler(this.txtHeight_TextChanged);
             // 
             // txtHair
             // 
@@ -12647,7 +12639,6 @@ namespace Chummer
             this.txtHair.Name = "txtHair";
             this.txtHair.Size = new System.Drawing.Size(100, 20);
             this.txtHair.TabIndex = 7;
-            this.txtHair.TextChanged += new System.EventHandler(this.txtHair_TextChanged);
             // 
             // txtEyes
             // 
@@ -12655,7 +12646,6 @@ namespace Chummer
             this.txtEyes.Name = "txtEyes";
             this.txtEyes.Size = new System.Drawing.Size(100, 20);
             this.txtEyes.TabIndex = 5;
-            this.txtEyes.TextChanged += new System.EventHandler(this.txtEyes_TextChanged);
             // 
             // txtAge
             // 
@@ -12663,7 +12653,6 @@ namespace Chummer
             this.txtAge.Name = "txtAge";
             this.txtAge.Size = new System.Drawing.Size(100, 20);
             this.txtAge.TabIndex = 3;
-            this.txtAge.TextChanged += new System.EventHandler(this.txtAge_TextChanged);
             // 
             // txtSex
             // 
@@ -12671,7 +12660,6 @@ namespace Chummer
             this.txtSex.Name = "txtSex";
             this.txtSex.Size = new System.Drawing.Size(100, 20);
             this.txtSex.TabIndex = 1;
-            this.txtSex.TextChanged += new System.EventHandler(this.txtSex_TextChanged);
             // 
             // nudPublicAware
             // 
@@ -12679,7 +12667,6 @@ namespace Chummer
             this.nudPublicAware.Name = "nudPublicAware";
             this.nudPublicAware.Size = new System.Drawing.Size(42, 20);
             this.nudPublicAware.TabIndex = 76;
-            this.nudPublicAware.ValueChanged += new System.EventHandler(this.nudPublicAware_ValueChanged);
             // 
             // lblPublicAware
             // 
@@ -12697,7 +12684,6 @@ namespace Chummer
             this.nudNotoriety.Name = "nudNotoriety";
             this.nudNotoriety.Size = new System.Drawing.Size(42, 20);
             this.nudNotoriety.TabIndex = 74;
-            this.nudNotoriety.ValueChanged += new System.EventHandler(this.nudNotoriety_ValueChanged);
             // 
             // nudStreetCred
             // 
@@ -12705,7 +12691,6 @@ namespace Chummer
             this.nudStreetCred.Name = "nudStreetCred";
             this.nudStreetCred.Size = new System.Drawing.Size(42, 20);
             this.nudStreetCred.TabIndex = 72;
-            this.nudStreetCred.ValueChanged += new System.EventHandler(this.nudStreetCred_ValueChanged);
             // 
             // lblPlayerName
             // 
@@ -14260,7 +14245,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabOtherInfo;
         private System.Windows.Forms.Label lblESSMax;
         private System.Windows.Forms.Label lblESS;
-        private System.Windows.Forms.Label lblArmor;
+        private LabelWithToolTip lblArmor;
         private System.Windows.Forms.Label lblCMStun;
         private System.Windows.Forms.Label lblCMPhysical;
         private System.Windows.Forms.Label lblCMStunLabel;
@@ -14409,7 +14394,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsArmorGearAddAsPlugin;
         private System.Windows.Forms.Label lblCMDamageResistancePool;
         private System.Windows.Forms.Label lblCMDamageResistancePoolLabel;
-        private System.Windows.Forms.Label lblCMArmor;
+        private LabelWithToolTip lblCMArmor;
         private System.Windows.Forms.Label lblCMArmorLabel;
         private System.Windows.Forms.ToolStripMenuItem tsArmorNotes;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponNotes;
@@ -14617,13 +14602,13 @@ namespace Chummer
         private UI.Skills.SkillsTabUserControl tabSkillsUc;
         private System.Windows.Forms.TabPage tabLimits;
         private System.Windows.Forms.Label lblAstralLabel;
-        private System.Windows.Forms.Label lblAstral;
+        private LabelWithToolTip lblAstral;
         private System.Windows.Forms.Label lblSocialLimitLabel;
-        private System.Windows.Forms.Label lblSocial;
+        private LabelWithToolTip lblSocial;
         private System.Windows.Forms.Label lblMentalLimitLabel;
-        private System.Windows.Forms.Label lblMental;
+        private LabelWithToolTip lblMental;
         private System.Windows.Forms.Label lblPhysicalLimitLabel;
-        private System.Windows.Forms.Label lblPhysical;
+        private LabelWithToolTip lblPhysical;
         private System.Windows.Forms.Button cmdAddLimitModifier;
         private System.Windows.Forms.TreeView treLimit;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
@@ -14654,7 +14639,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMentorSpiritLabel;
         private System.Windows.Forms.Label lblMentorSpiritInformation;
         private System.Windows.Forms.ComboBox cboTradition;
-        private System.Windows.Forms.Label lblDrainAttributesValue;
+        private LabelWithToolTip lblDrainAttributesValue;
         private System.Windows.Forms.Label lblDrainAttributes;
         private System.Windows.Forms.Label lblDrainAttributesLabel;
         private System.Windows.Forms.Label lblTraditionLabel;
@@ -14695,7 +14680,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private System.Windows.Forms.Button cmdRollFading;
         private System.Windows.Forms.ComboBox cboStream;
-        private System.Windows.Forms.Label lblFadingAttributesValue;
+        private LabelWithToolTip lblFadingAttributesValue;
         private System.Windows.Forms.Label lblFadingAttributes;
         private System.Windows.Forms.Label lblFadingAttributesLabel;
         private System.Windows.Forms.Label lblStreamLabel;
@@ -15219,9 +15204,9 @@ namespace Chummer
         private SplitButton cmdDeleteVehicle;
         private System.Windows.Forms.TabPage tabCharacterInfo;
         private System.Windows.Forms.Button cmdBurnStreetCred;
-        private System.Windows.Forms.Label lblPublicAwareTotal;
-        private System.Windows.Forms.Label lblNotorietyTotal;
-        private System.Windows.Forms.Label lblStreetCredTotal;
+        private LabelWithToolTip lblPublicAwareTotal;
+        private LabelWithToolTip lblNotorietyTotal;
+        private LabelWithToolTip lblStreetCredTotal;
         private System.Windows.Forms.Label lblCharacterName;
         private System.Windows.Forms.TextBox txtCharacterName;
         private System.Windows.Forms.TextBox txtPlayerName;

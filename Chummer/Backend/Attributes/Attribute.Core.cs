@@ -208,7 +208,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                if (_objCharacter.IsAI && Abbrev == "EDG")
+                if (Abbrev == "EDG" && _objCharacter.IsAI)
                     return _objCharacter.DEP.TotalValue;
 
                 int intReturn = _intMetatypeMax;
