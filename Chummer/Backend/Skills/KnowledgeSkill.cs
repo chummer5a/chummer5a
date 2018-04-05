@@ -71,16 +71,19 @@ namespace Chummer.Backend.Skills
 
         private string _strType = string.Empty;
         public bool ForcedName { get; }
+        public bool ForcedRating { get; }
+        public bool GainedFromSkillLevelImprovement { get; set; }
 
         public KnowledgeSkill(Character character) : base(character)
         {
             AttributeObject = character.LOG;
         }
 
-        public KnowledgeSkill(Character character, string forcedName) : this(character)
+        public KnowledgeSkill(Character character, string forcedName, bool forcedRating = true) : this(character)
         {
             WriteableName = forcedName;
             ForcedName = true;
+            ForcedRating = forcedRating;
         }
 
         public string WriteableName

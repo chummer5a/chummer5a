@@ -2031,14 +2031,12 @@ namespace Chummer.Classes
             string strSkill = string.Empty;
             int intValue = 1;
             bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
-            if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
+            if (!bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
+                bool isKnowledge = false;
+                strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, string.Empty, ref isKnowledge);
             }
-            else
-            {
-                Log.Error(new object[] { "skilllevel", bonusNode.OuterXml });
-            }
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
         }
 
         public void pushtext(XmlNode bonusNode)
@@ -2129,7 +2127,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + strForcedValue);
 
             bool blnIsKnowledgeSkill = true;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill) : strForcedValue;
+            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, String.Empty, ref blnIsKnowledgeSkill) : strForcedValue;
 
             string strVal = bonusNode["val"]?.InnerText;
             
@@ -2157,7 +2155,30 @@ namespace Chummer.Classes
             //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
 
             int val = bonusNode["val"] != null ? ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique, val);
+            string strSkill = string.Empty;
+            string strSkillType = bonusNode["group"]?.InnerText;
+            if (bonusNode["name"] != null)
+            {
+                strSkill = bonusNode["name"].InnerText;
+            }
+            else //Theme or selection from a given list
+            {
+                bool isKnowledge = true;
+                string descrition = bonusNode["theme"] == null ? string.Empty
+                    : LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Theme", GlobalOptions.Language).Replace("{0}", '[' + bonusNode["theme"].InnerText + ']');
+                strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, descrition, ref isKnowledge);
+            }
+
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, val);
+            KnowledgeSkill knoSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == strSkill);
+            if (knoSkill == null || !knoSkill.ForcedName)
+            {
+                //Enforce the native Language
+                knoSkill = new KnowledgeSkill(_objCharacter, strSkill, val == 0 && strSkillType == "Language");
+                knoSkill.Type = strSkillType;
+                knoSkill.GainedFromSkillLevelImprovement = false;
+                _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+            }
         }
 
         public void knowledgeskillpoints(XmlNode bonusNode)

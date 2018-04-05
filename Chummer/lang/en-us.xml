@@ -9277,6 +9277,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <text>Theme</text>
 	</string>
 	<string>
+	  <key>String_Any</key>
+	  <text>Any</text>
+	</string>
+	<string>
 	  <key>Message_SelectLifeModule_Restriction</key>
 	  <text>You have already selected a Life Module of that stage and can select only one.</text>
 	</string>
@@ -9287,6 +9291,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	<string>
       <key>Message_LifeModules_NotConsecutive</key>
       <text>Life Modules must be selected consecutively, you must not skip any stage.</text>
+    </string>
+	<string>
+      <key>Message_LifeModule_SelectKnowledgeSkill_Theme</key>
+      <text>Select or write a Knowledge skill which fits {0}:</text>
     </string>
 	<!-- End Region -->
   </strings>

@@ -103,7 +103,7 @@ namespace Chummer.UI.Skills
                 cboSpec.DataSource = skill.CGLSpecializations;
                 cboSpec.SelectedIndex = -1;
 
-                if (skill.ForcedName)
+                if (skill.ForcedName && skill.ForcedRating)
                     cboSpec.Enabled = false;
                 else
                     cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -112,7 +112,7 @@ namespace Chummer.UI.Skills
                 skill.PropertyChanged += Skill_PropertyChanged;
             }
 
-            if (skill.ForcedName)
+            if (skill.ForcedName && skill.ForcedRating)
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -131,7 +131,7 @@ namespace Chummer.UI.Skills
                 }
 
                 cmdDelete.Visible = false;
-            }
+            } 
             else
             {
                 cmdDelete.Click += (sender, args) =>
@@ -139,6 +139,15 @@ namespace Chummer.UI.Skills
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
                 };
+                if (skill.ForcedName && !skill.ForcedRating)
+                {
+                    if (!skill.CharacterObject.Created)
+                    {
+                        cboSkill.Enabled = false;
+                        cboType.Enabled = false;
+                    }
+                    cmdDelete.DataBindings.Add("Visible", skill, nameof(KnowledgeSkill.GainedFromSkillLevelImprovement), false, DataSourceUpdateMode.OnPropertyChanged);
+                }
             }
             cboType.EndUpdate();
             cboSkill.EndUpdate();

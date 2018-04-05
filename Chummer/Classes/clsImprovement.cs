@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -2629,7 +2630,7 @@ namespace Chummer
 
                 frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                    Description = string.IsNullOrEmpty(strFriendlyName) ? LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language) : strFriendlyName
                 };
                 if (setAllowedNames != null)
                     frmPickSkill.GeneralItems = lstDropdownItems;
@@ -2924,29 +2925,16 @@ namespace Chummer
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
-                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                        //{
-                        //    //wrote as foreach first, modify collection, not want rename
-                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                        //    {
-                        //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
-                        //        {
-                        //            skill.Free(fold);
-                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                        //        }
-                        //    }
-
-                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
-                        //    {
-                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                        //        //empty list, can't call clear as exposed list is RO
-
-                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                        //    }
-                        //}
+                        KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                            x => x.Name == objImprovement.ImprovedName
+                                 && x.GainedFromSkillLevelImprovement
+                                 && x.Enabled == false);
+                        if (knoSkill != null)
+                        {
+                            objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
+                            knoSkill.Enabled = true;
+                            objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+                        }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
@@ -3237,29 +3225,14 @@ namespace Chummer
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
-                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                        //{
-                        //    //wrote as foreach first, modify collection, not want rename
-                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                        //    {
-                        //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
-                        //        {
-                        //            skill.Free(fold);
-                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                        //        }
-                        //    }
-
-                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
-                        //    {
-                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                        //        //empty list, can't call clear as exposed list is RO
-
-                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                        //    }
-                        //}
+                        KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                            x => x.Name == objImprovement.ImprovedName
+                                 && x.GainedFromSkillLevelImprovement);
+                        if (knoSkill != null && knoSkill.GainedFromSkillLevelImprovement)
+                        {
+                            knoSkill.Enabled = false;
+                            knoSkill.UnbindSkill();
+                        }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         if (!blnHasDuplicate)
@@ -3640,29 +3613,21 @@ namespace Chummer
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
-                    //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                    //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                    //{
-                    //    //wrote as foreach first, modify collection, not want rename
-                    //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                    //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                    //    {
-                    //        Skill fold = skill.Fold[i];
-                    //        if (fold.Id.ToString() == objImprovement.ImprovedName)
-                    //        {
-                    //            skill.Free(fold);
-                    //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                    //        }
-                    //    }
-
-                    //    if (skill.Id.ToString() == objImprovement.ImprovedName)
-                    //    {
-                    //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                    //        //empty list, can't call clear as exposed list is RO
-
-                    //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                    //    }
-                    //}
+                        KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        //No points spent in the improved Skill
+                        if (knoSkill != null)
+                        {
+                            if (knoSkill.Base == 0 && (knoSkill.Karma == 0 || knoSkill.Karma == objImprovement.Value) &&
+                                ValueOf(objCharacter, Improvement.ImprovementType.SkillLevel, false, objImprovement.ImprovedName) == 0)
+                            {
+                                knoSkill.UnbindSkill();
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
+                            }
+                            else
+                            {
+                                knoSkill.GainedFromSkillLevelImprovement = true;
+                            }
+                        }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         if (!blnHasDuplicate)
