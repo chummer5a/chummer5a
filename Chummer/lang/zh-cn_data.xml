@@ -525,6 +525,32 @@
       <name>Large Diamond Ring</name>
       <translate>大型钻戒</translate>
     </armor>
+      <!-- Region Cutting Aces -->
+      <armor>
+        <id>c38ca685-f333-4529-93e8-a8248df52e64</id>
+        <name>Team Jersey (Licensed)</name>
+        <translate>护甲队服（有授权）</translate>
+      </armor>
+      <armor>
+        <id>6adcc6aa-cb83-434f-b9a4-2c263f738829</id>
+        <name>Team Jersey (Unlicensed)</name>
+        <translate>护甲队服（无授权）</translate>
+      </armor>
+      <armor>
+        <id>b9554fe8-fc04-4746-8f5f-32d5ee9053be</id>
+        <name>Ares Briefcase Shield</name>
+        <translate>阿瑞斯公文包盾牌</translate>
+      </armor>
+      <armor>
+        <id>c9424dfb-1e01-4073-995a-7935efc1894d</id>
+        <name>Catsuit</name>
+        <translate>猫服</translate>
+      </armor>
+      <armor>
+        <id>f22a86ba-e660-4c32-a998-d04def23d287</id>
+        <name>Scout's Tux</name>
+        <translate>侦察兵的晚礼服</translate>
+      </armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1076,6 +1102,136 @@
       <name>Spur Pocket</name>
       <translate>骨刺通道</translate>
     </bioware>
+      <bioware>
+        <id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
+        <name>Claws</name>
+        <translate>爪</translate>
+      </bioware>
+      <bioware>
+        <id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
+        <name>Claws (Retractable)</name>
+        <translate>爪（可伸缩）</translate>
+      </bioware>
+      <bioware>
+        <id>8832f6ac-0082-4b9b-9e1c-7f90874a23a1</id>
+        <name>Striking Callus</name>
+        <translate>打击茧</translate>
+      </bioware>
+      <bioware>
+        <id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
+        <name>Tusk(s), Small</name>
+        <translate>獠牙（小型）</translate>
+      </bioware>
+      <bioware>
+        <id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
+        <name>Tusk(s), Medium</name>
+        <translate>獠牙（中型）</translate>
+      </bioware>
+      <bioware>
+        <id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
+        <name>Tusk(s), Large</name>
+        <translate>獠牙（大型）</translate>
+      </bioware>
+      <bioware>
+        <id>c0dedc5f-2c75-4dcb-9fc3-86fc44adea58</id>
+        <name>Claws, Fixed (Hands)</name>
+        <translate>固定爪（手）</translate>
+      </bioware>
+      <bioware>
+        <id>df52299c-321c-4cf8-9f38-038c5a44d455</id>
+        <name>Claws, Retractable (Hands)</name>
+        <translate>可伸缩爪（手）</translate>
+      </bioware>
+      <bioware>
+        <id>da38afc5-fe4c-4dfa-8f9f-e9e88adcb357</id>
+        <name>Claws, Fixed (Feet)</name>
+        <translate>固定爪（足）</translate>
+      </bioware>
+      <bioware>
+        <id>ea389d15-539a-4d7b-aa2f-33ea6cf0d40b</id>
+        <name>Claws, Retractable (Feet)</name>
+        <translate>可伸缩爪（足）</translate>
+      </bioware>
+      <bioware>
+        <id>ccd4b880-cf85-4b96-9de0-211dc6fb48e2</id>
+        <name>Striking Callus (Hands)</name>
+        <translate>打击茧（手）</translate>
+      </bioware>
+      <bioware>
+        <id>56f6c403-3d29-4055-a323-a7b67acb607d</id>
+        <name>Striking Callus (Feet)</name>
+        <translate>打击茧（足）</translate>
+      </bioware>
+      <bioware>
+        <id>ee1d31e8-f5c9-4326-8139-3e591003f736</id>
+        <name>Tusk(s), Small</name>
+        <translate>獠牙（小型）</translate>
+      </bioware>
+      <bioware>
+        <id>34310f59-55d5-4e95-8966-a97b20a388ce</id>
+        <name>Tusk(s), Medium</name>
+        <translate>獠牙（中型）</translate>
+      </bioware>
+      <bioware>
+        <id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
+        <name>Tusk(s), Large</name>
+        <translate>獠牙（大型）</translate>
+      </bioware>
+      <bioware>
+        <id>1c919d10-72ae-4cd9-bad2-6b4a23ae48b0</id>
+        <name>Replacement Tusk(s), Small</name>
+        <translate>替换獠牙（小型）</translate>
+      </bioware>
+      <bioware>
+        <id>f97ba92a-bba5-4b52-ab4c-28102c67acd7</id>
+        <name>Replacement Tusk(s), Medium</name>
+        <translate>替换獠牙（中型）</translate>
+      </bioware>
+      <bioware>
+        <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
+        <name>Electrical Discharge</name>
+        <translate>放电器</translate>
+      </bioware>
+      <bioware>
+        <id>82780b5b-41dd-49ae-964f-c14ca91a0f14</id>
+        <name>Fangs</name>
+        <translate>尖牙</translate>
+      </bioware>
+      <bioware>
+        <id>3f0fda69-a098-4c9a-855e-5dd2d46ae3da</id>
+        <name>Fangs (Retractable)</name>
+        <translate>尖牙（可伸缩）</translate>
+      </bioware>
+      <bioware>
+        <id>cbe09df9-556d-44d4-9d68-073415850deb</id>
+        <name>Horns</name>
+        <translate>角</translate>
+      </bioware>
+      <bioware>
+        <id>605b82f9-9f12-4a14-b567-091dd5fcde80</id>
+        <name>Muzzle</name>
+        <translate>凸嘴</translate>
+      </bioware>
+      <bioware>
+        <id>828ca5e9-4409-42aa-a6df-87fc907fede2</id>
+        <name>Sprayer</name>
+        <translate>喷口</translate>
+      </bioware>
+      <bioware>
+        <id>b9085cbe-8e67-4205-8e49-603e31f9d6f7</id>
+        <name>Stinger, Tiny</name>
+        <translate>钉刺（小型）</translate>
+      </bioware>
+      <bioware>
+        <id>77bcbea4-fc69-42e6-b4e3-0debe6c08596</id>
+        <name>Stinger, Medium</name>
+        <translate>钉刺（中型）</translate>
+      </bioware>
+      <bioware>
+        <id>c466a6cf-bf31-4300-b53e-0f83af141342</id>
+        <name>Stinger, Large</name>
+        <translate>钉刺（大型）</translate>
+      </bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -1719,11 +1875,11 @@
 	</chummer>
 	<chummer file="critters.xml">
 		<categories>
-			<category translate="A.I.">A.I.s</category>
-			<category translate="龙形">Dracoforms</category>
+			<category translate="AI">A.I.s</category>
+			<category translate="龙类">Dracoforms</category>
 			<category translate="昆虫精魂">Insect Spirits</category>
 			<category translate="凡俗动物">Mundane Critters</category>
-			<category translate="Mutant Critters">Mutant Critters</category>
+			<category translate="突变动物">Mutant Critters</category>
 			<category translate="超自然动物">Paranormal Critters</category>
 			<category translate="Shedim">Shedim</category>
 			<category translate="精魂">Spirits</category>
@@ -1737,9 +1893,9 @@
 			<category translate="Imps">Imps</category>
 			<category translate="Infected">Infected</category>
 			<category translate="Primordial Spirits">Primordial Spirits</category>
-			<category translate="Protosapients">Protosapients</category>
-			<category translate="Shadow Spirits">Shadow Spirits</category>
-			<category translate="Technocritters">Technocritters</category>
+			<category translate="初智能">Protosapients</category>
+			<category translate="影精魂">Shadow Spirits</category>
+			<category translate="超链动物">Technocritters</category>
 		</categories>
 		<metatypes>
 			<metatype>
@@ -1867,6 +2023,96 @@
 				<name>Machine Sprite</name>
 				<translate>机械网精</translate>
 			</metatype>
+      <metatype>
+        <id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
+        <name>Bear</name>
+        <translate>熊</translate>
+      </metatype>
+      <metatype>
+        <id>76df0371-033a-4e8b-9e55-155bde09aac8</id>
+        <name>Boar</name>
+        <translate>野猪</translate>
+      </metatype>
+      <metatype>
+        <id>685c98b8-241e-4a4a-9095-04227c66b804</id>
+        <name>Chimpanzee</name>
+        <translate>黑猩猩</translate>
+      </metatype>
+      <metatype>
+        <id>dcdf75b0-39f7-436c-8e3f-1772e586f358</id>
+        <name>Eagle</name>
+        <translate>鹰</translate>
+      </metatype>
+      <metatype>
+        <id>12497012-2176-43e2-89ef-d51cedc43ec2</id>
+        <name>Elephant</name>
+        <translate>象</translate>
+      </metatype>
+      <metatype>
+        <id>7fcca21c-729f-414b-95aa-ced043d851cc</id>
+        <name>Snake</name>
+        <translate>蛇</translate>
+      </metatype>
+      <metatype>
+        <id>dda86d60-2d40-4e1a-bb9f-b58e834330f6</id>
+        <name>Squid</name>
+        <translate>鱿鱼</translate>
+      </metatype>
+      <metatype>
+        <id>9465b7be-1488-4b29-a024-8a7048f305a1</id>
+        <name>Sea Lion</name>
+        <translate>海狮</translate>
+      </metatype>
+      <metatype>
+        <id>0aa91adb-43bf-4ed0-8d87-4f9f1eb0fa3f</id>
+        <name>Barracuda</name>
+        <translate>梭鱼</translate>
+      </metatype>
+      <metatype>
+        <id>2cdf4a25-6866-49a2-be90-e508980ad219</id>
+        <name>Killer Whale</name>
+        <translate>虎鲸</translate>
+      </metatype>
+      <metatype>
+        <id>02027853-f96d-4a37-b9e7-f7babdba5ea9</id>
+        <name>Alligator</name>
+        <translate>鳄鱼</translate>
+      </metatype>
+      <metatype>
+        <id>928f0d01-6718-4846-9b3f-52715eac6482</id>
+        <name>Domestic Cat</name>
+        <translate>家猫</translate>
+      </metatype>
+      <metatype>
+        <id>34fc4c1f-50d9-4a88-883f-0edb6e21b59e</id>
+        <name>Cockroach</name>
+        <translate>蟑螂</translate>
+      </metatype>
+      <metatype>
+        <id>40cf4bf0-a676-47b2-8467-a5cf070a0869</id>
+        <name>Crow</name>
+        <translate>乌鸦</translate>
+      </metatype>
+      <metatype>
+        <id>7a0947bc-4128-4c54-825b-9e7f723f9847</id>
+        <name>Ferret</name>
+        <translate>鼬</translate>
+      </metatype>
+      <metatype>
+        <id>8e48a572-8305-4fbc-be39-d3a28622adc8</id>
+        <name>Raccoon</name>
+        <translate>浣熊</translate>
+      </metatype>
+      <metatype>
+        <id>be4c5fce-f717-4f96-92d1-103de839d9a2</id>
+        <name>Rat</name>
+        <translate>鼠</translate>
+      </metatype>
+      <metatype>
+        <id>e33b710d-5b46-4e20-9870-d762423cd0ac</id>
+        <name>Spider</name>
+        <translate>蜘蛛</translate>
+      </metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -2925,7 +3171,7 @@
 			<category translate="护甲强化">Armor Enhancements</category>
 			<category translate="音频设备">Audio Devices</category>
 			<category translate="听觉强化">Audio Enhancements</category>
-			<category translate="自动程序">Autosofts</category>
+			<category translate="自动软件">Autosofts</category>
 			<category translate="生物科技">Biotech</category>
 			<category translate="破门入室工具">Breaking and Entering Gear</category>
 			<category translate="BTLs">BTLs</category>
@@ -2975,13 +3221,63 @@
 			<category translate="软件">Software</category>
 			<category translate="生存装备">Survival Gear</category>
 			<category translate="定制香水/古龙水">Tailored Perfume/Cologne</category>
-			<category translate="专业装备（RG）">Tools of the Trade</category>
+			<category translate="专业装备">Tools of the Trade</category>
 			<category translate="工具">Tools</category>
 			<category translate="毒素">Toxins</category>
 			<category translate="视觉设备">Vision Devices</category>
 			<category translate="视觉强化">Vision Enhancements</category>
 		</categories>
 		<gears>
+      <gear>
+        <id>b1f2dcee-7304-4e5e-b022-f3393009a78c</id>
+        <name>Commlink Functionality</name>
+        <translate>通讯链功能</translate>
+      </gear>
+      <gear>
+        <id>9cd0bf83-3cfa-4c61-bfb0-ae6c01ac8f8d</id>
+        <name>Music Player</name>
+        <translate>音乐播放器</translate>
+      </gear>
+      <gear>
+        <id>5db9c4b8-4d7a-4728-aff0-617102c57fc5</id>
+        <name>Micro Trid-Projector</name>
+        <translate>微型3D投影仪</translate>
+      </gear>
+      <gear>
+        <id>b19f022c-c854-4a3f-8b7a-d2a2532a2680</id>
+        <name>Touchscreen Display</name>
+        <translate>触摸屏</translate>
+      </gear>
+      <gear>
+        <id>5146abd2-6ab2-4aee-b523-a63d5c5ab93b</id>
+        <name>RFID Tag Scanner</name>
+        <translate>RFID标签扫描器</translate>
+      </gear>
+      <gear>
+        <id>82946de2-876c-46d8-a6ec-744a38257668</id>
+        <name>GPS Guidance System</name>
+        <translate>GPS导航系统</translate>
+      </gear>
+      <gear>
+        <id>f9995732-7d00-496c-8407-a3dc0e1a82ff</id>
+        <name>Chip Player</name>
+        <translate>芯片播放器</translate>
+      </gear>
+      <gear>
+        <id>1d6f985e-5cf0-463d-a445-fafdd387f301</id>
+        <name>Credstick Reader</name>
+        <translate>信用棒读取器</translate>
+      </gear>
+      <gear>
+        <id>786682fb-cbd5-4ee8-969a-233484004df7</id>
+        <name>Shock- and Water-Resistant Case</name>
+        <translate>防摔防水</translate>
+      </gear>
+      <gear>
+        <id>73b55822-dfb8-48f5-8ff8-37ef498ab9ef</id>
+        <name>Living Persona</name>
+        <translate>活体化身</translate>
+      </gear>
 			<gear>
 				<id>89a0f3c9-5ef6-41cd-981f-4ac690ee2ab3</id>
 				<name>Meta Link</name>
@@ -3057,7 +3353,6 @@
       <gear>
         <id>146a6f15-f00f-45bb-abea-f574b2241915</id>
         <name>FTL Quark</name>
-        <translate></translate>
       </gear>
       <gear>
         <id>117bb53e-3f24-4e53-b861-29564bad7281</id>
@@ -3414,7 +3709,7 @@
 			<gear>
 				<id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
 				<name>Camera, Micro</name>
-				<translate>相机，微型</translate>
+				<translate>摄像机，微型</translate>
 			</gear>
 			<gear>
 				<id>22ceb53b-7863-424b-8ee5-d04bb520d97d</id>
@@ -3511,6 +3806,11 @@
 				<name>Atmosphere Sensor</name>
 				<translate>天气监测器</translate>
 			</gear>
+      <gear>
+        <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+        <name>Camera</name>
+        <translate>摄像头</translate>
+      </gear>
 			<gear>
 				<id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
 				<name>Cyberware Scanner</name>
@@ -3559,7 +3859,7 @@
 			<gear>
 				<id>07805498-75ea-441f-bd27-6536d4131b51</id>
 				<name>Camera</name>
-				<translate>相机</translate>
+				<translate>摄像机</translate>
 			</gear>
 			<gear>
 				<id>2bcc17b8-33bb-4567-887d-8be9593f7899</id>
@@ -8123,8 +8423,8 @@
         <id>f841b9f1-bc80-4fd5-a94d-6f76d2c59518</id>
         <name>Alligator</name>
         <translate>鳄鱼</translate>
-        <altadvantage>All: +2 dice to intimidation tests.</altadvantage>
-        <altdisadvantage>通用：〈威吓〉检定获得+2骰池调整</altdisadvantage>
+        <altadvantage>通用：〈威吓〉检定获得+2骰池调整</altadvantage>
+        <altdisadvantage>一个鳄鱼的追随者在改变他已经确定的计划或行动时会非常固执。当队伍中其他人开始执行B计划，法师（鳄鱼的追随者）必须通过一个魅力+意志（3）检定来调整自己的精神。否则，他们会继续尝试执行A计划。</altdisadvantage>
         <choices>
           <choice>
             <name>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</name>
@@ -8156,7 +8456,7 @@
       <mentor>
         <id>19154c75-9fa9-4e7e-aeee-da1faaaca3e2</id>
         <name>Giraffe</name>
-        <translate></translate>
+        <translate>长颈鹿</translate>
         <altadvantage>通用：〈灵视〉检定或察言观色检定（选择其一）获得+2骰池调整</altadvantage>
         <altdisadvantage>一个长颈鹿的追随者在社交礼仪中磕磕绊绊，因为她相信社交性寒暄中作为核心的碎嘴和闲聊本质上是不诚实的，并且不值得她努力为之。她能使得很广泛的许多场合变得尴尬，并因此在礼仪技能检定中受到-2骰池调整。</altdisadvantage>
         <choices>
@@ -8231,7 +8531,7 @@
       <mentor>
         <id>9ca5be05-1420-4592-81a5-1b59bb93545d</id>
         <name>Horse</name>
-        <translate> 马</translate>
+        <translate>马</translate>
         <altadvantage>通用：〈奔跑〉检定或〈陆用驾驶〉检定（选择其一）获得+2骰池调整</altadvantage>
         <altdisadvantage>马的跟随者们没法长时间坐定在一个地方，也不能被关在室内。他们每天至少得有4小时时间能待在室外导出跑动或开车（任何比走路更快的旅行方式）。如果跟随者们没能满足该条件，那么他们会在所有技能检定中骰池-1。该惩罚是可累加的，这意味着如果这位跟随者连着两天都全天被困在桌子旁（在室内且不能四处移动），ta的所有行动都要承受-2骰池惩罚，直到ta补上了那段自由时间。</altdisadvantage>
         <choices>
@@ -8397,7 +8697,7 @@
       <mentor>
         <id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
         <name>Tohu Wa-Bohu</name>
-        <translate></translate>
+        <translate>虚空混沌</translate>
         <altadvantage>通用：〈威吓〉检定或〈爆破〉检定（选择其一）获得+2骰池调整</altadvantage>
         <altdisadvantage>虚空混沌的追随者有时很难与之合作，因为他们不喜欢目标，这对他们来说更接近创造而不是毁灭。追随者获得「执念」（注：RF）特质，而其目标为毁灭某些有意义的东西的机会。此外，他们发现由于他们的毁灭天性而很难集体协作。他们永远不能从团队合作或领导力中获得加值</altdisadvantage>
         <choices>
@@ -10640,6 +10940,16 @@
         <name>Aspected Study</name>
         <translate>术法研习</translate>
       </quality>
+      <quality>
+        <id>12345678-123a-456b-789c-1234abcd0003</id>
+        <name>Born with Horns</name>
+        <translate>天生锐角</translate>
+      </quality>
+      <quality>
+        <id>12345678-123a-456b-789c-1234abcd0004</id>
+        <name>Born with Tusks</name>
+        <translate>天生獠牙</translate>
+      </quality>
       <!-- Region Run Faster -->
       <quality>
         <id>f446f88c-26aa-496a-aa78-ed478bf0875f</id>
@@ -10948,8 +11258,8 @@
       </quality>
       <quality>
         <id>3fc02bdc-1f3f-448c-8e8c-d1869ac4fcfc</id>
-        <name>HMHVV携带者（III型）</name>
-        <translate></translate>
+        <name>Carrier (HMHVV Strain III)</name>
+        <translate>HMHVV携带者（III型）</translate>
       </quality>
       <quality>
         <id>bdb17940-1bb5-4d6e-925f-019cfa8090af</id>
@@ -15855,6 +16165,181 @@
       <name>Ares Garuda</name>
       <translate>阿瑞斯·金翅鸟</translate>
     </vehicle>
+      <vehicle>
+        <id>685a5cb6-75ee-45fd-80bd-07ea669054a3</id>
+        <name>Horizon Noizquito (Microdrone)</name>
+        <translate>地平线•“嗡嗡蚊”（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>8b1aff5b-a9a3-4fdc-a10c-de56d88e4b91</id>
+        <name>Sony Goldfish (Microdrone)</name>
+        <translate>索尼•金鱼（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>3defffd7-c7ee-4c54-8d51-1df731842823</id>
+        <name>Aerodesign Systems Condor LDSD-23 (Minidrone)</name>
+        <translate>飞行设计系统•神鹰 LDSD-23（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>cf1383e9-5604-46eb-8323-522acaeada2e</id>
+        <name>Aztechnology Hedgehog (Minidrone)</name>
+        <translate>阿兹特科技•刺猬（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>cdf8a11b-c74a-4754-89b0-cb1a4bec17cd</id>
+        <name>Cyberspace Designs Dragonfly (Minidrone)</name>
+        <translate>赛博空间设计•蜻蜓（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>b5ef225a-9a22-4dfd-bf4e-2832cbe8e064</id>
+        <name>Festo Pigeon 2.0 (Minidrone)</name>
+        <translate>费斯托•野鸽（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>df487ee7-9009-47b0-9db8-548bed9a3361</id>
+        <name>Horizon CU^3 (Minidrone)</name>
+        <translate>地平线•CU^3（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>8e9830e5-16e4-40e3-9803-4036945b786d</id>
+        <name>Horizon CU^3 Professional (Minidrone)</name>
+        <translate>地平线•CU^3（专业版）（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>94a53ea0-c8de-4f2f-9098-55180205d8fa</id>
+        <name>Renraku Gerbil (Minidrone)</name>
+        <translate>联络•沙鼠（迷你）</translate>
+      </vehicle>
+      <vehicle>
+        <id>a38e5f21-eb84-4f01-81cc-ee214d88ed96</id>
+        <name>Ares Arms Sentry V (Small)</name>
+        <translate>阿瑞斯•武装哨兵V（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>d1289d4c-2b32-450f-bbc1-489dafe39c19</id>
+        <name>Citron-Brouillard Smoke Generator (Small)</name>
+        <translate>香橼-迷雾•发烟器（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>fcbe7bb4-6137-4939-8d4b-10b011b33ac6</id>
+        <name>Cyberspace Designs Wolfhound (Small)</name>
+        <translate>赛博空间设计•猎狼犬（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>d9157390-2003-4238-8738-6a24efc770f0</id>
+        <name>Evo Proletarian (Small)</name>
+        <translate>天演•无产者（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>6b0c07b2-6e3d-4174-a748-859fd46c090c</id>
+        <name>Ferret RPD-1X (Small)</name>
+        <translate>鼬RPD-1X（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>2e70a156-4201-48c8-935f-7223c16a1e82</id>
+        <name>Festo Sewer Snake (Small)</name>
+        <translate>费斯托•地沟蛇（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>89392969-1d03-4322-9aa8-c0160ba3ee76</id>
+        <name>Horizon Mini-Zep (Small)</name>
+        <translate>地平线•小齐普（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>68f2fddf-c530-4093-855a-f08e3924b68c</id>
+        <name>Knight Errant P5 (Small)</name>
+        <translate>游侠·P5（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>28abf230-3bd7-4edb-bcba-f6ae28d62d3a</id>
+        <name>Lone Star Castle Guard (Small)</name>
+        <translate>孤星•城守（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>a836d6d5-56f3-416c-a53f-2249af400580</id>
+        <name>MCT Gun Turret (Small)</name>
+        <translate>三津滨•炮塔（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>68b2cf81-7fa0-4451-8096-96d9bd25c128</id>
+        <name>MCT Seven (Wheelie) (Small)</name>
+        <translate>三津滨•七（轮子）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>84bc59dd-cd8f-4148-b5fa-53c3e0fe384f</id>
+        <name>MCT Seven (Treads) (Small)</name>
+        <translate>三津滨•七（两脚）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>67bfc8e7-e8dd-4e3f-9e31-d5aa4990e4f5</id>
+        <name>MCT Seven (Dirty) (Small)</name>
+        <translate>三津滨•七（脏脏）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>7cc3856f-eaaa-47a6-83f5-a5efa36efbcd</id>
+        <name>MCT Seven (Quad) (Small)</name>
+        <translate>三津滨•七（四脚）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>4c2952dd-b400-4560-816b-1a857e3f24dd</id>
+        <name>MCT Seven (Swims) (Small)</name>
+        <translate>三津滨•七（游水）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>2227d4bb-9a97-460a-b90c-cf9fd4d98636</id>
+        <name>MCT Seven (Hovers) (Small)</name>
+        <translate>三津滨•七（盘旋）（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>6918401c-ae18-45cc-90e2-72a029240eed</id>
+        <name>MCT Seven (Soars) (Small)</name>
+        <translate></translate>
+      </vehicle>
+      <vehicle>
+        <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
+        <name>Neonet Prarie Dog (Small)</name>
+        <translate>新网•草原犬鼠（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>963d0596-c0f5-40d9-8bfe-580cc1150d20</id>
+        <name>PW Sundowner (Small)</name>
+        <translate>普拉特&amp;惠特尼•日落飞行器（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>6cef9ce0-b7b0-4d3c-933a-ef1da1580388</id>
+        <name>Proteus Krake (Small)</name>
+        <translate>普鲁图斯•“海怪”</translate>
+      </vehicle>
+      <vehicle>
+        <id>75b5192e-6d57-4ca3-b288-c733c1272cef</id>
+        <name>Saab-Thyssen Bloodhound (Small)</name>
+        <translate>萨博-蒂森•寻血猎犬（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>ec84a3e8-00f7-4558-b21c-62fff76c33c5</id>
+        <name>Renraku Dove-4 (Small)</name>
+        <translate>联络•和平鸽-4（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>2f1519ae-8c34-48cb-a5ba-47eac74fff82</id>
+        <name>Renraku Jardinero (Small)</name>
+        <translate>联络•园丁（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>744987eb-0503-4d1f-b49e-fb3a543b08e0</id>
+        <name>Renraku Job-A-Mat (Small)</name>
+        <translate>联络•自动工作者（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>d8654096-dcd5-42ce-af43-cda1c0caeb3f</id>
+        <name>Renraku Pelican (Small)</name>
+        <translate>联络•鹈鹕（小型）</translate>
+      </vehicle>
+      <vehicle>
+        <id>50d4bce4-79f1-48d4-8b38-68969802dec0</id>
+        <name>Telestrian Shamus</name>
+        <translate>特里斯翠安工业•神探（小型）</translate>
+      </vehicle>
 		</vehicles>
 		<mods>
       <!-- Region SR5 Core Rulebook -->
@@ -16468,7 +16953,7 @@
       <mod>
         <id>1f723236-24f2-40d4-8dc0-617726004524</id>
         <name>Assembly Time Improvement (Drone)</name>
-        <translate></translate>
+        <translate>装配时间改良（无人机）</translate>
       </mod>
       <mod>
         <id>a7c9a0a4-bec5-4a01-a695-5b843e581123</id>
@@ -16628,6 +17113,134 @@
       </mod>
       <!-- End Region -->
     </mods>
+    <weaponmounts>
+      <!-- Region Size -->
+      <weaponmount>
+        <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
+        <name>Standard [SR5]</name>
+        <translate>标准（SR5）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>a567c5d3-38b8-496a-add8-1e176384e935</id>
+        <name>Heavy [SR5]</name>
+        <translate>重型（SR5）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>1b44540c-b463-47ed-b288-cf4a8e130eab</id>
+        <name>Light</name>
+        <translate>轻型</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
+        <name>Standard</name>
+        <translate>标准</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
+        <name>Heavy</name>
+        <translate>重型</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
+        <name>External</name>
+        <translate>外部</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>4d90a1e3-8602-488e-b837-f155b4549084</id>
+        <name>Internal</name>
+        <translate>内部</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>ad732625-c8bc-4e24-bc84-90c8449e82d5</id>
+        <name>Concealed</name>
+        <translate>隐蔽</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
+        <name>Fixed</name>
+        <translate>固定</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>8a0be4c4-5717-4a82-a1cd-35cd0315d180</id>
+        <name>Flexible</name>
+        <translate>灵活</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>12342330-446f-4e2f-ad9b-6ccdc4d89a9b</id>
+        <name>Turret</name>
+        <translate>炮塔</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>df720a43-31aa-4053-9f2e-30ec4923cfe8</id>
+        <name>Remote</name>
+        <translate>遥控</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>0c05f936-4826-418f-b798-848dafa4b4a0</id>
+        <name>Manual</name>
+        <translate>手动控制</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>741bb6e2-0c6b-4af2-82b0-0c4b14c60367</id>
+        <name>Manual [SR5]</name>
+        <translate>手动控制（SR5）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>05995261-b645-48b5-9a54-9f26becc9d5d</id>
+        <name>Armored Manual</name>
+        <translate>装甲手动控制</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>4fdb0fb3-c987-41a0-b11e-d82fe6ac85b1</id>
+        <name>Micro (Drone)</name>
+        <translate>微型（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>94d06312-0487-4f3c-a8e9-e02ac2d04a2e</id>
+        <name>Mini (Drone)</name>
+        <translate>迷你（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>9ee5e112-8ced-4266-9141-02ef18e33f43</id>
+        <name>Small (Drone)</name>
+        <translate>小型（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>0ec991be-a888-4547-8ca2-ad43d7c7399e</id>
+        <name>Standard (Drone)</name>
+        <translate>中型（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>2ab20ea4-441c-482d-977e-a5e90f37cb51</id>
+        <name>Large (Drone)</name>
+        <translate>大型（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>30099989-d8ca-4f9c-adf0-1de36b6f8ab6</id>
+        <name>Huge (Drone)</name>
+        <translate>巨大（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>52973ba7-3dbb-49fe-9a4c-8105eb6ab4bc</id>
+        <name>Heavy (Drone)</name>
+        <translate>重型（无人机）</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>be56fb91-88d3-4bfb-8e42-d12929b44fe5</id>
+        <name>None</name>
+        <translate>无</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>c6939caa-e94d-4db3-94f6-a46fbcc4df07</id>
+        <name>None</name>
+        <translate>无</translate>
+      </weaponmount>
+      <weaponmount>
+        <id>b7333366-24bf-4f47-bb68-b1cfe8f450fd</id>
+        <name>None</name>
+        <translate>无</translate>
+      </weaponmount>
+    </weaponmounts>
 	</chummer>
 	<chummer file="weapons.xml">
 		<categories>
