@@ -1857,7 +1857,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objGrade != value)
                 {
-                    bool blnGradeEssenceChanged = _objGrade.Essence == value.Essence;
+                    bool blnGradeEssenceChanged = _objGrade.Essence != value.Essence;
                     _objGrade = value;
                     if (blnGradeEssenceChanged && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
