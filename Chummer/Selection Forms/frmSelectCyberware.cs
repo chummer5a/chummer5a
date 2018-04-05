@@ -890,7 +890,7 @@ namespace Chummer
             }
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
             
-            if (_objCharacter.IsAI && ParentVehicle == null)
+            if (ParentVehicle == null && _objCharacter.IsAI)
                 strFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
             else if (_objParentNode != null)
                 strFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
