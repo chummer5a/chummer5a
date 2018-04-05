@@ -54,7 +54,6 @@ namespace Chummer
         private bool _blnDiscountedGeas;
         private XmlNode _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
-        private bool _blnFree;
         private int _intFreeLevels;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
@@ -112,7 +111,6 @@ namespace Chummer
             objWriter.WriteElementString("freepoints", _decFreePoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("freelevels", _intFreeLevels.ToString(GlobalOptions.InvariantCultureInfo));
             if (Bonus != null)
                 objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
@@ -235,7 +233,6 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
             objNode.TryGetInt32FieldQuickly("freelevels", ref _intFreeLevels);
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
@@ -572,6 +569,7 @@ namespace Chummer
             }
         }
 
+        private decimal _decCachedPowerPoints = decimal.MinValue;
         /// <summary>
         /// Total number of Power Points the Power costs.
         /// </summary>
@@ -579,9 +577,12 @@ namespace Chummer
         {
             get
             {
-                if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+                if (_decCachedPowerPoints != decimal.MinValue)
+                    return _decCachedPowerPoints;
+
+                if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
                 {
-                    return 0;
+                    return _decCachedPowerPoints = 0;
                 }
 
                 decimal decReturn;
@@ -596,7 +597,7 @@ namespace Chummer
                     decReturn -= FreePoints;
                 }
                 decReturn -= Discount;
-                return Math.Max(decReturn, 0.0m);
+                return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
             }            
         }
 
@@ -893,8 +894,10 @@ namespace Chummer
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             ICollection<string> lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(propertyName);
-            if (lstNamesOfChangedProperties.Contains(DisplayPoints))
+            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
                 _strCachedPowerPoints = string.Empty;
+            if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+                _decCachedPowerPoints = decimal.MinValue;
             if (PropertyChanged != null)
             {
                 foreach (string strPropertyToChange in lstNamesOfChangedProperties)
