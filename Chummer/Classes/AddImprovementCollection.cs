@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -1660,7 +1661,7 @@ namespace Chummer.Classes
             objWeapon.Avail = "0";
             objWeapon.Cost = "0";
             objWeapon.UseSkill = bonusNode["useskill"]? .InnerText ?? string.Empty;
-            objWeapon.Source = bonusNode["source"].InnerText ?? "SR5";
+            objWeapon.Source = bonusNode["source"]?.InnerText ?? "SR5";
             objWeapon.Page = bonusNode["page"]?.InnerText ?? "0";
 
             objWeapon.ParentID = SourceName;
@@ -2010,6 +2011,8 @@ namespace Chummer.Classes
                 foreach (XmlNode objSubNode in bonusNode["options"])
                     lstAbbrevs.Add(objSubNode.InnerText);
 
+                if (!string.IsNullOrEmpty(SelectedValue))
+                    lstAbbrevs.Remove(SelectedValue);
                 lstAbbrevs.Remove("ESS");
                 if (!_objCharacter.MAGEnabled)
                 {
@@ -2198,8 +2201,8 @@ namespace Chummer.Classes
             //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
 
             int val = bonusNode["val"] != null ? ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
-            string strSkill = string.Empty;
-            string strSkillType = bonusNode["group"]?.InnerText;
+            string strSkill;
+            string strSkillType = bonusNode["group"]?.InnerText ?? "Street";
             if (bonusNode["name"] != null)
             {
                 strSkill = bonusNode["name"].InnerText;
@@ -2217,9 +2220,11 @@ namespace Chummer.Classes
             if (knoSkill == null || !knoSkill.ForcedName)
             {
                 //Enforce the native Language
-                knoSkill = new KnowledgeSkill(_objCharacter, strSkill, val == 0 && strSkillType == "Language");
-                knoSkill.Type = strSkillType;
-                knoSkill.GainedFromSkillLevelImprovement = false;
+                knoSkill = new KnowledgeSkill(_objCharacter, strSkill, val == 0 && strSkillType == "Language")
+                    {
+                        Type = strSkillType,
+                        GainedFromSkillLevelImprovement = false
+                    };
                 _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
             }
         }
@@ -6066,6 +6071,30 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
         #endregion
+
+        public void sinlevel(XmlNode bonusNode)
+        {
+            Log.Info("sinlevel");
+            string strSINType = bonusNode.InnerText;
+            string strForceValue = bonusNode.Attributes?["select"]?.Value ?? string.Empty;
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+            XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strSINType + "\"]");
+            int karmaValue = -1 * ImprovementManager.ValueToInt(_objCharacter, objXmlSelectedQuality?["karma"]?.InnerText ?? "0", _intRating);
+            CreateImprovement(strSINType, _objImprovementSource, SourceName, Improvement.ImprovementType.Sinlevel, _strFriendlyName, karmaValue, 1 ,0, 0, 0, 0, string.Empty, false, strForceValue);
+
+            Quality maxKarmaSIN = _objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
+            if (maxKarmaSIN == null || -1 *maxKarmaSIN.BP < karmaValue || maxKarmaSIN.OriginSource == QualitySource.Selected)
+            {
+                if (maxKarmaSIN != null)
+                {
+                    _objCharacter.Qualities.Remove(maxKarmaSIN);
+                }
+                Quality objAddSIN = new Quality(_objCharacter);
+                List<Weapon> lstWeapons = new List<Weapon>();
+                objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                _objCharacter.Qualities.Add(objAddSIN);
+            }
+        }
     }
 
     [Serializable]

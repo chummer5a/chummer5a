@@ -8424,7 +8424,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectLifeModule_LimitList</key>
-			<text>Nur Lebensmodule, die ich auswählen kann</text>
+			<text>Nur auswählbare Lebensmodule</text>
 		</string>
 		<string>
 			<key>Checkbox_ShowOnlyAffordItems</key>
