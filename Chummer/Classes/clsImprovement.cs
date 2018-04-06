@@ -301,6 +301,7 @@ namespace Chummer
             WeaponSkillAccuracy,
             MetageneticLimit,
             Tradition,
+            Sinlevel,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
@@ -3215,6 +3216,23 @@ namespace Chummer
                                 objContact.Free = true;
                         }
                         break;
+                    case Improvement.ImprovementType.Sinlevel:
+                        Quality maxKarmaSIN = objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
+                        if (maxKarmaSIN == null || -1 * maxKarmaSIN.BP < objImprovement.Value || maxKarmaSIN.OriginSource == QualitySource.Selected)
+                        {
+                            if (maxKarmaSIN != null)
+                            {
+                                objCharacter.Qualities.Remove(maxKarmaSIN);
+                            }
+                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                            XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objImprovement.ImprovedName + "\"]");
+
+                            Quality objAddSIN = new Quality(objCharacter);
+                            List<Weapon> lstWeapons = new List<Weapon>();
+                            objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, objImprovement.Target, objImprovement.UniqueName);
+                            objCharacter.Qualities.Add(objAddSIN);
+                        }
+                        break;
                 }
             }
 
@@ -3556,6 +3574,33 @@ namespace Chummer
                                 Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
                                 if (objContact != null)
                                     objContact.Free = false;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Sinlevel:
+                        Quality maxKarmaSIN = objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
+
+                        List<Improvement> lstImp =
+                            objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.Sinlevel && x.Enabled).ToList();
+                        if (!lstImp.Any())
+                        {
+                            objCharacter.Qualities.Remove(maxKarmaSIN);
+                        }
+                        else
+                        {
+                            Improvement maxKarmaImp = lstImp.OrderByDescending(x => x.Value).First();
+                            if (-1 * maxKarmaSIN?.BP > maxKarmaImp.Value)
+                            {
+                                objCharacter.Qualities.Remove(maxKarmaSIN);
+
+                                //Add next highest SIN
+                                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                                XmlNode objXmlSelectedQuality =
+                                    objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaImp.ImprovedName + "\"]");
+                                Quality objAddSIN = new Quality(objCharacter);
+                                List<Weapon> lstWeapons = new List<Weapon>();
+                                objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, maxKarmaImp.Target, maxKarmaImp.UniqueName);
+                                objCharacter.Qualities.Add(objAddSIN);
                             }
                         }
                         break;
@@ -3991,6 +4036,33 @@ namespace Chummer
                                 Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
                                 if (objContact != null)
                                     objContact.Free = false;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Sinlevel:
+                        Quality maxKarmaSIN = objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
+
+                        List<Improvement> lstImp =
+                            objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.Sinlevel && x.Enabled).ToList();
+                        if (!lstImp.Any())
+                        {
+                            objCharacter.Qualities.Remove(maxKarmaSIN);
+                        }
+                        else
+                        {
+                            Improvement maxKarmaImp = lstImp.OrderByDescending(x => x.Value).First();
+                            if (-1 * maxKarmaSIN?.BP > maxKarmaImp.Value)
+                            {
+                                objCharacter.Qualities.Remove(maxKarmaSIN);
+
+                                //Add next highest SIN
+                                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                                XmlNode objXmlSelectedQuality =
+                                    objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaImp.ImprovedName + "\"]");
+                                Quality objAddSIN = new Quality(objCharacter);
+                                List<Weapon> lstWeapons = new List<Weapon>();
+                                objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, maxKarmaImp.Target, maxKarmaImp.UniqueName);
+                                objCharacter.Qualities.Add(objAddSIN);
                             }
                         }
                         break;

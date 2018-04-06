@@ -61,11 +61,7 @@
               <group>Language</group>
               <val>2</val>
             </knowledgeskilllevel>
-            <pushtext>United Canadian American States</pushtext>
-            <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+			<sinlevel select="United Canadian American States">SINner (National)</sinlevel>
           </bonus>
         </version>
         <version>
@@ -915,8 +911,8 @@
         <addqualities>
           <addquality>Paranoia</addquality>
           <addquality>Bad Rep</addquality>
-          <addquality>SINner (Criminal)</addquality>
         </addqualities>
+		<sinlevel>SINner (Criminal)</sinlevel>
       </bonus>
       <story>$real spent their formative years with their parents as they ran away from $FLEE.</story>
       <source>RF</source>
