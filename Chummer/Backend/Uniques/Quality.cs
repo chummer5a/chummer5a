@@ -853,6 +853,13 @@ namespace Chummer
                     }
                     continue;
                 }
+                if (bonusNode.Name == "sinlevel")
+                {
+                    string qualityName = bonusNode.InnerText;
+                    XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode("/chummer/qualities/quality[name = \"" + qualityName + "\"]");
+                    qualities += indent + (xmlQualityNode?["translate"]?.InnerText ?? qualityName) + Environment.NewLine;
+                }
                 XmlDocument xmlSkillDocument = XmlManager.Load("skills.xml", strLanguage);
                 switch (bonusNode.Name)
                 {
