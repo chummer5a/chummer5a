@@ -246,7 +246,7 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("advantage", Advantage);
             objWriter.WriteElementString("disadvantage", Disadvantage);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("mentormask", MentorMask.ToString());
@@ -269,6 +269,25 @@ namespace Chummer
                 {
                     _objCachedMyXmlNode = null;
                     _strName = value;
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to improvements selected for the Mentor Spirit or Paragon.
+        /// </summary>
+        public string Extra
+        {
+            get => _strExtra;
+            set
+            {
+                if (_strExtra != value)
+                {
+                    _strExtra = value;
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
                 }
             }
         }
@@ -288,7 +307,15 @@ namespace Chummer
         public string Advantage
         {
             get => _strAdvantage;
-            set => _strAdvantage = value;
+            set
+            {
+                if (_strAdvantage != value)
+                {
+                    _strAdvantage = value;
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                }
+            }
         }
 
         /// <summary>
@@ -298,10 +325,10 @@ namespace Chummer
         {
             string strReturn = Advantage;
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -313,7 +340,15 @@ namespace Chummer
         public string Disadvantage
         {
             get => _strDisadvantage;
-            set => _strDisadvantage = value;
+            set
+            {
+                if (_strDisadvantage != value)
+                {
+                    _strDisadvantage = value;
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                }
+            }
         }
 
         /// <summary>
