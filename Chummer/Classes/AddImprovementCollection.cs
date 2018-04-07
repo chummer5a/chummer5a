@@ -2079,8 +2079,17 @@ namespace Chummer.Classes
             bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
             if (!bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                bool isKnowledge = false;
-                strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, string.Empty, ref isKnowledge);
+                if (bonusNode["options"] != null)
+                {
+                    bool isKnowledge = false;
+                    strSkill = ImprovementManager.DoSelectSkill(bonusNode["options"], _objCharacter, _intRating,
+                        string.Empty, ref isKnowledge);
+                }
+                else
+                {
+                    Log.Error(new object[] {"skilllevel", bonusNode.OuterXml});
+                    throw new AbortedException();
+                }
             }
             CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
         }
@@ -2207,12 +2216,21 @@ namespace Chummer.Classes
             {
                 strSkill = bonusNode["name"].InnerText;
             }
-            else //Theme or selection from a given list
+            else if (bonusNode["options"] != null)
             {
                 bool isKnowledge = true;
-                string descrition = bonusNode["theme"] == null ? string.Empty
-                    : LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Theme", GlobalOptions.Language).Replace("{0}", '[' + bonusNode["theme"].InnerText + ']');
+                strSkill = ImprovementManager.DoSelectSkill(bonusNode["options"], _objCharacter, _intRating, String.Empty, ref isKnowledge);
+            }
+            else if(bonusNode["theme"] != null)
+            {
+                bool isKnowledge = true;
+                string descrition = LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Theme", GlobalOptions.Language).Replace("{0}", '[' + bonusNode["theme"].InnerText + ']');
                 strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, descrition, ref isKnowledge);
+            }
+            else
+            {
+                Log.Error(new object[] { "knowledgeskilllevel", bonusNode.OuterXml });
+                throw new AbortedException();
             }
 
             CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, val);
@@ -6076,9 +6094,26 @@ namespace Chummer.Classes
         {
             Log.Info("sinlevel");
             string strSINType = bonusNode.InnerText;
-            string strForceValue = bonusNode.Attributes?["select"]?.Value ?? string.Empty;
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strSINType + "\"]");
+
+            string strForceValue = bonusNode.Attributes?["select"]?.Value ?? string.Empty;
+            if (string.IsNullOrEmpty(strForceValue))
+            {
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description =
+                        LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
+                            .Replace("{0}", objXmlSelectedQuality?["translate"]?.InnerText ?? objXmlSelectedQuality?["name"]?.InnerText)
+                };
+                frmPickText.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickText.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                strForceValue = frmPickText.SelectedValue;
+            }
             int karmaValue = -1 * ImprovementManager.ValueToInt(_objCharacter, objXmlSelectedQuality?["karma"]?.InnerText ?? "0", _intRating);
             CreateImprovement(strSINType, _objImprovementSource, SourceName, Improvement.ImprovementType.Sinlevel, _strFriendlyName, karmaValue, 1 ,0, 0, 0, 0, string.Empty, false, strForceValue);
 

@@ -635,6 +635,32 @@ namespace Chummer
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_InitiateGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
                         return objCharacter.InitiateGrade >= Convert.ToInt32(strNodeInnerText);
                     }
+                case "lifemodule":
+                    bool versionRequired = xmlNode.Attributes?["version"] != null;
+                    Quality lifemodule = versionRequired
+                        ? objCharacter.Qualities.FirstOrDefault(x => x.Name == strNodeInnerText && x.ParentName == xmlNode.Attributes?["version"].InnerText)
+                        : objCharacter.Qualities.FirstOrDefault(x => x.Name == strNodeInnerText && x.Name != strIgnoreQuality);
+                    if (lifemodule != null)
+                    {
+                        if (blnShowMessage)
+                            strName = lifemodule.DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.Language);
+                        return true;
+                    }
+                    if (!blnShowMessage) return false;
+                    XmlNode xmlLifeModuleNode = XmlManager.Load("lifemodules.xml").SelectSingleNode($"/chummer/modules/module[name = \"{strNodeInnerText}\"]/translate");
+                    string strNameTranslated = xmlLifeModuleNode?.InnerText;
+                    strName = !string.IsNullOrEmpty(strNameTranslated)
+                        ? $"{Environment.NewLine}\t{strNameTranslated}"
+                        : $"{Environment.NewLine}\t{strNodeInnerText}";
+                    if (versionRequired)
+                    {
+                        string strVersionTranslated = xmlLifeModuleNode?.SelectSingleNode($"versions/version[name = \"{xmlNode.Attributes?["version"].InnerText}\"]/translate")?.InnerText;
+                        strName += !string.IsNullOrEmpty(strVersionTranslated)
+                            ? $"{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({strVersionTranslated})"
+                            : $"{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({xmlNode.Attributes?["version"].InnerText})";
+                    }
+                    strName += $"{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)})";
+                    return false;
                 case "martialart":
                     {
                         MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.Name == strNodeInnerText);
@@ -1650,6 +1676,12 @@ namespace Chummer
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_InitiateGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
                         return objCharacter.InitiateGrade >= Convert.ToInt32(strNodeInnerText);
                     }
+                case "lifemodule":
+                    if (xmlNode.SelectSingleNode("@version") != null)
+                    {
+                        return objCharacter.LifeModules.Any(x => x.ParentName == xmlNode.Value || x.Name == xmlNode.GetAttribute("version", ""));
+                    }
+                    return objCharacter.LifeModules.Any(x => x.Name == xmlNode.Value || x.ParentName == xmlNode.Value);
                 case "martialart":
                     {
                         MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.Name == strNodeInnerText);

@@ -1532,6 +1532,8 @@
           <quality>SINner (Criminal)</quality>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate Limited)</quality>
+		  <quality>People's SIN</quality>
+		  <quality>People's SIN (Criminal)</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1550,6 +1552,8 @@
           <quality>SINner (Criminal)</quality>
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
+		  <quality>People's SIN</quality>
+		  <quality>People's SIN (Criminal)</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1568,6 +1572,8 @@
           <quality>SINner (Criminal)</quality>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate)</quality>
+		  <quality>People's SIN</quality>
+		  <quality>People's SIN (Criminal)</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1587,6 +1593,8 @@
           <quality>SINner (Corporate)</quality>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate Limited)</quality>
+		  <quality>People's SIN</quality>
+		  <quality>People's SIN (Criminal)</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -16055,6 +16063,9 @@
           <quality>People's SIN (Criminal)</quality>
         </oneof>
       </forbidden>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <source>SAG</source>
       <page>148</page>
     </quality>
@@ -16072,6 +16083,9 @@
           <quality>People's SIN</quality>
         </oneof>
       </forbidden>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <source>SAG</source>
       <page>148</page>
     </quality>

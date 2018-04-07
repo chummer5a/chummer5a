@@ -55,9 +55,8 @@
               <val>2</val>
               <name>[City]</name>
             </knowledgeskilllevel>
-            <knowledgeskilllevel limittoskill="Spanish,German,Italian,French,Mandarin,Polish,Yiddish">
-              <options />
-              <id>a9df9852-6f4d-423d-8251-c92a709c1476</id>
+            <knowledgeskilllevel >
+              <options limittoskill="Spanish,German,Italian,French,Mandarin,Polish,Yiddish"/>
               <group>Language</group>
               <val>2</val>
             </knowledgeskilllevel>
@@ -883,6 +882,11 @@
       <category>LifeModule</category>
       <name>Fugitive</name>
       <karma>40</karma>
+	  <required>
+		<oneof>
+			<lifemodule>United Canadian American States</lifemodule>
+		</oneof>
+	  </required>
       <bonus>
         <attributelevel>
           <name>REA</name>
