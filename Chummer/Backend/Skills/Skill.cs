@@ -171,7 +171,12 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
                 if (xmlSkillNode["forced"] != null)
-                    skill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty);
+                    skill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                        xmlSkillNode["forcedRating"] != null)
+                    {
+                        Type = xmlSkillNode["type"]?.InnerText ?? string.Empty,
+                        Deletable = xmlSkillNode["deletable"] != null
+                    };
                 else
                 {
                     KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);

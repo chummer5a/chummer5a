@@ -72,7 +72,7 @@ namespace Chummer.Backend.Skills
         private string _strType = string.Empty;
         public bool ForcedName { get; }
         public bool ForcedRating { get; }
-        public bool ForcedSkillDeleteable { get; set; }
+        public bool Deletable { get; set; }
 
         public KnowledgeSkill(Character character) : base(character)
         {
@@ -416,6 +416,10 @@ namespace Chummer.Backend.Skills
             writer.WriteElementString("type", _strType);
             if (ForcedName)
                 writer.WriteElementString("forced", null);
+            if (ForcedRating)
+                writer.WriteElementString("forcedRating", null);
+            if (Deletable)
+                writer.WriteElementString("deletable", null);
         }
 
         public void Load(XmlNode xmlNode)
@@ -438,9 +442,11 @@ namespace Chummer.Backend.Skills
                     SkillId = guidTemp;
             }
 
+            Deletable = xmlNode["deletable"] != null;
             LoadSuggestedSpecializations();
             string strCategoryString = string.Empty;
-            if ((xmlNode.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
+            xmlNode.TryGetStringFieldQuickly("type", ref strCategoryString);
+            if ((!string.IsNullOrEmpty(strCategoryString))
                 || (xmlNode.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))
             {
                 Type = strCategoryString;

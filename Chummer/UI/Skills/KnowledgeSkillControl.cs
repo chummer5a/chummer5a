@@ -79,6 +79,7 @@ namespace Chummer.UI.Skills
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.Visible = true;
             }
             else
             {
@@ -149,7 +150,7 @@ namespace Chummer.UI.Skills
                         cboSkill.Enabled = false;
                         cboType.Enabled = false;
                     }
-                    cmdDelete.DataBindings.Add("Visible", skill, nameof(KnowledgeSkill.ForcedSkillDeleteable), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cmdDelete.DataBindings.Add("Visible", skill, nameof(KnowledgeSkill.Deletable), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
             }
             cboType.EndUpdate();

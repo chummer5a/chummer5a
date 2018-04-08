@@ -3685,7 +3685,7 @@ namespace Chummer
                             }
                             else
                             {
-                                knoSkill.ForcedSkillDeleteable = true;
+                                knoSkill.Deletable = true;
                             }
                             knoSkill.OnMultiplePropertyChanged(nameof(KnowledgeSkill.FreeKarma));
                         }

@@ -2240,7 +2240,7 @@ namespace Chummer.Classes
                 knoSkill = new KnowledgeSkill(_objCharacter, strSkill, isNativeLanguage)
                 {
                     Type = strSkillType,
-                    ForcedSkillDeleteable = false
+                    Deletable = false
                 };
                 _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
             }
@@ -2256,7 +2256,7 @@ namespace Chummer.Classes
                     new KnowledgeSkill(_objCharacter, strSkill, isNativeLanguage)
                     {
                         Type = strSkillType,
-                        ForcedSkillDeleteable = false,
+                        Deletable = false,
                         KarmaPoints = isNativeLanguage ? 0 : knoSkill.KarmaPoints,
                         BasePoints = isNativeLanguage ? 0 : knoSkill.BasePoints
                     };
