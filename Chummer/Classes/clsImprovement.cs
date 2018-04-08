@@ -2967,11 +2967,11 @@ namespace Chummer
                         KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
                             x => x.Name == objImprovement.ImprovedName
                                  && x.GainedFromSkillLevelImprovement
-                                 && x.Enabled == false);
+                                 && x.ForceDisabled);
                         if (knoSkill != null)
                         {
                             objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
-                            knoSkill.Enabled = true;
+                            knoSkill.ForceDisabled = false;
                             objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
                         }
                         break;
@@ -3274,7 +3274,7 @@ namespace Chummer
                                  && x.GainedFromSkillLevelImprovement);
                         if (knoSkill != null && knoSkill.GainedFromSkillLevelImprovement)
                         {
-                            knoSkill.Enabled = false;
+                            knoSkill.ForceDisabled = true;
                             knoSkill.UnbindSkill();
                         }
                         break;
