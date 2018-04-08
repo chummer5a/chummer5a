@@ -51,11 +51,15 @@ namespace Chummer.Backend.Skills
                     int intOverMax = (value + KarmaPoints + FreeLevels) - RatingMaximum;
 
                     //reduce value by max or 0
-                    //TODO karma from skill, karma other stuff might be reduced
                     value -= Math.Max(0, intOverMax);
 
                     //and save back, cannot go under 0
                     BasePoints = Math.Max(0, value - FreeBase);
+                    foreach (Skill skill in _lstAffectedSkills)
+                    {
+                        //To trigger new calculation of skill.KarmaPoints
+                        skill.Karma = skill.Karma;
+                    }
                 }
             }
         }
@@ -80,11 +84,15 @@ namespace Chummer.Backend.Skills
                     int intOverMax = value + BasePoints + FreeBase - RatingMaximum;
 
                     //reduce value by max or 0
-                    //TODO can remove karma from skills
                     value -= Math.Max(0, intOverMax);
 
                     //and save back, cannot go under 0
                     KarmaPoints = Math.Max(0, value - FreeLevels);
+                    foreach (Skill skill in _lstAffectedSkills)
+                    {
+                        //To trigger new calculation of skill.KarmaPoints
+                        skill.Karma = skill.Karma;
+                    }
                 }
             }
         }
