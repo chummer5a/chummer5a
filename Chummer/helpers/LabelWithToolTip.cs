@@ -56,7 +56,7 @@ namespace Chummer
         {
             ToolTipObject = objToolTip;
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

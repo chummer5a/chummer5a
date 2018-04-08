@@ -87,7 +87,7 @@ namespace Chummer
 
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
-        
+
         private void Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
             if (levels <= 0) return;
@@ -110,7 +110,7 @@ namespace Chummer
                 string trim = word.Trim();
                 if (string.IsNullOrEmpty(trim))
                     continue;
-                
+
                 if (trim.StartsWith('$'))
                 {
                     if (trim.StartsWith("$DOLLAR"))
@@ -187,7 +187,7 @@ namespace Chummer
             }
 
             //Did not meet predefined macros, check user defined
-            
+
             XPathNavigator xmlUserMacroNode = xmlBaseMacrosNode?.SelectSingleNode(macroName);
 
             if (xmlUserMacroNode != null)
@@ -210,13 +210,13 @@ namespace Chummer
                                     strNames[i] = xmlLoopNode.Name;
                                     ++i;
                                 }
-                                
+
                                 strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                             }
                         }
                         else if (xmlUserMacroFirstChild.Name == "persistent")
                         {
-                            //Any node not named 
+                            //Any node not named
                             XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
                             if (xmlPossibleNodeList.Count > 0)
                             {
@@ -227,7 +227,7 @@ namespace Chummer
                                     strNames[i] = xmlLoopNode.Name;
                                     ++i;
                                 }
-                                
+
                                 strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
                                     persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);

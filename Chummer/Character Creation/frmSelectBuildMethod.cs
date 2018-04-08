@@ -27,7 +27,7 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly string _strDefaultOption = "Standard";
-        private readonly XPathNavigator _xmlGameplayOptionsDataGameplayOptionsNode; 
+        private readonly XPathNavigator _xmlGameplayOptionsDataGameplayOptionsNode;
         private int _intQualityLimits;
         private decimal _decNuyenBP;
 
@@ -152,7 +152,7 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
-            
+
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;

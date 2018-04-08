@@ -521,7 +521,7 @@ namespace Chummer.Backend.Equipment
             get => _strMount;
             set => _strMount = value;
         }
-        
+
         /// <summary>
         /// Additional mount slot used (if any).
         /// </summary>

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace Chummer
         /// <summary>
         /// The physical health of the current npc
         /// </summary>
-        public int Physical 
+        public int Physical
         {
             get => _progressBarPhysical.Value;
             set => _progressBarPhysical.Value = value;
@@ -55,7 +55,7 @@ namespace Chummer
         /// <summary>
         /// The stun health of the current npc
         /// </summary>
-        public int Stun 
+        public int Stun
         {
             get => _progressBarStun.Value;
             set => _progressBarStun.Value = value;

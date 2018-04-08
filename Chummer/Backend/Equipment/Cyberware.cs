@@ -650,7 +650,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            
+
             if (blnCreateChildren)
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
 
@@ -1138,7 +1138,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + strSpaceCharacter + '(' + _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter + TotalAgility.ToString(objCulture) + ',' + strSpaceCharacter + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter + TotalStrength.ToString(objCulture) + ',' + strSpaceCharacter + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpaceCharacter + intLimit.ToString(objCulture) + ')');
             }
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            
+
             objWriter.WriteElementString("ess", CalculatedESS().ToString(_objCharacter.Options.EssenceFormat, objCulture));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
@@ -2303,7 +2303,7 @@ namespace Chummer.Backend.Equipment
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                    
+
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -2344,7 +2344,7 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    
+
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
@@ -2357,7 +2357,7 @@ namespace Chummer.Backend.Equipment
                     // Just a straight Capacity, so return the value.
                     return strCapacity;
                 }
-                
+
                 return strReturn;
             }
         }
@@ -2406,7 +2406,7 @@ namespace Chummer.Backend.Equipment
                 decimal decDiscount = Convert.ToDecimal(ESSDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
                 decTotalESSMultiplier *= 1.0m - decDiscount;
             }
-            
+
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
             if (ForceGrade == "None")
@@ -2650,7 +2650,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = TotalCostWithoutModifiers;
-                
+
                 if (_blnSuite)
                     decReturn *= 0.9m;
 
@@ -2718,7 +2718,7 @@ namespace Chummer.Backend.Equipment
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
-                
+
                 if (_blnSuite)
                     decReturn *= 0.9m;
 

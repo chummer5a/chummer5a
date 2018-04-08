@@ -54,7 +54,7 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            
+
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_packs.xml"))
             {
@@ -262,7 +262,7 @@ namespace Chummer
                 //        // </skill>
                 //        objWriter.WriteEndElement();
                 //    }
-                //}  
+                //}
 
                 // Skill Groups.
                 //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
@@ -549,7 +549,7 @@ namespace Chummer
                         // <weapon>
                         objWriter.WriteStartElement("weapon");
                         objWriter.WriteElementString("name", objWeapon.Name);
-                        
+
                         // Weapon Accessories.
                         if (objWeapon.WeaponAccessories.Count > 0)
                         {

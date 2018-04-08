@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
         {
             _skill = skill;
             InitializeComponent();
-            
+
             //Display
             lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
             lblModifiedRating.DataBindings.Add("ToolTipText", skill, nameof(Skill.PoolToolTip));
@@ -56,7 +56,7 @@ namespace Chummer.UI.Skills
 
                 lblRating.Visible = true;
                 lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
-                
+
                 //New knowledge skills start at 0. Leave the Type selector unlocked until they spend Karma on the skill.
                 cboType.Enabled = (skill.Karma == 0 && skill.Base == 0 || string.IsNullOrWhiteSpace(_skill.Type));
 
@@ -126,7 +126,7 @@ namespace Chummer.UI.Skills
                 chkKarma.Visible = false;
                 btnAddSpec.Enabled = false;
                 btnCareerIncrease.Enabled = false;
-                
+
                 if (!skill.CharacterObject.Created)
                 {
                     cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
@@ -258,7 +258,7 @@ namespace Chummer.UI.Skills
             if (selectForm.DialogResult != DialogResult.OK) return;
 
             _skill.AddSpecialization(selectForm.SelectedItem);
-            
+
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
         }

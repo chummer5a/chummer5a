@@ -97,7 +97,7 @@ namespace Chummer
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
-            
+
             if (!string.IsNullOrEmpty(s_StrSelectedCategory))
                 cboCategory.SelectedValue = s_StrSelectedCategory;
 
@@ -331,7 +331,7 @@ namespace Chummer
                             continue;
                     }
                 }
-                
+
                 string strName = objXmlProgram.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 // If this is a critter with Optional Programs, see if this Program is allowed.
                 if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null)
@@ -354,7 +354,7 @@ namespace Chummer
                 }
                 lstPrograms.Add(new ListItem(strId, strDisplayName));
             }
-            
+
             lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;

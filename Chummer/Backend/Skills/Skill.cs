@@ -582,7 +582,7 @@ namespace Chummer.Backend.Skills
         public Color PreferredControlColor => Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
 
         private int _intCachedCanHaveSpecs = -1;
-        
+
         public bool CanHaveSpecs
         {
             get

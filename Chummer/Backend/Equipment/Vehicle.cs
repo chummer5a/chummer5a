@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
                                 objGearChild.ParentID = objGear.InternalId;
                                 objGear.Children.Add(objGearChild);
                             }
-                            
+
                             _lstGear.Add(objGear);
                         }
                     }
@@ -458,7 +458,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-                
+
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     objWeapon.ParentVehicle = this;
@@ -1408,7 +1408,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                             else
-                            { 
+                            {
                                 intDroneModSlots -= objMod.CalculatedSlots;
                             }
                     }
@@ -1926,7 +1926,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intBody = _intBody;
-                
+
                 foreach (VehicleMod objMod in Mods)
                 {
                     if (!objMod.IncludedInVehicle && objMod.Installed)
@@ -2132,8 +2132,8 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intModArmor = 0;
-                
-                // Add the Modification's Armor to the Vehicle's base Armor. 
+
+                // Add the Modification's Armor to the Vehicle's base Armor.
                 foreach (VehicleMod objMod in Mods.Where(objMod => (!objMod.IncludedInVehicle && objMod.Installed)))
                 {
                     string strArmor = objMod.Bonus?["armor"]?.InnerText;
@@ -2604,7 +2604,7 @@ namespace Chummer.Backend.Equipment
             get => _strModAttributeArray;
             set => _strModAttributeArray = value;
         }
-        
+
         /// <summary>
         /// ASDF attribute boosted by Overclocker.
         /// </summary>
@@ -2816,7 +2816,7 @@ namespace Chummer.Backend.Equipment
                     Tag = "String_WeaponMounts",
                     Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
                 };
-                
+
                 // Weapon Mounts
                 foreach (WeaponMount objWeaponMount in WeaponMounts)
                 {
@@ -2838,7 +2838,7 @@ namespace Chummer.Backend.Equipment
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }
-            
+
             // Vehicle Gear.
             foreach (Gear objGear in Gear)
             {

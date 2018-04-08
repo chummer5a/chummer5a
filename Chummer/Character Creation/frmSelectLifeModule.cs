@@ -37,7 +37,6 @@ namespace Chummer
         private Regex _searchRegex;
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
-
         private readonly List<ListItem> _lstStage = new List<ListItem>();
 
         //private string _strWorkStage;
@@ -127,7 +126,6 @@ namespace Chummer
                     nodes.Add(treNode);
                 }
             }
-
             return nodes.ToArray();
         }
         
@@ -210,7 +208,6 @@ namespace Chummer
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
             }
-
         }
 
         public XmlNode SelectedNode => Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
@@ -251,7 +248,6 @@ namespace Chummer
                     //No other way to check for a valid regex that i know of
                 }
             }
-            
             BuildTree();
         }
     }

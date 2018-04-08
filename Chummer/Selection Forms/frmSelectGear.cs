@@ -100,7 +100,7 @@ namespace Chummer
             }
 
             XPathNodeIterator objXmlCategoryList;
-            
+
             // Populate the Gear Category list.
             if (_setAllowedCategories.Count > 0)
             {
@@ -481,7 +481,7 @@ namespace Chummer
         {
             set => _eCapacityStyle = value;
         }
-        
+
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
@@ -897,7 +897,7 @@ namespace Chummer
                 strFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
 
             strFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            
+
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
@@ -942,7 +942,7 @@ namespace Chummer
                         continue;
                     }
                 }
-                
+
                 if (!blnDoUIUpdate && blnTerminateAfterFirst)
                 {
                     lstGears.Add(new ListItem(string.Empty, string.Empty));

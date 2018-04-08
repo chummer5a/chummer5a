@@ -105,7 +105,7 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            
+
             /*
             if (_strNotes == string.Empty)
             {

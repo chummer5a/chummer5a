@@ -54,7 +54,7 @@ namespace Chummer
                     Debugger.Launch();
                 }
                 sw.TaskEnd("dbgchk");
-                //Various init stuff (that mostly "can" be removed as they serve 
+                //Various init stuff (that mostly "can" be removed as they serve
                 //debugging more than function
 
 
@@ -116,7 +116,7 @@ namespace Chummer
                 Log.Info(ExceptionHeatmap.GenerateInfo());
             }
         }
-        
+
         /// <summary>
         /// Main application form.
         /// </summary>
@@ -139,7 +139,7 @@ namespace Chummer
 
         static void FixCwd()
         {
-            //If launched by file assiocation, the cwd is file location. 
+            //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
             if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))

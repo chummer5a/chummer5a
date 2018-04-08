@@ -200,7 +200,7 @@ namespace Chummer
                 return LanguageManager.GetString("String_None", strLanguage);
             if (strLanguage == GlobalOptions.Language)
                 return RequiresProgram;
-            
+
             return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
 

@@ -339,7 +339,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         /// <summary>
         /// When running in silent mode, the update window will not be shown.
         /// </summary>
@@ -499,7 +499,7 @@ namespace Chummer
 
         private bool CreateBackupZip()
         {
-            //Create a backup file in the temp directory. 
+            //Create a backup file in the temp directory.
             string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
             Log.Info("Creating archive from application path: " + _strAppPath);
             try

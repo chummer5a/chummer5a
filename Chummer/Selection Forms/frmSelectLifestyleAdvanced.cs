@@ -546,7 +546,7 @@ namespace Chummer
                     return;
                 }
                 blnAddAgain = frmSelectLifestyleQuality.AddAgain;
-                
+
                 XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
 
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
@@ -698,7 +698,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            
+
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             XmlNode xmlAspect = _objLifestyle.GetNode();
@@ -840,7 +840,7 @@ namespace Chummer
                     decBaseNuyen += decCost;
             }
             _blnSkipRefresh = true;
-            
+
             nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
             nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
             nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);

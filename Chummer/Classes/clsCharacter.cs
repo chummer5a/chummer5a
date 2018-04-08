@@ -145,14 +145,6 @@ namespace Chummer
         private bool _blnCritterEnabled;
         private bool _blnIsCritter;
         private bool _blnPossessed;
-        private bool _blnBlackMarketDiscount;
-        private bool _blnFriendsInHighPlaces;
-        private bool _blnExCon;
-        private bool _blnOverclocker;
-        private bool _blnMadeMan;
-        private bool _blnFame;
-        private bool _blnBornRich;
-        private bool _blnErased;
 		private decimal _decPrototypeTranshuman;
         private bool _blnMAGEnabled;
         private bool _blnRESEnabled;
@@ -421,11 +413,13 @@ namespace Chummer
                 new DependancyGraphNode<string>(nameof(BuildMethodHasSkillPoints),
                     new DependancyGraphNode<string>(nameof(BuildMethod))
                 ),
-                new DependancyGraphNode<string>(nameof(DamageResistancePool),
-                    new DependancyGraphNode<string>(nameof(TotalArmorRating),
-                        new DependancyGraphNode<string>(nameof(ArmorRating))
-                    ),
-                    new DependancyGraphNode<string>(nameof(IsAI))
+                new DependancyGraphNode<string>(nameof(DamageResistancePoolToolTip),
+                    new DependancyGraphNode<string>(nameof(DamageResistancePool),
+                        new DependancyGraphNode<string>(nameof(TotalArmorRating),
+                            new DependancyGraphNode<string>(nameof(ArmorRating))
+                        ),
+                        new DependancyGraphNode<string>(nameof(IsAI))
+                    )
                 ),
                 new DependancyGraphNode<string>(nameof(IsAI),
                     new DependancyGraphNode<string>(nameof(DEPEnabled))
@@ -454,6 +448,21 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(BiowareEssence)),
                         new DependancyGraphNode<string>(nameof(EssenceHole))
                     )
+                ),
+                new DependancyGraphNode<string>(nameof(ComposureToolTip),
+                    new DependancyGraphNode<string>(nameof(Composure))
+                ),
+                new DependancyGraphNode<string>(nameof(JudgeIntentionsToolTip),
+                    new DependancyGraphNode<string>(nameof(JudgeIntentions))
+                ),
+                new DependancyGraphNode<string>(nameof(JudgeIntentionsResistToolTip),
+                    new DependancyGraphNode<string>(nameof(JudgeIntentionsResist))
+                ),
+                new DependancyGraphNode<string>(nameof(LiftAndCarryToolTip),
+                    new DependancyGraphNode<string>(nameof(LiftAndCarry))
+                ),
+                new DependancyGraphNode<string>(nameof(MemoryToolTip),
+                    new DependancyGraphNode<string>(nameof(Memory))
                 ),
                 new DependancyGraphNode<string>(nameof(DisplayCyberwareEssence),
                     new DependancyGraphNode<string>(nameof(CyberwareEssence))
@@ -1026,28 +1035,9 @@ namespace Chummer
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
 
-            // <friendsinhighplaces />
-            objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
             // <prototypetranshuman />
             objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
-
-            // <blackmarket />
-            objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
-
-            objWriter.WriteElementString("excon", _blnExCon.ToString());
-
-            objWriter.WriteElementString("overclocker", _blnOverclocker.ToString());
-
-            objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
-
-            objWriter.WriteElementString("ambidextrous", _blnAmbidextrous.ToString());
-
-            objWriter.WriteElementString("fame", _blnFame.ToString());
-
-            objWriter.WriteElementString("bornrich", _blnBornRich.ToString());
-
-            objWriter.WriteElementString("erased", _blnErased.ToString());
-
+            
 			// <attributes>
 			objWriter.WriteStartElement("attributes");
 	        AttributeSection.Save(objWriter);
@@ -1742,7 +1732,7 @@ namespace Chummer
             xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
             xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
             xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-            
+
             xmlCharacterNavigator.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
@@ -1750,17 +1740,8 @@ namespace Chummer
             xmlCharacterNavigator.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("initiationdisabled", ref _blnInitiationDisabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
+            
             xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("excon", ref _blnExCon);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("fame", ref _blnFame);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("erased", ref _blnErased);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
@@ -1812,7 +1793,7 @@ namespace Chummer
                             continue;
                     }
                 }
-                
+
                 Improvement objImprovement = new Improvement(this);
                 try
                 {
@@ -1913,7 +1894,6 @@ namespace Chummer
                             objQuality.Bonus = xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Made Man\"]/bonus");
                             objQuality.Extra = string.Empty;
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                            MadeMan = true;
                             ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.MadeMan, objQuality.DisplayNameShort(GlobalOptions.Language));
                             ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.AddContact, objQuality.DisplayNameShort(GlobalOptions.Language));
                             ImprovementManager.CreateImprovement(this, selectedContactGUID, Improvement.ImprovementSource.Quality, objQuality.InternalId, Improvement.ImprovementType.ContactForcedLoyalty, objQuality.DisplayNameShort(GlobalOptions.Language));
@@ -2004,17 +1984,13 @@ namespace Chummer
             }
 
             Timekeeper.Start("load_char_contacts");
-
-
+            
             // Contacts.
             foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
             {
                 Contact objContact = new Contact(this);
                 objContact.Load(xmlContact);
                 _lstContacts.Add(objContact);
-                if (MadeMan && LastSavedVersion <= new Version("5.200.0") &&
-                    Improvements.Any(x => x.ImprovedName == objContact.GUID && x.ImproveType == Improvement.ImprovementType.ContactForceGroup))
-                    objContact.GroupEnabled = false;
             }
 
             Timekeeper.Finish("load_char_contacts");
@@ -2888,7 +2864,7 @@ namespace Chummer
             objWriter.WriteElementString("cyberwaredisabled", CyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", CritterEnabled.ToString());
-            
+
             objWriter.WriteElementString("totaless", Essence().ToString(_objOptions.EssenceFormat, objCulture));
             // <tradition />
             string strTraditionName = MagicTradition;
@@ -2924,7 +2900,7 @@ namespace Chummer
                         strSpiritHealth = strNone;
                         strSpiritIllusion = strNone;
                         strSpiritManipulation = strNone;
-                        
+
                     }
                     else
                     {
@@ -3453,7 +3429,7 @@ namespace Chummer
             {
                 objgrade.Print(objWriter, strLanguageToPrint);
 
-                //TODO: Probably better to integrate this into the main print method, but eh. 
+                //TODO: Probably better to integrate this into the main print method, but eh.
                 // <metamagics>
                 objWriter.WriteStartElement("metamagics");
                 foreach (Metamagic objMetamagic in Metamagics.Where(objMetamagic => objMetamagic.Grade == objgrade.Grade))
@@ -3746,7 +3722,7 @@ namespace Chummer
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                         if (objReturnGear.Parent != null)
-                            strGearReturn += strSpaceCharacter + '(' + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')'; 
+                            strGearReturn += strSpaceCharacter + '(' + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
                         return strGearReturn;
                     }
                     foreach (Weapon objWeapon in Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -4385,7 +4361,7 @@ namespace Chummer
         public HashSet<string> GenerateBlackMarketMappings(XmlDocument xmlCategoryDocument)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
-            // Character has no Black Market discount qualities. Fail out early. 
+            // Character has no Black Market discount qualities. Fail out early.
             if (BlackMarketDiscount)
             {
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
@@ -4397,7 +4373,7 @@ namespace Chummer
                 }
                 using (XmlNodeList xmlCategoryList = xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
                     if (xmlCategoryList != null)
-                        // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+                        // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
                         foreach (XmlNode xmlCategoryNode in xmlCategoryList)
                         {
                             string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
@@ -4416,7 +4392,7 @@ namespace Chummer
         public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlBaseChummerNode)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
-            // Character has no Black Market discount qualities. Fail out early. 
+            // Character has no Black Market discount qualities. Fail out early.
             if (BlackMarketDiscount && xmlBaseChummerNode != null)
             {
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
@@ -4426,8 +4402,8 @@ namespace Chummer
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && objImprovement.Enabled)
                         setNames.Add(objImprovement.ImprovedName);
                 }
-                
-                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+
+                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
                 foreach (XPathNavigator xmlCategoryNode in xmlBaseChummerNode.Select("categories/category"))
                 {
                     string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
@@ -5136,9 +5112,13 @@ namespace Chummer
             set
             {
                 if (value >= _lstMugshots.Count || value < -1)
-                    _intMainMugshotIndex = -1;
-                else
+                    value = -1;
+
+                if (_intMainMugshotIndex != value)
+                {
                     _intMainMugshotIndex = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -5544,7 +5524,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         /// <summary>
         /// Character's name to use when loading them in a new tab.
         /// </summary>
@@ -5818,6 +5798,8 @@ namespace Chummer
             set => _intTotalAttributes = value;
         }
 
+        private int _intCachedCareerKarma = int.MinValue;
+
         /// <summary>
         /// Total amount of Karma the character has earned over the career.
         /// </summary>
@@ -5825,6 +5807,9 @@ namespace Chummer
         {
             get
             {
+                if (_intCachedCareerKarma != decimal.MinValue)
+                    return _intCachedCareerKarma;
+
                 int intKarma = 0;
 
                 foreach (ExpenseLogEntry objEntry in _lstExpenseLog)
@@ -5834,11 +5819,13 @@ namespace Chummer
                         intKarma += decimal.ToInt32(objEntry.Amount);
                 }
 
-                return intKarma;
+                return _intCachedCareerKarma = intKarma;
             }
         }
 
         public string DisplayCareerKarma => CareerKarma.ToString(GlobalOptions.CultureInfo);
+
+        private decimal _decCachedCareerNuyen = decimal.MinValue;
 
         /// <summary>
         /// Total amount of Nuyen the character has earned over the career.
@@ -5847,6 +5834,9 @@ namespace Chummer
         {
             get
             {
+                if (_decCachedCareerNuyen != decimal.MinValue)
+                    return _decCachedCareerNuyen;
+
                 decimal decNuyen = 0;
 
                 foreach (ExpenseLogEntry objEntry in _lstExpenseLog)
@@ -5856,7 +5846,7 @@ namespace Chummer
                         decNuyen += objEntry.Amount;
                 }
 
-                return decNuyen;
+                return _decCachedCareerNuyen = decNuyen;
             }
         }
 
@@ -5868,7 +5858,14 @@ namespace Chummer
         public bool IsCritter
         {
             get => _blnIsCritter;
-            set => _blnIsCritter = value;
+            set
+            {
+                if (_blnIsCritter != value)
+                {
+                    _blnIsCritter = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5882,7 +5879,14 @@ namespace Chummer
         public bool Possessed
         {
             get => _blnPossessed;
-            set => _blnPossessed = value;
+            set
+            {
+                if (_blnPossessed != value)
+                {
+                    _blnPossessed = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5891,17 +5895,24 @@ namespace Chummer
         public int MaximumAvailability
         {
             get => _intMaxAvail;
-            set => _intMaxAvail = value;
+            set
+            {
+                if (_intMaxAvail != value)
+                {
+                    _intMaxAvail = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public int SpellKarmaCost(string category = "")
+        public int SpellKarmaCost(string strCategory = "")
         {
             int intReturn = Options.KarmaSpell;
 
             decimal decMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in Improvements.Where(imp => (imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost ||
                                                                                   imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier) &&
-                                                                                  imp.ImprovedName == category))
+                                                                                  imp.ImprovedName == strCategory))
             {
                 if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
                 {
@@ -5970,7 +5981,7 @@ namespace Chummer
             get
             {
                 int intReturn = Options.KarmaNewAIAdvancedProgram;
-                
+
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
@@ -5989,17 +6000,18 @@ namespace Chummer
             }
         }
 
+        private int _intCachedAmbidextrous = -1;
 
         public bool Ambidextrous
         {
-            get => _blnAmbidextrous;
-            set
+            get
             {
-                if (_blnAmbidextrous != value)
+                if (_intCachedAmbidextrous < 0)
                 {
-                    _blnAmbidextrous = value;
-                    OnPropertyChanged();
+                    _intCachedAmbidextrous = Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.Ambidextrous) ? 1 : 0;
                 }
+
+                return _intCachedAmbidextrous > 0;
             }
         }
 #endregion
@@ -6171,12 +6183,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation. 
+        /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
         public int MaxSpiritForce => (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
 
         /// <summary>
-        /// Maximum level of sprites compilable/registerable by the character. Limited to RES at creation. 
+        /// Maximum level of sprites compilable/registerable by the character. Limited to RES at creation.
         /// </summary>
         public int MaxSpriteLevel => (Created ? 2 : 1) * RES.TotalValue;
 
@@ -6304,7 +6316,7 @@ namespace Chummer
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
-                
+
                 return objToolTip.ToString();
             }
         }
@@ -6386,7 +6398,7 @@ namespace Chummer
                     _strTraditionName = value;
                     OnPropertyChanged();
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -7199,25 +7211,130 @@ namespace Chummer
         /// </summary>
         public int Composure => WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
 
+        public string ComposureToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Judge Intentions (INT + CHA).
         /// </summary>
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
+
+        public string JudgeIntentionsToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense) && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
 
         /// <summary>
         /// Judge Intentions Resist (CHA + WIL).
         /// </summary>
         public int JudgeIntentionsResist => CHA.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
 
+        public string JudgeIntentionsResistToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense) && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Lifting and Carrying (STR + BOD).
         /// </summary>
         public int LiftAndCarry => STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
 
+        public string LiftAndCarryToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    STR.DisplayAbbrev + strSpaceCharacter + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+
+                objToolTip.Append(Environment.NewLine + LanguageManager
+                                      .GetString("Tip_LiftAndCarry", GlobalOptions.Language)
+                                      .Replace("{0}", (STR.TotalValue * 15).ToString())
+                                      .Replace("{1}", (STR.TotalValue * 10).ToString()));
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Memory (LOG + WIL).
         /// </summary>
         public int Memory => LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
+
+        public string MemoryToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
 
         /// <summary>
         /// Resist test to Fatigue damage (BOD + WIL).
@@ -7417,7 +7534,7 @@ namespace Chummer
             get
             {
                 StringBuilder objReturn = new StringBuilder(StreetCred.ToString(GlobalOptions.CultureInfo));
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language); 
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
                 foreach (Improvement objImprovement in _lstImprovements)
                 {
@@ -7860,6 +7977,33 @@ namespace Chummer
 
         public int DamageResistancePool => (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
 
+        public string DamageResistancePoolToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder();
+                if (IsAI)
+                {
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) + strSpaceCharacter + '(' + (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                else
+                {
+                    objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// The Character's total Armor Rating.
         /// </summary>
@@ -8240,7 +8384,7 @@ namespace Chummer
                 {
                     return decMaxValue;
                 }
-                
+
                 return Math.Min(decMaxValue, NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP));
             }
         }
@@ -8432,7 +8576,7 @@ namespace Chummer
                             strDPString = LanguageManager.GetString("String_Pilot", GlobalOptions.Language);
                         }
                     }
-                    
+
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + strDPString + strSpaceCharacter + '[' + intHomeNodeDP + ']');
                 }
                 else
@@ -8586,7 +8730,7 @@ namespace Chummer
             }
 
             string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strWalk.Split('/') : _strWalkAlt.Split('/');
-            
+
             switch (strType)
             {
                 case "Fly":
@@ -8622,7 +8766,7 @@ namespace Chummer
             }
 
             string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strRun.Split('/') : _strRunAlt.Split('/');
-            
+
             switch (strType)
             {
                 case "Fly":
@@ -8658,7 +8802,7 @@ namespace Chummer
             }
 
             string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strSprint.Split('/') : _strSprintAlt.Split('/');
-            
+
             switch (strType)
             {
             case "Fly":
@@ -8996,13 +9140,20 @@ namespace Chummer
             }
         }
 
+        private int _intCachedBlackMarketDiscount = -1;
+
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
         public bool BlackMarketDiscount
         {
-            get => _blnBlackMarketDiscount;
-            set => _blnBlackMarketDiscount = value;
+            get
+            {
+                if (_intCachedBlackMarketDiscount < 0)
+                    _intCachedBlackMarketDiscount = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && x.Enabled) ? 1 : 0;
+
+                return _intCachedBlackMarketDiscount > 0;
+            }
         }
 
         /// <summary>
@@ -9037,28 +9188,35 @@ namespace Chummer
 
         public bool IsPrototypeTranshuman => PrototypeTranshuman > 0;
 
+        private int _intCachedFriendsInHighPlaces = -1;
+
         /// <summary>
         /// Whether or not Friends in High Places is enabled.
         /// </summary>
         public bool FriendsInHighPlaces
         {
-            get => _blnFriendsInHighPlaces;
-            set => _blnFriendsInHighPlaces = value;
+            get
+            {
+                if (_intCachedFriendsInHighPlaces < 0)
+                    _intCachedFriendsInHighPlaces = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces && x.Enabled) ? 1 : 0;
+
+                return _intCachedFriendsInHighPlaces > 0;
+            }
         }
+
+        private int _intCachedExCon = -1;
 
         /// <summary>
         /// Whether or not ExCon is enabled.
         /// </summary>
         public bool ExCon
         {
-            get => _blnExCon;
-            set
+            get
             {
-                if (_blnExCon != value)
-                {
-                    _blnExCon = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedExCon < 0)
+                    _intCachedExCon = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ExCon && x.Enabled) ? 1 : 0;
+
+                return _intCachedExCon > 0;
             }
         }
 
@@ -9093,67 +9251,71 @@ namespace Chummer
                 return _intCachedRestrictedGear > 0;
             }
         }
+
+        private int _intCachedOverclocker = -1;
+
         /// <summary>
         /// Whether or not Overclocker is enabled.
         /// </summary>
         public bool Overclocker
         {
-            get => _blnOverclocker;
-            set
+            get
             {
-                if (_blnOverclocker != value)
-                {
-                    _blnOverclocker = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedOverclocker < 0)
+                    _intCachedOverclocker = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Overclocker && x.Enabled) ? 1 : 0;
+
+                return _intCachedOverclocker > 0;
             }
         }
+
+        private int _intCachedMadeMan = -1;
+
         /// <summary>
         /// Whether or not MadeMan is enabled.
         /// </summary>
         public bool MadeMan
         {
-            get => _blnMadeMan;
-            set
+            get
             {
-                if (_blnMadeMan != value)
-                {
-                    _blnMadeMan = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedMadeMan < 0)
+                    _intCachedMadeMan = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MadeMan && x.Enabled) ? 1 : 0;
+
+                return _intCachedMadeMan > 0;
             }
         }
+
+        private int _intCachedFame = -1;
+
         /// <summary>
         /// Whether or not Fame is enabled.
         /// </summary>
         public bool Fame
         {
-            get => _blnFame;
-            set
+            get
             {
-                if (_blnFame != value)
-                {
-                    _blnFame = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedFame < 0)
+                    _intCachedFame = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Fame && x.Enabled) ? 1 : 0;
+
+                return _intCachedFame > 0;
             }
         }
+
+        private int _intCachedErased = -1;
 
         /// <summary>
         /// Whether or not Erased is enabled.
         /// </summary>
         public bool Erased
         {
-            get => _blnErased;
-            set
+            get
             {
-                if (_blnErased != value)
-                {
-                    _blnErased = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedErased < 0)
+                    _intCachedErased = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Erased && x.Enabled) ? 1 : 0;
+
+                return _intCachedErased > 0;
             }
         }
+
         /// <summary>
         /// Convert a string to a CharacterBuildMethod.
         /// </summary>
@@ -9236,7 +9398,7 @@ namespace Chummer
                 strInterval = "1" + strSpaceCharacter + LanguageManager.GetString("String_Week", GlobalOptions.Language);
             else
                 strInterval = "1" + strSpaceCharacter + LanguageManager.GetString("String_Month", GlobalOptions.Language);
-            
+
             return intPool.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' + intAvailValue.ToString(GlobalOptions.CultureInfo) + ',' + strSpaceCharacter + strInterval + ')';
         }
 
@@ -9264,11 +9426,11 @@ namespace Chummer
 #endregion
 
 #region Application Properties
-        private readonly List<Character> _lstLinkedCharacters = new List<Character>();
+        private readonly HashSet<Character> _lstLinkedCharacters = new HashSet<Character>();
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
         /// </summary>
-        public IList<Character> LinkedCharacters => _lstLinkedCharacters;
+        public ICollection<Character> LinkedCharacters => _lstLinkedCharacters;
 
         #endregion
 
@@ -9991,7 +10153,6 @@ namespace Chummer
 
         //Can't be at improvementmanager due reasons
         private readonly Lazy<Stack<string>> _pushtext = new Lazy<Stack<string>>();
-        private bool _blnAmbidextrous;
 
         /// <summary>
         /// Push a value that will be used instad of dialog instead in next <selecttext />
@@ -10042,7 +10203,7 @@ namespace Chummer
             {
                 if (_intCachedRedlinerBonus == int.MinValue)
                     RefreshRedlinerImprovements();
-                
+
                 return _intCachedRedlinerBonus;
             }
         }
@@ -10234,7 +10395,7 @@ namespace Chummer
                             intRESMinimumReduction = intMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
                             intDEPMinimumReduction = intMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
                         }
-                        
+
                         // If the new RES reduction is greater than the old one...
                         int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
                         if (intRESMinimumReductionDelta > 0)
@@ -10294,7 +10455,7 @@ namespace Chummer
                             intMAGMinimumReduction = intMagMinReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss(true);
                             intMAGAdeptMinimumReduction = intMagMinReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss(true);
                         }
-                        
+
                         // If the new MAG reduction is greater than the old one...
                         int intMAGMinimumReductionDelta = intMAGMinimumReduction - intOldMAGCareerMinimumReduction;
                         if (intMAGMinimumReductionDelta > 0)
@@ -10391,7 +10552,7 @@ namespace Chummer
                         ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMagMaxReduction);
                     }
                 }
-                
+
                 ImprovementManager.Commit(this);
 
                 // If the character is in Career mode, it is possible for them to be forced to burn out.
@@ -10771,7 +10932,7 @@ namespace Chummer
         public bool CanAffordCareerPP => MysAdeptAllowPPCareer && Karma >= _objOptions.KarmaMysticAdeptPowerPoint && MAG.TotalValue > MysticAdeptPowerPoints;
         
         /// <summary>
-        /// Blocked grades of cyber/bioware in Create mode. 
+        /// Blocked grades of cyber/bioware in Create mode.
         /// </summary>
         public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
 
@@ -10806,13 +10967,49 @@ namespace Chummer
             {
                 _intCachedTrustFund = int.MinValue;
             }
+            if (lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+            {
+                _intCachedAmbidextrous = int.MinValue;
+            }
             if (lstNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
             {
                 _intCachedRestrictedGear = int.MinValue;
             }
-            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            if (lstNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
             {
-                _intCachedContactPoints = int.MinValue;
+                _intCachedFriendsInHighPlaces = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(ExCon)))
+            {
+                _intCachedExCon = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(MadeMan)))
+            {
+                _intCachedMadeMan = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Fame)))
+            {
+                _intCachedFame = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Erased)))
+            {
+                _intCachedErased = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Overclocker)))
+            {
+                _intCachedOverclocker = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+            {
+                _intCachedAmbidextrous = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+            {
+                _intCachedAmbidextrous = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
+            {
+                _intCachedBlackMarketDiscount = int.MinValue;
             }
             if (lstNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
             {
@@ -10833,6 +11030,14 @@ namespace Chummer
             if (lstNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
             {
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
+            {
+                _decCachedCareerNuyen = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(CareerKarma)))
+            {
+                _intCachedCareerKarma = int.MinValue;
             }
             if (lstNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
             {
@@ -10873,6 +11078,27 @@ namespace Chummer
                 foreach (string strPropertyToChange in lstNamesOfChangedProperties)
                 {
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+            }
+
+            foreach (Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
+            {
+                if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
+                {
+                    foreach (Spirit objSpirit in objLoopOpenCharacter.Spirits)
+                    {
+                        if (objSpirit.LinkedCharacter == this)
+                        {
+                            objSpirit.OnPropertyChanged(nameof(Spirit.LinkedCharacter));
+                        }
+                    }
+                    foreach (Contact objContact in objLoopOpenCharacter.Contacts)
+                    {
+                        if (objContact.LinkedCharacter == this)
+                        {
+                            objContact.OnPropertyChanged(nameof(Contact.LinkedCharacter));
+                        }
+                    }
                 }
             }
         }

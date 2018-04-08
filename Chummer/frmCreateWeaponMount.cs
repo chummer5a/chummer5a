@@ -114,7 +114,7 @@ namespace Chummer
                     cboSize.SelectedIndex = 0;
             else
                 RefreshCBOs();
-            
+
             nudMarkup.Visible = AllowDiscounts;
             lblMarkupLabel.Visible = AllowDiscounts;
             lblMarkupPercentLabel.Visible = AllowDiscounts;
@@ -219,7 +219,7 @@ namespace Chummer
                 }
                 if (!blnRequirementsMet)
                     return;
-                
+
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
@@ -376,7 +376,7 @@ namespace Chummer
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
                     lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    
+
                     if (chkFreeItem.Checked)
                     {
                         lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -412,7 +412,7 @@ namespace Chummer
                     return;
                 }
             }
-            
+
             if (xmlSelectedMount == null)
             {
                 lblCost.Text = string.Empty;
@@ -626,7 +626,7 @@ namespace Chummer
                 }
                 _lstMods.Add(objMod);
                 intSlots += objMod.CalculatedSlots;
-                
+
                 TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
 
                 if (objModsParentNode == null)

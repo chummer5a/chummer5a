@@ -646,7 +646,7 @@ namespace Chummer
             return null;
         }
         #endregion
-        
+
         /// <summary>
         /// Book code (using the translated version if applicable).
         /// </summary>

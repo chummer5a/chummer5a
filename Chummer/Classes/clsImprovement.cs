@@ -782,7 +782,7 @@ namespace Chummer
                 {
                     string strTargetAttribute = ImprovedName;
                     bool blnIsBase = strTargetAttribute.EndsWith("Base");
-                    
+
                     HashSet<string> setAttributePropertiesChanged = new HashSet<string>();
                     if (AugmentedMaximum != 0)
                         setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
@@ -1095,6 +1095,9 @@ namespace Chummer
                 case ImprovementType.AddSprite:
                     break;
                 case ImprovementType.BlackMarketDiscount:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.BlackMarketDiscount));
+                }
                     break;
                 case ImprovementType.ComplexFormLimit:
                     break;
@@ -1144,14 +1147,29 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.FriendsInHighPlaces:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.FriendsInHighPlaces));
+                }
                     break;
                 case ImprovementType.Erased:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Erased));
+                }
                     break;
                 case ImprovementType.Fame:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Fame));
+                }
                     break;
                 case ImprovementType.MadeMan:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MadeMan));
+                }
                     break;
                 case ImprovementType.Overclocker:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Overclocker));
+                }
                     break;
                 case ImprovementType.RestrictedGear:
                 {
@@ -1164,8 +1182,18 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.ExCon:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.ExCon));
+                }
                     break;
                 case ImprovementType.ContactForceGroup:
+                {
+                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                    if (objTargetContact != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.GroupEnabled));
+                    }
+                }
                     break;
                 case ImprovementType.Attributelevel:
                 {
@@ -1323,6 +1351,9 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.Ambidextrous:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Ambidextrous));
+                }
                     break;
                 case ImprovementType.UnarmedReach:
                     break;
@@ -1691,8 +1722,22 @@ namespace Chummer
                 case ImprovementType.BurnoutsWay:
                     break;
                 case ImprovementType.ContactForcedLoyalty:
+                    {
+                        Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                        if (objTargetContact != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.ForcedLoyalty));
+                        }
+                    }
                     break;
                 case ImprovementType.ContactMakeFree:
+                    {
+                        Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                        if (objTargetContact != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.Free));
+                        }
+                    }
                     break;
                 case ImprovementType.FreeWare:
                     break;
@@ -1701,6 +1746,9 @@ namespace Chummer
                 case ImprovementType.WeaponAccuracy:
                     break;
                 case ImprovementType.MetageneticLimit:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                }
                     break;
             }
         }
@@ -2170,7 +2218,7 @@ namespace Chummer
                     intReturn += intLoopValue;
                 }
             }
-            
+
             return intReturn;
         }
 
@@ -2649,7 +2697,7 @@ namespace Chummer
                         objFilter.Length -= 4;
                         objFilter.Append(')');
                     }
-                    
+
                     string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
                     using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
@@ -2675,7 +2723,7 @@ namespace Chummer
                     frmPickSkill.GeneralItems = lstDropdownItems;
                 else
                     frmPickSkill.DropdownItems = lstDropdownItems;
-                
+
                 frmPickSkill.ShowDialog();
 
                 if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -2700,7 +2748,7 @@ namespace Chummer
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-                
+
                 XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
                 if (xmlSkillCategories != null)
                     frmPickSkill.LimitToCategories = xmlSkillCategories;
@@ -2782,7 +2830,7 @@ namespace Chummer
                 Log.Exit("CreateImprovements");
                 return true;
             }
-            
+
             s_StrSelectedValue = string.Empty;
 
             Log.Info("_strForcedValue = " + s_StrForcedValue);
@@ -2956,7 +3004,7 @@ namespace Chummer
                 // Enable the Improvement.
                 objImprovement.Enabled = true;
             }
-            
+
             bool blnCharacterHasSkillsoftAccess = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
@@ -3048,15 +3096,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.BlackMarketDiscount:
-                        objCharacter.BlackMarketDiscount = true;
-                        break;
-                    case Improvement.ImprovementType.FriendsInHighPlaces:
-                        objCharacter.FriendsInHighPlaces = true;
-                        break;
-                    case Improvement.ImprovementType.ExCon:
-                        objCharacter.ExCon = true;
-                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
@@ -3065,27 +3104,7 @@ namespace Chummer
                         else
                             objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName);
                         break;
-                    case Improvement.ImprovementType.Erased:
-                        objCharacter.Erased = true;
-                        break;
-                    case Improvement.ImprovementType.Fame:
-                        objCharacter.Fame = true;
-                        break;
-                    case Improvement.ImprovementType.MadeMan:
-                        objCharacter.MadeMan = true;
-                        break;
-                    case Improvement.ImprovementType.Ambidextrous:
-                        objCharacter.Ambidextrous = true;
-                        break;
-                    case Improvement.ImprovementType.Overclocker:
-                        objCharacter.Overclocker = false;
-                        break;
                     case Improvement.ImprovementType.Adapsin:
-                        break;
-                    case Improvement.ImprovementType.ContactForceGroup:
-                        Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
-                        if (MadeManContact != null)
-                            MadeManContact.GroupEnabled = false;
                         break;
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -3175,7 +3194,7 @@ namespace Chummer
                                 default:
                                     continue;
                             }
-                            
+
                             foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
                             {
                                 objSkill.ForceDisabled = false;
@@ -3218,20 +3237,6 @@ namespace Chummer
                             objCyberware?.ChangeModularEquip(true);
                         }
                         break;
-                    case Improvement.ImprovementType.ContactForcedLoyalty:
-                        {
-                            Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
-                            if (objContact != null)
-                                objContact.ForcedLoyalty = Math.Max(objContact.ForcedLoyalty, objImprovement.Value);
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactMakeFree:
-                        {
-                            Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
-                            if (objContact != null)
-                                objContact.Free = true;
-                        }
-                        break;
                     case Improvement.ImprovementType.Sinlevel:
                         XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                         Quality maxKarmaSIN = objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
@@ -3263,7 +3268,7 @@ namespace Chummer
                 // Disable the Improvement.
                 objImprovement.Enabled = false;
             }
-            
+
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
@@ -3360,18 +3365,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.BlackMarketDiscount:
-                        if (!blnHasDuplicate)
-                            objCharacter.BlackMarketDiscount = false;
-                        break;
-                    case Improvement.ImprovementType.FriendsInHighPlaces:
-                        if (!blnHasDuplicate)
-                            objCharacter.FriendsInHighPlaces = false;
-                        break;
-                    case Improvement.ImprovementType.ExCon:
-                        if (!blnHasDuplicate)
-                            objCharacter.ExCon = false;
-                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
@@ -3383,35 +3376,7 @@ namespace Chummer
                         else
                             objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
                         break;
-                    case Improvement.ImprovementType.Erased:
-                        if (!blnHasDuplicate)
-                            objCharacter.Erased = false;
-                        break;
-                    case Improvement.ImprovementType.Fame:
-                        if (!blnHasDuplicate)
-                            objCharacter.Fame = false;
-                        break;
-                    case Improvement.ImprovementType.MadeMan:
-                        if (!blnHasDuplicate)
-                            objCharacter.MadeMan = false;
-                        break;
-                    case Improvement.ImprovementType.Ambidextrous:
-                        if (!blnHasDuplicate)
-                            objCharacter.Ambidextrous = false;
-                        break;
-                    case Improvement.ImprovementType.Overclocker:
-                        if (!blnHasDuplicate)
-                            objCharacter.Overclocker = false;
-                        break;
                     case Improvement.ImprovementType.Adapsin:
-                        break;
-                    case Improvement.ImprovementType.ContactForceGroup:
-                        if (!blnHasDuplicate)
-                        {
-                            Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
-                            if (MadeManContact != null)
-                                MadeManContact.GroupEnabled = true;
-                        }
                         break;
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -3566,21 +3531,6 @@ namespace Chummer
                         {
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
                             objCyberware?.ChangeModularEquip(false);
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactForcedLoyalty:
-                        {
-                            objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName)?.RecalculateForcedLoyalty();
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactMakeFree:
-                        {
-                            if (!blnHasDuplicate)
-                            {
-                                Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
-                                if (objContact != null)
-                                    objContact.Free = false;
-                            }
                         }
                         break;
                     case Improvement.ImprovementType.Sinlevel:
@@ -3778,18 +3728,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.BlackMarketDiscount:
-                        if (!blnHasDuplicate)
-                            objCharacter.BlackMarketDiscount = false;
-                        break;
-                    case Improvement.ImprovementType.FriendsInHighPlaces:
-                        if (!blnHasDuplicate)
-                            objCharacter.FriendsInHighPlaces = false;
-                        break;
-                    case Improvement.ImprovementType.ExCon:
-                        if (!blnHasDuplicate)
-                            objCharacter.ExCon = false;
-                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
@@ -3810,26 +3748,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.Erased:
-                        if (!blnHasDuplicate)
-                            objCharacter.Erased = false;
-                        break;
-                    case Improvement.ImprovementType.Fame:
-                        if (!blnHasDuplicate)
-                            objCharacter.Fame = false;
-                        break;
-                    case Improvement.ImprovementType.MadeMan:
-                        if (!blnHasDuplicate)
-                            objCharacter.MadeMan = false;
-                        break;
-                    case Improvement.ImprovementType.Ambidextrous:
-                        if (!blnHasDuplicate)
-                            objCharacter.Ambidextrous = false;
-                        break;
-                    case Improvement.ImprovementType.Overclocker:
-                        if (!blnHasDuplicate)
-                            objCharacter.Overclocker = false;
-                        break;
                     case Improvement.ImprovementType.Adapsin:
                         {
                             if (!blnHasDuplicate && !blnReapplyImprovements)
@@ -3841,14 +3759,6 @@ namespace Chummer
                                     objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType, true).FirstOrDefault(x => x.Name == strNewName);
                                 }
                             }
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactForceGroup:
-                        if (!blnHasDuplicate)
-                        {
-                            Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
-                            if (MadeManContact != null)
-                                MadeManContact.GroupEnabled = true;
                         }
                         break;
                     case Improvement.ImprovementType.AddContact:
@@ -4000,21 +3910,6 @@ namespace Chummer
                                 decReturn += objCyberware.DeleteCyberware();
                                 decReturn += objCyberware.TotalCost;
                                 objCharacter.Cyberware.Remove(objCyberware);
-                            }
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactForcedLoyalty:
-                        {
-                            objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName)?.RecalculateForcedLoyalty();
-                        }
-                        break;
-                    case Improvement.ImprovementType.ContactMakeFree:
-                        {
-                            if (!blnHasDuplicate)
-                            {
-                                Contact objContact = objCharacter.Contacts.FirstOrDefault(x => x.GUID == objImprovement.ImprovedName);
-                                if (objContact != null)
-                                    objContact.Free = false;
                             }
                         }
                         break;

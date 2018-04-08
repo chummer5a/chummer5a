@@ -112,7 +112,7 @@ namespace Chummer
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
-        
+
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         
@@ -593,7 +593,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
             // Setting name.
             _strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
@@ -1204,8 +1204,8 @@ namespace Chummer
             }
             set
             {
-                //As this is a hack, not quite sure how this is glued together. 
-                //If i understand it right (COMUNICATING TROUGHT FUCKING FILES?) this should never happen. 
+                //As this is a hack, not quite sure how this is glued together.
+                //If i understand it right (COMUNICATING TROUGHT FUCKING FILES?) this should never happen.
                 //Keyword should
                 if (_character == null)
                 {
@@ -2240,7 +2240,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// How much Karma a single Power Point costs for a Mystic Adept. 
+        /// How much Karma a single Power Point costs for a Mystic Adept.
         /// </summary>
         public int KarmaMysticAdeptPowerPoint
         {
@@ -2329,7 +2329,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether Martial Arts grant a free specialisation in a skill. 
+        /// Whether Martial Arts grant a free specialisation in a skill.
         /// </summary>
         public bool FreeMartialArtSpecialization
         {
@@ -2338,7 +2338,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether Spells from Magic Priority can also be spent on power points. 
+        /// Whether Spells from Magic Priority can also be spent on power points.
         /// </summary>
         public bool PrioritySpellsAsAdeptPowers
         {
@@ -2365,7 +2365,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether items that exceed the Availability Limit should be shown in Create Mode. 
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
         /// </summary>
         public bool HideItemsOverAvailLimit
         {

@@ -146,7 +146,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            
+
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
             DialogResult = DialogResult.OK;

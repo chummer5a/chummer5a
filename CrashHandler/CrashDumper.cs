@@ -36,7 +36,7 @@ namespace CrashHandler
 		private readonly BackgroundWorker _worker = new BackgroundWorker();
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
         private string _strLatestDumpName = string.Empty;
-	    
+
 	    private readonly TextWriter CrashLogWriter;
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace CrashHandler
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.\n" +
                                      "You can safely delete this file, but a developer might want to look at it");
             CrashLogWriter.Flush();
-		    
+
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
@@ -230,20 +230,20 @@ namespace CrashHandler
 				                      MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
 
 				bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
-				
+
 				if (extraInfo)
 				{
 					dtype |= 0;
 					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
-					
+
 				}
 				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
-					
-					//Might solve the problem if crashhandler stops working on remote (hah)					
+
+					//Might solve the problem if crashhandler stops working on remote (hah)
 					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
 					Attributes["debug-debug-thread-id"] = threadId.ToString();
 				}
@@ -426,7 +426,7 @@ namespace CrashHandler
 		//	}
 		//}
 
-		static bool Deserialize(string base64json, 
+		static bool Deserialize(string base64json,
 			out short processId, 
 			out List<string> filesList,
 			out Dictionary<string, string> pretendFiles, 

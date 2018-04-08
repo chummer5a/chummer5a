@@ -242,12 +242,12 @@ namespace Chummer.Backend.Equipment
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            
+
             LegacyShim();
         }
 
         /// <summary>
-        /// Performs actions based on the character's last loaded AppVersion attribute. 
+        /// Performs actions based on the character's last loaded AppVersion attribute.
         /// </summary>
         private void LegacyShim()
         {
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-        
+
         /// <summary>
         /// Page Number.
         /// </summary>
@@ -558,22 +558,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Comfort LP is increased/reduced by this Quality. 
+        /// Comfort LP is increased/reduced by this Quality.
         /// </summary>
         public int Comfort { get; set; }
 
         /// <summary>
-        /// Comfort LP maximum is increased/reduced by this Quality. 
+        /// Comfort LP maximum is increased/reduced by this Quality.
         /// </summary>
         public int ComfortMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int SecurityMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int Security { get; set; }
 
@@ -596,7 +596,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Category of the Quality. 
+        /// Category of the Quality.
         /// </summary>
         public string Category
         {
@@ -610,7 +610,7 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum { get; set; }
 
         /// <summary>
-        /// Area/Neighborhood minimum is increased/reduced by this Quality. 
+        /// Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
         public int Area { get; set; }
 

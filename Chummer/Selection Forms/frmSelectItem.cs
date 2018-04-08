@@ -306,7 +306,7 @@ namespace Chummer
                 _strMode = "Vehicles";
             }
         }
-        
+
         /// <summary>
         /// List of general items that the user can select.
         /// </summary>

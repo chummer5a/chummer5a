@@ -70,7 +70,7 @@ namespace Chummer
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-            
+
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;

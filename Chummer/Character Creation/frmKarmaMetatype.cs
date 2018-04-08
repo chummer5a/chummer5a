@@ -35,7 +35,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
-        
+
         private readonly XPathNavigator _xmlBaseMetatypeDataNode;
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XmlNode _xmlSkillsDocumentKnowledgeSkillsNode;
@@ -103,7 +103,7 @@ namespace Chummer
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             GlobalOptions.ToolTipProcessor.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
             GlobalOptions.ToolTipProcessor.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
-            
+
             List<ListItem> lstMethods = new List<ListItem>
             {
                 new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
@@ -194,7 +194,7 @@ namespace Chummer
             {
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
                 string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
-                
+
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
                     strSelectedMetavariant = "Human";
@@ -230,7 +230,7 @@ namespace Chummer
                 }*/
 
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
-                
+
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits( CommonFunctions.ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier),  CommonFunctions.ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier),  CommonFunctions.ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
                 _objCharacter.AGI.AssignLimits( CommonFunctions.ExpressionToString(charNode["agimin"]?.InnerText, intForce, intMinModifier),  CommonFunctions.ExpressionToString(charNode["agimax"]?.InnerText, intForce, intMaxModifier),  CommonFunctions.ExpressionToString(charNode["agiaug"]?.InnerText, intForce, intMaxModifier));
@@ -282,7 +282,7 @@ namespace Chummer
                             _objCharacter.Qualities.Add(objQuality);
                         }
 
-                //Load any critter powers the character has. 
+                //Load any critter powers the character has.
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -297,7 +297,7 @@ namespace Chummer
                     ImprovementManager.Commit(_objCharacter);
                 }
 
-                //Load any natural weapons the character has. 
+                //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter)
@@ -434,7 +434,7 @@ namespace Chummer
                         }
                     }
                 }
-                
+
                 //Set the Active Skill Ratings for the Critter.
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
                 {
@@ -516,7 +516,7 @@ namespace Chummer
                     objComplexform.Grade = -1;
 
                     _objCharacter.ComplexForms.Add(objComplexform);
-                    
+
                     ImprovementManager.CreateImprovement(_objCharacter, objComplexform.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm, string.Empty);
                     ImprovementManager.Commit(_objCharacter);
                 }
@@ -563,7 +563,7 @@ namespace Chummer
                     XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear["name"].InnerText + "\" and category = \"" + xmlGear["category"].InnerText + "\"]");
                     if (xmlGearData == null)
                         continue;
-                    
+
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
                         intRating = Convert.ToInt32(xmlGear["rating"].InnerText);
@@ -925,7 +925,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);   
+                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
                     else
                         lstMetatypes.SelectedValue = strOldSelected;
                 }

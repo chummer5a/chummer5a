@@ -1213,7 +1213,7 @@ namespace Chummer.Backend.Equipment
                             .FastEscape('[', ']')
                             .CheapReplace("Capacity", () => TotalArmorCapacity)
                             .Replace("Rating", Rating.ToString());
-                        
+
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {

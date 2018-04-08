@@ -250,7 +250,7 @@ namespace Chummer
             if (!_blnLoading)
                 BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
-        
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
@@ -361,7 +361,7 @@ namespace Chummer
             }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-            
+
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
             using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]"))
                 if (objXmlQualityList?.Count > 0)
@@ -413,7 +413,7 @@ namespace Chummer
 
             _strSelectedQuality = strSelectedQualityId;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
-            
+
             DialogResult = DialogResult.OK;
         }
 

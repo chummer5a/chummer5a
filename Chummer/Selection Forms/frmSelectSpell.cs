@@ -66,7 +66,7 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-            
+
             //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
             //in Career Mode. Create mode manages itself.
             int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
@@ -341,7 +341,7 @@ namespace Chummer
                 {
                     limit.Add(improvement.ImprovedName);
                 }
-                
+
                 if (limit.Count != 0 && limit.Any(l => strDescriptor.Contains(l)))
                     continue;
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ?? objXmlSpell.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -358,7 +358,7 @@ namespace Chummer
                 }
                 lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayName));
             }
-            
+
             lstSpellItems.Sort(CompareListItems.CompareNames);
             lstSpells.BeginUpdate();
             lstSpells.DataSource = null;
@@ -427,7 +427,7 @@ namespace Chummer
                     return;
                 }
             }
-            
+
             _strSelectedSpell = strSelectedItem;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()

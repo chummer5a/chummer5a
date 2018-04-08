@@ -73,7 +73,7 @@ namespace ChummerDataViewer.Model
 			_insertCrash = new SQLiteCommand("INSERT OR IGNORE INTO crashreports " +
 			                                 "(guid, timestamp, buildtype, errorfriendly, encryptionkey, url, version) " +
 			                                 "VALUES " +
-			                                 "(@guid, @timestamp, @buildtype, @errorfriendly, @encryptionkey, @url, @version);", 
+			                                 "(@guid, @timestamp, @buildtype, @errorfriendly, @encryptionkey, @url, @version);",
 				_dbConnection);
 
 			_getAllCrashes = new SQLiteCommand("SELECT * FROM crashreports ORDER BY timestamp DESC;", _dbConnection);
@@ -93,7 +93,7 @@ namespace ChummerDataViewer.Model
 			new SQLiteConnection($"Data Source={Path.Combine(PersistentState.DatabaseFolder, "persistent.db")}; Version=3;")
 				.OpenAndReturn())
 		{
-			
+
 		}
 
 		public void SetKey(string key, string value)
@@ -222,9 +222,9 @@ namespace ChummerDataViewer.Model
 			string s3 = reader.GetString(4);
 			string s4 = reader.GetString(5);
 			Version v = Version.Parse(reader.GetString(6));
-			string s6 = reader.GetValue(7) as string;         //Not GetString as GetString throws an invalidCast 
+			string s6 = reader.GetValue(7) as string;         //Not GetString as GetString throws an invalidCast
 			string s7 = reader.GetValue(8) as string;         //(or another exception, cannot rmbr)
-			string userstory = reader.GetValue(9) as string;  //If the value is null, and this and following fields 
+			string userstory = reader.GetValue(9) as string;  //If the value is null, and this and following fields
 			string trace = reader.GetValue(10) as string;     //can be null as they aren't set before zip is downloaded
 
 
@@ -302,7 +302,7 @@ namespace ChummerDataViewer.Model
             public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
 		}
 
-		
+
 
 		public void Delete()
 		{

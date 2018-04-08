@@ -27,7 +27,7 @@ namespace Chummer
     public partial class frmSelectMartialArt : Form
     {
         private string _strSelectedMartialArt = string.Empty;
-        
+
         private bool _blnAddAgain;
         private string _strForcedValue = string.Empty;
         private bool _blnShowQualities;
