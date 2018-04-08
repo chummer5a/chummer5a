@@ -412,11 +412,13 @@ namespace Chummer
                 new DependancyGraphNode<string>(nameof(BuildMethodHasSkillPoints),
                     new DependancyGraphNode<string>(nameof(BuildMethod))
                 ),
-                new DependancyGraphNode<string>(nameof(DamageResistancePool),
-                    new DependancyGraphNode<string>(nameof(TotalArmorRating),
-                        new DependancyGraphNode<string>(nameof(ArmorRating))
-                    ),
-                    new DependancyGraphNode<string>(nameof(IsAI))
+                new DependancyGraphNode<string>(nameof(DamageResistancePoolToolTip),
+                    new DependancyGraphNode<string>(nameof(DamageResistancePool),
+                        new DependancyGraphNode<string>(nameof(TotalArmorRating),
+                            new DependancyGraphNode<string>(nameof(ArmorRating))
+                        ),
+                        new DependancyGraphNode<string>(nameof(IsAI))
+                    )
                 ),
                 new DependancyGraphNode<string>(nameof(IsAI),
                     new DependancyGraphNode<string>(nameof(DEPEnabled))
@@ -445,6 +447,21 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(BiowareEssence)),
                         new DependancyGraphNode<string>(nameof(EssenceHole))
                     )
+                ),
+                new DependancyGraphNode<string>(nameof(ComposureToolTip),
+                    new DependancyGraphNode<string>(nameof(Composure))
+                ),
+                new DependancyGraphNode<string>(nameof(JudgeIntentionsToolTip),
+                    new DependancyGraphNode<string>(nameof(JudgeIntentions))
+                ),
+                new DependancyGraphNode<string>(nameof(JudgeIntentionsResistToolTip),
+                    new DependancyGraphNode<string>(nameof(JudgeIntentionsResist))
+                ),
+                new DependancyGraphNode<string>(nameof(LiftAndCarryToolTip),
+                    new DependancyGraphNode<string>(nameof(LiftAndCarry))
+                ),
+                new DependancyGraphNode<string>(nameof(MemoryToolTip),
+                    new DependancyGraphNode<string>(nameof(Memory))
                 ),
                 new DependancyGraphNode<string>(nameof(DisplayCyberwareEssence),
                     new DependancyGraphNode<string>(nameof(CyberwareEssence))
@@ -7168,25 +7185,130 @@ namespace Chummer
         /// </summary>
         public int Composure => WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
 
+        public string ComposureToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Judge Intentions (INT + CHA).
         /// </summary>
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
+
+        public string JudgeIntentionsToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense) && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
 
         /// <summary>
         /// Judge Intentions Resist (CHA + WIL).
         /// </summary>
         public int JudgeIntentionsResist => CHA.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
 
+        public string JudgeIntentionsResistToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense) && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Lifting and Carrying (STR + BOD).
         /// </summary>
         public int LiftAndCarry => STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
 
+        public string LiftAndCarryToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    STR.DisplayAbbrev + strSpaceCharacter + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+
+                objToolTip.Append(Environment.NewLine + LanguageManager
+                                      .GetString("Tip_LiftAndCarry", GlobalOptions.Language)
+                                      .Replace("{0}", (STR.TotalValue * 15).ToString())
+                                      .Replace("{1}", (STR.TotalValue * 10).ToString()));
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Memory (LOG + WIL).
         /// </summary>
         public int Memory => LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
+
+        public string MemoryToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(
+                    LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                    strSpaceCharacter + '+' + strSpaceCharacter +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
 
         /// <summary>
         /// Resist test to Fatigue damage (BOD + WIL).
@@ -7823,6 +7945,33 @@ namespace Chummer
         }
 
         public int DamageResistancePool => (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
+
+        public string DamageResistancePoolToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder();
+                if (IsAI)
+                {
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) + strSpaceCharacter + '(' + (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                else
+                {
+                    objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance && objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+                return objToolTip.ToString();
+            }
+        }
 
         /// <summary>
         /// The Character's total Armor Rating.

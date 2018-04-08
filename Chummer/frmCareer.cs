@@ -599,9 +599,19 @@ namespace Chummer
             lblMentorSpirit.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
             lblMentorSpiritInformation.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblComposure.DataBindings.Add("Text", CharacterObject, nameof(Character.Composure), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblComposure.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblJudgeIntentions.DataBindings.Add("Text", CharacterObject, nameof(Character.JudgeIntentions), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblJudgeIntentions.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblLiftCarry.DataBindings.Add("Text", CharacterObject, nameof(Character.LiftAndCarry), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblLiftCarry.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMemory.DataBindings.Add("Text", CharacterObject, nameof(Character.Memory), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMemory.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+
             lblEDGInfo.DataBindings.Add("Text", CharacterObject.EDG, nameof(CharacterAttrib.CareerRemainingString), false, DataSourceUpdateMode.OnPropertyChanged);
             lblCMDamageResistancePool.DataBindings.Add("Text", CharacterObject, nameof(Character.DamageResistancePool), false, DataSourceUpdateMode.OnPropertyChanged);
-            
+            lblCMDamageResistancePool.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.DamageResistancePoolToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+
             RefreshAttributes(pnlAttributes);
 
             PrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
@@ -15941,40 +15951,6 @@ namespace Chummer
             lblSwim.Text = CharacterObject.GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
             lblFly.Text = CharacterObject.GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-            // Special CharacterAttribute-Only Test.
-            lblComposure.Text = CharacterObject.Composure.ToString();
-            string strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({CharacterObject.WIL.TotalValue}) + {CharacterObject.CHA.DisplayAbbrev} ({CharacterObject.CHA.TotalValue})";
-            int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Composure);
-            if (intLoopModifier != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblComposure, strTip);
-            lblJudgeIntentions.Text = CharacterObject.JudgeIntentions.ToString();
-            strTip = $"{CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.TotalValue}) + {CharacterObject.CHA.DisplayAbbrev} ({CharacterObject.CHA.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions);
-            if (intLoopModifier != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblJudgeIntentions, strTip);
-            lblLiftCarry.Text = CharacterObject.LiftAndCarry.ToString();
-            strTip = $"{CharacterObject.STR.DisplayAbbrev} ({CharacterObject.STR.TotalValue}) + {CharacterObject.BOD.DisplayAbbrev} ({CharacterObject.BOD.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry);
-            if (intLoopModifier != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier + ')';
-            strTip += Environment.NewLine + LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language).Replace("{0}", (CharacterObject.STR.TotalValue * 15).ToString()).Replace("{1}", (CharacterObject.STR.TotalValue * 10).ToString());
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblLiftCarry, strTip);
-            lblMemory.Text = CharacterObject.Memory.ToString();
-            strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({CharacterObject.WIL.TotalValue}) + {CharacterObject.LOG.DisplayAbbrev} ({CharacterObject.LOG.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory);
-            if (intLoopModifier != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblMemory, strTip);
-            
-            // Update Damage Resistance Pool.
-            strTip = $"{CharacterObject.BOD.DisplayAbbrev} + {LanguageManager.GetString("Tip_Armor", GlobalOptions.Language)}";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DamageResistance) != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DamageResistance) + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblCMDamageResistancePool, strTip);
-            
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             PrintWindow?.RefreshCharacters();
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)

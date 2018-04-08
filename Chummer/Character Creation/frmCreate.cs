@@ -582,6 +582,15 @@ namespace Chummer
             lblMentorSpirit.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
             lblMentorSpiritInformation.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblComposure.DataBindings.Add("Text", CharacterObject, nameof(Character.Composure), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblComposure.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblJudgeIntentions.DataBindings.Add("Text", CharacterObject, nameof(Character.JudgeIntentions), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblJudgeIntentions.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblLiftCarry.DataBindings.Add("Text", CharacterObject, nameof(Character.LiftAndCarry), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblLiftCarry.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMemory.DataBindings.Add("Text", CharacterObject, nameof(Character.Memory), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblMemory.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+
             cmdAddCyberware.DataBindings.Add("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
             cmdAddBioware.DataBindings.Add("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -12028,34 +12037,7 @@ namespace Chummer
             //GlobalOptions.ToolTipProcessor.SetToolTip(lblMovement, strTip);
             lblSwim.Text = CharacterObject.GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
             lblFly.Text = CharacterObject.GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
-
-            // Special CharacterAttribute-Only Test.
-            lblComposure.Text = CharacterObject.Composure.ToString();
-            string strTip = $"{CharacterObject.WIL.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.WIL.TotalValue}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.CHA.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.CHA.TotalValue})";
-            int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Composure);
-            if (intLoopModifier != 0)
-                strTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblComposure, strTip);
-            lblJudgeIntentions.Text = CharacterObject.JudgeIntentions.ToString();
-            strTip = $"{CharacterObject.INT.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.INT.TotalValue}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.CHA.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.CHA.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions);
-            if (intLoopModifier != 0)
-                strTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblJudgeIntentions, strTip);
-            lblLiftCarry.Text = CharacterObject.LiftAndCarry.ToString();
-            strTip = $"{CharacterObject.STR.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.STR.TotalValue}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.BOD.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.BOD.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry);
-            if (intLoopModifier != 0)
-                strTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopModifier + ')';
-            strTip += Environment.NewLine + LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language).Replace("{0}", (CharacterObject.STR.TotalValue * 15).ToString()).Replace("{1}", (CharacterObject.STR.TotalValue * 10).ToString());
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblLiftCarry, strTip);
-            lblMemory.Text = CharacterObject.Memory.ToString();
-            strTip = $"{CharacterObject.WIL.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.WIL.TotalValue}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.LOG.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.LOG.TotalValue})";
-            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory);
-            if (intLoopModifier != 0)
-                strTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopModifier + ')';
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblMemory, strTip);
-
+            
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             PrintWindow?.RefreshCharacters();
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
