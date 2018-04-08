@@ -6131,7 +6131,8 @@ namespace Chummer.Classes
             CreateImprovement(strSINType, _objImprovementSource, SourceName, Improvement.ImprovementType.Sinlevel, _strFriendlyName, karmaValue, 1 ,0, 0, 0, 0, string.Empty, false, strForceValue);
 
             Quality maxKarmaSIN = _objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
-            if (maxKarmaSIN == null || -1 *maxKarmaSIN.BP < karmaValue || maxKarmaSIN.OriginSource == QualitySource.Selected)
+            XmlNode objXmlSIN = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaSIN?.Name + "\"]");
+            if (maxKarmaSIN == null || -1 * Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) < karmaValue || maxKarmaSIN.OriginSource == QualitySource.Selected)
             {
                 if (maxKarmaSIN != null)
                 {
@@ -6140,6 +6141,8 @@ namespace Chummer.Classes
                 Quality objAddSIN = new Quality(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>();
                 objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                objAddSIN.BP = 0;
+                objAddSIN.ContributeToLimit = false;
                 _objCharacter.Qualities.Add(objAddSIN);
             }
         }

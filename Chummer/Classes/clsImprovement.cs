@@ -3233,14 +3233,15 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Sinlevel:
+                        XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                         Quality maxKarmaSIN = objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
-                        if (maxKarmaSIN == null || -1 * maxKarmaSIN.BP < objImprovement.Value || maxKarmaSIN.OriginSource == QualitySource.Selected)
+                        XmlNode objXmlSIN = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaSIN?.Name + "\"]");
+                        if (maxKarmaSIN == null || -1 * Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) < objImprovement.Value || maxKarmaSIN.OriginSource == QualitySource.Selected)
                         {
                             if (maxKarmaSIN != null)
                             {
                                 objCharacter.Qualities.Remove(maxKarmaSIN);
                             }
-                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objImprovement.ImprovedName + "\"]");
 
                             Quality objAddSIN = new Quality(objCharacter);
@@ -3593,13 +3594,14 @@ namespace Chummer
                         }
                         else
                         {
+                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                            XmlNode objXmlSIN = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaSIN.Name + "\"]");
                             Improvement maxKarmaImp = lstImp.OrderByDescending(x => x.Value).First();
-                            if (-1 * maxKarmaSIN?.BP > maxKarmaImp.Value)
+                            if (-1 * Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) > maxKarmaImp.Value)
                             {
                                 objCharacter.Qualities.Remove(maxKarmaSIN);
 
                                 //Add next highest SIN
-                                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                                 XmlNode objXmlSelectedQuality =
                                     objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaImp.ImprovedName + "\"]");
                                 Quality objAddSIN = new Quality(objCharacter);
@@ -4027,18 +4029,21 @@ namespace Chummer
                         }
                         else
                         {
+                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                            XmlNode objXmlSIN = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaSIN.Name + "\"]");
                             Improvement maxKarmaImp = lstImp.OrderByDescending(x => x.Value).First();
-                            if (-1 * maxKarmaSIN?.BP > maxKarmaImp.Value)
+                            if (-1 * Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) > maxKarmaImp.Value)
                             {
                                 objCharacter.Qualities.Remove(maxKarmaSIN);
 
                                 //Add next highest SIN
-                                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                                 XmlNode objXmlSelectedQuality =
                                     objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaImp.ImprovedName + "\"]");
                                 Quality objAddSIN = new Quality(objCharacter);
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, maxKarmaImp.Target, maxKarmaImp.UniqueName);
+                                objAddSIN.BP = 0;
+                                objAddSIN.ContributeToLimit = false;
                                 objCharacter.Qualities.Add(objAddSIN);
                             }
                         }

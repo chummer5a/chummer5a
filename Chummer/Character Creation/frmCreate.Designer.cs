@@ -327,6 +327,8 @@ namespace Chummer
             this.nudNuyen = new System.Windows.Forms.NumericUpDown();
             this.lblNuyenTotal = new System.Windows.Forms.Label();
             this.tabLifeModules = new System.Windows.Forms.TabPage();
+            this.lblLifeModuleEffectLabel = new System.Windows.Forms.Label();
+            this.lblLifeModuleEffect = new System.Windows.Forms.Label();
             this.lblLifeModuleKarma = new System.Windows.Forms.Label();
             this.lblLifeModuleKarmaLabel = new System.Windows.Forms.Label();
             this.lblLifeModuleSource = new System.Windows.Forms.Label();
@@ -917,8 +919,8 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblLifeModuleEffectLabel = new System.Windows.Forms.Label();
-            this.lblLifeModuleEffect = new System.Windows.Forms.Label();
+            this.lblLifeModulesBP = new System.Windows.Forms.Label();
+            this.lblBuildLifeModules = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -9403,7 +9405,9 @@ namespace Chummer
             this.tlpKarmaSummary.ColumnCount = 2;
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKarmaSummary.Controls.Add(this.lblLifeModulesBP, 1, 22);
             this.tlpKarmaSummary.Controls.Add(this.lblAINormalProgramsBP, 1, 20);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildLifeModules, 0, 22);
             this.tlpKarmaSummary.Controls.Add(this.lblAIAdvancedProgramsBP, 1, 21);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildAIAdvancedPrograms, 0, 21);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildRitualsBP, 1, 13);
@@ -9449,7 +9453,7 @@ namespace Chummer
             this.tlpKarmaSummary.Controls.Add(this.lblKnowledgeSkillsBP, 1, 10);
             this.tlpKarmaSummary.Location = new System.Drawing.Point(6, 6);
             this.tlpKarmaSummary.Name = "tlpKarmaSummary";
-            this.tlpKarmaSummary.RowCount = 22;
+            this.tlpKarmaSummary.RowCount = 23;
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -9472,7 +9476,8 @@ namespace Chummer
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpKarmaSummary.Size = new System.Drawing.Size(164, 440);
+            this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpKarmaSummary.Size = new System.Drawing.Size(164, 460);
             this.tlpKarmaSummary.TabIndex = 99;
             // 
             // lblAINormalProgramsBP
@@ -10396,6 +10401,25 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
+            // 
+            // lblLifeModulesBP
+            // 
+            this.lblLifeModulesBP.AutoSize = true;
+            this.lblLifeModulesBP.Location = new System.Drawing.Point(115, 440);
+            this.lblLifeModulesBP.Name = "lblLifeModulesBP";
+            this.lblLifeModulesBP.Size = new System.Drawing.Size(30, 13);
+            this.lblLifeModulesBP.TabIndex = 136;
+            this.lblLifeModulesBP.Text = "0 BP";
+            // 
+            // lblBuildLifeModules
+            // 
+            this.lblBuildLifeModules.AutoSize = true;
+            this.lblBuildLifeModules.Location = new System.Drawing.Point(3, 440);
+            this.lblBuildLifeModules.Name = "lblBuildLifeModules";
+            this.lblBuildLifeModules.Size = new System.Drawing.Size(103, 13);
+            this.lblBuildLifeModules.TabIndex = 137;
+            this.lblBuildLifeModules.Tag = "String_LifeModules";
+            this.lblBuildLifeModules.Text = "Life Modules";
             // 
             // frmCreate
             // 
@@ -11399,5 +11423,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treLifeModules;
         private System.Windows.Forms.Label lblLifeModuleEffectLabel;
         private System.Windows.Forms.Label lblLifeModuleEffect;
+        private System.Windows.Forms.Label lblLifeModulesBP;
+        private System.Windows.Forms.Label lblBuildLifeModules;
     }
 }

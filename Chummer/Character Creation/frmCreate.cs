@@ -11208,7 +11208,7 @@ namespace Chummer
             int unlimitedPositive = CharacterObject.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
             intNegativeQualities += CharacterObject.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
             int unlimitedNegative = CharacterObject.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-            intLifeModuleQualities += CharacterObject.Qualities.Where(q => q.Type == QualityType.LifeModule && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
+            intLifeModuleQualities += CharacterObject.LifeModules.Where(q => q.Type == QualityType.LifeModule && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
 
             // Deduct the amounts for free Qualities.
             int intPositiveFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities) * CharacterObjectOptions.KarmaQuality;
@@ -11733,6 +11733,8 @@ namespace Chummer
                 lblNegativeQualitiesBP.Text = unlimitedNegative > 0
                     ? $"{intNegativeQualities * -1}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({intNegativeQualities + unlimitedNegative})"
                     : $"{intNegativeQualities * -1}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}";
+
+                lblLifeModulesBP.Text = intLifeModuleQualities + strSpaceCharacter + strPoints;
 
                 lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
                 lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
