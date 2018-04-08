@@ -51,7 +51,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyPropertyChanged, IHasMugshots, IHasName
+    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
     {
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
@@ -82,7 +82,7 @@ namespace Chummer
         private int _intAIAdvancedProgramLimit;
         private int _intCachedContactPoints = int.MinValue;
         private int _intContactPointsUsed;
-        private int _intRedlinerBonus;
+        private int _intCachedRedlinerBonus = int.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -148,13 +148,11 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private bool _blnFriendsInHighPlaces;
         private bool _blnExCon;
-        private bool _blnRestrictedGear;
         private bool _blnOverclocker;
         private bool _blnMadeMan;
         private bool _blnFame;
         private bool _blnBornRich;
         private bool _blnErased;
-		private int _intTrustFund;
 		private decimal _decPrototypeTranshuman;
         private bool _blnMAGEnabled;
         private bool _blnRESEnabled;
@@ -737,7 +735,7 @@ namespace Chummer
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    RefreshRedliner();
+                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
                     foreach (Cyberware objNewItem in e.NewItems)
                     {
                         setEssenceImprovementsToRefresh.Add(objNewItem.EssencePropertyName);
@@ -750,7 +748,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    RefreshRedliner();
+                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
                     foreach (Cyberware objOldItem in e.OldItems)
                     {
                         setEssenceImprovementsToRefresh.Add(objOldItem.EssencePropertyName);
@@ -763,7 +761,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    RefreshRedliner();
+                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
                     if (!Options.DontUseCyberlimbCalculation)
                     {
                         foreach (Cyberware objOldItem in e.OldItems)
@@ -790,8 +788,8 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    RefreshRedliner();
                     blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
+                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
                     setEssenceImprovementsToRefresh.Add(nameof(Essence));
                     break;
             }
@@ -1036,12 +1034,6 @@ namespace Chummer
             objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
 
             objWriter.WriteElementString("excon", _blnExCon.ToString());
-
-            objWriter.WriteElementString("trustfund", _intTrustFund.ToString());
-
-
-
-            objWriter.WriteElementString("restrictedgear", _blnRestrictedGear.ToString());
 
             objWriter.WriteElementString("overclocker", _blnOverclocker.ToString());
 
@@ -1753,8 +1745,6 @@ namespace Chummer
             xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("excon", ref _blnExCon);
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
-            xmlCharacterNavigator.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("fame", ref _blnFame);
@@ -3585,8 +3575,15 @@ namespace Chummer
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
-            _intRedlinerBonus = 0;
+            _intCachedRedlinerBonus = 0;
             _intCachedContactPoints = 0;
+            _intCachedInitiationEnabled = -1;
+            _decCachedBiowareEssence = decimal.MinValue;
+            _decCachedCyberwareEssence = decimal.MinValue;
+            ResetCachedEssence();
+            _decCachedEssenceHole = decimal.MinValue;
+            _decCachedPowerPointsUsed = decimal.MinValue;
+            _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
             _intContactPointsUsed = 0;
             _intKarma = 0;
             _intSpecial = 0;
@@ -9033,35 +9030,36 @@ namespace Chummer
                 }
             }
         }
+
+        private int _intCachedTrustFund = int.MinValue;
+
         /// <summary>
         /// Value of the Trust Fund quality.
         /// </summary>
         public int TrustFund
         {
-            get => _intTrustFund;
-            set
+            get
             {
-                if (_intTrustFund != value)
-                {
-                    _intTrustFund = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedTrustFund != int.MinValue)
+                    return _intCachedTrustFund;
+
+                return _intCachedTrustFund = Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty().Max(x => x.Value);
             }
         }
+
+        private int _intCachedRestrictedGear = -1;
 
         /// <summary>
         /// Whether or not RestrictedGear is enabled.
         /// </summary>
         public bool RestrictedGear
         {
-            get => _blnRestrictedGear;
-            set
+            get
             {
-                if (_blnRestrictedGear != value)
-                {
-                    _blnRestrictedGear = value;
-                    OnPropertyChanged();
-                }
+                if (_intCachedRestrictedGear < 0)
+                    _intCachedRestrictedGear = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled) ? 1 : 0;
+
+                return _intCachedRestrictedGear > 0;
             }
         }
         /// <summary>
@@ -10009,14 +10007,16 @@ namespace Chummer
 
         public int RedlinerBonus
         {
-            get => _intRedlinerBonus;
-            set => _intRedlinerBonus = value;
+            get
+            {
+                if (_intCachedRedlinerBonus == int.MinValue)
+                    RefreshRedlinerImprovements();
+                
+                return _intCachedRedlinerBonus;
+            }
         }
 
-        /// <summary>
-        /// Refreshes Redliner and Cyber-Singularity Seeker.
-        /// </summary>
-        public void RefreshRedliner()
+        public void RefreshRedlinerImprovements()
         {
             List<string> lstSeekerAttributes = new List<string>();
             List<Improvement> lstSeekerImprovements = new List<Improvement>();
@@ -10038,9 +10038,10 @@ namespace Chummer
             //if neither contains anything, it is safe to exit
             if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
             {
-                RedlinerBonus = 0;
+                _intCachedRedlinerBonus = 0;
+                return;
             }
-            
+
             //Calculate bonus from cyberlimbs
             int intCount = 0;
             foreach (Cyberware objCyberware in Cyberware)
@@ -10048,41 +10049,41 @@ namespace Chummer
                 intCount += objCyberware.GetCyberlimbCount("skull", "torso");
             }
             intCount = Math.Min(intCount / 2, 2);
-            RedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI") ? intCount : 0;
+            _intCachedRedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI") ? intCount : 0;
 
-            for (int i = 0; i < lstSeekerAttributes.Count; i++)
+            for (int i = 0; i < lstSeekerAttributes.Count; ++i)
             {
                 Improvement objImprove = lstSeekerImprovements.FirstOrDefault(x => x.SourceName == "SEEKER_" + lstSeekerAttributes[i] && x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
                 if (objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
                     lstSeekerImprovements.Remove(objImprove);
-                    i--;
+                    --i;
                 }
             }
+
             //Improvement manager defines the functions needed to manipulate improvements
             //When the locals (someday) gets moved to this class, this can be removed and use
             //the local
-
-            if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
-                return;
-
-            // Remove which qualites have been removed or which values have changed
-            ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
-
-            // Add new improvements or old improvements with new values
-            foreach (string strAttribute in lstSeekerAttributes)
+            if (lstSeekerImprovements.Count != 0 || lstSeekerAttributes.Count != 0)
             {
-                if (strAttribute == "BOX")
+                // Remove which qualites have been removed or which values have changed
+                ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
+
+                // Add new improvements or old improvements with new values
+                foreach (string strAttribute in lstSeekerAttributes)
                 {
-                    ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_BOX", Improvement.ImprovementType.PhysicalCM, Guid.NewGuid().ToString("D"), intCount * -3);
+                    if (strAttribute == "BOX")
+                    {
+                        ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_BOX", Improvement.ImprovementType.PhysicalCM, Guid.NewGuid().ToString("D"), intCount * -3);
+                    }
+                    else
+                    {
+                        ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_" + strAttribute, Improvement.ImprovementType.Attribute, Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
+                    }
                 }
-                else
-                {
-                    ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_" + strAttribute, Improvement.ImprovementType.Attribute, Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
-                }
+                ImprovementManager.Commit(this);
             }
-            ImprovementManager.Commit(this);
         }
 
         public void RefreshEssenceLossImprovements()
@@ -10090,7 +10091,6 @@ namespace Chummer
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
                 return;
-            ResetCachedEssence();
             // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
             // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
             if (EssenceAtSpecialStart != decimal.MinValue)
@@ -10771,9 +10771,46 @@ namespace Chummer
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
+            if (lstNamesOfChangedProperties.Contains(nameof(TrustFund)))
+            {
+                _intCachedTrustFund = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
+            {
+                _intCachedRestrictedGear = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            {
+                _intCachedContactPoints = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
+            {
+                _decCachedPowerPointsUsed = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
+            {
+                _decCachedCyberwareEssence = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
+            {
+                _decCachedBiowareEssence = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(EssenceHole)))
+            {
+                _decCachedEssenceHole = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
+            {
+                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
+            {
+                _intCachedRedlinerBonus = int.MinValue;
+                RefreshRedlinerImprovements();
+            }
             if (lstNamesOfChangedProperties.Contains(nameof(Essence)))
             {
-                _decCachedEssence = decimal.MinValue;
+                ResetCachedEssence();
                 RefreshEssenceLossImprovements();
             }
             if (lstNamesOfChangedProperties.Contains(nameof(WoundModifier)))
@@ -10799,30 +10836,6 @@ namespace Chummer
                             objSpirit.Force = MaxSpiritForce;
                     }
                 }
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
-            {
-                _intCachedContactPoints = int.MinValue;
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
-            {
-                _decCachedPowerPointsUsed = decimal.MinValue;
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
-            {
-                _decCachedCyberwareEssence = decimal.MinValue;
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
-            {
-                _decCachedBiowareEssence = decimal.MinValue;
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(EssenceHole)))
-            {
-                _decCachedEssenceHole = decimal.MinValue;
-            }
-            if (lstNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
-            {
-                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
             }
             if (PropertyChanged != null)
             {

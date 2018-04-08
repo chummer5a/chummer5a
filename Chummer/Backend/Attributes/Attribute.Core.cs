@@ -35,7 +35,7 @@ namespace Chummer.Backend.Attributes
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
-    public class CharacterAttrib : INotifyPropertyChanged
+    public class CharacterAttrib : INotifyMultiplePropertyChanged
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;

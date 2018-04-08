@@ -36,6 +36,7 @@ namespace Chummer.UI.Skills
             
             //Display
             lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblModifiedRating.DataBindings.Add("ToolTipText", skill, nameof(Skill.PoolToolTip));
 
             List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
             lstTypes.Sort(CompareListItems.CompareNames);
@@ -61,6 +62,8 @@ namespace Chummer.UI.Skills
 
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblName.DataBindings.Add("ForeColor", skill, nameof(Skill.PreferredColor));
+                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.SkillToolTip));
 
                 lblSpec.Visible = true;
                 lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -70,12 +73,12 @@ namespace Chummer.UI.Skills
                 cboSpec.Visible = false;
 
                 lblModifiedRating.Location = new Point(294 - 30, 4);
-
-                btnAddSpec.Visible = true;
+                
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.Visible = true;
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
             {
@@ -143,11 +146,6 @@ namespace Chummer.UI.Skills
             cboType.EndUpdate();
             cboSkill.EndUpdate();
             cboSpec.EndUpdate();
-
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skill.SkillToolTip);
-            GlobalOptions.ToolTipProcessor.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
-            GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
         }
 
         public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -157,33 +155,7 @@ namespace Chummer.UI.Skills
             {
                 case null:
                     all = true;
-                    goto case nameof(Skill.SkillToolTip);
-                case nameof(Skill.DisplayPool):
-                    all = true;
-                    goto case nameof(Skill.PoolToolTip);
-                case nameof(Skill.SkillToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skill.SkillToolTip);  //is this the best way?
-                    //GlobalOptions.ToolTipProcessor.SetToolTip(this, skill.SkillToolTip);
-                    //GlobalOptions.ToolTipProcessor.SetToolTip(lblAttribute, skill.SkillToolTip);
-                    //GlobalOptions.ToolTipProcessor.SetToolTip(lblCareerSpec, skill.SkillToolTip);
-                    if (all)
-                        goto case nameof(Skill.AddSpecToolTip);
-                    break;
-                case nameof(Skill.AddSpecToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
-                    if (all)
-                        goto case nameof(Skill.PoolToolTip);
-                    break;
-                case nameof(Skill.PoolToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
-                    if (all)
-                        goto case nameof(Skill.UpgradeToolTip);
-                    break;
-                case nameof(Skill.UpgradeToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
-                    if (all)
-                        goto case nameof(Skill.CGLSpecializations);
-                    break;
+                    goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
                     string strOldSpec = cboSpec.SelectedValue?.ToString();
                     cboSpec.SuspendLayout();
@@ -201,6 +173,8 @@ namespace Chummer.UI.Skills
                             cboSpec.Text = strOldSpec;
                     }
                     cboSpec.ResumeLayout();
+                    if (all)
+                        goto case nameof(KnowledgeSkill.Type);
                     break;
                 case nameof(KnowledgeSkill.Type):
                     if (!cboSkill.Enabled)
@@ -220,7 +194,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = _skill.UpgradeKarmaCost();
+            int upgradeKarmaCost = _skill.UpgradeKarmaCost;
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive

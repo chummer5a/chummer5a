@@ -3156,7 +3156,6 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
                 _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-            _objCharacter.TrustFund = ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
 
         // Check for MadeMan modifiers.
@@ -3206,7 +3205,6 @@ namespace Chummer.Classes
             Log.Info("restrictedgear = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedGear, _strUnique);
-            _objCharacter.RestrictedGear = true;
         }
 
         // Check for Improvements that grant bonuses to the maximum amount of Native languages a user can have.
@@ -3764,11 +3762,6 @@ namespace Chummer.Classes
 
                                 Log.Info("Calling CreateImprovement");
                                 CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
-
-                                foreach (Power objPower in lstExistingPowersList)
-                                {
-                                    objPower.ForceEvent(nameof(Power.FreeLevels));
-                                }
                             }
                         }
             }

@@ -36,20 +36,20 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new LabelWithToolTip();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
-            this.lblModifiedRating = new System.Windows.Forms.Label();
+            this.lblModifiedRating = new LabelWithToolTip();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblCareerRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
+            this.btnCareerIncrease = new ButtonWithToolTip();
             this.lblCareerSpec = new System.Windows.Forms.Label();
-            this.btnAddSpec = new System.Windows.Forms.Button();
+            this.btnAddSpec = new ButtonWithToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
             this.cmsSkillLabel.SuspendLayout();
@@ -261,18 +261,18 @@ namespace Chummer.UI.Skills
 
         #endregion
 
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblAttribute;
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
-        private System.Windows.Forms.Label lblModifiedRating;
+        private LabelWithToolTip lblModifiedRating;
         private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblCareerRating;
-        private System.Windows.Forms.Button btnCareerIncrease;
+        private ButtonWithToolTip btnCareerIncrease;
         private System.Windows.Forms.Label lblCareerSpec;
-        private System.Windows.Forms.Button btnAddSpec;
+        private ButtonWithToolTip btnAddSpec;
         private System.Windows.Forms.Button btnAttribute;
         private System.Windows.Forms.ComboBox cboSelectAttribute;
         private ContextMenuStrip cmsSkillLabel;

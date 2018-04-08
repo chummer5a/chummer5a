@@ -29,9 +29,9 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new LabelWithToolTip();
             this.lblGroupRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
+            this.btnCareerIncrease = new ButtonWithToolTip();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
@@ -118,8 +118,8 @@ namespace Chummer.UI.Skills
 
         private NumericUpDownEx nudSkill;
         private NumericUpDownEx nudKarma;
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblGroupRating;
-        private System.Windows.Forms.Button btnCareerIncrease;
+        private ButtonWithToolTip btnCareerIncrease;
     }
 }
