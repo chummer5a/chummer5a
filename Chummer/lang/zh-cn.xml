@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -3776,7 +3776,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Contact_Group</key>
-			<text>魔法团体</text>
+			<text>团体联系人</text>
 		</string>
 		<string>
 			<key>Checkbox_Contact_Free</key>
@@ -7370,10 +7370,10 @@
 			<key>Message_ComplexFormLimit</key>
 			<text>你习得的复合程式数量不能超过共鸣属性×2。</text>
 		</string>
-    <string>
-      <key>Message_PriorityComplexFormLimit</key>
-      <text>你习得的复合程式数量不能超过你天资优先级决定的数字。</text>
-    </string>
+		<string>
+			<key>Message_PriorityComplexFormLimit</key>
+			<text>你习得的复合程式数量不能超过你天资优先级决定的数字。</text>
+		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
 			<text>你确定要花费{2}点业力，由{0}提升到{1}，并锁定技能种类于{3}吗？</text>
@@ -8927,6 +8927,78 @@
 		<string>
 			<key>String_TotalComparisonWithPointBuy</key>
 			<text>总计（与业力模式对比）</text>
+		</string>
+		<string>
+			<key>Label_BonusLP</key>
+			<text>奖励LP：</text>
+		</string>
+		<string>
+			<key>Label_QualityLP</key>
+			<text>特质LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityCost</key>
+			<text>特质花销：</text>
+		</string>
+		<string>
+			<key>Label_QualitySource</key>
+			<text>特质来源：</text>
+		</string>
+		<string>
+			<key>Button_DeleteQuality</key>
+			<text>删除特质</text>
+		</string>
+		<string>
+			<key>Button_RemoveInitiateGrade</key>
+			<text>移除启蒙阶层</text>
+		</string>
+		<string>
+			<key>Button_RemoveSubmersionGrade</key>
+			<text>移除深潜阶层</text>
+		</string>
+		<string>
+			<key>Button_RemoveMetamagic</key>
+			<text>移除超魔</text>
+		</string>
+		<string>
+			<key>Button_RemoveEcho</key>
+			<text>移除回声</text>
+		</string>
+		<string>
+			<key>Node_UnequippedModularCyberware</key>
+			<text>未装载的模块赛博改造</text>
+		</string>
+		<string>
+			<key>Tip_Skill_OffHand</key>
+			<text>副手</text>
+		</string>
+		<string>
+			<key>Label_Options_KarmaMysticAdeptPowerPoint</key>
+			<text>神秘修士能力点</text>
+		</string>
+		<string>
+			<key>Label_SelectBP_MaxNuyen</key>
+			<text>换新円业力上限</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyle</key>
+			<text>无法找到{0}生活方式的基础生活方式。请从下表中选择合适的名称。</text>
+		</string>
+		<string>
+			<key>Message_SelectCyberware_CyberwareRestriction</key>
+			<text>由于你已经选择了以下禁止项，你无法选择该赛博改造/生体改造。</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsURLs</key>
+			<text>PDF以URL格式打开（浏览器中使用）</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeBelow</key>
+			<text>{1}品级消耗的精华要低于{0}：你目前是{2}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeAbove</key>
+			<text>{1}品级消耗的精华至少为{0}：你目前是{2}</text>
 		</string>
 	</strings>
 </chummer>

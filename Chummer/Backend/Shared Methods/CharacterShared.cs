@@ -1553,18 +1553,26 @@ namespace Chummer
             }
         }
 
-        protected void RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs listChangedEventArgs)
+        protected void RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
         {
-            switch (listChangedEventArgs?.ListChangedType)
+            switch (e?.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
                     {
-                        CharacterObject.Powers[listChangedEventArgs.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic, (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
+                        CharacterObject.Powers[e.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic, (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
                     }
                     break;
                 case ListChangedType.Reset:
                     {
                         RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
+                    break;
+                case null:
+                    {
+                        foreach (Power objPower in CharacterObject.Powers)
+                        {
+                            objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic, (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
+                        }
                     }
                     break;
             }

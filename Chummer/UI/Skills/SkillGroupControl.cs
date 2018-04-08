@@ -35,10 +35,8 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
-
-            _skillGroup.PropertyChanged += SkillGroup_PropertyChanged;
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skillGroup.ToolTip);
+            lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
             if (_skillGroup.CharacterObject.Created)
             {
@@ -47,7 +45,7 @@ namespace Chummer.UI.Skills
 
                 btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
-                GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
+                btnCareerIncrease.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 lblGroupRating.Visible = true;
                 lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -69,7 +67,6 @@ namespace Chummer.UI.Skills
 
         public void UnbindSkillGroupControl()
         {
-            _skillGroup.PropertyChanged -= SkillGroup_PropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -86,28 +83,6 @@ namespace Chummer.UI.Skills
                 return;
 
             _skillGroup.Upgrade();
-        }
-
-        private void SkillGroup_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            //I learned something from this but i'm not sure it is a good solution
-            //scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
-
-            //if name of changed is null it does magic to change all, otherwise it only does one.
-            bool all = false;
-            switch (propertyChangedEventArgs?.PropertyName)
-            {
-                case null:
-                    all = true;
-                    goto case nameof(SkillGroup.ToolTip);
-                case nameof(SkillGroup.ToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblName, _skillGroup.ToolTip);
-                    if (all) { goto case nameof(Skill.UpgradeToolTip); }
-                    break;
-                case nameof(SkillGroup.UpgradeToolTip):
-                    GlobalOptions.ToolTipProcessor.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
-                    break;
-            }
         }
         #endregion
 

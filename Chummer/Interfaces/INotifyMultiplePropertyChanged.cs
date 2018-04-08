@@ -16,32 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
-namespace Chummer.Backend.Skills
+namespace Chummer
 {
-    public static class SkillExtensions
+    public interface INotifyMultiplePropertyChanged : INotifyPropertyChanged
     {
-        public static int TotalCostSp(this IEnumerable<Skill> list)
-        {
-            return list.Sum(skill => skill.CurrentSpCost);
-        }
-
-        public static int TotalCostKarma(this IEnumerable<Skill> list)
-        {
-            return list.Sum(skill => skill.CurrentKarmaCost);
-        }
-
-        public static int TotalCostSp(this IEnumerable<SkillGroup> list)
-        {
-            return list.Sum(skill => skill.CurrentSpCost);
-        }
-
-        public static int TotalCostKarma(this IEnumerable<SkillGroup> list)
-        {
-            return list.Sum(skill => skill.CurrentKarmaCost);
-        }
-
+        void OnMultiplePropertyChanged(params string[] lstPropertyNames);
     }
 }

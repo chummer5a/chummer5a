@@ -254,6 +254,7 @@ namespace Chummer
             RefreshSpirits(panSpirits, panSprites);
             RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
             RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+            RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
