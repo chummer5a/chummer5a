@@ -638,8 +638,8 @@ namespace Chummer
                 case "lifemodule":
                     bool versionRequired = xmlNode.Attributes?["version"] != null;
                     Quality lifemodule = versionRequired
-                        ? objCharacter.Qualities.FirstOrDefault(x => x.Name == strNodeInnerText && x.ParentName == xmlNode.Attributes?["version"].InnerText)
-                        : objCharacter.Qualities.FirstOrDefault(x => x.Name == strNodeInnerText && x.Name != strIgnoreQuality);
+                        ? objCharacter.LifeModules.FirstOrDefault(x => x.ParentName == strNodeInnerText && x.Name == xmlNode.Attributes?["version"].InnerText)
+                        : objCharacter.LifeModules.FirstOrDefault(x => x.ParentName == strNodeInnerText);
                     if (lifemodule != null)
                     {
                         if (blnShowMessage)
