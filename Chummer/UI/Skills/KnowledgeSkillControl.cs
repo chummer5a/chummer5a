@@ -149,7 +149,7 @@ namespace Chummer.UI.Skills
                         cboSkill.Enabled = false;
                         cboType.Enabled = false;
                     }
-                    cmdDelete.DataBindings.Add("Visible", skill, nameof(KnowledgeSkill.GainedFromSkillLevelImprovement), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cmdDelete.DataBindings.Add("Visible", skill, nameof(KnowledgeSkill.ForcedSkillDeleteable), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
             }
             cboType.EndUpdate();

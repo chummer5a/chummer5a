@@ -2965,14 +2965,16 @@ namespace Chummer
                 {
                     case Improvement.ImprovementType.SkillLevel:
                         KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                            x => x.Name == objImprovement.ImprovedName
-                                 && x.GainedFromSkillLevelImprovement
-                                 && x.ForceDisabled);
+                            x => x.Name == objImprovement.ImprovedName);
                         if (knoSkill != null)
                         {
-                            objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
-                            knoSkill.ForceDisabled = false;
-                            objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+                            knoSkill.OnMultiplePropertyChanged(nameof(KnowledgeSkill.FreeKarma));
+                            if (knoSkill.ForceDisabled)
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
+                                knoSkill.ForceDisabled = false;
+                                objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
@@ -3270,12 +3272,15 @@ namespace Chummer
                 {
                     case Improvement.ImprovementType.SkillLevel:
                         KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                            x => x.Name == objImprovement.ImprovedName
-                                 && x.GainedFromSkillLevelImprovement);
-                        if (knoSkill != null && knoSkill.GainedFromSkillLevelImprovement)
+                            x => x.Name == objImprovement.ImprovedName);
+                        if (knoSkill != null)
                         {
-                            knoSkill.ForceDisabled = true;
-                            knoSkill.UnbindSkill();
+                            knoSkill.OnMultiplePropertyChanged(nameof(KnowledgeSkill.FreeKarma));
+                            if (knoSkill.KarmaPoints == 0 && knoSkill.BasePoints == 0)
+                            {
+                                knoSkill.ForceDisabled = true;
+                                knoSkill.UnbindSkill();
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
@@ -3670,20 +3675,19 @@ namespace Chummer
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
-                        KnowledgeSkill knoSkill = objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
-                        //No points spent in the improved Skill
-                        if (knoSkill != null)
+                        foreach (KnowledgeSkill knoSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.Name == objImprovement.ImprovedName).ToList())
                         {
-                            if (knoSkill.Base == 0 && (knoSkill.Karma == 0 || knoSkill.Karma == objImprovement.Value) &&
-                                ValueOf(objCharacter, Improvement.ImprovementType.SkillLevel, false, objImprovement.ImprovedName) == 0)
+                            //No points spent in the improved Skill
+                            if (knoSkill.KarmaPoints == 0 && knoSkill.BasePoints == 0 && objCharacter.Improvements.All(x => x.ImprovedName != knoSkill.Name))
                             {
                                 knoSkill.UnbindSkill();
                                 objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
                             }
                             else
                             {
-                                knoSkill.GainedFromSkillLevelImprovement = true;
+                                knoSkill.ForcedSkillDeleteable = true;
                             }
+                            knoSkill.OnMultiplePropertyChanged(nameof(KnowledgeSkill.FreeKarma));
                         }
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:

@@ -902,25 +902,9 @@ namespace Chummer
                                      ")";
                             }
                         }
-                        else if (bonusNode["theme"] != null)
-                        {
-                            s = '[' + bonusNode["theme"].InnerText + ']';
-                        }
                         else if (bonusNode["options"] != null)
                         {
-                            if (bonusNode["options"]["any"] != null)
-                            {
-                                s = LanguageManager.GetString("String_Any", strLanguage);
-                            }
-                            else
-                            {
-                                s = bonusNode["options"].ChildNodes.Cast<XmlNode>()
-                                    .Aggregate(s,
-                                        (current, optionsNode) => current +
-                                                                  (LanguageManager.TranslateExtra(optionsNode.InnerText,
-                                                                       strLanguage) + "/"));
-                                s = s.Substring(0, s.Length - 1);
-                            }
+                            s += bonusNode["options"].Attributes["limittoskill"]?.Value.Replace(',', '/') ?? LanguageManager.GetString("String_Any", GlobalOptions.Language);
                         }
                         skills += indent + s;
                         skills += LanguageManager.GetString("String_Space", strLanguage) + '+' +
@@ -944,8 +928,7 @@ namespace Chummer
                         }
                         else if (bonusNode["options"] != null)
                         {
-                            s = bonusNode["options"].ChildNodes.Cast<XmlNode>().Aggregate(s, (current, optionsNode) => current + (LanguageManager.TranslateExtra(optionsNode.InnerText, strLanguage) + "/"));
-                            s = s.Substring(0, s.Length - 1);
+                            s += bonusNode["options"].Attributes["limittoskill"]?.Value.Replace(',', '/') ?? LanguageManager.GetString("String_Any", GlobalOptions.Language);
                         }
                         if (bonusNode["group"]?.InnerText == "Language" &&
                             (bonusNode["val"]?.InnerText ?? "1") == "0")

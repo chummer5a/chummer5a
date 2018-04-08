@@ -2206,9 +2206,6 @@ namespace Chummer.Classes
 
         public void knowledgeskilllevel(XmlNode bonusNode)
         {
-            //Theoretically life modules, right now we just give out free points and let people sort it out themselves.
-            //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
-
             int val = bonusNode["val"] != null ? ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
             string strSkill;
             string strSkillType = bonusNode["group"]?.InnerText ?? "Street";
@@ -2233,17 +2230,40 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, val);
             KnowledgeSkill knoSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == strSkill);
-            if (knoSkill == null || !knoSkill.ForcedName)
+            bool isNativeLanguage = val == 0 && strSkillType == "Language";
+            if (knoSkill == null || _objCharacter.SkillsSection.KnowsoftSkills.Contains(knoSkill))
             {
-                //Enforce the native Language
-                knoSkill = new KnowledgeSkill(_objCharacter, strSkill, val == 0 && strSkillType == "Language")
+                //Skill doesn't exist yet or is obtained via Knowsoft
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel,
+                    _strUnique, val);
+                knoSkill = new KnowledgeSkill(_objCharacter, strSkill, isNativeLanguage)
+                {
+                    Type = strSkillType,
+                    ForcedSkillDeleteable = false
+                };
+                _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+            }
+            else if (!_objCharacter.Improvements.Any(x => x.ImprovedName == strSkill && x.Value == 0))
+            {
+                //Skill exists already and isn't a native Language gained via improvement
+                if (isNativeLanguage)
+                {
+                    //Remove existing Improvements to ensure the native language has Rating 0
+                    ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImprovedName == strSkill).ToList());
+                }
+                KnowledgeSkill knoSkillCopy =
+                    new KnowledgeSkill(_objCharacter, strSkill, isNativeLanguage)
                     {
                         Type = strSkillType,
-                        GainedFromSkillLevelImprovement = false
+                        ForcedSkillDeleteable = false,
+                        KarmaPoints = isNativeLanguage ? 0 : knoSkill.KarmaPoints,
+                        BasePoints = isNativeLanguage ? 0 : knoSkill.BasePoints
                     };
-                _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, val);
+                knoSkill.UnbindSkill();
+                _objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
+                _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkillCopy);
             }
         }
 
@@ -6122,6 +6142,11 @@ namespace Chummer.Classes
                 objAddSIN.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                 _objCharacter.Qualities.Add(objAddSIN);
             }
+        }
+
+        public void multipleskillslevel(XmlNode bonusNode)
+        {
+            
         }
     }
 

@@ -72,7 +72,7 @@ namespace Chummer.Backend.Skills
         private string _strType = string.Empty;
         public bool ForcedName { get; }
         public bool ForcedRating { get; }
-        public bool GainedFromSkillLevelImprovement { get; set; }
+        public bool ForcedSkillDeleteable { get; set; }
 
         public KnowledgeSkill(Character character) : base(character)
         {

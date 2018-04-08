@@ -274,7 +274,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int RatingMaximum => (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6);
+        public int RatingMaximum => (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule ? 7 : 6);
 
         public void Upgrade()
         {
