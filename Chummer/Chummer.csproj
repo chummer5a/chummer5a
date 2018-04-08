@@ -278,6 +278,7 @@
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>

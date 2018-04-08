@@ -291,10 +291,15 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            if (blnDoRedlinerRefresh)
-                _objCharacter?.RefreshRedliner();
-            if (blnDoEssenceImprovementsRefresh)
-                _objCharacter?.OnPropertyChanged(EssencePropertyName);
+            if (_objCharacter != null)
+            {
+                if (blnDoRedlinerRefresh && blnDoEssenceImprovementsRefresh)
+                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.RedlinerBonus), EssencePropertyName);
+                else if (blnDoRedlinerRefresh)
+                    _objCharacter.OnPropertyChanged(nameof(Character.RedlinerBonus));
+                else if (blnDoEssenceImprovementsRefresh)
+                    _objCharacter.OnPropertyChanged(EssencePropertyName);
+            }
         }
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

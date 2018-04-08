@@ -36,19 +36,13 @@ namespace Chummer.Backend.Skills
 
         public override bool AllowDelete => !CharacterObject.Created;
 
-        public override int CurrentSpCost()
-        {
-            return Math.Max(BasePoints, 0);
-        }
+        public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
         /// <summary>
         /// How much karma this costs. Return value during career mode is undefined
         /// </summary>
         /// <returns></returns>
-        public override int CurrentKarmaCost()
-        {
-            return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
-        }
+        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
         public override bool IsExoticSkill => true;
 

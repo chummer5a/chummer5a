@@ -29,17 +29,17 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblModifiedRating = new System.Windows.Forms.Label();
+            this.lblModifiedRating = new LabelWithToolTip();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboSkill = new System.Windows.Forms.ComboBox();
             this.cboType = new System.Windows.Forms.ComboBox();
             this.lblRating = new System.Windows.Forms.Label();
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new LabelWithToolTip();
             this.lblSpec = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
-            this.btnAddSpec = new System.Windows.Forms.Button();
+            this.btnCareerIncrease = new ButtonWithToolTip();
+            this.btnAddSpec = new ButtonWithToolTip();
             this.nudSkill = new NumericUpDownEx();
             this.nudKarma = new NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
@@ -213,16 +213,16 @@ namespace Chummer.UI.Skills
         #endregion
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
-        private System.Windows.Forms.Label lblModifiedRating;
+        private LabelWithToolTip lblModifiedRating;
         private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.ComboBox cboSkill;
         private System.Windows.Forms.ComboBox cboType;
         private System.Windows.Forms.Label lblRating;
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblSpec;
-        private System.Windows.Forms.Button btnCareerIncrease;
-        private System.Windows.Forms.Button btnAddSpec;
+        private ButtonWithToolTip btnCareerIncrease;
+        private ButtonWithToolTip btnAddSpec;
     }
 }
