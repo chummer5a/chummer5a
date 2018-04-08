@@ -365,7 +365,7 @@ namespace Chummer
                     cboContactRole.Text = strContactRole;
                 return;
             }
-            
+
             // Read the list of Categories from the XML file.
             List<ListItem> lstCategories = new List<ListItem>
             {

@@ -87,7 +87,7 @@ namespace Chummer.Backend
                 {
                     _dicAttributes.Add("system-cultureinfo", e.ToString());
                 }
-                
+
                 //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
                 if (Registry.LocalMachine != null)
                 {
@@ -119,7 +119,7 @@ namespace Chummer.Backend
                         {
                             _dicAttributes.Add("os-name", e.ToString());
                         }
-                        
+
                         objCurrentVersionKey.Close();
                     }
                 }
@@ -132,11 +132,11 @@ namespace Chummer.Backend
             }
 
             // JavaScriptSerializer requires that all properties it accesses be public.
-            // ReSharper disable once MemberCanBePrivate.Local 
+            // ReSharper disable once MemberCanBePrivate.Local
             private readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
-            // ReSharper disable once MemberCanBePrivate.Local 
+            // ReSharper disable once MemberCanBePrivate.Local
             private readonly Dictionary<string, string> _dicPretendFiles;
-            // ReSharper disable once MemberCanBePrivate.Local 
+            // ReSharper disable once MemberCanBePrivate.Local
             private readonly Dictionary<string, string> _dicAttributes;
             private readonly int _intProcessId = Process.GetCurrentProcess().Id;
             private readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();

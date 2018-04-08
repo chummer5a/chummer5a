@@ -20,11 +20,11 @@ using System;
 using System.Xml;
 
 namespace Chummer.Backend.Skills
-{ 
+{
     public sealed class ExoticSkill : Skill
     {
         private string _strSpecific;
-        
+
         public ExoticSkill(Character character, XmlNode node) : base(character, node)
         {
         }

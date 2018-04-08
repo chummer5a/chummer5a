@@ -140,7 +140,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
@@ -406,7 +406,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Check the Keys in the selected language file against the English version. 
+        /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         public static void VerifyStrings(string strLanguage)

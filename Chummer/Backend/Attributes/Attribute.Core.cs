@@ -31,7 +31,7 @@ using System.Xml;
 namespace Chummer.Backend.Attributes
 {
     /// <summary>
-    /// Character CharacterAttribute. 
+    /// Character CharacterAttribute.
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
@@ -59,7 +59,7 @@ namespace Chummer.Backend.Attributes
 		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory = AttributeCategory.Standard)
         {
 	        _strAbbrev = abbrev;
-	        MetatypeCategory = enumCategory;
+            _enumMetatypeCategory = enumCategory;
 	        _objCharacter = character;
 			_objCharacter.PropertyChanged += OnCharacterChanged;
 		}
@@ -169,12 +169,8 @@ namespace Chummer.Backend.Attributes
         #region Properties
 
         public Character CharacterObject => _objCharacter;
-        
-		public AttributeCategory MetatypeCategory
-		{
-			get => _enumMetatypeCategory;
-		    set => _enumMetatypeCategory = value;
-		}
+
+        public AttributeCategory MetatypeCategory => _enumMetatypeCategory;
 
 		/// <summary>
 		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
@@ -461,7 +457,7 @@ namespace Chummer.Backend.Attributes
             }
         }
         /// <summary>
-        /// The CharacterAttribute's total value (Value + Modifiers). 
+        /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
@@ -637,7 +633,7 @@ namespace Chummer.Backend.Attributes
         /// Is it possible to place points in Base or is it prevented by their build method?
         /// </summary>
         public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints;
-        
+
         /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
@@ -971,7 +967,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        // Caching the value prevents calling the event multiple times. 
+        // Caching the value prevents calling the event multiple times.
         private int _intCachedCanUpgradeCareer = -1;
         public bool CanUpgradeCareer
         {
@@ -983,12 +979,11 @@ namespace Chummer.Backend.Attributes
                 return _intCachedCanUpgradeCareer > 0;
             }
         }
-        
+
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
             {
-                _intCachedCanUpgradeCareer = -1;
                 OnPropertyChanged(nameof(CanUpgradeCareer));
             }
         }
@@ -1073,7 +1068,7 @@ namespace Chummer.Backend.Attributes
 		#endregion
 
         #region static
-        //A tree of dependencies. Once some of the properties are changed, 
+        //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
         private static readonly DependancyGraph<string> AttributeDependancyGraph =
@@ -1136,7 +1131,7 @@ namespace Chummer.Backend.Attributes
                     new DependancyGraphNode<string>(nameof(Value))
                 )
             );
-        
+
         /// <summary>
         /// Translated abbreviation of the attribute.
         /// </summary>
@@ -1191,7 +1186,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else if (Abbrev == "EDG" && _objCharacter.Created && TotalMinimum > 0)
                 {
-                    //Edge can reduce the metatype minimum below zero. 
+                    //Edge can reduce the metatype minimum below zero.
                     MetatypeMinimum -= 1;
                 }
                 else

@@ -290,7 +290,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteEndElement();
 		}
         /// <summary>
-        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy. 
+        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy.
         /// </summary>
         /// <param name="xmlNode"></param>
         public void CreateByName(XmlNode xmlNode)
@@ -301,7 +301,7 @@ namespace Chummer.Backend.Equipment
             if (xmlDataNode != null)
             {
                 objMount.Create(xmlDataNode);
-                
+
                 xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"]?.InnerText}\" and category = \"Flexibility\"]");
                 if (xmlDataNode != null)
                 {
@@ -525,7 +525,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Vehicle that the Mod is attached to. 
+        /// Vehicle that the Mod is attached to.
         /// </summary>
         public Vehicle Parent => _vehicle;
 

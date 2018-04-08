@@ -364,11 +364,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Converts old lifestyle structures to new standards. 
+        /// Converts old lifestyle structures to new standards.
         /// </summary>
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
-            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property. 
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion <= new Version("5.197.0") && xmlLifestyleNode["costforarea"] == null)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
@@ -804,7 +804,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle. 
+        /// Whether the character is the primary tenant for the Lifestyle.
         /// </summary>
         public bool PrimaryTenant
         {
@@ -898,7 +898,7 @@ namespace Chummer.Backend.Equipment
         public decimal BaseCost => Cost * Math.Max(CostMultiplier + BaseCostMultiplier, 1);
 
         /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has. 
+        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
         public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
 

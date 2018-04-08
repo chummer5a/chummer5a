@@ -117,7 +117,7 @@ namespace Chummer
         {
             if (_blnSkipUpdate)
                 return;
-            
+
             SuspendLayout();
             if (e?.Text != "mru")
             {
@@ -468,7 +468,7 @@ namespace Chummer
 
             if (!_lstCharacterCache.TryAdd(strFile, objCache))
                 _lstCharacterCache[strFile] = objCache;
-            
+
             TreeNode objNode = new TreeNode
             {
                 ContextMenuStrip = cmsRoster,
@@ -486,7 +486,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Generates a name for the treenode based on values contained in the CharacterCache object. 
+        /// Generates a name for the treenode based on values contained in the CharacterCache object.
         /// </summary>
         /// <param name="objCache">Cache from which to generate name.</param>
         /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
@@ -738,7 +738,7 @@ namespace Chummer
         #endregion
         #region Classes
         /// <summary>
-        /// Caches a subset of a full character's properties for loading purposes. 
+        /// Caches a subset of a full character's properties for loading purposes.
         /// </summary>
         private sealed class CharacterCache
         {
@@ -838,7 +838,7 @@ namespace Chummer
                                 GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
 
                             _blnSkipUpdate = false;
-                                
+
                             LoadCharacters(true, false, false);
                             MoveControls();
                             ResumeLayout();
@@ -853,7 +853,7 @@ namespace Chummer
         private void tsToggleFav_Click(object sender, EventArgs e)
         {
             TreeNode t = treCharacterList.SelectedNode;
-            
+
             if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
             {
                 switch (t.Parent.Tag.ToString())

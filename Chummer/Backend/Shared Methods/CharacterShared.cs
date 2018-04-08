@@ -54,7 +54,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            
+
             _lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>
             {
                 CharacterObject.BOD,
@@ -93,7 +93,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wrapper for relocating contact forms. 
+        /// Wrapper for relocating contact forms.
         /// </summary>
         protected struct TransportWrapper
         {
@@ -162,7 +162,7 @@ namespace Chummer
                     return;
                 }
             }
-            
+
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
             string strShowFileName = strFile[strFile.Length - 1];
 
@@ -173,7 +173,7 @@ namespace Chummer
             Cursor = Cursors.Default;
             AutosaveStopWatch.Restart();
         }
-        
+
         /// <summary>
         /// Edit and update a Limit Modifier.
         /// </summary>
@@ -692,7 +692,7 @@ namespace Chummer
             {
                 string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
                 string strSelectedMetamagicId = treMetamagic.SelectedNode?.Tag.ToString();
-                
+
                 treComplexForms.Nodes.Clear();
 
                 // Add Complex Forms.
@@ -1012,7 +1012,7 @@ namespace Chummer
                         break;
                 }
             }
-            
+
             TreeNode GetLimitModifierParentNode(int intTargetLimit)
             {
                 TreeNode objParentNode = aobjLimitNodes[intTargetLimit];
@@ -1066,7 +1066,7 @@ namespace Chummer
                 string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
                 TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
                 lstRootNodes.Clear();
-                
+
                 foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
                 {
                     AddToTree(objGrade);
@@ -1118,7 +1118,7 @@ namespace Chummer
                                     CharacterObject.InitiateGrade++;
                                 }
                             }
-                            //TODO: Annoying boilerplate, but whatever. 
+                            //TODO: Annoying boilerplate, but whatever.
                             if (CharacterObject.RESEnabled)
                             {
                                 // Remove any existing Initiation Improvements.
@@ -1194,7 +1194,7 @@ namespace Chummer
                                 List<Spell> lstRemoveSpells = CharacterObject.Spells.Where(objSpell => objSpell.Grade == objGrade.Grade).ToList();
                                 foreach (Spell objSpell in lstRemoveSpells)
                                     CharacterObject.Spells.Remove(objSpell);
-                                
+
                                 // Complex Forms
                                 List<ComplexForm> lstRemoveComplexForms = CharacterObject.ComplexForms.Where(cf => cf.Grade == objGrade.Grade).ToList();
                                 foreach (ComplexForm cf in lstRemoveComplexForms)
@@ -1821,7 +1821,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Refreshes the list of qualities into the selected TreeNode. If the same number of 
+        /// Refreshes the list of qualities into the selected TreeNode. If the same number of
         /// </summary>
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
@@ -2699,7 +2699,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
             {
                 treArmor.Nodes.Clear();
-                
+
                 // Start by adding Locations.
                 foreach (string strLocation in CharacterObject.ArmorLocations)
                 {
@@ -3110,7 +3110,7 @@ namespace Chummer
         protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treGear.SelectedNode?.Tag.ToString();
-            
+
             TreeNode nodRoot = null;
             
             if (notifyCollectionChangedEventArgs == null)
@@ -3269,7 +3269,7 @@ namespace Chummer
         {
             if (notifyCollectionChangedEventArgs == null)
                 return;
-            
+
             TreeNode nodParent = treGear.FindNode(objParent.InternalId);
             if (nodParent == null)
                 return;
@@ -3538,7 +3538,7 @@ namespace Chummer
                     }
                     nodParent = objBiowareRoot;
                 }
-                
+
                 if (nodParent != null)
                 {
                     if (blnSingleAdd)
@@ -4926,7 +4926,7 @@ namespace Chummer
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
-            
+
             TreeNode objMartialArtsParentNode = null;
             TreeNode objQualityNode = null;
 
@@ -5151,7 +5151,7 @@ namespace Chummer
         protected void RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
-            
+
             TreeNode objRoot;
 
             if (notifyCollectionChangedEventArgs == null)
@@ -5578,7 +5578,7 @@ namespace Chummer
         protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treLifestyles.SelectedNode?.Tag.ToString();
-            
+
             TreeNode objParentNode = null;
 
             if (notifyCollectionChangedEventArgs == null)
@@ -5664,7 +5664,7 @@ namespace Chummer
                     treLifestyles.Nodes.Add(objParentNode);
                     objParentNode.Expand();
                 }
-                
+
                 if (blnSingleAdd)
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -6203,7 +6203,7 @@ namespace Chummer
                     intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
-            
+
             int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
             int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -6271,13 +6271,13 @@ namespace Chummer
         #region Additional Relationships Tab Control Events
         protected void AddContactsFromFile()
         {
-            // Displays an OpenFileDialog so the user can select the XML to read.  
+            // Displays an OpenFileDialog so the user can select the XML to read.
             OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
-            // Show the Dialog.  
+            // Show the Dialog.
             // If the user cancels out, return early.
             if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
@@ -6300,7 +6300,7 @@ namespace Chummer
                 MessageBox.Show(ex.ToString());
                 return;
             }
-            
+
             foreach (XPathNavigator xmlContact in xmlDoc.GetFastNavigator().Select("/chummer/contacts/contact"))
             {
                 Contact objContact = new Contact(CharacterObject);
@@ -6328,7 +6328,7 @@ namespace Chummer
                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
                     objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
-                    
+
                     if (blnIsSpirit)
                     {
                         intSpirits += 1;
@@ -6784,7 +6784,7 @@ namespace Chummer
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
-            
+
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
             string strShowFileName = strFile[strFile.Length - 1];
 

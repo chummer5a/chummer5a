@@ -152,7 +152,7 @@ namespace Chummer.Backend.Skills
                 return _intCachedBaseUnbroken > 0;
             }
         }
-        
+
         private int _intCachedKarmaUnbroken = -1;
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Chummer.Backend.Skills
 
                 CharacterObject.Karma -= intPrice;
             }
-           
+
             Karma += 1;
         }
 
@@ -478,7 +478,7 @@ namespace Chummer.Backend.Skills
         {
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
-            
+
             _objCharacter.PropertyChanged += Character_PropertyChanged;
         }
 

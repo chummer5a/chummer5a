@@ -54,7 +54,7 @@ namespace Chummer
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                     select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
-            
+
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
             cboImprovemetType.ValueMember = "Value";
@@ -301,7 +301,7 @@ namespace Chummer
                             DropdownItems = lstDropdownItems,
                             Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                         };
-                        
+
                         frmPickSkill.ShowDialog(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)

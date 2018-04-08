@@ -150,7 +150,7 @@ namespace Chummer.Backend.Skills
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
                     SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
-                    
+
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
                         KnowledgeSkill kno = new KnowledgeSkill(_objCharacter)
@@ -327,12 +327,12 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            //This might give subtle bugs in the future, 
-            //but right now it needs to be run once when upgrading or it might crash. 
-            //As some didn't they crashed on loading skills. 
+            //This might give subtle bugs in the future,
+            //but right now it needs to be run once when upgrading or it might crash.
+            //As some didn't they crashed on loading skills.
             //After this have run, it won't (for the crash i'm aware)
             //TODO: Move it to the other side of the if someday?
-            
+
             if (!_objCharacter.Created)
             {
                 // zero out any skillgroups whose skills did not make the final cut
@@ -554,7 +554,7 @@ namespace Chummer.Backend.Skills
                 return fromAttributes + val;
             }
         }
-        
+
         /// <summary>
         /// Number of free Knowledge skill points the character have remaining
         /// </summary>

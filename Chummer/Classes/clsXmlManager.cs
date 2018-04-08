@@ -183,7 +183,7 @@ namespace Chummer
                 catch (XmlException)
                 {
                 }
-                
+
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                 if (strFileName != "improvements.xml")
                 {
@@ -1063,7 +1063,7 @@ namespace Chummer
                                                         {
                                                             bool blnTranslate = objTranslate.SelectSingleNode("translate") != null;
                                                             bool blnAltPage = objTranslate.SelectSingleNode("altpage") != null;
-                                                            
+
                                                             // Item exists, so make sure it has its translate attribute populated.
                                                             if (!blnTranslate || !blnAltPage)
                                                             {

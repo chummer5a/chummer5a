@@ -325,7 +325,7 @@ namespace Chummer
                 TranslateForm();
                 Cursor = Cursors.Default;
             }
-            
+
             OptionsChanged(sender,e);
         }
 
@@ -561,7 +561,7 @@ namespace Chummer
                     cboSheetLanguage.SelectedValue = _strSelectedLanguage;
                 }
             }
-            
+
             PopulatePDFParameters();
             MoveControls();
         }
@@ -722,7 +722,7 @@ namespace Chummer
             lblKarmaSummoningFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaSustainingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaWeaponFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
-            
+
             intWidth = 0;
             int intMargin = treSourcebook.Left;
             foreach (TreeNode objNode in treSourcebook.Nodes)
@@ -1228,7 +1228,7 @@ namespace Chummer
         private void PopulateLimbCountList()
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
-            
+
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/limbcounts/limb"))
                 if (objXmlNodeList != null)
                     foreach (XmlNode objXmlNode in objXmlNodeList)
@@ -1259,7 +1259,7 @@ namespace Chummer
         private void PopulatePDFParameters()
         {
             List<ListItem> lstPdfParameters = new List<ListItem>();
-            
+
             int intIndex = 0;
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
@@ -1314,7 +1314,7 @@ namespace Chummer
             foreach (string filePath in settingsFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument();
-                
+
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
@@ -1411,7 +1411,7 @@ namespace Chummer
 
                 lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
             }
-            
+
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
@@ -1536,7 +1536,7 @@ namespace Chummer
             string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", strLanguage);
 
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
@@ -1763,7 +1763,7 @@ namespace Chummer
                     txtCharacterRosterPath.Text = dlgSelectFolder.SelectedPath;
             }
         }
-        
+
         private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.

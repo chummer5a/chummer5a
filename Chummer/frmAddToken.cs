@@ -34,7 +34,7 @@ namespace Chummer
             //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
-            
+
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ namespace Chummer
             PowerObject = objPower;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 
+            nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -43,25 +43,25 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.TotalRating), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            nudRating.DataBindings.Add("InterceptMouseWheel", PowerObject.CharacterObject.Options, 
+            nudRating.DataBindings.Add("InterceptMouseWheel", PowerObject.CharacterObject.Options,
                 nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false, 
+            lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false, 
+            lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             lblPowerPoints.DataBindings.Add("ToolTipText", PowerObject, nameof(PowerObject.ToolTip), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false, 
+            lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedAdeptWay.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.AdeptWayDiscountEnabled), false, 
+            chkDiscountedAdeptWay.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.AdeptWayDiscountEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false, 
+            chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, 
+            chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.DoesNotHaveFreeLevels), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            
+
             MoveControls();
         }
 

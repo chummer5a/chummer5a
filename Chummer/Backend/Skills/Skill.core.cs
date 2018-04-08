@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
         private int _intBase;
         private int _intKarma;
         private bool _blnBuyWithKarma;
-        
+
         /// <summary>
         /// How many points REALLY are in _base. Better that subclasses calculating Base - FreeBase()
         /// </summary>
@@ -106,8 +106,8 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject != null && SkillGroupObject.Base != 0 && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups))
                     return;
-                
-                //Calculate how far above maximum we are. 
+
+                //Calculate how far above maximum we are.
                 int intOverMax = value + Karma - RatingMaximum;
 
                 if (intOverMax > 0) //Too much
@@ -143,7 +143,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                //Calculate how far above maximum we are. 
+                //Calculate how far above maximum we are.
                 int intOverMax = value + Base - RatingMaximum;
 
                 if (intOverMax > 0) //Too much
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Skills
 
         /// <summary>
         /// The rating the character have acctually paid for, not including skillwires
-        /// or other overrides for skill Rating. Read only, you probably want to 
+        /// or other overrides for skill Rating. Read only, you probably want to
         /// increase Karma instead.
         /// </summary>
         public int LearnedRating => Karma + Base;
@@ -658,7 +658,7 @@ namespace Chummer.Backend.Skills
 
                 CharacterObject.Karma -= price;
             }
-            
+
             Karma += 1;
         }
         
@@ -748,7 +748,7 @@ namespace Chummer.Backend.Skills
 
                 CharacterObject.Karma -= price;
             }
-            
+
             Specializations.Add(nspec);
         }
 

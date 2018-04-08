@@ -56,7 +56,7 @@ namespace Chummer
             {
                 txtValue.Text = DefaultString;
             }
-        }        
+        }
         #endregion
 
         #region Properties

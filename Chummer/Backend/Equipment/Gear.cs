@@ -797,7 +797,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            
+
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -1238,7 +1238,7 @@ namespace Chummer.Backend.Equipment
             get => _decCostFor;
             set => _decCostFor = value;
         }
-        
+
         /// <summary>
         /// Cost.
         /// </summary>
@@ -1816,7 +1816,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                         strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
-                    
+
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                     if (!string.IsNullOrEmpty(strSecondHalf))
@@ -1868,7 +1868,7 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                    
+
                     if (strFirstHalf == "[*]")
                         strReturn = "*";
                     else
@@ -1893,7 +1893,7 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strReturn.StartsWith('[');
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
-                    
+
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     if (blnIsSuccess)
                         strReturn = ((double) objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -1948,7 +1948,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
-                
+
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
                 objCost.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));

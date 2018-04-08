@@ -445,7 +445,7 @@ namespace Chummer
             string strSelectedPower = trePowers.SelectedNode?.Tag.ToString();
             if (string.IsNullOrEmpty(strSelectedPower))
                 return;
-            
+
             XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedPower + "\"]");
             if (objXmlPower == null)
                 return;

@@ -49,7 +49,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            
+
             // Load the Metamagic information.
             switch (objMode)
             {

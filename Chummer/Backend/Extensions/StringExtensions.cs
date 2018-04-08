@@ -167,7 +167,7 @@ namespace Chummer
                 return string.Empty;
             if (strInput.Length < intToDeleteLength)
                 return strInput;
-            
+
             int intIndexToBeginRemove = strInput.IndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
         }
@@ -710,7 +710,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Tests whether a given string is a Guid. Returns false if not. 
+        /// Tests whether a given string is a Guid. Returns false if not.
         /// </summary>
         /// <param name="strGuid">String to test.</param>
         /// <returns>True if string is a Guid, false if not.</returns>

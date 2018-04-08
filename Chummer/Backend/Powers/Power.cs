@@ -377,7 +377,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
@@ -460,8 +460,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An additional cost on top of the power's PointsPerLevel. 
-        /// Example: Improved Reflexes is properly speaking Rating + 0.5, but the math for that gets weird. 
+        /// An additional cost on top of the power's PointsPerLevel.
+        /// Example: Improved Reflexes is properly speaking Rating + 0.5, but the math for that gets weird.
         /// </summary>
         public decimal ExtraPointCost
         {
@@ -524,7 +524,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The current Rating of the Power, including any Free Levels. 
+        /// The current Rating of the Power, including any Free Levels.
         /// </summary>
         public int TotalRating
         {
@@ -549,7 +549,7 @@ namespace Chummer
                 decimal decExtraCost = FreePoints;
                 // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
                 int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
-                // The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
+                // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                 if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
                     decExtraCost -= (PointsPerLevel + ExtraPointCost);
@@ -603,7 +603,7 @@ namespace Chummer
                 }
                 decReturn -= Discount;
                 return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
-            }            
+            }
         }
 
         public string DisplayPoints
@@ -627,7 +627,7 @@ namespace Chummer
 
         /// <summary>
         /// Free Power Points that apply to the Power. Calculated as Improvement Rating * 0.25.
-        /// Typically used for Qi Foci. 
+        /// Typically used for Qi Foci.
         /// </summary>
         public decimal FreePoints
         {
@@ -825,7 +825,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether the power can be discounted due to presence of an Adept Way. 
+        /// Whether the power can be discounted due to presence of an Adept Way.
         /// </summary>
         public bool AdeptWayDiscountEnabled
         {
@@ -836,7 +836,7 @@ namespace Chummer
                     return false;
                 }
                 bool blnReturn = false;
-                //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount. 
+                //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
                 if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
                 {
                     blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
@@ -924,7 +924,7 @@ namespace Chummer
                 _intCachedFreeLevels = int.MinValue;
             if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
                 _decCachedPowerPoints = decimal.MinValue;
-            
+
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)))
             {

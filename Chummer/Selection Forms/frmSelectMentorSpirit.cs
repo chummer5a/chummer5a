@@ -220,7 +220,7 @@ namespace Chummer
         /// Second choice that was selected in the dialogue.
         /// </summary>
         public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
-        
+
         /// <summary>
         /// Whether the character manifests the Mentor's Mask. Used externally to create improvements.
         /// </summary>
@@ -241,7 +241,7 @@ namespace Chummer
                     return;
 
                 SelectedMentor = strSelectedId;
-                
+
                 DialogResult = DialogResult.OK;
             }
         }

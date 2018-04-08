@@ -192,7 +192,7 @@ namespace Chummer.Backend.Skills
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
-                
+
                 if (IsKnowledgeSkill)
                 {
                     int intMaxSkillsoftRating = Math.Min(IsKnowledgeSkill ? int.MaxValue : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess));
@@ -406,7 +406,7 @@ namespace Chummer.Backend.Skills
                 return Math.Max(intPointCost, 0);
             }
         }
-        
+
         protected override void SaveExtendedData(XmlTextWriter writer)
         {
             writer.WriteElementString("name", Name);

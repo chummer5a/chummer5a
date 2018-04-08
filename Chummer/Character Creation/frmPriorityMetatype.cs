@@ -30,7 +30,7 @@ namespace Chummer
     public partial class frmPriorityMetatype : Form
     {
         private readonly Character _objCharacter;
-        
+
         private int _intBuildMethod;
         private bool _blnInitializing = true;
         private readonly List<string> _lstPrioritySkills;
@@ -217,7 +217,7 @@ namespace Chummer
             {
                 SumtoTen();
             }
-            
+
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             GlobalOptions.ToolTipProcessor.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
             GlobalOptions.ToolTipProcessor.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
@@ -285,7 +285,7 @@ namespace Chummer
                         break;
                     }
                 }
-                
+
                 if (xmlTalentNode != null)
                 {
                     string strSkillCount = xmlTalentNode.SelectSingleNode("skillqty")?.Value ?? xmlTalentNode.SelectSingleNode("skillgroupqty")?.Value ?? string.Empty;
@@ -436,7 +436,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        
+
                         if (int.TryParse(xmlTalentNode.SelectSingleNode("specialattribpoints")?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
@@ -703,7 +703,7 @@ namespace Chummer
                     _objCharacter.CritterPowers.Add(objPower);
                 }
 
-                //Load any natural weapons the character has. 
+                //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter)
@@ -757,7 +757,7 @@ namespace Chummer
                         break;
                     }
                 }
-                    
+
 
                 if ("Aspected Magician".Equals(cboTalents.SelectedValue))
                 {
@@ -830,7 +830,7 @@ namespace Chummer
                         break;
                     }
                 }
-                
+
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
                 _objCharacter.TotalSpecial = _objCharacter.Special;
@@ -1045,7 +1045,7 @@ namespace Chummer
                 {
                     cmdOK.Enabled = true;
                 }
-                
+
                 lblBOD.Text = $"{objXmlMetavariant.SelectSingleNode("bodmin")?.Value}/{objXmlMetavariant.SelectSingleNode("bodmax")?.Value} ({objXmlMetavariant.SelectSingleNode("bodaug")?.Value})";
                 lblAGI.Text = $"{objXmlMetavariant.SelectSingleNode("agimin")?.Value}/{objXmlMetavariant.SelectSingleNode("agimax")?.Value} ({objXmlMetavariant.SelectSingleNode("agiaug")?.Value})";
                 lblREA.Text = $"{objXmlMetavariant.SelectSingleNode("reamin")?.Value}/{objXmlMetavariant.SelectSingleNode("reamax")?.Value} ({objXmlMetavariant.SelectSingleNode("reaaug")?.Value})";
@@ -1242,7 +1242,7 @@ namespace Chummer
         {
             // Load the Priority information.
             List<ListItem> lstTalent = new List<ListItem>();
-            
+
             // Populate the Priority Category list.
             XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
             foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
@@ -1566,7 +1566,7 @@ namespace Chummer
         private void LoadMetatypes()
         {
             List<ListItem> lstCategory = new List<ListItem>();
-            
+
             // Populate the Metatype Category list.
             // Create a list of any Categories that should not be in the list.
             HashSet<string> lstRemoveCategory = new HashSet<string>();

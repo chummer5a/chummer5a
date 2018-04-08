@@ -45,7 +45,7 @@ namespace Chummer
             MoveControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
-            
+
             if (_objCharacter.IsCritter)
             {
                 _xmlOptionalComplexFormNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
@@ -139,7 +139,7 @@ namespace Chummer
                         .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
                         .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
                 }
-                
+
                 lblFV.Text = strFV;
                 
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -238,7 +238,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
