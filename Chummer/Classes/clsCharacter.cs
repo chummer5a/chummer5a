@@ -11736,12 +11736,18 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 if (_objOptions.UseTotalValueForFreeContacts)
-                    OnPropertyChanged(nameof(ContactPoints));
-                OnMultiplePropertyChanged(nameof(LimitSocial),
-                                          nameof(Composure),
-                                          nameof(JudgeIntentions),
-                                          nameof(JudgeIntentionsResist),
-                                          nameof(SpellDefenseDecreaseCHA));
+                    OnMultiplePropertyChanged(nameof(ContactPoints),
+                                              nameof(LimitSocial),
+                                              nameof(Composure),
+                                              nameof(JudgeIntentions),
+                                              nameof(JudgeIntentionsResist),
+                                              nameof(SpellDefenseDecreaseCHA));
+                else
+                    OnMultiplePropertyChanged(nameof(LimitSocial),
+                                              nameof(Composure),
+                                              nameof(JudgeIntentions),
+                                              nameof(JudgeIntentionsResist),
+                                              nameof(SpellDefenseDecreaseCHA));
             }
             else if (e.PropertyName == nameof(CharacterAttrib.Value))
             {
@@ -11975,6 +11981,10 @@ namespace Chummer
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
+            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            {
+                _intCachedContactPoints = int.MinValue;
+            }
             if (lstNamesOfChangedProperties.Contains(nameof(TrustFund)))
             {
                 _intCachedTrustFund = int.MinValue;
