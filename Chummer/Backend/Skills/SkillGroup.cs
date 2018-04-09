@@ -766,7 +766,7 @@ namespace Chummer.Backend.Skills
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
-                    if ((objLoopImprovement.Maximum == 0 || intRating <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intRating &&
+                    if ((objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intRating + 1 &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                         objLoopImprovement.Enabled)
                     {
