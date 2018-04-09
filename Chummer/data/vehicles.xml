@@ -10005,11 +10005,11 @@
       <name>Standard Drone Rack (Micro)</name>
       <page>160</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>4</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>350</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>1</slots>
     </mod>
     <mod>
       <id>fa0b86df-1678-4d02-bcec-fec68831e1a8</id>
@@ -10060,11 +10060,11 @@
       <name>Landing Drone Rack (Micro)</name>
       <page>160</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>6</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>750</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>2</slots>
     </mod>
     <mod>
       <id>943e11c1-68ab-47db-9075-e13e52247350</id>
