@@ -83,6 +83,7 @@ namespace Chummer
         private int _intCachedContactPoints = int.MinValue;
         private int _intContactPointsUsed;
         private int _intCachedRedlinerBonus = int.MinValue;
+        private int _intCurrentCounterspellingDice = 0;
 
         // General character info.
         private string _strName = string.Empty;
@@ -253,6 +254,7 @@ namespace Chummer
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
 
             BOD.PropertyChanged += RefreshBODDependentProperties;
+            AGI.PropertyChanged += RefreshAGIDependentProperties;
             REA.PropertyChanged += RefreshREADependentProperties;
             STR.PropertyChanged += RefreshSTRDependentProperties;
             CHA.PropertyChanged += RefreshCHADependentProperties;
@@ -417,11 +419,187 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(TotalArmorRating),
                             new DependancyGraphNode<string>(nameof(ArmorRating))
                         ),
-                        new DependancyGraphNode<string>(nameof(IsAI))
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI)
                     )
                 ),
                 new DependancyGraphNode<string>(nameof(IsAI),
                     new DependancyGraphNode<string>(nameof(DEPEnabled))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodgeToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodge),
+                        new DependancyGraphNode<string>(nameof(TotalBonusDodgeRating))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIndirectDodge),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodge))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoakToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoak),
+                        new DependancyGraphNode<string>(nameof(TotalArmorRating)),
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIndirectSoak),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoak))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakManaToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakMana),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakMana),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakMana))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysicalToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakPhysical),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDetectionToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDetection),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDetection),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDetection))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBODToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBOD),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseBOD),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBOD))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGIToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGI),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseAGI),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGI))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREAToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREA),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseREA),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREA))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTRToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTR),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseSTR),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTR))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHAToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHA),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseCHA),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHA))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINTToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINT),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseINT),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINT))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOGToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOG),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseLOG),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOG))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWILToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWIL),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseWIL),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWIL))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseIllusionManaToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionMana),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIllusionMana),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionMana))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysicalToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysical),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIllusionPhysical),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysical))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMentalToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMental),
+                        new DependancyGraphNode<string>(nameof(SpellResistance))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseManipulationMental),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMental))
+                ),
+                new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysicalToolTip),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysical),
+                        new DependancyGraphNode<string>(nameof(SpellResistance)),
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI)
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySpellDefenseManipulationPhysical),
+                    new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysical))
                 ),
                 new DependancyGraphNode<string>(nameof(TotalArmorRatingToolTip),
                     new DependancyGraphNode<string>(nameof(TotalArmorRating))
@@ -972,6 +1150,8 @@ namespace Chummer
             objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString());
             // <aiadvancedprogramlimit />
             objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString());
+            // <currentcounterspellingdice />
+            objWriter.WriteElementString("currentcounterspellingdice", _intCurrentCounterspellingDice.ToString());
             // <streetcred />
             objWriter.WriteElementString("streetcred", _intStreetCred.ToString());
             // <notoriety />
@@ -1036,7 +1216,7 @@ namespace Chummer
 
             // <prototypetranshuman />
             objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
-            
+
 			// <attributes>
 			objWriter.WriteStartElement("attributes");
 	        AttributeSection.Save(objWriter);
@@ -1705,6 +1885,7 @@ namespace Chummer
             xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice", ref _intCurrentCounterspellingDice);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
@@ -1730,7 +1911,7 @@ namespace Chummer
             xmlCharacterNavigator.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("initiationdisabled", ref _blnInitiationDisabled);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-            
+
             xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
             xmlCharacterNavigator.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
@@ -3119,37 +3300,37 @@ namespace Chummer
 
             // Spell Resistances
             //Indirect Dodge
-            objWriter.WriteElementString("indirectdefenseresist", (INT.TotalValue + REA.TotalValue + TotalBonusDodgeRating).ToString(objCulture));
+            objWriter.WriteElementString("indirectdefenseresist", SpellDefenseIndirectDodge.ToString(objCulture));
             //Direct Soak - Mana
-            objWriter.WriteElementString("directmanaresist", (WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("directmanaresist", SpellDefenseDirectSoakMana.ToString(objCulture));
             //Direct Soak - Physical
-            objWriter.WriteElementString("directphysicalresist", (BOD.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("directphysicalresist", SpellDefenseDirectSoakPhysical.ToString(objCulture));
             //Detection Spells
-            objWriter.WriteElementString("detectionspellresist", (LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist)).ToString(objCulture));
+            objWriter.WriteElementString("detectionspellresist", SpellDefenseDetection.ToString(objCulture));
             //Decrease Attribute - BOD
-            objWriter.WriteElementString("decreasebodresist", (BOD.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreasebodresist", SpellDefenseDecreaseBOD.ToString(objCulture));
             //Decrease Attribute - AGI
-            objWriter.WriteElementString("decreaseagiresist", (AGI.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreaseagiresist", SpellDefenseDecreaseAGI.ToString(objCulture));
             //Decrease Attribute - REA
-            objWriter.WriteElementString("decreaserearesist", (REA.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreaserearesist", SpellDefenseDecreaseREA.ToString(objCulture));
             //Decrease Attribute - STR
-            objWriter.WriteElementString("decreasestrresist", (STR.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreasestrresist", SpellDefenseDecreaseSTR.ToString(objCulture));
             //Decrease Attribute - CHA
-            objWriter.WriteElementString("decreasecharesist", (CHA.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreasecharesist", SpellDefenseDecreaseCHA.ToString(objCulture));
             //Decrease Attribute - INT
-            objWriter.WriteElementString("decreaseintresist", (INT.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreaseintresist", SpellDefenseDecreaseINT.ToString(objCulture));
             //Decrease Attribute - LOG
-            objWriter.WriteElementString("decreaselogresist", (LOG.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreaselogresist", SpellDefenseDecreaseLOG.ToString(objCulture));
             //Decrease Attribute - WIL
-            objWriter.WriteElementString("decreasewilresist", (WIL.TotalValue + WIL.TotalValue + SpellResistance).ToString(objCulture));
+            objWriter.WriteElementString("decreasewilresist", SpellDefenseDecreaseWIL.ToString(objCulture));
             //Illusion - Mana
-            objWriter.WriteElementString("illusionmanaresist", (WIL.TotalValue + LOG.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist)).ToString(objCulture));
+            objWriter.WriteElementString("illusionmanaresist", SpellDefenseIllusionMana.ToString(objCulture));
             //Illusion - Physical
-            objWriter.WriteElementString("illusionphysicalresist", (INT.TotalValue + LOG.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist)).ToString(objCulture));
+            objWriter.WriteElementString("illusionphysicalresist", SpellDefenseIllusionPhysical.ToString(objCulture));
             //Manipulation - Mental
-            objWriter.WriteElementString("manipulationmentalresist", (WIL.TotalValue + LOG.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist)).ToString(objCulture));
+            objWriter.WriteElementString("manipulationmentalresist", SpellDefenseManipulationMental.ToString(objCulture));
             //Manipulation - Physical
-            objWriter.WriteElementString("manipulationphysicalresist", (STR.TotalValue + BOD.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)).ToString(objCulture));
+            objWriter.WriteElementString("manipulationphysicalresist", SpellDefenseManipulationPhysical.ToString(objCulture));
 
             // <skills>
             objWriter.WriteStartElement("skills");
@@ -3553,6 +3734,7 @@ namespace Chummer
             _intAIAdvancedProgramLimit = 0;
             _intCachedRedlinerBonus = 0;
             _intCachedContactPoints = 0;
+            _intCurrentCounterspellingDice = 0;
             _intCachedInitiationEnabled = -1;
             _decCachedBiowareEssence = decimal.MinValue;
             _decCachedCyberwareEssence = decimal.MinValue;
@@ -6041,7 +6223,7 @@ namespace Chummer
         /// Willpower (WIL) CharacterAttribute.
         /// </summary>
         public CharacterAttrib WIL => AttributeSection.GetAttributeByName("WIL");
-        
+
         /// <summary>
         /// Edge (EDG) CharacterAttribute.
         /// </summary>
@@ -7969,6 +8151,829 @@ namespace Chummer
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
+                return objToolTip.ToString();
+            }
+        }
+
+        public int CurrentCounterspellingDice
+        {
+            get => _intCurrentCounterspellingDice;
+            set
+            {
+                if (_intCurrentCounterspellingDice != value)
+                {
+                    _intCurrentCounterspellingDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int SpellDefenseIndirectDodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating;
+
+        public string DisplaySpellDefenseIndirectDodge => CurrentCounterspellingDice == 0
+            ? SpellDefenseIndirectDodge.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIndirectDodge.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseIndirectDodge + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseIndirectDodgeToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = TotalBonusDodgeRating;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Dodge && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseIndirectSoak => (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating + SpellResistance;
+
+        public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
+            ? SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseIndirectSoak + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseIndirectSoakToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder();
+                if (IsAI)
+                {
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) + strSpaceCharacter + '(' + (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                else
+                {
+                    objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter + '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDirectSoakMana => WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDirectSoakMana => CurrentCounterspellingDice == 0
+            ? SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDirectSoakManaToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDirectSoakPhysical => (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + SpellResistance;
+
+        public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
+            ? SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDirectSoakPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDirectSoakPhysicalToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder();
+                if (IsAI)
+                {
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) + strSpaceCharacter + '(' + (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
+                }
+                else
+                {
+                    objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDetection => LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist);
+
+        public string DisplaySpellDefenseDetection => CurrentCounterspellingDice == 0
+            ? SpellDefenseDetection.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDetection.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDetection + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDetectionToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist);
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.DetectionSpellResist || objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseBOD => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseBOD + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseBODToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseAGI => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseAGI + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseAGIToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(AGI.DisplayAbbrev + strSpaceCharacter + '(' + AGI.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseREA => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseREA + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseREAToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseSTR => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseSTR + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseSTRToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(STR.DisplayAbbrev + strSpaceCharacter + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseCHA => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseCHA + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseCHAToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseINT => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseINT + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseINTToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseLOG => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseLOG + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseLOGToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue + SpellResistance;
+
+        public string DisplaySpellDefenseDecreaseWIL => CurrentCounterspellingDice == 0
+            ? SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseDecreaseWIL + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseDecreaseWILToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance;
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseIllusionMana => LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
+
+        public string DisplaySpellDefenseIllusionMana => CurrentCounterspellingDice == 0
+            ? SpellDefenseIllusionMana.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIllusionMana.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseIllusionMana + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseIllusionManaToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.ManaIllusionResist || objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseIllusionPhysical => LOG.TotalValue + INT.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
+
+        public string DisplaySpellDefenseIllusionPhysical => CurrentCounterspellingDice == 0
+            ? SpellDefenseIllusionPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIllusionPhysical.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseIllusionPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseIllusionPhysicalToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalIllusionResist || objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseManipulationMental => LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist);
+
+        public string DisplaySpellDefenseManipulationMental => CurrentCounterspellingDice == 0
+            ? SpellDefenseManipulationMental.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseManipulationMental.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseManipulationMental + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseManipulationMentalToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist);
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalManipulationResist || objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        public int SpellDefenseManipulationPhysical => (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody * 2 : 0) : BOD.TotalValue + STR.TotalValue) + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
+
+        public string DisplaySpellDefenseManipulationPhysical => CurrentCounterspellingDice == 0
+            ? SpellDefenseManipulationPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseManipulationPhysical.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (SpellDefenseManipulationPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
+
+        public string SpellDefenseManipulationPhysicalToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                int intBody;
+                int intStrength;
+                string strBodyAbbrev;
+                string strStrengthAbbrev;
+                if (IsAI)
+                {
+                    intBody = intStrength = (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0);
+                    strBodyAbbrev = strStrengthAbbrev = LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language);
+                }
+                else
+                {
+                    intBody = BOD.TotalValue;
+                    intStrength = STR.TotalValue;
+                    strBodyAbbrev = BOD.DisplayAbbrev;
+                    strStrengthAbbrev = STR.DisplayAbbrev;
+                }
+                StringBuilder objToolTip = new StringBuilder(strBodyAbbrev + strSpaceCharacter + '(' + intBody.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             strStrengthAbbrev + strSpaceCharacter + '(' + intStrength.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
+
+                if (intModifiers != 0)
+                {
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+                    bool blnFirstModifier = true;
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalManipulationResist || objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) && objLoopImprovement.Enabled)
+                        {
+                            if (blnFirstModifier)
+                            {
+                                blnFirstModifier = false;
+                                objToolTip.Append(':');
+                            }
+                            else
+                                objToolTip.Append(',');
+                            objToolTip.Append(strSpaceCharacter + GetObjectName(objLoopImprovement, GlobalOptions.Language));
+                        }
+                    }
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
                 return objToolTip.ToString();
             }
         }
@@ -10681,7 +11686,11 @@ namespace Chummer
                                           nameof(StunCMNaturalRecovery),
                                           nameof(PhysicalCMNaturalRecovery),
                                           nameof(PhysicalCM),
-                                          nameof(CMOverflow));
+                                          nameof(CMOverflow),
+                                          nameof(SpellDefenseIndirectSoak),
+                                          nameof(SpellDefenseDirectSoakPhysical),
+                                          nameof(SpellDefenseDecreaseBOD),
+                                          nameof(SpellDefenseManipulationPhysical));
             }
             else if (e.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
@@ -10690,11 +11699,22 @@ namespace Chummer
             }
         }
 
+        public void RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                OnPropertyChanged(nameof(SpellDefenseDecreaseAGI));
+            }
+        }
+
         public void RefreshREADependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitPhysical), nameof(InitiativeValue));
+                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                                          nameof(InitiativeValue),
+                                          nameof(SpellDefenseIndirectDodge),
+                                          nameof(SpellDefenseDecreaseREA));
             }
         }
 
@@ -10705,7 +11725,9 @@ namespace Chummer
                 // Encumbrance is only affected by STR.TotalValue when it comes to attributes
                 RefreshEncumbrance();
                 OnMultiplePropertyChanged(nameof(LimitPhysical),
-                                          nameof(LiftAndCarry));
+                                          nameof(LiftAndCarry),
+                                          nameof(SpellDefenseDecreaseSTR),
+                                          nameof(SpellDefenseManipulationPhysical));
             }
         }
 
@@ -10718,7 +11740,8 @@ namespace Chummer
                 OnMultiplePropertyChanged(nameof(LimitSocial),
                                           nameof(Composure),
                                           nameof(JudgeIntentions),
-                                          nameof(JudgeIntentionsResist));
+                                          nameof(JudgeIntentionsResist),
+                                          nameof(SpellDefenseDecreaseCHA));
             }
             else if (e.PropertyName == nameof(CharacterAttrib.Value))
             {
@@ -10737,7 +11760,10 @@ namespace Chummer
                                           nameof(AstralInitiativeValue),
                                           nameof(MatrixInitiativeValue),
                                           nameof(MatrixInitiativeColdValue),
-                                          nameof(MatrixInitiativeHotValue));
+                                          nameof(MatrixInitiativeHotValue),
+                                          nameof(SpellDefenseIndirectDodge),
+                                          nameof(SpellDefenseDecreaseINT),
+                                          nameof(SpellDefenseIllusionPhysical));
             }
         }
 
@@ -10748,7 +11774,12 @@ namespace Chummer
                 OnMultiplePropertyChanged(nameof(LimitMental),
                                           nameof(Memory),
                                           nameof(PsychologicalAddictionResistFirstTime),
-                                          nameof(PsychologicalAddictionResistAlreadyAddicted));
+                                          nameof(PsychologicalAddictionResistAlreadyAddicted),
+                                          nameof(SpellDefenseDetection),
+                                          nameof(SpellDefenseDecreaseLOG),
+                                          nameof(SpellDefenseIllusionMana),
+                                          nameof(SpellDefenseIllusionPhysical),
+                                          nameof(SpellDefenseManipulationMental));
             }
         }
 
@@ -10769,7 +11800,19 @@ namespace Chummer
                                           nameof(PsychologicalAddictionResistFirstTime),
                                           nameof(PsychologicalAddictionResistAlreadyAddicted),
                                           nameof(StunCMNaturalRecovery),
-                                          nameof(StunCM));
+                                          nameof(StunCM),
+                                          nameof(SpellDefenseDirectSoakMana),
+                                          nameof(SpellDefenseDetection),
+                                          nameof(SpellDefenseDecreaseBOD),
+                                          nameof(SpellDefenseDecreaseAGI),
+                                          nameof(SpellDefenseDecreaseREA),
+                                          nameof(SpellDefenseDecreaseSTR),
+                                          nameof(SpellDefenseDecreaseCHA),
+                                          nameof(SpellDefenseDecreaseINT),
+                                          nameof(SpellDefenseDecreaseLOG),
+                                          nameof(SpellDefenseDecreaseWIL),
+                                          nameof(SpellDefenseIllusionMana),
+                                          nameof(SpellDefenseManipulationMental));
             }
         }
 

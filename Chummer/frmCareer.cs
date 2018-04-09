@@ -576,6 +576,42 @@ namespace Chummer
             lblCMArmor.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalArmorRating), false, DataSourceUpdateMode.OnPropertyChanged);
             lblCMArmor.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblSpellDefenceIndirectDodge.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectDodge), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIndirectDodge.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectDodgeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIndirectSoak.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectSoak), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIndirectSoak.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectSoakToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDirectSoakMana.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakMana), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDirectSoakMana.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakManaToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDirectSoakPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDirectSoakPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDetection.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDetection), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDetection.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDetectionToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttBOD.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseBOD), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttBOD.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseBODToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttAGI.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseAGI), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttAGI.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseAGIToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttREA.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseREA), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttREA.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseREAToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttSTR.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseSTR), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttSTR.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseSTRToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttCHA.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseCHA), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttCHA.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseCHAToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttINT.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseINT), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttINT.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseINTToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttLOG.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseLOG), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttLOG.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseLOGToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttWIL.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseWIL), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceDecAttWIL.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseWILToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIllusionMana.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionMana), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIllusionMana.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionManaToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIllusionPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceIllusionPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceManipMental.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationMental), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceManipMental.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationMentalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceManipPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSpellDefenceManipPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            nudCounterspellingDice.DataBindings.Add("Value", CharacterObject, nameof(Character.CurrentCounterspellingDice), false, DataSourceUpdateMode.OnPropertyChanged);
+
             lblAstralINI.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
             lblRemainingNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -3185,122 +3221,6 @@ namespace Chummer
         private void mnuSpecialAddBiowareSuite_Click(object sender, EventArgs e)
         {
             AddCyberwareSuite(Improvement.ImprovementSource.Bioware);
-        }
-        #endregion
-
-        #region SpellDefense Events
-        private void UpdateSpellDefence()
-        {
-            // Update the Spell Defence labels.
-            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
-            string strCounterSpelling = LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language);
-            string strSpellResistance = LanguageManager.GetString("String_SpellResistanceDice", GlobalOptions.Language);
-            //Indirect Dodge
-            lblSpellDefenceIndirectDodge.Text = (CharacterObject.INT.TotalValue + CharacterObject.REA.TotalValue + CharacterObject.TotalBonusDodgeRating).ToString();
-            string strSpellTooltip = $"{strModifiers}: " +
-                              $"{CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.TotalValue}) + {CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.TotalValue}) + {strModifiers} ({CharacterObject.TotalBonusDodgeRating})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
-            //Indirect Soak
-            int intTotalArmor = CharacterObject.TotalArmorRating;
-            lblSpellDefenceIndirectSoak.Text = (intTotalArmor + CharacterObject.BOD.TotalValue).ToString();
-            strSpellTooltip = $"{strModifiers}: " +
-                              $"{LanguageManager.GetString("Tip_Armor", GlobalOptions.Language)} ({intTotalArmor}) + {CharacterObject.BOD.DisplayAbbrev} ({CharacterObject.BOD.TotalValue})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
-            //Direct Soak - Mana
-            lblSpellDefenceDirectSoakMana.Text = (CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: " +
-                              $"{CharacterObject.WIL.DisplayAbbrev} ({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
-            //Direct Soak - Physical
-            lblSpellDefenceDirectSoakPhysical.Text = (CharacterObject.BOD.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.BOD.DisplayAbbrev} ({CharacterObject.BOD.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
-            //Detection Spells
-            lblSpellDefenceDetection.Text =
-                (CharacterObject.LOG.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: " +
-                              $"{CharacterObject.LOG.DisplayAbbrev} ({CharacterObject.LOG.TotalValue}) + {CharacterObject.WIL.DisplayAbbrev} ({CharacterObject.WIL.TotalValue}) " +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DetectionSpellResist)})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
-            //Decrease Attribute - BOD
-            lblSpellDefenceDecAttBOD.Text =
-                (CharacterObject.BOD.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.BOD.DisplayAbbrev} ({CharacterObject.BOD.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
-            //Decrease Attribute - AGI
-            lblSpellDefenceDecAttAGI.Text =
-                (CharacterObject.AGI.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.AGI.DisplayAbbrev} ({CharacterObject.AGI.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
-            //Decrease Attribute - REA
-            lblSpellDefenceDecAttREA.Text =
-                (CharacterObject.REA.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
-            //Decrease Attribute - STR
-            lblSpellDefenceDecAttSTR.Text =
-                (CharacterObject.STR.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.STR.DisplayAbbrev} ({CharacterObject.STR.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
-            //Decrease Attribute - CHA
-            lblSpellDefenceDecAttCHA.Text =
-                (CharacterObject.CHA.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.CHA.DisplayAbbrev} ({CharacterObject.CHA.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
-            //Decrease Attribute - INT
-            lblSpellDefenceDecAttINT.Text =
-                (CharacterObject.INT.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
-            //Decrease Attribute - LOG
-            lblSpellDefenceDecAttLOG.Text =
-                (CharacterObject.LOG.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.LOG.DisplayAbbrev} ({CharacterObject.LOG.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
-            //Decrease Attribute - WIL
-            lblSpellDefenceDecAttWIL.Text =
-                (CharacterObject.WIL.TotalValue + CharacterObject.WIL.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.WIL.DisplayAbbrev} ({CharacterObject.WIL.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
-            //Illusion - Mana
-            lblSpellDefenceIllusionMana.Text =
-                (CharacterObject.WIL.TotalValue + CharacterObject.LOG.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ManaIllusionResist)).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.LOG.DisplayAbbrev} ({CharacterObject.LOG.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ManaIllusionResist)})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
-            //Illusion - Physical
-            lblSpellDefenceIllusionPhysical.Text =
-                (CharacterObject.INT.TotalValue + CharacterObject.LOG.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalIllusionResist)).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.TotalValue}) +{CharacterObject.LOG.DisplayAbbrev} +({CharacterObject.LOG.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalIllusionResist)})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
-            //Manipulation - Mental
-            lblSpellDefenceManipMental.Text =
-                (CharacterObject.WIL.TotalValue + CharacterObject.LOG.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.MentalManipulationResist)).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.LOG.DisplayAbbrev} ({CharacterObject.LOG.TotalValue}) +{CharacterObject.WIL.DisplayAbbrev} +({CharacterObject.WIL.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.MentalManipulationResist)})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
-            //Manipulation - Physical
-            lbllSpellDefenceManipPhysical.Text =
-                (CharacterObject.STR.TotalValue + CharacterObject.BOD.TotalValue + nudCounterspellingDice.Value + CharacterObject.SpellResistance + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalManipulationResist)).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: {CharacterObject.STR.DisplayAbbrev} ({CharacterObject.STR.TotalValue}) +{CharacterObject.BOD.DisplayAbbrev} +({CharacterObject.BOD.TotalValue})" +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({CharacterObject.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalManipulationResist)})";
-            GlobalOptions.ToolTipProcessor.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
-        }
-
-        private void nudCounterspellingDice_Changed(object sender, EventArgs e)
-        {
-            UpdateSpellDefence();
         }
         #endregion
 
@@ -15858,9 +15778,6 @@ namespace Chummer
 
             ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow);
             ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0);
-            
-            // Update the Spell Defence tab.
-            UpdateSpellDefence();
             
             int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
             int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;

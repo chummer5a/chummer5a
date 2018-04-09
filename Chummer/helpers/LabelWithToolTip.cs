@@ -22,6 +22,8 @@ namespace Chummer
 {
     public sealed class LabelWithToolTip : Label
     {
+        private readonly int _intToolTipWrap;
+
         private ToolTip _tt;
         public ToolTip ToolTipObject
         {
@@ -42,6 +44,7 @@ namespace Chummer
             get => _strToolTipText;
             set
             {
+                value = value.WordWrap(_intToolTipWrap);
                 if (_strToolTipText != value)
                 {
                     _strToolTipText = value;
@@ -52,9 +55,10 @@ namespace Chummer
 
         public LabelWithToolTip() : this(GlobalOptions.ToolTipProcessor) { }
 
-        public LabelWithToolTip(ToolTip objToolTip)
+        public LabelWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
         {
             ToolTipObject = objToolTip;
+            _intToolTipWrap = intToolTipWrap;
         }
 
         protected override void Dispose(bool disposing)

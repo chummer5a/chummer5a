@@ -1646,24 +1646,26 @@ namespace Chummer.Classes
 
             Log.Info("Adding Weapon");
 
-            Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Name = bonusNode["name"]?.InnerText;
-            objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
-            objWeapon.WeaponType = "Melee";
-            objWeapon.Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText);
-            objWeapon.Accuracy = bonusNode["accuracy"]?.InnerText;
-            objWeapon.Damage = bonusNode["damage"]?.InnerText;
-            objWeapon.AP = bonusNode["ap"]?.InnerText;
-            objWeapon.Mode = "0";
-            objWeapon.RC = "0";
-            objWeapon.Concealability = 0;
-            objWeapon.Avail = "0";
-            objWeapon.Cost = "0";
-            objWeapon.UseSkill = bonusNode["useskill"]? .InnerText ?? string.Empty;
-            objWeapon.Source = bonusNode["source"].InnerText ?? "SR5";
-            objWeapon.Page = bonusNode["page"]?.InnerText ?? "0";
+            Weapon objWeapon = new Weapon(_objCharacter)
+            {
+                Name = bonusNode["name"]?.InnerText,
+                Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                WeaponType = "Melee",
+                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText),
+                Accuracy = bonusNode["accuracy"]?.InnerText,
+                Damage = bonusNode["damage"]?.InnerText,
+                AP = bonusNode["ap"]?.InnerText,
+                Mode = "0",
+                RC = "0",
+                Concealability = 0,
+                Avail = "0",
+                Cost = "0",
+                UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
+                Source = bonusNode["source"].InnerText ?? "SR5",
+                Page = bonusNode["page"]?.InnerText ?? "0",
+                ParentID = SourceName
+            };
 
-            objWeapon.ParentID = SourceName;
 
             _objCharacter.Weapons.Add(objWeapon);
 

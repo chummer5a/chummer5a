@@ -1492,14 +1492,29 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.MentalManipulationResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseManipulationMental));
+                }
                     break;
                 case ImprovementType.PhysicalManipulationResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseManipulationPhysical));
+                }
                     break;
                 case ImprovementType.ManaIllusionResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseIllusionMana));
+                }
                     break;
                 case ImprovementType.PhysicalIllusionResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseIllusionPhysical));
+                }
                     break;
                 case ImprovementType.DetectionSpellResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDetection));
+                }
                     break;
                 case ImprovementType.AddLimb:
                 {

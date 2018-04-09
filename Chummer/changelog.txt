@@ -8,6 +8,7 @@ Application Changes:
 - Changed MadeMan from selectcontact to addcontact and added backwards compatibility to convert old characters
 - Tooltips of fading, drain, and armor dice values will now spell out each modifier instead of having them all grouped under one umbrella.
 - Fixed issues where AI characters' limit values' tooltips displayed values as if the character was following AI rules from Data Trails.
+- Values for the counterspelling dice numerical up-down are now saved with characters, and their effects on spell defense dice are now displayed separately through parentheses next to base values for those spell defense dice.
 
 New Strings:
 
