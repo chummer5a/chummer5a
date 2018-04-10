@@ -1236,6 +1236,8 @@ namespace Chummer
                 lblMetavariantBP.Text = string.Empty;
                 cmdOK.Enabled = false;
             }
+
+            MoveControls();
         }
 
         void PopulateTalents()
@@ -1689,6 +1691,16 @@ namespace Chummer
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
             cboPossessionMethod.Enabled = chkPossessionBased.Checked;
+        }
+        private void MoveControls()
+        {
+            if (lblMetavariantQualities.Bottom > cboPossessionMethod.Top)
+            {
+                Height += lblMetavariantQualities.Bottom - cboPossessionMethod.Top + 20;
+            }
+
+            if (lblMetavariantQualities.Right <= pnlMetatypes.Right) return;
+            Width += (lblMetavariantQualities.Right - pnlMetatypes.Right) + 20;
         }
         #endregion
     }

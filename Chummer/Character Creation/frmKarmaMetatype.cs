@@ -134,6 +134,17 @@ namespace Chummer
 
             _blnLoading = false;
         }
+
+        private void MoveControls()
+        {
+            if (lblQualities.Bottom > cboPossessionMethod.Top)
+            {
+                Height += lblQualities.Bottom - cboPossessionMethod.Top + 20;
+            }
+
+            if (lblQualities.Right <= pnlMetatypes.Right) return;
+            Width += (lblQualities.Right - pnlMetatypes.Right) + 20;
+        }
         #endregion
 
         #region Control Events
@@ -787,6 +798,8 @@ namespace Chummer
 
                 cmdOK.Enabled = false;
             }
+
+            MoveControls();
         }
 
         private void PopulateMetavariants()

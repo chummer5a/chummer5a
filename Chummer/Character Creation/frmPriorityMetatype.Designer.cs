@@ -217,6 +217,7 @@ namespace Chummer
             // 
             // chkBloodSpirit
             // 
+            this.chkBloodSpirit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.chkBloodSpirit.AutoSize = true;
             this.chkBloodSpirit.Location = new System.Drawing.Point(182, 287);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
@@ -229,6 +230,7 @@ namespace Chummer
             // 
             // cboPossessionMethod
             // 
+            this.cboPossessionMethod.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cboPossessionMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPossessionMethod.Enabled = false;
             this.cboPossessionMethod.FormattingEnabled = true;
@@ -240,6 +242,7 @@ namespace Chummer
             // 
             // chkPossessionBased
             // 
+            this.chkPossessionBased.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.chkPossessionBased.AutoSize = true;
             this.chkPossessionBased.Location = new System.Drawing.Point(182, 310);
             this.chkPossessionBased.Name = "chkPossessionBased";
@@ -249,7 +252,7 @@ namespace Chummer
             this.chkPossessionBased.Text = "Summoned by Possess-based Tradition";
             this.chkPossessionBased.UseVisualStyleBackColor = true;
             this.chkPossessionBased.Visible = false;
-            this.chkPossessionBased.CheckedChanged += new System.EventHandler(chkPossessionBased_CheckedChanged);
+            this.chkPossessionBased.CheckedChanged += new System.EventHandler(this.chkPossessionBased_CheckedChanged);
             // 
             // nudForce
             // 
@@ -298,7 +301,7 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(313, 331);
             this.cmdCancel.Name = "cmdCancel";
@@ -355,7 +358,7 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdOK.Location = new System.Drawing.Point(394, 331);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -560,6 +563,8 @@ namespace Chummer
             // 
             // pnlMetatypes
             // 
+            this.pnlMetatypes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.pnlMetatypes.Controls.Add(this.cboSkill3);
             this.pnlMetatypes.Controls.Add(this.lblMetavariantBP);
             this.pnlMetatypes.Controls.Add(this.label6);
@@ -707,8 +712,8 @@ namespace Chummer
             this.Controls.Add(this.pnlMetatypes);
             this.Name = "frmPriorityMetatype";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Choose Character Priorities";
             this.Tag = "Title_ChooseCharacterPriorities";
+            this.Text = "Choose Character Priorities";
             this.Load += new System.EventHandler(this.frmPriorityMetatype_Load);
             this.pnlPriorities.ResumeLayout(false);
             this.pnlPriorities.PerformLayout();
