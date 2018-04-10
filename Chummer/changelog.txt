@@ -10,6 +10,7 @@ Application Changes:
 - Fixed issues where AI characters' limit values' tooltips displayed values as if the character was following AI rules from Data Trails.
 - Values for the counterspelling dice numerical up-down are now saved with characters, and their effects on spell defense dice are now displayed separately through parentheses next to base values for those spell defense dice.
 - Fixed behaviour of Jack of All Trades improvement again to properly deduct karma for skills over the threshold.
+- Regression fix for behaviour of initiation tab in career and create mode either not being visible, or hiding Group/Ordeal checkboxes.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 

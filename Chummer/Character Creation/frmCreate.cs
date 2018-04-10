@@ -879,8 +879,11 @@ namespace Chummer
                             GlobalOptions.ToolTipProcessor.SetToolTip(cmdAddMetamagic, strInitTip);
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
 
-                            treMetamagic.Top = cmdAddMetamagic.Top + cmdAddMetamagic.Height + 6;
+                            treMetamagic.Top = chkInitiationSchooling.Top + chkInitiationSchooling.Height + 6;
                             cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
+                            cmdDeleteMetamagic.Left = cmdAddMetamagic.Left;
+                            lblMetamagicSourceLabel.Left = treMetamagic.Left + treMetamagic.Left + treMetamagic.Width + 6;
+                            lblMetamagicSource.Left = lblMetamagicSourceLabel.Left + lblMetamagicSourceLabel.Width + 6;
 
                             if (!SpecialAttributes.Contains(CharacterObject.MAG))
                             {
@@ -933,8 +936,11 @@ namespace Chummer
                             GlobalOptions.ToolTipProcessor.SetToolTip(cmdAddMetamagic, strInitTip);
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
 
-                            treMetamagic.Top = cmdAddMetamagic.Top + cmdAddMetamagic.Height + 6;
+                            treMetamagic.Top = chkInitiationSchooling.Top + chkInitiationSchooling.Height + 6;
                             cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
+                            cmdDeleteMetamagic.Left = cmdAddMetamagic.Left;
+                            lblMetamagicSourceLabel.Left = treMetamagic.Left + treMetamagic.Left + treMetamagic.Width + 6;
+                            lblMetamagicSource.Left = lblMetamagicSourceLabel.Left + lblMetamagicSourceLabel.Width + 6;
 
                             if (!SpecialAttributes.Contains(CharacterObject.RES))
                             {

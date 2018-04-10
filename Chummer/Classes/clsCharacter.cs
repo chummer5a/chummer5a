@@ -12075,6 +12075,14 @@ namespace Chummer
             {
                 RefreshWoundPenalties();
             }
+
+            if ((Options.AllowInitiationInCreateMode && !Created || Created) &&
+                (lstNamesOfChangedProperties.Contains(nameof(MAGEnabled)) ||
+                 lstNamesOfChangedProperties.Contains(nameof(RESEnabled))))
+            {
+                _intCachedInitiationEnabled = -1;
+            }
+
             if (!Created)
             {
                 // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
