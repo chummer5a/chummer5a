@@ -603,6 +603,10 @@ namespace Chummer
             lblSpellDefenceManipPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             nudCounterspellingDice.DataBindings.Add("Value", CharacterObject, nameof(Character.CurrentCounterspellingDice), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblMovement.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayMovement), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSwim.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySwim), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblFly.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayFly), false, DataSourceUpdateMode.OnPropertyChanged);
+
             lblRemainingNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
 
             lblStreetCredTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalStreetCred), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -12082,13 +12086,6 @@ namespace Chummer
                 lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
             }
 
-            // Movement.
-            lblMovement.Text = CharacterObject.GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            //strTip = _objCharacter.CalculatedMovementSpeed;
-            //GlobalOptions.ToolTipProcessor.SetToolTip(lblMovement, strTip);
-            lblSwim.Text = CharacterObject.GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            lblFly.Text = CharacterObject.GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             PrintWindow?.RefreshCharacters();
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)

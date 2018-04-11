@@ -980,11 +980,20 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
+            if (e.PropertyName == nameof(Character.Karma))
             {
                 OnPropertyChanged(nameof(CanUpgradeCareer));
+            }
+            else if (e.PropertyName == nameof(Character.LimbCount))
+            {
+                if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                    (Abbrev == "AGI" || Abbrev == "STR") &&
+                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                {
+                    OnPropertyChanged(nameof(TotalValue));
+                }
             }
         }
 

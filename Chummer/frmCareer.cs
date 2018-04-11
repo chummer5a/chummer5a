@@ -612,6 +612,10 @@ namespace Chummer
             lblSpellDefenceManipPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             nudCounterspellingDice.DataBindings.Add("Value", CharacterObject, nameof(Character.CurrentCounterspellingDice), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            lblMovement.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayMovement), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblSwim.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySwim), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblFly.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayFly), false, DataSourceUpdateMode.OnPropertyChanged);
+
             lblAstralINI.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
             lblRemainingNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -995,13 +999,19 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-
+            
             IsDirty = true;
 
             switch (e.PropertyName)
             {
                 case nameof(Character.CharacterName):
                     UpdateWindowTitle(false);
+                    break;
+                case nameof(Character.DisplayNuyen):
+                    tssNuyen.Text = CharacterObject.DisplayNuyen;
+                    break;
+                case nameof(Character.DisplayKarma):
+                    tssKarma.Text = CharacterObject.DisplayKarma;
                     break;
                 case nameof(Character.DisplayEssence):
                     tssEssence.Text = CharacterObject.DisplayEssence;
@@ -15872,18 +15882,9 @@ namespace Chummer
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
                 lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-            }
-
-            // Update the Nuyen and Karma for the character.
-            tssNuyen.Text = CharacterObject.DisplayNuyen;
-            tssKarma.Text = CharacterObject.Karma.ToString();
-
+            }                               
+            
             PopulateExpenseList(null, EventArgs.Empty);
-
-            // Movement.
-            lblMovement.Text = CharacterObject.GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            lblSwim.Text = CharacterObject.GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            lblFly.Text = CharacterObject.GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             PrintWindow?.RefreshCharacters();

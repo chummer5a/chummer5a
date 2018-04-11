@@ -1397,22 +1397,29 @@ namespace Chummer
                 case ImprovementType.LimitSpiritCategory:
                     break;
                 case ImprovementType.WalkSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.WalkingRate));
+                }
                     break;
                 case ImprovementType.RunSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.RunningRate));
+                }
                     break;
                 case ImprovementType.SprintSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SprintingRate));
+                }
                     break;
                 case ImprovementType.WalkMultiplier:
-                    break;
-                case ImprovementType.RunMultiplier:
-                    break;
-                case ImprovementType.SprintBonus:
-                    break;
                 case ImprovementType.WalkMultiplierPercent:
-                    break;
+                case ImprovementType.RunMultiplier:
                 case ImprovementType.RunMultiplierPercent:
-                    break;
+                case ImprovementType.SprintBonus:
                 case ImprovementType.SprintBonusPercent:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CalculatedMovement));
+                }
                     break;
                 case ImprovementType.EssencePenalty:
                 case ImprovementType.EssencePenaltyT100:
@@ -1518,16 +1525,7 @@ namespace Chummer
                     break;
                 case ImprovementType.AddLimb:
                 {
-                    if (!_objCharacter.Options.DontUseCyberlimbCalculation && _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
-                    {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                        {
-                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
-                            {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.TotalValue));
-                            }
-                        }
-                    }
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimbCount));
                 }
                     break;
                 case ImprovementType.StreetCredMultiplier:

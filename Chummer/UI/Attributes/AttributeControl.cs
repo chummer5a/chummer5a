@@ -89,6 +89,8 @@ namespace Chummer.UI.Attributes
 
         public void UnbindAttributeControl()
         {
+            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();

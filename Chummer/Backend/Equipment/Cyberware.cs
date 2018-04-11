@@ -281,6 +281,7 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
+            bool blnDoMovementUpdate = false;
             if (blnDoCyberlimbAGIRefresh || blnDoCyberlimbSTRRefresh)
             {
                 foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
@@ -290,15 +291,20 @@ namespace Chummer.Backend.Equipment
                         objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+                blnDoMovementUpdate = _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
             }
             if (_objCharacter != null)
             {
-                if (blnDoRedlinerRefresh && blnDoEssenceImprovementsRefresh)
-                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.RedlinerBonus), EssencePropertyName);
-                else if (blnDoRedlinerRefresh)
-                    _objCharacter.OnPropertyChanged(nameof(Character.RedlinerBonus));
-                else if (blnDoEssenceImprovementsRefresh)
-                    _objCharacter.OnPropertyChanged(EssencePropertyName);
+                List<string> lstPropertiesToChange = new List<string>();
+                if (blnDoRedlinerRefresh)
+                    lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
+                if (blnDoEssenceImprovementsRefresh)
+                    lstPropertiesToChange.Add(EssencePropertyName);
+                if (blnDoMovementUpdate)
+                    lstPropertiesToChange.Add(nameof(Character.GetMovement));
+
+                if (lstPropertiesToChange.Count > 0)
+                    _objCharacter.OnMultiplePropertyChanged(lstPropertiesToChange.ToArray());
             }
         }
 
@@ -1293,8 +1299,10 @@ namespace Chummer.Backend.Equipment
                     if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
                         !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                     {
+                        bool blnDoMovementUpdate = false;
                         if (value == "Enhanced Agility" || value == "Customized Agility" || strOldValue == "Enhanced Agility" || strOldValue == "Customized Agility")
                         {
+                            blnDoMovementUpdate = true;
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
                                 if (objCharacterAttrib.Abbrev == "AGI")
@@ -1305,6 +1313,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (value == "Enhanced Strength" || value == "Customized Strength" || strOldValue == "Enhanced Strength" || strOldValue == "Customized Strength")
                         {
+                            blnDoMovementUpdate = true;
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
                                 if (objCharacterAttrib.Abbrev == "STR")
@@ -1313,6 +1322,9 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1399,6 +1411,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1426,6 +1441,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1461,6 +1479,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1743,6 +1764,7 @@ namespace Chummer.Backend.Equipment
                 if (_intRating != intNewValue)
                 {
                     _intRating = intNewValue;
+                    bool blnDoMovementUpdate = false;
                     if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
                         !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                     {
@@ -1755,8 +1777,10 @@ namespace Chummer.Backend.Equipment
                                     objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                                 }
                             }
+
+                            blnDoMovementUpdate = true;
                         }
-                        if (Name == "Enhanced Strength" || Name == "Customized Strength")
+                        else if (Name == "Enhanced Strength" || Name == "Customized Strength")
                         {
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
@@ -1765,9 +1789,18 @@ namespace Chummer.Backend.Equipment
                                     objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                                 }
                             }
+
+                            blnDoMovementUpdate = true;
                         }
                     }
-                    if (ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+
+                    blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
+                    bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
+                    if (blnDoMovementUpdate && blnDoEssenceUpdate)
+                        _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
+                    else if (blnDoMovementUpdate)
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                    else if (blnDoEssenceUpdate)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
                 }
             }

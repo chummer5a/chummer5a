@@ -242,6 +242,7 @@ namespace Chummer
 			_objOptions = new CharacterOptions(this);
 			AttributeSection = new AttributeSection(this);
 			AttributeSection.Reset();
+            AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
 
             SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
@@ -660,6 +661,9 @@ namespace Chummer
                 new DependancyGraphNode<string>(nameof(DisplayNuyen),
                     new DependancyGraphNode<string>(nameof(Nuyen))
                 ),
+                new DependancyGraphNode<string>(nameof(DisplayKarma),
+                    new DependancyGraphNode<string>(nameof(Karma))
+                ),
                 new DependancyGraphNode<string>(nameof(DisplayTotalStartingNuyen),
                     new DependancyGraphNode<string>(nameof(TotalStartingNuyen),
                         new DependancyGraphNode<string>(nameof(StartingNuyen)),
@@ -757,8 +761,55 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(LimitMental)),
                         new DependancyGraphNode<string>(nameof(LimitSocial))
                     )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplayMovement),
+                    new DependancyGraphNode<string>(nameof(GetMovement),
+                        new DependancyGraphNode<string>(nameof(Movement)),
+                        new DependancyGraphNode<string>(nameof(CalculatedMovement),
+                            new DependancyGraphNode<string>(nameof(WalkingRate),
+                                new DependancyGraphNode<string>(nameof(CurrentWalkingRateString),
+                                    new DependancyGraphNode<string>(nameof(WalkString), () => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard),
+                                    new DependancyGraphNode<string>(nameof(WalkAltString), () => AttributeSection.AttributeCategory != CharacterAttrib.AttributeCategory.Standard)
+                                )
+                            ),
+                            new DependancyGraphNode<string>(nameof(RunningRate),
+                                new DependancyGraphNode<string>(nameof(CurrentRunningRateString),
+                                    new DependancyGraphNode<string>(nameof(RunString), () => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard),
+                                    new DependancyGraphNode<string>(nameof(RunAltString), () => AttributeSection.AttributeCategory != CharacterAttrib.AttributeCategory.Standard)
+                                )
+                            ),
+                            new DependancyGraphNode<string>(nameof(SprintingRate),
+                                new DependancyGraphNode<string>(nameof(CurrentSprintingRateString),
+                                    new DependancyGraphNode<string>(nameof(SprintString), () => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard),
+                                    new DependancyGraphNode<string>(nameof(SprintAltString), () => AttributeSection.AttributeCategory != CharacterAttrib.AttributeCategory.Standard)
+                                )
+                            )
+                        )
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySwim),
+                    new DependancyGraphNode<string>(nameof(GetSwim),
+                        new DependancyGraphNode<string>(nameof(Movement)),
+                        new DependancyGraphNode<string>(nameof(CalculatedMovement))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplayFly),
+                    new DependancyGraphNode<string>(nameof(GetFly),
+                        new DependancyGraphNode<string>(nameof(Movement)),
+                        new DependancyGraphNode<string>(nameof(CalculatedMovement))
+                    )
                 )
             );
+        }
+
+        private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            {
+                OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
+                                          nameof(CurrentRunningRateString),
+                                          nameof(CurrentSprintingRateString));
+            }
         }
 
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -5169,7 +5220,14 @@ namespace Chummer
         public string FileName
         {
             get => _strFileName;
-            set => _strFileName = value;
+            set
+            {
+                if (_strFileName != value)
+                {
+                    _strFileName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5189,6 +5247,7 @@ namespace Chummer
                 {
                     _strSettingsFileName = value;
                     _objOptions.Load(_strSettingsFileName);
+                    OnPropertyChanged();
                 }
             }
         }
@@ -5393,7 +5452,14 @@ namespace Chummer
         public string GameplayOption
         {
             get => _strGameplayOption;
-            set => _strGameplayOption = value;
+            set
+            {
+                if (_strGameplayOption != value)
+                {
+                    _strGameplayOption = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5466,7 +5532,14 @@ namespace Chummer
         public string MetatypePriority
         {
             get => _strPriorityMetatype;
-            set => _strPriorityMetatype = value;
+            set
+            {
+                if (_strPriorityMetatype != value)
+                {
+                    _strPriorityMetatype = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5475,7 +5548,14 @@ namespace Chummer
         public string AttributesPriority
         {
             get => _strPriorityAttributes;
-            set => _strPriorityAttributes = value;
+            set
+            {
+                if (_strPriorityAttributes != value)
+                {
+                    _strPriorityAttributes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5484,7 +5564,14 @@ namespace Chummer
         public string SpecialPriority
         {
             get => _strPrioritySpecial;
-            set => _strPrioritySpecial = value;
+            set
+            {
+                if (_strPrioritySpecial != value)
+                {
+                    _strPrioritySpecial = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5493,7 +5580,14 @@ namespace Chummer
         public string SkillsPriority
         {
             get => _strPrioritySkills;
-            set => _strPrioritySkills = value;
+            set
+            {
+                if (_strPrioritySkills != value)
+                {
+                    _strPrioritySkills = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5502,7 +5596,14 @@ namespace Chummer
         public string ResourcesPriority
         {
             get => _strPriorityResources;
-            set => _strPriorityResources = value;
+            set
+            {
+                if (_strPriorityResources != value)
+                {
+                    _strPriorityResources = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5511,7 +5612,14 @@ namespace Chummer
         public string TalentPriority
         {
             get => _strPriorityTalent;
-            set => _strPriorityTalent = value;
+            set
+            {
+                if (_strPriorityTalent != value)
+                {
+                    _strPriorityTalent = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -6062,13 +6170,22 @@ namespace Chummer
             }
         }
 
+        public string DisplayKarma => Karma.ToString(GlobalOptions.CultureInfo);
+
         /// <summary>
         /// Special.
         /// </summary>
         public int Special
         {
             get => _intSpecial;
-            set => _intSpecial = value;
+            set
+            {
+                if (_intSpecial != value)
+                {
+                    _intSpecial = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -6077,7 +6194,14 @@ namespace Chummer
         public int TotalSpecial
         {
             get => _intTotalSpecial;
-            set => _intTotalSpecial = value;
+            set
+            {
+                if (_intTotalSpecial != value)
+                {
+                    _intTotalSpecial = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -6086,7 +6210,14 @@ namespace Chummer
         public int Attributes
         {
             get => _intAttributes;
-            set => _intAttributes = value;
+            set
+            {
+                if (_intAttributes != value)
+                {
+                    _intAttributes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -6095,7 +6226,14 @@ namespace Chummer
         public int TotalAttributes
         {
             get => _intTotalAttributes;
-            set => _intTotalAttributes = value;
+            set
+            {
+                if (_intTotalAttributes != value)
+                {
+                    _intTotalAttributes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private int _intCachedCareerKarma = int.MinValue;
@@ -6918,7 +7056,14 @@ namespace Chummer
         public int InitiateGrade
         {
             get => _intInitiateGrade;
-            set => _intInitiateGrade = value;
+            set
+            {
+                if (_intInitiateGrade != value)
+                {
+                    _intInitiateGrade = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -7074,7 +7219,14 @@ namespace Chummer
         public int SubmersionGrade
         {
             get => _intSubmersionGrade;
-            set => _intSubmersionGrade = value;
+            set
+            {
+                if (_intSubmersionGrade != value)
+                {
+                    _intSubmersionGrade = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -7083,7 +7235,14 @@ namespace Chummer
         public bool GroupMember
         {
             get => _blnGroupMember;
-            set => _blnGroupMember = value;
+            set
+            {
+                if (_blnGroupMember != value)
+                {
+                    _blnGroupMember = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -9414,7 +9573,14 @@ namespace Chummer
         public int SumtoTen
         {
             get => _intSumtoTen;
-            set => _intSumtoTen = value;
+            set
+            {
+                if (_intSumtoTen != value)
+                {
+                    _intSumtoTen = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         /// <summary>
         /// Amount of Karma that is used to create the character.
@@ -9422,7 +9588,14 @@ namespace Chummer
         public int BuildKarma
         {
             get => _intBuildKarma;
-            set => _intBuildKarma = value;
+            set
+            {
+                if (_intBuildKarma != value)
+                {
+                    _intBuildKarma = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -9449,7 +9622,14 @@ namespace Chummer
         public decimal StartingNuyen
         {
             get => _decStartingNuyen;
-            set => _decStartingNuyen = value;
+            set
+            {
+                if (_decStartingNuyen != value)
+                {
+                    _decStartingNuyen = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public decimal StartingNuyenModifiers => Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen));
@@ -9745,7 +9925,14 @@ namespace Chummer
         public string Metatype
         {
             get => _strMetatype;
-            set => _strMetatype = value;
+            set
+            {
+                if (_strMetatype != value)
+                {
+                    _strMetatype = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -9754,7 +9941,14 @@ namespace Chummer
         public string Metavariant
         {
             get => _strMetavariant;
-            set => _strMetavariant = value;
+            set
+            {
+                if (_strMetavariant != value)
+                {
+                    _strMetavariant = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -9788,34 +9982,15 @@ namespace Chummer
             return intReturn;
         }
 
+        public string DisplayMovement => GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Character's Movement rate (Culture-dependent).
         /// </summary>
         public string GetMovement(CultureInfo objCulture, string strLanguage)
         {
-            if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
-            {
-                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
-                XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
-                XmlNode objRunNode = variant?["run"] ?? meta?["run"];
-                XmlNode objWalkNode = variant?["walk"] ?? meta?["walk"];
-                XmlNode objSprintNode = variant?["sprint"] ?? meta?["sprint"];
-
-                _strMovement = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
-                _strRun = objRunNode?.InnerText ?? string.Empty;
-                _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                _strSprint = objSprintNode?.InnerText ?? string.Empty;
-
-                objRunNode = objRunNode?.Attributes?["alt"];
-                objWalkNode = objWalkNode?.Attributes?["alt"];
-                objSprintNode = objSprintNode?.Attributes?["alt"];
-                _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
-            }
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if (_strMovement == "Special")
+            if (Movement == "Special")
             {
                 return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
@@ -9824,30 +9999,204 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's Movement rate.
+        /// Character's Movement rate data string.
         /// </summary>
         public string Movement
         {
-            set => _strMovement = value;
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strMovement))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    _strMovement = xmlMetavariantNode?["movement"]?.InnerText ?? xmlMetatypeNode?["movement"]?.InnerText ?? string.Empty;
+                }
+                return _strMovement;
+            }
+            set
+            {
+                if (_strMovement != value)
+                {
+                    _strMovement = value;
+                    OnPropertyChanged();
+                }
+            }
         }
+
+        /// <summary>
+        /// Character's Run rate data string.
+        /// </summary>
+        public string RunString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strRun))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    _strRun = xmlMetavariantNode?["run"]?.InnerText ?? xmlMetatypeNode?["run"]?.InnerText ?? string.Empty;
+                }
+                return _strRun;
+            }
+            set
+            {
+                if (_strRun != value)
+                {
+                    _strRun = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Alternate Run rate data string.
+        /// </summary>
+        public string RunAltString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strRunAlt))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    XmlNode xmlRunNode = xmlMetavariantNode?["run"] ?? xmlMetatypeNode?["run"];
+                    _strRunAlt = xmlRunNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                }
+                return _strRunAlt;
+            }
+            set
+            {
+                if (_strRunAlt != value)
+                {
+                    _strRunAlt = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Walk rate data string.
+        /// </summary>
+        public string WalkString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strWalk))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    _strWalk = xmlMetavariantNode?["walk"]?.InnerText ?? xmlMetatypeNode?["walk"]?.InnerText ?? string.Empty;
+                }
+                return _strWalk;
+            }
+            set
+            {
+                if (_strWalk != value)
+                {
+                    _strWalk = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Alternate Walk rate data string.
+        /// </summary>
+        public string WalkAltString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strWalkAlt))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    XmlNode xmlWalkNode = xmlMetavariantNode?["walk"] ?? xmlMetatypeNode?["walk"];
+                    _strWalkAlt = xmlWalkNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                }
+                return _strWalkAlt;
+            }
+            set
+            {
+                if (_strWalkAlt != value)
+                {
+                    _strWalkAlt = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Sprint rate data string.
+        /// </summary>
+        public string SprintString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strSprint))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    _strSprint = xmlMetavariantNode?["sprint"]?.InnerText ?? xmlMetatypeNode?["sprint"]?.InnerText ?? string.Empty;
+                }
+                return _strSprint;
+            }
+            set
+            {
+                if (_strSprint != value)
+                {
+                    _strSprint = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Alternate Sprint rate data string.
+        /// </summary>
+        public string SprintAltString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_strSprintAlt))
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                    XmlNode xmlSprintNode = xmlMetavariantNode?["sprint"] ?? xmlMetatypeNode?["sprint"];
+                    _strSprintAlt = xmlSprintNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                }
+                return _strSprintAlt;
+            }
+            set
+            {
+                if (_strSprintAlt != value)
+                {
+                    _strSprintAlt = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string CurrentWalkingRateString => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? WalkString : WalkAltString;
+
+        public string CurrentRunningRateString => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? RunString : RunAltString;
+
+        public string CurrentSprintingRateString => AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? SprintString : SprintAltString;
 
         /// <summary>
         /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
-        private int WalkingRate(string strType = "Ground")
+        public int WalkingRate(string strType = "Ground")
         {
-            int intTmp = 0;
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
+            int intTmp = int.MinValue;
+            foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
-                {
-                    intTmp = Math.Max(intTmp, objImprovement.Value);
-                }
-                return intTmp;
+                intTmp = Math.Max(intTmp, objImprovement.Value);
             }
+            if (intTmp != int.MinValue)
+                return intTmp;
 
-            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strWalk.Split('/') : _strWalkAlt.Split('/');
+            string[] strReturn = CurrentWalkingRateString.Split('/');
 
             switch (strType)
             {
@@ -9871,19 +10220,17 @@ namespace Chummer
         /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
-        private int RunningRate(string strType = "Ground")
+        public int RunningRate(string strType = "Ground")
         {
-            int intTmp = 0;
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
+            int intTmp = int.MinValue;
+            foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
-                {
-                    intTmp = Math.Max(intTmp, objImprovement.Value);
-                }
-                return intTmp;
+                intTmp = Math.Max(intTmp, objImprovement.Value);
             }
+            if (intTmp != int.MinValue)
+                return intTmp;
 
-            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strRun.Split('/') : _strRunAlt.Split('/');
+            string[] strReturn = CurrentRunningRateString.Split('/');
 
             switch (strType)
             {
@@ -9907,19 +10254,17 @@ namespace Chummer
         /// Character's sprinting Movement rate (meters per hit).
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
-        private decimal SprintingRate(string strType = "Ground")
+        public decimal SprintingRate(string strType = "Ground")
         {
-            decimal decTmp = 0;
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
+            decimal decTmp = decimal.MinValue;
+            foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
-                {
-                    decTmp = Math.Max(decTmp, objImprovement.Value);
-                }
-                return decTmp;
+                decTmp = Math.Max(decTmp, objImprovement.Value / 100.0m);
             }
+            if (decTmp != decimal.MinValue)
+                return decTmp;
 
-            string[] strReturn = AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard ? _strSprint.Split('/') : _strSprintAlt.Split('/');
+            string[] strReturn = CurrentSprintingRateString.Split('/');
 
             switch (strType)
             {
@@ -9939,7 +10284,7 @@ namespace Chummer
             return decTmp;
         }
 
-        private string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false, CultureInfo objCulture = null)
+        public string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false, CultureInfo objCulture = null)
         {
             decimal decSprint = SprintingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false, strMovementType) / 100.0m;
             decimal decRun = RunningRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunMultiplier, false, strMovementType);
@@ -9955,7 +10300,7 @@ namespace Chummer
 
             int intAGI = AGI.CalculatedTotalValue(false);
             int intSTR = STR.CalculatedTotalValue(false);
-            if (_objOptions.CyberlegMovement && blnUseCyberlegs && Cyberware.Any(objCyber => objCyber.LimbSlot == "leg"))
+            if (_objOptions.CyberlegMovement && blnUseCyberlegs)
             {
                 int intTempAGI = int.MaxValue;
                 int intTempSTR = int.MaxValue;
@@ -9966,7 +10311,7 @@ namespace Chummer
                     intTempAGI = Math.Min(intTempAGI, objCyber.TotalAgility);
                     intTempSTR = Math.Min(intTempSTR, objCyber.TotalStrength);
                 }
-                if (intLegs >= 2)
+                if (intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
                 {
                     intAGI = intTempAGI;
                     intSTR = intTempSTR;
@@ -9990,30 +10335,23 @@ namespace Chummer
             return strReturn;
         }
 
+        public string DisplaySwim => GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Character's Swim rate.
         /// </summary>
         public string GetSwim(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if (_strMovement == "Special")
+            if (Movement == "Special")
             {
                 return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
-
-            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-            if (objXmlNode != null)
-            {
-                string strReturn = string.Empty;
-                objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
-                if (strReturn == "Special")
-                {
-                    return LanguageManager.GetString("String_ModeSpecial", strLanguage);
-                }
-            }
-
+            
             return CalculatedMovement("Swim", false, objCulture);
         }
+
+        public string DisplayFly => GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Character's Fly rate.
@@ -10021,22 +10359,11 @@ namespace Chummer
         public string GetFly(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if (_strMovement == "Special")
+            if (Movement == "Special")
             {
                 return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
-
-            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-            if (objXmlNode != null)
-            {
-                string strReturn = string.Empty;
-                objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
-                if (strReturn == "Special")
-                {
-                    return LanguageManager.GetString("String_ModeSpecial", strLanguage);
-                }
-            }
-
+            
             return CalculatedMovement("Fly", false, objCulture);
         }
 
@@ -10069,7 +10396,14 @@ namespace Chummer
         public int MetatypeBP
         {
             get => _intMetatypeBP;
-            set => _intMetatypeBP = value;
+            set
+            {
+                if (_intMetatypeBP != value)
+                {
+                    _intMetatypeBP = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -11211,13 +11545,20 @@ namespace Chummer
         {
             get
             {
-                if (_initPasses == int.MinValue)
-                    _initPasses = Convert.ToInt32(InitiativeDice);
-                return _initPasses;
+                if (_intInitPasses == int.MinValue)
+                    _intInitPasses = Convert.ToInt32(InitiativeDice);
+                return _intInitPasses;
             }
-            set => _initPasses = value;
+            set
+            {
+                if (_intInitPasses != value)
+                {
+                    _intInitPasses = value;
+                    OnPropertyChanged();
+                }
+            }
         }
-        private int _initPasses = int.MinValue;
+        private int _intInitPasses = int.MinValue;
 
         /// <summary>
         /// True iff the character is currently delaying an action
