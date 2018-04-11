@@ -728,6 +728,9 @@ namespace Chummer
                 new DependancyGraphNode<string>(nameof(HasMentorSpirit),
                     new DependancyGraphNode<string>(nameof(MentorSpirits))
                 ),
+                new DependancyGraphNode<string>(nameof(CharacterGrammaticGender),
+                    new DependancyGraphNode<string>(nameof(Sex))
+                ),
                 new DependancyGraphNode<string>(nameof(FirstMentorSpiritDisplayName),
                     new DependancyGraphNode<string>(nameof(MentorSpirits))
                 ),
@@ -2795,7 +2798,7 @@ namespace Chummer
             if (!InitiationEnabled || !AddInitiationsAllowed)
                 ClearInitiations();
             Timekeeper.Finish("load_char_improvementrefreshers");
-            
+
             //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
             //      if (blnHasOldQualities)
             //      {
@@ -5236,8 +5239,8 @@ namespace Chummer
             {
                 if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
                     return null;
-                else
-                    return Mugshots[MainMugshotIndex];
+
+                return Mugshots[MainMugshotIndex];
             }
             set
             {
@@ -5399,7 +5402,14 @@ namespace Chummer
         public int GameplayOptionQualityLimit
         {
             get => _intGameplayOptionQualityLimit;
-            set => _intGameplayOptionQualityLimit = value;
+            set
+            {
+                if (_intGameplayOptionQualityLimit != value)
+                {
+                    _intGameplayOptionQualityLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5408,7 +5418,14 @@ namespace Chummer
         public int MaxKarma
         {
             get => _intMaxKarma;
-            set => _intMaxKarma = value;
+            set
+            {
+                if (_intMaxKarma != value)
+                {
+                    _intMaxKarma = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5417,7 +5434,14 @@ namespace Chummer
         public decimal MaxNuyen
         {
             get => _decMaxNuyen;
-            set => _decMaxNuyen = value;
+            set
+            {
+                if (_decMaxNuyen != value)
+                {
+                    _decMaxNuyen = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5506,18 +5530,19 @@ namespace Chummer
                 if (_strSex != value)
                 {
                     _strSex = value;
-                    _strCharacterGrammaticGender = string.Empty;
+                    OnPropertyChanged();
                 }
             }
         }
 
-        private string _strCharacterGrammaticGender = string.Empty;
+        private string _strCachedCharacterGrammaticGender = string.Empty;
+
         public string CharacterGrammaticGender
         {
             get
             {
-                if (!string.IsNullOrEmpty(_strCharacterGrammaticGender))
-                    return _strCharacterGrammaticGender;
+                if (!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
+                    return _strCachedCharacterGrammaticGender;
                 switch (LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language).ToLower())
                 {
                     case "m":
@@ -5527,16 +5552,16 @@ namespace Chummer
                     case "lord":
                     case "gentleman":
                     case "guy":
-                        return _strCharacterGrammaticGender = "male";
+                        return _strCachedCharacterGrammaticGender = "male";
                     case "f":
                     case "female":
                     case "woman":
                     case "girl":
                     case "lady":
                     case "gal":
-                        return _strCharacterGrammaticGender = "female";
+                        return _strCachedCharacterGrammaticGender = "female";
                     default:
-                        return _strCharacterGrammaticGender = "neutral";
+                        return _strCachedCharacterGrammaticGender = "neutral";
                 }
             }
         }
@@ -5547,7 +5572,14 @@ namespace Chummer
         public string Age
         {
             get => _strAge;
-            set => _strAge = value;
+            set
+            {
+                if (_strAge != value)
+                {
+                    _strAge = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5556,7 +5588,14 @@ namespace Chummer
         public string Eyes
         {
             get => _strEyes;
-            set => _strEyes = value;
+            set
+            {
+                if (_strEyes != value)
+                {
+                    _strEyes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5565,7 +5604,14 @@ namespace Chummer
         public string Height
         {
             get => _strHeight;
-            set => _strHeight = value;
+            set
+            {
+                if (_strHeight != value)
+                {
+                    _strHeight = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5574,7 +5620,14 @@ namespace Chummer
         public string Weight
         {
             get => _strWeight;
-            set => _strWeight = value;
+            set
+            {
+                if (_strWeight != value)
+                {
+                    _strWeight = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5583,7 +5636,14 @@ namespace Chummer
         public string Skin
         {
             get => _strSkin;
-            set => _strSkin = value;
+            set
+            {
+                if (_strSkin != value)
+                {
+                    _strSkin = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5592,7 +5652,14 @@ namespace Chummer
         public string Hair
         {
             get => _strHair;
-            set => _strHair = value;
+            set
+            {
+                if (_strHair != value)
+                {
+                    _strHair = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5601,7 +5668,14 @@ namespace Chummer
         public string Description
         {
             get => _strDescription;
-            set => _strDescription = value;
+            set
+            {
+                if (_strDescription != value)
+                {
+                    _strDescription = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5610,7 +5684,14 @@ namespace Chummer
         public string Background
         {
             get => _strBackground;
-            set => _strBackground = value;
+            set
+            {
+                if (_strBackground != value)
+                {
+                    _strBackground = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5619,7 +5700,14 @@ namespace Chummer
         public string Concept
         {
             get => _strConcept;
-            set => _strConcept = value;
+            set
+            {
+                if (_strConcept != value)
+                {
+                    _strConcept = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5628,7 +5716,14 @@ namespace Chummer
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5637,7 +5732,14 @@ namespace Chummer
         public string GameNotes
         {
             get => _strGameNotes;
-            set => _strGameNotes = value;
+            set
+            {
+                if (_strGameNotes != value)
+                {
+                    _strGameNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5662,7 +5764,14 @@ namespace Chummer
         public string PlayerName
         {
             get => _strPlayerName;
-            set => _strPlayerName = value;
+            set
+            {
+                if (_strPlayerName != value)
+                {
+                    _strPlayerName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5863,7 +5972,14 @@ namespace Chummer
         public int ContactPointsUsed
         {
             get => _intContactPointsUsed;
-            set => _intContactPointsUsed = value;
+            set
+            {
+                if (_intContactPointsUsed != value)
+                {
+                    _intContactPointsUsed = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5872,7 +5988,14 @@ namespace Chummer
         public int CFPLimit
         {
             get => _intCFPLimit;
-            set => _intCFPLimit = value;
+            set
+            {
+                if (_intCFPLimit != value)
+                {
+                    _intCFPLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5881,7 +6004,14 @@ namespace Chummer
         public int AINormalProgramLimit
         {
             get => _intAINormalProgramLimit;
-            set => _intAINormalProgramLimit = value;
+            set
+            {
+                if (_intAINormalProgramLimit != value)
+                {
+                    _intAINormalProgramLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5890,7 +6020,14 @@ namespace Chummer
         public int AIAdvancedProgramLimit
         {
             get => _intAIAdvancedProgramLimit;
-            set => _intAIAdvancedProgramLimit = value;
+            set
+            {
+                if (_intAIAdvancedProgramLimit != value)
+                {
+                    _intAIAdvancedProgramLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -5899,7 +6036,14 @@ namespace Chummer
         public int SpellLimit
         {
             get => _intSpellLimit;
-            set => _intSpellLimit = value;
+            set
+            {
+                if (_intSpellLimit != value)
+                {
+                    _intSpellLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -11981,6 +12125,10 @@ namespace Chummer
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
+            if (lstNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
+            {
+                _strCachedCharacterGrammaticGender = string.Empty;
+            }
             if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
             {
                 _intCachedContactPoints = int.MinValue;
@@ -12061,6 +12209,10 @@ namespace Chummer
             {
                 _intCachedCareerKarma = int.MinValue;
             }
+            if (lstNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
+            {
+                _intCachedInitiationEnabled = -1;
+            }
             if (lstNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
             {
                 _intCachedRedlinerBonus = int.MinValue;
@@ -12075,14 +12227,6 @@ namespace Chummer
             {
                 RefreshWoundPenalties();
             }
-
-            if ((Options.AllowInitiationInCreateMode && !Created || Created) &&
-                (lstNamesOfChangedProperties.Contains(nameof(MAGEnabled)) ||
-                 lstNamesOfChangedProperties.Contains(nameof(RESEnabled))))
-            {
-                _intCachedInitiationEnabled = -1;
-            }
-
             if (!Created)
             {
                 // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
