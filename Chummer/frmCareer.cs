@@ -2616,7 +2616,7 @@ namespace Chummer
                 cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
                 string strPage = objMartialArt.Page(GlobalOptions.Language);
                 lblMartialArtSource.Text = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
             else if (treMartialArts.SelectedNode?.Tag is MartialArtTechnique objTechnique)
             {
@@ -2624,7 +2624,7 @@ namespace Chummer
                 cmdDeleteMartialArt.Enabled = true;
                 string strPage = objTechnique.Page(GlobalOptions.Language);
                 lblMartialArtSource.Text = CommonFunctions.LanguageBookShort(objTechnique.Source, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objTechnique.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objTechnique.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
 #if LEGACY
                 else if (treMartialArts.SelectedNode?.Tag is MartialArtManeuver objManeuver)
@@ -2632,7 +2632,7 @@ namespace Chummer
                             cmdDeleteMartialArt.Enabled = true;
                             string strPage = objManeuver.Page(GlobalOptions.Language);
                             lblMartialArtSource.Text = CommonFunctions.LanguageBookShort(objManeuver.Source, GlobalOptions.Language) + ' ' + strPage;
-                            tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objManeuver.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                            GlobalOptions.ToolTipProcessor.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objManeuver.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 }
 #endif
             else
@@ -4453,7 +4453,7 @@ namespace Chummer
                     objFoundGear.Quantity += decMove;
                     TreeNode objFoundNode = treGear.FindNode(objFoundGear.InternalId);
                     if (objFoundNode != null)
-                        objFoundNode.Text = objFoundGear.DisplayName(GlobalOptions.Language);
+                        objFoundNode.Text = objFoundGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
 
                 // Update the selected item.

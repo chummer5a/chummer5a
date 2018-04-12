@@ -3956,7 +3956,7 @@ namespace Chummer
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                    strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                 else
                                     strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                 return strGearReturn;
@@ -3970,7 +3970,7 @@ namespace Chummer
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3983,7 +3983,7 @@ namespace Chummer
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3996,7 +3996,7 @@ namespace Chummer
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -4010,7 +4010,7 @@ namespace Chummer
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
@@ -4028,7 +4028,7 @@ namespace Chummer
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                         if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                            strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                            strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                         else
                                             strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                         return strGearReturn;
@@ -4042,7 +4042,7 @@ namespace Chummer
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
