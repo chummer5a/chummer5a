@@ -114,7 +114,7 @@ namespace Chummer
                     cboSize.SelectedIndex = 0;
             else
                 RefreshCBOs();
-            
+
             nudMarkup.Visible = AllowDiscounts;
             lblMarkupLabel.Visible = AllowDiscounts;
             lblMarkupPercentLabel.Visible = AllowDiscounts;
@@ -219,7 +219,7 @@ namespace Chummer
                 }
                 if (!blnRequirementsMet)
                     return;
-                
+
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
@@ -367,6 +367,7 @@ namespace Chummer
 
             cmdDeleteMod.Enabled = false;
             string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
@@ -375,7 +376,7 @@ namespace Chummer
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
                     lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    
+
                     if (chkFreeItem.Checked)
                     {
                         lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -403,15 +404,15 @@ namespace Chummer
                     }
 
                     string strModPage = objMod.Page(GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + ' ' + strModPage;
+                    lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + strSpaceCharacter + strModPage;
 
-                    tipTooltip.SetToolTip(lblSource,
-                        CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' +
-                        LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strModPage);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
+                        CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + strSpaceCharacter +
+                        LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strModPage);
                     return;
                 }
             }
-            
+
             if (xmlSelectedMount == null)
             {
                 lblCost.Text = string.Empty;
@@ -492,11 +493,11 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-            tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
+                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
         }
 
         private void cmdAddMod_Click(object sender, EventArgs e)
@@ -528,6 +529,7 @@ namespace Chummer
                 intSlots += objMod.CalculatedSlots;
             }
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
@@ -614,7 +616,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1,
                         LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
-                        ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        strSpaceCharacter + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -624,7 +626,7 @@ namespace Chummer
                 }
                 _lstMods.Add(objMod);
                 intSlots += objMod.CalculatedSlots;
-                
+
                 TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
 
                 if (objModsParentNode == null)

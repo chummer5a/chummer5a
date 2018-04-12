@@ -40,21 +40,21 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
             InitializeComponent();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
-
+            _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
             lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblValue.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblValue.DataBindings.Add("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             if (_objCharacter.Created)
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-                cmdImproveATT.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                cmdImproveATT.DataBindings.Add("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
                 cmdImproveATT.Visible = true;
                 cmdImproveATT.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 cmdBurnEdge.Visible = AttributeName == "EDG";
-                cmdBurnEdge.TooltipText = LanguageManager.GetString("Tip_CommonBurnEdge", GlobalOptions.Language);
+                cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge", GlobalOptions.Language);
             }
             else
             {
@@ -78,14 +78,19 @@ namespace Chummer.UI.Attributes
                 cmdBurnEdge.Visible = false;
             }
         }
-        
-		public void ResetBinding(CharacterAttrib attrib)
-		{
-			_dataSource.DataSource = attrib;
-		}
+
+        private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            {
+                _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
+            }
+        }
 
         public void UnbindAttributeControl()
         {
+            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();

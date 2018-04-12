@@ -407,7 +407,11 @@
     </string>
     <string>
       <key>String_Of</key>
-      <text>of</text>
+      <text xml:space="preserve"> of </text>
+    </string>
+    <string>
+      <key>String_Space</key>
+      <text xml:space="preserve"> </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -494,6 +498,26 @@
       <text>LP:</text>
     </string>
     <string>
+      <key>Label_BonusLP</key>
+      <text>Bonus LP:</text>
+    </string>
+    <string>
+      <key>Label_QualityLP</key>
+      <text>Quality LP:</text>
+    </string>
+    <string>
+      <key>Label_QualityCost</key>
+      <text>Quality Cost:</text>
+    </string>
+    <string>
+      <key>Label_QualitySource</key>
+      <text>Quality Source:</text>
+    </string>
+    <string>
+      <key>Checkbox_Randomize1D6</key>
+      <text>Randomize 1D6</text>
+    </string>
+    <string>
       <key>Label_KarmaRemaining</key>
       <text>Karma Remaining:</text>
     </string>
@@ -525,6 +549,10 @@
       <key>Label_Speed</key>
       <text>Speed:</text>
     </string>
+	<string>
+      <key>String_Handling</key>
+      <text>Handling</text>
+    </string>
     <string>
       <key>Label_Response</key>
       <text>Response:</text>
@@ -541,6 +569,10 @@
       <key>Label_Body</key>
       <text>Body:</text>
     </string>
+	<string>
+	  <key>String_VehicleBody</key>
+	  <text>Body</text>
+	</string>
     <string>
       <key>Label_Armor</key>
       <text>Armor:</text>
@@ -552,6 +584,10 @@
     <string>
       <key>Label_Sensor</key>
       <text>Sensor:</text>
+    </string>
+	<string>
+      <key>String_Sensor</key>
+      <text>Sensor</text>
     </string>
     <string>
       <key>Label_Avail</key>
@@ -2013,7 +2049,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Your number of registered Sprites cannot exceed your CHA score.</text>
+      <text>Your number of registered Sprites cannot exceed your LOG score.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -2932,7 +2968,7 @@
       <text>Alchemical</text>
     </string>
     <string>
-      <key>String_AttributePilot</key>
+      <key>String_Pilot</key>
       <text>Pilot</text>
     </string>
     <string>
@@ -3227,6 +3263,14 @@
     <string>
       <key>String_ExpenseLifestyle</key>
       <text>Purchased Lifestyle</text>
+    </string>
+    <string>
+      <key>String_ExpenseDecreaseLifestyle</key>
+      <text>Decremented Lifestyle</text>
+    </string>
+    <string>
+      <key>String_ExpenseModifiedLifestyle</key>
+      <text>Modified Lifestyle</text>
     </string>
     <string>
       <key>String_ExpensePurchaseCyberware</key>
@@ -5828,6 +5872,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Tip_Skill_Wounds</key>
       <text>Wounds</text>
     </string>
+	<string>
+      <key>Tip_Skill_OffHand</key>
+      <text>Off Hand</text>
+    </string>
     <string>
       <key>Tip_Skill_Cannot_Default</key>
       <text>You cannot default in this skill.</text>
@@ -7559,11 +7607,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Lifestyle:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Positive Qualities</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Negative Qualities</text>
     </string>
     <string>
@@ -7628,7 +7676,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
-      <text>Contributes tp Lifestyle Points</text>
+      <text>Contributes to Lifestyle Points</text>
     </string>
     <string>
       <key>Label_Options_KarmaMysticAdeptPowerPoint</key>

@@ -32,11 +32,10 @@ namespace Chummer
             this.lblPowerName = new System.Windows.Forms.Label();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.nudRating = new NumericUpDownEx();
-            this.lblPowerPoints = new System.Windows.Forms.Label();
+            this.lblPowerPoints = new LabelWithToolTip();
             this.chkDiscountedAdeptWay = new System.Windows.Forms.CheckBox();
             this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
             this.imgNotes = new System.Windows.Forms.PictureBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.lblActivation = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
@@ -132,17 +131,7 @@ namespace Chummer
             this.imgNotes.Size = new System.Drawing.Size(16, 16);
             this.imgNotes.TabIndex = 11;
             this.imgNotes.TabStop = false;
-            this.tipTooltip.SetToolTip(this.imgNotes, "Edit Adept Power Notes.");
             this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // lblActivation
             // 
@@ -179,11 +168,10 @@ namespace Chummer
 
         private System.Windows.Forms.Label lblPowerName;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Label lblPowerPoints;
+        private LabelWithToolTip lblPowerPoints;
         private System.Windows.Forms.CheckBox chkDiscountedAdeptWay;
         private System.Windows.Forms.CheckBox chkDiscountedGeas;
         private System.Windows.Forms.PictureBox imgNotes;
-        private System.Windows.Forms.ToolTip tipTooltip;
         private NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblActivation;
     }

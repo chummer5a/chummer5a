@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
                 UnbindContactControl();
             }
             base.Dispose(disposing);
@@ -37,7 +36,6 @@ namespace Chummer
             this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cboContactRole = new System.Windows.Forms.ComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
@@ -173,20 +171,6 @@ namespace Chummer
             this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
             this.tsAttachCharacter.Text = "Attach Character";
             this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // cboContactRole
             // 
@@ -599,7 +583,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
         private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
         private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.ComboBox cboContactRole;
         private System.Windows.Forms.TextBox txtContactName;

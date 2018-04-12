@@ -38,7 +38,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private bool _blnContributeToLimit = true;
+        private bool _blnContributeToLP = true;
         private bool _blnPrint = true;
         private int _intLP;
         private string _strCost = string.Empty;
@@ -124,7 +124,7 @@ namespace Chummer.Backend.Equipment
             }
             _objLifestyleQualitySource = objLifestyleQualitySource;
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
-            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             if (!objXmlLifestyleQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
@@ -182,7 +182,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("lp", _intLP.ToString());
-            objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("contributetolimit", _blnContributeToLP.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
             objWriter.WriteElementString("lifestylequalitytype", _objLifestyleQualityType.ToString());
             objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
@@ -218,7 +218,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
-            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
@@ -242,12 +242,12 @@ namespace Chummer.Backend.Equipment
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            
+
             LegacyShim();
         }
 
         /// <summary>
-        /// Performs actions based on the character's last loaded AppVersion attribute. 
+        /// Performs actions based on the character's last loaded AppVersion attribute.
         /// </summary>
         private void LegacyShim()
         {
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-        
+
         /// <summary>
         /// Page Number.
         /// </summary>
@@ -426,7 +426,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int LP
         {
-            get => Free ? 0 : _intLP;
+            get => Free || !ContributesLP ? 0 : _intLP;
             set => _intLP = value;
         }
 
@@ -451,7 +451,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
             return strReturn;
         }
@@ -531,6 +531,12 @@ namespace Chummer.Backend.Equipment
             set => _blnFree = value;
         }
 
+        public bool ContributesLP
+        {
+            get => _blnContributeToLP;
+            set => _blnContributeToLP = value;
+        }
+
         /// <summary>
         /// Are the costs of this Quality included in base lifestyle costs?
         /// </summary>
@@ -552,22 +558,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Comfort LP is increased/reduced by this Quality. 
+        /// Comfort LP is increased/reduced by this Quality.
         /// </summary>
         public int Comfort { get; set; }
 
         /// <summary>
-        /// Comfort LP maximum is increased/reduced by this Quality. 
+        /// Comfort LP maximum is increased/reduced by this Quality.
         /// </summary>
         public int ComfortMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int SecurityMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int Security { get; set; }
 
@@ -590,7 +596,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Category of the Quality. 
+        /// Category of the Quality.
         /// </summary>
         public string Category
         {
@@ -604,7 +610,7 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum { get; set; }
 
         /// <summary>
-        /// Area/Neighborhood minimum is increased/reduced by this Quality. 
+        /// Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
         public int Area { get; set; }
 

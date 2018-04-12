@@ -34,7 +34,7 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Power> _powers;
         public PowersTabUserControl()
@@ -44,12 +44,6 @@ namespace Chummer.UI.Powers
 
             _dropDownList = GenerateDropdownFilter();
             _sortList = GenerateSortList();
-        }
-
-        public void MissingDatabindingsWorkaround()
-        {
-            //TODO: Databind this
-            CalculatePowerPoints();
         }
         
         private Character _objCharacter;
@@ -79,9 +73,9 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
-            //Keep everything visible until ready to display everything. This 
+            //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
 
@@ -91,7 +85,8 @@ namespace Chummer.UI.Powers
             SuspendLayout();
             DoubleBuffered = true;
 
-            CalculatePowerPoints();
+            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblDiscountLabel.DataBindings.Add("Visible", _objCharacter, nameof(Character.AnyPowerAdeptWayDiscountEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
             _powers = new BindingListDisplay<Power>(_objCharacter.Powers, power => new PowerControl(power))
             {
@@ -117,7 +112,6 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("_sort databind");
 
-            _powers.ChildPropertyChanged += RefreshPowerInfo;
             _powers.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;
@@ -237,49 +231,9 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
-                    MissingDatabindingsWorkaround();
                 }
             }
             while (blnAddAgain);
-        }
-
-        public void RefreshPowerInfo(object sender, EventArgs e)
-        {
-            CalculatePowerPoints();
-        }
-
-        /// <summary>
-        /// Calculate the number of Adept Power Points used.
-        /// </summary>
-        public void CalculatePowerPoints()
-        {
-            int intPowerPointsTotal = PowerPointsTotal;
-            decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
-            lblDiscountLabel.Visible = _objCharacter.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
-        }
-
-        private int PowerPointsTotal
-        {
-            get
-            {
-                int intMAG;
-                if (_objCharacter.IsMysticAdept)
-                {
-                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = _objCharacter.Options.MysAdeptSecondMAGAttribute ? _objCharacter.MAGAdept.TotalValue : _objCharacter.MysticAdeptPowerPoints;
-                }
-                else
-                {
-                    // The character is just an Adept, so use the full value.
-                    intMAG = _objCharacter.MAG.TotalValue;
-                }
-
-                // Add any Power Point Improvements to MAG.
-                intMAG += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AdeptPowerPoints);
-
-                return Math.Max(intMAG, 0);
-            }
         }
     }
 }

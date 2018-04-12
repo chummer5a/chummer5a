@@ -59,8 +59,9 @@ namespace Chummer
         public frmChummerMain()
         {
             InitializeComponent();
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            Text = Application.ProductName + " - " + LanguageManager.GetString("String_Version", GlobalOptions.Language) + ' ' + _strCurrentVersion;
+            Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
 #if DEBUG
             Text += " DEBUG BUILD";
 #endif
@@ -253,21 +254,21 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                 {
                     foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
-                        objCharacter.CharacterNameChanged += UpdateCharacterTabTitle;
+                        objCharacter.PropertyChanged += UpdateCharacterTabTitle;
                     break;
                 }
                 case NotifyCollectionChangedAction.Remove:
                 {
                     foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
-                        objCharacter.CharacterNameChanged -= UpdateCharacterTabTitle;
+                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
                     break;
                 }
                 case NotifyCollectionChangedAction.Replace:
                 {
                     foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
-                        objCharacter.CharacterNameChanged -= UpdateCharacterTabTitle;
+                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
                     foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
-                        objCharacter.CharacterNameChanged += UpdateCharacterTabTitle;
+                        objCharacter.PropertyChanged += UpdateCharacterTabTitle;
                     break;
                 }
             }
@@ -350,7 +351,7 @@ namespace Chummer
                 response.Close();
                 return;
             }
-            
+
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
 
@@ -438,8 +439,9 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                Text = Application.ProductName + " - " +
-                       LanguageManager.GetString("String_Version", GlobalOptions.Language) + ' ' + _strCurrentVersion + " - " +
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter +
+                       LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
                        string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), Utils.CachedGitVersion);
             }
         }
@@ -617,7 +619,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-            
+
             Cursor = Cursors.Default;
         }
 
@@ -637,7 +639,7 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-                
+
                 GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
@@ -742,10 +744,10 @@ namespace Chummer
             return false;
         }
 
-        public void UpdateCharacterTabTitle(object sender, EventArgs e)
+        public void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
         {
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-            if (tabForms.TabCount > 0 && sender is Character objCharacter)
+            if (tabForms.TabCount > 0 && e.PropertyName == nameof(Character.CharacterName) && sender is Character objCharacter)
             {
                 foreach (TabPage objTabPage in tabForms.TabPages)
                 {
@@ -981,7 +983,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-            
+
             Cursor = Cursors.Default;
         }
 
@@ -1077,8 +1079,8 @@ namespace Chummer
 
                 if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                     GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-                
-                UpdateCharacterTabTitle(objCharacter, EventArgs.Empty);
+
+                UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
                 Timekeeper.Finish("load_event_time");
             }
@@ -1290,7 +1292,7 @@ namespace Chummer
                             objItem.Text = "1&0 " + strFile;
                         else
                             objItem.Text = '&' + (i + 1).ToString() + ' ' + strFile;
-                        
+
                         ++i2;
                     }
                 }

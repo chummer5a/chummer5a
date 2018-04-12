@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Chummer
 {
@@ -50,7 +51,7 @@ namespace Chummer
             {
                 if (objReturn.Add(objLoopNode.MyObject))
                 {
-                    foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes)
+                    foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependancyCondition?.Invoke() != false).Select(x => x.Node))
                     {
                         CollectDependants(objDependant.MyObject, objReturn);
                     }
@@ -73,7 +74,7 @@ namespace Chummer
             {
                 if (objReturn.Add(objLoopNode.MyObject))
                 {
-                    foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes)
+                    foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependancyCondition?.Invoke() != false).Select(x => x.Node))
                     {
                         CollectDependants(objDependant.MyObject, objReturn);
                     }
@@ -91,7 +92,7 @@ namespace Chummer
             if (NodeDictionary.TryGetValue(objKey, out DependancyGraphNode<T> objLoopNode))
             {
                 yield return objLoopNode.MyObject;
-                foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes)
+                foreach (DependancyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependancyCondition?.Invoke() != false).Select(x => x.Node))
                 {
                     foreach (T objDependantObject in GetWithAllDependantsUnsafe(objDependant.MyObject))
                     {
@@ -124,32 +125,32 @@ namespace Chummer
             }
 
             // Attempt to add all descendants of the current DependancyGraphNode to the SearchDictionary
-            foreach (DependancyGraphNode<T> objDownStreamNode in objDependancyGraphNode.DownStreamNodes)
+            foreach (DependancyGraphNodeWithCondition<T> objDownStreamNode in objDependancyGraphNode.DownStreamNodes)
             {
-                if (!NodeDictionary.TryGetValue(objDownStreamNode.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
+                if (!NodeDictionary.TryGetValue(objDownStreamNode.Node.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
-                    DependancyGraphNode<T> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode);
-                    objExistingValue.DownStreamNodes.Add(objDownStreamNodeCopy);
-                    objDownStreamNodeCopy.UpStreamNodes.Add(objExistingValue);
+                    DependancyGraphNode<T> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode.Node);
+                    objExistingValue.DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNodeCopy, objDownStreamNode.DependancyCondition));
+                    objDownStreamNodeCopy.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objExistingValue, objDownStreamNode.DependancyCondition));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }
             }
 
             // Attempt to add all dependants of the current DependancyGraphNode to the SearchDictionary
-            foreach (DependancyGraphNode<T> objUpStreamNode in objDependancyGraphNode.UpStreamNodes)
+            foreach (DependancyGraphNodeWithCondition<T> objUpStreamNode in objDependancyGraphNode.UpStreamNodes)
             {
-                if (!NodeDictionary.TryGetValue(objUpStreamNode.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
+                if (!NodeDictionary.TryGetValue(objUpStreamNode.Node.MyObject, out DependancyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
-                    DependancyGraphNode<T> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode);
-                    objExistingValue.UpStreamNodes.Add(objUpStreamNodeCopy);
-                    objUpStreamNodeCopy.DownStreamNodes.Add(objExistingValue);
+                    DependancyGraphNode<T> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode.Node);
+                    objExistingValue.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objUpStreamNodeCopy, objUpStreamNode.DependancyCondition));
+                    objUpStreamNodeCopy.DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objExistingValue, objUpStreamNode.DependancyCondition));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }

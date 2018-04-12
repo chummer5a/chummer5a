@@ -19,7 +19,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -72,7 +71,6 @@ namespace Chummer
             this.tssNuyen = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.lblCMStunLabel = new System.Windows.Forms.Label();
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
             this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
@@ -92,7 +90,7 @@ namespace Chummer
             this.cmdEdgeGained = new System.Windows.Forms.Button();
             this.cmdEdgeSpent = new System.Windows.Forms.Button();
             this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
-            this.lbllSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenceManipMentalLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
@@ -206,7 +204,7 @@ namespace Chummer
             this.tsWeaponAddModification = new System.Windows.Forms.ToolStripMenuItem();
             this.tsBoltHole = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSafehouse = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblArmor = new System.Windows.Forms.Label();
+            this.lblArmor = new LabelWithToolTip();
             this.panStunCM = new System.Windows.Forms.Panel();
             this.lblStunCMLabel = new System.Windows.Forms.Label();
             this.chkStunCM18 = new System.Windows.Forms.CheckBox();
@@ -266,10 +264,10 @@ namespace Chummer
             this.lblFlyLabel = new System.Windows.Forms.Label();
             this.lblSwim = new System.Windows.Forms.Label();
             this.lblSwimLabel = new System.Windows.Forms.Label();
-            this.lblMemory = new System.Windows.Forms.Label();
-            this.lblLiftCarry = new System.Windows.Forms.Label();
-            this.lblJudgeIntentions = new System.Windows.Forms.Label();
-            this.lblComposure = new System.Windows.Forms.Label();
+            this.lblMemory = new LabelWithToolTip();
+            this.lblLiftCarry = new LabelWithToolTip();
+            this.lblJudgeIntentions = new LabelWithToolTip();
+            this.lblComposure = new LabelWithToolTip();
             this.lblMovement = new System.Windows.Forms.Label();
             this.lblCareerKarma = new System.Windows.Forms.Label();
             this.lblRemainingNuyen = new System.Windows.Forms.Label();
@@ -278,29 +276,29 @@ namespace Chummer
             this.lblCMPhysical = new System.Windows.Forms.Label();
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
             this.lblEDGInfo = new System.Windows.Forms.Label();
-            this.lblCMDamageResistancePool = new System.Windows.Forms.Label();
-            this.lblCMArmor = new System.Windows.Forms.Label();
+            this.lblCMDamageResistancePool = new LabelWithToolTip();
+            this.lblCMArmor = new LabelWithToolTip();
             this.label1 = new System.Windows.Forms.Label();
             this.lblCMPenalty = new System.Windows.Forms.Label();
             this.tabDefences = new System.Windows.Forms.TabPage();
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
-            this.lbllSpellDefenceManipPhysical = new System.Windows.Forms.Label();
-            this.lblSpellDefenceManipMental = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionPhysical = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionMana = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttWIL = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttLOG = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttINT = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttCHA = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttSTR = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttREA = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttAGI = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttBOD = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDetection = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakPhysical = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakMana = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectSoak = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectDodge = new System.Windows.Forms.Label();
+            this.lblSpellDefenceManipPhysical = new LabelWithToolTip();
+            this.lblSpellDefenceManipMental = new LabelWithToolTip();
+            this.lblSpellDefenceIllusionPhysical = new LabelWithToolTip();
+            this.lblSpellDefenceIllusionMana = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttWIL = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttLOG = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttINT = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttCHA = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttSTR = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttREA = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttAGI = new LabelWithToolTip();
+            this.lblSpellDefenceDecAttBOD = new LabelWithToolTip();
+            this.lblSpellDefenceDetection = new LabelWithToolTip();
+            this.lblSpellDefenceDirectSoakPhysical = new LabelWithToolTip();
+            this.lblSpellDefenceDirectSoakMana = new LabelWithToolTip();
+            this.lblSpellDefenceIndirectSoak = new LabelWithToolTip();
+            this.lblSpellDefenceIndirectDodge = new LabelWithToolTip();
             this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -404,13 +402,13 @@ namespace Chummer
             this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
             this.tabLimits = new System.Windows.Forms.TabPage();
             this.lblAstralLabel = new System.Windows.Forms.Label();
-            this.lblAstral = new System.Windows.Forms.Label();
+            this.lblAstral = new LabelWithToolTip();
             this.lblSocialLimitLabel = new System.Windows.Forms.Label();
-            this.lblSocial = new System.Windows.Forms.Label();
+            this.lblSocial = new LabelWithToolTip();
             this.lblMentalLimitLabel = new System.Windows.Forms.Label();
-            this.lblMental = new System.Windows.Forms.Label();
+            this.lblMental = new LabelWithToolTip();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
-            this.lblPhysical = new System.Windows.Forms.Label();
+            this.lblPhysical = new LabelWithToolTip();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.treLimit = new System.Windows.Forms.TreeView();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
@@ -441,7 +439,7 @@ namespace Chummer
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
             this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.cboTradition = new System.Windows.Forms.ComboBox();
-            this.lblDrainAttributesValue = new System.Windows.Forms.Label();
+            this.lblDrainAttributesValue = new LabelWithToolTip();
             this.lblDrainAttributes = new System.Windows.Forms.Label();
             this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
             this.lblTraditionLabel = new System.Windows.Forms.Label();
@@ -482,7 +480,7 @@ namespace Chummer
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
             this.cmdRollFading = new System.Windows.Forms.Button();
             this.cboStream = new System.Windows.Forms.ComboBox();
-            this.lblFadingAttributesValue = new System.Windows.Forms.Label();
+            this.lblFadingAttributesValue = new LabelWithToolTip();
             this.lblFadingAttributes = new System.Windows.Forms.Label();
             this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
             this.lblStreamLabel = new System.Windows.Forms.Label();
@@ -1037,9 +1035,9 @@ namespace Chummer
             this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.nudMugshotIndex = new System.Windows.Forms.NumericUpDown();
-            this.lblPublicAwareTotal = new System.Windows.Forms.Label();
-            this.lblNotorietyTotal = new System.Windows.Forms.Label();
-            this.lblStreetCredTotal = new System.Windows.Forms.Label();
+            this.lblPublicAwareTotal = new LabelWithToolTip();
+            this.lblNotorietyTotal = new LabelWithToolTip();
+            this.lblStreetCredTotal = new LabelWithToolTip();
             this.lblCharacterName = new System.Windows.Forms.Label();
             this.txtCharacterName = new System.Windows.Forms.TextBox();
             this.txtPlayerName = new System.Windows.Forms.TextBox();
@@ -1405,20 +1403,6 @@ namespace Chummer
             this.dlgSaveFile.Filter = "Chummer Character|*.sr5";
             this.dlgSaveFile.Title = "Save Character";
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // lblCMStunLabel
             // 
             this.lblCMStunLabel.AutoSize = true;
@@ -1428,7 +1412,6 @@ namespace Chummer
             this.lblCMStunLabel.TabIndex = 19;
             this.lblCMStunLabel.Tag = "Label_OtherStunCM";
             this.lblCMStunLabel.Text = "Stun Condition Track:";
-            this.tipTooltip.SetToolTip(this.lblCMStunLabel, "Stun CM is calculated as 8 + (WIL / 2).");
             // 
             // lblCMPhysicalLabel
             // 
@@ -1439,7 +1422,6 @@ namespace Chummer
             this.lblCMPhysicalLabel.TabIndex = 18;
             this.lblCMPhysicalLabel.Tag = "Label_OtherPhysicalCM";
             this.lblCMPhysicalLabel.Text = "Physical Condition Track:";
-            this.tipTooltip.SetToolTip(this.lblCMPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblRemainingNuyenLabel
             // 
@@ -1450,7 +1432,6 @@ namespace Chummer
             this.lblRemainingNuyenLabel.TabIndex = 36;
             this.lblRemainingNuyenLabel.Tag = "Label_OtherNuyenRemain";
             this.lblRemainingNuyenLabel.Text = "Nuyen Remaining:";
-            this.tipTooltip.SetToolTip(this.lblRemainingNuyenLabel, "The amount of Nuyen you have left to purchase gear.");
             // 
             // lblESS
             // 
@@ -1461,8 +1442,7 @@ namespace Chummer
             this.lblESS.TabIndex = 34;
             this.lblESS.Tag = "Label_OtherEssence";
             this.lblESS.Text = "Essence:";
-            this.tipTooltip.SetToolTip(this.lblESS, "Characters start with 6 Essence which is decreased by adding Cyberware and Biowar" +
-        "e.");
+            
             // 
             // lblCareerKarmaLabel
             // 
@@ -1473,7 +1453,6 @@ namespace Chummer
             this.lblCareerKarmaLabel.TabIndex = 42;
             this.lblCareerKarmaLabel.Tag = "Label_OtherCareerKarma";
             this.lblCareerKarmaLabel.Text = "Career Karma:";
-            this.tipTooltip.SetToolTip(this.lblCareerKarmaLabel, "The amount of Nuyen you have left to purchase gear.");
             // 
             // lblMemoryLabel
             // 
@@ -1484,7 +1463,6 @@ namespace Chummer
             this.lblMemoryLabel.TabIndex = 58;
             this.lblMemoryLabel.Tag = "Label_OtherMemory";
             this.lblMemoryLabel.Text = "Memory:";
-            this.tipTooltip.SetToolTip(this.lblMemoryLabel, "Memory is calculated as LOG + WIL.");
             // 
             // lblLiftCarryLabel
             // 
@@ -1495,7 +1473,6 @@ namespace Chummer
             this.lblLiftCarryLabel.TabIndex = 56;
             this.lblLiftCarryLabel.Tag = "Label_OtherLiftAndCarry";
             this.lblLiftCarryLabel.Text = "Lift and Carry:";
-            this.tipTooltip.SetToolTip(this.lblLiftCarryLabel, "Lift and Carry is calculated as STR + BOD.");
             // 
             // lblJudgeIntentionsLabel
             // 
@@ -1506,7 +1483,6 @@ namespace Chummer
             this.lblJudgeIntentionsLabel.TabIndex = 54;
             this.lblJudgeIntentionsLabel.Tag = "Label_OtherJudgeIntention";
             this.lblJudgeIntentionsLabel.Text = "Judge Intentions:";
-            this.tipTooltip.SetToolTip(this.lblJudgeIntentionsLabel, "Judge Intentions is calculated as INT + CHA.");
             // 
             // lblComposureLabel
             // 
@@ -1517,7 +1493,6 @@ namespace Chummer
             this.lblComposureLabel.TabIndex = 52;
             this.lblComposureLabel.Tag = "Label_OtherCmposure";
             this.lblComposureLabel.Text = "Composure:";
-            this.tipTooltip.SetToolTip(this.lblComposureLabel, "Composure is calculated as WIL + CHA.");
             // 
             // lblCMPenaltyLabel
             // 
@@ -1528,7 +1503,6 @@ namespace Chummer
             this.lblCMPenaltyLabel.TabIndex = 37;
             this.lblCMPenaltyLabel.Tag = "Label_CMCMPenalty";
             this.lblCMPenaltyLabel.Text = "CM Penalty:";
-            this.tipTooltip.SetToolTip(this.lblCMPenaltyLabel, "Dice pool penalty from Condition Monitor damage.");
             // 
             // lblCMArmorLabel
             // 
@@ -1539,7 +1513,6 @@ namespace Chummer
             this.lblCMArmorLabel.TabIndex = 66;
             this.lblCMArmorLabel.Tag = "Label_CMArmor";
             this.lblCMArmorLabel.Text = "Armor:";
-            this.tipTooltip.SetToolTip(this.lblCMArmorLabel, resources.GetString("lblCMArmorLabel.ToolTip"));
             // 
             // lblCMDamageResistancePoolLabel
             // 
@@ -1550,7 +1523,6 @@ namespace Chummer
             this.lblCMDamageResistancePoolLabel.TabIndex = 70;
             this.lblCMDamageResistancePoolLabel.Tag = "Label_CMResistancePool";
             this.lblCMDamageResistancePoolLabel.Text = "Dmg Resistance Pool:";
-            this.tipTooltip.SetToolTip(this.lblCMDamageResistancePoolLabel, "Number of dice used to make Damage Resistance Tests.");
             // 
             // lblCareerNuyenLabel
             // 
@@ -1561,7 +1533,6 @@ namespace Chummer
             this.lblCareerNuyenLabel.TabIndex = 64;
             this.lblCareerNuyenLabel.Tag = "Label_OtherCareerNuyen";
             this.lblCareerNuyenLabel.Text = "Career Nuyen:";
-            this.tipTooltip.SetToolTip(this.lblCareerNuyenLabel, "The amount of Nuyen you have left to purchase gear.");
             // 
             // lblArmorLabel
             // 
@@ -1572,7 +1543,6 @@ namespace Chummer
             this.lblArmorLabel.TabIndex = 71;
             this.lblArmorLabel.Tag = "Label_ArmorValueShort";
             this.lblArmorLabel.Text = "Armor:";
-            this.tipTooltip.SetToolTip(this.lblArmorLabel, resources.GetString("lblArmorLabel.ToolTip"));
             // 
             // lblAstralINILabel
             // 
@@ -1583,7 +1553,6 @@ namespace Chummer
             this.lblAstralINILabel.TabIndex = 79;
             this.lblAstralINILabel.Tag = "Label_OtherAstralInit";
             this.lblAstralINILabel.Text = "Astral Initiative:";
-            this.tipTooltip.SetToolTip(this.lblAstralINILabel, "Astral Initiative is calculated as INT x 2.");
             // 
             // lblINILabel
             // 
@@ -1594,7 +1563,6 @@ namespace Chummer
             this.lblINILabel.TabIndex = 77;
             this.lblINILabel.Tag = "Label_OtherInit";
             this.lblINILabel.Text = "Initiative:";
-            this.tipTooltip.SetToolTip(this.lblINILabel, "Initiative is calculated as REA + INT.");
             // 
             // cmdEdgeGained
             // 
@@ -1605,7 +1573,6 @@ namespace Chummer
             this.cmdEdgeGained.Size = new System.Drawing.Size(24, 24);
             this.cmdEdgeGained.TabIndex = 64;
             this.cmdEdgeGained.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdEdgeGained, "Regain a point of Edge");
             this.cmdEdgeGained.UseVisualStyleBackColor = true;
             this.cmdEdgeGained.Click += new System.EventHandler(this.cmdEdgeGained_Click);
             // 
@@ -1618,7 +1585,6 @@ namespace Chummer
             this.cmdEdgeSpent.Size = new System.Drawing.Size(24, 24);
             this.cmdEdgeSpent.TabIndex = 63;
             this.cmdEdgeSpent.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdEdgeSpent, "Spend a point of Edge");
             this.cmdEdgeSpent.UseVisualStyleBackColor = true;
             this.cmdEdgeSpent.Click += new System.EventHandler(this.cmdEdgeSpent_Click);
             // 
@@ -1632,18 +1598,16 @@ namespace Chummer
             this.lblCounterspellingDiceLabel.TabIndex = 62;
             this.lblCounterspellingDiceLabel.Tag = "Label_CounterspellingDice";
             this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
-            this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
-            // lbllSpellDefenceManipPhysicalLabel
+            // lblSpellDefenceManipPhysicalLabel
             // 
-            this.lbllSpellDefenceManipPhysicalLabel.AutoSize = true;
-            this.lbllSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(3, 351);
-            this.lbllSpellDefenceManipPhysicalLabel.Name = "lbllSpellDefenceManipPhysicalLabel";
-            this.lbllSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
-            this.lbllSpellDefenceManipPhysicalLabel.TabIndex = 59;
-            this.lbllSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
-            this.lbllSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
-            this.tipTooltip.SetToolTip(this.lbllSpellDefenceManipPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+            this.lblSpellDefenceManipPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(3, 351);
+            this.lblSpellDefenceManipPhysicalLabel.Name = "lblSpellDefenceManipPhysicalLabel";
+            this.lblSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
+            this.lblSpellDefenceManipPhysicalLabel.TabIndex = 59;
+            this.lblSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
+            this.lblSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
             // 
             // lblSpellDefenceManipMentalLabel
             // 
@@ -1654,7 +1618,6 @@ namespace Chummer
             this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
             this.lblSpellDefenceManipMentalLabel.Tag = "Label_SpellDefenceManipMental";
             this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceManipMentalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIllusionPhysicalLabel
             // 
@@ -1665,7 +1628,6 @@ namespace Chummer
             this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
             this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
             this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIllusionManaLabel
             // 
@@ -1676,7 +1638,6 @@ namespace Chummer
             this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
             this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
             this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttWILLabel
             // 
@@ -1687,7 +1648,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
             this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
             this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttWILLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttLOGLabel
             // 
@@ -1698,7 +1658,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
             this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
             this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttLOGLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttINTLabel
             // 
@@ -1709,7 +1668,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
             this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
             this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttINTLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttCHALabel
             // 
@@ -1720,7 +1678,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
             this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
             this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttCHALabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttSTRLabel
             // 
@@ -1731,7 +1688,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
             this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
             this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttSTRLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttREALabel
             // 
@@ -1742,7 +1698,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
             this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
             this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttREALabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttAGILabel
             // 
@@ -1753,7 +1708,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
             this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
             this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttAGILabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDecAttBODLabel
             // 
@@ -1764,7 +1718,6 @@ namespace Chummer
             this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
             this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
             this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttBODLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDetectionLabel
             // 
@@ -1775,7 +1728,6 @@ namespace Chummer
             this.lblSpellDefenceDetectionLabel.TabIndex = 33;
             this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
             this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDetectionLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDirectSoakPhysicalLabel
             // 
@@ -1786,7 +1738,6 @@ namespace Chummer
             this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
             this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
             this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceDirectSoakManaLabel
             // 
@@ -1797,7 +1748,6 @@ namespace Chummer
             this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
             this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
             this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIndirectSoakLabel
             // 
@@ -1808,7 +1758,6 @@ namespace Chummer
             this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
             this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
             this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectSoakLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblSpellDefenceIndirectDodgeLabel
             // 
@@ -1819,7 +1768,6 @@ namespace Chummer
             this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
             this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
             this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
-            this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
             // 
             // lblStreetCred
             // 
@@ -1830,8 +1778,6 @@ namespace Chummer
             this.lblStreetCred.TabIndex = 71;
             this.lblStreetCred.Tag = "Label_StreetCred";
             this.lblStreetCred.Text = "Street Cred:";
-            this.tipTooltip.SetToolTip(this.lblStreetCred, "Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further ad" +
-        "justed by Game Masters.");
             // 
             // lblNotoriety
             // 
@@ -1842,9 +1788,6 @@ namespace Chummer
             this.lblNotoriety.TabIndex = 73;
             this.lblNotoriety.Tag = "Label_Notoriety";
             this.lblNotoriety.Text = "Notoriety:";
-            this.tipTooltip.SetToolTip(this.lblNotoriety, "Notoriety is typically gained through Qualities and can be further adjusted by Ga" +
-        "me Masters. Notoriety can be reduced by 1 point by burning 2 points of Street Cr" +
-        "ed.");
             // 
             // cmdBurnStreetCred
             // 
@@ -1856,7 +1799,6 @@ namespace Chummer
             this.cmdBurnStreetCred.Size = new System.Drawing.Size(24, 24);
             this.cmdBurnStreetCred.TabIndex = 82;
             this.cmdBurnStreetCred.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdBurnStreetCred, "Burn 2 points of Street Cred to reduce Notoriety by 1.");
             this.cmdBurnStreetCred.UseVisualStyleBackColor = true;
             this.cmdBurnStreetCred.Click += new System.EventHandler(this.cmdBurnStreetCred_Click);
             // 
@@ -1870,7 +1812,6 @@ namespace Chummer
             this.cmdVehicleGearReduceQty.Size = new System.Drawing.Size(24, 24);
             this.cmdVehicleGearReduceQty.TabIndex = 112;
             this.cmdVehicleGearReduceQty.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdVehicleGearReduceQty, "Reduce the quantity of the Gear by 1.");
             this.cmdVehicleGearReduceQty.UseVisualStyleBackColor = true;
             this.cmdVehicleGearReduceQty.Click += new System.EventHandler(this.cmdVehicleGearReduceQty_Click);
             // 
@@ -1884,7 +1825,6 @@ namespace Chummer
             this.cmdVehicleMoveToInventory.Size = new System.Drawing.Size(24, 24);
             this.cmdVehicleMoveToInventory.TabIndex = 136;
             this.cmdVehicleMoveToInventory.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdVehicleMoveToInventory, "Transfer to Inventory.");
             this.cmdVehicleMoveToInventory.UseVisualStyleBackColor = true;
             this.cmdVehicleMoveToInventory.Click += new System.EventHandler(this.cmdVehicleMoveToInventory_Click);
             // 
@@ -1898,7 +1838,6 @@ namespace Chummer
             this.chkVehicleWeaponAccessoryInstalled.TabIndex = 89;
             this.chkVehicleWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
             this.chkVehicleWeaponAccessoryInstalled.Text = "Installed";
-            this.tipTooltip.SetToolTip(this.chkVehicleWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
             this.chkVehicleWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
             this.chkVehicleWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkVehicleWeaponAccessoryInstalled_CheckedChanged);
             // 
@@ -1912,7 +1851,6 @@ namespace Chummer
             this.cmdGearReduceQty.Size = new System.Drawing.Size(24, 24);
             this.cmdGearReduceQty.TabIndex = 96;
             this.cmdGearReduceQty.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdGearReduceQty, "Reduce the quantity of the Gear by 1.");
             this.cmdGearReduceQty.UseVisualStyleBackColor = true;
             this.cmdGearReduceQty.Click += new System.EventHandler(this.cmdGearReduceQty_Click);
             // 
@@ -1926,7 +1864,6 @@ namespace Chummer
             this.cmdGearIncreaseQty.Size = new System.Drawing.Size(24, 24);
             this.cmdGearIncreaseQty.TabIndex = 105;
             this.cmdGearIncreaseQty.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdGearIncreaseQty, "Increase the number of pre-paid months for the Lifestyle");
             this.cmdGearIncreaseQty.UseVisualStyleBackColor = true;
             this.cmdGearIncreaseQty.Click += new System.EventHandler(this.cmdGearIncreaseQty_Click);
             // 
@@ -1940,7 +1877,6 @@ namespace Chummer
             this.cmdGearSplitQty.Size = new System.Drawing.Size(24, 24);
             this.cmdGearSplitQty.TabIndex = 112;
             this.cmdGearSplitQty.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdGearSplitQty, "Reduce the quantity of the Gear by 1.");
             this.cmdGearSplitQty.UseVisualStyleBackColor = true;
             this.cmdGearSplitQty.Click += new System.EventHandler(this.cmdGearSplitQty_Click);
             // 
@@ -1954,7 +1890,6 @@ namespace Chummer
             this.cmdGearMergeQty.Size = new System.Drawing.Size(24, 24);
             this.cmdGearMergeQty.TabIndex = 113;
             this.cmdGearMergeQty.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdGearMergeQty, "Reduce the quantity of the Gear by 1.");
             this.cmdGearMergeQty.UseVisualStyleBackColor = true;
             this.cmdGearMergeQty.Click += new System.EventHandler(this.cmdGearMergeQty_Click);
             // 
@@ -1968,7 +1903,6 @@ namespace Chummer
             this.cmdGearMoveToVehicle.Size = new System.Drawing.Size(24, 24);
             this.cmdGearMoveToVehicle.TabIndex = 115;
             this.cmdGearMoveToVehicle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdGearMoveToVehicle, "Transfer to Vehicle.");
             this.cmdGearMoveToVehicle.UseVisualStyleBackColor = true;
             this.cmdGearMoveToVehicle.Click += new System.EventHandler(this.cmdGearMoveToVehicle_Click);
             // 
@@ -1981,7 +1915,6 @@ namespace Chummer
             this.lblFoci.TabIndex = 92;
             this.lblFoci.Tag = "Label_BondedFoci";
             this.lblFoci.Text = "Bonded Foci";
-            this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of BP equal to its Force.");
             // 
             // cmdWeaponBuyAmmo
             // 
@@ -1993,7 +1926,6 @@ namespace Chummer
             this.cmdWeaponBuyAmmo.Size = new System.Drawing.Size(24, 24);
             this.cmdWeaponBuyAmmo.TabIndex = 107;
             this.cmdWeaponBuyAmmo.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdWeaponBuyAmmo, "Buy additional Ammo for this Weapon");
             this.cmdWeaponBuyAmmo.UseVisualStyleBackColor = true;
             this.cmdWeaponBuyAmmo.Click += new System.EventHandler(this.cmdWeaponBuyAmmo_Click);
             // 
@@ -2007,7 +1939,6 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle.Size = new System.Drawing.Size(24, 24);
             this.cmdWeaponMoveToVehicle.TabIndex = 116;
             this.cmdWeaponMoveToVehicle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdWeaponMoveToVehicle, "Transfer to Vehicle.");
             this.cmdWeaponMoveToVehicle.UseVisualStyleBackColor = true;
             this.cmdWeaponMoveToVehicle.Click += new System.EventHandler(this.cmdWeaponMoveToVehicle_Click);
             // 
@@ -2021,7 +1952,6 @@ namespace Chummer
             this.chkWeaponAccessoryInstalled.TabIndex = 79;
             this.chkWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
             this.chkWeaponAccessoryInstalled.Text = "Installed";
-            this.tipTooltip.SetToolTip(this.chkWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
             this.chkWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
             this.chkWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkWeaponAccessoryInstalled_CheckedChanged);
             // 
@@ -2035,7 +1965,6 @@ namespace Chummer
             this.cmdArmorDecrease.Size = new System.Drawing.Size(24, 24);
             this.cmdArmorDecrease.TabIndex = 94;
             this.cmdArmorDecrease.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdArmorDecrease, "Damage Armor Rating");
             this.cmdArmorDecrease.UseVisualStyleBackColor = true;
             this.cmdArmorDecrease.Click += new System.EventHandler(this.cmdArmorDecrease_Click);
             // 
@@ -2049,7 +1978,6 @@ namespace Chummer
             this.cmdArmorIncrease.Size = new System.Drawing.Size(24, 24);
             this.cmdArmorIncrease.TabIndex = 95;
             this.cmdArmorIncrease.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdArmorIncrease, "Repair Armor Rating");
             this.cmdArmorIncrease.UseVisualStyleBackColor = true;
             this.cmdArmorIncrease.Click += new System.EventHandler(this.cmdArmorIncrease_Click);
             // 
@@ -2063,8 +1991,6 @@ namespace Chummer
             this.chkArmorEquipped.TabIndex = 78;
             this.chkArmorEquipped.Tag = "Checkbox_Equipped";
             this.chkArmorEquipped.Text = "Equipped";
-            this.tipTooltip.SetToolTip(this.chkArmorEquipped, "Equipped Armor and Armor Mods are factored into Armor Encumbrance and a character" +
-        "\'s highest Armor Ratings.");
             this.chkArmorEquipped.UseVisualStyleBackColor = true;
             this.chkArmorEquipped.CheckedChanged += new System.EventHandler(this.chkArmorEquipped_CheckedChanged);
             // 
@@ -2077,7 +2003,6 @@ namespace Chummer
             this.cmdDecreaseLifestyleMonths.Size = new System.Drawing.Size(24, 24);
             this.cmdDecreaseLifestyleMonths.TabIndex = 92;
             this.cmdDecreaseLifestyleMonths.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdDecreaseLifestyleMonths, "Decrease the number of pre-paid months for the Lifestyle");
             this.cmdDecreaseLifestyleMonths.UseVisualStyleBackColor = true;
             this.cmdDecreaseLifestyleMonths.Visible = false;
             this.cmdDecreaseLifestyleMonths.Click += new System.EventHandler(this.cmdDecreaseLifestyleMonths_Click);
@@ -2091,7 +2016,6 @@ namespace Chummer
             this.cmdIncreaseLifestyleMonths.Size = new System.Drawing.Size(24, 24);
             this.cmdIncreaseLifestyleMonths.TabIndex = 93;
             this.cmdIncreaseLifestyleMonths.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.tipTooltip.SetToolTip(this.cmdIncreaseLifestyleMonths, "Increase the number of pre-paid months for the Lifestyle");
             this.cmdIncreaseLifestyleMonths.UseVisualStyleBackColor = true;
             this.cmdIncreaseLifestyleMonths.Visible = false;
             this.cmdIncreaseLifestyleMonths.Click += new System.EventHandler(this.cmdIncreaseLifestyleMonths_Click);
@@ -2105,7 +2029,6 @@ namespace Chummer
             this.lblAttributesAug.TabIndex = 105;
             this.lblAttributesAug.Tag = "Label_ValAugmented";
             this.lblAttributesAug.Text = "Val (Aug)";
-            this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
             // 
             // lblAttributesMetatype
             // 
@@ -2116,7 +2039,6 @@ namespace Chummer
             this.lblAttributesMetatype.TabIndex = 104;
             this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
             this.lblAttributesMetatype.Text = "Metatype Limits";
-            this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
             // 
             // lblAttributes
             // 
@@ -2127,8 +2049,6 @@ namespace Chummer
             this.lblAttributes.TabIndex = 103;
             this.lblAttributes.Tag = "Label_Attributes";
             this.lblAttributes.Text = "Attributes";
-            this.tipTooltip.SetToolTip(this.lblAttributes, "Only one attribute may be at its Maximum value during character creation (not inc" +
-        "luding EDG, MAG, and RES).");
             // 
             // lblRiggingINILabel
             // 
@@ -3691,8 +3611,8 @@ namespace Chummer
             this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
             this.tabDefences.Controls.Add(this.lblCounterspellingDiceLabel);
             this.tabDefences.Controls.Add(this.nudCounterspellingDice);
-            this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysical);
-            this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysicalLabel);
+            this.tabDefences.Controls.Add(this.lblSpellDefenceManipPhysical);
+            this.tabDefences.Controls.Add(this.lblSpellDefenceManipPhysicalLabel);
             this.tabDefences.Controls.Add(this.lblSpellDefenceManipMental);
             this.tabDefences.Controls.Add(this.lblSpellDefenceManipMentalLabel);
             this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysical);
@@ -3739,16 +3659,15 @@ namespace Chummer
             this.nudCounterspellingDice.Name = "nudCounterspellingDice";
             this.nudCounterspellingDice.Size = new System.Drawing.Size(40, 20);
             this.nudCounterspellingDice.TabIndex = 61;
-            this.nudCounterspellingDice.ValueChanged += new System.EventHandler(this.nudCounterspellingDice_Changed);
             // 
-            // lbllSpellDefenceManipPhysical
+            // lblSpellDefenceManipPhysical
             // 
-            this.lbllSpellDefenceManipPhysical.AutoSize = true;
-            this.lbllSpellDefenceManipPhysical.Location = new System.Drawing.Point(160, 352);
-            this.lbllSpellDefenceManipPhysical.Name = "lbllSpellDefenceManipPhysical";
-            this.lbllSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lbllSpellDefenceManipPhysical.TabIndex = 60;
-            this.lbllSpellDefenceManipPhysical.Text = "0";
+            this.lblSpellDefenceManipPhysical.AutoSize = true;
+            this.lblSpellDefenceManipPhysical.Location = new System.Drawing.Point(160, 352);
+            this.lblSpellDefenceManipPhysical.Name = "lblSpellDefenceManipPhysical";
+            this.lblSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenceManipPhysical.TabIndex = 60;
+            this.lblSpellDefenceManipPhysical.Text = "0";
             // 
             // lblSpellDefenceManipMental
             // 
@@ -4714,7 +4633,7 @@ namespace Chummer
             this.cmdIncreasePowerPoints.Size = new System.Drawing.Size(24, 24);
             this.cmdIncreasePowerPoints.TabIndex = 106;
             this.cmdIncreasePowerPoints.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.cmdIncreasePowerPoints.TooltipText = null;
+            this.cmdIncreasePowerPoints.ToolTipText = null;
             this.cmdIncreasePowerPoints.UseVisualStyleBackColor = true;
             this.cmdIncreasePowerPoints.Click += new System.EventHandler(this.cmdIncreasePowerPoints_Click);
             // 
@@ -4740,7 +4659,6 @@ namespace Chummer
             this.txtAlias.Name = "txtAlias";
             this.txtAlias.Size = new System.Drawing.Size(270, 20);
             this.txtAlias.TabIndex = 89;
-            this.txtAlias.TextChanged += new System.EventHandler(this.txtAlias_TextChanged);
             // 
             // lblAlias
             // 
@@ -12598,6 +12516,7 @@ namespace Chummer
             this.lblStreetCredTotal.TabIndex = 79;
             this.lblStreetCredTotal.Tag = "Label_StreetCred";
             this.lblStreetCredTotal.Text = "[0]";
+            this.lblStreetCredTotal.TextChanged += AdjustBurnStreetCredButtonLocation;
             // 
             // lblCharacterName
             // 
@@ -12615,7 +12534,6 @@ namespace Chummer
             this.txtCharacterName.Name = "txtCharacterName";
             this.txtCharacterName.Size = new System.Drawing.Size(100, 20);
             this.txtCharacterName.TabIndex = 78;
-            this.txtCharacterName.TextChanged += new System.EventHandler(this.txtCharacterName_TextChanged);
             // 
             // txtPlayerName
             // 
@@ -12623,7 +12541,6 @@ namespace Chummer
             this.txtPlayerName.Name = "txtPlayerName";
             this.txtPlayerName.Size = new System.Drawing.Size(100, 20);
             this.txtPlayerName.TabIndex = 66;
-            this.txtPlayerName.TextChanged += new System.EventHandler(this.txtPlayerName_TextChanged);
             // 
             // txtNotes
             // 
@@ -12633,7 +12550,6 @@ namespace Chummer
             this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtNotes.Size = new System.Drawing.Size(618, 100);
             this.txtNotes.TabIndex = 25;
-            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtConcept
@@ -12644,7 +12560,6 @@ namespace Chummer
             this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtConcept.Size = new System.Drawing.Size(618, 100);
             this.txtConcept.TabIndex = 19;
-            this.txtConcept.TextChanged += new System.EventHandler(this.txtConcept_TextChanged);
             this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtBackground
@@ -12655,7 +12570,7 @@ namespace Chummer
             this.txtBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtBackground.Size = new System.Drawing.Size(618, 96);
             this.txtBackground.TabIndex = 17;
-            this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
+            this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtDescription
             // 
@@ -12665,7 +12580,6 @@ namespace Chummer
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDescription.Size = new System.Drawing.Size(618, 101);
             this.txtDescription.TabIndex = 15;
-            this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
             this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // txtSkin
@@ -12674,7 +12588,6 @@ namespace Chummer
             this.txtSkin.Name = "txtSkin";
             this.txtSkin.Size = new System.Drawing.Size(100, 20);
             this.txtSkin.TabIndex = 13;
-            this.txtSkin.TextChanged += new System.EventHandler(this.txtSkin_TextChanged);
             // 
             // txtWeight
             // 
@@ -12682,7 +12595,6 @@ namespace Chummer
             this.txtWeight.Name = "txtWeight";
             this.txtWeight.Size = new System.Drawing.Size(100, 20);
             this.txtWeight.TabIndex = 11;
-            this.txtWeight.TextChanged += new System.EventHandler(this.txtWeight_TextChanged);
             // 
             // txtHeight
             // 
@@ -12690,7 +12602,6 @@ namespace Chummer
             this.txtHeight.Name = "txtHeight";
             this.txtHeight.Size = new System.Drawing.Size(100, 20);
             this.txtHeight.TabIndex = 9;
-            this.txtHeight.TextChanged += new System.EventHandler(this.txtHeight_TextChanged);
             // 
             // txtHair
             // 
@@ -12698,7 +12609,6 @@ namespace Chummer
             this.txtHair.Name = "txtHair";
             this.txtHair.Size = new System.Drawing.Size(100, 20);
             this.txtHair.TabIndex = 7;
-            this.txtHair.TextChanged += new System.EventHandler(this.txtHair_TextChanged);
             // 
             // txtEyes
             // 
@@ -12706,7 +12616,6 @@ namespace Chummer
             this.txtEyes.Name = "txtEyes";
             this.txtEyes.Size = new System.Drawing.Size(100, 20);
             this.txtEyes.TabIndex = 5;
-            this.txtEyes.TextChanged += new System.EventHandler(this.txtEyes_TextChanged);
             // 
             // txtAge
             // 
@@ -12714,7 +12623,6 @@ namespace Chummer
             this.txtAge.Name = "txtAge";
             this.txtAge.Size = new System.Drawing.Size(100, 20);
             this.txtAge.TabIndex = 3;
-            this.txtAge.TextChanged += new System.EventHandler(this.txtAge_TextChanged);
             // 
             // txtSex
             // 
@@ -12722,7 +12630,6 @@ namespace Chummer
             this.txtSex.Name = "txtSex";
             this.txtSex.Size = new System.Drawing.Size(100, 20);
             this.txtSex.TabIndex = 1;
-            this.txtSex.TextChanged += new System.EventHandler(this.txtSex_TextChanged);
             // 
             // nudPublicAware
             // 
@@ -12730,7 +12637,6 @@ namespace Chummer
             this.nudPublicAware.Name = "nudPublicAware";
             this.nudPublicAware.Size = new System.Drawing.Size(42, 20);
             this.nudPublicAware.TabIndex = 76;
-            this.nudPublicAware.ValueChanged += new System.EventHandler(this.nudPublicAware_ValueChanged);
             // 
             // lblPublicAware
             // 
@@ -12748,7 +12654,6 @@ namespace Chummer
             this.nudNotoriety.Name = "nudNotoriety";
             this.nudNotoriety.Size = new System.Drawing.Size(42, 20);
             this.nudNotoriety.TabIndex = 74;
-            this.nudNotoriety.ValueChanged += new System.EventHandler(this.nudNotoriety_ValueChanged);
             // 
             // nudStreetCred
             // 
@@ -12756,7 +12661,6 @@ namespace Chummer
             this.nudStreetCred.Name = "nudStreetCred";
             this.nudStreetCred.Size = new System.Drawing.Size(42, 20);
             this.nudStreetCred.TabIndex = 72;
-            this.nudStreetCred.ValueChanged += new System.EventHandler(this.nudStreetCred_ValueChanged);
             // 
             // lblPlayerName
             // 
@@ -14316,12 +14220,11 @@ namespace Chummer
 
         private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.TabControl tabInfo;
         private System.Windows.Forms.TabPage tabOtherInfo;
         private System.Windows.Forms.Label lblESSMax;
         private System.Windows.Forms.Label lblESS;
-        private System.Windows.Forms.Label lblArmor;
+        private LabelWithToolTip lblArmor;
         private System.Windows.Forms.Label lblCMStun;
         private System.Windows.Forms.Label lblCMPhysical;
         private System.Windows.Forms.Label lblCMStunLabel;
@@ -14457,20 +14360,20 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsUndoKarmaExpense;
         private System.Windows.Forms.ContextMenuStrip cmsUndoNuyenExpense;
         private System.Windows.Forms.ToolStripMenuItem tsUndoNuyenExpense;
-        private System.Windows.Forms.Label lblMemory;
+        private LabelWithToolTip lblMemory;
         private System.Windows.Forms.Label lblMemoryLabel;
-        private System.Windows.Forms.Label lblLiftCarry;
+        private LabelWithToolTip lblLiftCarry;
         private System.Windows.Forms.Label lblLiftCarryLabel;
-        private System.Windows.Forms.Label lblJudgeIntentions;
+        private LabelWithToolTip lblJudgeIntentions;
         private System.Windows.Forms.Label lblJudgeIntentionsLabel;
-        private System.Windows.Forms.Label lblComposure;
+        private LabelWithToolTip lblComposure;
         private System.Windows.Forms.Label lblComposureLabel;
         private System.Windows.Forms.ToolStripMenuItem tsAddArmorGear;
         private System.Windows.Forms.ContextMenuStrip cmsArmorGear;
         private System.Windows.Forms.ToolStripMenuItem tsArmorGearAddAsPlugin;
-        private System.Windows.Forms.Label lblCMDamageResistancePool;
+        private LabelWithToolTip lblCMDamageResistancePool;
         private System.Windows.Forms.Label lblCMDamageResistancePoolLabel;
-        private System.Windows.Forms.Label lblCMArmor;
+        private LabelWithToolTip lblCMArmor;
         private System.Windows.Forms.Label lblCMArmorLabel;
         private System.Windows.Forms.ToolStripMenuItem tsArmorNotes;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponNotes;
@@ -14606,19 +14509,19 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabDefences;
         private System.Windows.Forms.Label lblCounterspellingDiceLabel;
         private System.Windows.Forms.NumericUpDown nudCounterspellingDice;
-        private System.Windows.Forms.Label lbllSpellDefenceManipPhysical;
-        private System.Windows.Forms.Label lbllSpellDefenceManipPhysicalLabel;
-        private System.Windows.Forms.Label lblSpellDefenceManipMental;
+        private LabelWithToolTip lblSpellDefenceManipPhysical;
+        private System.Windows.Forms.Label lblSpellDefenceManipPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenceManipMental;
         private System.Windows.Forms.Label lblSpellDefenceManipMentalLabel;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionPhysical;
+        private LabelWithToolTip lblSpellDefenceIllusionPhysical;
         private System.Windows.Forms.Label lblSpellDefenceIllusionPhysicalLabel;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionMana;
+        private LabelWithToolTip lblSpellDefenceIllusionMana;
         private System.Windows.Forms.Label lblSpellDefenceIllusionManaLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttWIL;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttLOG;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttINT;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttCHA;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttSTR;
+        private LabelWithToolTip lblSpellDefenceDecAttWIL;
+        private LabelWithToolTip lblSpellDefenceDecAttLOG;
+        private LabelWithToolTip lblSpellDefenceDecAttINT;
+        private LabelWithToolTip lblSpellDefenceDecAttCHA;
+        private LabelWithToolTip lblSpellDefenceDecAttSTR;
         private System.Windows.Forms.Label lblSpellDefenceDecAttWILLabel;
         private System.Windows.Forms.Label lblSpellDefenceDecAttLOGLabel;
         private System.Windows.Forms.Label lblSpellDefenceDecAttINTLabel;
@@ -14626,19 +14529,19 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpellDefenceDecAttSTRLabel;
         private System.Windows.Forms.Label lblSpellDefenceDecAttREALabel;
         private System.Windows.Forms.Label lblSpellDefenceDecAttAGILabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttREA;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttAGI;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttBOD;
+        private LabelWithToolTip lblSpellDefenceDecAttREA;
+        private LabelWithToolTip lblSpellDefenceDecAttAGI;
+        private LabelWithToolTip lblSpellDefenceDecAttBOD;
         private System.Windows.Forms.Label lblSpellDefenceDecAttBODLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDetection;
+        private LabelWithToolTip lblSpellDefenceDetection;
         private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysical;
+        private LabelWithToolTip lblSpellDefenceDirectSoakPhysical;
         private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysicalLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakMana;
+        private LabelWithToolTip lblSpellDefenceDirectSoakMana;
         private System.Windows.Forms.Label lblSpellDefenceDirectSoakManaLabel;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectSoak;
+        private LabelWithToolTip lblSpellDefenceIndirectSoak;
         private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectDodge;
+        private LabelWithToolTip lblSpellDefenceIndirectDodge;
         private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
         private System.Windows.Forms.TabControl tabCharacterTabs;
@@ -14678,13 +14581,13 @@ namespace Chummer
         private UI.Skills.SkillsTabUserControl tabSkillsUc;
         private System.Windows.Forms.TabPage tabLimits;
         private System.Windows.Forms.Label lblAstralLabel;
-        private System.Windows.Forms.Label lblAstral;
+        private LabelWithToolTip lblAstral;
         private System.Windows.Forms.Label lblSocialLimitLabel;
-        private System.Windows.Forms.Label lblSocial;
+        private LabelWithToolTip lblSocial;
         private System.Windows.Forms.Label lblMentalLimitLabel;
-        private System.Windows.Forms.Label lblMental;
+        private LabelWithToolTip lblMental;
         private System.Windows.Forms.Label lblPhysicalLimitLabel;
-        private System.Windows.Forms.Label lblPhysical;
+        private LabelWithToolTip lblPhysical;
         private System.Windows.Forms.Button cmdAddLimitModifier;
         private System.Windows.Forms.TreeView treLimit;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
@@ -14715,7 +14618,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMentorSpiritLabel;
         private System.Windows.Forms.Label lblMentorSpiritInformation;
         private System.Windows.Forms.ComboBox cboTradition;
-        private System.Windows.Forms.Label lblDrainAttributesValue;
+        private LabelWithToolTip lblDrainAttributesValue;
         private System.Windows.Forms.Label lblDrainAttributes;
         private System.Windows.Forms.Label lblDrainAttributesLabel;
         private System.Windows.Forms.Label lblTraditionLabel;
@@ -14756,7 +14659,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private System.Windows.Forms.Button cmdRollFading;
         private System.Windows.Forms.ComboBox cboStream;
-        private System.Windows.Forms.Label lblFadingAttributesValue;
+        private LabelWithToolTip lblFadingAttributesValue;
         private System.Windows.Forms.Label lblFadingAttributes;
         private System.Windows.Forms.Label lblFadingAttributesLabel;
         private System.Windows.Forms.Label lblStreamLabel;
@@ -15280,9 +15183,9 @@ namespace Chummer
         private SplitButton cmdDeleteVehicle;
         private System.Windows.Forms.TabPage tabCharacterInfo;
         private System.Windows.Forms.Button cmdBurnStreetCred;
-        private System.Windows.Forms.Label lblPublicAwareTotal;
-        private System.Windows.Forms.Label lblNotorietyTotal;
-        private System.Windows.Forms.Label lblStreetCredTotal;
+        private LabelWithToolTip lblPublicAwareTotal;
+        private LabelWithToolTip lblNotorietyTotal;
+        private LabelWithToolTip lblStreetCredTotal;
         private System.Windows.Forms.Label lblCharacterName;
         private System.Windows.Forms.TextBox txtCharacterName;
         private System.Windows.Forms.TextBox txtPlayerName;

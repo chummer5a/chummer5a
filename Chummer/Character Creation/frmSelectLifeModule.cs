@@ -37,7 +37,7 @@ namespace Chummer
 
 
         private string _strWorkStage;
-        
+
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
@@ -111,7 +111,7 @@ namespace Chummer
                     {
                         nodes.Add(treNode);
                     }
-                    
+
                 }
             }
 
@@ -171,8 +171,7 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = selectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + ' ' + selectedNodeInfo["page"]?.InnerText;
-
+                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Language) + selectedNodeInfo["page"]?.InnerText;
                 lblStage.Text = selectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
@@ -276,7 +275,7 @@ namespace Chummer
                 _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
                 BuildTree(GetSelectString());
             }
-            
+
         }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
@@ -295,7 +294,7 @@ namespace Chummer
                     //No other way to check for a valid regex that i know of
                 }
             }
-            
+
             BuildTree(GetSelectString());
         }
 

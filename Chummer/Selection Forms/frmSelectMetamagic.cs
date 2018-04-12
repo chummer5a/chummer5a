@@ -49,7 +49,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            
+
             // Load the Metamagic information.
             switch (objMode)
             {
@@ -86,19 +86,20 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                    tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 

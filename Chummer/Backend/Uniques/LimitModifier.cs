@@ -220,9 +220,9 @@ namespace Chummer
                 else
                     strBonus = _intBonus.ToString();
 
-                string strReturn = DisplayNameShort + " [" + strBonus + ']';
+                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += " (" + _strCondition + ')';
+                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
                 return strReturn;
             }
         }

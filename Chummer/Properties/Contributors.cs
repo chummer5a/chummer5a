@@ -53,6 +53,7 @@ namespace Chummer.Properties
             "David Dashifen Kees<dashifen>",
             "Kadrack",
             "Lochabar",
+            "cnschu",
             "mudge6",
             "Richard Zang<richard-zang>",
             "Claire<MachineMuse>",

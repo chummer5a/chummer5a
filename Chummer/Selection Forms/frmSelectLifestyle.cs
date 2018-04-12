@@ -77,6 +77,7 @@ namespace Chummer
                 cboLifestyle.SelectedIndex = 0;
             cboLifestyle.EndUpdate();
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             // Fill the Options list.
             using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
                 if (xmlLifestyleOptionsList?.Count > 0)
@@ -91,7 +92,7 @@ namespace Chummer
                         if (nodMultiplier == null)
                         {
                             nodMultiplier = objXmlOption["multiplierbaseonly"];
-                            strBaseString = ' ' + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
+                            strBaseString = strSpaceCharacter + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
                         }
                         nodOption.Tag = objXmlOption["id"]?.InnerText;
                         if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
@@ -188,13 +189,14 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 
@@ -290,13 +292,14 @@ namespace Chummer
                     string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                        tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                        string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                        GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                     }
                     else
                     {
                         lblSource.Text = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                        tipTooltip.SetToolTip(lblSource, LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
+                        GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
                     }
 
                     // Add the flat costs from qualities

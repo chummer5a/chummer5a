@@ -34,8 +34,8 @@ namespace Chummer
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
-        /// from an XmlNode. This version sets the output variable to its 
-        /// default value in case of a failed read and can be used for 
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
         /// initializing variables
         /// </summary>
         /// <typeparam name="T">The type to convert to</typeparam>
@@ -103,7 +103,7 @@ namespace Chummer
 
                 //Otherwise just log it
 #if DEBUG
-                System.Reflection.MethodBase mth 
+                System.Reflection.MethodBase mth
                     = new StackTrace().GetFrame(1).GetMethod();
                 string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType?.Name, mth);
 #else
@@ -120,8 +120,8 @@ namespace Chummer
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
-        /// from an XmlNode. This version sets the output variable to its 
-        /// default value in case of a failed read and can be used for 
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
         /// a tryParse style function that is fed the nodes InnerText
         /// </summary>
@@ -179,7 +179,7 @@ namespace Chummer
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
         /// from an XmlNode. This version preserves the output variable in case
-        /// of a failed read 
+        /// of a failed read
         /// </summary>
         /// <typeparam name="T">The type to convert to</typeparam>
         /// <param name="node">The XmlNode to read from</param>

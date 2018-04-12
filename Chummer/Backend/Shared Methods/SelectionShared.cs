@@ -126,7 +126,7 @@ namespace Chummer
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString(), out bool blnIsSuccess);
                     strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
-                    
+
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
                     IEnumerable<IHasName> objListToCheck = null;
                     bool blnCheckCyberwareChildren = false;
@@ -980,7 +980,7 @@ namespace Chummer
                 strName = strNodeInnerText;
             return false;
         }
-        
+
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>

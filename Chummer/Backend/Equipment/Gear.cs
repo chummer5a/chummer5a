@@ -796,7 +796,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            
+
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -1005,7 +1005,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gear");
 
             if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 
@@ -1237,7 +1237,7 @@ namespace Chummer.Backend.Equipment
             get => _decCostFor;
             set => _decCostFor = value;
         }
-        
+
         /// <summary>
         /// Cost.
         /// </summary>
@@ -1817,7 +1817,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                         strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
-                    
+
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                     if (!string.IsNullOrEmpty(strSecondHalf))
@@ -1869,7 +1869,7 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                    
+
                     if (strFirstHalf == "[*]")
                         strReturn = "*";
                     else
@@ -1894,7 +1894,7 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strReturn.StartsWith('[');
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
-                    
+
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     if (blnIsSuccess)
                         strReturn = ((double) objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -1949,7 +1949,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
-                
+
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
                 objCost.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2121,20 +2121,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1.0m || Category == "Currency")
-                strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", GlobalOptions.CultureInfo) + ' ' + strReturn;
+                strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
             if (!string.IsNullOrEmpty(GearName))
             {
-                strReturn += " (\"" + GearName + "\")";
+                strReturn += strSpaceCharacter + "(\"" + GearName + "\")";
             }
 
             return strReturn;
@@ -2453,7 +2453,7 @@ namespace Chummer.Backend.Equipment
                                 Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = treGears.FindNode(InternalId);
                                 if (objGearNode != null)
-                                    objGearNode.Text = DisplayName(GlobalOptions.Language);
+                                    objGearNode.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
                         }
                         if (WirelessOn && WirelessBonus != null)
@@ -2465,7 +2465,7 @@ namespace Chummer.Backend.Equipment
                                 Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = treGears.FindNode(InternalId);
                                 if (objGearNode != null)
-                                    objGearNode.Text = DisplayName(GlobalOptions.Language);
+                                    objGearNode.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
                         }
                     }
@@ -2473,7 +2473,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(DisplayName(GlobalOptions.Language));
+                    strOutdatedItems.AppendLine(DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
                 }
             }
             foreach (Gear objChild in Children)
@@ -2493,7 +2493,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = cmsGear,
                 ForeColor = PreferredColor,

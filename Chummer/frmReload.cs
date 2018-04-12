@@ -107,7 +107,7 @@ namespace Chummer
         {
             set => _lstAmmo = value;
         }
-        
+
         /// <summary>
         /// List of ammunition that the user can select.
         /// </summary>

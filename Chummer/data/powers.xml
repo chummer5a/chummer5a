@@ -537,6 +537,10 @@
         </required>
       </adeptwayrequires>
       <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
         <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
@@ -1672,6 +1676,12 @@
           <power>Facial Sculpt</power>
         </oneof>
       </required>
+      <bonus>
+        <specificskill>
+          <name>Disguise</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
     </power>
     <!-- Region Cutting Aces -->
     <power>

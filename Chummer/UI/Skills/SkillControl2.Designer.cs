@@ -20,7 +20,6 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
                 _italic?.Dispose();
                 _italicName?.Dispose();
                 UnbindSkillControl();
@@ -37,21 +36,20 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new LabelWithToolTip();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
-            this.lblModifiedRating = new System.Windows.Forms.Label();
+            this.lblModifiedRating = new LabelWithToolTip();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblCareerRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
+            this.btnCareerIncrease = new ButtonWithToolTip();
             this.lblCareerSpec = new System.Windows.Forms.Label();
-            this.btnAddSpec = new System.Windows.Forms.Button();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.btnAddSpec = new ButtonWithToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
             this.cmsSkillLabel.SuspendLayout();
@@ -207,20 +205,6 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // btnAttribute
             // 
             this.btnAttribute.FlatAppearance.BorderSize = 0;
@@ -277,19 +261,18 @@ namespace Chummer.UI.Skills
 
         #endregion
 
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblAttribute;
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
-        private System.Windows.Forms.Label lblModifiedRating;
+        private LabelWithToolTip lblModifiedRating;
         private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblCareerRating;
-        private System.Windows.Forms.Button btnCareerIncrease;
+        private ButtonWithToolTip btnCareerIncrease;
         private System.Windows.Forms.Label lblCareerSpec;
-        private System.Windows.Forms.Button btnAddSpec;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private ButtonWithToolTip btnAddSpec;
         private System.Windows.Forms.Button btnAttribute;
         private System.Windows.Forms.ComboBox cboSelectAttribute;
         private ContextMenuStrip cmsSkillLabel;

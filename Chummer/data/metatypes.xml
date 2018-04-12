@@ -2506,7 +2506,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2574,7 +2579,15 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2641,7 +2654,15 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2709,7 +2730,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2780,7 +2806,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2848,7 +2879,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2916,7 +2952,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>115</karma>
@@ -2985,7 +3026,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3041,7 +3087,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3110,7 +3161,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3181,7 +3237,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3264,7 +3325,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3329,7 +3395,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3395,7 +3466,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3459,7 +3535,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3526,7 +3607,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3591,7 +3677,12 @@
           </qualities>
           <karma>120</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3658,7 +3749,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3730,7 +3826,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3796,7 +3897,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3862,7 +3968,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3929,7 +4040,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -4062,7 +4178,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -4141,7 +4262,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4216,7 +4342,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -4294,7 +4425,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4375,7 +4511,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <qualities>
@@ -4455,7 +4596,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4531,7 +4677,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>125</karma>
@@ -4609,7 +4760,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4689,7 +4845,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4771,7 +4932,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4853,7 +5019,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4933,7 +5104,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -5009,7 +5185,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -5087,7 +5268,13 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5161,7 +5348,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5239,7 +5431,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>4</karma>
@@ -5315,7 +5512,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>130</karma>
@@ -5395,7 +5597,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -5477,7 +5684,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5556,7 +5768,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5635,7 +5852,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5715,7 +5937,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5833,7 +6060,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -5901,7 +6133,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -5968,7 +6205,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6036,7 +6278,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6107,7 +6354,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6175,7 +6427,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6243,7 +6500,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6312,7 +6574,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6371,7 +6638,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6440,7 +6712,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6511,7 +6788,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6591,7 +6873,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6658,7 +6945,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6726,7 +7018,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6794,7 +7091,12 @@
           </qualities>
           <karma>8</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6862,7 +7164,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6930,7 +7237,12 @@
           </qualities>
           <karma>140</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6998,7 +7310,12 @@
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7070,7 +7387,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7140,7 +7462,12 @@
           </qualities>
           <karma>12</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7206,7 +7533,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7276,7 +7608,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7402,7 +7739,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7490,7 +7832,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7577,7 +7924,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7665,7 +8017,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7756,7 +8113,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7844,7 +8206,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7932,7 +8299,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8021,7 +8393,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8110,7 +8487,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8201,7 +8583,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8292,7 +8679,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8384,7 +8776,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8472,7 +8869,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8561,7 +8963,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8648,7 +9055,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8736,7 +9148,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8823,7 +9240,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8914,7 +9336,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9006,7 +9433,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9095,7 +9527,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9184,7 +9621,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9274,7 +9716,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9417,7 +9864,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9507,7 +9959,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9595,7 +10052,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9684,7 +10146,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9776,7 +10243,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9865,7 +10337,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9954,7 +10431,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10045,7 +10527,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10136,7 +10623,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10229,7 +10721,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10322,7 +10819,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10414,7 +10916,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10502,7 +11009,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10591,7 +11103,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10679,7 +11196,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10768,7 +11290,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10856,7 +11383,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10949,7 +11481,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11044,7 +11581,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11135,7 +11677,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11226,7 +11773,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11317,7 +11869,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11451,7 +12008,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11460,7 +12017,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11529,7 +12091,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -11540,7 +12102,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11609,7 +12176,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11618,7 +12185,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11687,7 +12259,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11697,7 +12269,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11766,7 +12343,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
@@ -11779,7 +12356,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11848,7 +12430,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11858,7 +12440,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11926,7 +12513,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
@@ -11937,7 +12524,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12007,7 +12599,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12018,7 +12610,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12088,7 +12685,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12100,7 +12697,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12170,7 +12772,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12184,7 +12786,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12254,7 +12861,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12267,7 +12874,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12337,7 +12949,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
@@ -12350,7 +12962,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12420,7 +13037,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -12429,7 +13046,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12498,7 +13120,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
@@ -12508,7 +13130,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12577,7 +13204,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -12586,7 +13213,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12655,7 +13287,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -12665,7 +13297,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12733,7 +13370,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
@@ -12743,7 +13380,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12813,7 +13455,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -12823,7 +13465,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12897,7 +13544,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -12908,7 +13555,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12980,7 +13632,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -12990,7 +13642,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13061,7 +13718,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -13071,7 +13728,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13143,7 +13805,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -13153,7 +13815,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13288,7 +13955,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13377,7 +14049,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13464,7 +14141,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13552,7 +14234,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13643,7 +14330,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13731,7 +14423,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13820,7 +14517,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13910,7 +14612,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14000,7 +14707,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14092,7 +14804,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14184,7 +14901,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14276,7 +14998,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14364,7 +15091,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14453,7 +15185,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14541,7 +15278,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14629,7 +15371,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14716,7 +15463,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14805,7 +15557,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14899,7 +15656,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14989,7 +15751,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15079,7 +15846,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15169,7 +15941,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15314,7 +16091,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15404,7 +16186,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15492,7 +16279,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15581,7 +16373,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15673,7 +16470,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15762,7 +16564,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15851,7 +16658,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15942,7 +16754,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16033,7 +16850,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16126,7 +16948,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16219,7 +17046,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16312,7 +17144,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
@@ -16400,7 +17237,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16489,7 +17331,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16578,7 +17425,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16667,7 +17519,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16755,7 +17612,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16847,7 +17709,12 @@
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16941,7 +17808,12 @@
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17032,7 +17904,12 @@
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17123,7 +18000,12 @@
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17214,7 +18096,12 @@
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17359,7 +18246,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17450,7 +18342,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17539,7 +18436,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17629,7 +18531,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17721,7 +18628,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17811,7 +18723,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17901,7 +18818,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17993,7 +18915,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18086,7 +19013,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18181,7 +19113,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18275,7 +19212,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18369,7 +19311,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18463,7 +19410,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18553,7 +19505,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18643,7 +19600,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18733,7 +19695,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18822,7 +19789,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18913,7 +19885,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19009,7 +19986,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19101,7 +20083,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19193,7 +20180,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19285,7 +20277,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19431,7 +20428,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19512,7 +20514,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19591,7 +20598,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19671,7 +20683,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19753,7 +20770,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19833,7 +20855,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19913,7 +20940,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19995,7 +21027,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -20078,7 +21115,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20163,7 +21205,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20247,7 +21294,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20331,7 +21383,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20411,7 +21468,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20491,7 +21553,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20570,7 +21637,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20650,7 +21722,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20729,7 +21806,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20811,7 +21893,12 @@
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20896,7 +21983,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20978,7 +22070,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21060,7 +22157,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21142,7 +22244,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21281,7 +22388,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21364,7 +22476,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -21445,7 +22562,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21526,7 +22648,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21610,7 +22737,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21693,7 +22825,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21776,7 +22913,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21859,7 +23001,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -21925,7 +23072,12 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22009,7 +23161,12 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22098,7 +23255,12 @@
             <power>Shift (Metahuman Form)</power>
           </powers>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22199,7 +23361,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22281,7 +23448,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22363,7 +23535,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22445,7 +23622,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22527,7 +23709,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22606,7 +23793,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -22692,7 +23884,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22781,7 +23978,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22865,7 +24067,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22951,7 +24158,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -23037,7 +24249,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>

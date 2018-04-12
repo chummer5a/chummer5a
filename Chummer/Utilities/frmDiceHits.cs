@@ -35,7 +35,8 @@ namespace Chummer
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + ' ' + _intDice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ": ";
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + strSpaceCharacter + _intDice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ':' + strSpaceCharacter;
             nudDiceResult.Maximum = _intDice;
             nudDiceResult.Minimum = 0;
             lblResult.Text = string.Empty;

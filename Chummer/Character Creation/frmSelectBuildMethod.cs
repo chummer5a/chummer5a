@@ -27,9 +27,9 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly string _strDefaultOption = "Standard";
-        private readonly XPathNavigator _xmlGameplayOptionsDataGameplayOptionsNode; 
-        int intQualityLimits;
-        decimal decNuyenBP;
+        private readonly XPathNavigator _xmlGameplayOptionsDataGameplayOptionsNode;
+        private int _intQualityLimits;
+        private decimal _decNuyenBP;
 
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
@@ -86,7 +86,7 @@ namespace Chummer
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
 
-            toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
 
             if (blnUseCurrentValues)
             {
@@ -98,9 +98,9 @@ namespace Chummer
                 cboBuildMethod.SelectedValue = _objCharacter.BuildMethod.ToString();
 
                 nudKarma.Value = objCharacter.BuildKarma;
-                nudMaxNuyen.Value = decNuyenBP = _objCharacter.NuyenMaximumBP;
+                nudMaxNuyen.Value = _decNuyenBP = _objCharacter.NuyenMaximumBP;
 
-                intQualityLimits = _objCharacter.GameplayOptionQualityLimit;
+                _intQualityLimits = _objCharacter.GameplayOptionQualityLimit;
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
                 nudMaxAvail.Value = objCharacter.MaximumAvailability;
                 nudSumtoTen.Value = objCharacter.SumtoTen;
@@ -108,8 +108,8 @@ namespace Chummer
             else if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
                 XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
-                objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref intQualityLimits);
-                objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decNuyenBP);
+                objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
+                objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
             }
         }
 
@@ -122,11 +122,11 @@ namespace Chummer
                     _objCharacter.BuildMethod = CharacterBuildMethod.Karma;
                     break;
                 case "Priority":
-                    _objCharacter.NuyenMaximumBP = decNuyenBP;
+                    _objCharacter.NuyenMaximumBP = _decNuyenBP;
                     _objCharacter.BuildMethod = CharacterBuildMethod.Priority;
                     break;
                 case "SumtoTen":
-                    _objCharacter.NuyenMaximumBP = decNuyenBP;
+                    _objCharacter.NuyenMaximumBP = _decNuyenBP;
                     _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
                     _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
                     break;
@@ -152,10 +152,10 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
-            
+
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
-            _objCharacter.GameplayOptionQualityLimit = intQualityLimits;
+            _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = decimal.ToInt32(nudMaxAvail.Value);
             DialogResult = DialogResult.OK;
@@ -218,8 +218,8 @@ namespace Chummer
                 int intTemp = 0;
                 if (objXmlGameplayOption.TryGetInt32FieldQuickly("maxavailability", ref intTemp))
                     nudMaxAvail.Value = intTemp;
-                objXmlGameplayOption.TryGetInt32FieldQuickly("karma", ref intQualityLimits);
-                objXmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decNuyenBP);
+                objXmlGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
+                objXmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
             }
         }
         #endregion

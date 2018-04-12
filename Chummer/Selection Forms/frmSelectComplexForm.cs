@@ -45,7 +45,7 @@ namespace Chummer
             MoveControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
-            
+
             if (_objCharacter.IsCritter)
             {
                 _xmlOptionalComplexFormNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
@@ -78,7 +78,7 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 return;
             }
 
@@ -139,23 +139,24 @@ namespace Chummer
                         .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
                         .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
                 }
-                
+
                 lblFV.Text = strFV;
                 
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-                tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
+                    CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 
@@ -237,7 +238,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
