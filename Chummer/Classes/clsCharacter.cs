@@ -6245,7 +6245,7 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedCareerKarma != decimal.MinValue)
+                if (_intCachedCareerKarma != int.MinValue)
                     return _intCachedCareerKarma;
 
                 int intKarma = 0;
