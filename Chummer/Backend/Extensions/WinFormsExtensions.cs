@@ -218,7 +218,7 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if ((objNode.Tag as IHasInternalId).InternalId == strGuid)
+                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;
