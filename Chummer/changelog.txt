@@ -13,6 +13,7 @@ Application Changes:
 - Regression fix for behaviour of initiation tab in career and create mode either not being visible, or hiding Group/Ordeal checkboxes.
 - Fixed controls overlapping when selecting a shapeshifter or other metatype with a lot of standard qualities.
 - Fixed a cache issue with the TrustFund property that caused advanced lifestyles to crash.
+- Advanced Lifestyles are no longer allowed to be accepted with more lifestyle points spent than maximum.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
@@ -23,6 +24,8 @@ New Strings:
 - String_Sensor
 - String_Pilot
 - String_VehicleBody
+- Message_SelectAdvancedLifestyle_OverLPLimit
+- MessageTitle_SelectAdvancedLifestyle_OverLPLimit
 
 Removed Strings:
 

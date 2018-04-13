@@ -455,11 +455,6 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtLifestyleName.Text))
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
             _blnAddAgain = false;
             AcceptForm();
         }
@@ -668,6 +663,17 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            if (string.IsNullOrEmpty(txtLifestyleName.Text))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (Convert.ToInt32(lblTotalLP.Text) < 0)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlLifestyle == null)
