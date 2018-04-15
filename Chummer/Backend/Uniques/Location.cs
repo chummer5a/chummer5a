@@ -33,26 +33,19 @@ namespace Chummer
     public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove
     {
         private Guid _guiID;
-        private string _strName = string.Empty;
+        private string _strName;
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
-
         #region Constructor, Create, Save, Load, and Print Methods
-        public Location(Character objCharacter)
+        public Location(Character objCharacter, ObservableCollection<Location> parent, string name = "", bool addToList = true)
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-        }
-
-        /// Create an Art from an XmlNode.
-        /// <param name="objXmlNode">XmlNode to create the object from.</param>
-        /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlNode, Improvement.ImprovementSource objSource)
-        {
-            objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objXmlNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _strName = name;
+            Parent = parent;
+            if (addToList)
+                Parent.Add(this);
         }
 
         /// <summary>
@@ -61,7 +54,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            objWriter.WriteStartElement("art");
+            objWriter.WriteStartElement("location");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
@@ -77,6 +70,8 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (Parent == null || Parent.Contains(this)) return;
+                Parent.Add(this);
         }
 
         /// <summary>
@@ -86,7 +81,7 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
-            objWriter.WriteStartElement("art");
+            objWriter.WriteStartElement("location");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
@@ -139,6 +134,7 @@ namespace Chummer
 
         public List<IHasLocation> Children { get; } = new List<IHasLocation>();
 
+        public ObservableCollection<Location> Parent { get; set; }
         #endregion
 
         #region UI Methods
@@ -179,7 +175,7 @@ namespace Chummer
                 item.Location = string.Empty;
             }
             string strMessage = LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language);
-            return character.ConfirmDelete(strMessage) && character.ArmorLocations.Remove(this);
+            return character.ConfirmDelete(strMessage) && Parent.Remove(this);
         }
     }
 }

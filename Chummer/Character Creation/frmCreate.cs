@@ -3304,14 +3304,19 @@ namespace Chummer
         private void cmdAddWeapon_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
+            Location location = null;
+            if (treWeapons.SelectedNode?.Tag is Location objLocation)
+            {
+                location = objLocation;
+            }
             do
             {
-                blnAddAgain = AddWeapon(string.Empty);
+                blnAddAgain = AddWeapon(location);
             }
             while (blnAddAgain);
         }
 
-        private bool AddWeapon(string strLocation)
+        private bool AddWeapon(Location objLocation = null)
         {
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject);
             frmPickWeapon.ShowDialog(this);
@@ -3329,7 +3334,7 @@ namespace Chummer
             Weapon objWeapon = new Weapon(CharacterObject);
             objWeapon.Create(objXmlWeapon, lstWeapons);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-            objWeapon.Location = strLocation;
+            objWeapon.Location = objLocation;
 
             if (frmPickWeapon.FreeCost)
             {
@@ -3401,9 +3406,14 @@ namespace Chummer
         private void cmdAddGear_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
+            string id = string.Empty;
+            if (treGear.SelectedNode?.Tag is IHasInternalId objNode)
+            {
+                id = objNode.InternalId;
+            }
             do
             {
-                blnAddAgain = PickGear(string.Empty);
+                blnAddAgain = PickGear(id);
             }
             while (blnAddAgain);
         }
@@ -4232,10 +4242,7 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject);
-            objLocation.Name = frmPickText.SelectedValue;
-            CharacterObject.GearLocations.Add(objLocation);
-
+            Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
             IsDirty = true;
         }
 
@@ -4250,9 +4257,7 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject);
-            objLocation.Name = frmPickText.SelectedValue;
-            CharacterObject.WeaponLocations.Add(objLocation);
+            Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -4428,24 +4433,18 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject);
-            objLocation.Name = frmPickText.SelectedValue;
-            CharacterObject.ArmorLocations.Add(objLocation);
-            
+            Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
+
             IsDirty = true;
         }
 
         private void cmdArmorEquipAll_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode?.Tag is string strSelectedId)
+            if (treArmor.SelectedNode?.Tag is Location objLocation)
             {
-                // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in CharacterObject.Armor)
+                foreach (Armor objArmor in objLocation.Children)
                 {
-                    if (objArmor.Location == strSelectedId || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
-                    {
-                        objArmor.Equipped = true;
-                    }
+                    objArmor.Equipped = true;
                 }
                 IsCharacterUpdateRequested = true;
 
@@ -4455,15 +4454,11 @@ namespace Chummer
 
         private void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode?.Tag is string strSelectedId)
+            if (treArmor.SelectedNode?.Tag is Location objLocation)
             {
-                // En-equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in CharacterObject.Armor)
+                foreach (Armor objArmor in objLocation.Children)
                 {
-                    if (objArmor.Location == strSelectedId || (strSelectedId == "Node_SelectedArmor" && string.IsNullOrEmpty(objArmor.Location)))
-                    {
-                        objArmor.Equipped = false;
-                    }
+                    objArmor.Equipped = true;
                 }
                 IsCharacterUpdateRequested = true;
 
@@ -4479,19 +4474,15 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Add a new location to the selected Vehicle.
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
-            string strLocation = frmPickText.SelectedValue;
-            if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(strLocation))
+            if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-
-            objVehicle.Locations.Add(strLocation);
+            Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -8286,7 +8277,7 @@ namespace Chummer
             if (e.Node.Checked)
                 return;
             
-            string strSelectedId = (e.Node?.Tag as IHasInternalId).InternalId;
+            string strSelectedId = (e.Node?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             // Locate the Focus that is being touched.
             Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(strSelectedId);
@@ -15581,22 +15572,22 @@ namespace Chummer
 
         private void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            string strSelectedLocation = treWeapons.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!(treWeapons.SelectedNode.Tag is Location objLocation)) return;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddWeapon(strSelectedLocation);
+                blnAddAgain = AddWeapon(objLocation);
             }
             while (blnAddAgain);
         }
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+            if (!(treGear.SelectedNode.Tag is IHasInternalId objSelectedId)) return;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(strSelectedId);
+                blnAddAgain = PickGear(objSelectedId.InternalId);
             }
             while (blnAddAgain);
         }

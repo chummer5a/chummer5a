@@ -3058,7 +3058,7 @@ namespace Chummer
             this.tsGearLocationAddGear.Size = new System.Drawing.Size(166, 22);
             this.tsGearLocationAddGear.Tag = "Menu_AddGear";
             this.tsGearLocationAddGear.Text = "Add &Gear";
-            this.tsGearLocationAddGear.Click += new System.EventHandler(this.tsGearLocationAddGear_Click);
+            this.tsGearLocationAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
             // 
             // cmsArmorLocation
             // 

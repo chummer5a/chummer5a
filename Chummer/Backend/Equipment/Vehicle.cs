@@ -70,7 +70,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
-        private readonly TaggedObservableCollection<string> _lstLocations = new TaggedObservableCollection<string>();
+        private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
 
@@ -531,9 +531,9 @@ namespace Chummer.Backend.Equipment
             {
                 // <locations>
                 objWriter.WriteStartElement("locations");
-                foreach (string strLocation in _lstLocations)
+                foreach (Location objLocation in _lstLocations)
                 {
-                    objWriter.WriteElementString("location", strLocation);
+                    objLocation.Save(objWriter);
                 }
                 // </locations>
                 objWriter.WriteEndElement();
@@ -760,7 +760,8 @@ namespace Chummer.Backend.Equipment
                 // Locations.
                 foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
                 {
-                    _lstLocations.Add(objXmlLocation.InnerText);
+                    Location objLocation = new Location(_objCharacter, _lstLocations, "", false);
+                    objLocation.Load(objXmlLocation);
                 }
             }
         }
@@ -1322,7 +1323,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<string> Locations => _lstLocations;
+        public TaggedObservableCollection<Location> Locations => _lstLocations;
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
@@ -2791,15 +2792,15 @@ namespace Chummer.Backend.Equipment
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
-            foreach (string strLocation in Locations)
+            foreach (Location objLocation in Locations)
             {
-                TreeNode objLocation = new TreeNode
+                TreeNode objLocationNode = new TreeNode
                 {
-                    Tag = strLocation,
-                    Text = strLocation,
+                    Tag = objLocation,
+                    Text = objLocation.DisplayName(GlobalOptions.Language),
                     ContextMenuStrip = cmsVehicleLocation
                 };
-                lstChildNodes.Add(objLocation);
+                lstChildNodes.Add(objLocationNode);
             }
 
             // VehicleMods.

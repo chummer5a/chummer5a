@@ -496,7 +496,7 @@ namespace Chummer.Backend.Equipment
                     objWriter.WriteEndElement();
                 }
             }
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 
@@ -814,7 +814,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", WeaponName);
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
@@ -1339,10 +1339,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get; set;
         }
 
         /// <summary>

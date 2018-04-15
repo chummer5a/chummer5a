@@ -3064,7 +3064,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private bool PickWeapon(string strLocation)
+        private bool PickWeapon(object destObject)
         {
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject);
             frmPickWeapon.ShowDialog(this);
@@ -3117,7 +3117,10 @@ namespace Chummer
                 objExpense.Undo = objUndo;
             }
 
-            objWeapon.Location = strLocation;
+            if (destObject is Location objLocation)
+            {
+                objWeapon.Location = objLocation;
+            }
 
             CharacterObject.Weapons.Add(objWeapon);
 
@@ -5216,9 +5219,8 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject);
+            Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations);
             objLocation.Name = strLocation;
-            CharacterObject.GearLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5236,9 +5238,8 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject);
+            Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations);
             objLocation.Name = strLocation;
-            CharacterObject.WeaponLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5553,9 +5554,8 @@ namespace Chummer
                 return;
 
             string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject);
+            Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations);
             objLocation.Name = strLocation;
-            CharacterObject.ArmorLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5702,20 +5702,15 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Add a new location to the selected Vehicle.
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
-            string strLocation = frmPickText.SelectedValue;
-
-            if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(strLocation))
+            if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-
-            objVehicle.Locations.Add(strLocation);
+            Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -11265,7 +11260,7 @@ namespace Chummer
                     return;
             }
 
-            objWeapon.Location = string.Empty;
+            objWeapon.Location = null;
             // Remove the Weapon from the character and add it to the Vehicle Mod.
             CharacterObject.Weapons.Remove(objWeapon);
 
@@ -18338,11 +18333,10 @@ namespace Chummer
 
         private void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            string strSelectedLocation = treWeapons.SelectedNode?.Tag.ToString() ?? string.Empty;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickWeapon(strSelectedLocation);
+                blnAddAgain = PickWeapon(treWeapons.SelectedNode?.Tag);
             }
             while (blnAddAgain);
         }
