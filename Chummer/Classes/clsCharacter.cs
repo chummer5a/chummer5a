@@ -843,6 +843,10 @@ namespace Chummer
                     break;
                 case ListChangedType.ItemChanged:
                     {
+                    if (e.PropertyDescriptor == null)
+                    {
+                        break;
+                    }
                         if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                         else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
