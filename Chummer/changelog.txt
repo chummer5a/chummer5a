@@ -18,6 +18,7 @@ Application Changes:
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
+- Added missing melee weapon categories for the Small, Standard, Large, Huge and Heavy drone weapon mounts from Rigger 5. Existing drones should either remove and re-add the drone or edit the weapon mount in order to regenerate the weapon category.
 
 New Strings:
 
