@@ -113,7 +113,6 @@ namespace Chummer.UI.Skills
             this.lblRating.Size = new System.Drawing.Size(13, 13);
             this.lblRating.TabIndex = 22;
             this.lblRating.Text = "0";
-            this.lblRating.Visible = false;
             // 
             // lblName
             // 
@@ -123,7 +122,6 @@ namespace Chummer.UI.Skills
             this.lblName.Size = new System.Drawing.Size(44, 13);
             this.lblName.TabIndex = 23;
             this.lblName.Text = "[NAME]";
-            this.lblName.Visible = false;
             // 
             // lblSpec
             // 
@@ -133,7 +131,6 @@ namespace Chummer.UI.Skills
             this.lblSpec.Size = new System.Drawing.Size(41, 13);
             this.lblSpec.TabIndex = 24;
             this.lblSpec.Text = "[SPEC]";
-            this.lblSpec.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -143,7 +140,6 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 25;
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // btnAddSpec
@@ -154,7 +150,6 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 26;
             this.btnAddSpec.UseVisualStyleBackColor = true;
-            this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
             // nudSkill

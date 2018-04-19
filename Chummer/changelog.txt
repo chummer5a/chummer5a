@@ -15,6 +15,7 @@ Application Changes:
 - Fixed a cache issue with the TrustFund property that caused advanced lifestyles to crash.
 - Advanced Lifestyles are no longer allowed to be accepted with more lifestyle points spent than maximum.
 - Fixed adept powers causing a crash when toggling their discount from Adept Ways.
+- Fixed missing databindings for skill controls due to visible = false shenanigans in the designer.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 

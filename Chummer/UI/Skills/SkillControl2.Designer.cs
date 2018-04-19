@@ -160,7 +160,6 @@ namespace Chummer.UI.Skills
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Visible = false;
             // 
             // lblCareerRating
             // 
@@ -170,7 +169,6 @@ namespace Chummer.UI.Skills
             this.lblCareerRating.Size = new System.Drawing.Size(19, 13);
             this.lblCareerRating.TabIndex = 20;
             this.lblCareerRating.Text = "00";
-            this.lblCareerRating.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -180,7 +178,6 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 21;
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // lblCareerSpec
@@ -191,7 +188,6 @@ namespace Chummer.UI.Skills
             this.lblCareerSpec.Size = new System.Drawing.Size(35, 13);
             this.lblCareerSpec.TabIndex = 22;
             this.lblCareerSpec.Text = "label1";
-            this.lblCareerSpec.Visible = false;
             // 
             // btnAddSpec
             // 
@@ -202,7 +198,6 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 23;
             this.btnAddSpec.UseVisualStyleBackColor = true;
-            this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
             // btnAttribute
@@ -216,7 +211,6 @@ namespace Chummer.UI.Skills
             this.btnAttribute.TabIndex = 24;
             this.btnAttribute.Text = "ATR";
             this.btnAttribute.UseVisualStyleBackColor = true;
-            this.btnAttribute.Visible = false;
             this.btnAttribute.Click += new System.EventHandler(this.btnAttribute_Click);
             // 
             // cboSelectAttribute
@@ -227,7 +221,6 @@ namespace Chummer.UI.Skills
             this.cboSelectAttribute.Name = "cboSelectAttribute";
             this.cboSelectAttribute.Size = new System.Drawing.Size(39, 21);
             this.cboSelectAttribute.TabIndex = 25;
-            this.cboSelectAttribute.Visible = false;
             this.cboSelectAttribute.DropDownClosed += new System.EventHandler(this.cboSelectAttribute_Closed);
             // 
             // SkillControl2
