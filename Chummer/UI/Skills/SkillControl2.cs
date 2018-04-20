@@ -66,6 +66,15 @@ namespace Chummer.UI.Skills
             _skill.CharacterObject.AttributeSection.PropertyChanged += AttributeSection_PropertyChanged;
             Skill_PropertyChanged(null, null);  //if null it updates all
 
+            nudSkill.Visible = !skill.CharacterObject.Created;
+            nudKarma.Visible = !skill.CharacterObject.Created;
+            chkKarma.Visible = !skill.CharacterObject.Created;
+            cboSpec.Visible  = !skill.CharacterObject.Created;
+
+            btnCareerIncrease.Visible = skill.CharacterObject.Created;
+            lblCareerSpec.Visible = skill.CharacterObject.Created;
+            btnAddSpec.Visible = skill.CharacterObject.Created;
+
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
 
@@ -75,21 +84,13 @@ namespace Chummer.UI.Skills
 
                 lblCareerRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false,
                     DataSourceUpdateMode.OnPropertyChanged);
-                lblCareerRating.Visible = true;
 
-                btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.Visible = false;
-                nudKarma.Visible = false;
-                chkKarma.Visible = false;
-
-                cboSpec.Visible = false;
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                lblCareerSpec.Visible = true;
                 lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
@@ -141,9 +142,9 @@ namespace Chummer.UI.Skills
             }
 
             //Delete button
+            cmdDelete.Visible = skill.AllowDelete;
             if (skill.AllowDelete)
             {
-                cmdDelete.Visible = true;
                 cmdDelete.Click += (sender, args) =>
                 {
                     skill.UnbindSkill();
