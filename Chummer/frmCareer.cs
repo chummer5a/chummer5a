@@ -4341,7 +4341,7 @@ namespace Chummer
                 objGear.Copy(objSelectedGear);
 
                 objGear.Quantity = decMove;
-                objGear.Location = string.Empty;
+                objGear.Location = null;
 
                 objVehicle.Gear.Add(objGear);
             }
@@ -4492,9 +4492,9 @@ namespace Chummer
             {
                 // Select the root Gear node then open the Select Gear window.
                 string strGuid = string.Empty;
-                if (objGear.Location != string.Empty)
+                if (objGear.Location != null)
                 {
-                    strGuid = objGear.Location;
+                    strGuid = objGear.Location.InternalId;
                 }
                 if (objGear.Parent is Gear parent)
                 {
@@ -15157,12 +15157,15 @@ namespace Chummer
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
+            Location objLocation = null;
             if (!string.IsNullOrEmpty(strSelectedId))
                 objSelectedGear = CharacterObject.Gear.DeepFindById(strSelectedId);
             if (objSelectedGear == null)
             {
                 objSelectedGear = new Gear(CharacterObject);
                 blnNullParent = true;
+                objLocation =
+                    CharacterObject.GearLocations.FirstOrDefault(location => location.InternalId == strSelectedId);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -15364,7 +15367,7 @@ namespace Chummer
                 }
                 else
                 {
-                    objGear.Location = strSelectedId;
+                    objGear.Location = objLocation;
                     CharacterObject.Gear.Add(objGear);
                 }
             }

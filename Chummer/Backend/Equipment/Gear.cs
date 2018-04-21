@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -64,7 +64,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation = null;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
@@ -558,7 +558,7 @@ namespace Chummer.Backend.Equipment
             _nodWeaponBonus = objGear.WeaponBonus;
             Guid.TryParse(objGear.WeaponID, out _guiWeaponID);
             _strNotes = objGear.Notes;
-            _strLocation = objGear.Location;
+            _objLocation = objGear.Location;
             _intChildAvailModifier = objGear.ChildAvailModifier;
             _intChildCostMultiplier = objGear.ChildCostMultiplier;
             _strGearName = objGear.GearName;
@@ -642,7 +642,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 
@@ -769,7 +769,24 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        CharacterObject.GearLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        CharacterObject.GearLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
+
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -800,7 +817,7 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _strLocation = string.Empty;
+                _objLocation = null;
 
                 if (Bonus != null || WirelessBonus != null)
                 {
@@ -1034,7 +1051,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("bonded", Bonded.ToString());
             objWriter.WriteElementString("equipped", Equipped.ToString());
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.InternalId);
             objWriter.WriteElementString("gearname", GearName);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -1488,10 +1505,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>

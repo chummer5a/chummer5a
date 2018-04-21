@@ -3217,9 +3217,9 @@ namespace Chummer
                 if (objNode == null)
                     return;
                 TreeNode nodParent = null;
-                if (!string.IsNullOrEmpty(objGear.Location))
+                if (objGear.Location != null)
                 {
-                    nodParent = treGear.FindNode(objGear.Location, false);
+                    nodParent = treGear.FindNode(objGear.Location.InternalId, false);
                 }
                 if (nodParent == null)
                 {
@@ -3351,7 +3351,7 @@ namespace Chummer
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
                 if (objNode == null)
                     return;
-                if (string.IsNullOrEmpty(objGear.Location))
+                if (objGear.Location != null)
                 {
                     if (intIndex >= 0)
                         nodParent.Nodes.Insert(intIndex, objNode);
@@ -3361,7 +3361,7 @@ namespace Chummer
                 }
                 else
                 {
-                    TreeNode nodLocation = nodParent.FindNode(objGear.Location, false);
+                    TreeNode nodLocation = nodParent.FindNode(objGear.Location.InternalId, false);
                     if (nodLocation != null)
                     {
                         if (intIndex >= 0)
@@ -3700,15 +3700,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            TreeNode objLocation = new TreeNode
+                            TreeNode objNode = new TreeNode
                             {
-                                Tag = strLocation,
-                                Text = strLocation,
+                                Tag = objLocation,
+                                Text = objLocation.DisplayName(GlobalOptions.Language),
                                 ContextMenuStrip = cmsVehicleLocation
                             };
-                            treVehicles.Nodes.Insert(intNewIndex, objLocation);
+                            treVehicles.Nodes.Insert(intNewIndex, objNode);
                             intNewIndex += 1;
                         }
                     }
@@ -3837,30 +3837,30 @@ namespace Chummer
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            TreeNode objLocation = new TreeNode
+                            TreeNode objNode = new TreeNode
                             {
-                                Tag = strLocation,
-                                Text = strLocation,
+                                Tag = objLocation,
+                                Text = objLocation.DisplayName(GlobalOptions.Language),
                                 ContextMenuStrip = cmsVehicleLocation
                             };
-                            treVehicles.Nodes.Insert(intNewIndex, objLocation);
+                            treVehicles.Nodes.Insert(intNewIndex, objNode);
                             intNewIndex += 1;
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treVehicles.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            if (objNode != null)
                             {
-                                objLocation.Remove();
-                                for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                objNode.Remove();
+                                for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
                                 {
-                                    TreeNode nodVehicle = objLocation.Nodes[i];
+                                    TreeNode nodVehicle = objNode.Nodes[i];
                                     nodVehicle.Remove();
                                     nodRoot.Nodes.Add(nodVehicle);
                                 }
@@ -4257,7 +4257,7 @@ namespace Chummer
                     objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                     foreach (Gear objGear in objVehicle.Gear)
                         SetupChildrenGearsCollectionChanged(true, treVehicles, objGear, cmsVehicleGear);
-                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
+                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location == null), y));
                 }
 
                 treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -4306,7 +4306,7 @@ namespace Chummer
                                 objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                 foreach (Gear objGear in objVehicle.Gear)
                                     SetupChildrenGearsCollectionChanged(true, treVehicles, objGear, cmsVehicleGear);
-                                objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
+                                objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location == null), y));
                                 intNewIndex += 1;
                             }
                         }
@@ -4431,7 +4431,7 @@ namespace Chummer
                                 objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshChildrenGears(treVehicles, objVehicle, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                 foreach (Gear objGear in objVehicle.Gear)
                                     SetupChildrenGearsCollectionChanged(true, treVehicles, objGear, cmsVehicleGear);
-                                objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => string.IsNullOrEmpty(z.Location)), y));
+                                objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location != null), y));
                                 intNewIndex += 1;
                             }
                             treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);

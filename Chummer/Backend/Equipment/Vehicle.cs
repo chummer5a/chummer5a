@@ -2847,15 +2847,13 @@ namespace Chummer.Backend.Equipment
                 if (objLoopNode != null)
                 {
                     TreeNode objParent = objNode;
-                    if (!string.IsNullOrEmpty(objGear.Location))
+                    if (objGear.Location != null)
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Text == objGear.Location)
-                            {
-                                objParent = objFind;
-                                break;
-                            }
+                            if (objFind.Tag != objGear.Location) continue;
+                            objParent = objFind;
+                            break;
                         }
                     }
 

@@ -4469,7 +4469,12 @@ namespace Chummer
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
             // Make sure a Vehicle is selected.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+            Vehicle objVehicle = null;
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            {
+                objVehicle = (Vehicle) treVehicles.SelectedNode.Tag;
+            }
+            if (!(objVehicle == null || treVehicles.SelectedNode?.Tag == null))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4482,7 +4487,7 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
+            Location objLocation = new Location(CharacterObject, objVehicle?.Locations ?? CharacterObject.VehicleLocations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -11190,10 +11195,13 @@ namespace Chummer
         {
             bool blnNullParent = false;
             Gear objSelectedGear = CharacterObject.Gear.DeepFindById(strSelectedId);
+            Location objLocation = null;
             if (objSelectedGear == null)
             {
                 objSelectedGear = new Gear(CharacterObject);
                 blnNullParent = true;
+                objLocation =
+                    CharacterObject.GearLocations.FirstOrDefault(location => location.InternalId == strSelectedId);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -11278,7 +11286,7 @@ namespace Chummer
             }
             else
             {
-                objGear.Location = strSelectedId;
+                objGear.Location = objLocation;
                 CharacterObject.Gear.Add(objGear);
             }
 

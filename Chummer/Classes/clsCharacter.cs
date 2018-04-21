@@ -4669,10 +4669,10 @@ namespace Chummer
             for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
                 if (objCheckNode == objGearNode)
                     return;
-
-            string strSelectedId = objGearNode.Tag.ToString();
-            // Locate the currently selected piece of Gear.
-            Gear objGear = Gear.DeepFindById(strSelectedId);
+            if (!(objGearNode.Tag is Gear objGear))
+            {
+                return;
+            }
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
@@ -4699,10 +4699,11 @@ namespace Chummer
             else
                 Gear.Remove(objGear);
 
-            if (objDestination.Level == 0)
+            if (objDestination.Tag is Location objLocation)
             {
                 // The Gear was moved to a location, so add it to the character instead.
-                objGear.Location = objDestination.Text;
+                objGear.Location = objLocation;
+                objLocation.Children.Add(objGear);
                 Gear.Add(objGear);
             }
             else
@@ -4711,7 +4712,7 @@ namespace Chummer
                 Gear objParent = Gear.DeepFindById(objDestination.Tag.ToString());
 
                 // Add the Gear as a child of the destination Node and clear its location.
-                objGear.Location = string.Empty;
+                objGear.Location = null;
                 objParent.Children.Add(objGear);
             }
         }
@@ -4733,7 +4734,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Gear item.
-                objGear.Location = objNewParent.Tag.ToString() == "Node_SelectedGear" ? string.Empty : objNewParent.Text;
+                objGear.Location = (objNewParent.Tag is Location objLocation) ? objLocation : null;
 
                 Gear.Move(Gear.IndexOf(objGear), intNewIndex);
             }
@@ -4934,7 +4935,7 @@ namespace Chummer
                     objOldVehicle.Gear.Remove(objGear);
 
                 // Add the Gear to its new parent.
-                objGear.Location = string.Empty;
+                objGear.Location = null;
                 objDestinationGear.Children.Add(objGear);
             }
             else
@@ -4964,7 +4965,7 @@ namespace Chummer
                         objOldVehicle.Gear.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
-                    objGear.Location = objLocation.InternalId;
+                    objGear.Location = objLocation;
                 }
             }
         }
@@ -12617,3 +12618,4 @@ namespace Chummer
         }
     }
 }
+

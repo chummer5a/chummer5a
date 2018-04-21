@@ -172,7 +172,7 @@ namespace Chummer
         {
             foreach (IHasLocation item in Children)
             {
-                item.Location = string.Empty;
+                item.Location = null;
             }
             string strMessage = LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language);
             return character.ConfirmDelete(strMessage) && Parent.Remove(this);

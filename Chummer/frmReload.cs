@@ -49,12 +49,12 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
                         strName += " (" + objParent.DisplayNameShort(GlobalOptions.Language);
-                        if (!string.IsNullOrEmpty(objParent.Location))
-                            strName += " @ " + objParent.Location;
+                        if (objParent.Location != null)
+                            strName += " @ " + objParent.Location.DisplayName(GlobalOptions.Language);
                         strName += ')';
                     }
                 }
-                else if (!string.IsNullOrEmpty(objGear.Location))
+                else if (objGear.Location != null)
                     strName += " (" + objGear.Location + ')';
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
