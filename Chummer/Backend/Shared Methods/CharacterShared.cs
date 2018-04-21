@@ -2857,9 +2857,9 @@ namespace Chummer
                 if (objNode == null)
                     return;
                 TreeNode nodParent = null;
-                if (!string.IsNullOrEmpty(objArmor.Location))
+                if (objArmor.Location != null)
                 {
-                    nodParent = treArmor.FindNode(objArmor.Location, false);
+                    nodParent = treArmor.FindNode(objArmor.Location.InternalId, false);
                 }
                 if (nodParent == null)
                 {
@@ -4467,9 +4467,9 @@ namespace Chummer
                     return;
 
                 TreeNode nodParent = null;
-                if (!string.IsNullOrEmpty(objVehicle.Location))
+                if (objVehicle.Location != null)
                 {
-                    nodParent = treVehicles.FindNode(objVehicle.Location, false);
+                    nodParent = treVehicles.FindNode(objVehicle.Location.InternalId, false);
                 }
                 if (nodParent == null)
                 {

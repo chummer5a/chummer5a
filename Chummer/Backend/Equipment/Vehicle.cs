@@ -69,7 +69,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation = null;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
@@ -524,7 +524,7 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objWeapon in _lstWeapons)
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString());
             if (_lstLocations.Count > 0)
@@ -725,7 +725,24 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
@@ -795,7 +812,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", VehicleName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
@@ -1099,10 +1116,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>

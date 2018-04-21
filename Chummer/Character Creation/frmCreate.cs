@@ -3434,7 +3434,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private bool AddVehicle(TreeNode nodParentNode)
+        private bool AddVehicle(Location objLocation = null)
         {
             frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject);
             frmPickVehicle.ShowDialog(this);
@@ -3462,7 +3462,7 @@ namespace Chummer
                 objVehicle.Cost = "0";
             }
 
-            objVehicle.Location = nodParentNode?.Tag.ToString() ?? string.Empty;
+            objVehicle.Location = objLocation;
 
             CharacterObject.Vehicles.Add(objVehicle);
 
@@ -4376,12 +4376,12 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddArmor(string.Empty);
+                blnAddAgain = AddArmor(treArmor.SelectedNode.Tag is Location objLocation ? objLocation : null);
             }
             while (blnAddAgain);
         }
 
-        private bool AddArmor(string strLocation)
+        private bool AddArmor(Location objLocation = null)
         {
             frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject);
             frmPickArmor.ShowDialog(this);
@@ -4402,7 +4402,7 @@ namespace Chummer
             objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
             if (objArmor.InternalId.IsEmptyGuid())
                 return frmPickArmor.AddAgain;
-            objArmor.Location = strLocation;
+            objArmor.Location = objLocation;
             if (frmPickArmor.FreeCost)
             {
                 objArmor.Cost = "0";
@@ -5564,14 +5564,7 @@ namespace Chummer
 
         private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode?.Tag is string strSelectedLocation)
-            {
-                bool blnAddAgain;
-                do
-                {
-                    blnAddAgain = AddArmor(strSelectedLocation);
-                } while (blnAddAgain);
-            }
+            cmdAddArmor_Click(sender, e);
         }
 
         private void tsAddArmorGear_Click(object sender, EventArgs e)
@@ -10539,7 +10532,7 @@ namespace Chummer
         public void RefreshSelectedArmor()
         {
             _blnSkipRefresh = true;
-            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+            string strSelectedId = treArmor.SelectedNode?.Tag is Location objLocation ? objLocation.InternalId : treArmor.SelectedNode?.Tag.ToString();
             bool blnNoneSelected = string.IsNullOrEmpty(strSelectedId);
             cmdDeleteArmor.Enabled = !blnNoneSelected && strSelectedId != "Node_SelectedArmor";
 
@@ -10571,7 +10564,7 @@ namespace Chummer
                     StringBuilder strArmorEquipped = new StringBuilder();
                     foreach (Armor objLoopArmor in CharacterObject.Armor)
                     {
-                        if (objLoopArmor.Equipped && (objLoopArmor.Location == strSelectedId || string.IsNullOrEmpty(objLoopArmor.Location) && strSelectedId == "Node_SelectedArmor"))
+                        if (objLoopArmor.Equipped && (objLoopArmor.Location.InternalId == strSelectedId || objLoopArmor.Location == null && strSelectedId == "Node_SelectedArmor"))
                         {
                             strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
                             strArmorEquipped.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
@@ -15602,11 +15595,10 @@ namespace Chummer
 
         private void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(objSelectedNode);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode.Tag is Location objSelectedNode ? objSelectedNode : null);
             }
             while (blnAddAgain);
         }

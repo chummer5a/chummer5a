@@ -2198,6 +2198,87 @@ namespace Chummer
                 SkillsSection.Load(objXmlCharacter, true);
             }
 
+            Timekeeper.Start("load_char_loc");
+
+            // Locations.
+            XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_loc");
+            Timekeeper.Start("load_char_abundle");
+
+            // Armor Bundles.
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_abundle");
+            Timekeeper.Start("load_char_vloc");
+
+            // Vehicle Locations.
+            XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
+            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+            {
+                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
+            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+            {
+                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_vloc");
+            Timekeeper.Start("load_char_wloc");
+
+            // Weapon Locations.
+            XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
+            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+            {
+                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+            {
+                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_wloc");
+
             Timekeeper.Start("load_char_contacts");
             
             // Contacts.
@@ -2645,63 +2726,6 @@ namespace Chummer
                 }
             }
 #endif
-            Timekeeper.Start("load_char_loc");
-
-            // Locations.
-            XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-            objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-
-            Timekeeper.Finish("load_char_loc");
-            Timekeeper.Start("load_char_abundle");
-
-            // Armor Bundles.
-            objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-
-            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-
-            Timekeeper.Finish("load_char_abundle");
-            Timekeeper.Start("load_char_vloc");
-
-            // Vehicle Locations.
-            XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
-            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-            {
-                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-
-            Timekeeper.Finish("load_char_vloc");
-            Timekeeper.Start("load_char_wloc");
-
-            // Weapon Locations.
-            XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
-            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-            {
-                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
-                objLocation.Load(objXmlLocation);
-            }
-
-            Timekeeper.Finish("load_char_wloc");
             Timekeeper.Start("load_char_igroup");
 
             // Improvement Groups.
@@ -4808,7 +4832,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                objArmor.Location = objNewParent.Tag.ToString() == "Node_SelectedArmor" ? string.Empty : objNewParent.Text;
+                objArmor.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
 
                 Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
             }
@@ -4902,7 +4926,7 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                objVehicle.Location = objNewParent.Tag.ToString() == "Node_SelectedVehicles" ? string.Empty : objNewParent.Text;
+                objVehicle.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
 
                 Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
             }

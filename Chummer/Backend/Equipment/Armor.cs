@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Location _location;
+        private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
@@ -418,7 +418,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            objWriter.WriteElementString("location", _location.InternalId);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
@@ -437,24 +437,28 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _location = null;
+                _objLocation = null;
             }
             else
             {
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
-                if (!string.IsNullOrWhiteSpace(objNode["location"].InnerText))
+                if (objNode["location"] != null)
                 {
-                    if (!objNode.TryGetField("location", Guid.TryParse, out Guid _locationGuid))
+                    if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
                     {
-                        foreach (Location armorLocation in _objCharacter.ArmorLocations)
-                        {
-                            if (armorLocation.Name != objNode["location"].InnerText) continue;
-                            Location = armorLocation.InternalId;
-                            break;
-                        }
+                        // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                        Location =
+                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                location.InternalId == temp.ToString());
                     }
-                    else Location = _locationGuid.ToString();
+                    else
+                    {
+                        //Legacy. Location is a string. 
+                        Location =
+                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                location.Name == objNode["location"].InnerText);
+                    }
                 }
             }
 
@@ -578,7 +582,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -1075,10 +1079,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>
@@ -1382,7 +1386,6 @@ namespace Chummer.Backend.Equipment
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private string _strLocation;
 
         public XmlNode GetNode()
         {

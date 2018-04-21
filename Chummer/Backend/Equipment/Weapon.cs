@@ -89,7 +89,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation = null;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
@@ -683,7 +683,24 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
             bool blnIsActive = false;
