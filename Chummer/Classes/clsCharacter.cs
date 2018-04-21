@@ -843,6 +843,10 @@ namespace Chummer
                     break;
                 case ListChangedType.ItemChanged:
                     {
+                    if (e.PropertyDescriptor == null)
+                    {
+                        break;
+                    }
                         if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                         else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
@@ -6244,7 +6248,7 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedCareerKarma != decimal.MinValue)
+                if (_intCachedCareerKarma != int.MinValue)
                     return _intCachedCareerKarma;
 
                 int intKarma = 0;
@@ -10683,7 +10687,7 @@ namespace Chummer
                 if (_intCachedTrustFund != int.MinValue)
                     return _intCachedTrustFund;
 
-                return _intCachedTrustFund = Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty().Max(x => x.Value);
+                return _intCachedTrustFund = Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty().Max(x => x != null ? x.Value : 0);
             }
         }
 

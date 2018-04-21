@@ -10035,11 +10035,11 @@
       <name>Standard Drone Rack (Micro)</name>
       <page>160</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>4</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>350</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>1</slots>
     </mod>
     <mod>
       <id>fa0b86df-1678-4d02-bcec-fec68831e1a8</id>
@@ -10090,11 +10090,11 @@
       <name>Landing Drone Rack (Micro)</name>
       <page>160</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>6</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>750</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>2</slots>
     </mod>
     <mod>
       <id>943e11c1-68ab-47db-9075-e13e52247350</id>
@@ -12148,7 +12148,7 @@
       <name>Internal</name>
       <page>163</page>
       <source>R5</source>
-      <avail>4</avail>
+      <avail>2</avail>
       <category>Visibility</category>
       <cost>1500</cost>
       <slots>2</slots>
@@ -12309,7 +12309,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </required>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>0ec991be-a888-4547-8ca2-ad43d7c7399e</id>
@@ -12331,7 +12331,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </required>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>2ab20ea4-441c-482d-977e-a5e90f37cb51</id>
@@ -12353,7 +12353,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </required>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>30099989-d8ca-4f9c-adf0-1de36b6f8ab6</id>
@@ -12375,7 +12375,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </required>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>52973ba7-3dbb-49fe-9a4c-8105eb6ab4bc</id>
@@ -12397,7 +12397,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </required>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>be56fb91-88d3-4bfb-8e42-d12929b44fe5</id>
