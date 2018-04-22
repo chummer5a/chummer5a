@@ -6838,7 +6838,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 List<Improvement> lstImprovementsDisabled = new List<Improvement>();
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.Custom))
                 {
                     if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
                     {
