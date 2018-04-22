@@ -10228,7 +10228,7 @@
       <rating>0</rating>
       <slots>1</slots>
       <hide />
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponmountcategories>
     </mod>
     <mod>
       <id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
@@ -10241,7 +10241,7 @@
       <rating>0</rating>
       <slots>2</slots>
       <hide />
-      <!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
+      <!-- TODO: Add Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
       <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
     </mod>
     <mod>
@@ -10255,7 +10255,7 @@
       <rating>0</rating>
       <slots>4</slots>
       <hide />
-      <!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
+      <!-- TODO: Add Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
       <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
     </mod>
     <mod>
@@ -10934,7 +10934,7 @@
           <category operation="contains">Drones</category>
         </vehicledetails>
       </required>
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponmountcategories>
     </mod>
     <mod>
       <id>47b3e2f9-78d5-4747-b587-858deb725139</id>
@@ -10953,7 +10953,7 @@
           <category operation="contains">Drones</category>
         </vehicledetails>
       </required>
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponmountcategories>
     </mod>
     <mod>
       <id>f367741c-f236-4f64-9975-667f74973bb8</id>
@@ -10972,7 +10972,7 @@
           <category operation="contains">Drones</category>
         </vehicledetails>
       </required>
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponmountcategories>
     </mod>
     <mod>
       <id>ea8eadf6-3ada-4ee2-a6a8-545f68cd17e2</id>
@@ -10991,7 +10991,7 @@
           <category operation="contains">Drones</category>
         </vehicledetails>
       </required>
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
     </mod>
     <mod>
       <id>4ac413b9-3a43-4771-b5db-c586c762781f</id>
@@ -11010,7 +11010,7 @@
           <category operation="contains">Drones</category>
         </vehicledetails>
       </required>
-      <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
+      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
     </mod>
     <mod>
       <id>b5b9cd7e-dbb3-42e9-abcd-f805f6a4b10e</id>
@@ -11524,7 +11524,7 @@
           <name>Daihatsu-Caterpillar Horseman</name>
         </vehicledetails>
       </required>
-      <!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out for weapon mount -->
+      <!-- TODO: Add Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed, Machine Pistols, and Submachine Guns as soon as Errata comes out for weapon mount -->
       <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
     </mod>
     <mod>
@@ -12091,7 +12091,7 @@
           <visibility>None</visibility>
         </weaponmountdetails>
       </forbidden>
-      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponcategories>
+      <weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
