@@ -1654,6 +1654,9 @@
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\amend_AdapsinMultiplier_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\College Education Qualities Stack\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -23,6 +23,8 @@ Data Changes:
 - Added missing melee weapon categories for the Small, Standard, Large, Huge and Heavy drone weapon mounts from Rigger 5. Existing drones should either remove and re-add the drone or edit the weapon mount in order to regenerate the weapon category.
 - Soul Swallower quality now requires the Essence Drain power.
 - Latent Dracomorphosis no longer contributes towards quality limit in create mode.
+- Added an amend entry to allow the College Education qualities from Run Faster and Sail Away, Sweet Sister to stack.
+- Added missing limits to Hand & Foot Webbing bioware.
 
 New Strings:
 
