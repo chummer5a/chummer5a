@@ -6675,6 +6675,8 @@ namespace Chummer
 
         private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
+            if (!(treVehicles.SelectedNode.Tag is Location objLocation)) return;
+
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
@@ -6684,20 +6686,9 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            // Determine if this is a Location.
-            TreeNode objVehicleNode = treVehicles.SelectedNode;
-            string strOldLocation = objVehicleNode.Tag.ToString();
-            do
-            {
-                objVehicleNode = objVehicleNode.Parent;
-            } while (objVehicleNode.Level > 1);
-
-            if (objVehicleNode.Tag is Location objLocation)
-            {
-                objLocation.Name = frmPickText.SelectedValue;
-                objVehicleNode.Text = objLocation.Name;
-                IsDirty = true;
-            }
+            objLocation.Name = frmPickText.SelectedValue;
+            treVehicles.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
+            IsDirty = true;
         }
 
         private void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
@@ -8158,11 +8149,8 @@ namespace Chummer
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
             _blnSkipRefresh = true;
-            if (treSpells.SelectedNode.Level > 0)
+            if (treSpells.SelectedNode.Level > 0 && e.Node.Tag is Spell objSpell)
             {
-                // Locate the selected Spell.
-                Spell objSpell = CharacterObject.Spells.FindById(e.Node.Tag.ToString());
-
                 cmdDeleteSpell.Enabled = objSpell.Grade == 0;
                 lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Language);
                 lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Language);
@@ -14593,14 +14581,13 @@ namespace Chummer
                 // Armor Tab.
                 else if (tabStreetGearTabs.SelectedTab == tabArmor)
                 {
-                    string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
-                    if (!string.IsNullOrEmpty(strSelectedId))
+                    if (treArmor.SelectedNode?.Tag is IHasInternalId strSelectedId)
                     {
                         blnPasteEnabled = GlobalOptions.ClipboardContentType == ClipboardContentType.Armor ||
-                                          (GlobalOptions.ClipboardContentType == ClipboardContentType.Gear && (CharacterObject.Armor.Any(x => x.InternalId == strSelectedId) ||
-                                                                                                               CharacterObject.Armor.FindArmorMod(strSelectedId) != null ||
-                                                                                                               CharacterObject.Armor.FindArmorGear(strSelectedId) != null));
-                        blnCopyEnabled = CharacterObject.Armor.Any(x => x.InternalId == strSelectedId) || CharacterObject.Armor.FindArmorGear(strSelectedId) != null;
+                                          (GlobalOptions.ClipboardContentType == ClipboardContentType.Gear && (CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId) ||
+                                                                                                               CharacterObject.Armor.FindArmorMod(strSelectedId.InternalId) != null ||
+                                                                                                               CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null));
+                        blnCopyEnabled = CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId) || CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null;
                     }
                 }
 
@@ -14618,10 +14605,9 @@ namespace Chummer
                             case ClipboardContentType.Gear:
                                 // Check if the copied Gear can be pasted into the selected Weapon Accessory.
                                 XmlNode objXmlCategoryNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
-                                if (objXmlCategoryNode != null)
+                                if (objXmlCategoryNode != null && treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
                                 {
                                     // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
-                                    WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
                                     XmlNodeList xmlGearCategoryList = objAccessory?.AllowGear?.SelectNodes("gearcategory");
                                     if (xmlGearCategoryList?.Count > 0)
                                     {
@@ -14638,35 +14624,34 @@ namespace Chummer
                                 break;
                         }
 
-                        blnCopyEnabled = CharacterObject.Weapons.Any(x => x.InternalId == strSelectedId) || CharacterObject.Weapons.FindWeaponGear(strSelectedId) != null;
+                        //TODO: ICanCopy interface? If weapon comes from something else == false, etc. 
+                        blnCopyEnabled = treWeapons.SelectedNode.Tag is Weapon || treWeapons.SelectedNode.Tag is Gear;
                     }
                 }
                 // Gear Tab.
                 else if (tabStreetGearTabs.SelectedTab == tabGear)
                 {
-                    string strSelectedId = treGear.SelectedNode?.Tag.ToString();
-                    if (!string.IsNullOrEmpty(strSelectedId))
+                    if (treGear.SelectedNode.Tag is IHasInternalId)
                     {
                         blnPasteEnabled = GlobalOptions.ClipboardContentType == ClipboardContentType.Gear;
-                        blnCopyEnabled = CharacterObject.Gear.DeepFindById(strSelectedId) != null;
+                        blnCopyEnabled = treGear.SelectedNode.Tag is Gear;
                     }
                 }
             }
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
-                if (!string.IsNullOrEmpty(strSelectedId))
+                if (treCyberware.SelectedNode.Tag is IHasInternalId)
                 {
                     switch (GlobalOptions.ClipboardContentType)
                     {
                         case ClipboardContentType.Gear:
                             XmlNode objXmlCategoryNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
-                            if (objXmlCategoryNode != null)
+                            if (objXmlCategoryNode != null && treCyberware.SelectedNode.Tag is Cyberware objCyberware)
                             {
                                 // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
-                                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
-                                XmlNodeList xmlGearCategoryList = objCyberware?.AllowGear?.SelectNodes("gearcategory");
+                                XmlNodeList xmlGearCategoryList =
+                                    objCyberware?.AllowGear?.SelectNodes("gearcategory");
                                 if (xmlGearCategoryList?.Count > 0)
                                 {
                                     foreach (XmlNode objAllowed in xmlGearCategoryList)
@@ -14679,17 +14664,16 @@ namespace Chummer
                                     }
                                 }
                             }
-                            break;
+                        break;
                     }
 
-                    blnCopyEnabled = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId) != null;
+                    blnCopyEnabled = treCyberware.SelectedNode.Tag is Gear;
                 }
             }
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
-                string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
-                if (!string.IsNullOrEmpty(strSelectedId))
+                if (treVehicles.SelectedNode?.Tag is IHasInternalId)
                 {
                     switch (GlobalOptions.ClipboardContentType)
                     {
@@ -14697,80 +14681,46 @@ namespace Chummer
                             blnPasteEnabled = true;
                             break;
                         case ClipboardContentType.Gear:
+                        {
+                            blnPasteEnabled = treVehicles.SelectedNode?.Tag is Vehicle ||
+                                              treVehicles.SelectedNode?.Tag is Gear;
+                            if (!blnPasteEnabled)
                             {
-                                blnPasteEnabled = CharacterObject.Vehicles.Any(x => x.InternalId == strSelectedId) ||
-                                                  CharacterObject.Vehicles.FindVehicleGear(strSelectedId) != null;
-                                if (!blnPasteEnabled)
+                                XmlNodeList gearList = null;
+                                switch (treVehicles.SelectedNode?.Tag)
                                 {
-                                    WeaponAccessory objAccessory = null;
-                                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId);
-                                    if (objCyberware == null)
-                                    {
-                                        objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
-                                    }
+                                    case Cyberware objCyberware:
+                                        gearList = objCyberware.AllowGear?.SelectNodes("gearcategory");
+                                        break;
+                                    case WeaponAccessory objAccessory:
+                                        gearList = objAccessory.AllowGear?.SelectNodes("gearcategory");
+                                        break;
+                                }
 
-                                    if (objAccessory != null || objCyberware != null)
+                                if (gearList?.Count > 0)
+                                {
+                                    XmlNode objXmlCategoryNode =
+                                        GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
+                                    foreach (XmlNode objAllowed in gearList)
                                     {
-                                        XmlNode objXmlCategoryNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
-                                        if (objXmlCategoryNode != null)
+                                        if (objAllowed.InnerText == objXmlCategoryNode.InnerText)
                                         {
-                                            XmlNodeList xmlGearCategoryList = objCyberware?.AllowGear?.SelectNodes("gearcategory");
-                                            if (xmlGearCategoryList?.Count > 0)
-                                            {
-                                                foreach (XmlNode objAllowed in xmlGearCategoryList)
-                                                {
-                                                    if (objAllowed.InnerText == objXmlCategoryNode.InnerText)
-                                                    {
-                                                        blnPasteEnabled = true;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                xmlGearCategoryList = objAccessory?.AllowGear?.SelectNodes("gearcategory");
-                                                if (xmlGearCategoryList?.Count > 0)
-                                                {
-                                                    foreach (XmlNode objAllowed in xmlGearCategoryList)
-                                                    {
-                                                        if (objAllowed.InnerText == objXmlCategoryNode.InnerText)
-                                                        {
-                                                            blnPasteEnabled = true;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            blnPasteEnabled = true;
+                                            break;
                                         }
                                     }
                                 }
                             }
                             break;
+                        }
                         case ClipboardContentType.Weapon:
-                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out Vehicle _);
-                            if (objWeaponMount != null)
-                            {
-                                blnPasteEnabled = true;
-                            }
-                            else
-                            {
-                                VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId);
-                                if (objVehicleMod != null)
-                                {
-                                    // TODO: Make this not depend on string names
-                                    if (objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.Name.Contains("Drone Arm"))
-                                    {
-                                        blnPasteEnabled = true;
-                                    }
-                                }
-                            }
-
+                            blnPasteEnabled = ((treVehicles.SelectedNode.Tag is WeaponMount) ||
+                                                treVehicles.SelectedNode.Tag is VehicleMod objVehicleMod &&
+                                               (objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.Name.Contains("Drone Arm")));
                             break;
                     }
 
-                    blnCopyEnabled = CharacterObject.Vehicles.Any(x => x.InternalId == strSelectedId) ||
-                                     CharacterObject.Vehicles.FindVehicleGear(strSelectedId) != null ||
-                                     CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId) != null;
+                    blnCopyEnabled = treVehicles.SelectedNode.Tag is IHasChildren<Gear>;
                 }
             }
 

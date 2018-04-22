@@ -4710,7 +4710,7 @@ namespace Chummer
                 do
                 {
                     objFindNode = objFindNode.Parent;
-                    if (objFindNode.Tag.ToString() == objGear.InternalId)
+                    if (objFindNode.Tag == objGear)
                     {
                         blnAllowMove = false;
                         break;
@@ -4734,11 +4734,8 @@ namespace Chummer
                 objLocation.Children.Add(objGear);
                 Gear.Add(objGear);
             }
-            else
+            else if (objDestination.Tag is Gear objParent)
             {
-                // Locate the Gear that the item was dropped on.
-                Gear objParent = Gear.DeepFindById(objDestination.Tag.ToString());
-
                 // Add the Gear as a child of the destination Node and clear its location.
                 objGear.Location = null;
                 objParent.Children.Add(objGear);
@@ -4753,9 +4750,7 @@ namespace Chummer
         /// <param name="objGearNode">Node of gear to move.</param>
         public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
         {
-            string strSelectedId = objGearNode?.Tag.ToString();
-            Gear objGear = Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (objGear != null)
+            if (objGearNode?.Tag is Gear objGear)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
@@ -4822,10 +4817,7 @@ namespace Chummer
         /// <param name="nodArmorNode">Node of armor to move.</param>
         public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
         {
-            string strSelectedId = nodArmorNode?.Tag.ToString();
-            // Locate the currently selected Armor.
-            Armor objArmor = Armor.FindById(strSelectedId);
-            if (objArmor != null)
+            if (nodArmorNode?.Tag is Armor objArmor)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
@@ -4869,10 +4861,7 @@ namespace Chummer
         /// <param name="nodWeaponNode">Node of weapon to move.</param>
         public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
         {
-            string strSelectedId = nodWeaponNode?.Tag.ToString();
-            // Locate the currently selected Weapon.
-            Weapon objWeapon = Weapons.FindById(strSelectedId);
-            if (objWeapon != null)
+            if (nodWeaponNode?.Tag is Weapon objWeapon)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
@@ -4916,10 +4905,7 @@ namespace Chummer
         /// <param name="nodVehicleNode">Node of vehicle to move.</param>
         public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
         {
-            string strSelectedId = nodVehicleNode?.Tag.ToString();
-            // Locate the currently selected Vehicle.
-            Vehicle objVehicle = Vehicles.FindById(strSelectedId);
-            if (objVehicle != null)
+            if (nodVehicleNode?.Tag is Vehicle objVehicle)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
@@ -4943,9 +4929,10 @@ namespace Chummer
             for (TreeNode objCheckNode = nodDestination; objCheckNode != null && objCheckNode.Level >= nodDestination.Level; objCheckNode = objCheckNode.Parent)
                 if (objCheckNode == nodGearNode)
                     return;
-
+            if (!(nodGearNode.Tag is IHasInternalId nodeId)) return;
             // Locate the currently selected piece of Gear.
-            Gear objGear = Vehicles.FindVehicleGear(nodGearNode.Tag.ToString(), out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
+            //TODO: Better interface for determining what the parent of a bit of gear is.
+            Gear objGear = Vehicles.FindVehicleGear(nodeId.InternalId, out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
 
             if (objGear == null)
                 return;
@@ -4975,9 +4962,6 @@ namespace Chummer
                     nodVehicleNode = nodVehicleNode.Parent;
                 }
                 while (nodVehicleNode.Level > 1);
-
-                // Get a reference to the destination Vehicle.
-                Vehicle objDestinationVehicle = Vehicles.FindById(nodVehicleNode.Tag.ToString());
 
                 // Determine if this is a Location in the destination Vehicle.
                 if (nodDestination.Tag is Location objLocation)
