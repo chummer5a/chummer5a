@@ -25,6 +25,7 @@ Data Changes:
 - Latent Dracomorphosis no longer contributes towards quality limit in create mode.
 - Added an amend entry to allow the College Education qualities from Run Faster and Sail Away, Sweet Sister to stack.
 - Added missing limits to Hand & Foot Webbing bioware.
+- Fixed missing bonus for Magical Flight power.
 
 New Strings:
 
