@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -566,7 +566,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("armorname", ArmorName);
+            objWriter.WriteElementString("armorname", CustomName);
             objWriter.WriteElementString("equipped", Equipped.ToString());
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteStartElement("armormods");
@@ -1366,8 +1366,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
-            if (!string.IsNullOrEmpty(ArmorName))
-                strReturn += strSpaceCharacter + "(\"" + ArmorName + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
             if (Rating > 0)
                 strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
@@ -1378,7 +1378,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Armor assigned by the player.
         /// </summary>
-        public string ArmorName
+        public string CustomName
         {
             get => _strArmorName;
             set => _strArmorName = value;

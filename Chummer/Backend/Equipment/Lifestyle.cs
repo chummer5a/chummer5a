@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -430,7 +430,7 @@ namespace Chummer.Backend.Equipment
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("lifestyle");
-            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("name", CustomName);
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -508,6 +508,12 @@ namespace Chummer.Backend.Equipment
             set => _strName = value;
         }
 
+        public string CustomName
+        {
+            get => _strName;
+            set => _strName = value;
+        }
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -527,8 +533,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(Name))
-                strReturn += " (\"" + Name + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += " (\"" + CustomName + "\")";
 
             return strReturn;
         }

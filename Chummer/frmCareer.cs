@@ -5584,7 +5584,6 @@ namespace Chummer
             else
             {
                 return;
-
             }
 
             IsCharacterUpdateRequested = true;
@@ -6148,9 +6147,8 @@ namespace Chummer
 
         private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
-            string strSelectedLocation = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (string.IsNullOrEmpty(strSelectedLocation) || !strSelectedLocation.IsGuid())
+            if (!(treGear.SelectedNode?.Tag is IHasInternalId selectedId))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6159,7 +6157,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(strSelectedLocation);
+                blnAddAgain = PickGear(selectedId.InternalId);
             }
             while (blnAddAgain);
         }
@@ -7387,383 +7385,68 @@ namespace Chummer
 
         private void tsWeaponSell_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
             // Delete the selected Weapon.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (treWeapons.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                Weapon objWeapon = CharacterObject.Weapons.FirstOrDefault(x => x.InternalId == strSelectedId);
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
 
-                if (objWeapon != null)
-                {
-                    // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-                    if (objWeapon.Cyberware)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-                    if (objWeapon.Category == "Gear")
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-                    if (objWeapon.Category.StartsWith("Quality"))
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    frmSellItem frmSell = new frmSellItem();
-                    frmSell.ShowDialog(this);
-
-                    if (frmSell.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = (objWeapon.TotalCost + objWeapon.DeleteWeapon()) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-
-                    CharacterObject.Weapons.Remove(objWeapon);
-                }
-                else
-                {
-                    WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId);
-
-                    if (objAccessory != null)
-                    {
-                        objWeapon = objAccessory.Parent;
-                        frmSellItem frmSell = new frmSellItem();
-                        frmSell.ShowDialog(this);
-
-                        if (frmSell.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        // Record the Weapon's original cost.
-                        decimal decOriginal = objWeapon.TotalCost + objAccessory.DeleteWeaponAccessory();
-
-                        objWeapon.WeaponAccessories.Remove(objAccessory);
-
-                        decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen += decAmount;
-                    }
-                    else
-                    {
-                        // Find the selected Gear.
-                        Gear objGear = CharacterObject.Weapons.FindWeaponGear(strSelectedId, out objAccessory);
-
-                        if (objGear != null)
-                        {
-                            frmSellItem frmSell = new frmSellItem();
-                            frmSell.ShowDialog(this);
-
-                            if (frmSell.DialogResult == DialogResult.Cancel)
-                                return;
-
-                            if (objGear.Parent is Gear objParent)
-                                objParent.Children.Remove(objGear);
-                            else
-                                objAccessory.Gear.Remove(objGear);
-
-                            decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                            decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Nuyen += decAmount;
-                        }
-                    }
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
+                
+                vendorTrash.Sell(CharacterObject, frmSell.SellPercent);
             }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void sellItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
-            // Delete the selected Gear.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            // Delete the selected Weapon.
+            if (treGear.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                if (treGear.SelectedNode.Level > 0)
-                {
-                    Gear objGear = CharacterObject.Gear.DeepFindById(strSelectedId);
-                    if (objGear == null)
-                        return;
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
 
-                    frmSellItem frmSell = new frmSellItem();
-                    frmSell.ShowDialog(this);
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
 
-                    if (frmSell.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                    decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-
-                    // If the Parent is populated, remove the item from its Parent.
-                    if (objGear.Parent is Gear objParent)
-                        objParent.Children.Remove(objGear);
-                    else
-                        CharacterObject.Gear.Remove(objGear);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
+                vendorTrash.Sell(CharacterObject, frmSell.SellPercent);
             }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void tsVehicleSell_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
-            // Delete the selected Vehicle.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            // Delete the selected Weapon.
+            if (treVehicles.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                // Locate the Weapon that is selected in the tree.
-                foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-                {
-                    foreach (Weapon objWeapon in objCharacterVehicle.Weapons)
-                    {
-                        if (objWeapon.InternalId == strSelectedId)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            break;
-                        }
-                    }
-                }
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
 
-                // Locate the Vehicle that is selected in the tree.
-                Vehicle objVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
 
-                // Selling a Vehicle
-                if (objVehicle != null)
-                {
-                    frmSellItem frmSell = new frmSellItem();
-                    frmSell.ShowDialog(this);
-
-                    if (frmSell.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Create the Expense Log Entry for the sale.
-                    decimal decAmount = (objVehicle.TotalCost + objVehicle.DeleteVehicle()) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen += decAmount;
-                    CharacterObject.Vehicles.Remove(objVehicle);
-                }
-                else
-                {
-                    // Locate the WeaponMount that is selected in the tree.
-                    WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
-                    // Selling a Weapon Mount
-                    if (objWeaponMount != null)
-                    {
-                        if (objWeaponMount.IncludedInVehicle)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveVehicleMod", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveVehicleMod", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-
-                        frmSellItem frmSell = new frmSellItem();
-                        frmSell.ShowDialog(this);
-
-                        if (frmSell.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        // Record the original value of the Vehicle.
-                        decimal decOriginal = objVehicle.TotalCost + objWeaponMount.DeleteWeaponMount();
-
-                        objVehicle.WeaponMounts.Remove(objWeaponMount);
-
-                        // Create the Expense Log Entry for the sale.
-                        decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                        foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
-                        {
-                            // Check for Improved Sensor bonus.
-                            if (objLoopMod.Bonus?["improvesensor"] != null || (objLoopMod.WirelessOn && objLoopMod.WirelessBonus?["improvesensor"] != null))
-                            {
-                                objVehicle.ChangeVehicleSensor(treVehicles, false, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            }
-                        }
-
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objWeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen += decAmount;
-                    }
-                    else
-                    {
-                        // Locate the VehicleMod that is selected in the tree.
-                        VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
-                        // Selling a Vehicle Mod
-                        if (objMod != null)
-                        {
-                            if (objMod.IncludedInVehicle)
-                            {
-                                MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveVehicleMod", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveVehicleMod", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return;
-                            }
-
-                            frmSellItem frmSell = new frmSellItem();
-                            frmSell.ShowDialog(this);
-
-                            if (frmSell.DialogResult == DialogResult.Cancel)
-                                return;
-
-                            // Record the original value of the Vehicle.
-                            decimal decOriginal = objVehicle.TotalCost + objMod.DeleteVehicleMod();
-
-                            // Check for Improved Sensor bonus.
-                            if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
-                            {
-                                objVehicle.ChangeVehicleSensor(treVehicles, false, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            }
-
-                            if (objWeaponMount != null)
-                                objWeaponMount.Mods.Remove(objMod);
-                            else
-                                objVehicle.Mods.Remove(objMod);
-
-                            // Create the Expense Log Entry for the sale.
-                            decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Nuyen += decAmount;
-                        }
-                        else
-                        {
-                            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out objVehicle, out objWeaponMount, out objMod);
-                            // Removing a Weapon
-                            if (objWeapon != null)
-                            {
-                                frmSellItem frmSell = new frmSellItem();
-                                frmSell.ShowDialog(this);
-
-                                if (frmSell.DialogResult == DialogResult.Cancel)
-                                    return;
-
-                                // Record the original value of the Vehicle.
-                                decimal decOriginal = objVehicle.TotalCost + objWeapon.DeleteWeapon();
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else if (objMod != null)
-                                    objMod.Weapons.Remove(objWeapon);
-                                else if (objWeaponMount != null)
-                                    objWeaponMount.Weapons.Remove(objWeapon);
-                                // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
-                                else
-                                    objVehicle.Weapons.Remove(objWeapon);
-
-                                // Create the Expense Log Entry for the sale.
-                                decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                                CharacterObject.Nuyen += decAmount;
-                            }
-                            else
-                            {
-                                WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
-                                // Removing a weapon accessory
-                                if (objWeaponAccessory != null)
-                                {
-                                    objWeapon = objWeaponAccessory.Parent;
-                                    frmSellItem frmSell = new frmSellItem();
-                                    frmSell.ShowDialog(this);
-
-                                    if (frmSell.DialogResult == DialogResult.Cancel)
-                                        return;
-
-                                    // Record the original value of the Vehicle.
-                                    decimal decOriginal = objWeapon.TotalCost + objWeaponAccessory.DeleteWeaponAccessory();
-                                    objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
-
-                                    // Create the Expense Log Entry for the sale.
-                                    decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
-                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                                    CharacterObject.Nuyen += decAmount;
-                                }
-                                else
-                                {
-                                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId, out objMod);
-                                    // Removing Cyberware
-                                    if (objCyberware != null)
-                                    {
-                                        frmSellItem frmSell = new frmSellItem();
-                                        frmSell.ShowDialog(this);
-
-                                        if (frmSell.DialogResult == DialogResult.Cancel)
-                                            return;
-
-                                        // Record the original value of the Vehicle.
-                                        decimal decOriginal = objMod.TotalCost + objCyberware.DeleteCyberware();
-                                        Cyberware objParent = objCyberware.Parent;
-                                        if (objParent != null)
-                                            objCyberware.Parent.Children.Remove(objCyberware);
-                                        else
-                                            objMod.Cyberware.Remove(objCyberware);
-
-                                        // Create the Expense Log Entry for the sale.
-                                        decimal decAmount = (decOriginal - objMod.TotalCost) * frmSell.SellPercent;
-                                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                                        CharacterObject.Nuyen += decAmount;
-                                    }
-                                    else
-                                    {
-                                        Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objWeaponAccessory, out objCyberware);
-                                        if (objGear != null)
-                                        {
-                                            frmSellItem frmSell = new frmSellItem();
-                                            frmSell.ShowDialog(this);
-
-                                            if (frmSell.DialogResult == DialogResult.Cancel)
-                                                return;
-
-                                            // Record the original value of the vehicle.
-                                            decimal decOriginal = objVehicle.TotalCost + objGear.DeleteGear();
-                                            if (objGear.Parent is Gear objParent)
-                                                objParent.Children.Remove(objGear);
-                                            else if (objCyberware != null)
-                                                objCyberware.Gear.Remove(objGear);
-                                            else if (objWeaponAccessory != null)
-                                                objWeaponAccessory.Gear.Remove(objGear);
-                                            else
-                                                objVehicle.Gear.Remove(objGear);
-
-                                            // Create the Expense Log Entry for the sale.
-                                            decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                                            CharacterObject.Nuyen += decAmount;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
+                vendorTrash.Sell(CharacterObject, frmSell.SellPercent);
             }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
@@ -7861,31 +7544,23 @@ namespace Chummer
         private void tsWeaponName_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treWeapons.SelectedNode.Level > 1)
-                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
-
-            // Get the information for the currently selected Weapon.
-            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
-            if (objWeapon == null)
-                return;
-
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_WeaponName", GlobalOptions.Language),
-                DefaultString = objWeapon.WeaponName
+                DefaultString = objWeapon.CustomName
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objWeapon.WeaponName = frmPickText.SelectedValue;
+            objWeapon.CustomName = frmPickText.SelectedValue;
             treWeapons.SelectedNode.Text = objWeapon.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
@@ -7893,16 +7568,11 @@ namespace Chummer
 
         private void tsGearName_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
+            if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Get the information for the currently selected Gear.
-            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
-            if (objGear == null)
-                return;
 
             frmSelectText frmPickText = new frmSelectText
             {
@@ -7922,18 +7592,12 @@ namespace Chummer
 
         private void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treWeapons.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode == null || objSelectedNode.Level == 0)
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            // Locate the Weapon that is selected in the tree.
-            Weapon objSelectedWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
-            if (objSelectedWeapon == null)
-                return;
 
             if (objSelectedWeapon.Cyberware)
             {
@@ -8843,20 +8507,18 @@ namespace Chummer
 
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (objSelectedNode == null || objSelectedNode.Level == 0)
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string strSelectedId = objSelectedNode.Tag.ToString();
             // Select the root Gear node then open the Select Gear window.
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(strSelectedId, true);
+                blnAddAgain = PickArmorGear(objArmor.InternalId, true);
             }
             while (blnAddAgain);
         }
@@ -8871,24 +8533,29 @@ namespace Chummer
                 return;
             }
 
-            string strSelectedId = objSelectedNode.Tag.ToString();
-            // Make sure the selected item is another piece of Gear.
-            ArmorMod objMod = null;
-            Gear objGear = CharacterObject.Armor.FindArmorGear(strSelectedId);
-            if (objGear == null)
+            string strSelectedId = string.Empty;
+            bool capacityOnly = false;
+            if (treArmor.SelectedNode?.Tag is Gear objGear)
             {
-                objMod = CharacterObject.Armor.FindArmorMod(strSelectedId);
+                strSelectedId = objGear.InternalId;
+            }
+            else if (treArmor.SelectedNode?.Tag is ArmorMod objMod)
+            {
+                strSelectedId = objMod.InternalId;
                 if (string.IsNullOrEmpty(objMod?.GearCapacity))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+
             }
+
+            if (strSelectedId == string.Empty) return;
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(strSelectedId, objMod != null);
+                blnAddAgain = PickArmorGear(strSelectedId, capacityOnly);
             }
             while (blnAddAgain);
         }
@@ -9003,21 +8670,20 @@ namespace Chummer
                 treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
             }
 
-            // Get the information for the currently selected Vehicle.
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is IHasCustomName objRename)) return;
 
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Language),
-                DefaultString = objVehicle.VehicleName
+                DefaultString = objRename.CustomName
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objVehicle.VehicleName = frmPickText.SelectedValue;
-            treVehicles.SelectedNode.Text = objVehicle.DisplayName(GlobalOptions.Language);
+            objRename.CustomName = frmPickText.SelectedValue;
+            treVehicles.SelectedNode.Text = objRename.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9226,31 +8892,32 @@ namespace Chummer
 
         private void tsArmorName_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected, then open the Select Accessory window.
+            // Make sure a parent item is selected.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (treArmor.SelectedNode.Level > 1)
+            while (treArmor.SelectedNode.Level > 1)
+            {
                 treArmor.SelectedNode = treArmor.SelectedNode.Parent;
+            }
 
-            // Get the information for the currently selected Armor.
-            Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
+            if (!(treArmor.SelectedNode?.Tag is IHasCustomName objRename)) return;
 
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_ArmorName", GlobalOptions.Language),
-                DefaultString = objArmor.ArmorName
+                DefaultString = objRename.CustomName()
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objArmor.ArmorName = frmPickText.SelectedValue;
-            treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Language);
+            objRename.Rename(frmPickText.SelectedValue);
+            treArmor.SelectedNode.Text = objRename.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9272,35 +8939,28 @@ namespace Chummer
 
         private void tsLifestyleName_Click(object sender, EventArgs e)
         {
-            string strSelectedId = treLifestyles.SelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strSelectedId) || treLifestyles.SelectedNode.Level == 0)
+            // Get the information for the currently selected Lifestyle.
+            if (!(treLifestyles.SelectedNode.Tag is IHasCustomName objCustomName))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLifestyle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // Get the information for the currently selected Lifestyle.
-            Lifestyle objLifestyle = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (objLifestyle == null)
-                return;
-
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_LifestyleName", GlobalOptions.Language),
-                DefaultString = objLifestyle.Name
+                DefaultString = objCustomName.CustomName
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            if (objLifestyle.Name != frmPickText.SelectedValue)
+            if (objCustomName.CustomName != frmPickText.SelectedValue)
             {
-                objLifestyle.Name = frmPickText.SelectedValue;
+                objCustomName.CustomName = frmPickText.SelectedValue;
 
-                treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
-
-                treLifestyles.SortCustom(strSelectedId);
+                treLifestyles.SelectedNode.Text = objCustomName.DisplayName(GlobalOptions.Language);
 
                 IsDirty = true;
             }
@@ -18355,8 +18015,7 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString());
-            if (objWeapon != null)
+            if (treVehicles.SelectedNode.Tag is Weapon objWeapon)
             {
                 objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString());
 

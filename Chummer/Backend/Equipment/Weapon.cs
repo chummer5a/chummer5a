@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -830,7 +830,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("weaponname", WeaponName);
+            objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             if (_lstAccessories.Count > 0)
             {
@@ -980,7 +980,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Weapon assigned by the player.
         /// </summary>
-        public string WeaponName
+        public string CustomName
         {
             get => _strWeaponName;
             set => _strWeaponName = value;

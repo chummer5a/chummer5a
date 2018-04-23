@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -810,7 +810,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
-            objWriter.WriteElementString("vehiclename", VehicleName);
+            objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
             objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
@@ -1305,7 +1305,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Vehicle assigned by the player.
         /// </summary>
-        public string VehicleName
+        public string CustomName
         {
             get => _strVehicleName;
             set => _strVehicleName = value;
@@ -1329,9 +1329,9 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(VehicleName))
+            if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += " (\"" + VehicleName + "\")";
+                strReturn += " (\"" + CustomName + "\")";
             }
 
             return strReturn;
