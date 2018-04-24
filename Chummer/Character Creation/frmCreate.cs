@@ -7569,30 +7569,31 @@ namespace Chummer
                 return;
 
             // Locate the selected Armor or Armor Mod.
-            if (treArmor.SelectedNode.Tag is Armor objArmor)
+            switch (treArmor.SelectedNode.Tag)
             {
-                objArmor.Equipped = chkArmorEquipped.Checked;
-            }
-            else if (treArmor.SelectedNode.Tag is ArmorMod objMod)
-            {
-                objMod.Equipped = chkArmorEquipped.Checked;
-            }
-            else if (treArmor.SelectedNode.Tag is Gear objGear)
-            {
-                objGear.Equipped = chkArmorEquipped.Checked;
-                if (chkArmorEquipped.Checked)
-                {
-                    CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
-                    // Add the Gear's Improevments to the character.
-                    if (objParentArmor.Equipped && objParentMod?.Equipped != false)
+                case Armor objArmor:
+                    objArmor.Equipped = chkArmorEquipped.Checked;
+                    break;
+                case ArmorMod objMod:
+                    objMod.Equipped = chkArmorEquipped.Checked;
+                    break;
+                case Gear objGear:
+                    objGear.Equipped = chkArmorEquipped.Checked;
+                    if (chkArmorEquipped.Checked)
                     {
-                        objGear.ChangeEquippedStatus(true);
+                        CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
+                        // Add the Gear's Improevments to the character.
+                        if (objParentArmor.Equipped && objParentMod?.Equipped != false)
+                        {
+                            objGear.ChangeEquippedStatus(true);
+                        }
                     }
-                }
-                else
-                {
-                    objGear.ChangeEquippedStatus(false);
-                }
+                    else
+                    {
+                        objGear.ChangeEquippedStatus(false);
+                    }
+
+                    break;
             }
 
             IsCharacterUpdateRequested = true;
