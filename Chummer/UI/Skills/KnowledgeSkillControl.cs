@@ -48,7 +48,19 @@ namespace Chummer.UI.Skills
             cboType.ValueMember = nameof(ListItem.Value);
             cboType.DataSource = lstTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
-            
+
+            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
+            nudKarma.Visible = !skill.CharacterObject.Created;
+            chkKarma.Visible = !skill.CharacterObject.Created;
+            cboSpec.Visible = !skill.CharacterObject.Created;
+            cboType.Visible = !skill.CharacterObject.Created;
+
+            btnCareerIncrease.Visible = skill.CharacterObject.Created;
+            lblSpec.Visible = skill.CharacterObject.Created;
+            btnAddSpec.Visible = skill.CharacterObject.Created;
+            lblModifiedRating.Visible = skill.CharacterObject.Created;
+            lblRating.Visible = skill.CharacterObject.Created;
+
             if (skill.CharacterObject.Created)
             {
                 nudKarma.Visible = false;
