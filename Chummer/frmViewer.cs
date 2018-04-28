@@ -535,7 +535,8 @@ namespace Chummer
                     ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
                     {
                         FileName = GlobalOptions.PDFAppPath,
-                        Arguments = strParams
+                        Arguments = strParams,
+                        WindowStyle = ProcessWindowStyle.Hidden
                     };
                     Process.Start(objPdfProgramProcess);
                 }

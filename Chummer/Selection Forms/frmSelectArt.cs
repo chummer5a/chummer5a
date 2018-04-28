@@ -198,7 +198,7 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, _strLocalName))
+                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
                         return;
 
                     _strSelectedItem = strSelectedItem;
