@@ -200,8 +200,8 @@ namespace Chummer
 
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
-            chkInitiationGroup.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            chkInitiationSchooling.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            //chkInitiationGroup.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            //chkInitiationSchooling.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
             txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false, DataSourceUpdateMode.OnPropertyChanged);
             chkJoinGroup.Checked = CharacterObject.GroupMember;
@@ -1040,8 +1040,8 @@ namespace Chummer
                     {
                         if (CharacterObject.MAGEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
-                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
 
                             tabInitiation.Text = LanguageManager.GetString("Tab_Initiation", GlobalOptions.Language);
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
@@ -1073,7 +1073,7 @@ namespace Chummer
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabMagician);
+                            tabCharacterTabs.TabPages.Remove(tabInitiation);
 
                             if (SpecialAttributes.Contains(CharacterObject.MAG))
                             {
@@ -1084,6 +1084,9 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
+                        chkInitiationGroup.Visible = CharacterObject.MAGEnabled;
+                        chkInitiationOrdeal.Visible = CharacterObject.MAGEnabled;
+                        chkInitiationSchooling.Visible = CharacterObject.MAGEnabled;
                     }
                     break;
                 case nameof(Character.RESEnabled):
@@ -1183,6 +1186,9 @@ namespace Chummer
                         // Change to the status of Magician being enabled.
                         if (CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
+                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+
                             cmdAddSpell.Enabled = true;
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
@@ -1191,6 +1197,7 @@ namespace Chummer
                         }
                         else
                         {
+                            tabCharacterTabs.TabPages.Remove(tabMagician);
                             cmdAddSpell.Enabled = false;
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
