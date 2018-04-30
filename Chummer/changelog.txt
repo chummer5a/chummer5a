@@ -18,6 +18,7 @@ Application Changes:
 - Fixed missing databindings for skill controls due to visible = false shenanigans in the designer.
 - Fixed an issue with the Disable Improvements button incorrectly disabling all improvements.
 - Fixed an issue with Martial Arts Techniques not being able to be purchased for different martial arts.
+- Ugly workaround for issue with foci binding panel not being visible.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
