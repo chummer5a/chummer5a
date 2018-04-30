@@ -77,7 +77,7 @@ namespace Chummer
         private bool _blnFamily;
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
-
+        private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
 
@@ -116,7 +116,7 @@ namespace Chummer
             }
             if (lstNamesOfChangedProperties.Contains(nameof(Free)))
             {
-                _intCachedFree = -1;
+                _intCachedFreeFromImprovement = -1;
             }
 
             if (PropertyChanged != null)
@@ -254,6 +254,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteElementString("family", _blnFamily.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
+            objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
 
             if (_blnReadOnly)
@@ -302,6 +303,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
             objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
             objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             if (objNode.SelectSingleNode("colour") != null)
             {
                 int intTmp = _objColour.ToArgb();
@@ -364,7 +366,7 @@ namespace Chummer
         public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-
+        
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -866,7 +868,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedFree = -1;
+        private int _intCachedFreeFromImprovement = -1;
 
         /// <summary>
         /// Whether or not this is a free contact.
@@ -875,14 +877,22 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedFree < 0)
+                if (_blnFree) return _blnFree;
+
+                if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFree = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
-                return _intCachedFree > 0;
+                return _intCachedFreeFromImprovement > 0;
+            }
+            set
+            {
+                _blnFree = value;
             }
         }
+
+        public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
 
         /// <summary>
         /// Unique ID for this contact

@@ -546,7 +546,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotReadOnly), false,
+            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.FreeEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
                 DataSourceUpdateMode.OnPropertyChanged);
