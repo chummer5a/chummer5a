@@ -264,6 +264,10 @@ namespace Chummer.Backend.Equipment
                     {
                         frmPickWeaponCategory.WeaponType = "exotic";
                     }
+                    else if (_strName.StartsWith("Ammo: DMSO Rounds"))
+                    {
+                        frmPickWeaponCategory.WeaponType = "exotic";
+                    }
                     else if (_strName.StartsWith("Ammo: Peak-Discharge"))
                     {
                         frmPickWeaponCategory.WeaponType = "laser";

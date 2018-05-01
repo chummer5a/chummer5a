@@ -508,6 +508,20 @@
       </weaponbonus>
     </gear>
     <gear>
+      <id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
+      <name>Ammo: DMSO Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5G</source>
+      <page>436</page>
+      <avail>2R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <cost>20</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
       <name>Arrow: Standard</name>
       <category>Ammunition</category>

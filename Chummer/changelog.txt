@@ -29,6 +29,7 @@ Data Changes:
 - Added an amend entry to allow the College Education qualities from Run Faster and Sail Away, Sweet Sister to stack.
 - Added missing limits to Hand & Foot Webbing bioware.
 - Fixed missing bonus for Magical Flight power.
+- Added DMSO rounds for the Ares Super-Squirt per German SR5. Requires the SR5G book to be enabled.
 
 New Strings:
 

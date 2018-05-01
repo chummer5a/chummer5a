@@ -1106,7 +1106,9 @@ namespace Chummer.Backend.Equipment
                 if (Name.Contains("Net Gun"))
                     return new[] {"Net Gun"};
                 if (Name == "Pepper Punch Pen")
-                    return new[] {"Pepper Punch"};
+                    return new[] { "Pepper Punch" };
+                if (Name == "Ares S-III Super Squirt")
+                    return new[] { "Ammo: DMSO Rounds" };
                 switch (AmmoCategory)
                 {
                     case "Grenade Launchers":
