@@ -29,8 +29,8 @@ namespace Chummer
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
-        /// from an XmlNode. This version sets the output variable to its 
-        /// default value in case of a failed read and can be used for 
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
         /// a tryParse style function that is fed the nodes InnerText
         /// </summary>

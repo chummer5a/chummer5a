@@ -641,7 +641,7 @@ namespace Chummer.Backend.Equipment
         public int ConditionMonitor => _intConditionMonitor;
 
         /// <summary>
-        /// Vehicle that the Mod is attached to. 
+        /// Vehicle that the Mod is attached to.
         /// </summary>
         public Vehicle Parent { internal get; set; }
 
@@ -1116,7 +1116,7 @@ namespace Chummer.Backend.Equipment
                 return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
             }
         }
-        
+
         /// <summary>
         /// Vehicle arm/leg Agility.
         /// </summary>

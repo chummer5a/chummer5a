@@ -35,7 +35,7 @@ namespace Chummer
             PowerObject = objPower;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 
+            nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -43,43 +43,33 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Value", PowerObject, nameof(PowerObject.TotalRating), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            nudRating.DataBindings.Add("InterceptMouseWheel", PowerObject.CharacterObject.Options, 
+            nudRating.DataBindings.Add("InterceptMouseWheel", PowerObject.CharacterObject.Options,
                 nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false, 
+            lblPowerName.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayName), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false, 
+            lblPowerPoints.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayPoints), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false, 
+            lblPowerPoints.DataBindings.Add("ToolTipText", PowerObject, nameof(PowerObject.ToolTip), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedAdeptWay.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.AdeptWayDiscountEnabled), false, 
+            lblActivation.DataBindings.Add("Text", PowerObject, nameof(PowerObject.DisplayAction), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false, 
+            chkDiscountedAdeptWay.DataBindings.Add("Visible", PowerObject, nameof(PowerObject.AdeptWayDiscountEnabled), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false, 
+            chkDiscountedAdeptWay.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedAdeptWay), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkDiscountedGeas.DataBindings.Add("Checked", PowerObject, nameof(PowerObject.DiscountedGeas), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.DoesNotHaveFreeLevels), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
-            PowerObject.PropertyChanged += Power_PropertyChanged;
-
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             MoveControls();
         }
 
         public void UnbindPowerControl()
         {
-            PowerObject.PropertyChanged -= Power_PropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
-            }
-        }
-
-        private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs?.PropertyName == nameof(Power.ToolTip))
-            {
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblPowerPoints, PowerObject.ToolTip);
             }
         }
 
@@ -91,7 +81,7 @@ namespace Chummer
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            //Cache the parentform prior to deletion, otherwise the relationship is broken.
+            // Cache the parentform prior to deletion, otherwise the relationship is broken.
             Form frmParent = ParentForm;
             if (PowerObject.FreeLevels > 0)
             {
@@ -103,10 +93,7 @@ namespace Chummer
                     objGear.Extra = string.Empty;
                 }
             }
-            PowerObject.Deleting = true;
-            ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
-            PowerObject.CharacterObject.Powers.Remove(PowerObject);
-            PowerObject.UnbindPower();
+            PowerObject.DeletePower();
 
             if (frmParent is CharacterShared objParent)
                 objParent.IsCharacterUpdateRequested = true;

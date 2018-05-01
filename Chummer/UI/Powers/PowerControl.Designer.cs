@@ -32,7 +32,7 @@ namespace Chummer
             this.lblPowerName = new System.Windows.Forms.Label();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.nudRating = new NumericUpDownEx();
-            this.lblPowerPoints = new System.Windows.Forms.Label();
+            this.lblPowerPoints = new LabelWithToolTip();
             this.chkDiscountedAdeptWay = new System.Windows.Forms.CheckBox();
             this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
             this.imgNotes = new System.Windows.Forms.PictureBox();
@@ -168,7 +168,7 @@ namespace Chummer
 
         private System.Windows.Forms.Label lblPowerName;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Label lblPowerPoints;
+        private LabelWithToolTip lblPowerPoints;
         private System.Windows.Forms.CheckBox chkDiscountedAdeptWay;
         private System.Windows.Forms.CheckBox chkDiscountedGeas;
         private System.Windows.Forms.PictureBox imgNotes;

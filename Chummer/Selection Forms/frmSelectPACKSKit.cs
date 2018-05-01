@@ -844,7 +844,7 @@ namespace Chummer
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
                                 };
-                                
+
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }

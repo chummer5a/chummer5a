@@ -49,7 +49,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            
+
             // Load the Metamagic information.
             switch (objWindowMode)
             {
@@ -156,7 +156,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             List<ListItem> lstArts = new List<ListItem>();
             foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + _strXPathFilter))
             {
@@ -198,7 +198,7 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, _strLocalName))
+                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
                         return;
 
                     _strSelectedItem = strSelectedItem;

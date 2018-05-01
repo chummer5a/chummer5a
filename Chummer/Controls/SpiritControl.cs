@@ -608,7 +608,7 @@ namespace Chummer
 
             if (objXmlCritter["optionalpowers"] != null)
             {
-                //For every 3 full points of Force a spirit has, it may gain one Optional Power. 
+                //For every 3 full points of Force a spirit has, it may gain one Optional Power.
                 for (int i = intForce - 3; i >= 0; i -= 3)
                 {
                     XmlDocument objDummyDocument = new XmlDocument();

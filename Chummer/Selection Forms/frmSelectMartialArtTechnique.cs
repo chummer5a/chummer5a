@@ -75,7 +75,7 @@ namespace Chummer
                     if (setAllowedTechniques?.Contains(strTechniqueName) == false)
                         continue;
 
-                    if (xmlTechnique.RequirementsMet(_objCharacter))
+                    if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
                     {
                         lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNode("translate")?.Value ?? strTechniqueName));
                     }

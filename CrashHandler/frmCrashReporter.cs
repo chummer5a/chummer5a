@@ -76,7 +76,7 @@ namespace CrashHandler
 			DialogResult = DialogResult.OK;
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 			_dumper.AllowSending();
-			
+
 			Close();
 		}
 

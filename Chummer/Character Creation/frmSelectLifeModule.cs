@@ -37,7 +37,7 @@ namespace Chummer
 
 
         private string _strWorkStage;
-        
+
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
@@ -111,7 +111,7 @@ namespace Chummer
                     {
                         nodes.Add(treNode);
                     }
-                    
+
                 }
             }
 
@@ -275,7 +275,7 @@ namespace Chummer
                 _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
                 BuildTree(GetSelectString());
             }
-            
+
         }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
@@ -294,7 +294,7 @@ namespace Chummer
                     //No other way to check for a valid regex that i know of
                 }
             }
-            
+
             BuildTree(GetSelectString());
         }
 

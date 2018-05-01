@@ -26,7 +26,7 @@ namespace ChummerDataViewer
 
 
 		private readonly Dictionary<string, Action<StatusChangedEventArgs>> _specificHandlers;
-		
+
 
 		public Mainform()
 		{
@@ -69,7 +69,7 @@ namespace ChummerDataViewer
 			{
 				_crashReports.Add(crashReport);
 			}
-			
+
 			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader))
 			{
 				Anchor  = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
@@ -204,7 +204,7 @@ namespace ChummerDataViewer
 			if (report.StackTrace?.Contains(search) ?? false) return true;
 
 			if (report.Userstory?.Contains(search) ?? false) return false;
-			
+
 			return false;
 		}
 	}

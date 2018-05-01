@@ -34,7 +34,7 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Power> _powers;
         public PowersTabUserControl()
@@ -73,9 +73,9 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
-            //Keep everything visible until ready to display everything. This 
+            //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
 
@@ -84,7 +84,7 @@ namespace Chummer.UI.Powers
             //Visible = false;
             SuspendLayout();
             DoubleBuffered = true;
-            
+
             lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
             lblDiscountLabel.DataBindings.Add("Visible", _objCharacter, nameof(Character.AnyPowerAdeptWayDiscountEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -111,7 +111,7 @@ namespace Chummer.UI.Powers
             cboSort.MaxDropDownItems = _sortList.Count;
 
             parts.TaskEnd("_sort databind");
-            
+
             _powers.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;

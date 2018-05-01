@@ -367,7 +367,7 @@ namespace Chummer
             if (_objBaseChummerKey == null)
                 return;
             _objBaseChummerKey.CreateSubKey("Sourcebook");
-            
+
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
@@ -503,7 +503,7 @@ namespace Chummer
             get => _lifeModuleEnabled;
             set => _lifeModuleEnabled = value;
         }
-        
+
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>

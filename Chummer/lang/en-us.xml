@@ -569,6 +569,10 @@
       <key>Label_Body</key>
       <text>Body:</text>
     </string>
+	<string>
+	  <key>String_VehicleBody</key>
+	  <text>Body</text>
+	</string>
     <string>
       <key>Label_Armor</key>
       <text>Armor:</text>
@@ -7661,6 +7665,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>MessageTitle_SelectAdvancedLifestyle_LifestyleName</key>
       <text>Lifestyle Name</text>
+    </string>
+    <string>
+      <key>Message_SelectAdvancedLifestyle_OverLPLimit</key>
+      <text>Too many Lifestyle Points have been spent to allow this lifestyle.</text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
+      <text>Over LP Limit</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_TrustFund</key>

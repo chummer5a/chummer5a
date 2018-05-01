@@ -351,7 +351,7 @@ namespace Chummer
                 response.Close();
                 return;
             }
-            
+
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
 
@@ -619,7 +619,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-            
+
             Cursor = Cursors.Default;
         }
 
@@ -639,7 +639,7 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-                
+
                 GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
@@ -983,7 +983,7 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized
             };
             frmNewCharacter.Show();
-            
+
             Cursor = Cursors.Default;
         }
 
@@ -1079,7 +1079,7 @@ namespace Chummer
 
                 if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                     GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-                
+
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
                 Timekeeper.Finish("load_event_time");
@@ -1292,7 +1292,7 @@ namespace Chummer
                             objItem.Text = "1&0 " + strFile;
                         else
                             objItem.Text = '&' + (i + 1).ToString() + ' ' + strFile;
-                        
+
                         ++i2;
                     }
                 }

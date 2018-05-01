@@ -19,7 +19,7 @@ namespace ChummerDataViewer.Model
 
 
 		public Guid Guid { get; }
-		
+
 		public DateTime Timestamp { get; }
 		public Version Version { get; }
 		public string BuildType { get;  }
@@ -34,7 +34,7 @@ namespace ChummerDataViewer.Model
 			get => _progress;
 		    private set
 			{
-				_progress = value; 
+				_progress = value;
 				ProgressChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
@@ -101,7 +101,7 @@ namespace ChummerDataViewer.Model
 		{
 			if (args.AttachedData?.guid != Guid ?? false)
 				return;
-			
+
 			_worker.StatusChanged -= WorkerOnStatusChanged;
 			
 			_database.SetZipFileLocation(Guid, args.AttachedData.destinationPath);

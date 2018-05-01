@@ -32,7 +32,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.pnlMetatypes = new System.Windows.Forms.Panel();
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.cboPossessionMethod = new System.Windows.Forms.ComboBox();
@@ -106,15 +105,17 @@ namespace Chummer
             this.pnlMetatypes.Controls.Add(this.lblBOD);
             this.pnlMetatypes.Controls.Add(this.Label3);
             this.pnlMetatypes.Controls.Add(this.lstMetatypes);
-            this.pnlMetatypes.Location = new System.Drawing.Point(12, 12);
+            this.pnlMetatypes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMetatypes.Location = new System.Drawing.Point(0, 0);
             this.pnlMetatypes.Name = "pnlMetatypes";
-            this.pnlMetatypes.Size = new System.Drawing.Size(513, 354);
+            this.pnlMetatypes.Size = new System.Drawing.Size(460, 274);
             this.pnlMetatypes.TabIndex = 35;
             // 
             // chkBloodSpirit
             // 
+            this.chkBloodSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkBloodSpirit.AutoSize = true;
-            this.chkBloodSpirit.Location = new System.Drawing.Point(182, 237);
+            this.chkBloodSpirit.Location = new System.Drawing.Point(179, 245);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
             this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
             this.chkBloodSpirit.TabIndex = 69;
@@ -125,19 +126,21 @@ namespace Chummer
             // 
             // cboPossessionMethod
             // 
+            this.cboPossessionMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPossessionMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPossessionMethod.Enabled = false;
             this.cboPossessionMethod.FormattingEnabled = true;
-            this.cboPossessionMethod.Location = new System.Drawing.Point(200, 283);
+            this.cboPossessionMethod.Location = new System.Drawing.Point(182, 218);
             this.cboPossessionMethod.Name = "cboPossessionMethod";
-            this.cboPossessionMethod.Size = new System.Drawing.Size(174, 21);
+            this.cboPossessionMethod.Size = new System.Drawing.Size(219, 21);
             this.cboPossessionMethod.TabIndex = 65;
             this.cboPossessionMethod.Visible = false;
             // 
             // chkPossessionBased
             // 
+            this.chkPossessionBased.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkPossessionBased.AutoSize = true;
-            this.chkPossessionBased.Location = new System.Drawing.Point(182, 260);
+            this.chkPossessionBased.Location = new System.Drawing.Point(182, 195);
             this.chkPossessionBased.Name = "chkPossessionBased";
             this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
             this.chkPossessionBased.TabIndex = 64;
@@ -145,7 +148,7 @@ namespace Chummer
             this.chkPossessionBased.Text = "Summoned by Possess-based Tradition";
             this.chkPossessionBased.UseVisualStyleBackColor = true;
             this.chkPossessionBased.Visible = false;
-            this.chkPossessionBased.CheckedChanged += new EventHandler(chkPossessionBased_CheckedChanged);
+            this.chkPossessionBased.CheckedChanged += new System.EventHandler(this.chkPossessionBased_CheckedChanged);
             // 
             // nudForce
             // 
@@ -188,7 +191,7 @@ namespace Chummer
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(3, 3);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(158, 21);
+            this.cboCategory.Size = new System.Drawing.Size(170, 21);
             this.cboCategory.TabIndex = 66;
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
@@ -196,7 +199,7 @@ namespace Chummer
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(353, 323);
+            this.cmdCancel.Location = new System.Drawing.Point(296, 241);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 68;
@@ -208,7 +211,7 @@ namespace Chummer
             // lblQualities
             // 
             this.lblQualities.AutoSize = true;
-            this.lblQualities.Location = new System.Drawing.Point(236, 156);
+            this.lblQualities.Location = new System.Drawing.Point(236, 123);
             this.lblQualities.Name = "lblQualities";
             this.lblQualities.Size = new System.Drawing.Size(33, 13);
             this.lblQualities.TabIndex = 63;
@@ -219,7 +222,7 @@ namespace Chummer
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(229, 143);
+            this.label4.Location = new System.Drawing.Point(231, 110);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 13);
             this.label4.TabIndex = 62;
@@ -229,7 +232,7 @@ namespace Chummer
             // lblBP
             // 
             this.lblBP.AutoSize = true;
-            this.lblBP.Location = new System.Drawing.Point(179, 154);
+            this.lblBP.Location = new System.Drawing.Point(179, 123);
             this.lblBP.Name = "lblBP";
             this.lblBP.Size = new System.Drawing.Size(13, 13);
             this.lblBP.TabIndex = 61;
@@ -239,7 +242,7 @@ namespace Chummer
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(179, 143);
+            this.label6.Location = new System.Drawing.Point(179, 110);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 60;
@@ -249,9 +252,10 @@ namespace Chummer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(179, 95);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(179, 70);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 58;
             this.label2.Tag = "Label_Metavariant";
             this.label2.Text = "Metavariant";
@@ -260,7 +264,7 @@ namespace Chummer
             // 
             this.cboMetavariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetavariant.FormattingEnabled = true;
-            this.cboMetavariant.Location = new System.Drawing.Point(182, 111);
+            this.cboMetavariant.Location = new System.Drawing.Point(182, 86);
             this.cboMetavariant.Name = "cboMetavariant";
             this.cboMetavariant.Size = new System.Drawing.Size(219, 21);
             this.cboMetavariant.TabIndex = 59;
@@ -269,7 +273,7 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(434, 323);
+            this.cmdOK.Location = new System.Drawing.Point(377, 241);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 67;
@@ -465,18 +469,18 @@ namespace Chummer
             this.lstMetatypes.FormattingEnabled = true;
             this.lstMetatypes.Location = new System.Drawing.Point(3, 30);
             this.lstMetatypes.Name = "lstMetatypes";
-            this.lstMetatypes.Size = new System.Drawing.Size(158, 316);
+            this.lstMetatypes.Size = new System.Drawing.Size(170, 238);
             this.lstMetatypes.Sorted = true;
             this.lstMetatypes.TabIndex = 35;
             this.lstMetatypes.SelectedIndexChanged += new System.EventHandler(this.lstMetatypes_SelectedIndexChanged);
-            this.lstMetatypes.MouseDoubleClick += new MouseEventHandler(this.lstMetatypes_DoubleClick);
+            this.lstMetatypes.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstMetatypes_DoubleClick);
             // 
             // frmKarmaMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(538, 376);
+            this.ClientSize = new System.Drawing.Size(460, 274);
             this.ControlBox = false;
             this.Controls.Add(this.pnlMetatypes);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

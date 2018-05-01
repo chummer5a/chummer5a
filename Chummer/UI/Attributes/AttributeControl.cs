@@ -40,7 +40,7 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
             InitializeComponent();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
-
+            _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
             lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -78,14 +78,19 @@ namespace Chummer.UI.Attributes
                 cmdBurnEdge.Visible = false;
             }
         }
-        
-		public void ResetBinding(CharacterAttrib attrib)
-		{
-			_dataSource.DataSource = attrib;
-		}
+
+        private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            {
+                _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
+            }
+        }
 
         public void UnbindAttributeControl()
         {
+            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();

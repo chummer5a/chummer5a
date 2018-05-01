@@ -27,7 +27,7 @@ namespace Chummer
     static class Timekeeper
     {
         private static readonly Stopwatch s_Time = new Stopwatch();
-        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>(); 
+        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper ()

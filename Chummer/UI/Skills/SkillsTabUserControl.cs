@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _skills;
         private BindingListDisplay<SkillGroup> _groups;
@@ -93,9 +93,9 @@ namespace Chummer.UI.Skills
                 Utils.BreakIfDebug();
             }
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
-            //Keep everything visible until ready to display everything. This 
+            //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
 
@@ -118,7 +118,7 @@ namespace Chummer.UI.Skills
                 intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
                 intRatingLabelWidth = Math.Max(sg.RatingWidth, intRatingLabelWidth);
             }
-            
+
             foreach (SkillGroupControl s in _groups.Controls[0].Controls)
             {
                 s.MoveControls(intNameLabelWidth, intRatingLabelWidth);
@@ -177,7 +177,7 @@ namespace Chummer.UI.Skills
             swDisplays.TaskEnd("_knoSkills add");
 
             parts.TaskEnd("MakeSkillDisplay()");
-            
+
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilterKnowledge.BeginUpdate();
             cboSort.BeginUpdate();
@@ -333,7 +333,7 @@ namespace Chummer.UI.Skills
                             $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
                             skill => skill.SkillCategory == strName));
                     }
-            
+
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", GlobalOptions.Language, false);

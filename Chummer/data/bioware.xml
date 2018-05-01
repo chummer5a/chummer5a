@@ -862,6 +862,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{arm}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -887,6 +888,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{leg}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>

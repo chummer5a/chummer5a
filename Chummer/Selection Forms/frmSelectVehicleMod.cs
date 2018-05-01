@@ -233,7 +233,7 @@ namespace Chummer
         {
             set => _intWeaponMountSlots = value;
         }
-        
+
         /// <summary>
         /// Name of the Mod that was selected in the dialogue.
         /// </summary>

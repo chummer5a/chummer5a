@@ -83,7 +83,7 @@ namespace Chummer
         private void BuildAccessoryList()
         {
             List<ListItem> lstAccessories = new List<ListItem>();
-            
+
             // Populate the Accessory list.
             StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in _lstAllowedMounts)
@@ -176,7 +176,7 @@ namespace Chummer
                         continue;
                     }
                 }
-                
+
                 if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter))
                 {
                     lstAccessories.Add(new ListItem(strId, objXmlAccessory.SelectSingleNode("translate")?.Value ?? objXmlAccessory.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
@@ -296,7 +296,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         /// <summary>
         /// GUID of the current weapon for which the accessory is being selected
         /// </summary>

@@ -8035,7 +8035,7 @@ namespace Translator
         }
 
         /// <summary>
-        /// Process translation of child elements inside individual item elements 
+        /// Process translation of child elements inside individual item elements
         /// </summary>
         /// <param name="xmlItemNode">The item on the translation data</param>
         /// <param name="xmlDataItemNode">The item on the source data</param>
