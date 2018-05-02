@@ -9000,5 +9000,25 @@
 			<key>Message_SelectQuality_RequireESSGradeAbove</key>
 			<text>{1}品级消耗的精华至少为{0}：你目前是{2}</text>
 		</string>
+		<string>
+			<key>MessageTitle_CannotAddComplexFormOption</key>
+			<text>无法添加选项</text>
+		</string>
+		<string>
+			<key>String_Pilot</key>
+			<text>自驾</text>
+		</string>
+		<string>
+			<key>Message_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>这一生活方式花费了太多LP（生活方式点数）</text>
+		</string>
+		<string>
+			<key>Label_Options_NuyenDecimalsMaximum</key>
+			<text>新円显示的最高小数位：</text>
+		</string>
+		<string>
+			<key>Label_Options_NuyenDecimalsMinimum</key>
+			<text>新円显示的最低小数位：</text>
+		</string>
 	</strings>
 </chummer>
