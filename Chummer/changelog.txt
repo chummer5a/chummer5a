@@ -23,6 +23,7 @@ Application Changes:
 - Fixed an issue with the selection and creation of Cyberware Suites through the special menu not working properly.
 - Fixed modular cyberware that doesn't have an inherent location being unable to mount to modular mount points with sides, such as arms.
 - Fixed an issue in which the first technique purchased for a martial art in career mode would not be free.
+- Fixed behaviour loading lifestyles that caused a crash if loading a lifestyle that had more than the base amount of points spent on comforts, area or security.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
