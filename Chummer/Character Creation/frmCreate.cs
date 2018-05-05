@@ -485,7 +485,7 @@ namespace Chummer
 
             Utils.DoDatabinding(lblMysticAdeptAssignment,  "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
             Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
-            Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Maximum", CharacterObject, nameof(CharacterAttrib.TotalValue));
+            Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Maximum", CharacterObject.MAG, nameof(CharacterAttrib.TotalValue));
             Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Value",   CharacterObject, nameof(Character.MysticAdeptPowerPoints));
             
             _blnLoading = false;
