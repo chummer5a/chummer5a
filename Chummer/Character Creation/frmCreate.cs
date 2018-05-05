@@ -13108,6 +13108,7 @@ namespace Chummer
             _blnSkipToolStripRevert = true;
             if (CharacterObject.Save())
             {
+                IsDirty = false;
                 Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Cursor = Cursors.Default;
                 Program.MainForm.OpenCharacter(objOpenCharacter);
