@@ -20,6 +20,7 @@ Application Changes:
 - Fixed an issue with Martial Arts Techniques not being able to be purchased for different martial arts.
 - Ugly workaround for issue with foci binding panel not being visible.
 - Fixed behaviour of contacts to allow being flagged as free without having an associated improvement.
+- Fixed an issue with the selection and creation of Cyberware Suites through the special menu not working properly.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 

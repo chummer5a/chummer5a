@@ -159,6 +159,8 @@ namespace Chummer
             // <suite>
             objWriter.WriteStartElement("suite");
             // <name />
+            objWriter.WriteElementString("id", Guid.NewGuid().ToString());
+            // <name />
             objWriter.WriteElementString("name", txtName.Text);
             // <grade />
             objWriter.WriteElementString("grade", strGrade);
