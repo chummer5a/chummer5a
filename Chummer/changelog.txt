@@ -22,6 +22,7 @@ Application Changes:
 - Fixed behaviour of contacts to allow being flagged as free without having an associated improvement.
 - Fixed an issue with the selection and creation of Cyberware Suites through the special menu not working properly.
 - Fixed modular cyberware that doesn't have an inherent location being unable to mount to modular mount points with sides, such as arms.
+- Fixed an issue in which the first technique purchased for a martial art in career mode would not be free.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 

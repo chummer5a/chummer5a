@@ -7992,14 +7992,16 @@ namespace Chummer
                         objAdvantage.Create(xmlTechnique);
                         if (objAdvantage.InternalId.IsEmptyGuid())
                             return;
+                        // The first technique for a martial art is free. 
+                        int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
 
                         objMartialArt.Techniques.Add(objAdvantage);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objEntry.Create(karmaCost * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objEntry);
-                        CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
+                        CharacterObject.Karma -= karmaCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
