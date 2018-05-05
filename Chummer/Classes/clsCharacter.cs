@@ -4335,7 +4335,7 @@ namespace Chummer
             foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
             {
                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
+                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && (objLoopCyberware.Location == objModularCyberware.Location || objModularCyberware.Location == string.Empty) &&
                     objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
                 {
                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
