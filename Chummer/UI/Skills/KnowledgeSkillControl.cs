@@ -49,7 +49,7 @@ namespace Chummer.UI.Skills
             cboType.DataSource = lstTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
+            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.SkillsSection.HasKnowledgePoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
             cboSpec.Visible = !skill.CharacterObject.Created;
