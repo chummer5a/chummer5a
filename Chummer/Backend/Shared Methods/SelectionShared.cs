@@ -1325,7 +1325,7 @@ namespace Chummer
                     // Update the flag for requirements met.
                     if (!blnOneOfMet)
                         blnRequirementMet = false;
-                    if (blnShowMessage)
+                    if (blnShowMessage && !blnOneOfMet)
                         objRequirement.Append(objThisRequirement);
                     else if (!blnRequirementMet)
                         break;
@@ -1891,9 +1891,10 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml");
-                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText ??
-                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{strNodeInnerText}";
+                            string strSkillName = xmlNode.SelectSingleNode("name")?.Value;
+                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strSkillName}\"]/translate")?.InnerText ??
+                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strSkillName}\"]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{xmlNode.SelectSingleNode("name")?.Value}";
                             if (!string.IsNullOrEmpty(strSpec))
                             {
                                 strName += $" ({strSpec})";
