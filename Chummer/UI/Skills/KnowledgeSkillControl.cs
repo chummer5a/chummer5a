@@ -58,7 +58,6 @@ namespace Chummer.UI.Skills
             btnCareerIncrease.Visible = skill.CharacterObject.Created;
             lblSpec.Visible = skill.CharacterObject.Created;
             btnAddSpec.Visible = skill.CharacterObject.Created;
-            lblModifiedRating.Visible = skill.CharacterObject.Created;
             lblRating.Visible = skill.CharacterObject.Created;
 
             if (skill.CharacterObject.Created)

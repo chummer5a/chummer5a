@@ -3,6 +3,7 @@ Future Build 201
 Application Changes:
 
 - Reverted use of databinding for Visible attribute in career and create forms due to flaky behaviour.
+- Removed incorrect visibility binding for the Rating of knowledge skills.
 
 Build 200
 
