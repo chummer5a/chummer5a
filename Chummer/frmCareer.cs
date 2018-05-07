@@ -193,11 +193,7 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-
-            Utils.DoDatabinding(lblSpirits, "Visible", CharacterObject, nameof(Character.MagicianEnabled));
-            Utils.DoDatabinding(cmdAddSpirit, "Visible", CharacterObject, nameof(Character.MagicianEnabled));
-            Utils.DoDatabinding(panSpirits, "Visible", CharacterObject, nameof(Character.MagicianEnabled));
-
+            
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
             
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -221,10 +217,6 @@ namespace Chummer
             Utils.DoDatabinding(txtPlayerName, "Text", CharacterObject, nameof(Character.PlayerName));
 
 
-            Utils.DoDatabinding(cmdQuickenSpell, "Visible", CharacterObject, nameof(Character.QuickeningEnabled));
-            Utils.DoDatabinding(chkInitiationGroup, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(chkInitiationOrdeal, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(chkInitiationSchooling, "Visible", CharacterObject, nameof(Character.MAGEnabled));
             Utils.DoDatabinding(chkInitiationGroup, "Checked", CharacterObject, nameof(Character.GroupMember));
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -247,10 +239,6 @@ namespace Chummer
             Utils.DoDatabinding(nudStreetCred,  "Value", CharacterObject, nameof(Character.StreetCred));
             Utils.DoDatabinding(nudNotoriety,   "Value", CharacterObject, nameof(Character.Notoriety));
             Utils.DoDatabinding(nudPublicAware, "Value", CharacterObject, nameof(Character.PublicAwareness));
-
-            Utils.DoDatabinding(lblFoci, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(treFoci, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(cmdCreateStackedFocus, "Visible", CharacterObject, nameof(Character.MAGEnabled));
             Utils.DoDatabinding(cmdAddMetamagic, "Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
             RefreshQualities(treQualities, cmsQuality);
@@ -304,7 +292,8 @@ namespace Chummer
             CharacterObject.Improvements.CollectionChanged += ImprovementCollectionChanged;
             CharacterObject.ImprovementGroups.CollectionChanged += ImprovementGroupCollectionChanged;
             CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
-            
+            CharacterObjectOptions.PropertyChanged += OptionsChanged;
+
             // Populate the Magician Traditions list.
             XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstTraditions = new List<ListItem>();
@@ -481,10 +470,7 @@ namespace Chummer
                 cboAttributeCategory.SelectedValue = "Standard";
             }
 
-            Utils.DoDatabinding(lblMysticAdeptAssignment, "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
-            Utils.DoDatabinding(lblMysticAdeptMAGAdept, "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
             Utils.DoDatabinding(lblMysticAdeptMAGAdept, "Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints));
-            Utils.DoDatabinding(cmdIncreasePowerPoints, "Visible", CharacterObject, nameof(Character.MysAdeptAllowPPCareer));
             Utils.DoDatabinding(cmdIncreasePowerPoints, "Enabled", CharacterObject, nameof(Character.CanAffordCareerPP));
 
             // Populate vehicle weapon fire mode list.
@@ -553,10 +539,6 @@ namespace Chummer
             foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
 
-            // Set the visibility of the Armor Degradation buttons.
-            Utils.DoDatabinding(cmdArmorDecrease, "Visible", CharacterObjectOptions, nameof(CharacterOptions.ArmorDegradation));
-            Utils.DoDatabinding(cmdArmorIncrease, "Visible", CharacterObjectOptions, nameof(CharacterOptions.ArmorDegradation));
-
             Utils.DoDatabinding(lblCMPenalty,   "Text", CharacterObject, nameof(Character.WoundModifier));
             Utils.DoDatabinding(lblCMPhysical,  "Text", CharacterObject, nameof(Character.PhysicalCM));
             Utils.DoDatabinding(lblCMStun,      "Text", CharacterObject, nameof(Character.StunCM));
@@ -573,8 +555,6 @@ namespace Chummer
             Utils.DoDatabinding(lblCyberwareESS, "Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
             Utils.DoDatabinding(lblBiowareESS, "Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
             Utils.DoDatabinding(lblEssenceHoleESS, "Text", CharacterObject, nameof(Character.DisplayEssenceHole));
-
-            Utils.DoDatabinding(lblAstralINI, "Visible", CharacterObject, nameof(Character.MAGEnabled));
 
             Utils.DoDatabinding(lblArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
             Utils.DoDatabinding(lblArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
@@ -632,10 +612,7 @@ namespace Chummer
             Utils.DoDatabinding(lblPublicAwareTotal, "Text", CharacterObject, nameof(Character.TotalPublicAwareness));
             Utils.DoDatabinding(lblPublicAwareTotal, "ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip));
 
-            Utils.DoDatabinding(lblMentorSpiritLabel, "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
-            Utils.DoDatabinding(lblMentorSpirit, "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
             Utils.DoDatabinding(lblMentorSpirit, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
-            Utils.DoDatabinding(lblMentorSpiritInformation, "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
             Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
             Utils.DoDatabinding(lblComposure, "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
@@ -686,6 +663,17 @@ namespace Chummer
                     DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                     CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                 }
+            }
+        }
+
+        private void OptionsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.ArmorDegradation):
+                    cmdArmorDecrease.Visible = CharacterObjectOptions.ArmorDegradation;
+                    cmdArmorIncrease.Visible = CharacterObjectOptions.ArmorDegradation;
+                    break;
             }
         }
 
@@ -1090,6 +1078,13 @@ namespace Chummer
                         chkInitiationGroup.Visible = CharacterObject.MAGEnabled;
                         chkInitiationOrdeal.Visible = CharacterObject.MAGEnabled;
                         chkInitiationSchooling.Visible = CharacterObject.MAGEnabled;
+                        lblFoci.Visible = CharacterObject.MAGEnabled;
+                        treFoci.Visible = CharacterObject.MAGEnabled;
+                        cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
+                        lblAstralINI.Visible = CharacterObject.MAGEnabled;
+                        lblSpirits.Visible = CharacterObject.MAGEnabled;
+                        panSpirits.Visible = CharacterObject.MAGEnabled;
+                        cmdAddSpirit.Visible = CharacterObject.MAGEnabled;
                     }
                     break;
                 case nameof(Character.RESEnabled):
@@ -1207,6 +1202,9 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
+                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
+                        cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
+                        panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
                     break;
                 case nameof(Character.AdeptEnabled):
@@ -1353,9 +1351,31 @@ namespace Chummer
                         }
                     }
                     break;
+                case nameof(Character.QuickeningEnabled):
+                    {
+                        cmdQuickenSpell.Visible = CharacterObject.QuickeningEnabled;
+                        break;
+                    }
+                case nameof(Character.HasMentorSpirit):
+                    {
+                        lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        break;
+                    }
+                case nameof(Character.UseMysticAdeptPPs):
+                    {
+                        lblMysticAdeptAssignment.Visible = CharacterObject.UseMysticAdeptPPs;
+                        lblMysticAdeptMAGAdept.Visible = CharacterObject.UseMysticAdeptPPs;
+                        break;
+                    }
+                case nameof(Character.MysAdeptAllowPPCareer):
+                    {
+                        cmdIncreasePowerPoints.Visible = CharacterObject.MysAdeptAllowPPCareer;
+                        break;
+                    }
             }
         }
-
         /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();

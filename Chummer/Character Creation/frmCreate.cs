@@ -210,7 +210,7 @@ namespace Chummer
                 }
             }
             Utils.DoDatabinding(lblNuyenTotal, "Text", CharacterObject, nameof(Character.DisplayTotalStartingNuyen));
-            Utils.DoDatabinding(lblAttributesBase, "Visible", CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
+            lblAttributesBase.Visible = CharacterObject.BuildMethodHasSkillPoints;
 
             Utils.DoDatabinding(txtCharacterName, "Text", CharacterObject, nameof(Character.Name));
             Utils.DoDatabinding(txtSex,           "Text", CharacterObject, nameof(Character.Sex));
@@ -232,17 +232,12 @@ namespace Chummer
             tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Language);
             lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
 
-            Utils.DoDatabinding(lblSpirits,   "Visible", CharacterObject, nameof(Character.MagicianEnabled));
-            Utils.DoDatabinding(cmdAddSpirit, "Visible", CharacterObject, nameof(Character.MagicianEnabled));
-            Utils.DoDatabinding(panSpirits,   "Visible", CharacterObject, nameof(Character.MagicianEnabled));
 
             // Set the visibility of the Bioware Suites menu options.
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
             mnuSpecialCreateBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
-            Utils.DoDatabinding(chkInitiationGroup,     "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(chkInitiationGroup,     "Checked", CharacterObject, nameof(Character.GroupMember));
-            Utils.DoDatabinding(chkInitiationSchooling, "Visible", CharacterObject, nameof(Character.MAGEnabled));
+            Utils.DoDatabinding(chkInitiationGroup, "Checked", CharacterObject, nameof(Character.GroupMember));
 
             // Remove the Improvements Tab.
             tabCharacterTabs.TabPages.Remove(tabImprovements);
@@ -267,9 +262,6 @@ namespace Chummer
             
             OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
 
-            Utils.DoDatabinding(lblFoci, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(treFoci, "Visible", CharacterObject, nameof(Character.MAGEnabled));
-            Utils.DoDatabinding(cmdCreateStackedFocus, "Visible", CharacterObject, nameof(Character.MAGEnabled));
             Utils.DoDatabinding(cmdAddMetamagic, "Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
             if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
@@ -483,8 +475,6 @@ namespace Chummer
                 lblStreamLabel.Visible = false;
             }
 
-            Utils.DoDatabinding(lblMysticAdeptAssignment,  "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
-            Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs));
             Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Maximum", CharacterObject.MAG, nameof(CharacterAttrib.TotalValue));
             Utils.DoDatabinding(nudMysticAdeptMAGMagician, "Value",   CharacterObject, nameof(Character.MysticAdeptPowerPoints));
             
@@ -557,12 +547,7 @@ namespace Chummer
             Utils.DoDatabinding(lblBiowareESS,      "Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
             Utils.DoDatabinding(lblEssenceHoleESS,  "Text", CharacterObject, nameof(Character.DisplayEssenceHole));
 
-            Utils.DoDatabinding(chkPrototypeTranshuman,         "Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman));
-            Utils.DoDatabinding(lblPrototypeTranshumanESSLabel, "Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman));
-            Utils.DoDatabinding(lblPrototypeTranshumanESS,      "Visible", CharacterObject, nameof(Character.IsPrototypeTranshuman));
             Utils.DoDatabinding(lblPrototypeTranshumanESS,      "Text", CharacterObject, nameof(Character.DisplayPrototypeTranshumanEssenceUsed));
-
-            Utils.DoDatabinding(lblAstralINI, "Visible", CharacterObject, nameof(Character.MAGEnabled));
 
             Utils.DoDatabinding(lblArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
             Utils.DoDatabinding(lblArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
@@ -618,10 +603,7 @@ namespace Chummer
             Utils.DoDatabinding(lblPublicAwareTotal,        "Text", CharacterObject, nameof(Character.TotalPublicAwareness));
             Utils.DoDatabinding(lblPublicAwareTotal,        "ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip));
 
-            Utils.DoDatabinding(lblMentorSpiritLabel,       "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
-            Utils.DoDatabinding(lblMentorSpirit,            "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
             Utils.DoDatabinding(lblMentorSpirit,            "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
-            Utils.DoDatabinding(lblMentorSpiritInformation, "Visible", CharacterObject, nameof(Character.HasMentorSpirit));
             Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
             Utils.DoDatabinding(lblComposure,       "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
@@ -888,10 +870,7 @@ namespace Chummer
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
-                            tsMetamagicAddArt.Visible = true;
-                            tsMetamagicAddEnchantment.Visible = true;
-                            tsMetamagicAddEnhancement.Visible = true;
-                            tsMetamagicAddRitual.Visible = true;
+                            
                             string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.InitiateGrade + 1).ToString()).Replace("{1}", (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString());
                             GlobalOptions.ToolTipProcessor.SetToolTip(cmdAddMetamagic, strInitTip);
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
@@ -926,6 +905,15 @@ namespace Chummer
 
                             IsCharacterUpdateRequested = true;
                         }
+
+                        lblFoci.Visible = CharacterObject.MAGEnabled;
+                        treFoci.Visible = CharacterObject.MAGEnabled;
+                        cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
+                        lblAstralINI.Visible = CharacterObject.MAGEnabled;
+                        tsMetamagicAddArt.Visible = CharacterObject.MAGEnabled;
+                        tsMetamagicAddEnchantment.Visible = CharacterObject.MAGEnabled;
+                        tsMetamagicAddEnhancement.Visible = CharacterObject.MAGEnabled;
+                        tsMetamagicAddRitual.Visible = CharacterObject.MAGEnabled;
                     }
                     break;
                 case nameof(Character.RESEnabled):
@@ -1049,6 +1037,9 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
+                        cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
+                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
+                        panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
                     break;
                 case nameof(Character.AdeptEnabled):
@@ -1169,11 +1160,34 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
+                        chkInitiationGroup.Visible = CharacterObject.InitiationEnabled;
+                        chkInitiationOrdeal.Visible = CharacterObject.InitiationEnabled;
+                        chkInitiationSchooling.Visible = CharacterObject.InitiationEnabled;
                     }
                     break;
+                case nameof(Character.HasMentorSpirit):
+                    {
+                        lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        break;
+                    }
+                case nameof(Character.UseMysticAdeptPPs):
+                    {
+                        lblMysticAdeptAssignment.Visible = CharacterObject.UseMysticAdeptPPs;
+                        nudMysticAdeptMAGMagician.Visible = CharacterObject.UseMysticAdeptPPs;
+                        break;
+                    }
+                case nameof(Character.IsPrototypeTranshuman):
+                    {
+                        chkPrototypeTranshuman.Visible = CharacterObject.IsPrototypeTranshuman;
+                        lblPrototypeTranshumanESS.Visible = CharacterObject.IsPrototypeTranshuman;
+                        lblPrototypeTranshumanESSLabel.Visible = CharacterObject.IsPrototypeTranshuman;
+                        break;
+                    }
             }
         }
-        
+
         /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)

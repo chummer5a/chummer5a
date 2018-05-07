@@ -1,3 +1,9 @@
+Future Build 201
+
+Application Changes:
+
+- Reverted use of databinding for Visible attribute in career and create forms due to flaky behaviour.
+
 Build 200
 
 Application Changes:
