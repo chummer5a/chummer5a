@@ -4,6 +4,8 @@ Application Changes:
 
 - Reverted use of databinding for Visible attribute in career and create forms due to flaky behaviour.
 - Removed incorrect visibility binding for the Rating of knowledge skills.
+- Fixed behaviour of attribute-based databindings to work properly when loading characters.
+- Fixed an issue with the SelectSpecialAttribute improvement not allowing the selection of non-active special attributes.
 
 Build 200
 

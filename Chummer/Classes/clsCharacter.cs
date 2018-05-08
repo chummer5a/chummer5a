@@ -254,20 +254,7 @@ namespace Chummer
             _lstPowers.ListChanged += PowersOnListChanged;
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
 
-            BOD.PropertyChanged += RefreshBODDependentProperties;
-            AGI.PropertyChanged += RefreshAGIDependentProperties;
-            REA.PropertyChanged += RefreshREADependentProperties;
-            STR.PropertyChanged += RefreshSTRDependentProperties;
-            CHA.PropertyChanged += RefreshCHADependentProperties;
-            INT.PropertyChanged += RefreshINTDependentProperties;
-            LOG.PropertyChanged += RefreshLOGDependentProperties;
-            WIL.PropertyChanged += RefreshWILDependentProperties;
-            MAG.PropertyChanged += RefreshMAGDependentProperties;
-            RES.PropertyChanged += RefreshRESDependentProperties;
-            DEP.PropertyChanged += RefreshDEPDependentProperties;
-            ESS.PropertyChanged += RefreshESSDependentProperties;
-            // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
-            AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
+            RefreshAttributeBindings();
 
             CharacterDependencyGraph =
             new DependancyGraph<string>(
@@ -800,6 +787,24 @@ namespace Chummer
                     )
                 )
             );
+        }
+
+        private void RefreshAttributeBindings()
+        {
+            BOD.PropertyChanged += RefreshBODDependentProperties;
+            AGI.PropertyChanged += RefreshAGIDependentProperties;
+            REA.PropertyChanged += RefreshREADependentProperties;
+            STR.PropertyChanged += RefreshSTRDependentProperties;
+            CHA.PropertyChanged += RefreshCHADependentProperties;
+            INT.PropertyChanged += RefreshINTDependentProperties;
+            LOG.PropertyChanged += RefreshLOGDependentProperties;
+            WIL.PropertyChanged += RefreshWILDependentProperties;
+            MAG.PropertyChanged += RefreshMAGDependentProperties;
+            RES.PropertyChanged += RefreshRESDependentProperties;
+            DEP.PropertyChanged += RefreshDEPDependentProperties;
+            ESS.PropertyChanged += RefreshESSDependentProperties;
+            // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+            AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -2142,7 +2147,8 @@ namespace Chummer
                 ConvertOldQualities(objXmlNodeList);
 	        Timekeeper.Finish("load_char_quality");
 			AttributeSection.Load(objXmlCharacter);
-			Timekeeper.Start("load_char_misc2");
+            RefreshAttributeBindings();
+            Timekeeper.Start("load_char_misc2");
 
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
