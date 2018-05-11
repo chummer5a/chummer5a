@@ -4942,6 +4942,7 @@ namespace Chummer
 
                     if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
+                    CharacterObject.InitiationGrades.Remove(objGrade);
                 }
                 else
                 {
@@ -14342,7 +14343,7 @@ namespace Chummer
                 }
                 else if (objWareGrade.Burnout)
                     continue;
-                if (CharacterObject.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                if (CharacterObject.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
                     continue;
 
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
