@@ -5530,6 +5530,13 @@
       <bonus>
         <selecttext />
       </bonus>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fake SIN</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <cost>Rating * 2500</cost>
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Custom</addoncategory>

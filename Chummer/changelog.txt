@@ -10,6 +10,10 @@ Application Changes:
 - Fixed visibility of the Type combobox for knowledge skills in career mode.
 - Removed possibly-legacy code that caused odd behaviour for mentor spirits that provided skill bonuses, particularly the Doom mentor.
 
+Data Changes:
+
+- Removed the ability to add Fake SINs to other Fake SINs.
+
 Build 200
 
 Application Changes:
