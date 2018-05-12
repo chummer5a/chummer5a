@@ -3774,6 +3774,7 @@ Build 5.118 (beta)
 - Resolved the error on the Options dialog by setting the Shadowrun 5 sheet as the default if one isn't present.
 - Adept powers will now sort by name when you load the character.
 - Updated vehicles to allow adding any gear. This resolves several issues... First, being able to replace the standard sensors. Second, until we have vehicle capacity rules, there's really no programmatic means to say what does and does not belong in a car.
+- Fixed visibility of the Type combobox for knowledge skills in career mode.
 
 Build 5.117 (beta)
 - Fixed a bug that could cause a bug while browsing weapons.

@@ -53,7 +53,7 @@ namespace Chummer.UI.Skills
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
             cboSpec.Visible = !skill.CharacterObject.Created;
-            cboType.Visible = !skill.CharacterObject.Created;
+            //cboType.Visible = !skill.CharacterObject.Created;
 
             btnCareerIncrease.Visible = skill.CharacterObject.Created;
             lblSpec.Visible = skill.CharacterObject.Created;
