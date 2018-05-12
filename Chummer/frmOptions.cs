@@ -1013,6 +1013,7 @@ namespace Chummer
             GlobalOptions.Dronemods = chkDronemods.Checked;
             GlobalOptions.DronemodsMaximumPilot = chkDronemodsMaximumPilot.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
+            GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
         }
 
         /// <summary>
@@ -1043,6 +1044,7 @@ namespace Chummer
                 objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
                 objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString());
                 objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
+                objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
 
                 // Save the SourcebookInfo.
                 RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
@@ -1495,6 +1497,7 @@ namespace Chummer
             chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
             txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
+            chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
         }
 
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)

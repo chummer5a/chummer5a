@@ -143,11 +143,12 @@ namespace Chummer
                 () => XmlManager.Load("weapons.xml")
             );
             Timekeeper.Finish("cache_load");
-
-            CharacterRoster = new frmCharacterRoster
-            {
-                MdiParent = this
-            };
+            CharacterRoster = GlobalOptions.HideCharacterRoster
+                ? null
+                : new frmCharacterRoster
+                {
+                    MdiParent = this
+                };
 
             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
             _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -181,9 +182,11 @@ namespace Chummer
                 frmTestData.Show();
             }
             OpenCharacterList(lstCharactersToLoad);
-
-            CharacterRoster.WindowState = FormWindowState.Maximized;
-            CharacterRoster.Show();
+            if (!GlobalOptions.HideCharacterRoster)
+            {
+                CharacterRoster.WindowState = FormWindowState.Maximized;
+                CharacterRoster.Show();
+            }
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -481,6 +484,7 @@ namespace Chummer
         {
             foreach (Form childForm in MdiChildren)
             {
+                if (childForm != CharacterRoster)
                 childForm.Close();
             }
         }

@@ -15,6 +15,10 @@ Data Changes:
 
 - Removed the ability to add Fake SINs to other Fake SINs.
 
+New Strings:
+
+- Checkbox_Options_HideCharacterRoster
+
 Build 200
 
 Application Changes:

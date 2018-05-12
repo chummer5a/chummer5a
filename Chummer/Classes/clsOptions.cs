@@ -179,6 +179,7 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _hideCharacterRoster;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -389,6 +390,8 @@ namespace Chummer
 
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
 
+            LoadBoolFromRegistry(ref _hideCharacterRoster, "hidecharacterroster");
+
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
@@ -474,6 +477,16 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
+        /// </summary>
+        public static bool HideCharacterRoster
+        {
+            get => _hideCharacterRoster;
+            set => _hideCharacterRoster = value;
+        }
+
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>
@@ -636,6 +649,7 @@ namespace Chummer
         public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
 
         private static XmlDocument _xmlClipboard = new XmlDocument();
+
         /// <summary>
         /// Clipboard.
         /// </summary>
