@@ -9,6 +9,7 @@ Application Changes:
 - Fixed an issue in create mode in which ignoring creation rules would not properly allow all 'ware grades to be visible. 
 - Fixed visibility of the Type combobox for knowledge skills in career mode.
 - Removed possibly-legacy code that caused odd behaviour for mentor spirits that provided skill bonuses, particularly the Doom mentor.
+- Layout change for frmSelectArmor to prevent the Test text from overlapping.
 
 Data Changes:
 
