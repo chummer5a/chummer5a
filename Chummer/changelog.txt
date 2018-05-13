@@ -1,4 +1,25 @@
-Future Build 200
+Future Build 201
+
+Application Changes:
+
+- Reverted use of databinding for Visible attribute in career and create forms due to flaky behaviour.
+- Removed incorrect visibility binding for the Rating of knowledge skills.
+- Fixed behaviour of attribute-based databindings to work properly when loading characters.
+- Fixed an issue with the SelectSpecialAttribute improvement not allowing the selection of non-active special attributes.
+- Fixed an issue in create mode in which ignoring creation rules would not properly allow all 'ware grades to be visible. 
+- Fixed visibility of the Type combobox for knowledge skills in career mode.
+- Removed possibly-legacy code that caused odd behaviour for mentor spirits that provided skill bonuses, particularly the Doom mentor.
+- Layout change for frmSelectArmor to prevent the Test text from overlapping.
+
+Data Changes:
+
+- Removed the ability to add Fake SINs to other Fake SINs.
+
+New Strings:
+
+- Checkbox_Options_HideCharacterRoster
+
+Build 200
 
 Application Changes:
 
@@ -16,10 +37,24 @@ Application Changes:
 - Advanced Lifestyles are no longer allowed to be accepted with more lifestyle points spent than maximum.
 - Fixed adept powers causing a crash when toggling their discount from Adept Ways.
 - Fixed missing databindings for skill controls due to visible = false shenanigans in the designer.
+- Fixed an issue with the Disable Improvements button incorrectly disabling all improvements.
+- Fixed an issue with Martial Arts Techniques not being able to be purchased for different martial arts.
+- Ugly workaround for issue with foci binding panel not being visible.
+- Fixed behaviour of contacts to allow being flagged as free without having an associated improvement.
+- Fixed an issue with the selection and creation of Cyberware Suites through the special menu not working properly.
+- Fixed modular cyberware that doesn't have an inherent location being unable to mount to modular mount points with sides, such as arms.
+- Fixed an issue in which the first technique purchased for a martial art in career mode would not be free.
+- Fixed behaviour loading lifestyles that caused a crash if loading a lifestyle that had more than the base amount of points spent on comforts, area or security.
 
 Data Changes:
 - Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
 - Added missing melee weapon categories for the Small, Standard, Large, Huge and Heavy drone weapon mounts from Rigger 5. Existing drones should either remove and re-add the drone or edit the weapon mount in order to regenerate the weapon category.
+- Soul Swallower quality now requires the Essence Drain power.
+- Latent Dracomorphosis no longer contributes towards quality limit in create mode.
+- Added an amend entry to allow the College Education qualities from Run Faster and Sail Away, Sweet Sister to stack.
+- Added missing limits to Hand & Foot Webbing bioware.
+- Fixed missing bonus for Magical Flight power.
+- Added DMSO rounds for the Ares Super-Squirt per German SR5. Requires the SR5G book to be enabled.
 
 New Strings:
 

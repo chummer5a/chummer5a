@@ -5640,6 +5640,7 @@ namespace Chummer
             this.tabStreetGearTabs.Location = new System.Drawing.Point(3, 3);
             this.tabStreetGearTabs.Name = "tabStreetGearTabs";
             this.tabStreetGearTabs.SelectedIndex = 0;
+            this.tabStreetGearTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabStreetGearTabs.Size = new System.Drawing.Size(839, 605);
             this.tabStreetGearTabs.TabIndex = 87;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
@@ -5895,7 +5896,7 @@ namespace Chummer
             // 
             // treFoci
             // 
-            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treFoci.CheckBoxes = true;
             this.treFoci.Location = new System.Drawing.Point(310, 348);

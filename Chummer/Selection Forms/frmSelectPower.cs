@@ -232,7 +232,7 @@ namespace Chummer
                     continue;
                 }
 
-                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
                 lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
@@ -263,7 +263,7 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
 
-                if (objXmlPower.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     DialogResult = DialogResult.OK;

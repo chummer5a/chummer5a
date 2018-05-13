@@ -5258,6 +5258,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
     </string>
     <string>
+      <key>Checkbox_Options_HideCharacterRoster</key>
+      <text>Hide the Character Roster</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>

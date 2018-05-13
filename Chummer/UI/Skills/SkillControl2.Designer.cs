@@ -36,20 +36,20 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblName = new LabelWithToolTip();
+            this.lblName = new Chummer.LabelWithToolTip();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
-            this.lblModifiedRating = new LabelWithToolTip();
+            this.lblModifiedRating = new Chummer.LabelWithToolTip();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblCareerRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new ButtonWithToolTip();
+            this.btnCareerIncrease = new Chummer.ButtonWithToolTip();
             this.lblCareerSpec = new System.Windows.Forms.Label();
-            this.btnAddSpec = new ButtonWithToolTip();
+            this.btnAddSpec = new Chummer.ButtonWithToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
             this.cmsSkillLabel.SuspendLayout();
@@ -65,6 +65,7 @@ namespace Chummer.UI.Skills
             this.lblName.Size = new System.Drawing.Size(35, 13);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "label1";
+            this.lblName.ToolTipText = "";
             this.lblName.Click += new System.EventHandler(this.lblName_Click);
             // 
             // cmsSkillLabel
@@ -127,6 +128,7 @@ namespace Chummer.UI.Skills
             this.lblModifiedRating.Size = new System.Drawing.Size(14, 13);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "0";
+            this.lblModifiedRating.ToolTipText = "";
             // 
             // cboSpec
             // 
@@ -177,6 +179,7 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Name = "btnCareerIncrease";
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 21;
+            this.btnCareerIncrease.ToolTipText = "";
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
@@ -197,6 +200,7 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Name = "btnAddSpec";
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 23;
+            this.btnAddSpec.ToolTipText = "";
             this.btnAddSpec.UseVisualStyleBackColor = true;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 

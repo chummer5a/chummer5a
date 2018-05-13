@@ -2610,7 +2610,23 @@
       <action>Complex</action>
       <range>LOS</range>
       <karma>14</karma>
-      <bonus />
+      <bonus>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>500</val>
+        </movementreplace>
+      </bonus>
       <required>
         <oneof>
           <quality>Dracoform (Eastern Drake)</quality>

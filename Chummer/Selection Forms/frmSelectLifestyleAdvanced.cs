@@ -419,6 +419,8 @@ namespace Chummer
                     chkBonusLPRandomize.Checked = false;
                     nudBonusLP.Value = _objSourceLifestyle.BonusLP;
                 }
+
+                _objLifestyle.BaseLifestyle = _objSourceLifestyle.BaseLifestyle;
             }
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
@@ -433,6 +435,50 @@ namespace Chummer
 
             if (_objSourceLifestyle != null)
             {
+                int intMinComfort = 0;
+                int intMaxComfort = 0;
+                int intMinArea = 0;
+                int intMaxArea = 0;
+                int intMinSec = 0;
+                int intMaxSec = 0;
+                string strBaseLifestyle = _objSourceLifestyle.BaseLifestyle;
+
+                // Calculate the limits of the 3 aspects.
+                // Comforts.
+                XmlNode xmlNode = _xmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
+                if (intMaxComfort < intMinComfort)
+                    intMaxComfort = intMinComfort;
+                // Area.
+                xmlNode = _xmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
+                if (intMaxArea < intMinArea)
+                    intMaxArea = intMinArea;
+                // Security.
+                xmlNode = _xmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
+                if (intMaxSec < intMinSec)
+                    intMaxSec = intMinSec;
+
+                // Calculate the cost of Positive Qualities.
+                foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities)
+                {
+                    intMaxArea += objQuality.AreaMaximum;
+                    intMaxComfort += objQuality.ComfortMaximum;
+                    intMaxSec += objQuality.SecurityMaximum;
+                    intMinArea += objQuality.Area;
+                    intMinComfort += objQuality.Comfort;
+                    intMinSec += objQuality.Security;
+                }
+                _blnSkipRefresh = true;
+
+                nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
+                nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
+                nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
+
                 txtLifestyleName.Text = _objSourceLifestyle.Name;
                 nudRoommates.Value = _objSourceLifestyle.Roommates;
                 nudPercentage.Value = _objSourceLifestyle.Percentage;

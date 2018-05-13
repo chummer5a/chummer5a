@@ -92,20 +92,20 @@ namespace Chummer
                                                                         (_eSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                                                                        && strGrade.Contains(x.ImprovedName) && x.Enabled)))
                                 continue;
-                            lstCyberware.Items.Add(strName);
+                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedSuite = lstCyberware.Text;
+            string strSelectedSuite = lstCyberware.SelectedItem?.ToString();
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
             if (!string.IsNullOrEmpty(lstCyberware.Text))
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + strSelectedSuite + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
@@ -166,10 +166,10 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            string strSelectedId = lstCyberware.SelectedValue?.ToString();
+            string strSelectedId = lstCyberware.SelectedItem?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                _strSelectedSuite = lstCyberware.Text;
+                _strSelectedSuite = strSelectedId;
                 DialogResult = DialogResult.OK;
             }
         }

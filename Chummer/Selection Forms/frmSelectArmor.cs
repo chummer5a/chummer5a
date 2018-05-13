@@ -477,13 +477,15 @@ namespace Chummer
         {
             int intWidth = lblArmorLabel.Width;
             intWidth = Math.Max(intWidth, lblCapacityLabel.Width);
+            intWidth = Math.Max(intWidth, lblArmorValueLabel.Width);
             intWidth = Math.Max(intWidth, lblAvailLabel.Width);
             intWidth = Math.Max(intWidth, lblCostLabel.Width);
+            intWidth = Math.Max(intWidth, lblTestLabel.Width);
 
             lblArmor.Left = lblArmorLabel.Left + intWidth + 6;
             lblCapacity.Left = lblCapacityLabel.Left + intWidth + 6;
             lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-            lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
+            lblTest.Left = lblTestLabel.Left + intWidth + 6;
             lblCost.Left = lblCostLabel.Left + intWidth + 6;
 
             nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;

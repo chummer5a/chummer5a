@@ -7619,6 +7619,7 @@ namespace Chummer
             this.tabStreetGearTabs.SelectedIndex = 0;
             this.tabStreetGearTabs.Size = new System.Drawing.Size(190, 68);
             this.tabStreetGearTabs.TabIndex = 87;
+            this.tabStreetGearTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
             // 
             // tabGear

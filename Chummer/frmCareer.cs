@@ -193,36 +193,31 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-
-            lblSpirits.DataBindings.Add("Visible", CharacterObject, nameof(Character.MagicianEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdAddSpirit.DataBindings.Add("Visible", CharacterObject, nameof(Character.MagicianEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            panSpirits.DataBindings.Add("Visible", CharacterObject, nameof(Character.MagicianEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-
+            
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
-
-            chkInitiationGroup.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            chkInitiationSchooling.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
             txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false, DataSourceUpdateMode.OnPropertyChanged);
             chkJoinGroup.Checked = CharacterObject.GroupMember;
-            
-            txtCharacterName.DataBindings.Add("Text", CharacterObject, nameof(Character.Name), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtSex.DataBindings.Add("Text", CharacterObject, nameof(Character.Sex), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtAge.DataBindings.Add("Text", CharacterObject, nameof(Character.Age), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtEyes.DataBindings.Add("Text", CharacterObject, nameof(Character.Eyes), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtHeight.DataBindings.Add("Text", CharacterObject, nameof(Character.Height), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtWeight.DataBindings.Add("Text", CharacterObject, nameof(Character.Weight), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtSkin.DataBindings.Add("Text", CharacterObject, nameof(Character.Skin), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtHair.DataBindings.Add("Text", CharacterObject, nameof(Character.Hair), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtDescription.DataBindings.Add("Text", CharacterObject, nameof(Character.Description), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtBackground.DataBindings.Add("Text", CharacterObject, nameof(Character.Background), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtConcept.DataBindings.Add("Text", CharacterObject, nameof(Character.Concept), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.Notes), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtAlias.DataBindings.Add("Text", CharacterObject, nameof(Character.Alias), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtPlayerName.DataBindings.Add("Text", CharacterObject, nameof(Character.PlayerName), false, DataSourceUpdateMode.OnPropertyChanged);
-            txtGameNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GameNotes), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            cmdQuickenSpell.DataBindings.Add("Visible", CharacterObject, nameof(Character.QuickeningEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(txtCharacterName, "Text", CharacterObject, nameof(Character.Name));
+            Utils.DoDatabinding(txtSex, "Text", CharacterObject, nameof(Character.Sex));
+            Utils.DoDatabinding(txtAge, "Text", CharacterObject, nameof(Character.Age));
+            Utils.DoDatabinding(txtEyes, "Text", CharacterObject, nameof(Character.Eyes));
+            Utils.DoDatabinding(txtHeight, "Text", CharacterObject, nameof(Character.Height));
+            Utils.DoDatabinding(txtWeight, "Text", CharacterObject, nameof(Character.Weight));
+            Utils.DoDatabinding(txtSkin, "Text", CharacterObject, nameof(Character.Skin));
+            Utils.DoDatabinding(txtHair, "Text", CharacterObject, nameof(Character.Hair));
+            Utils.DoDatabinding(txtDescription, "Text", CharacterObject, nameof(Character.Description));
+            Utils.DoDatabinding(txtBackground, "Text", CharacterObject, nameof(Character.Background));
+            Utils.DoDatabinding(txtConcept, "Text", CharacterObject, nameof(Character.Concept));
+            Utils.DoDatabinding(txtNotes, "Text", CharacterObject, nameof(Character.Notes));
+            Utils.DoDatabinding(txtGameNotes, "Text", CharacterObject, nameof(Character.GameNotes));
+            Utils.DoDatabinding(txtAlias, "Text", CharacterObject, nameof(Character.Alias));
+            Utils.DoDatabinding(txtPlayerName, "Text", CharacterObject, nameof(Character.PlayerName));
+
+
+            Utils.DoDatabinding(chkInitiationGroup, "Checked", CharacterObject, nameof(Character.GroupMember));
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
             if (CharacterObject.Mugshots.Count > 0)
@@ -241,14 +236,10 @@ namespace Chummer
 
             // Refresh character information fields.
             RefreshMetatypeFields();
-            
-            nudStreetCred.DataBindings.Add("Value", CharacterObject, nameof(Character.StreetCred), false, DataSourceUpdateMode.OnPropertyChanged);
-            nudNotoriety.DataBindings.Add("Value", CharacterObject, nameof(Character.Notoriety), false, DataSourceUpdateMode.OnPropertyChanged);
-            nudPublicAware.DataBindings.Add("Value", CharacterObject, nameof(Character.PublicAwareness), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            lblFoci.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            treFoci.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdCreateStackedFocus.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(nudStreetCred,  "Value", CharacterObject, nameof(Character.StreetCred));
+            Utils.DoDatabinding(nudNotoriety,   "Value", CharacterObject, nameof(Character.Notoriety));
+            Utils.DoDatabinding(nudPublicAware, "Value", CharacterObject, nameof(Character.PublicAwareness));
+            Utils.DoDatabinding(cmdAddMetamagic, "Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
             RefreshQualities(treQualities, cmsQuality);
             RefreshSpirits(panSpirits, panSprites);
@@ -301,7 +292,8 @@ namespace Chummer
             CharacterObject.Improvements.CollectionChanged += ImprovementCollectionChanged;
             CharacterObject.ImprovementGroups.CollectionChanged += ImprovementGroupCollectionChanged;
             CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
-            
+            CharacterObjectOptions.PropertyChanged += OptionsChanged;
+
             // Populate the Magician Traditions list.
             XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
             List<ListItem> lstTraditions = new List<ListItem>();
@@ -349,16 +341,16 @@ namespace Chummer
             cboDrain.ValueMember = nameof(ListItem.Value);
             cboDrain.DisplayMember = nameof(ListItem.Name);
             cboDrain.DataSource = lstDrainAttributes;
-            cboDrain.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.TraditionDrain), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboDrain, "SelectedValue", CharacterObject, nameof(Character.TraditionDrain));
             cboDrain.EndUpdate();
+            
+            Utils.DoDatabinding(lblDrainAttributes, "Text", CharacterObject, nameof(Character.DisplayTraditionDrain));
+            Utils.DoDatabinding(lblDrainAttributesValue, "Text", CharacterObject, nameof(Character.TraditionDrainValue));
+            Utils.DoDatabinding(lblDrainAttributesValue, "ToolTipText", CharacterObject, nameof(Character.TraditionDrainValueToolTip));
 
-            lblDrainAttributes.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayTraditionDrain), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblDrainAttributesValue.DataBindings.Add("Text", CharacterObject, nameof(Character.TraditionDrainValue), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblDrainAttributesValue.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.TraditionDrainValueToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            lblFadingAttributes.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayTechnomancerFading), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblFadingAttributesValue.DataBindings.Add("Text", CharacterObject, nameof(Character.TechnomancerFadingValue), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblFadingAttributesValue.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.TechnomancerFadingValueToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblFadingAttributes, "Text", CharacterObject, nameof(Character.DisplayTechnomancerFading));
+            Utils.DoDatabinding(lblFadingAttributesValue, "Text", CharacterObject, nameof(Character.TechnomancerFadingValue));
+            Utils.DoDatabinding(lblFadingAttributesValue, "ToolTipText", CharacterObject, nameof(Character.TechnomancerFadingValueToolTip));
 
             HashSet<string> limit = new HashSet<string>();
             foreach (Improvement improvement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
@@ -392,7 +384,7 @@ namespace Chummer
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
             cboSpiritCombat.DataSource = lstCombat;
-            cboSpiritCombat.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritCombat), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboSpiritCombat, "SelectedValue", CharacterObject, nameof(Character.SpiritCombat));
             cboSpiritCombat.EndUpdate();
 
             List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
@@ -400,7 +392,7 @@ namespace Chummer
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstDetection;
-            cboSpiritDetection.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritDetection), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboSpiritDetection, "SelectedValue", CharacterObject, nameof(Character.SpiritDetection));
             cboSpiritDetection.EndUpdate();
 
             List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
@@ -408,7 +400,7 @@ namespace Chummer
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
             cboSpiritHealth.DataSource = lstHealth;
-            cboSpiritHealth.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritHealth), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboSpiritHealth, "SelectedValue", CharacterObject, nameof(Character.SpiritHealth));
             cboSpiritHealth.EndUpdate();
 
             List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
@@ -416,7 +408,7 @@ namespace Chummer
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstIllusion;
-            cboSpiritIllusion.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritIllusion), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboSpiritIllusion, "SelectedValue", CharacterObject, nameof(Character.SpiritIllusion));
             cboSpiritIllusion.EndUpdate();
 
             List<ListItem> lstManip = new List<ListItem>(lstSpirit);
@@ -424,7 +416,7 @@ namespace Chummer
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
             cboSpiritManipulation.DataSource = lstManip;
-            cboSpiritManipulation.DataBindings.Add("SelectedValue", CharacterObject, nameof(Character.SpiritManipulation), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cboSpiritManipulation, "SelectedValue", CharacterObject, nameof(Character.SpiritManipulation));
             cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
@@ -477,13 +469,10 @@ namespace Chummer
                 cboAttributeCategory.EndUpdate();
                 cboAttributeCategory.SelectedValue = "Standard";
             }
-            
-            lblMysticAdeptAssignment.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMysticAdeptMAGAdept.DataBindings.Add("Visible", CharacterObject, nameof(Character.UseMysticAdeptPPs), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMysticAdeptMAGAdept.DataBindings.Add("Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdIncreasePowerPoints.DataBindings.Add("Visible", CharacterObject, nameof(Character.MysAdeptAllowPPCareer), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdIncreasePowerPoints.DataBindings.Add("Enabled", CharacterObject, nameof(Character.CanAffordCareerPP), false, DataSourceUpdateMode.OnPropertyChanged);
-            
+
+            Utils.DoDatabinding(lblMysticAdeptMAGAdept, "Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints));
+            Utils.DoDatabinding(cmdIncreasePowerPoints, "Enabled", CharacterObject, nameof(Character.CanAffordCareerPP));
+
             // Populate vehicle weapon fire mode list.
             List<ListItem> lstFireModes = new List<ListItem>();
             foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
@@ -504,7 +493,8 @@ namespace Chummer
                 cboTradition.SelectedValue = CharacterObject.MagicTradition;
             else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                 cboTradition.SelectedIndex = 0;
-            txtTraditionName.DataBindings.Add("Text", CharacterObject, nameof(Character.TraditionName), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            Utils.DoDatabinding(txtTraditionName, "Text", CharacterObject, nameof(Character.TraditionName));
 
             // Select the Technomancer's Stream.
             if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
@@ -549,108 +539,98 @@ namespace Chummer
             foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
 
-            // Set the visibility of the Armor Degradation buttons.
-            cmdArmorDecrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdArmorIncrease.DataBindings.Add("Visible", CharacterObjectOptions, nameof(CharacterOptions.ArmorDegradation), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMPenalty.DataBindings.Add("Text", CharacterObject, nameof(Character.WoundModifier), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblCMPenalty,   "Text", CharacterObject, nameof(Character.WoundModifier));
+            Utils.DoDatabinding(lblCMPhysical,  "Text", CharacterObject, nameof(Character.PhysicalCM));
+            Utils.DoDatabinding(lblCMStun,      "Text", CharacterObject, nameof(Character.StunCM));
+            Utils.DoDatabinding(lblPhysical, "Text", CharacterObject, nameof(Character.LimitPhysical));
+            Utils.DoDatabinding(lblPhysical, "ToolTipText", CharacterObject, nameof(Character.LimitPhysicalToolTip));
+            Utils.DoDatabinding(lblMental, "Text", CharacterObject, nameof(Character.LimitMental));
+            Utils.DoDatabinding(lblMental, "ToolTipText", CharacterObject, nameof(Character.LimitMentalToolTip));
+            Utils.DoDatabinding(lblSocial, "Text", CharacterObject, nameof(Character.LimitSocial));
+            Utils.DoDatabinding(lblSocial, "ToolTipText", CharacterObject, nameof(Character.LimitSocialToolTip));
+            Utils.DoDatabinding(lblAstral, "Text", CharacterObject, nameof(Character.LimitAstral));
+            Utils.DoDatabinding(lblAstral, "ToolTipText", CharacterObject, nameof(Character.LimitAstralToolTip));
 
-            lblCMPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.PhysicalCM), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMStun.DataBindings.Add("Text", CharacterObject, nameof(Character.StunCM), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblESSMax, "Text", CharacterObject, nameof(Character.DisplayEssence));
+            Utils.DoDatabinding(lblCyberwareESS, "Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
+            Utils.DoDatabinding(lblBiowareESS, "Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
+            Utils.DoDatabinding(lblEssenceHoleESS, "Text", CharacterObject, nameof(Character.DisplayEssenceHole));
 
-            lblPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LimitPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMental.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitMental), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMental.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LimitMentalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSocial.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitSocial), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSocial.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LimitSocialToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblAstral.DataBindings.Add("Text", CharacterObject, nameof(Character.LimitAstral), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblAstral.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LimitAstralToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
+            Utils.DoDatabinding(lblArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
+            Utils.DoDatabinding(lblCMArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
+            Utils.DoDatabinding(lblCMArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
 
-            lblESSMax.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayEssence), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCyberwareESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblBiowareESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayBiowareEssence), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblEssenceHoleESS.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayEssenceHole), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblSpellDefenceIndirectDodge, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectDodge));
+            Utils.DoDatabinding(lblSpellDefenceIndirectDodge, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectDodgeToolTip));
+            Utils.DoDatabinding(lblSpellDefenceIndirectSoak, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectSoak));
+            Utils.DoDatabinding(lblSpellDefenceIndirectSoak, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectSoakToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDirectSoakMana, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakMana));
+            Utils.DoDatabinding(lblSpellDefenceDirectSoakMana, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakManaToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDirectSoakPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
+            Utils.DoDatabinding(lblSpellDefenceDirectSoakPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDetection, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDetection));
+            Utils.DoDatabinding(lblSpellDefenceDetection, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDetectionToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttBOD, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseBOD));
+            Utils.DoDatabinding(lblSpellDefenceDecAttBOD, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseBODToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttAGI, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseAGI));
+            Utils.DoDatabinding(lblSpellDefenceDecAttAGI, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseAGIToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttREA, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseREA));
+            Utils.DoDatabinding(lblSpellDefenceDecAttREA, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseREAToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttSTR, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseSTR));
+            Utils.DoDatabinding(lblSpellDefenceDecAttSTR, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseSTRToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttCHA, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseCHA));
+            Utils.DoDatabinding(lblSpellDefenceDecAttCHA, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseCHAToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttINT, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseINT));
+            Utils.DoDatabinding(lblSpellDefenceDecAttINT, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseINTToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttLOG, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseLOG));
+            Utils.DoDatabinding(lblSpellDefenceDecAttLOG, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseLOGToolTip));
+            Utils.DoDatabinding(lblSpellDefenceDecAttWIL, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseWIL));
+            Utils.DoDatabinding(lblSpellDefenceDecAttWIL, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseWILToolTip));
+            Utils.DoDatabinding(lblSpellDefenceIllusionMana, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionMana));
+            Utils.DoDatabinding(lblSpellDefenceIllusionMana, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionManaToolTip));
+            Utils.DoDatabinding(lblSpellDefenceIllusionPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionPhysical));
+            Utils.DoDatabinding(lblSpellDefenceIllusionPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionPhysicalToolTip));
+            Utils.DoDatabinding(lblSpellDefenceManipMental, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationMental));
+            Utils.DoDatabinding(lblSpellDefenceManipMental, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationMentalToolTip));
+            Utils.DoDatabinding(lblSpellDefenceManipPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationPhysical));
+            Utils.DoDatabinding(lblSpellDefenceManipPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip));
+            Utils.DoDatabinding(nudCounterspellingDice, "Value", CharacterObject, nameof(Character.CurrentCounterspellingDice));
 
-            lblArmor.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalArmorRating), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblArmor.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMArmor.DataBindings.Add("Text", CharacterObject, nameof(Character.TotalArmorRating), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMArmor.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblMovement, "Text", CharacterObject, nameof(Character.DisplayMovement));
+            Utils.DoDatabinding(lblSwim, "Text", CharacterObject, nameof(Character.DisplaySwim));
+            Utils.DoDatabinding(lblFly, "Text", CharacterObject, nameof(Character.DisplayFly));
 
-            lblSpellDefenceIndirectDodge.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectDodge), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIndirectDodge.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectDodgeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIndirectSoak.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectSoak), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIndirectSoak.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectSoakToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDirectSoakMana.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakMana), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDirectSoakMana.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakManaToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDirectSoakPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDirectSoakPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDetection.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDetection), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDetection.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDetectionToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttBOD.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseBOD), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttBOD.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseBODToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttAGI.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseAGI), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttAGI.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseAGIToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttREA.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseREA), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttREA.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseREAToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttSTR.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseSTR), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttSTR.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseSTRToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttCHA.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseCHA), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttCHA.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseCHAToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttINT.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseINT), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttINT.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseINTToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttLOG.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseLOG), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttLOG.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseLOGToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttWIL.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseWIL), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceDecAttWIL.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseWILToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIllusionMana.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionMana), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIllusionMana.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionManaToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIllusionPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceIllusionPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceManipMental.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationMental), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceManipMental.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationMentalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceManipPhysical.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationPhysical), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSpellDefenceManipPhysical.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            nudCounterspellingDice.DataBindings.Add("Value", CharacterObject, nameof(Character.CurrentCounterspellingDice), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblRemainingNuyen, "Text", CharacterObject, nameof(Character.DisplayNuyen));
+            Utils.DoDatabinding(lblCareerKarma, "Text", CharacterObject, nameof(Character.DisplayCareerKarma));
+            Utils.DoDatabinding(lblCareerNuyen, "Text", CharacterObject, nameof(Character.DisplayCareerNuyen));
 
-            lblMovement.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayMovement), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblSwim.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplaySwim), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblFly.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayFly), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblStreetCredTotal, "Text", CharacterObject, nameof(Character.TotalStreetCred));
+            Utils.DoDatabinding(lblStreetCredTotal, "ToolTipText", CharacterObject, nameof(Character.StreetCredTooltip));
+            Utils.DoDatabinding(lblNotorietyTotal, "Text", CharacterObject, nameof(Character.TotalNotoriety));
+            Utils.DoDatabinding(lblNotorietyTotal, "ToolTipText", CharacterObject, nameof(Character.NotorietyTooltip));
+            Utils.DoDatabinding(lblPublicAwareTotal, "Text", CharacterObject, nameof(Character.TotalPublicAwareness));
+            Utils.DoDatabinding(lblPublicAwareTotal, "ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip));
 
-            lblAstralINI.DataBindings.Add("Visible", CharacterObject, nameof(Character.MAGEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblMentorSpirit, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
-            lblRemainingNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCareerKarma.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayCareerKarma), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCareerNuyen.DataBindings.Add("Text", CharacterObject, nameof(Character.DisplayCareerNuyen), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblComposure, "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
+            Utils.DoDatabinding(lblComposure, "Text", CharacterObject, nameof(Character.Composure));
+            Utils.DoDatabinding(lblJudgeIntentions, "ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip));
+            Utils.DoDatabinding(lblJudgeIntentions, "Text", CharacterObject, nameof(Character.JudgeIntentions));
+            Utils.DoDatabinding(lblLiftCarry, "ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip));
+            Utils.DoDatabinding(lblLiftCarry, "Text", CharacterObject, nameof(Character.LiftAndCarry));
+            Utils.DoDatabinding(lblMemory, "ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
+            Utils.DoDatabinding(lblMemory, "Text", CharacterObject, nameof(Character.Memory));
 
-            cmdBurnStreetCred.DataBindings.Add("Enabled", CharacterObject, nameof(Character.CanBurnStreetCred), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdAddCyberware.DataBindings.Add("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdAddBioware.DataBindings.Add("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(cmdAddCyberware, "Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
+            Utils.DoDatabinding(cmdAddBioware, "Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
+            Utils.DoDatabinding(cmdBurnStreetCred, "Enabled", CharacterObject, nameof(Character.CanBurnStreetCred));
 
-            lblStreetCredTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.CareerDisplayStreetCred), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblNotorietyTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.CareerDisplayNotoriety), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblPublicAwareTotal.DataBindings.Add("Text", CharacterObject, nameof(Character.CareerDisplayPublicAwareness), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblStreetCredTotal.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.StreetCredTooltip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblNotorietyTotal.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.NotorietyTooltip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblPublicAwareTotal.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            lblMentorSpiritLabel.DataBindings.Add("Visible", CharacterObject, nameof(Character.HasMentorSpirit), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMentorSpirit.DataBindings.Add("Visible", CharacterObject, nameof(Character.HasMentorSpirit), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMentorSpiritInformation.DataBindings.Add("Visible", CharacterObject, nameof(Character.HasMentorSpirit), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMentorSpirit.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMentorSpiritInformation.DataBindings.Add("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            lblComposure.DataBindings.Add("Text", CharacterObject, nameof(Character.Composure), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblComposure.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblJudgeIntentions.DataBindings.Add("Text", CharacterObject, nameof(Character.JudgeIntentions), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblJudgeIntentions.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblLiftCarry.DataBindings.Add("Text", CharacterObject, nameof(Character.LiftAndCarry), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblLiftCarry.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMemory.DataBindings.Add("Text", CharacterObject, nameof(Character.Memory), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblMemory.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            lblEDGInfo.DataBindings.Add("Text", CharacterObject.EDG, nameof(CharacterAttrib.CareerRemainingString), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMDamageResistancePool.DataBindings.Add("Text", CharacterObject, nameof(Character.DamageResistancePool), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblCMDamageResistancePool.DataBindings.Add("ToolTipText", CharacterObject, nameof(Character.DamageResistancePoolToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            Utils.DoDatabinding(lblEDGInfo, "Text", CharacterObject.EDG, nameof(CharacterAttrib.CareerRemainingString));
+            Utils.DoDatabinding(lblCMDamageResistancePool, "ToolTipText", CharacterObject, nameof(Character.DamageResistancePoolToolTip));
+            Utils.DoDatabinding(lblCMDamageResistancePool, "Text", CharacterObject, nameof(Character.DamageResistancePool));
 
             RefreshAttributes(pnlAttributes);
 
@@ -683,6 +663,17 @@ namespace Chummer
                     DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                     CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                 }
+            }
+        }
+
+        private void OptionsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.ArmorDegradation):
+                    cmdArmorDecrease.Visible = CharacterObjectOptions.ArmorDegradation;
+                    cmdArmorIncrease.Visible = CharacterObjectOptions.ArmorDegradation;
+                    break;
             }
         }
 
@@ -1040,8 +1031,8 @@ namespace Chummer
                     {
                         if (CharacterObject.MAGEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
-                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
 
                             tabInitiation.Text = LanguageManager.GetString("Tab_Initiation", GlobalOptions.Language);
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
@@ -1073,7 +1064,7 @@ namespace Chummer
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabMagician);
+                            tabCharacterTabs.TabPages.Remove(tabInitiation);
 
                             if (SpecialAttributes.Contains(CharacterObject.MAG))
                             {
@@ -1084,6 +1075,16 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
+                        chkInitiationGroup.Visible = CharacterObject.MAGEnabled;
+                        chkInitiationOrdeal.Visible = CharacterObject.MAGEnabled;
+                        chkInitiationSchooling.Visible = CharacterObject.MAGEnabled;
+                        lblFoci.Visible = CharacterObject.MAGEnabled;
+                        treFoci.Visible = CharacterObject.MAGEnabled;
+                        cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
+                        lblAstralINI.Visible = CharacterObject.MAGEnabled;
+                        lblSpirits.Visible = CharacterObject.MAGEnabled;
+                        panSpirits.Visible = CharacterObject.MAGEnabled;
+                        cmdAddSpirit.Visible = CharacterObject.MAGEnabled;
                     }
                     break;
                 case nameof(Character.RESEnabled):
@@ -1183,6 +1184,9 @@ namespace Chummer
                         // Change to the status of Magician being enabled.
                         if (CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
+                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+
                             cmdAddSpell.Enabled = true;
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
@@ -1191,12 +1195,16 @@ namespace Chummer
                         }
                         else
                         {
+                            tabCharacterTabs.TabPages.Remove(tabMagician);
                             cmdAddSpell.Enabled = false;
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
+                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
+                        cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
+                        panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
                     break;
                 case nameof(Character.AdeptEnabled):
@@ -1343,9 +1351,31 @@ namespace Chummer
                         }
                     }
                     break;
+                case nameof(Character.QuickeningEnabled):
+                    {
+                        cmdQuickenSpell.Visible = CharacterObject.QuickeningEnabled;
+                        break;
+                    }
+                case nameof(Character.HasMentorSpirit):
+                    {
+                        lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        break;
+                    }
+                case nameof(Character.UseMysticAdeptPPs):
+                    {
+                        lblMysticAdeptAssignment.Visible = CharacterObject.UseMysticAdeptPPs;
+                        lblMysticAdeptMAGAdept.Visible = CharacterObject.UseMysticAdeptPPs;
+                        break;
+                    }
+                case nameof(Character.MysAdeptAllowPPCareer):
+                    {
+                        cmdIncreasePowerPoints.Visible = CharacterObject.MysAdeptAllowPPCareer;
+                        break;
+                    }
             }
         }
-
         /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
@@ -5646,18 +5676,19 @@ namespace Chummer
         private void cmdImprovementsDisableAll_Click(object sender, EventArgs e)
         {
             // Disable all of the Improvements in the Improvement Group.
-            if (!(treImprovements.SelectedNode?.Tag is string strSelectedId)) return;
-            List<Improvement> lstImprovementsDisabled = new List<Improvement>();
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
+                List<Improvement> lstImprovementsDisabled = new List<Improvement>();
+                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.Custom))
                 {
-                    lstImprovementsDisabled.Add(objImprovement);
+                    if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
+                    {
+                        lstImprovementsDisabled.Add(objImprovement);
+                    }
                 }
-            }
-
-            if (lstImprovementsDisabled.Count <= 0) return;
-            ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+                if (lstImprovementsDisabled.Count > 0)
+                {
+                    ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -6733,13 +6764,14 @@ namespace Chummer
                     if (objAdvantage.InternalId.IsEmptyGuid())
                         return;
 
-                    objMartialArt.Techniques.Add(objAdvantage);
+                    int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
+                            objMartialArt.Techniques.Add(objAdvantage);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objEntry.Create(karmaCost * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objEntry);
-                        CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
+                        CharacterObject.Karma -= karmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
@@ -16908,13 +16940,21 @@ namespace Chummer
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
 
-            XmlNode xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
+            XmlNode xmlSuite = null;
+            if (Guid.TryParse(frmPickCyberwareSuite.SelectedSuite, out Guid _result))
+            {
+                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
+            }
+            else
+            {
+                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
+            }
             if (xmlSuite == null)
                 return;
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSuite["name"].InnerText, ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
 

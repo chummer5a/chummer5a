@@ -38,16 +38,17 @@ namespace Chummer.UI.Skills
             lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
             lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
+            nudKarma.Visible = !skillGroup.CharacterObject.Created;
+
+            btnCareerIncrease.Visible = skillGroup.CharacterObject.Created;
+            lblGroupRating.Visible = skillGroup.CharacterObject.Created;
+
             if (_skillGroup.CharacterObject.Created)
             {
-                nudKarma.Visible = false;
-                nudSkill.Visible = false;
-
-                btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                lblGroupRating.Visible = true;
                 lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else

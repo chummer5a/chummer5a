@@ -87,6 +87,7 @@ namespace Chummer
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
+
             GlobalOptions.MRUChanged -= PopulateCharacterList;
             treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
             treCharacterList.DragEnter -= treCharacterList_DragEnter;

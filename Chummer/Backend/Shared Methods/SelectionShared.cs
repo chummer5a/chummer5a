@@ -1051,13 +1051,14 @@ namespace Chummer
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
         /// <param name="xmlNode">XmlNode of the object.</param>
         /// <param name="objCharacter">Character object against which to check.</param>
+        /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
         /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <returns></returns>
-        public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
+        public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
         {
             if (xmlNode == null || objCharacter == null)
                 return false;
@@ -1187,10 +1188,19 @@ namespace Chummer
                             }
                         case "technique":
                             {
-                                List<MartialArtTechnique> objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
-                                foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                                List<MartialArtTechnique> objTempList = null;
+                                if (objParent is MartialArt objArt)
                                 {
-                                    objTempList.AddRange(objMartialArt.Techniques);
+                                    objTempList = new List<MartialArtTechnique>(objArt.Techniques.Count);
+                                    objTempList.AddRange(objArt.Techniques);
+                                }
+                                else
+                                {
+                                    objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
+                                    foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                                    {
+                                        objTempList.AddRange(objMartialArt.Techniques);
+                                    }
                                 }
                                 objListToCheck = objTempList;
                                 break;
@@ -1315,7 +1325,7 @@ namespace Chummer
                     // Update the flag for requirements met.
                     if (!blnOneOfMet)
                         blnRequirementMet = false;
-                    if (blnShowMessage)
+                    if (blnShowMessage && !blnOneOfMet)
                         objRequirement.Append(objThisRequirement);
                     else if (!blnRequirementMet)
                         break;
@@ -1881,9 +1891,10 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml");
-                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText ??
-                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{strNodeInnerText}";
+                            string strSkillName = xmlNode.SelectSingleNode("name")?.Value;
+                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strSkillName}\"]/translate")?.InnerText ??
+                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strSkillName}\"]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{xmlNode.SelectSingleNode("name")?.Value}";
                             if (!string.IsNullOrEmpty(strSpec))
                             {
                                 strName += $" ({strSpec})";

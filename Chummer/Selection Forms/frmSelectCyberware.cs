@@ -1135,7 +1135,7 @@ namespace Chummer
                     }
                 }
             }
-            if (ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
+            if (ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;

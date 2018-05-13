@@ -105,7 +105,7 @@ namespace Chummer
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForceValueChoice1;
+                //ImprovementManager.ForcedValue = strForceValueChoice1;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), _nodChoice1, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
@@ -127,7 +127,7 @@ namespace Chummer
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForceValueChoice2;
+                //ImprovementManager.ForcedValue = strForceValueChoice2;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), _nodChoice2, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;

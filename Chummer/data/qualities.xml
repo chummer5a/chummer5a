@@ -10694,6 +10694,11 @@
       <karma>7</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <critterpower>Essence Drain</critterpower>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
@@ -12031,6 +12036,7 @@
       <name>Latent Dracomorphosis</name>
       <karma>5</karma>
       <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
       <refundkarmaonremove />
       <bonus />
       <forbidden>

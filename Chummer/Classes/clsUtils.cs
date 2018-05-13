@@ -113,5 +113,14 @@ namespace Chummer
             Application.Exit();
             Process.Start(startInfo);
         }
+
+        public static void DoDatabinding(Control objControl, string PropertyName, object dataSource, string dataMember)
+        {
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(PropertyName, dataSource, dataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
     }
 }

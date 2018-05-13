@@ -66,14 +66,18 @@ namespace Chummer.UI.Skills
             _skill.CharacterObject.AttributeSection.PropertyChanged += AttributeSection_PropertyChanged;
             Skill_PropertyChanged(null, null);  //if null it updates all
 
-            nudSkill.Visible = !skill.CharacterObject.Created;
+            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
             cboSpec.Visible  = !skill.CharacterObject.Created;
 
+            cboSelectAttribute.Visible = skill.CharacterObject.Created;
             btnCareerIncrease.Visible = skill.CharacterObject.Created;
             lblCareerSpec.Visible = skill.CharacterObject.Created;
             btnAddSpec.Visible = skill.CharacterObject.Created;
+            lblAttribute.Visible = skill.CharacterObject.Created;
+            btnAttribute.Visible = skill.CharacterObject.Created;
+            lblCareerRating.Visible = skill.CharacterObject.Created;
 
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
