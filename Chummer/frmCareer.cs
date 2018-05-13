@@ -5675,20 +5675,24 @@ namespace Chummer
 
         private void cmdImprovementsDisableAll_Click(object sender, EventArgs e)
         {
+            if (!(treImprovements.SelectedNode?.Tag is string strSelectedId)) return;
             // Disable all of the Improvements in the Improvement Group.
-            if (!string.IsNullOrEmpty(strSelectedId))
+            List<Improvement> lstImprovementsDisabled = new List<Improvement>();
+            foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement =>
+                objImprovement.Custom && objImprovement.Enabled))
             {
-                List<Improvement> lstImprovementsDisabled = new List<Improvement>();
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.Custom))
+                if ((objImprovement.CustomGroup == strSelectedId ||
+                     (strSelectedId == "Node_SelectedImprovements" &&
+                      string.IsNullOrEmpty(objImprovement.CustomGroup))))
                 {
-                    if (objImprovement.Enabled && (objImprovement.CustomGroup == strSelectedId || (strSelectedId == "Node_SelectedImprovements" && string.IsNullOrEmpty(objImprovement.CustomGroup))))
-                    {
-                        lstImprovementsDisabled.Add(objImprovement);
-                    }
+                    lstImprovementsDisabled.Add(objImprovement);
                 }
-                if (lstImprovementsDisabled.Count > 0)
-                {
-                    ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+            }
+
+            if (lstImprovementsDisabled.Count > 0)
+            {
+                ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+            }
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
