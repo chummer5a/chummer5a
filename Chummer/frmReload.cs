@@ -44,17 +44,17 @@ namespace Chummer
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
-                if (objGear.Parent != null)
+                if (objGear.Parent is Gear objParent)
                 {
-                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort(GlobalOptions.Language)))
+                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
-                        if (!string.IsNullOrEmpty(objGear.Parent.Location))
-                            strName += " @ " + objGear.Parent.Location;
+                        strName += " (" + objParent.DisplayNameShort(GlobalOptions.Language);
+                        if (objParent.Location != null)
+                            strName += " @ " + objParent.Location.DisplayName(GlobalOptions.Language);
                         strName += ')';
                     }
                 }
-                else if (!string.IsNullOrEmpty(objGear.Location))
+                else if (objGear.Location != null)
                     strName += " (" + objGear.Location + ')';
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)

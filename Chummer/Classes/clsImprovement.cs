@@ -35,7 +35,7 @@ using System.ComponentModel;
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
-    public class Improvement
+    public class Improvement: IHasNotes
     {
         private string DisplayDebug()
         {

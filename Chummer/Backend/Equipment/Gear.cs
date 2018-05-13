@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildren<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -64,11 +64,11 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation = null;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
-        private Gear _objParent;
+        private object _objParent;
         private bool _blnDiscountCost;
         private string _strGearName = string.Empty;
         private string _strParentID = string.Empty;
@@ -76,7 +76,6 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMFilled;
         private string _strForcedValue = string.Empty;
         private bool _blnAllowRename;
-
         private string _strAttack = string.Empty;
         private string _strSleaze = string.Empty;
         private string _strDataProcessing = string.Empty;
@@ -563,7 +562,7 @@ namespace Chummer.Backend.Equipment
             _nodWeaponBonus = objGear.WeaponBonus;
             Guid.TryParse(objGear.WeaponID, out _guiWeaponID);
             _strNotes = objGear.Notes;
-            _strLocation = objGear.Location;
+            _objLocation = objGear.Location;
             _intChildAvailModifier = objGear.ChildAvailModifier;
             _intChildCostMultiplier = objGear.ChildCostMultiplier;
             _strGearName = objGear.GearName;
@@ -647,7 +646,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 
@@ -774,7 +773,24 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        CharacterObject.GearLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        CharacterObject.GearLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
+
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -805,7 +821,7 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _strLocation = string.Empty;
+                _objLocation = null;
 
                 if (Bonus != null || WirelessBonus != null)
                 {
@@ -1039,7 +1055,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("bonded", Bonded.ToString());
             objWriter.WriteElementString("equipped", Equipped.ToString());
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.InternalId);
             objWriter.WriteElementString("gearname", GearName);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -1436,8 +1452,8 @@ namespace Chummer.Backend.Equipment
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
                     if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                     {
                         int intTotalChildrenValue = 0;
@@ -1493,10 +1509,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>
@@ -1532,11 +1548,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Gear.
         /// </summary>
-        public Gear Parent
+        public object Parent
         {
             get => _objParent;
             set => _objParent = value;
         }
+
+        public IHasChildrenAndCost<Gear> ParentObject { get; set; }
 
         /// <summary>
         /// Whether or not the Gear's cost should be discounted by 10% through the Black Market Pipeline Quality.
@@ -1934,9 +1952,9 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     if (strCostExpression.Contains("Gear Cost"))
-                        decGearCost = Parent.CalculatedCost;
+                        decGearCost = ((Gear) Parent).CalculatedCost;
                     if (strCostExpression.Contains("Parent Cost"))
-                        decParentCost = Parent.OwnCostPreMultipliers;
+                        decParentCost = ((Gear)Parent).OwnCostPreMultipliers;
                 }
                 decimal decTotalChildrenCost = 0;
                 if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
@@ -2004,7 +2022,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
-                int intParentMultiplier = _objParent?.ChildCostMultiplier ?? 1;
+                int intParentMultiplier = ((Gear)Parent)?.ChildCostMultiplier ?? 1;
 
                 decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
@@ -2017,7 +2035,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public decimal OwnCost => (OwnCostPreMultipliers * Parent?.ChildCostMultiplier ?? 1) / CostFor;
+        public decimal OwnCost => (OwnCostPreMultipliers * ((Gear)Parent)?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
@@ -2497,7 +2515,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -2548,5 +2566,46 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
+                return false;
+
+            DeleteGear();
+            // If the Parent is populated, remove the item from its Parent.
+            if (Parent != null)
+                ParentObject.Children.Remove(this);
+            else
+                characterObject.Gear.Remove(this);
+            return true;
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            decimal decOriginal = 0;
+            decimal decNewCost = 0;
+            if (CharacterObject.Gear.Any(gear => gear == this))
+            {
+                CharacterObject.Gear.Remove(this);
+                decOriginal = TotalCost;
+            }
+            else if (ParentObject != null)
+            {
+                decOriginal = ParentObject.TotalCost;
+                ParentObject.Children.Remove(this);
+                decNewCost = ParentObject.TotalCost;
+            }
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = (decOriginal - decNewCost) * percentage;
+            decAmount += DeleteGear() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
+            objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen += decAmount;
+        }
     }
 }

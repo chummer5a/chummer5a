@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -69,8 +69,8 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
-        private readonly TaggedObservableCollection<string> _lstLocations = new TaggedObservableCollection<string>();
+        private Location _objLocation = null;
+        private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
 
@@ -524,16 +524,16 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objWeapon in _lstWeapons)
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString());
             if (_lstLocations.Count > 0)
             {
                 // <locations>
                 objWriter.WriteStartElement("locations");
-                foreach (string strLocation in _lstLocations)
+                foreach (Location objLocation in _lstLocations)
                 {
-                    objWriter.WriteElementString("location", strLocation);
+                    objLocation.Save(objWriter);
                 }
                 // </locations>
                 objWriter.WriteEndElement();
@@ -725,7 +725,24 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
@@ -760,7 +777,8 @@ namespace Chummer.Backend.Equipment
                 // Locations.
                 foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
                 {
-                    _lstLocations.Add(objXmlLocation.InnerText);
+                    Location objLocation = new Location(_objCharacter, _lstLocations, "", false);
+                    objLocation.Load(objXmlLocation);
                 }
             }
         }
@@ -792,9 +810,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
-            objWriter.WriteElementString("vehiclename", VehicleName);
+            objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
@@ -1098,10 +1116,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>
@@ -1287,7 +1305,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Vehicle assigned by the player.
         /// </summary>
-        public string VehicleName
+        public string CustomName
         {
             get => _strVehicleName;
             set => _strVehicleName = value;
@@ -1311,9 +1329,9 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(VehicleName))
+            if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += " (\"" + VehicleName + "\")";
+                strReturn += " (\"" + CustomName + "\")";
             }
 
             return strReturn;
@@ -1322,7 +1340,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<string> Locations => _lstLocations;
+        public TaggedObservableCollection<Location> Locations => _lstLocations;
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
@@ -2783,7 +2801,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsVehicle,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -2791,15 +2809,15 @@ namespace Chummer.Backend.Equipment
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
-            foreach (string strLocation in Locations)
+            foreach (Location objLocation in Locations)
             {
-                TreeNode objLocation = new TreeNode
+                TreeNode objLocationNode = new TreeNode
                 {
-                    Tag = strLocation,
-                    Text = strLocation,
+                    Tag = objLocation,
+                    Text = objLocation.DisplayName(GlobalOptions.Language),
                     ContextMenuStrip = cmsVehicleLocation
                 };
-                lstChildNodes.Add(objLocation);
+                lstChildNodes.Add(objLocationNode);
             }
 
             // VehicleMods.
@@ -2846,15 +2864,13 @@ namespace Chummer.Backend.Equipment
                 if (objLoopNode != null)
                 {
                     TreeNode objParent = objNode;
-                    if (!string.IsNullOrEmpty(objGear.Location))
+                    if (objGear.Location != null)
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Text == objGear.Location)
-                            {
-                                objParent = objFind;
-                                break;
-                            }
+                            if (objFind.Tag != objGear.Location) continue;
+                            objParent = objFind;
+                            break;
                         }
                     }
 
@@ -3148,5 +3164,18 @@ namespace Chummer.Backend.Equipment
             return intReturn;
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                return false;
+            DeleteVehicle();
+            return characterObject.Vehicles.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

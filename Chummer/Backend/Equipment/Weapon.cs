@@ -1,9 +1,22 @@
-/*  This file is part of Chummer5a.
+/*  This file
+s part of Chummer5a.
  *
- *  Chummer5a is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  Chu
+er5a is free software: you 
+n redistribute it 
+d/or modify
+ *  it under t
+ terms of the GNU
+eneral Public License a
+published by
+ *  the
+ree Software Foundati
+, either version 3 of the License
+or
+ *  (at your o
+using Chummer;
+
+n) any later version.
  *
  *  Chummer5a is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -76,7 +89,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation = null;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
@@ -370,6 +383,7 @@ namespace Chummer.Backend.Equipment
                             objGear.MinRating = intGearRating;
                             objGear.MaxRating = intGearRating;
                             objGear.ParentID = InternalId;
+
                             if (!string.IsNullOrEmpty(strChildForceSource))
                                 objGear.Source = strChildForceSource;
                             if (!string.IsNullOrEmpty(strChildForcePage))
@@ -482,7 +496,7 @@ namespace Chummer.Backend.Equipment
                     objWriter.WriteEndElement();
                 }
             }
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 
@@ -669,7 +683,24 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+
+            if (objNode["location"] != null)
+            {
+                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                {
+                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.InternalId == temp.ToString());
+                }
+                else
+                {
+                    //Legacy. Location is a string. 
+                    _objLocation =
+                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                            location.Name == objNode["location"].InnerText);
+                }
+            }
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
             bool blnIsActive = false;
@@ -799,8 +830,8 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("weaponname", WeaponName);
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("weaponname", CustomName);
+            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
@@ -949,7 +980,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Weapon assigned by the player.
         /// </summary>
-        public string WeaponName
+        public string CustomName
         {
             get => _strWeaponName;
             set => _strWeaponName = value;
@@ -1327,10 +1358,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get; set;
         }
 
         /// <summary>
@@ -4356,7 +4386,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsWeapon,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -4569,6 +4599,51 @@ namespace Chummer.Backend.Equipment
                 Guid = guid;
                 Ammo = ammo;
             }
+        }
+
+        public bool Remove(Character characterObject)
+        {
+            // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
+            if (Cyberware)
+            {
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
+            if (Category.StartsWith("Quality"))
+            {
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            if (Category == "Gear")
+            {
+                string message = LanguageManager.GetString(ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon", GlobalOptions.Language);
+                MessageBox.Show(message, LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            DeleteWeapon();
+            if (characterObject.Weapons.Any(weapon => weapon == this))
+            {
+                return characterObject.Weapons.Remove(this);
+            }
+            if (Parent != null)
+                return Parent.Children.Remove(this);
+            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
+            //else if (objWeapon.parent != null)
+            //    objWeaponMount.Weapons.Remove(objWeapon);
+            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
         }
     }
 }

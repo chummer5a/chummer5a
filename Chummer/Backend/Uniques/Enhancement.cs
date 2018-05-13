@@ -28,7 +28,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -288,7 +288,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsEnhancement,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -313,5 +313,23 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (Grade <= 0)
+                return false;
+            string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
+            if (!characterObject.ConfirmDelete(strMessage))
+                return false;
+
+            characterObject.Enhancements.Remove(this);
+            foreach (Power objPower in characterObject.Powers)
+            {
+                if (objPower.Enhancements.Contains(this))
+                    objPower.Enhancements.Remove(this);
+            }
+
+            return true;
+        }
     }
 }

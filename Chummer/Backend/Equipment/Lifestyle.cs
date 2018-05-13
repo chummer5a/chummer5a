@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -430,7 +430,7 @@ namespace Chummer.Backend.Equipment
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("lifestyle");
-            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("name", CustomName);
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -508,6 +508,12 @@ namespace Chummer.Backend.Equipment
             set => _strName = value;
         }
 
+        public string CustomName
+        {
+            get => _strName;
+            set => _strName = value;
+        }
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -527,8 +533,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(Name))
-                strReturn += " (\"" + Name + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += " (\"" + CustomName + "\")";
 
             return strReturn;
         }
@@ -979,6 +985,31 @@ namespace Chummer.Backend.Equipment
                 _guiID = guiTemp;
         }
 
+        /// <summary>
+        /// Purchases an additional month of the selected lifestyle. 
+        /// </summary>
+        /// <param name="CharacterObject">Character to use.</param>
+        public void IncrementMonths(Character CharacterObject)
+        {
+            // Create the Expense Log Entry.
+            decimal decAmount = TotalMonthlyCost;
+                if (decAmount > CharacterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen -= decAmount;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
+            objExpense.Undo = objUndo;
+
+            Increments += 1;
+        }
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
@@ -989,7 +1020,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1011,5 +1042,10 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
+        }
     }
 }

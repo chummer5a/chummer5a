@@ -28,7 +28,7 @@ namespace Chummer
     /// An Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -275,7 +275,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsArt,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -301,5 +301,13 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character character)
+        {
+            if (Grade <= 0)
+                return false;
+            string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
+            return character.ConfirmDelete(strMessage) && character.Arts.Remove(this);
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -975,7 +975,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1011,5 +1011,27 @@ namespace Chummer.Backend.Equipment
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            DeleteArmorMod();
+            return Parent.ArmorMods.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            // Record the cost of the Armor with the ArmorMod.
+            decimal decOriginal = Parent.TotalCost;
+
+            Parent.ArmorMods.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = (decOriginal - Parent.TotalCost) * percentage;
+            decAmount += DeleteArmorMod() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+        }
     }
 }

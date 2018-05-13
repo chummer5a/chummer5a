@@ -1987,7 +1987,7 @@ namespace Chummer
             this.tsVehicleCyberwareNotes.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareNotes.Tag = "Menu_Notes";
             this.tsVehicleCyberwareNotes.Text = "&Notes";
-            this.tsVehicleCyberwareNotes.Click += new System.EventHandler(this.tsVehicleCyberwareNotes_Click);
+            this.tsVehicleCyberwareNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // cmsLifestyle
             // 
@@ -2782,7 +2782,7 @@ namespace Chummer
             this.tsVehicleWeaponNotes.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleWeaponNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponNotes.Text = "&Notes";
-            this.tsVehicleWeaponNotes.Click += new System.EventHandler(this.tsVehicleWeaponNotes_Click);
+            this.tsVehicleWeaponNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // cmsVehicleGear
             // 
@@ -2834,7 +2834,7 @@ namespace Chummer
             this.tsArmorGearNotes.Size = new System.Drawing.Size(147, 22);
             this.tsArmorGearNotes.Tag = "Menu_Notes";
             this.tsArmorGearNotes.Text = "&Notes";
-            this.tsArmorGearNotes.Click += new System.EventHandler(this.tsArmorGearNotes_Click);
+            this.tsArmorGearNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
             // 
             // cmsArmorMod
             // 
@@ -2850,7 +2850,7 @@ namespace Chummer
             this.tsArmorModNotes.Size = new System.Drawing.Size(105, 22);
             this.tsArmorModNotes.Tag = "Menu_Notes";
             this.tsArmorModNotes.Text = "&Notes";
-            this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorModNotes_Click);
+            this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
             // 
             // cmsQuality
             // 
@@ -2960,7 +2960,7 @@ namespace Chummer
             this.tsWeaponAccessoryNotes.Size = new System.Drawing.Size(123, 22);
             this.tsWeaponAccessoryNotes.Tag = "Menu_Notes";
             this.tsWeaponAccessoryNotes.Text = "&Notes";
-            this.tsWeaponAccessoryNotes.Click += new System.EventHandler(this.tsWeaponAccessoryNotes_Click);
+            this.tsWeaponAccessoryNotes.Click += new System.EventHandler(this.tsWeaponNotes_Click);
             // 
             // cmsGearPlugin
             // 
@@ -2976,7 +2976,7 @@ namespace Chummer
             this.tsGearPluginNotes.Size = new System.Drawing.Size(105, 22);
             this.tsGearPluginNotes.Tag = "Menu_Notes";
             this.tsGearPluginNotes.Text = "&Notes";
-            this.tsGearPluginNotes.Click += new System.EventHandler(this.tsGearPluginNotes_Click);
+            this.tsGearPluginNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
             // 
             // cmsComplexFormPlugin
             // 
@@ -3058,7 +3058,7 @@ namespace Chummer
             this.tsGearLocationAddGear.Size = new System.Drawing.Size(166, 22);
             this.tsGearLocationAddGear.Tag = "Menu_AddGear";
             this.tsGearLocationAddGear.Text = "Add &Gear";
-            this.tsGearLocationAddGear.Click += new System.EventHandler(this.tsGearLocationAddGear_Click);
+            this.tsGearLocationAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
             // 
             // cmsArmorLocation
             // 
@@ -3184,7 +3184,7 @@ namespace Chummer
             this.tsVehicleWeaponAccessoryNotes.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponAccessoryNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponAccessoryNotes.Text = "&Notes";
-            this.tsVehicleWeaponAccessoryNotes.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryNotes_Click);
+            this.tsVehicleWeaponAccessoryNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
             // cmsVehicleWeaponAccessoryGear
             // 

@@ -33,7 +33,7 @@ namespace Chummer
     /// A Magician Spell.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -878,7 +878,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsSpell,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -904,5 +904,15 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
+            if (!characterObject.ConfirmDelete(strMessage)) return false;
+            characterObject.Spells.Remove(this);
+            ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.Spell, InternalId);
+            return true;
+
+        }
     }
 }

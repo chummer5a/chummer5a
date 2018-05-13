@@ -220,10 +220,10 @@ namespace Chummer
         private readonly ObservableCollection<ExpenseLogEntry> _lstExpenseLog = new ObservableCollection<ExpenseLogEntry>();
         private readonly ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
         private readonly ObservableCollection<InitiationGrade> _lstInitiationGrades = new ObservableCollection<InitiationGrade>();
-        private readonly ObservableCollection<string> _lstGearLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstArmorLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstVehicleLocations = new ObservableCollection<string>();
-        private readonly ObservableCollection<string> _lstWeaponLocations = new ObservableCollection<string>();
+        private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstVehicleLocations = new ObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
         private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
@@ -1583,36 +1583,36 @@ namespace Chummer
 
             // <locations>
             objWriter.WriteStartElement("gearlocations");
-            foreach (string strLocation in _lstGearLocations)
+            foreach (Location objLocation in _lstGearLocations)
             {
-                objWriter.WriteElementString("gearlocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </locations>
             objWriter.WriteEndElement();
 
             // <armorbundles>
             objWriter.WriteStartElement("armorlocations");
-            foreach (string strBundle in _lstArmorLocations)
+            foreach (Location objLocation in _lstArmorLocations)
             {
-                objWriter.WriteElementString("armorlocation", strBundle);
+                objLocation.Save(objWriter);
             }
             // </armorbundles>
             objWriter.WriteEndElement();
 
             // <vehiclelocations>
             objWriter.WriteStartElement("vehiclelocations");
-            foreach (string strLocation in _lstVehicleLocations)
+            foreach (Location objLocation in _lstVehicleLocations)
             {
-                objWriter.WriteElementString("vehiclelocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </vehiclelocations>
             objWriter.WriteEndElement();
 
             // <weaponlocations>
             objWriter.WriteStartElement("weaponlocations");
-            foreach (string strLocation in _lstWeaponLocations)
+            foreach (Location objLocation in _lstWeaponLocations)
             {
-                objWriter.WriteElementString("weaponlocation", strLocation);
+                objLocation.Save(objWriter);
             }
             // </weaponlocations>
             objWriter.WriteEndElement();
@@ -2204,6 +2204,87 @@ namespace Chummer
                 SkillsSection.Load(objXmlCharacter, true);
             }
 
+            Timekeeper.Start("load_char_loc");
+
+            // Locations.
+            XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_loc");
+            Timekeeper.Start("load_char_abundle");
+
+            // Armor Bundles.
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlLocationList)
+            {
+                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_abundle");
+            Timekeeper.Start("load_char_vloc");
+
+            // Vehicle Locations.
+            XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
+            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+            {
+                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
+            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+            {
+                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_vloc");
+            Timekeeper.Start("load_char_wloc");
+
+            // Weapon Locations.
+            XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
+            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+            {
+                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+            objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
+            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+            {
+                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                objLocation.Load(objXmlLocation);
+            }
+
+            Timekeeper.Finish("load_char_wloc");
+
             Timekeeper.Start("load_char_contacts");
             
             // Contacts.
@@ -2651,57 +2732,6 @@ namespace Chummer
                 }
             }
 #endif
-            Timekeeper.Start("load_char_loc");
-
-            // Locations.
-            XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                _lstGearLocations.Add(objXmlLocation.InnerText);
-            }
-            objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
-            foreach (XmlNode objXmlLocation in objXmlLocationList)
-            {
-                _lstGearLocations.Add(objXmlLocation.InnerText);
-            }
-
-            Timekeeper.Finish("load_char_loc");
-            Timekeeper.Start("load_char_abundle");
-
-            // Armor Bundles.
-            XmlNodeList objXmlBundleList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
-            foreach (XmlNode objXmlBundle in objXmlBundleList)
-            {
-                _lstArmorLocations.Add(objXmlBundle.InnerText);
-            }
-
-            objXmlBundleList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
-            foreach (XmlNode objXmlBundle in objXmlBundleList)
-            {
-                _lstArmorLocations.Add(objXmlBundle.InnerText);
-            }
-
-            Timekeeper.Finish("load_char_abundle");
-            Timekeeper.Start("load_char_vloc");
-
-            // Vehicle Locations.
-            XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
-            foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-            {
-                _lstVehicleLocations.Add(objXmlLocation.InnerText);
-            }
-
-            Timekeeper.Finish("load_char_vloc");
-            Timekeeper.Start("load_char_wloc");
-
-            // Weapon Locations.
-            XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
-            foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-            {
-                _lstWeaponLocations.Add(objXmlLocation.InnerText);
-            }
-
-            Timekeeper.Finish("load_char_wloc");
             Timekeeper.Start("load_char_igroup");
 
             // Improvement Groups.
@@ -3941,8 +3971,8 @@ namespace Chummer
                     if (objReturnGear != null)
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                        if (objReturnGear.Parent != null)
-                            strGearReturn += strSpaceCharacter + '(' + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            strGearReturn += " (" + parent.DisplayNameShort(strLanguage) + ')'; 
                         return strGearReturn;
                     }
                     foreach (Weapon objWeapon in Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -3953,8 +3983,8 @@ namespace Chummer
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                if (objReturnGear.Parent != null)
-                                    strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                 else
                                     strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                 return strGearReturn;
@@ -3967,8 +3997,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3980,8 +4010,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -3993,8 +4023,8 @@ namespace Chummer
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent != null)
-                                strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
                             return strGearReturn;
@@ -4007,8 +4037,8 @@ namespace Chummer
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                    if (objReturnGear.Parent != null)
-                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
@@ -4025,8 +4055,8 @@ namespace Chummer
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                        if (objReturnGear.Parent != null)
-                                            strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                            strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                         else
                                             strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objAccessory.DisplayNameShort(strLanguage) + ')';
                                         return strGearReturn;
@@ -4039,8 +4069,8 @@ namespace Chummer
                                 if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                    if (objReturnGear.Parent != null)
-                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objReturnGear.Parent.DisplayNameShort(strLanguage) + ')';
+                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                                     else
                                         strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) + ',' + strSpaceCharacter + objCyberware.DisplayNameShort(strLanguage) + ')';
                                     return strGearReturn;
@@ -4673,10 +4703,10 @@ namespace Chummer
             for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
                 if (objCheckNode == objGearNode)
                     return;
-
-            string strSelectedId = objGearNode.Tag.ToString();
-            // Locate the currently selected piece of Gear.
-            Gear objGear = Gear.DeepFindById(strSelectedId);
+            if (!(objGearNode.Tag is Gear objGear))
+            {
+                return;
+            }
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
@@ -4686,7 +4716,7 @@ namespace Chummer
                 do
                 {
                     objFindNode = objFindNode.Parent;
-                    if (objFindNode.Tag.ToString() == objGear.InternalId)
+                    if (objFindNode.Tag == objGear)
                     {
                         blnAllowMove = false;
                         break;
@@ -4698,24 +4728,22 @@ namespace Chummer
                 return;
 
             // Remove the Gear from the character.
-            if (objGear.Parent == null)
-                Gear.Remove(objGear);
+            if (objGear.Parent is IHasChildren<Gear> parent)
+                parent.Children.Remove(objGear);
             else
-                objGear.Parent.Children.Remove(objGear);
+                Gear.Remove(objGear);
 
-            if (objDestination.Level == 0)
+            if (objDestination.Tag is Location objLocation)
             {
                 // The Gear was moved to a location, so add it to the character instead.
-                objGear.Location = objDestination.Text;
+                objGear.Location = objLocation;
+                objLocation.Children.Add(objGear);
                 Gear.Add(objGear);
             }
-            else
+            else if (objDestination.Tag is Gear objParent)
             {
-                // Locate the Gear that the item was dropped on.
-                Gear objParent = Gear.DeepFindById(objDestination.Tag.ToString());
-
                 // Add the Gear as a child of the destination Node and clear its location.
-                objGear.Location = string.Empty;
+                objGear.Location = null;
                 objParent.Children.Add(objGear);
             }
         }
@@ -4728,16 +4756,14 @@ namespace Chummer
         /// <param name="objGearNode">Node of gear to move.</param>
         public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
         {
-            string strSelectedId = objGearNode?.Tag.ToString();
-            Gear objGear = Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (objGear != null)
+            if (objGearNode?.Tag is Gear objGear)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Gear item.
-                objGear.Location = objNewParent.Tag.ToString() == "Node_SelectedGear" ? string.Empty : objNewParent.Text;
+                objGear.Location = (objNewParent.Tag is Location objLocation) ? objLocation : null;
 
                 Gear.Move(Gear.IndexOf(objGear), intNewIndex);
             }
@@ -4762,8 +4788,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            GearLocations.Move(GearLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4785,9 +4811,7 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strSelectedId = nodLifestyleNode.Tag.ToString();
-            Lifestyle objLifestyle = Lifestyles.FirstOrDefault(x => x.InternalId == strSelectedId);
-            if (objLifestyle != null)
+            if (nodLifestyleNode.Tag is Lifestyle objLifestyle)
                 Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
         }
 
@@ -4799,17 +4823,14 @@ namespace Chummer
         /// <param name="nodArmorNode">Node of armor to move.</param>
         public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
         {
-            string strSelectedId = nodArmorNode?.Tag.ToString();
-            // Locate the currently selected Armor.
-            Armor objArmor = Armor.FindById(strSelectedId);
-            if (objArmor != null)
+            if (nodArmorNode?.Tag is Armor objArmor)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                objArmor.Location = objNewParent.Tag.ToString() == "Node_SelectedArmor" ? string.Empty : objNewParent.Text;
+                objArmor.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
 
                 Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
             }
@@ -4834,8 +4855,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            ArmorLocations.Move(ArmorLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4846,17 +4867,14 @@ namespace Chummer
         /// <param name="nodWeaponNode">Node of weapon to move.</param>
         public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
         {
-            string strSelectedId = nodWeaponNode?.Tag.ToString();
-            // Locate the currently selected Weapon.
-            Weapon objWeapon = Weapons.FindById(strSelectedId);
-            if (objWeapon != null)
+            if (nodWeaponNode?.Tag is Weapon objWeapon)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                objWeapon.Location = objNewParent.Tag.ToString() == "Node_SelectedWeapons" ? string.Empty : objNewParent.Text;
+                objWeapon.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
 
                 Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
             }
@@ -4881,8 +4899,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = nodOldNode.Tag.ToString();
-            WeaponLocations.Move(WeaponLocations.IndexOf(strLocation), intNewIndex);
+            if (!(nodOldNode.Tag is Location objLocation)) return;
+            WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -4893,17 +4911,14 @@ namespace Chummer
         /// <param name="nodVehicleNode">Node of vehicle to move.</param>
         public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
         {
-            string strSelectedId = nodVehicleNode?.Tag.ToString();
-            // Locate the currently selected Vehicle.
-            Vehicle objVehicle = Vehicles.FindById(strSelectedId);
-            if (objVehicle != null)
+            if (nodVehicleNode?.Tag is Vehicle objVehicle)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
                 // Change the Location on the Armor item.
-                objVehicle.Location = objNewParent.Tag.ToString() == "Node_SelectedVehicles" ? string.Empty : objNewParent.Text;
+                objVehicle.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
 
                 Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
             }
@@ -4920,22 +4935,19 @@ namespace Chummer
             for (TreeNode objCheckNode = nodDestination; objCheckNode != null && objCheckNode.Level >= nodDestination.Level; objCheckNode = objCheckNode.Parent)
                 if (objCheckNode == nodGearNode)
                     return;
-
+            if (!(nodGearNode.Tag is IHasInternalId nodeId)) return;
             // Locate the currently selected piece of Gear.
-            Gear objGear = Vehicles.FindVehicleGear(nodGearNode.Tag.ToString(), out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
+            //TODO: Better interface for determining what the parent of a bit of gear is.
+            Gear objGear = Vehicles.FindVehicleGear(nodeId.InternalId, out Vehicle objOldVehicle, out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
 
             if (objGear == null)
                 return;
 
-            Gear objOldParent = objGear.Parent;
-            string strDestinationId = nodDestination.Tag.ToString();
-            // Make sure the destination is another piece of Gear or a Location.
-            Gear objDestinationGear = Vehicles.FindVehicleGear(strDestinationId);
-            if (objDestinationGear != null)
+            if (nodDestination.Tag is Gear objDestinationGear)
             {
                 // Remove the Gear from the Vehicle.
-                if (objOldParent != null)
-                    objOldParent.Children.Remove(objGear);
+                if (objGear.Parent is IHasChildren<Gear> parent)
+                    parent.Children.Remove(objGear);
                 else if (objOldCyberware != null)
                     objOldCyberware.Gear.Remove(objGear);
                 else if (objOldWeaponAccessory != null)
@@ -4944,7 +4956,7 @@ namespace Chummer
                     objOldVehicle.Gear.Remove(objGear);
 
                 // Add the Gear to its new parent.
-                objGear.Location = string.Empty;
+                objGear.Location = null;
                 objDestinationGear.Children.Add(objGear);
             }
             else
@@ -4957,17 +4969,12 @@ namespace Chummer
                 }
                 while (nodVehicleNode.Level > 1);
 
-                // Get a reference to the destination Vehicle.
-                Vehicle objDestinationVehicle = Vehicles.FindById(nodVehicleNode.Tag.ToString());
-
                 // Determine if this is a Location in the destination Vehicle.
-                string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == strDestinationId);
-
-                if (!string.IsNullOrEmpty(strDestinationLocation))
+                if (nodDestination.Tag is Location objLocation)
                 {
                     // Remove the Gear from the Vehicle.
-                    if (objOldParent != null)
-                        objOldParent.Children.Remove(objGear);
+                    if (objGear.Parent is IHasChildren<Gear> parent)
+                        parent.Children.Remove(objGear);
                     else if (objOldCyberware != null)
                         objOldCyberware.Gear.Remove(objGear);
                     else if (objOldWeaponAccessory != null)
@@ -4976,7 +4983,7 @@ namespace Chummer
                         objOldVehicle.Gear.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
-                    objGear.Location = strDestinationLocation;
+                    objGear.Location = objLocation;
                 }
             }
         }
@@ -8324,22 +8331,22 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public ObservableCollection<string> GearLocations => _lstGearLocations;
+        public ObservableCollection<Location> GearLocations => _lstGearLocations;
 
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public ObservableCollection<string> ArmorLocations => _lstArmorLocations;
+        public ObservableCollection<Location> ArmorLocations => _lstArmorLocations;
 
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public ObservableCollection<string> VehicleLocations => _lstVehicleLocations;
+        public ObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public ObservableCollection<string> WeaponLocations => _lstWeaponLocations;
+        public ObservableCollection<Location> WeaponLocations => _lstWeaponLocations;
 
         /// <summary>
         /// Improvement Groups.
@@ -12629,3 +12636,4 @@ namespace Chummer
         }
     }
 }
+

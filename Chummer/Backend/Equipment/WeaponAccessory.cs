@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -981,7 +981,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1019,5 +1019,25 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            DeleteWeaponAccessory();
+            return Parent.WeaponAccessories.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            if (characterObject.Created || IncludedInWeapon) return;
+            Parent.WeaponAccessories.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteWeaponAccessory() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+        }
     }
 }

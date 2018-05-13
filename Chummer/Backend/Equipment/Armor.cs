@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private string _strLocation = string.Empty;
+        private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
@@ -345,6 +345,7 @@ namespace Chummer.Backend.Equipment
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
+                    objGear.ParentObject = this;
                     _lstGear.Add(objGear);
                 }
             }
@@ -417,7 +418,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("location", _objLocation.InternalId);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
@@ -436,13 +437,29 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _strLocation = string.Empty;
+                _objLocation = null;
             }
             else
             {
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
-                objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+                if (objNode["location"] != null)
+                {
+                    if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                    {
+                        // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                        Location =
+                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                location.InternalId == temp.ToString());
+                    }
+                    else
+                    {
+                        //Legacy. Location is a string. 
+                        Location =
+                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                location.Name == objNode["location"].InnerText);
+                    }
+                }
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -549,7 +566,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("armorname", ArmorName);
+            objWriter.WriteElementString("armorname", CustomName);
             objWriter.WriteElementString("equipped", Equipped.ToString());
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteStartElement("armormods");
@@ -565,7 +582,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("location", Location.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -1062,10 +1079,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Location.
         /// </summary>
-        public string Location
+        public Location Location
         {
-            get => _strLocation;
-            set => _strLocation = value;
+            get => _objLocation;
+            set => _objLocation = value;
         }
 
         /// <summary>
@@ -1349,8 +1366,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
-            if (!string.IsNullOrEmpty(ArmorName))
-                strReturn += strSpaceCharacter + "(\"" + ArmorName + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
             if (Rating > 0)
                 strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
@@ -1361,7 +1378,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A custom name for the Armor assigned by the player.
         /// </summary>
-        public string ArmorName
+        public string CustomName
         {
             get => _strArmorName;
             set => _strArmorName = value;
@@ -1469,7 +1486,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsArmor,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1508,5 +1525,27 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            DeleteArmor();
+            return characterObject.Armor.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            if (characterObject.Created) return;
+            characterObject.Armor.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteArmor() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+        }
+
+        public TaggedObservableCollection<Gear> Children => Gear;
     }
 }

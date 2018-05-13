@@ -31,7 +31,7 @@ namespace Chummer
     /// A Technomancer Program or Complex Form.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -447,7 +447,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsComplexForm,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -472,5 +472,15 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm", GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.ComplexForm, InternalId);
+
+            return characterObject.ComplexForms.Remove(this);
+        }
     }
 }

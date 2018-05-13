@@ -205,6 +205,7 @@
     <Compile Include="Backend\Uniques\Focus.cs" />
     <Compile Include="Backend\Uniques\InitiationGrade.cs" />
     <Compile Include="Backend\Uniques\LimitModifier.cs" />
+    <Compile Include="Backend\Uniques\Location.cs" />
     <Compile Include="Backend\Uniques\MartialArt.cs" />
     <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
     <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
@@ -272,7 +273,13 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\IHasConditionMonitor.cs" />
+    <Compile Include="Interfaces\IHasCustomName.cs" />
+    <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
+    <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\IHasInternalId.cs" />

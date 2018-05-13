@@ -28,7 +28,7 @@ namespace Chummer
     /// A Martial Arts Technique.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -199,6 +199,25 @@ namespace Chummer
         }
         #endregion
 
+        #region Methods
+
+        public bool Remove(Character objCharacter)
+        {
+            // Find the selected Advantage object.
+            //TODO: Advantages should know what their parent is. 
+            objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
+            if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(objCharacter,
+                Improvement.ImprovementSource.MartialArtTechnique, InternalId);
+
+            objMartialArt.Techniques.Remove(this);
+            return true;
+        }
+        #endregion
+
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
         {
@@ -209,7 +228,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsMartialArtTechnique,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

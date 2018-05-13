@@ -65,21 +65,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
-            if (objNode != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objChild in objNode.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objChild in objNode.Nodes)
-                {
-                    if (objChild.Tag.ToString() == strGuid)
-                        return objChild;
+                if (objChild.Tag is IHasInternalId idNode && idNode.InternalId == strGuid)
+                    return objChild;
 
-                    if (blnDeep)
-                    {
-                        objFound = objChild.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objChild.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }
@@ -145,7 +140,7 @@ namespace Chummer
             if (lstTreeViewNodes == null)
                 return;
             if (string.IsNullOrEmpty(strSelectedNodeTag))
-                strSelectedNodeTag = treView.SelectedNode?.Tag.ToString();
+                strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -220,21 +215,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
-            if (treTree != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objNode in treTree.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Tag.ToString() == strGuid)
-                        return objNode;
+                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode.Tag.ToString() == strGuid)
+                    return objNode;
 
-                    if (blnDeep)
-                    {
-                        objFound = objNode.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objNode.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }

@@ -28,7 +28,7 @@ namespace Chummer
     /// An AI Program or Advanced Program.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -277,7 +277,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsAIProgram,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -302,5 +302,17 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!CanDelete) return false;
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram", GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.AIProgram,
+                InternalId);
+
+            return characterObject.AIPrograms.Remove(this);
+        }
     }
 }

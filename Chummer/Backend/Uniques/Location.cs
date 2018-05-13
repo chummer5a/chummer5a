@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -25,36 +27,25 @@ using System.Xml;
 namespace Chummer
 {
     /// <summary>
-    /// A Martial Art Maneuver.
+    /// A Location.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove
     {
         private Guid _guiID;
-        private string _strName = string.Empty;
-        private string _strSource = string.Empty;
-        private string _strPage = string.Empty;
+        private string _strName;
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
-
         #region Constructor, Create, Save, Load, and Print Methods
-        public MartialArtManeuver(Character objCharacter)
+        public Location(Character objCharacter, ObservableCollection<Location> parent, string name = "", bool addToList = true)
         {
-            // Create the GUID for the new Martial Art Maneuver.
+            // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-        }
-
-        /// Create a Martial Art Maneuver from an XmlNode.
-        /// <param name="objXmlManeuverNode">XmlNode to create the object from.</param>
-        public void Create(XmlNode objXmlManeuverNode)
-        {
-            if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-            objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
-            if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _strName = name;
+            Parent = parent;
+            if (addToList)
+                Parent.Add(this);
         }
 
         /// <summary>
@@ -63,29 +54,24 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            objWriter.WriteStartElement("martialartmaneuver");
+            objWriter.WriteStartElement("location");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
-        /// Load the Martial Art Maneuver from the XmlNode.
+        /// Load the Metamagic from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
-                _guiID = Guid.NewGuid();
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-            objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (Parent == null || Parent.Contains(this)) return;
+                Parent.Add(this);
         }
 
         /// <summary>
@@ -95,11 +81,9 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
-            objWriter.WriteStartElement("martialartmaneuver");
+            objWriter.WriteStartElement("location");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -108,22 +92,17 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Internal identifier which will be used to identify this Martial Art Maneuver in the Improvement system.
+        /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
         /// <summary>
-        /// Name.
+        /// Metamagic name.
         /// </summary>
         public string Name
         {
             get => _strName;
-            set
-            {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
-                _strName = value;
-            }
+            set => _strName = value;
         }
 
         /// <summary>
@@ -131,11 +110,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return Name;
-
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return Name;
         }
 
         /// <summary>
@@ -149,27 +124,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sourcebook.
-        /// </summary>
-        public string Source
-        {
-            get => _strSource;
-            set => _strSource = value;
-        }
-
-        /// <summary>
-        /// Page.
-        /// </summary>
-        public string Page(string strLanguage)
-        {
-            // Get the translated name if applicable.
-            if (strLanguage != GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
-        }
-
-        /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
@@ -178,37 +132,21 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        private XmlNode _objCachedMyXmlNode;
-        private string _strCachedXmlNodeLanguage = string.Empty;
+        public List<IHasLocation> Children { get; } = new List<IHasLocation>();
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
-        {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("martialarts.xml", strLanguage).SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
-        }
+        public ObservableCollection<Location> Parent { get; set; }
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation, bool blnAddCategory = false)
         {
-            //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
-            //return null;
-
+            string strText = DisplayName(GlobalOptions.Language);
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = strText,
                 Tag = this,
-                ContextMenuStrip = cmsMartialArtTechnique,
+                ContextMenuStrip = cmsLocation,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };
@@ -229,5 +167,15 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character character)
+        {
+            foreach (IHasLocation item in Children)
+            {
+                item.Location = null;
+            }
+            string strMessage = LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language);
+            return character.ConfirmDelete(strMessage) && Parent.Remove(this);
+        }
     }
 }
