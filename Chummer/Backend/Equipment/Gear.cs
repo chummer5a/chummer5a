@@ -646,7 +646,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("location", _objLocation.InternalId);
+            _objLocation?.Save(objWriter);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 

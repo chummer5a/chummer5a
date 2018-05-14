@@ -2103,7 +2103,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode nodLocation = treWeapons.FindNode(objLocation.InternalId, false);
+                            TreeNode nodLocation = treWeapons.FindNode(objLocation?.InternalId, false);
                             if (nodLocation != null)
                             {
                                 if (nodLocation.Nodes.Count > 0)
@@ -2176,7 +2176,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
-                            TreeNode nodLocation = treWeapons.FindNode(objLocation.InternalId, false);
+                            TreeNode nodLocation = treWeapons.FindNode(objLocation?.InternalId, false);
                             if (nodLocation == null) continue;
                             if (nodLocation.Nodes.Count > 0)
                             {
@@ -2311,6 +2311,7 @@ namespace Chummer
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objNode == null)
                     return;
+                bool isExpanded = objNode.IsExpanded;
                 TreeNode nodParent = null;
                 if (objWeapon.Location != null)
                 {
@@ -2672,7 +2673,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.ArmorLocations)
                         {
-                            TreeNode nodLocation = treArmor.FindNode(objLocation.InternalId, false);
+                            TreeNode nodLocation = treArmor.FindNode(objLocation?.InternalId, false);
                             if (nodLocation != null)
                             {
                                 if (nodLocation.Nodes.Count > 0)
@@ -3010,7 +3011,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treGear.FindNode(objLocation?.InternalId, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -3041,7 +3042,7 @@ namespace Chummer
                         int intNewItemsIndex = 0;
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treGear.FindNode(objLocation?.InternalId, false);
                             if (objNode != null)
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
@@ -3083,7 +3084,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.GearLocations)
                         {
-                            TreeNode nodLocation = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode nodLocation = treGear.FindNode(objLocation?.InternalId, false);
                             if (nodLocation != null)
                             {
                                 nodLocation.Remove();
@@ -3361,7 +3362,7 @@ namespace Chummer
                 }
                 else
                 {
-                    TreeNode nodLocation = nodParent.FindNode(objGear.Location.InternalId, false);
+                    TreeNode nodLocation = nodParent.FindNode(objGear.Location?.InternalId, false);
                     if (nodLocation != null)
                     {
                         if (intIndex >= 0)
@@ -3790,7 +3791,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
-                            TreeNode nodLocation = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode nodLocation = treVehicles.FindNode(objLocation?.InternalId, false);
                             if (nodLocation == null) continue;
                             if (nodLocation.Nodes.Count > 0)
                             {
@@ -3854,7 +3855,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNode(objLocation?.InternalId, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -3917,7 +3918,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in objVehicle.Locations)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNode(objLocation?.InternalId, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();

@@ -2232,7 +2232,7 @@ namespace Chummer
                     {
                         Gear objGear = new Gear(CharacterObject);
                         objGear.Load(objXmlNode, true);
-                        selectedObject = treGear.SelectedNode.Tag;
+                        selectedObject = treGear.SelectedNode?.Tag;
                         if (selectedObject is Gear objNewParent)
                         {
                             XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
@@ -3511,12 +3511,12 @@ namespace Chummer
                 return;
             }
 
-            if (treVehicles.SelectedNode.Tag is string strSelectedId)
+            if (treVehicles.SelectedNode?.Tag is string strSelectedId)
             {
                 if (strSelectedId == "Node_SelectedVehicles")
                     return;
             }
-            else if (treVehicles.SelectedNode.Tag is VehicleMod objMod)
+            else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
                 // Check for Improved Sensor bonus.
                 if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
@@ -3564,7 +3564,7 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
-            else if (treVehicles.SelectedNode.Tag is ICanRemove selectedObject)
+            else if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
                 if (selectedObject.Remove(CharacterObject))
                 {
@@ -3587,7 +3587,7 @@ namespace Chummer
             if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
                 return;
 
-            LimitModifier objLimitModifier = treLimit.SelectedNode.Tag as LimitModifier;
+            LimitModifier objLimitModifier = treLimit.SelectedNode?.Tag as LimitModifier;
             if (objLimitModifier == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4512,7 +4512,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddArmor(treArmor.SelectedNode.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag is Location objLocation ? objLocation : null);
             }
             while (blnAddAgain);
         }
@@ -4608,7 +4608,7 @@ namespace Chummer
             Vehicle objVehicle = null;
             if (treVehicles.SelectedNode?.Tag is Vehicle)
             {
-                objVehicle = (Vehicle) treVehicles.SelectedNode.Tag;
+                objVehicle = (Vehicle) treVehicles.SelectedNode?.Tag;
             }
             if (!(objVehicle == null || treVehicles.SelectedNode?.Tag == null))
             {
@@ -4633,7 +4633,7 @@ namespace Chummer
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treCyberware.SelectedNode.Tag is Cyberware objCyberware))
+            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4650,7 +4650,7 @@ namespace Chummer
         private void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treVehicles.SelectedNode.Tag is Cyberware objCyberware))
+            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4666,7 +4666,7 @@ namespace Chummer
 
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Weapon objWeapon))
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language),
@@ -4765,7 +4765,7 @@ namespace Chummer
 
             TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(treArmor.SelectedNode.Tag is Armor objArmor) || objSelectedNode.Level <= 0)
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor) || objSelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4834,7 +4834,7 @@ namespace Chummer
         {
 
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treGear.SelectedNode.Tag is Gear objGear))
+            if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4850,7 +4850,7 @@ namespace Chummer
 
         private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode.Tag is Vehicle objVehicle)) return;
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle)) return;
             frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(objVehicle, CharacterObject);
             frmPickVehicleMod.ShowDialog(this);
 
@@ -4874,7 +4874,7 @@ namespace Chummer
                 objSelectedNode = objSelectedNode.Parent;
 
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (!(objSelectedNode.Tag is Vehicle objVehicle))
+            if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4996,12 +4996,12 @@ namespace Chummer
             WeaponMount objWeaponMount = null;
             VehicleMod objMod = null;
             Vehicle objVehicle = null;
-            if (treVehicles.SelectedNode.Tag is WeaponMount selectedMount)
+            if (treVehicles.SelectedNode?.Tag is WeaponMount selectedMount)
             {
                 objWeaponMount = selectedMount;
                 objVehicle = selectedMount.Parent;
             }
-            else if (treVehicles.SelectedNode.Tag is VehicleMod selectedMod && (objMod.Name.StartsWith("Mechanical Arm") || objMod.Name.Contains("Drone Arm")))
+            else if (treVehicles.SelectedNode?.Tag is VehicleMod selectedMod && (objMod.Name.StartsWith("Mechanical Arm") || objMod.Name.Contains("Drone Arm")))
             {
                 objMod = selectedMod;
                 objVehicle = selectedMod.Parent;
@@ -5068,7 +5068,7 @@ namespace Chummer
         private void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            if (!(treVehicles.SelectedNode.Tag is Weapon objWeapon))
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5131,7 +5131,7 @@ namespace Chummer
         private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            if (!(treVehicles.SelectedNode.Tag is Weapon objSelectedWeapon))
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5206,7 +5206,7 @@ namespace Chummer
                 return;
             }
 
-            if (!(treMartialArts.SelectedNode.Tag is MartialArt objMartialArt))
+            if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5238,7 +5238,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode.Tag is Vehicle objSelectedVehicle))
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5353,7 +5353,7 @@ namespace Chummer
             }
 
             // Make sure the Gear was found.
-            if (!(objSelectedNode.Tag is Gear objSensor))
+            if (!(objSelectedNode?.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5449,7 +5449,7 @@ namespace Chummer
         {
             if (treVehicles.SelectedNode == null)
                 return;
-            if (treVehicles.SelectedNode.Tag is Gear objGear)
+            if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 string strOldValue = objGear.Notes;
                 frmNotes frmItemNotes = new frmNotes
@@ -5514,7 +5514,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Weapon.
-            if (!(treWeapons.SelectedNode.Tag is Weapon objWeapon))
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5545,7 +5545,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Gear.
-            if (!(treGear.SelectedNode.Tag is Gear objGear))
+            if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5571,7 +5571,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
             // Locate the Weapon that is selected in the tree.
-            if (!(objSelectedNode.Tag is Weapon objSelectedWeapon))
+            if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5634,7 +5634,7 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
-            if (treGear.SelectedNode.Tag is Gear objGear)
+            if (treGear.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Extra = frmPickText.SelectedValue;
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -5673,7 +5673,7 @@ namespace Chummer
             }
 
             // Attempt to locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode.Tag is Vehicle objVehicle))
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5706,7 +5706,7 @@ namespace Chummer
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(treArmor.SelectedNode.Tag is Armor objArmor))
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5734,7 +5734,7 @@ namespace Chummer
             bool capacityOnly = false;
             string selectedGuid = string.Empty;
             // Make sure the selected item is another piece of Gear.
-            if (objSelectedNode.Tag is ArmorMod objMod)
+            if (objSelectedNode?.Tag is ArmorMod objMod)
             {
                 if (string.IsNullOrEmpty(objMod.GearCapacity))
                 {
@@ -5744,7 +5744,7 @@ namespace Chummer
                 capacityOnly = true;
                 selectedGuid = objMod.InternalId;
             }
-            else if (objSelectedNode.Tag is Gear objGear)
+            else if (objSelectedNode?.Tag is Gear objGear)
             {
                 selectedGuid = objGear.InternalId;
             }
@@ -5760,7 +5760,7 @@ namespace Chummer
         {
             if (treArmor.SelectedNode == null)
                 return;
-            if (treArmor.SelectedNode.Tag is IHasNotes objNotes)
+            if (treArmor.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treArmor.SelectedNode);
             }
@@ -5770,7 +5770,7 @@ namespace Chummer
         {
             if (treLimit.SelectedNode == null)
                 return;
-            if (treLimit.SelectedNode.Tag is IHasNotes objNotes)
+            if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treLimit.SelectedNode);
             }
@@ -5778,7 +5778,7 @@ namespace Chummer
             {
                 // the limit modifier has a source
                 //TODO: All limitmodifiers should exist in the character object properly, irrespective of whether it came from an improvement. 
-                if (treLimit.SelectedNode.Tag is IHasInternalId selectedNode)
+                if (treLimit.SelectedNode?.Tag is IHasInternalId selectedNode)
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.SourceName == selectedNode.InternalId)
@@ -5793,7 +5793,7 @@ namespace Chummer
         {
             if (treWeapons.SelectedNode == null)
                 return;
-            if (treWeapons.SelectedNode.Tag is IHasNotes objNotes)
+            if (treWeapons.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treWeapons.SelectedNode);
             }
@@ -5803,7 +5803,7 @@ namespace Chummer
         {
             if (treCyberware.SelectedNode == null)
                 return;
-            if (treCyberware.SelectedNode.Tag is IHasNotes objNotes)
+            if (treCyberware.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treCyberware.SelectedNode);
             }
@@ -5813,7 +5813,7 @@ namespace Chummer
         {
             if (treVehicles.SelectedNode == null)
                 return;
-            if (treVehicles.SelectedNode.Tag is IHasNotes objNotes)
+            if (treVehicles.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treVehicles.SelectedNode);
             }
@@ -5823,7 +5823,7 @@ namespace Chummer
         {
             if (treQualities.SelectedNode == null)
                 return;
-            if (treQualities.SelectedNode.Tag is IHasNotes objNotes)
+            if (treQualities.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treQualities.SelectedNode);
             }
@@ -5833,7 +5833,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode == null)
                 return;
-            if (treMartialArts.SelectedNode.Tag is IHasNotes objNotes)
+            if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treMartialArts.SelectedNode);
             }
@@ -5844,7 +5844,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode == null)
                 return;
-            if (treMartialArts.SelectedNode.Tag is IHasNotes objNotes)
+            if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treMartialArts.SelectedNode);
             }
@@ -5855,7 +5855,7 @@ namespace Chummer
         {
             if (treSpells.SelectedNode == null)
                 return;
-            if (treSpells.SelectedNode.Tag is IHasNotes objNotes)
+            if (treSpells.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treSpells.SelectedNode);
             }
@@ -5865,7 +5865,7 @@ namespace Chummer
         {
             if (treComplexForms.SelectedNode == null)
                 return;
-            if (treComplexForms.SelectedNode.Tag is IHasNotes objNotes)
+            if (treComplexForms.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treComplexForms.SelectedNode);
             }
@@ -5875,7 +5875,7 @@ namespace Chummer
         {
             if (treAIPrograms.SelectedNode == null)
                 return;
-            if (treAIPrograms.SelectedNode.Tag is IHasNotes objNotes)
+            if (treAIPrograms.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treAIPrograms.SelectedNode);
             }
@@ -5885,7 +5885,7 @@ namespace Chummer
         {
             if (treCritterPowers.SelectedNode == null)
                 return;
-            if (treCritterPowers.SelectedNode.Tag is IHasNotes objNotes)
+            if (treCritterPowers.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treCritterPowers.SelectedNode);
             }
@@ -5895,7 +5895,7 @@ namespace Chummer
         {
             if (treMetamagic.SelectedNode == null)
                 return;
-            if (treMetamagic.SelectedNode.Tag is IHasNotes objNotes)
+            if (treMetamagic.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treMetamagic.SelectedNode);
             }
@@ -5905,7 +5905,7 @@ namespace Chummer
         {
             if (treGear.SelectedNode == null)
                 return;
-            if (treGear.SelectedNode.Tag is IHasNotes objNotes)
+            if (treGear.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treGear.SelectedNode);
             }
@@ -5915,7 +5915,7 @@ namespace Chummer
         {
             if (treLifestyles.SelectedNode == null)
                 return;
-            if (treLifestyles.SelectedNode.Tag is IHasNotes objNotes)
+            if (treLifestyles.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treLifestyles.SelectedNode);
             }
@@ -5923,7 +5923,7 @@ namespace Chummer
 
         private void tsWeaponMountLocation_Click(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Tag is WeaponMount objWeaponMount)
+            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount)
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
@@ -5956,7 +5956,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Vehicle.
-            if (!(treVehicles.SelectedNode.Tag is Vehicle objVehicle))
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6158,7 +6158,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Armor.
-            if (!(treArmor.SelectedNode.Tag is Armor objArmor))
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6196,7 +6196,7 @@ namespace Chummer
         private void tsLifestyleName_Click(object sender, EventArgs e)
         {
             // Get the information for the currently selected Lifestyle.
-            if (!(treLifestyles.SelectedNode.Tag is IHasCustomName objCustomName))
+            if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLifestyle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6224,7 +6224,7 @@ namespace Chummer
 
         private void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -6242,7 +6242,7 @@ namespace Chummer
 
         private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treWeapons.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -6287,7 +6287,7 @@ namespace Chummer
 
         private void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treArmor.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -6314,7 +6314,7 @@ namespace Chummer
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
-            if (!(objSelectedNode.Tag is Cyberware objCyberware) ||  objCyberware?.AllowGear == null)
+            if (!(objSelectedNode?.Tag is Cyberware objCyberware) ||  objCyberware?.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6481,7 +6481,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle Sensor Gear.
-            if (!(objSelectedNode.Tag is Gear objSensor))
+            if (!(objSelectedNode?.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6570,7 +6570,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle Sensor Gear.
-            if (!(objSelectedNode.Tag is Gear objSensor))
+            if (!(objSelectedNode?.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6653,7 +6653,7 @@ namespace Chummer
             TreeNode objSelectedNode = treWeapons.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (!(objSelectedNode.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
+            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6727,7 +6727,7 @@ namespace Chummer
 
         private void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Gear objSensor))
+            if (!(treWeapons.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6809,7 +6809,7 @@ namespace Chummer
 
         private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treVehicles.SelectedNode?.Tag is Location objLocation)) return;
 
             frmSelectText frmPickText = new frmSelectText
             {
@@ -6844,7 +6844,7 @@ namespace Chummer
         private void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure the Gear was found.
-            if (!(treVehicles.SelectedNode.Tag is Gear objSensor))
+            if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6932,7 +6932,7 @@ namespace Chummer
             TreeNode objSelectedNode = treVehicles.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (!(objSelectedNode.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
+            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7250,7 +7250,7 @@ namespace Chummer
         {
             if (!_blnSkipRefresh)
             {
-                if (treCyberware.SelectedNode.Tag is Cyberware objCyberware)
+                if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
                 {
                     // Update the selected Cyberware Rating.
                     objCyberware.PrototypeTranshuman = chkPrototypeTranshuman.Checked;
@@ -7267,7 +7267,7 @@ namespace Chummer
             if (!_blnSkipRefresh)
             {
                 // Locate the selected piece of Cyberware.
-                if (treCyberware.SelectedNode.Tag is Cyberware objCyberware)
+                if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
                 {
                     // Update the selected Cyberware Rating.
                     objCyberware.Rating = decimal.ToInt32(nudCyberwareRating.Value);
@@ -7319,7 +7319,7 @@ namespace Chummer
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                 }
-                else if (treCyberware.SelectedNode.Tag is Gear objGear)
+                else if (treCyberware.SelectedNode?.Tag is Gear objGear)
                 {
                     // Find the selected piece of Gear.
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
@@ -7609,7 +7609,7 @@ namespace Chummer
                 _blnSkipRefresh = true;
 
                 // Locate the selected Lifestyle.
-                if (!(treLifestyles.SelectedNode.Tag is Lifestyle objLifestyle))
+                if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                     return;
 
                 objLifestyle.Increments = decimal.ToInt32(nudLifestyleMonths.Value);
@@ -7635,7 +7635,7 @@ namespace Chummer
 
             if (treGear.SelectedNode.Level > 0)
             {
-                if (!(treGear.SelectedNode.Tag is Gear objGear))
+                if (!(treGear.SelectedNode?.Tag is Gear objGear))
                     return;
 
                 if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
@@ -7688,7 +7688,7 @@ namespace Chummer
             // Attempt to locate the selected piece of Gear.
             if (treGear.SelectedNode.Level > 0)
             {
-                if (treGear.SelectedNode.Tag is Gear objGear)
+                if (treGear.SelectedNode?.Tag is Gear objGear)
                 {
                     objGear.Quantity = nudGearQty.Value;
 
@@ -7705,7 +7705,7 @@ namespace Chummer
                 return;
 
             // Locate the selected Armor or Armor Mod.
-            switch (treArmor.SelectedNode.Tag)
+            switch (treArmor.SelectedNode?.Tag)
             {
                 case Armor objArmor:
                     objArmor.Equipped = chkArmorEquipped.Checked;
@@ -7742,15 +7742,15 @@ namespace Chummer
             if (_blnSkipRefresh || treWeapons.SelectedNode == null)
                 return;
             // Locate the selected Weapon Accessory or Modification.
-            if (treWeapons.SelectedNode.Tag is WeaponAccessory objAccessory)
+            if (treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
                 objAccessory.Installed = chkWeaponAccessoryInstalled.Checked;
             }
-            else if (treWeapons.SelectedNode.Tag is Weapon objWeapon)
+            else if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {
                 objWeapon.Installed = chkWeaponAccessoryInstalled.Checked;
             }
-            else if (treWeapons.SelectedNode.Tag is Gear objGear)
+            else if (treWeapons.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Equipped = chkWeaponAccessoryInstalled.Checked;
                 objGear.ChangeEquippedStatus(chkWeaponAccessoryInstalled.Checked);
@@ -7765,7 +7765,7 @@ namespace Chummer
             if (_blnSkipRefresh || treWeapons.SelectedNode == null)
                 return;
             // Locate the selected Weapon Accessory or Modification.
-            if (treWeapons.SelectedNode.Tag is WeaponAccessory objAccessory)
+            if (treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
                 objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
                 IsDirty = true;
@@ -7861,7 +7861,7 @@ namespace Chummer
                 return;
 
             // Attempt to locate the selected piece of Gear.
-            if (treGear.SelectedNode.Tag is Gear objGear)
+            if (treGear.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Equipped = chkGearEquipped.Checked;
                 objGear.ChangeEquippedStatus(chkGearEquipped.Checked);
@@ -8114,7 +8114,7 @@ namespace Chummer
             if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
             {
                 // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                if (treVehicles.SelectedNode.Tag is Gear objGear)
+                if (treVehicles.SelectedNode?.Tag is Gear objGear)
                 {
                     _eDragButton = e.Button;
                     _blnDraggingGear = true;
@@ -8256,7 +8256,7 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (treVehicles.SelectedNode.Tag is Gear objGear)
+            if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Quantity = nudVehicleGearQty.Value;
                 treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -8270,7 +8270,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            if (treVehicles.SelectedNode.Tag is IHasMatrixAttributes objTarget)
+            if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 objTarget.SetHomeNode(CharacterObject, chkVehicleHomeNode.Checked);
 
@@ -8543,7 +8543,7 @@ namespace Chummer
                 return;
             
             // Locate the selected ArmorMod.
-            if (treArmor.SelectedNode.Tag is ArmorMod objMod)
+            if (treArmor.SelectedNode?.Tag is ArmorMod objMod)
             {
                 objMod.Rating = decimal.ToInt32(nudArmorRating.Value);
                 treArmor.SelectedNode.Text = objMod.DisplayName(GlobalOptions.Language);
@@ -8559,7 +8559,7 @@ namespace Chummer
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                 }
             }
-            else if (treArmor.SelectedNode.Tag is Gear objGear)
+            else if (treArmor.SelectedNode?.Tag is Gear objGear)
             {
                 if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                 {
@@ -8589,7 +8589,7 @@ namespace Chummer
                         objGear.ChangeEquippedStatus(false);
                 }
             }
-            else if (treArmor.SelectedNode.Tag is Armor objArmor)
+            else if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 objArmor.Rating = decimal.ToInt32(nudArmorRating.Value);
                 treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Language);
@@ -10190,7 +10190,7 @@ namespace Chummer
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
 
             // Locate the selected piece of Cyberware.
-            if (treCyberware.SelectedNode.Tag is Cyberware objCyberware)
+            if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 if (!string.IsNullOrEmpty(objCyberware.ParentID))
                     cmdDeleteCyberware.Enabled = false;
@@ -10297,7 +10297,7 @@ namespace Chummer
                     lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
                 treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
-            else if (treCyberware.SelectedNode.Tag is Gear objGear)
+            else if (treCyberware.SelectedNode?.Tag is Gear objGear)
             {
                 if (objGear.IncludedInParent)
                     cmdDeleteCyberware.Enabled = false;
@@ -10724,7 +10724,7 @@ namespace Chummer
             lblArmorEquippedLabel.Visible = false;
             lblArmorEquipped.Visible = false;
 
-            if (treArmor.SelectedNode.Tag is Armor objArmor)
+            if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 lblArmorDeviceRatingLabel.Visible = false;
                 lblArmorDeviceRating.Visible = false;
@@ -10759,7 +10759,7 @@ namespace Chummer
                 chkIncludedInArmor.Enabled = false;
                 chkIncludedInArmor.Checked = false;
             }
-            else if (treArmor.SelectedNode.Tag is ArmorMod objArmorMod)
+            else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
             {
                 lblArmorDeviceRatingLabel.Visible = false;
                 lblArmorDeviceRating.Visible = false;
@@ -10802,7 +10802,7 @@ namespace Chummer
                 chkIncludedInArmor.Enabled = true;
                 chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
             }
-            else if (treArmor.SelectedNode.Tag is Gear objSelectedGear)
+            else if (treArmor.SelectedNode?.Tag is Gear objSelectedGear)
             {
                 if (objSelectedGear.IncludedInParent)
                     cmdDeleteArmor.Enabled = false;
@@ -11567,7 +11567,7 @@ namespace Chummer
             }
 
             // Locate the selected Lifestyle.
-            if (!(treLifestyles.SelectedNode.Tag is Lifestyle objLifestyle))
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
             {
                 _blnSkipRefresh = false;
                 return;
@@ -11790,7 +11790,7 @@ namespace Chummer
             lblVehicleSlotsLabel.Visible = false;
             lblVehicleSlots.Visible = false;
             
-            if (string.IsNullOrEmpty(strSelectedId) || treVehicles.SelectedNode.Level <= 0 || treVehicles.SelectedNode.Tag is Location)
+            if (string.IsNullOrEmpty(strSelectedId) || treVehicles.SelectedNode.Level <= 0 || treVehicles.SelectedNode?.Tag is Location)
             {
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Minimum = 0;
@@ -11814,7 +11814,7 @@ namespace Chummer
             }
 
             // Locate the selected Vehicle.
-            if (treVehicles.SelectedNode.Tag is Vehicle objVehicle)
+            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
                 if (!string.IsNullOrEmpty(objVehicle.ParentID))
                     cmdDeleteVehicle.Enabled = false;
@@ -11903,7 +11903,7 @@ namespace Chummer
                     lblVehicleSlots.Text = objVehicle.Slots + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objVehicle.Slots - objVehicle.SlotsUsed) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 }
             }
-            else if (treVehicles.SelectedNode.Tag is WeaponMount objWeaponMount)
+            else if (treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount)
             {
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Minimum = 0;
@@ -11937,7 +11937,7 @@ namespace Chummer
                 GlobalOptions.ToolTipProcessor.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeaponMount.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
             // Locate the selected VehicleMod.
-            if (treVehicles.SelectedNode.Tag is VehicleMod objMod)
+            if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
                 if (objMod.IncludedInVehicle)
                     cmdDeleteVehicle.Enabled = false;
@@ -12013,7 +12013,7 @@ namespace Chummer
                 lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + ' ' + strPage;
                 GlobalOptions.ToolTipProcessor.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
-            else if (treVehicles.SelectedNode.Tag is Weapon objWeapon)
+            else if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
                 if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
                     cmdDeleteVehicle.Enabled = false;
@@ -12068,7 +12068,7 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
             }
-            else if (treVehicles.SelectedNode.Tag is WeaponAccessory objAccessory)
+            else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
                 if (objAccessory.IncludedInWeapon)
                     cmdDeleteVehicle.Enabled = false;
@@ -12121,7 +12121,7 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
             }
-            else if (treVehicles.SelectedNode.Tag is Cyberware objCyberware)
+            else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 if (!string.IsNullOrEmpty(objCyberware.ParentID))
                     cmdDeleteVehicle.Enabled = false;
@@ -12156,7 +12156,7 @@ namespace Chummer
                     chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                 }
             }
-            else if (treVehicles.SelectedNode.Tag is Gear objGear)
+            else if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 if (objGear.IncludedInParent)
                     cmdDeleteVehicle.Enabled = false;
@@ -14761,29 +14761,29 @@ namespace Chummer
                         }
 
                         //TODO: ICanCopy interface? If weapon comes from something else == false, etc. 
-                        blnCopyEnabled = treWeapons.SelectedNode.Tag is Weapon || treWeapons.SelectedNode.Tag is Gear;
+                        blnCopyEnabled = treWeapons.SelectedNode?.Tag is Weapon || treWeapons.SelectedNode?.Tag is Gear;
                     }
                 }
                 // Gear Tab.
                 else if (tabStreetGearTabs.SelectedTab == tabGear)
                 {
-                    if (treGear.SelectedNode.Tag is IHasInternalId)
+                    if (treGear.SelectedNode?.Tag is IHasInternalId)
                     {
                         blnPasteEnabled = GlobalOptions.ClipboardContentType == ClipboardContentType.Gear;
-                        blnCopyEnabled = treGear.SelectedNode.Tag is Gear;
+                        blnCopyEnabled = treGear.SelectedNode?.Tag is Gear;
                     }
                 }
             }
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                if (treCyberware.SelectedNode.Tag is IHasInternalId)
+                if (treCyberware.SelectedNode?.Tag is IHasInternalId)
                 {
                     switch (GlobalOptions.ClipboardContentType)
                     {
                         case ClipboardContentType.Gear:
                             XmlNode objXmlCategoryNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
-                            if (objXmlCategoryNode != null && treCyberware.SelectedNode.Tag is Cyberware objCyberware)
+                            if (objXmlCategoryNode != null && treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
                             {
                                 // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
                                 XmlNodeList xmlGearCategoryList =
@@ -14803,7 +14803,7 @@ namespace Chummer
                         break;
                     }
 
-                    blnCopyEnabled = treCyberware.SelectedNode.Tag is Gear;
+                    blnCopyEnabled = treCyberware.SelectedNode?.Tag is Gear;
                 }
             }
             // Vehicles Tab.
@@ -14850,13 +14850,13 @@ namespace Chummer
                             break;
                         }
                         case ClipboardContentType.Weapon:
-                            blnPasteEnabled = ((treVehicles.SelectedNode.Tag is WeaponMount) ||
-                                                treVehicles.SelectedNode.Tag is VehicleMod objVehicleMod &&
+                            blnPasteEnabled = ((treVehicles.SelectedNode?.Tag is WeaponMount) ||
+                                                treVehicles.SelectedNode?.Tag is VehicleMod objVehicleMod &&
                                                (objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.Name.Contains("Drone Arm")));
                             break;
                     }
 
-                    blnCopyEnabled = treVehicles.SelectedNode.Tag is IHasChildren<Gear>;
+                    blnCopyEnabled = treVehicles.SelectedNode?.Tag is IHasChildren<Gear>;
                 }
             }
 
@@ -15045,7 +15045,7 @@ namespace Chummer
         
         private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is InitiationGrade objGrade))
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
@@ -15088,7 +15088,7 @@ namespace Chummer
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is InitiationGrade objGrade))
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Art);
@@ -15117,7 +15117,7 @@ namespace Chummer
 
         private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is InitiationGrade objGrade))
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enchantment);
@@ -15146,7 +15146,7 @@ namespace Chummer
 
         private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is InitiationGrade objGrade))
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Ritual);
@@ -15175,14 +15175,14 @@ namespace Chummer
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is IHasNotes objNotes))
+            if (!(treMetamagic.SelectedNode?.Tag is IHasNotes objNotes))
                 return;
                 WriteNotes(objNotes,treMetamagic.SelectedNode);
         }
 
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode.Tag is InitiationGrade objGrade))
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement);
@@ -15286,7 +15286,7 @@ namespace Chummer
 
         private void tsAddTechniqueNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode.Tag is IHasNotes objNotes))
+            if (!(treMartialArts.SelectedNode?.Tag is IHasNotes objNotes))
                 return;
             WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
@@ -15485,7 +15485,7 @@ namespace Chummer
         {
             if (treCyberware.SelectedNode == null)
                 return;
-            if (!(treCyberware.SelectedNode.Tag is Cyberware objModularCyberware))
+            if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
 
             frmSelectItem frmPickMount = new frmSelectItem
@@ -15565,7 +15565,7 @@ namespace Chummer
 
         private void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode.Tag is Cyberware objModularCyberware))
+            if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
@@ -15666,7 +15666,7 @@ namespace Chummer
 
         private void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treWeapons.SelectedNode?.Tag is Location objLocation)) return;
             bool blnAddAgain;
             do
             {
@@ -15677,7 +15677,7 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode.Tag is IHasInternalId objSelectedId)) return;
+            if (!(treGear.SelectedNode?.Tag is IHasInternalId objSelectedId)) return;
             bool blnAddAgain;
             do
             {
@@ -15691,7 +15691,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode.Tag is Location objSelectedNode ? objSelectedNode : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objSelectedNode ? objSelectedNode : null);
             }
             while (blnAddAgain);
         }
@@ -15699,7 +15699,7 @@ namespace Chummer
         private void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            if (!(treVehicles.SelectedNode.Tag is WeaponMount objWeaponMount))
+            if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
             frmCreateWeaponMount frmCreateWeaponMount = new frmCreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount);
             frmCreateWeaponMount.ShowDialog(this);

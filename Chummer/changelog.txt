@@ -14,6 +14,7 @@ Application Changes:
 Data Changes:
 
 - Removed the ability to add Fake SINs to other Fake SINs.
+- Removed the ability to add multiple Advanced Basic Safety Systems to a weapon. 
 
 New Strings:
 

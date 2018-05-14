@@ -3071,7 +3071,7 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            object objSelectedNode = treArmor.SelectedNode.Tag;
+            object objSelectedNode = treArmor.SelectedNode?.Tag;
             if (objSelectedNode == null)
                 return;
 
@@ -3177,7 +3177,7 @@ namespace Chummer
             if (treWeapons.SelectedNode == null) return;
 
             // Locate the Weapon that is selected in the tree.
-            if (treWeapons.SelectedNode.Tag is ICanRemove objRemovable)
+            if (treWeapons.SelectedNode?.Tag is ICanRemove objRemovable)
             {
                 objRemovable.Remove(CharacterObject);
             }
@@ -3349,7 +3349,7 @@ namespace Chummer
             {
                 selectedObject.Remove(CharacterObject);
             }
-            else if (treVehicles.SelectedNode.Tag is VehicleMod objMod)
+            else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
                 // Check for Improved Sensor bonus.
                 if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
@@ -3402,12 +3402,12 @@ namespace Chummer
                 else
                     objMod.Parent.Mods.Remove(objMod);
             }
-            else if (treVehicles.SelectedNode.Tag is WeaponAccessory objAccessory)
+            else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
                 objAccessory.DeleteWeaponAccessory();
                 objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
             }
-            else if (treVehicles.SelectedNode.Tag is Cyberware objCyberware)
+            else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 if (objCyberware.Parent != null)
                     objCyberware.Parent.Children.Remove(objCyberware);
@@ -3421,7 +3421,7 @@ namespace Chummer
 
                 objCyberware.DeleteCyberware();
             }
-            else if (treVehicles.SelectedNode.Tag is Gear objGear)
+            else if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 if (objGear.Parent is Gear objParent)
                     objParent.Children.Remove(objGear);
@@ -4085,7 +4085,7 @@ namespace Chummer
         private void cmdGearReduceQty_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treGear.SelectedNode;
-            if (!(objSelectedNode.Tag is Gear objGear)) return;
+            if (!(objSelectedNode?.Tag is Gear objGear)) return;
             
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
@@ -4537,7 +4537,7 @@ namespace Chummer
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            if (!(objSelectedNode.Tag is Gear objGear)) return;
+            if (!(objSelectedNode?.Tag is Gear objGear)) return;
 
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen"))
@@ -5795,7 +5795,7 @@ namespace Chummer
         private void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Enable and disable menu items
-            if (treMetamagic.SelectedNode.Tag is InitiationGrade objGrade)
+            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
             {
                 int intGrade = objGrade.Grade;
                 bool blnHasArt = CharacterObject.Arts.Any(art => art.Grade == intGrade);
@@ -6204,7 +6204,7 @@ namespace Chummer
 
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (!(objSelectedNode.Tag is Vehicle objVehicle))
+            if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7718,7 +7718,7 @@ namespace Chummer
                 treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
 
             // Attempt to locate the selected Vehicle.
-            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
+            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode?.Tag.ToString());
 
             frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
             frmPickNexus.ShowDialog(this);
@@ -8976,7 +8976,7 @@ namespace Chummer
         private void tsLifestyleName_Click(object sender, EventArgs e)
         {
             // Get the information for the currently selected Lifestyle.
-            if (!(treLifestyles.SelectedNode.Tag is IHasCustomName objCustomName))
+            if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLifestyle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -9004,7 +9004,7 @@ namespace Chummer
 
         private void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -9021,7 +9021,7 @@ namespace Chummer
 
         private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treWeapons.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -9097,7 +9097,7 @@ namespace Chummer
 
         private void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treArmor.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -9600,7 +9600,7 @@ namespace Chummer
         private void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
-            WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(objSelectedNode.Tag.ToString());
+            WeaponAccessory objAccessory = CharacterObject.Weapons.FindWeaponAccessory(objSelectedNode?.Tag.ToString());
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (objAccessory.AllowGear == null)
@@ -9816,7 +9816,7 @@ namespace Chummer
 
         private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode.Tag is Location objLocation)) return;
+            if (!(treVehicles.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
@@ -9851,7 +9851,7 @@ namespace Chummer
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Locate the Vehicle Sensor Gear.
-            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory _, out Cyberware _);
+            Gear objSensor = CharacterObject.Vehicles.FindVehicleGear(objSelectedNode?.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory _, out Cyberware _);
             if (objSensor == null)
             // Make sure the Gear was found.
             {
@@ -9964,7 +9964,7 @@ namespace Chummer
         private void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            WeaponAccessory objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(objSelectedNode.Tag.ToString());
+            WeaponAccessory objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(objSelectedNode?.Tag.ToString());
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (objAccessory.AllowGear == null)
@@ -10108,7 +10108,7 @@ namespace Chummer
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            string strSelectedId = treWeapons.SelectedNode.Tag.ToString();
+            string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 if (treWeapons.SelectedNode.Level != 1 && treWeapons.SelectedNode.Level != 0)
@@ -10385,7 +10385,7 @@ namespace Chummer
                 return;
 
             // Locate the selected Armor or Armor Mod.
-            switch (treArmor.SelectedNode.Tag)
+            switch (treArmor.SelectedNode?.Tag)
             {
                 case Armor objArmor:
                     objArmor.Equipped = chkArmorEquipped.Checked;
@@ -10433,7 +10433,7 @@ namespace Chummer
 
         private void cmdReloadWeapon_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons?.SelectedNode.Tag is Weapon objWeapon)) return;
+            if (!(treWeapons?.SelectedNode?.Tag is Weapon objWeapon)) return;
             List<Gear> lstAmmo = new List<Gear>();
             List<string> lstCount = new List<string>();
             bool blnExternalSource = false;
@@ -10757,7 +10757,7 @@ namespace Chummer
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
                     return;
 
-            if (!(treWeapons?.SelectedNode.Tag is Weapon objWeapon) || _blnSkipRefresh)
+            if (!(treWeapons?.SelectedNode?.Tag is Weapon objWeapon) || _blnSkipRefresh)
                 return;
 
             objWeapon.ActiveAmmoSlot = Convert.ToInt32(cboWeaponAmmo.SelectedValue.ToString());
@@ -10794,7 +10794,7 @@ namespace Chummer
 
         private void cmdWeaponBuyAmmo_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode.Tag is Weapon objWeapon))
+            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
             string[] lstAmmoPrefixStrings = objWeapon.AmmoPrefixStrings;
             bool blnAddAgain;
@@ -10924,7 +10924,7 @@ namespace Chummer
 
         private void cmdArmorIncrease_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode.Tag is Armor objArmor))
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
                 return;
 
             objArmor.ArmorDamage -= 1;
@@ -10936,7 +10936,7 @@ namespace Chummer
 
         private void cmdArmorDecrease_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode.Tag is Armor objArmor))
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
                 return;
 
             objArmor.ArmorDamage += 1;
@@ -10974,7 +10974,7 @@ namespace Chummer
             // Attempt to locate the selected piece of Gear.
             if (treGear.SelectedNode != null)
             {
-                IHasMatrixAttributes objSelectedCommlink = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
+                IHasMatrixAttributes objSelectedCommlink = CharacterObject.Gear.DeepFindById(treGear.SelectedNode?.Tag.ToString());
                 if (objSelectedCommlink != null)
                 {
                     objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
@@ -10992,7 +10992,7 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (!(treCyberware.SelectedNode.Tag is IHasMatrixAttributes objSelectedCommlink))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
 
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
@@ -11007,7 +11007,7 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (!(treVehicles.SelectedNode.Tag is IHasMatrixAttributes objSelectedCommlink))
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
 
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
@@ -11024,7 +11024,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treGear.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
@@ -11041,7 +11041,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treGear.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearSleaze, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
@@ -11058,7 +11058,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treGear.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearDataProcessing, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
@@ -11075,7 +11075,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treGear.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearFirewall, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
@@ -11093,7 +11093,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treVehicles.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
             {
@@ -11110,7 +11110,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treVehicles.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearSleaze, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
             {
@@ -11127,7 +11127,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treVehicles.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearFirewall, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
             {
@@ -11144,7 +11144,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treVehicles.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearDataProcessing, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
             {
@@ -11162,7 +11162,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treCyberware.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearAttack, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
@@ -11180,7 +11180,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treCyberware.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearSleaze, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
@@ -11198,7 +11198,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treCyberware.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearDataProcessing, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
@@ -11216,7 +11216,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treCyberware.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearFirewall, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
@@ -11235,7 +11235,7 @@ namespace Chummer
 
             _blnLoading = true;
             
-            if (!(treWeapons.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
@@ -11252,7 +11252,7 @@ namespace Chummer
 
             _blnLoading = true;
             
-            if (!(treWeapons.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
@@ -11269,7 +11269,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treWeapons.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
@@ -11286,7 +11286,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            if (!(treWeapons.SelectedNode.Tag is IHasMatrixAttributes objTarget))
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
@@ -11312,7 +11312,7 @@ namespace Chummer
                 if (treVehicles.SelectedNode.Level != 1)
                 {
                     // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
+                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode?.Tag.ToString());
                     if (objGear != null)
                     {
                         _eDragButton = e.Button;
@@ -11411,7 +11411,7 @@ namespace Chummer
             };
 
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle);
+            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode?.Tag.ToString(), out Vehicle objVehicle);
 
             // Determine which loading methods are available to the Weapon.
             string ammoString = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
@@ -12542,7 +12542,7 @@ namespace Chummer
                 }
                 else
                 {
-                    string strSelectedId = treImprovements.SelectedNode.Tag.ToString();
+                    string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
                     Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
                     if (objImprovement != null)
@@ -12603,7 +12603,7 @@ namespace Chummer
         {
             if (treImprovements.SelectedNode?.Level > 0)
             {
-                string strSelectedId = treImprovements.SelectedNode.Tag.ToString();
+                string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
                 Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
                 if (objImprovement != null)
@@ -12632,7 +12632,7 @@ namespace Chummer
 
             if (treImprovements.SelectedNode?.Level > 0)
             {
-                string strSelectedId = treImprovements.SelectedNode.Tag.ToString();
+                string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
                 Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
                 if (objImprovement != null)
@@ -12652,7 +12652,7 @@ namespace Chummer
         private void treImprovements_ItemDrag(object sender, ItemDragEventArgs e)
         {
                 // Do not allow the root element to be moved.
-            if (treImprovements.SelectedNode == null || treImprovements.SelectedNode.Tag.ToString() == "Node_SelectedImprovements")
+            if (treImprovements.SelectedNode == null || treImprovements.SelectedNode?.Tag.ToString() == "Node_SelectedImprovements")
                     return;
             _intDragLevel = treImprovements.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
@@ -14248,7 +14248,7 @@ namespace Chummer
         public void RefreshSelectedGear()
         {
             _blnSkipRefresh = true;
-            cmdDeleteGear.Enabled = treGear.SelectedNode != null && treGear.SelectedNode.Tag.ToString() != "Node_SelectedGear";
+            cmdDeleteGear.Enabled = treGear.SelectedNode != null && treGear.SelectedNode?.Tag.ToString() != "Node_SelectedGear";
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
                 lblGearRating.Text = string.Empty;
@@ -14269,7 +14269,7 @@ namespace Chummer
 
             if (treGear.SelectedNode.Level > 0)
             {
-                if (treGear.SelectedNode.Tag is Gear objGear)
+                if (treGear.SelectedNode?.Tag is Gear objGear)
                 {
                     if (objGear.IncludedInParent)
                         cmdDeleteGear.Enabled = false;
@@ -15156,7 +15156,7 @@ namespace Chummer
             if (treLifestyles.SelectedNode.Level > 0)
             {
                 // Locate the selected Lifestyle.
-                Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
+                Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode?.Tag.ToString());
                 if (objLifestyle == null)
                     return;
 
@@ -17015,7 +17015,7 @@ namespace Chummer
         {
             if (treLimit.SelectedNode != null)
             {
-                if (treMetamagic.SelectedNode.Tag is IHasNotes objNotes)
+                if (treMetamagic.SelectedNode?.Tag is IHasNotes objNotes)
                 {
                     WriteNotes(objNotes, treMetamagic.SelectedNode);
                 }
@@ -17025,7 +17025,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
-                            objImprovement.SourceName == treLimit.SelectedNode.Tag.ToString())
+                            objImprovement.SourceName == treLimit.SelectedNode?.Tag.ToString())
                         {
                             string strOldValue = objImprovement.Notes;
                             frmNotes frmItemNotes = new frmNotes
@@ -17864,7 +17864,7 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode.Tag is IHasInternalId objSelectedId)) return;
+            if (!(treGear.SelectedNode?.Tag is IHasInternalId objSelectedId)) return;
             bool blnAddAgain;
             do
             {
@@ -17904,7 +17904,7 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (treVehicles.SelectedNode.Tag is Weapon objWeapon)
+            if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
                 objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString());
 

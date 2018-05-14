@@ -12552,10 +12552,11 @@
       </required>
       <forbidden>
         <oneof>
+          <accessory>Advanced Safety System, Basic</accessory>
+          <accessory>Advanced Safety System, Electro Shocker</accessory>
+          <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
           <accessory>Advanced Safety System, Immobilization</accessory>
           <accessory>Advanced Safety System, Self Destruct</accessory>
-          <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
-          <accessory>Advanced Safety System, Electro Shocker</accessory>
         </oneof>
       </forbidden>
       <rating>0</rating>
