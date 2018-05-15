@@ -3150,6 +3150,15 @@ namespace Chummer
             if (destObject is Location objLocation)
             {
                 objWeapon.Location = objLocation;
+                foreach (Weapon objExtraWeapon in lstWeapons)
+                {
+                    objExtraWeapon.Location = objLocation;
+                }
+            }
+
+            foreach (Weapon objExtraWeapon in lstWeapons)
+            {
+                CharacterObject.Weapons.Add(objExtraWeapon);
             }
 
             CharacterObject.Weapons.Add(objWeapon);

@@ -5146,7 +5146,7 @@ namespace Chummer
         /// </summary>
         protected void RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId).InternalId ?? string.Empty;
+            string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode objRoot;
 
