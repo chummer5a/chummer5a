@@ -102,6 +102,8 @@ namespace Chummer.Backend.Equipment
         private bool _blnCyberware;
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
+        private Weapon _objParent;
+        private string _strSizeCategory;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -252,7 +254,7 @@ namespace Chummer.Backend.Equipment
                 else
                     _strCost = strFirstHalf;
             }
-
+            objXmlWeapon.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objXmlWeapon.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
             objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
@@ -448,6 +450,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammo", _strAmmo);
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
+            objWriter.WriteElementString("sizecategory", _strSizeCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
@@ -609,6 +612,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ammo", ref _strAmmo);
             objNode.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
             objNode.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
+            objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -1033,6 +1037,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Effective size of the weapon for mounting purposes. 
+        /// </summary>
+        public string SizeCategory => _strSizeCategory == string.Empty ? Category : _strSizeCategory;
+
+        /// <summary>
         /// Type of Weapon (either Melee or Ranged).
         /// </summary>
         public string WeaponType
@@ -1312,7 +1321,6 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
         }
 
-        private Weapon _objParent;
         public Weapon Parent
         {
             get => _objParent;

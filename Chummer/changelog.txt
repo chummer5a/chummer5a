@@ -11,11 +11,13 @@ Application Changes:
 - Removed possibly-legacy code that caused odd behaviour for mentor spirits that provided skill bonuses, particularly the Doom mentor.
 - Layout change for frmSelectArmor to prevent the Test text from overlapping.
 - Fixed purchasing weapons in career mode not properly adding other weapons that they're added by.
+- Created a new weapon property, SizeCategory. This is used to overrides the default category for the weapon it's applied to, allowing it to be mounted as though it were a weapon of the particular type. Intended to be used for exotic weapons in vehicle weapon mounts. 
 
 Data Changes:
 
 - Removed the ability to add Fake SINs to other Fake SINs.
 - Removed the ability to add multiple Advanced Basic Safety Systems to a weapon. 
+- Added SizeCategory references to the Grapple Gun, Ares S-III Super Squirt, Ares Screech Sonic Rifle, FN-AAL Gyrojet Pistol, Fichetti Pain Inducer, Parashield Dart Pistol, Parashield Dart Rifle and Tactical Grapple Gun.
 
 New Strings:
 

@@ -400,7 +400,7 @@ namespace Chummer.Backend.Equipment
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
-                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.Category) &&
+                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
                                 !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
                                 objWeaponMount.Weapons.Count != 0) continue;
                             objWeaponMount.Weapons.Add(objWeapon);
@@ -414,7 +414,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (VehicleMod objMod in _lstVehicleMods)
                             {
-                                if ((objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+                                if ((objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
                                     foreach (Weapon objSubWeapon in objSubWeapons)
@@ -426,7 +426,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (VehicleMod objMod in _lstVehicleMods)
                                 {
-                                    if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                    if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory)))
                                     {
                                         objMod.Weapons.Add(objWeapon);
                                         foreach (Weapon objSubWeapon in objSubWeapons)

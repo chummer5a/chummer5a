@@ -2169,6 +2169,7 @@
       <page>449</page>
       <hide />
       <range>Light Crossbows</range>
+      <sizecategory>Light Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
     </weapon>
     <weapon>
@@ -2190,6 +2191,7 @@
       <page>104</page>
       <hide />
       <range>Tasers</range>
+      <sizecategory>Tasers</sizecategory>
       <spec>Sprayer</spec>
     </weapon>
     <weapon>
@@ -2211,6 +2213,7 @@
       <page>449</page>
       <hide />
       <range>Tasers</range>
+      <sizecategory>Tasers</sizecategory>
       <spec>Flare Launcher</spec>
     </weapon>
     <weapon>
@@ -5835,6 +5838,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Light Pistols</range>
+      <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5861,6 +5865,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Shotguns (flechette)</range>
+      <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5927,6 +5932,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Heavy Pistols</range>
+      <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5953,6 +5959,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Submachine Guns</range>
+      <sizecategory>Submachine Guns</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -6038,6 +6045,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Heavy Pistols</range>
+      <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -6064,6 +6072,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Sporting Rifles</range>
+      <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -7952,6 +7961,7 @@
         </accessory>
       </accessories>
       <range>Heavy Crossbows</range>
+      <sizecategory>Heavy Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
     </weapon>
     <weapon>

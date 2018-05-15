@@ -109,6 +109,7 @@
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="requireammo" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="sizecategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="spec2" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
