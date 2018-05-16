@@ -3374,7 +3374,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = SourceID == EssenceHoleGUID ? EssenceHoleGUID.ToString("D") : InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsCyberware,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -3446,7 +3446,7 @@ namespace Chummer.Backend.Equipment
             {
                 characterObject.Cyberware.Remove(this);
             }
-            if (Parent != null)
+            else if (Parent != null)
                 Parent.Children.Remove(this);
             else
             {
