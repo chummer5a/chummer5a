@@ -18,6 +18,7 @@ Data Changes:
 - Removed the ability to add Fake SINs to other Fake SINs.
 - Removed the ability to add multiple Advanced Basic Safety Systems to a weapon. 
 - Added SizeCategory references to the Grapple Gun, Ares S-III Super Squirt, Ares Screech Sonic Rifle, FN-AAL Gyrojet Pistol, Fichetti Pain Inducer, Parashield Dart Pistol, Parashield Dart Rifle and Tactical Grapple Gun.
+- Added a customdata file to have Customised Agility and Strength not apply Grade modifiers from their parent (ie, an Alphaware limb's customisation cost will not increase to 6000¥.) Closes #2702 but should probably be referred to CGL for errata clarification.
 
 New Strings:
 

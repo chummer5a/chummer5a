@@ -1664,6 +1664,9 @@
     <Content Include="customdata\College Education Qualities Stack\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
