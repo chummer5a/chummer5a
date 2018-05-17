@@ -2818,7 +2818,9 @@ namespace Chummer
         private void cmdDeleteSpell_Click(object sender, EventArgs e)
         {
             // Locate the Spell that is selected in the tree.
-            if ((!(treSpells.SelectedNode?.Tag is Spell objSpell)) || objSpell.Grade == 0) return;
+            if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
+            // Spells that come from Initiation Grades can't be deleted normally. 
+            if (objSpell.Grade != 0) return;
             if (!objSpell.Remove(CharacterObject)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
