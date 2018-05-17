@@ -123,12 +123,6 @@
   <metadata name="dlgSaveFile.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>688, 17</value>
   </metadata>
-  <data name="lblCMArmorLabel.ToolTip" xml:space="preserve">
-    <value>Only the highest single Armor value is used to determine your Armor Rating. If the total Armor value for all pieces worn exceeds BOD × 2, you receive a -1 penalty to AGI for every 2 points you are over.</value>
-  </data>
-  <data name="lblArmorLabel.ToolTip" xml:space="preserve">
-    <value>Only the highest single Armor value is used to determine your Armor Rating. If the total Armor value for all pieces worn exceeds BOD × 2, you receive a -1 penalty to AGI for every 2 points you are over.</value>
-  </data>
   <metadata name="cmsMartialArts.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>152, 95</value>
   </metadata>

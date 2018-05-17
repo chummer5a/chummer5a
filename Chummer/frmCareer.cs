@@ -13701,6 +13701,9 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = false;
                 tabWeaponMatrixCM.Visible = false;
 
+                lblWeaponCapacity.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
+
                 lblWeaponDeviceRatingLabel.Visible = false;
                 lblWeaponDeviceRating.Visible = false;
                 lblWeaponFirewallLabel.Visible = false;
@@ -13763,6 +13766,9 @@ namespace Chummer
                 lblWeaponSleazeLabel.Visible = true;
                 lblWeaponDataProcessingLabel.Visible = true;
                 lblWeaponFirewallLabel.Visible = true;
+
+                lblWeaponCapacity.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
 
                 cmdWeaponMoveToVehicle.Enabled = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0;
 
@@ -13909,6 +13915,9 @@ namespace Chummer
                 lblWeaponAmmo.Text = string.Empty;
                 lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
 
+                lblWeaponCapacity.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
+
                 StringBuilder strSlotsText = new StringBuilder(objSelectedAccessory.Mount);
                 if (strSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -14001,6 +14010,10 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
+
+                lblWeaponCapacity.Visible = true;
+                lblWeaponCapacityLabel.Visible = true;
+                lblWeaponCapacity.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
 
                 objGear.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
                 lblWeaponDeviceRatingLabel.Visible = true;

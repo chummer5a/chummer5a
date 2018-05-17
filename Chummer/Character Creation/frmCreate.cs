@@ -10439,6 +10439,8 @@ namespace Chummer
                 lblWeaponDataProcessing.Text = objWeapon.GetTotalMatrixAttribute("Data Processing").ToString();
                 lblWeaponFirewall.Text = objWeapon.GetTotalMatrixAttribute("Firewall").ToString();
 
+                lblWeaponCapacity.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
                 // Show the Weapon Ranges.
                 lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                 lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
@@ -10516,6 +10518,8 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                 chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
                 chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
+                lblWeaponCapacity.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
 
                 lblWeaponDeviceRatingLabel.Visible = false;
                 lblWeaponDeviceRating.Visible = false;
@@ -10567,6 +10571,9 @@ namespace Chummer
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
 
+                lblWeaponCapacity.Visible = true;
+                lblWeaponCapacityLabel.Visible = true;
+                lblWeaponCapacity.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblWeaponDeviceRatingLabel.Visible = true;
                 lblWeaponDeviceRating.Visible = true;
                 lblWeaponAttackLabel.Visible = true;
@@ -10618,6 +10625,8 @@ namespace Chummer
                     chkIncludedInWeapon.Enabled = false;
                     chkIncludedInWeapon.Checked = false;
 
+                    lblWeaponCapacity.Visible = false;
+                    lblWeaponCapacityLabel.Visible = false;
                     lblWeaponDeviceRatingLabel.Visible = false;
                     lblWeaponDeviceRating.Visible = false;
                     lblWeaponAttackLabel.Visible = false;
@@ -14472,6 +14481,7 @@ namespace Chummer
 
             intWidth = Math.Max(lblWeaponRCLabel.Width, lblWeaponModeLabel.Width);
             intWidth = Math.Max(intWidth, lblWeaponCostLabel.Width);
+            intWidth = Math.Max(intWidth, lblWeaponCapacityLabel.Width);
 
             lblWeaponRCLabel.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponRC.Left = lblWeaponRCLabel.Left + intWidth + 6;
@@ -14479,6 +14489,8 @@ namespace Chummer
             lblWeaponMode.Left = lblWeaponModeLabel.Left + intWidth + 6;
             lblWeaponCostLabel.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
+            lblWeaponCapacityLabel.Left = lblWeaponSlotsLabel.Left + 176;
+            lblWeaponCapacity.Left = lblWeaponCapacityLabel.Left + intWidth + 6;
             chkIncludedInWeapon.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + lblWeaponAccuracyLabel.Width + 6;
 
