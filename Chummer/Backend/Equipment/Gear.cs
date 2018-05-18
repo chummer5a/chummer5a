@@ -646,7 +646,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
-            _objLocation?.Save(objWriter);
+            objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 
@@ -789,6 +789,7 @@ namespace Chummer.Backend.Equipment
                         CharacterObject.GearLocations.FirstOrDefault(location =>
                             location.Name == objNode["location"].InnerText);
                 }
+                _objLocation?.Children.Add(this);
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -802,7 +803,6 @@ namespace Chummer.Backend.Equipment
                 if (test != null)
                 {
                     int intResult = _objCharacter.LastSavedVersion.CompareTo(test);
-                    //Check for typo in Corrupter quality and correct it
                     if (intResult == -1)
                     {
                         XmlDocument objXmlDocument = XmlManager.Load("gear.xml");

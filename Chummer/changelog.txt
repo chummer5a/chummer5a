@@ -13,6 +13,8 @@ Application Changes:
 - Fixed purchasing weapons in career mode not properly adding other weapons that they're added by.
 - Created a new weapon property, SizeCategory. This is used to overrides the default category for the weapon it's applied to, allowing it to be mounted as though it were a weapon of the particular type. Intended to be used for exotic weapons in vehicle weapon mounts. 
 - Gear attached to weapons can now show the Capacity remaining/used.
+- Refactored behaviour of the Swap Quality button to be a method attached to the quality itself. 
+- Fixed an issue with Swap Quality causing constant prompts about unavailable qualities.
 
 Data Changes:
 

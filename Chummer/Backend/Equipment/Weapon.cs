@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -705,6 +705,7 @@ namespace Chummer.Backend.Equipment
                             location.Name == objNode["location"].InnerText);
                 }
             }
+            _objLocation?.Children.Add(this);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
             bool blnIsActive = false;

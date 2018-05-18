@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -524,7 +524,7 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objWeapon in _lstWeapons)
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
-            _objLocation?.Save(objWriter);
+            objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString());
             if (_lstLocations.Count > 0)
@@ -742,6 +742,7 @@ namespace Chummer.Backend.Equipment
                         _objCharacter.WeaponLocations.FirstOrDefault(location =>
                             location.Name == objNode["location"].InnerText);
                 }
+                _objLocation?.Children.Add(this);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);

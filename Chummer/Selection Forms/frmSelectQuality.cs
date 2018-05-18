@@ -396,7 +396,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, IgnoreQuality))
+                    if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                     {
                         lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
                     }
