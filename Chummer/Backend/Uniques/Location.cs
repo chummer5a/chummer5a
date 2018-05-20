@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -46,6 +47,7 @@ namespace Chummer
             Parent = parent;
             if (addToList)
                 Parent.Add(this);
+            Children.CollectionChanged += ChildrenOnCollectionChanged;
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        public List<IHasLocation> Children { get; } = new List<IHasLocation>();
+        public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
         public ObservableCollection<Location> Parent { get; set; }
         #endregion
@@ -167,6 +169,34 @@ namespace Chummer
             }
         }
         #endregion
+
+
+        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (IHasLocation objNewItem in e.NewItems)
+                        objNewItem.Location = this;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (IHasLocation objOldItem in e.OldItems)
+                        objOldItem.Location = null;
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (IHasLocation objOldItem in e.OldItems)
+                        objOldItem.Location = null;
+                    foreach (IHasLocation objNewItem in e.NewItems)
+                        objNewItem.Location = this;
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (IHasLocation objItem in Children)
+                    {
+                        objItem.Location = null;
+                    }
+                    break;
+            }
+        }
 
         public bool Remove(Character character)
         {

@@ -3243,7 +3243,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(string.Empty);
+                blnAddAgain = PickGear(null);
             }
             while (blnAddAgain);
         }
@@ -4541,7 +4541,7 @@ namespace Chummer
                 {
                     strGuid = parent.InternalId;
                 }
-                blnAddAgain = PickGear(strGuid, objGear.Category == "Ammunition", objGear, objGear.Name);
+                blnAddAgain = PickGear(objGear, null, objGear.Category == "Ammunition", objGear, objGear.Name);
             } while (blnAddAgain);
         }
 
@@ -6101,7 +6101,7 @@ namespace Chummer
         private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(treGear.SelectedNode?.Tag is IHasInternalId selectedId))
+            if (!(treGear.SelectedNode?.Tag is IHasChildren<Gear> iParent))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6110,7 +6110,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(selectedId.InternalId);
+                blnAddAgain = PickGear(iParent);
             }
             while (blnAddAgain);
         }
@@ -10718,7 +10718,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(string.Empty, true, null, string.Empty, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, string.Empty, lstAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -14622,19 +14622,14 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
-        private bool PickGear(string strSelectedId, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
         {
             bool blnNullParent = false;
-            Gear objSelectedGear = null;
-            Location objLocation = null;
-            if (!string.IsNullOrEmpty(strSelectedId))
-                objSelectedGear = CharacterObject.Gear.DeepFindById(strSelectedId);
-            if (objSelectedGear == null)
+
+            if (!((iParent is Gear ? iParent : null) is Gear objSelectedGear))
             {
                 objSelectedGear = new Gear(CharacterObject);
                 blnNullParent = true;
-                objLocation =
-                    CharacterObject.GearLocations.FirstOrDefault(location => location.InternalId == strSelectedId);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -14836,9 +14831,10 @@ namespace Chummer
                 }
                 else
                 {
-                    objGear.Location = objLocation;
                     CharacterObject.Gear.Add(objGear);
                 }
+
+                objLocation?.Children.Add(objGear);
             }
             
             IsCharacterUpdateRequested = true;
@@ -17795,11 +17791,11 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is IHasInternalId objSelectedId)) return;
+            if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(objSelectedId.InternalId);
+                blnAddAgain = PickGear(null, objLocation);
             }
             while (blnAddAgain);
         }
