@@ -6826,6 +6826,7 @@ namespace Chummer
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {
+                        objWeapon.ParentVehicle = objSelectedVehicle;
                         objSelectedVehicle.Weapons.Add(objWeapon);
                     }
                 }
