@@ -3681,7 +3681,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
-                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
+                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate && !blnReapplyImprovements)
                         {
                             switch (objImprovement.ImprovedName)
                             {
@@ -3699,7 +3699,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
-                        if (!blnHasDuplicate)
+                        if (!blnHasDuplicate && !blnReapplyImprovements)
                         {
                             if (objImprovement.UniqueName == "enabletab")
                             {

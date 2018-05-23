@@ -15,6 +15,7 @@ Application Changes:
 - Gear attached to weapons can now show the Capacity remaining/used.
 - Refactored behaviour of the Swap Quality button to be a method attached to the quality itself. 
 - Fixed an issue with Swap Quality causing constant prompts about unavailable qualities.
+- Fixed behaviour of the SpecialTab and EnableAttribute bonuses causing their relevant children being removed when using Reapply Improvements.
 
 Data Changes:
 
