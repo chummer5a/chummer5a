@@ -813,7 +813,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
+            objWriter.WriteElementString("location", Location?.DisplayName(GlobalOptions.Language));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());

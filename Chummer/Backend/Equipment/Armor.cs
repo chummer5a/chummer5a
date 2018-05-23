@@ -583,7 +583,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("location", Location.DisplayNameShort(GlobalOptions.Language));
+            objWriter.WriteElementString("location", Location?.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();

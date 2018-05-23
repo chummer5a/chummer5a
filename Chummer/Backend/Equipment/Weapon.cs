@@ -836,7 +836,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
-            objWriter.WriteElementString("location", Location.DisplayName(GlobalOptions.Language));
+            objWriter.WriteElementString("location", Location?.DisplayName(GlobalOptions.Language));
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");

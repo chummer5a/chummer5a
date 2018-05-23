@@ -1055,7 +1055,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("bonded", Bonded.ToString());
             objWriter.WriteElementString("equipped", Equipped.ToString());
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
-            objWriter.WriteElementString("location", Location.InternalId);
+            objWriter.WriteElementString("location", Location?.DisplayName(GlobalOptions.Language));
             objWriter.WriteElementString("gearname", GearName);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
