@@ -1040,7 +1040,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Effective size of the weapon for mounting purposes. 
         /// </summary>
-        public string SizeCategory => _strSizeCategory == string.Empty ? Category : _strSizeCategory;
+        public string SizeCategory => string.IsNullOrWhiteSpace(_strSizeCategory) ? Category : _strSizeCategory;
 
         /// <summary>
         /// Type of Weapon (either Melee or Ranged).
