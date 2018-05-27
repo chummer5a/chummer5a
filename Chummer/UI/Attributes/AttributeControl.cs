@@ -84,6 +84,7 @@ namespace Chummer.UI.Attributes
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
                 _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
+                _dataSource.ResetBindings(false);
             }
         }
 

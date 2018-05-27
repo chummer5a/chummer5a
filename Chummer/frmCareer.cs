@@ -34,6 +34,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using Chummer.UI.Attributes;
 
 namespace Chummer
 {
@@ -17766,7 +17767,6 @@ namespace Chummer
             CharacterObject.AttributeSection.AttributeCategory = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
             CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
             CharacterObject.AttributeSection.ResetBindings();
-
             MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
         }
 
