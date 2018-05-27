@@ -3230,29 +3230,29 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             // <armor />
-            objWriter.WriteElementString("armor", TotalArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("armor", TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("firearmor", TotalFireArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("coldarmor", TotalColdArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
+            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).ToString(objCulture));
             // <armordicestun />
-            objWriter.WriteElementString("armordicestun", (BOD.TotalValue + TotalArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("armordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalArmorRating).ToString(objCulture));
             // <firearmordicestun />
-            objWriter.WriteElementString("firearmordicestun", (BOD.TotalValue + TotalFireArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("firearmordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicestun />
-            objWriter.WriteElementString("coldarmordicestun", (BOD.TotalValue + TotalColdArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("coldarmordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicestun />
-            objWriter.WriteElementString("electricityarmordicestun", (BOD.TotalValue + TotalElectricityArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("electricityarmordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicestun />
-            objWriter.WriteElementString("acidarmordicestun", (BOD.TotalValue + TotalAcidArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("acidarmordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicestun />
-            objWriter.WriteElementString("fallingarmordicestun", (BOD.TotalValue + TotalFallingArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("fallingarmordicestun", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFallingArmorRating).ToString(objCulture));
             // <armordicephysical />
             objWriter.WriteElementString("armordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalArmorRating).ToString(objCulture));
             // <firearmordicephysical />
