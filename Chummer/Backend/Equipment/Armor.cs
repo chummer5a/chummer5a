@@ -73,6 +73,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
 
             _lstArmorMods.CollectionChanged += ArmorModsOnCollectionChanged;
+            _lstGear.CollectionChanged += GearOnCollectionChanged;
         }
 
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -119,6 +120,21 @@ namespace Chummer.Backend.Equipment
             {
                 _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                 _objCharacter?.RefreshEncumbrance();
+            }
+        }
+
+        private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(Equipped);
+                    }
+                    break;
             }
         }
 
@@ -345,7 +361,6 @@ namespace Chummer.Backend.Equipment
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
-                    objGear.ParentObject = this;
                     _lstGear.Add(objGear);
                 }
             }

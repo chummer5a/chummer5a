@@ -68,7 +68,6 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
-        private object _objParent;
         private bool _blnDiscountCost;
         private string _strGearName = string.Empty;
         private string _strParentID = string.Empty;
@@ -1548,13 +1547,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Gear.
         /// </summary>
-        public object Parent
-        {
-            get => _objParent;
-            set => _objParent = value;
-        }
-
-        public IHasChildrenAndCost<Gear> ParentObject { get; set; }
+        public object Parent { get; set; }
 
         /// <summary>
         /// Whether or not the Gear's cost should be discounted by 10% through the Black Market Pipeline Quality.
@@ -2573,11 +2566,15 @@ namespace Chummer.Backend.Equipment
                 return false;
 
             DeleteGear();
-            // If the Parent is populated, remove the item from its Parent.
-            if (Parent != null)
-                ParentObject.Children.Remove(this);
+            if (Parent is IHasChildren<Gear> objHasChildren)
+            {
+                objHasChildren.Children.Remove(this);
+            }
             else
+            {
                 characterObject.Gear.Remove(this);
+            }
+
             return true;
         }
 
@@ -2590,11 +2587,11 @@ namespace Chummer.Backend.Equipment
                 CharacterObject.Gear.Remove(this);
                 decOriginal = TotalCost;
             }
-            else if (ParentObject != null)
+            else if (Parent != null && Parent is IHasChildrenAndCost<Gear> parentObject)
             {
-                decOriginal = ParentObject.TotalCost;
-                ParentObject.Children.Remove(this);
-                decNewCost = ParentObject.TotalCost;
+                decOriginal = parentObject.TotalCost;
+                parentObject.Children.Remove(this);
+                decNewCost = parentObject.TotalCost;
             }
 
             // Create the Expense Log Entry for the sale.

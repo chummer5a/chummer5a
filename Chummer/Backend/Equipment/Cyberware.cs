@@ -317,7 +317,10 @@ namespace Chummer.Backend.Equipment
                     if (ParentVehicle != null || !IsModularCurrentlyEquipped)
                     {
                         foreach (Gear objNewItem in e.NewItems)
+                        {
+                            objNewItem.Parent = this;
                             objNewItem.ChangeEquippedStatus(false);
+                        }
                     }
                     this.RefreshMatrixAttributeArray();
                     break;
