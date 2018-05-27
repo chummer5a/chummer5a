@@ -138,6 +138,16 @@ namespace Chummer.UI.Attributes
             {
                 if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
                 {
+                    // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
+                    if (_oldKarma > _objAttribute.KarmaMaximum)
+                    {
+                        _oldKarma = _objAttribute.KarmaMaximum - 1;
+                    }
+                    if (_oldKarma < 0)
+                    {
+                        nudBase.Value = Math.Max(nudBase.Value - _oldKarma, 0);
+                        _oldKarma = 0;
+                    }
                     nudKarma.Value = _oldKarma;
                     return;
                 }
