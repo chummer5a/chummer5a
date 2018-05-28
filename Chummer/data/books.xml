@@ -227,5 +227,10 @@
       <name>The Seattle Gambit</name>
       <code>TSG</code>
     </book>
+    <book>
+      <id>0af63ef6-2e53-4d65-9031-b3d6d7f9d9d9</id>
+      <name>Hazard Pay</name>
+      <code>HP</code>
+    </book>
   </books>
 </chummer>
