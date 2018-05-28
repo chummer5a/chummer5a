@@ -1054,6 +1054,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Cost multiplier for Gear Children attached to this Armor.
+        /// </summary>
+        public int ChildCostMultiplier => 1;
+
+        /// <summary>
         /// Cost for just the Armor.
         /// </summary>
         public decimal OwnCost
