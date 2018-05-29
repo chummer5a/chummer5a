@@ -2028,7 +2028,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public decimal OwnCost => (OwnCostPreMultipliers * ((Gear)Parent)?.ChildCostMultiplier ?? 1) / CostFor;
+        public decimal OwnCost => (OwnCostPreMultipliers * ((IHasChildrenAndCost<Gear>)Parent)?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
