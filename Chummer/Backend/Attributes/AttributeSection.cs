@@ -135,7 +135,7 @@ namespace Chummer.Backend.Attributes
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
                 // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0)
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
                     CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
@@ -226,6 +226,8 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }

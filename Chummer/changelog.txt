@@ -20,6 +20,7 @@ Application Changes:
 - Fixed behaviour of improvements that reduce the maximum of an attribute is reduced to match the value when another attribute is already at maximum.
 - Fixed a regression with shapeshifter attributes not resetting bindings properly.
 - Fixed Martial Arts techniques not being properly displayed using their localised names in the treeview.
+- Fixed an issue with shapeshifters generating their attributes in duplicate when transitioning to career. 
 
 Data Changes:
 
