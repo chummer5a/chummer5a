@@ -1152,32 +1152,32 @@
       <book>
         <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
         <name>Assassin's Primer</name>
-        <translate>Assassin's Primer</translate>
+        <translate>Manuel de l'assassin</translate>
       </book>
       <book>
         <id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
         <name>Gun Heaven 3</name>
-        <translate>Gun Heaven 3</translate>
+        <translate>Gun Heaven 3 (inclus dans Run & Gun)</translate>
       </book>
       <book>
         <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
         <name>Run and Gun</name>
-        <translate>Run and Gun</translate>
+        <translate>Run &amp; Gun</translate>
       </book>
       <book>
         <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
         <name>Shadowrun 5th Edition</name>
-        <translate>Shadowrun 5th Edition</translate>
+        <translate>Shadowrun 5ème édition</translate>
       </book>
       <book>
         <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
         <name>Street Grimoire</name>
-        <translate>Street Grimoire</translate>
+        <translate>Grimoire des ombres</translate>
       </book>
       <book>
         <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
         <name>Bullets &amp; Bandages</name>
-        <translate>Bullets &amp; Bandages</translate>
+        <translate>Balles &amp; pansements</translate>
       </book>
       <book>
         <id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
@@ -1187,7 +1187,7 @@
       <book>
         <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
         <name>Stolen Souls</name>
-        <translate>Stolen Souls</translate>
+        <translate>Ames volées</translate>
       </book>
       <book>
         <id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
@@ -1197,7 +1197,7 @@
       <book>
         <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
         <name>Shadowrun 5th Edition (German)</name>
-        <translate>Shadowrun 5th Edition (German)</translate>
+        <translate>Shadowrun 5ème édition (allemande)</translate>
       </book>
     </books>
   </chummer>
