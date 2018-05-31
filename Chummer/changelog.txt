@@ -21,6 +21,7 @@ Application Changes:
 - Fixed a regression with shapeshifter attributes not resetting bindings properly.
 - Fixed Martial Arts techniques not being properly displayed using their localised names in the treeview.
 - Fixed an issue with shapeshifters generating their attributes in duplicate when transitioning to career. 
+- Fixed an issue with increasing quantities of Gear not working when using non-English strings.
 
 Data Changes:
 

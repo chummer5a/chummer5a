@@ -4542,7 +4542,7 @@ namespace Chummer
                 {
                     strGuid = parent.InternalId;
                 }
-                blnAddAgain = PickGear(objGear, null, objGear.Category == "Ammunition", objGear, objGear.Name);
+                blnAddAgain = PickGear(objGear, null, objGear.Category == "Ammunition", objGear, objGear.DisplayNameShort(GlobalOptions.Language);
             } while (blnAddAgain);
         }
 
