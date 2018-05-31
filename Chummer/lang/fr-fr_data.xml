@@ -22296,7 +22296,7 @@
       <priority>
         <id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
         <name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
-        <translate>C - Humain, elfe, nain, ork, ou I.A.</translate>
+        <translate>C - Humain, elfe, nain, ork ou I.A.</translate>
       </priority>
       <priority>
         <id>255da2ba-8d21-4a73-9f81-37156901db72</id>
@@ -22311,27 +22311,145 @@
       <priority>
         <id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
         <name>A - Magician or Technomancer</name>
-        <translate>A - Magicien ou adepte mystique ou technomancien</translate>
+        <translate>A - Magicien, adepte mystique ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Magician - 6 Magic/10 Spells</name>
+						<translate>Magicien - Magie 6/10 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 6 Magic/10 Spells</name>
+						<translate>Adepte mystique - Magie 6/10 sorts</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 6 Resonance/7 Complex Forms</name>
+						<translate>Technomancien - Résonance 6/7 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 6 Depth</name>
+						<translate>A.I. - 6 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
         <name>B - Adept, Magician, or Technomancer</name>
-        <translate>B - Adepte, magicien ou adepte mystique, magicien spécialisé ou technomancien</translate>
+        <translate>B - Adepte, magicien, adepte mystique, magicien spécialisé ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Adept - 6 Magic</name>
+						<translate>Adepte - Magie 6</translate>
+					</talent>
+					<talent>
+						<name>Magician - 4 Magic/7 Spells</name>
+						<translate>Magicien - Magie 4/7 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 4 Magic/7 Spells</name>
+						<translate>Adepte mystique - Magie 4/7 sorts</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 5 Magic</name>
+						<translate>Magicien spécialisé - Magie 5</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 5 Magic</name>
+						<translate>Apprentice - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 4 Resonance/4 Complex Forms</name>
+						<translate>Technomancien - Résonance 4/4 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 4 Depth</name>
+						<translate>A.I. - 4 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>aae3a140-d306-4811-a9d2-874140600150</id>
         <name>C - Adepte, Magician, or Technomancer</name>
-        <translate>C - Adepte, magicien ou adepte mystique, magicien spécialisé ou technomancien</translate>
+        <translate>C - Adepte, magicien, adepte mystique, magicien spécialisé ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Adept - 4 Magic</name>
+						<translate>Adepte - Magie 4</translate>
+					</talent>
+					<talent>
+						<name>Magician - 3 Magic/5 Spells</name>
+						<translate>Magicien - Magie 3/5 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 3 Magic/5 Spells</name>
+						<translate>Adepte mystique - Magie 3/5 sorts</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 3 Magic</name>
+						<translate>Magicien spécialisé - Magie 3</translate>
+					</talent>
+					<talent>
+						<name>Explorer - 5 Magic</name>
+						<translate>Explorer - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Enchanter - 5 Magic</name>
+						<translate>Enchanter - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 3 Magic</name>
+						<translate>Apprentice - 3 Magic</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 3 Resonance/3 Complex Forms</name>
+						<translate>Technomancien - Résonance 3/3 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 3 Depth</name>
+						<translate>A.I. - 3 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
         <name>D - Adept or Aspected Magician</name>
         <translate>D - Adepte ou magicien spécialisé</translate>
+				<talents>
+					<talent>
+						<name>Adept - 2 Magic</name>
+						<translate>Adepte - Magie 2</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 2 Magic</name>
+						<translate>Magicien spécialisé - Magie 2</translate>
+					</talent>
+					<talent>
+						<name>Aware - 3 Magic</name>
+						<translate>Aware - 3 Magic</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 2 Magic</name>
+						<translate>Apprentice - 2 Magic</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 2 Depth</name>
+						<translate>A.I. - 2 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
         <name>E - Mundane</name>
         <translate>E - Ordinaire</translate>
+				<talents>
+					<talent>
+						<name>Mundane</name>
+						<translate>Ordinaire</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 1 Depth</name>
+						<translate>A.I. - 1 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
