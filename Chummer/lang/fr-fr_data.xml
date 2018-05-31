@@ -6514,62 +6514,62 @@
       <gear>
         <id>b3c0a6bd-e086-4971-be77-dc9a9cb2e174</id>
         <name>Browse</name>
-        <translate>Catalogue</translate>
-        <page>232</page>
+        <translate>Navigateur</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>fe598c15-fe7a-46f9-bc84-751cb32735e2</id>
         <name>Edit</name>
         <translate>Edition</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>a1e4b783-0751-43eb-b5bd-ee00f84b7bb3</id>
         <name>Armor</name>
         <translate>Armure</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>7bc33fe3-96b0-4f3c-a459-7c85ede9f8c1</id>
         <name>Biofeedback Filter</name>
         <translate>Filtre de biofeedback</translate>
-        <page>234</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>f3134808-861c-41df-8bdf-2d2c855e78a4</id>
         <name>Blackout</name>
         <translate>Blackout</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>5217388a-e2ce-4add-bcc0-b0b1672f156c</id>
         <name>Decrypt</name>
         <translate>Décryptage</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>168b8c61-9ea4-4816-8cf4-cb996067b6d6</id>
         <name>Defuse</name>
         <translate>Désamorçage</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>67ea7c0c-1703-412b-80d3-9c23cc6d8291</id>
         <name>Exploit</name>
         <translate>Exploitation</translate>
-        <page>233</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>d5877f46-03e0-4603-b77a-f27e278202ab</id>
         <name>Stealth</name>
         <translate>Furtivité</translate>
-        <page>234</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>9bfce6cb-99ea-4b63-ad9f-e1bceb87bbd6</id>
         <name>Track</name>
         <translate>Pistage</translate>
-        <page>234</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>2d8396ff-a4a9-4382-ab69-70d198856e7f</id>
@@ -7427,7 +7427,7 @@
         <id>e631585a-0cce-4c95-873d-74b278a661df</id>
         <name>Biofeedback</name>
         <translate>Biofeedback</translate>
-        <page>111</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>e8e7b222-99da-4a4f-9c4e-8ffa61838017</id>
@@ -7912,92 +7912,92 @@
       <gear>
         <id>0e9a4de8-c78e-498e-8f3b-8e581bc73e43</id>
         <name>Configurator</name>
-        <translate>Configurator</translate>
-        <page>245</page>
+        <translate>Configurateur</translate>
+        <page>246</page>
       </gear>
       <gear>
         <id>d3bb1242-73b0-4b8a-89ab-27c272ebc900</id>
         <name>Encryption</name>
-        <translate>Encryption</translate>
-        <page>245</page>
+        <translate>Cryptage</translate>
+        <page>246</page>
       </gear>
       <gear>
         <id>1662e26b-7370-4ade-9d9d-c9b92b0d145b</id>
         <name>Signal Scrub</name>
-        <translate>Signal Scrub</translate>
-        <page>245</page>
+        <translate>Gommage de bruit</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>cffae49c-30d1-42df-b47c-a407f3a86e7a</id>
         <name>Toolbox</name>
         <translate>Toolbox</translate>
-        <page>245</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>7b8f4a4e-0bdb-4e05-ade4-bf558daf60a6</id>
         <name>Virtual Machine</name>
-        <translate>Virtual Machine</translate>
-        <page>245</page>
+        <translate>Machine virtuelle</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>a37b8000-495b-4ab8-a73b-16a36a6a410e</id>
         <name>Baby Monitor</name>
-        <translate>Baby Monitor</translate>
-        <page>245</page>
+        <translate>Surveillance</translate>
+        <page>248</page>
       </gear>
       <gear>
         <id>3da01b93-3830-4211-b563-f41c7fcf4ab0</id>
         <name>Demolition</name>
-        <translate>Demolition</translate>
-        <page>245</page>
+        <translate>Démolition</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>69a87be8-6f05-453d-a344-b02d9fab055c</id>
         <name>Fork</name>
         <translate>Fork</translate>
-        <page>245</page>
+        <page>247</page>
       </gear>
       <gear>
         <id>ea3178a2-535f-43b7-8555-deca95ac837d</id>
         <name>Guard</name>
-        <translate>Guard</translate>
-        <page>245</page>
+        <translate>Garde</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>a3851f14-3fdc-47d6-82b4-07caf00202ce</id>
         <name>Hammer</name>
-        <translate>Hammer</translate>
-        <page>245</page>
+        <translate>Marteau</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>70be200d-5b83-4842-83b5-725839330808</id>
         <name>Lockdown</name>
-        <translate>Lockdown</translate>
-        <page>245</page>
+        <translate>Verrouillage</translate>
+        <page>248</page>
       </gear>
       <gear>
         <id>62d165f6-bc3f-4204-afb7-47b3485e25ad</id>
         <name>Mugger</name>
-        <translate>Mugger</translate>
-        <page>245</page>
+        <translate>Agresseur</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>84a3e0d5-ed40-4706-9b96-7f07567bcbef</id>
         <name>Shell</name>
-        <translate>Shell</translate>
-        <page>245</page>
+        <translate>Carapace</translate>
+        <page>248</page>
       </gear>
       <gear>
         <id>8920c83c-f4f2-4dfa-81a4-b150ba6ae1c0</id>
         <name>Sneak</name>
-        <translate>Sneak</translate>
-        <page>245</page>
+        <translate>Discrétion</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>4a33f713-566b-4233-bdd2-985000097648</id>
         <name>Wrapper</name>
-        <translate>Wrapper</translate>
-        <page>245</page>
+        <translate>Maquillage</translate>
+        <page>247</page>
       </gear>
       <gear>
         <id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
