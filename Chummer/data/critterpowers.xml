@@ -2614,7 +2614,7 @@
         <movementreplace>
           <category>Fly</category>
           <speed>walk</speed>
-          <val>6</val>
+          <val>3</val>
         </movementreplace>
         <movementreplace>
           <category>Fly</category>
