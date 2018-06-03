@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Windows.Navigation;
 using System.Xml;
 using Chummer.Classes;
 

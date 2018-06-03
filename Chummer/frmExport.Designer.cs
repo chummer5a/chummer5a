@@ -1,5 +1,3 @@
-using System.Windows.Controls;
-
 namespace Chummer
 {
     partial class frmExport
