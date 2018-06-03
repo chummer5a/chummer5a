@@ -725,53 +725,29 @@ namespace Chummer.Backend.Equipment
             }
 
             // Check to see if there are any child elements.
-            XmlNode xmlGearsNode = objParentNode["gears"];
-            if (xmlGearsNode != null)
+            if (objParentNode["gears"] != null)
             {
-                // Create Gear using whatever information we're given.
-                using (XmlNodeList xmlGearList = xmlGearsNode.SelectNodes("usegear"))
-                    if (xmlGearList?.Count > 0)
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+
+                XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
+                IList<Weapon> lstChildWeapons = new List<Weapon>();
+                foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                {
+                    Gear objGear = new Gear(_objCharacter);
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, _lstGear)) continue;
+                    foreach (Weapon objWeapon in lstChildWeapons)
                     {
-                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                        foreach (XmlNode objXmlChild in xmlGearList)
-                        {
-                            XmlNode xmlNameNode = objXmlChild["name"];
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlNameNode?.InnerText + "\" and category = \"" + objXmlChild["category"]?.InnerText + "\"]");
-                            if (objXmlGear != null)
-                            {
-                                XmlAttributeCollection xmlNameAttributes = xmlNameNode?.Attributes;
-                                int intChildRating = 0;
-                                decimal decChildQty = 1;
-                                string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
-                                string strChildForcePage = objXmlChild["page"]?.InnerText ?? string.Empty;
-                                string strChildForceValue = xmlNameAttributes?["select"]?.InnerText ?? string.Empty;
-                                if (objXmlChild["rating"] != null)
-                                    intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-                                if (xmlNameAttributes?["qty"] != null)
-                                    decChildQty = Convert.ToDecimal(xmlNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                                // Create the new piece of Gear.
-                                List<Weapon> objChildWeapons = new List<Weapon>();
-
-                                Gear objChild = new Gear(_objCharacter);
-                                objChild.Create(objXmlGear, intChildRating, objChildWeapons, strChildForceValue, blnCreateImprovements);
-                                objChild.Quantity = decChildQty;
-
-                                objChild.Cost = "0";
-                                objChild.ParentID = InternalId;
-                                if (!string.IsNullOrEmpty(strChildForceSource))
-                                    objChild.Source = strChildForceSource;
-                                if (!string.IsNullOrEmpty(strChildForcePage))
-                                    objChild.Page = strChildForcePage;
-                                if (objXmlChild["capacity"] != null)
-                                    objChild.Capacity = '[' + objXmlChild["capacity"].InnerText + ']';
-                                // Create any Weapons that came with this Gear.
-                                foreach (Weapon objWeapon in objChildWeapons)
-                                    lstWeapons.Add(objWeapon);
-
-                                _lstGear.Add(objChild);
-                            }
-                        }
+                        objWeapon.ParentID = InternalId;
                     }
+
+                    objGear.Capacity = "[0]";
+                    objGear.ArmorCapacity = "[0]";
+                    objGear.Cost = "0";
+                    objGear.MaxRating = objGear.Rating;
+                    objGear.MinRating = objGear.Rating;
+                    objGear.ParentID = InternalId;
+                }
+                lstWeapons.AddRange(lstChildWeapons);
             }
         }
 

@@ -302,10 +302,9 @@ namespace Chummer.Backend.Equipment
 
                 foreach (XmlNode objXmlArmorMod in objXmlArmorNode.SelectNodes("mods/name"))
                 {
-                    intRating = 0;
-                    string strForceValue = string.Empty;
-                    objXmlArmorMod.TryGetInt32FieldQuickly("rating", ref intRating);
-                    objXmlArmorMod.TryGetStringFieldQuickly("select", ref strForceValue);
+                    XmlAttributeCollection objXmlAttributes = objXmlArmorMod.Attributes;
+                    intRating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText);
+                    string strForceValue = objXmlAttributes?["select"]?.InnerText ?? string.Empty;
 
                     XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlArmorMod.InnerText + "\"]");
                     if (objXmlMod != null)
@@ -313,6 +312,7 @@ namespace Chummer.Backend.Equipment
                         ArmorMod objMod = new ArmorMod(_objCharacter);
 
                         objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
+                        objMod.Extra = strForceValue;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
                         objMod.Cost = "0";
@@ -332,7 +332,8 @@ namespace Chummer.Backend.Equipment
                             ArmorCapacity = "[0]",
                             Cost = "0",
                             Rating = 0,
-                            MaximumRating = 0
+                            MaximumRating = 0,
+                            Extra = strForceValue
                         };
                         _lstArmorMods.Add(objMod);
                     }
@@ -343,26 +344,24 @@ namespace Chummer.Backend.Equipment
             if (objXmlArmorNode["gears"] != null && blnCreateChildren)
             {
                 XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                foreach (XmlNode objXmlArmorGear in objXmlArmorNode.SelectNodes("gears/usegear"))
+
+                XmlNodeList objXmlGearList = objXmlArmorNode["gears"].SelectNodes("usegear");
+                IList<Weapon> lstChildWeapons = new List<Weapon>();
+                foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                 {
-                    intRating = 0;
-                    string strForceValue = string.Empty;
-                    objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
-                    objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
-
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
-
-                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
-
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, _lstGear)) continue;
+                    foreach (Weapon objWeapon in lstChildWeapons)
+                    {
+                        objWeapon.ParentID = InternalId;
+                    }
+                    
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
-                    objGear.Cost = "0";
-                    objGear.MaxRating = objGear.Rating;
-                    objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
-                    _lstGear.Add(objGear);
+                    lstChildWeapons.AddRange(lstWeapons);
                 }
+                lstWeapons.AddRange(lstChildWeapons);
             }
 
             XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
