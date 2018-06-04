@@ -22572,6 +22572,8 @@
         <translate>D - 15 000 ¥</translate>
       </priority>
     </priorities>
+	</chummer>
+	<chummer file="gameplayoptions.xml">
     <gameplayoptions>
       <gameplayoption>
         <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
