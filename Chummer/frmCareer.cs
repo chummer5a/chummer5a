@@ -11640,28 +11640,27 @@ namespace Chummer
                 return;
             }
 
-            // Locate the Focus that is being touched.
-            Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(e.Node.Tag.ToString());
-
             // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
             int intFociCount = 1;
-            int intFociTotal;
+            int intFociTotal = 0;
 
-            if (objSelectedFocus != null)
-                intFociTotal = objSelectedFocus.Rating;
-            else
+            Gear objSelectedFocus = null;
+
+            switch (e.Node.Tag)
             {
-                // This is a Stacked Focus.
-                StackedFocus objStack = new StackedFocus(CharacterObject);
-                foreach (StackedFocus objCharacterFocus in CharacterObject.StackedFoci)
+                case Gear objGear:
                 {
-                    if (e.Node.Tag.ToString() == objCharacterFocus.InternalId)
-                    {
-                        objStack = objCharacterFocus;
-                        break;
-                    }
+                    objSelectedFocus = (Gear) e.Node.Tag;
+                    intFociTotal = objSelectedFocus.Rating;
+                    objGear = null;
+                    break;
                 }
-                intFociTotal = objStack.TotalForce;
+                case StackedFocus objStackedFocus:
+                {
+                    intFociTotal = objStackedFocus.TotalForce;
+                    objStackedFocus = null;
+                    break;
+                }
             }
 
             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
@@ -11749,53 +11748,85 @@ namespace Chummer
                 switch (strFocusName)
                 {
                     case "Qi Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaQiFocus;
                         break;
+                    }
                     case "Sustaining Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaSustainingFocus;
                         break;
+                    }
                     case "Counterspelling Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaCounterspellingFocus;
                         break;
+                    }
                     case "Banishing Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaBanishingFocus;
                         break;
+                    }
                     case "Binding Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaBindingFocus;
                         break;
+                    }
                     case "Weapon Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaWeaponFocus;
                         break;
+                    }
                     case "Spellcasting Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaSpellcastingFocus;
                         break;
+                    }
                     case "Ritual Spellcasting Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaRitualSpellcastingFocus;
                         break;
+                    }
                     case "Spell Shaping Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaSpellShapingFocus;
                         break;
+                    }
                     case "Summoning Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaSummoningFocus;
                         break;
+                    }
                     case "Alchemical Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaAlchemicalFocus;
                         break;
+                    }
                     case "Centering Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaCenteringFocus;
                         break;
+                    }
                     case "Masking Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaMaskingFocus;
                         break;
+                    }
                     case "Disenchanting Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaDisenchantingFocus;
                         break;
+                    }
                     case "Power Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaPowerFocus;
                         break;
+                    }
                     case "Flexible Signature Focus":
+                    {
                         intKarmaMultiplier = CharacterObjectOptions.KarmaFlexibleSignatureFocus;
                         break;
+                    }
                 }
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
                 {
@@ -11846,21 +11877,20 @@ namespace Chummer
             else
             {
                 // The Focus was not found in Gear, so this is a Stacked Focus.
-                StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
-                if (objStack == null)
+                if (!(e.Node.Tag is StackedFocus objStackedFocus))
                 {
                     e.Cancel = true;
                     return;
                 }
 
-                Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
+                Gear objStackGear = CharacterObject.Gear.DeepFindById(objStackedFocus.GearId);
                 if (objStackGear == null)
                 {
                     e.Cancel = true;
                     return;
                 }
                 bool blnOldEquipped = objStackGear.Equipped;
-                foreach (Gear objGear in objStack.Gear)
+                foreach (Gear objGear in objStackedFocus.Gear)
                 {
                     if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
                     {
@@ -11868,7 +11898,7 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objGear.Extra;
                         if (objGear.Bonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -11881,7 +11911,7 @@ namespace Chummer
                         }
                         if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -11894,7 +11924,7 @@ namespace Chummer
                     }
                 }
 
-                int intKarmaExpense = objStack.BindingCost;
+                int intKarmaExpense = objStackedFocus.BindingCost;
                 if (intKarmaExpense > CharacterObject.Karma)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -11906,7 +11936,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objStack.Name(GlobalOptions.CultureInfo, GlobalOptions.Language))))
+                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objStackedFocus.Name(GlobalOptions.CultureInfo, GlobalOptions.Language))))
                 {
                     // Clear created improvements
                     objStackGear.ChangeEquippedStatus(false);
@@ -11918,15 +11948,15 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objStack.Name(GlobalOptions.CultureInfo, GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objStackedFocus.Name(GlobalOptions.CultureInfo, GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStack.InternalId);
+                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStackedFocus.InternalId);
                 objExpense.Undo = objUndo;
 
-                objStack.Bonded = true;
+                objStackedFocus.Bonded = true;
             }
 
             IsCharacterUpdateRequested = true;
