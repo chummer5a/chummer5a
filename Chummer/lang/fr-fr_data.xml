@@ -1152,32 +1152,32 @@
       <book>
         <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
         <name>Assassin's Primer</name>
-        <translate>Assassin's Primer</translate>
+        <translate>Manuel de l'assassin</translate>
       </book>
       <book>
         <id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
         <name>Gun Heaven 3</name>
-        <translate>Gun Heaven 3</translate>
+        <translate>Gun Heaven 3 (inclus dans Run &amp; Gun)</translate>
       </book>
       <book>
         <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
         <name>Run and Gun</name>
-        <translate>Run and Gun</translate>
+        <translate>Run &amp; Gun</translate>
       </book>
       <book>
         <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
         <name>Shadowrun 5th Edition</name>
-        <translate>Shadowrun 5th Edition</translate>
+        <translate>Shadowrun 5ème édition</translate>
       </book>
       <book>
         <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
         <name>Street Grimoire</name>
-        <translate>Street Grimoire</translate>
+        <translate>Grimoire des ombres</translate>
       </book>
       <book>
         <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
         <name>Bullets &amp; Bandages</name>
-        <translate>Bullets &amp; Bandages</translate>
+        <translate>Balles &amp; pansements</translate>
       </book>
       <book>
         <id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
@@ -1187,7 +1187,7 @@
       <book>
         <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
         <name>Stolen Souls</name>
-        <translate>Stolen Souls</translate>
+        <translate>Ames volées</translate>
       </book>
       <book>
         <id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
@@ -1197,7 +1197,7 @@
       <book>
         <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
         <name>Shadowrun 5th Edition (German)</name>
-        <translate>Shadowrun 5th Edition (German)</translate>
+        <translate>Shadowrun 5ème édition (allemande)</translate>
       </book>
     </books>
   </chummer>
@@ -14375,7 +14375,7 @@
         <id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
         <name>Analytical Mind</name>
         <translate>Esprit analytique</translate>
-        <page>74</page>
+        <page>76</page>
       </quality>
       <quality translated="True">
         <id>58e3d62a-2073-4af5-b8e0-00c446b3a5ab</id>
@@ -14398,7 +14398,7 @@
       <quality translated="True">
         <id>9cffd452-8489-48d5-888c-ac35459d9174</id>
         <name>Blandness</name>
-        <translate>M. Tout le Monde</translate>
+        <translate>M. Tout le monde</translate>
         <page>77</page>
       </quality>
       <quality translated="True">
@@ -14459,7 +14459,7 @@
         <id>823eb204-c155-45a9-bb9a-98dcbe17a707</id>
         <name>Home Ground</name>
         <translate>Territoire</translate>
-        <page>75</page>
+        <page>78</page>
       </quality>
       <quality translated="True">
         <id>2844e64e-f271-4ca7-bd58-0860b2db56c9</id>
@@ -14551,13 +14551,13 @@
       <quality translated="True">
         <id>291efdb6-a8b8-49ce-b2be-72f9d3f8a243</id>
         <name>Quick Healer</name>
-        <translate>Guérison Rapide</translate>
+        <translate>Guérison rapide</translate>
         <page>77</page>
       </quality>
       <quality translated="True">
         <id>e160111a-5fe3-4154-9d5a-82330c9b32fc</id>
         <name>Resistance to Pathogens</name>
-        <translate>Résistance aux agents pathogènes</translate>
+        <translate>Résistance aux pathogènes</translate>
         <page>78</page>
       </quality>
       <quality translated="True">
@@ -14569,7 +14569,7 @@
       <quality translated="True">
         <id>5a21137b-dc82-4141-9151-84718e7485f9</id>
         <name>Resistance to Pathogens and Toxins</name>
-        <translate>Résistance aux agents pathogènes et toxines</translate>
+        <translate>Résistance aux pathogènes / toxines</translate>
         <page>78</page>
       </quality>
       <quality translated="True">
@@ -14625,7 +14625,7 @@
       <quality translated="True">
         <id>0886bbb3-f5a9-4583-bcea-d6723889c80d</id>
         <name>Addiction (Burnout)</name>
-        <translate>Addiction (cramé)</translate>
+        <translate>Addiction (dévorante)</translate>
         <page>79</page>
       </quality>
       <quality translated="True">
@@ -14649,31 +14649,31 @@
       <quality translated="True">
         <id>e89db285-8db9-4a9c-80cb-94d87b86a80b</id>
         <name>Allergy (Common, Mild)</name>
-        <translate>Allergie (commune, légère)</translate>
+        <translate>Allergie (courant, légère)</translate>
         <page>79</page>
       </quality>
       <quality translated="True">
         <id>90188ca7-0ccb-4198-b199-dcf33e029d74</id>
         <name>Allergy (Common, Moderate)</name>
-        <translate>Allergie (commune, modérée)</translate>
+        <translate>Allergie (courant, modérée)</translate>
         <page>79</page>
       </quality>
       <quality translated="True">
         <id>df14fb6e-456d-4d24-83e8-b1c97576dce2</id>
         <name>Allergy (Common, Severe)</name>
-        <translate>Allergie (commune, grave)</translate>
+        <translate>Allergie (courant, grave)</translate>
         <page>79</page>
       </quality>
       <quality translated="True">
         <id>94a09a8d-d582-44f0-9f2c-71f7ba94e767</id>
         <name>Astral Beacon</name>
-        <translate>Balise Astrale</translate>
+        <translate>Balise astrale</translate>
         <page>80</page>
       </quality>
       <quality translated="True">
         <id>bc5f41ca-1549-4367-9c12-afa403182f8c</id>
         <name>Bad Luck</name>
-        <translate>Malchanceux</translate>
+        <translate>Malchance</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
@@ -14697,19 +14697,19 @@
       <quality translated="True">
         <id>2b9a495d-b735-416b-a000-f648c3b4191a</id>
         <name>Dependent (Nuisance)</name>
-        <translate>Personne(s) à charge (nuisance)</translate>
+        <translate>Personnes à charge (nuisance occasionelle)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>cc857826-3bb2-466d-987b-7d56a337bc08</id>
         <name>Dependent (Inconvenience)</name>
-        <translate>Personne(s) à charge (inconvénient)</translate>
+        <translate>Personnes à charge (désagrément régulier)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>066a2de9-1717-44ca-a8c6-90366890574a</id>
         <name>Dependent (Demanding)</name>
-        <translate>Personne(s) à charge (exigeante)</translate>
+        <translate>Personnes à charge (exigeante)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
@@ -14721,7 +14721,7 @@
       <quality translated="True">
         <id>7036225b-d0f0-4c86-85b7-cc4d46943113</id>
         <name>Elf Poser</name>
-        <translate>Poseur Elfe</translate>
+        <translate>Poseur elfe</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
@@ -14739,37 +14739,37 @@
       <quality translated="True">
         <id>9ba327d2-38c5-4a25-ae44-25e98f0bbf03</id>
         <name>Low Pain Tolerance</name>
-        <translate>Sensible à la douleur</translate>
+        <translate>Sensibilité à la douleur</translate>
         <page>86</page>
       </quality>
       <quality translated="True">
         <id>075447a2-5730-4750-a19f-1a5c6086903d</id>
         <name>Ork Poser</name>
-        <translate>Poseur Ork</translate>
+        <translate>Poseur ork</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>d6843e67-0837-4353-a5db-f4c320560ddb</id>
         <name>Prejudiced (Common, Biased)</name>
-        <translate>Préjugés (commun, dissimulés)</translate>
+        <translate>Préjugés (courant, dissimulés)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>9a76f104-a472-4b6a-b5b7-a8f5248f65a9</id>
         <name>Prejudiced (Common, Outspoken)</name>
-        <translate>Préjugés (commun, francs)</translate>
+        <translate>Préjugés (courant, francs)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>1dc88694-8519-4fb0-b8c9-c5a823084730</id>
         <name>Prejudiced (Common, Radical)</name>
-        <translate>Préjugés (commun, radicaux)</translate>
+        <translate>Préjugés (courant, radicaux)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
         <id>b0640207-7965-4f1a-a28c-0dd5e24d2d8c</id>
         <name>Prejudiced (Specific, Biased)</name>
-        <translate>Préjugés (spécifique, dissimulé)</translate>
+        <translate>Préjugés (spécifique, dissimulés)</translate>
         <page>85</page>
       </quality>
       <quality translated="True">
@@ -14799,13 +14799,13 @@
       <quality translated="True">
         <id>b2210e9a-ab8a-45f9-b5db-13f6923c2d22</id>
         <name>Simsense Vertigo</name>
-        <translate>Mal du Simsens</translate>
+        <translate>Mal du simsens</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
         <id>d9479e5c-d44a-45b9-8fb4-d1e08a9487b2</id>
         <name>SINner (Criminal)</name>
-        <translate>SINner (Criminel)</translate>
+        <translate>SINner (criminel)</translate>
         <page>86</page>
       </quality>
       <quality translated="True">
@@ -14823,9 +14823,8 @@
       <quality translated="True">
         <id>d8362a78-54e9-4dbe-8388-6ba0a7b9df31</id>
         <name>Uneducated</name>
-        <translate>Primitif</translate>
-        <page>
-        </page>
+        <translate>Illétré</translate>
+        <page>83</page>
       </quality>
       <quality translated="True">
         <id>0a7bcb95-dd9c-4e3e-ab0a-291a352ac1d4</id>
@@ -14842,19 +14841,19 @@
       <quality translated="True">
         <id>0f3a0971-1cc5-47d6-a32d-d098ecdfb4d9</id>
         <name>Indomitable (Mental)</name>
-        <translate>Sans limite (Mentale)</translate>
+        <translate>Sans limites (Mentale)</translate>
         <page>78</page>
       </quality>
       <quality translated="True">
         <id>58e6a651-cdd7-4144-a2cc-4cee24526e92</id>
         <name>Indomitable (Physical)</name>
-        <translate>Sans limite (Physique)</translate>
+        <translate>Sans limites (Physique)</translate>
         <page>78</page>
       </quality>
       <quality translated="True">
         <id>b9f1dbeb-1728-4250-a066-4773f758fe6a</id>
         <name>Indomitable (Social)</name>
-        <translate>Sans limite (Sociale)</translate>
+        <translate>Sans limites (Sociale)</translate>
         <page>78</page>
       </quality>
       <quality>
@@ -14969,13 +14968,13 @@
       <quality translated="True">
         <id>0cf25fda-725b-49fd-a8cf-de589e938065</id>
         <name>Insomnia (Basic)</name>
-        <translate>Insomnie (Mineure)</translate>
+        <translate>Insomnie (mineure)</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
         <id>149e6bf7-a6b4-4893-b755-4d983372079c</id>
         <name>Insomnia (Full)</name>
-        <translate>Insomnie (Majeurel)</translate>
+        <translate>Insomnie (majeure)</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
@@ -14987,19 +14986,19 @@
       <quality translated="True">
         <id>e00623e1-54b0-4a91-b234-3c7e141deef4</id>
         <name>SINner (Corporate)</name>
-        <translate>SINner (Corporatiste)</translate>
+        <translate>SINner (natif corporatiste)</translate>
         <page>86</page>
       </quality>
       <quality translated="True">
         <id>9ac85feb-ae1e-4996-8514-3570d411e1d5</id>
         <name>SINner (National)</name>
-        <translate>SINner (National)</translate>
+        <translate>SINner (national)</translate>
         <page>86</page>
       </quality>
       <quality translated="True">
         <id>318d2edd-833b-48c5-a3e1-343bf03848a5</id>
         <name>SINner (Corporate Limited)</name>
-        <translate>SINner (Corporatiste Limité)</translate>
+        <translate>SINner (corporatiste limité)</translate>
         <page>86</page>
       </quality>
       <quality translated="True">
@@ -22287,174 +22286,294 @@
       <priority>
         <id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
         <name>A - Any metatype</name>
-        <translate>A - Any metatype</translate>
+        <translate>A - Tous métatypes</translate>
       </priority>
       <priority>
         <id>f9aa712d-7140-4ddd-9e88-4a06e8bae222</id>
         <name>B - Any metatype</name>
-        <translate>B - Any metatype</translate>
+        <translate>B - Tous métatypes</translate>
       </priority>
       <priority>
         <id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
         <name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
-        <translate>C - Human, Dwarf, Elf, Ork, or A.I.</translate>
+        <translate>C - Humain, elfe, nain, ork ou I.A.</translate>
       </priority>
       <priority>
         <id>255da2ba-8d21-4a73-9f81-37156901db72</id>
         <name>D - Human or Elf</name>
-        <translate>D - Human or Elf</translate>
+        <translate>D - Humain ou elfe</translate>
       </priority>
       <priority>
         <id>91dccab9-c3fc-4868-abf8-1825b70e8a6c</id>
         <name>E - Human</name>
-        <translate>E - Human</translate>
+        <translate>E - Humain</translate>
       </priority>
       <priority>
         <id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
         <name>A - Magician or Technomancer</name>
-        <translate>A - Magician or Technomancer</translate>
+        <translate>A - Magicien, adepte mystique ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Magician - 6 Magic/10 Spells</name>
+						<translate>Magicien - Magie 6/10 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 6 Magic/10 Spells</name>
+						<translate>Adepte mystique - Magie 6/10 sorts</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 6 Resonance/7 Complex Forms</name>
+						<translate>Technomancien - Résonance 6/7 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 6 Depth</name>
+						<translate>A.I. - 6 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
         <name>B - Adept, Magician, or Technomancer</name>
-        <translate>B - Adept, Magician, or Technomancer</translate>
+        <translate>B - Adepte, magicien, adepte mystique, magicien spécialisé ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Adept - 6 Magic</name>
+						<translate>Adepte - Magie 6</translate>
+					</talent>
+					<talent>
+						<name>Magician - 4 Magic/7 Spells</name>
+						<translate>Magicien - Magie 4/7 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 4 Magic/7 Spells</name>
+						<translate>Adepte mystique - Magie 4/7 sorts</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 5 Magic</name>
+						<translate>Magicien spécialisé - Magie 5</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 5 Magic</name>
+						<translate>Apprentice - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 4 Resonance/4 Complex Forms</name>
+						<translate>Technomancien - Résonance 4/4 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 4 Depth</name>
+						<translate>A.I. - 4 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>aae3a140-d306-4811-a9d2-874140600150</id>
-        <name>C - Adept, Magician, or Technomancer</name>
-        <translate>C - Adept, Magician, or Technomancer</translate>
+        <name>C - Adepte, Magician, or Technomancer</name>
+        <translate>C - Adepte, magicien, adepte mystique, magicien spécialisé ou technomancien</translate>
+				<talents>
+					<talent>
+						<name>Adept - 4 Magic</name>
+						<translate>Adepte - Magie 4</translate>
+					</talent>
+					<talent>
+						<name>Magician - 3 Magic/5 Spells</name>
+						<translate>Magicien - Magie 3/5 sorts</translate>
+					</talent>
+					<talent>
+						<name>Mystic Adept - 3 Magic/5 Spells</name>
+						<translate>Adepte mystique - Magie 3/5 sorts</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 3 Magic</name>
+						<translate>Magicien spécialisé - Magie 3</translate>
+					</talent>
+					<talent>
+						<name>Explorer - 5 Magic</name>
+						<translate>Explorer - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Enchanter - 5 Magic</name>
+						<translate>Enchanter - 5 Magic</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 3 Magic</name>
+						<translate>Apprentice - 3 Magic</translate>
+					</talent>
+					<talent>
+						<name>Technomancer - 3 Resonance/3 Complex Forms</name>
+						<translate>Technomancien - Résonance 3/3 formes complexes</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 3 Depth</name>
+						<translate>A.I. - 3 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
         <name>D - Adept or Aspected Magician</name>
-        <translate>D - Adept or Aspected Magician</translate>
+        <translate>D - Adepte ou magicien spécialisé</translate>
+				<talents>
+					<talent>
+						<name>Adept - 2 Magic</name>
+						<translate>Adepte - Magie 2</translate>
+					</talent>
+					<talent>
+						<name>Aspected Magician - 2 Magic</name>
+						<translate>Magicien spécialisé - Magie 2</translate>
+					</talent>
+					<talent>
+						<name>Aware - 3 Magic</name>
+						<translate>Aware - 3 Magic</translate>
+					</talent>
+					<talent>
+						<name>Apprentice - 2 Magic</name>
+						<translate>Apprentice - 2 Magic</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 2 Depth</name>
+						<translate>A.I. - 2 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
         <name>E - Mundane</name>
-        <translate>E - Mundane</translate>
+        <translate>E - Ordinaire</translate>
+				<talents>
+					<talent>
+						<name>Mundane</name>
+						<translate>Ordinaire</translate>
+					</talent>
+					<talent>
+						<name>A.I. - 1 Depth</name>
+						<translate>A.I. - 1 Depth</translate>
+					</talent>
+				</talents>
       </priority>
       <priority>
         <id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
         <name>A - 24 (12) Attributes</name>
-        <translate>A - 24 (12) Attributes</translate>
+        <translate>A - 24 (12) points</translate>
       </priority>
       <priority>
         <id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
         <name>B - 20 (10) Attributes</name>
-        <translate>B - 20 (10) Attributes</translate>
+        <translate>B - 20 (10) points</translate>
       </priority>
       <priority>
         <id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
         <name>C - 16 (8) Attributes</name>
-        <translate>C - 16 (8) Attributes</translate>
+        <translate>C - 16 (8) points</translate>
       </priority>
       <priority>
         <id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
         <name>D - 14 (7) Attributes</name>
-        <translate>D - 14 (7) Attributes</translate>
+        <translate>D - 14 (7) points</translate>
       </priority>
       <priority>
         <id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
         <name>E - 12 (6) Attributes</name>
-        <translate>E - 12 (6) Attributes</translate>
+        <translate>E - 12 (6) points</translate>
       </priority>
       <priority>
         <id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
         <name>A - 46 Skills/10 Skill Groups</name>
-        <translate>A - 46 Skills/10 Skill Groups</translate>
+        <translate>A - 46 compétences/10 groupes de compétence</translate>
       </priority>
       <priority>
         <id>bde37645-6789-4401-bcec-4c0e61c7fe17</id>
         <name>B - 36 Skills/5 Skill Groups</name>
-        <translate>B - 36 Skills/5 Skill Groups</translate>
+        <translate>B - 36 compétences/5 groupes de compétence</translate>
       </priority>
       <priority>
         <id>57c52154-489e-4e8a-b885-13b341700deb</id>
         <name>C - 28 Skills/2 Skill Groups</name>
-        <translate>C - 28 Skills/2 Skill Groups</translate>
+        <translate>C - 28 compétences/2 groupes de compétence</translate>
       </priority>
       <priority>
         <id>61e1758f-e4ca-4e53-ad45-bb88a0e5ac04</id>
         <name>D - 22 Skills/0 Skill Groups</name>
-        <translate>D - 22 Skills/0 Skill Groups</translate>
+        <translate>D - 22 compétences/0 groupes de compétence</translate>
       </priority>
       <priority>
         <id>b1ca5551-46a4-4ef0-9d07-c33ae0abbcd1</id>
         <name>E - 18 Skills/0 Skill Groups</name>
-        <translate>E - 18 Skills/0 Skill Groups</translate>
+        <translate>E - 18 compétences/0 groupes de compétence</translate>
       </priority>
       <priority>
         <id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
         <name>A - 450,000¥</name>
-        <translate>A - 450,000¥</translate>
+        <translate>A - 450 000 ¥</translate>
       </priority>
       <priority>
         <id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
         <name>B - 275,000¥</name>
-        <translate>B - 275,000¥</translate>
+        <translate>B - 275 000 ¥</translate>
       </priority>
       <priority>
         <id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
         <name>C - 140,000¥</name>
-        <translate>C - 140,000¥</translate>
+        <translate>C - 140 000 ¥</translate>
       </priority>
       <priority>
         <id>b977475b-9728-45a0-9873-a77bb036fb99</id>
         <name>D - 50,000¥</name>
-        <translate>D - 50,000¥</translate>
+        <translate>D - 50 000 ¥</translate>
       </priority>
       <priority>
         <id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
         <name>E - 6,000¥</name>
-        <translate>E - 6,000¥</translate>
+        <translate>E - 6 000 ¥</translate>
       </priority>
       <priority>
         <id>7e4c5695-52c8-4b16-b233-058af14a41d1</id>
         <name>A - 500,000¥</name>
-        <translate>A - 500,000¥</translate>
+        <translate>A - 500 000 ¥</translate>
       </priority>
       <priority>
         <id>1da0e4d3-e75b-40ab-b366-e1eba499e8ca</id>
         <name>B - 325,000¥</name>
-        <translate>B - 325,000¥</translate>
+        <translate>B - 325 000 ¥</translate>
       </priority>
       <priority>
         <id>0fdfe7f7-119d-4971-a629-4a4dea938c6c</id>
         <name>C - 210,000¥</name>
-        <translate>C - 210,000¥</translate>
+        <translate>C - 210 000 ¥</translate>
       </priority>
       <priority>
         <id>2cbe209a-ae97-4985-b42f-4839613dfb28</id>
         <name>D - 150,000¥</name>
-        <translate>D - 150,000¥</translate>
+        <translate>D - 150 000 ¥</translate>
       </priority>
       <priority>
         <id>860a9601-e06f-424f-8f40-bee843a6b5dc</id>
         <name>E - 100,000¥</name>
-        <translate>E - 100,000¥</translate>
+        <translate>E - 100 000 ¥</translate>
       </priority>
       <priority>
         <id>dc72a445-a956-4ea5-b383-0f775c638f05</id>
         <name>A - 75,000¥</name>
-        <translate>A - 75,000¥</translate>
+        <translate>A - 75 000 ¥</translate>
       </priority>
       <priority>
         <id>edc5db00-8d4c-4510-85d2-8d82d6c66ed6</id>
         <name>B - 50,000¥</name>
-        <translate>B - 50,000¥</translate>
+        <translate>B - 50 000 ¥</translate>
       </priority>
       <priority>
         <id>9aecfa32-4d5c-4ba9-a88e-9a04f83e516b</id>
         <name>C - 25,000¥</name>
-        <translate>C - 25,000¥</translate>
+        <translate>C - 25 000 ¥</translate>
       </priority>
       <priority>
         <id>c5b45f74-3396-45c7-afa9-b69c0c8db6ee</id>
         <name>D - 15,000¥</name>
-        <translate>D - 15,000¥</translate>
+        <translate>D - 15 000 ¥</translate>
       </priority>
     </priorities>
+	</chummer>
+	<chummer file="gameplayoptions.xml">
     <gameplayoptions>
       <gameplayoption>
         <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
@@ -22464,12 +22583,12 @@
       <gameplayoption>
         <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
         <name>Prime Runner</name>
-        <translate>Prime Runner</translate>
+        <translate>Runner d'élite</translate>
       </gameplayoption>
       <gameplayoption>
         <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
         <name>Street Level</name>
-        <translate>Street Level</translate>
+        <translate>Niveau rue</translate>
       </gameplayoption>
     </gameplayoptions>
   </chummer>
