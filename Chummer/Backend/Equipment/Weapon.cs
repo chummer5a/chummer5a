@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -93,7 +93,7 @@ namespace Chummer.Backend.Equipment
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
-        private bool _blnInstalled = true;
+        private bool _blnEquipped = true;
         private bool _blnDiscountCost;
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
@@ -478,7 +478,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("allowaccessory", _blnAllowAccessory.ToString());
             objWriter.WriteElementString("weaponname", _strWeaponName);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-            objWriter.WriteElementString("installed", _blnInstalled.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
             objWriter.WriteElementString("accuracy", _strAccuracy);
             objWriter.WriteElementString("mount", _strMount);
@@ -645,7 +645,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             if (Name == "Unarmed Attack")
                 _blnIncludedInWeapon = true; // Unarmed Attack can never be removed
-            objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            if (!_blnEquipped)
+            {
+                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+            }
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
 
@@ -1398,7 +1402,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (value != null)
                                 objGear.ChangeEquippedStatus(false);
-                            else if (Installed && objGear.Equipped)
+                            else if (Equipped && objGear.Equipped)
                                 objGear.ChangeEquippedStatus(true);
                         }
                     }
@@ -1439,10 +1443,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Underbarrel Weapon is installed.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
-            set => _blnInstalled = value;
+            get => _blnEquipped;
+            set => _blnEquipped = value;
         }
 
         /// <summary>
@@ -1510,7 +1514,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                if (objAccessory.Installed)
+                if (objAccessory.Equipped)
                     intReturn += objAccessory.TotalConcealability;
             }
 
@@ -1747,7 +1751,7 @@ namespace Chummer.Backend.Equipment
             // Add in the DV bonus from any Weapon Mods.
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                if (objAccessory.Installed)
+                if (objAccessory.Equipped)
                 {
                     if (!string.IsNullOrEmpty(objAccessory.DamageType))
                     {
@@ -1962,7 +1966,7 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Installed)
+                    if (objAccessory.Equipped)
                     {
                         // Replace the Ammo value.
                         if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
@@ -2146,7 +2150,7 @@ namespace Chummer.Backend.Equipment
                     // Do the same for any accessories/modifications.
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        if (objAccessory.Installed)
+                        if (objAccessory.Equipped)
                         {
                             if (!string.IsNullOrEmpty(objAccessory.FireMode))
                             {
@@ -2189,7 +2193,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                if (objAccessory.Installed && string.IsNullOrEmpty(objAccessory.AddMode))
+                if (objAccessory.Equipped && string.IsNullOrEmpty(objAccessory.AddMode))
                     lstModes.Add(objAccessory.AddMode);
             }
 
@@ -2232,7 +2236,7 @@ namespace Chummer.Backend.Equipment
             // Run through the list of Weapon Mods.
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
-                if (objExcludeAccessory != objAccessory && objAccessory.Installed && !objAccessory.IncludedInWeapon)
+                if (objExcludeAccessory != objAccessory && objAccessory.Equipped && !objAccessory.IncludedInWeapon)
                 {
                     decReturn += objAccessory.TotalCost;
                 }
@@ -2370,7 +2374,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => objAccessory.Installed))
+            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => objAccessory.Equipped))
             {
                 // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
                 if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
@@ -2618,7 +2622,7 @@ namespace Chummer.Backend.Equipment
 
             // Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
             // Only add in the values for items that do not come with the weapon.
-            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => !string.IsNullOrEmpty(objAccessory.RC) && objAccessory.Installed))
+            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => !string.IsNullOrEmpty(objAccessory.RC) && objAccessory.Equipped))
             {
                 if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
                 {
@@ -2941,7 +2945,7 @@ namespace Chummer.Backend.Equipment
                 int intBonusAccuracyFromNonStackingAccessories = 0;
                 foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
                 {
-                    if (objWeaponAccessory.Installed)
+                    if (objWeaponAccessory.Equipped)
                     {
                         int intLoopAccuracy = objWeaponAccessory.Accuracy;
                         if (intLoopAccuracy != 0)
@@ -3278,7 +3282,7 @@ namespace Chummer.Backend.Equipment
 
                 // Weapon Mods.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                    if (objAccessory.Installed)
+                    if (objAccessory.Equipped)
                         intRangeBonus += objAccessory.RangeBonus;
 
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
@@ -3360,7 +3364,7 @@ namespace Chummer.Backend.Equipment
                 // Check to see if any of the Mods replace this value.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Installed && objAccessory.FullBurst > intReturn)
+                    if (objAccessory.Equipped && objAccessory.FullBurst > intReturn)
                         intReturn = objAccessory.FullBurst;
                 }
 
@@ -3380,7 +3384,7 @@ namespace Chummer.Backend.Equipment
                 // Check to see if any of the Mods replace this value.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Installed && objAccessory.Suppressive > intReturn)
+                    if (objAccessory.Equipped && objAccessory.Suppressive > intReturn)
                         intReturn = objAccessory.Suppressive;
                 }
 
@@ -3398,7 +3402,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 0;
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Installed && objAccessory.AccessoryCostMultiplier != 1)
+                    if (objAccessory.Equipped && objAccessory.AccessoryCostMultiplier != 1)
                         intReturn += objAccessory.AccessoryCostMultiplier;
                 }
 
@@ -3416,7 +3420,7 @@ namespace Chummer.Backend.Equipment
         {
             string strExtra = string.Empty;
             int intDicePool = 0;
-            int intDicePoolModifier = WeaponAccessories.Where(a => a.Installed).Sum(a => a.DicePool);
+            int intDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
             switch (FireMode)
             {
                 //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
@@ -3784,7 +3788,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the Accessories and add in their availability.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (!objAccessory.IncludedInWeapon && objAccessory.Installed)
+                    if (!objAccessory.IncludedInWeapon && objAccessory.Equipped)
                     {
                         AvailabilityValue objLoopAvail = objAccessory.TotalAvailTuple();
                         if (objLoopAvail.AddToParent)
@@ -3811,7 +3815,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 1;
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    if (objAccessory.Installed && objAccessory.AccessoryCostMultiplier > 1)
+                    if (objAccessory.Equipped && objAccessory.AccessoryCostMultiplier > 1)
                         intReturn = objAccessory.AccessoryCostMultiplier;
                 }
 
@@ -4524,7 +4528,7 @@ namespace Chummer.Backend.Equipment
                         int intTotalChildrenValue = 0;
                         foreach (Weapon objLoopWeapon in Children)
                         {
-                            if (objLoopWeapon.Installed)
+                            if (objLoopWeapon.Equipped)
                             {
                                 intTotalChildrenValue += objLoopWeapon.GetBaseMatrixAttribute(strMatrixAttribute);
                             }
@@ -4562,7 +4566,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (Weapon objLoopWeapon in Children)
             {
-                if (objLoopWeapon.Installed && objLoopWeapon.ParentID != InternalId)
+                if (objLoopWeapon.Equipped && objLoopWeapon.ParentID != InternalId)
                 {
                     intReturn += objLoopWeapon.GetTotalMatrixAttribute(strAttributeName);
                 }

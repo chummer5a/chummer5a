@@ -7746,11 +7746,11 @@ namespace Chummer
             // Locate the selected Weapon Accessory or Modification.
             if (treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
-                objAccessory.Installed = chkWeaponAccessoryInstalled.Checked;
+                objAccessory.Equipped = chkWeaponAccessoryInstalled.Checked;
             }
             else if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {
-                objWeapon.Installed = chkWeaponAccessoryInstalled.Checked;
+                objWeapon.Equipped = chkWeaponAccessoryInstalled.Checked;
             }
             else if (treWeapons.SelectedNode?.Tag is Gear objGear)
             {
@@ -8231,19 +8231,19 @@ namespace Chummer
                 return;
             if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
-                objAccessory.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
+                objAccessory.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
             }
             else if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
-                objWeapon.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
+                objWeapon.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
             }
             else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
-                objMod.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
+                objMod.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount)
             {
-                objWeaponMount.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
+                objWeaponMount.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
             }
             else
             {
@@ -10388,7 +10388,7 @@ namespace Chummer
                 GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Page", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
 
                 chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
-                chkWeaponAccessoryInstalled.Checked = objWeapon.Installed;
+                chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
@@ -10517,7 +10517,7 @@ namespace Chummer
                 lblWeaponSource.Text = CommonFunctions.LanguageBookShort(objSelectedAccessory.Source, GlobalOptions.Language) + ' ' + strPage;
                 GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objSelectedAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkWeaponAccessoryInstalled.Enabled = true;
-                chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
+                chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
                 chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
                 chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
                 lblWeaponCapacity.Visible = false;
@@ -11935,7 +11935,7 @@ namespace Chummer
                 lblVehicleCostLabel.Visible = true;
                 lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
 
-                chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Installed;
+                chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
                 chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
                 chkVehicleIncludedInWeapon.Checked = false;
 
@@ -12012,7 +12012,7 @@ namespace Chummer
                 nudVehicleGearQty.Visible = true;
                 lblVehicleGearQtyLabel.Visible = true;
 
-                chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
+                chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
                 chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
                 chkVehicleIncludedInWeapon.Checked = false;
 
@@ -12075,7 +12075,7 @@ namespace Chummer
                     intPilot -= 1;
                 lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
 
-                chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
+                chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
                 chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
             }
@@ -12129,7 +12129,7 @@ namespace Chummer
                 lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language) + ' ' + strPage;
                 GlobalOptions.ToolTipProcessor.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
+                chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
@@ -12980,7 +12980,7 @@ namespace Chummer
                 {
                     if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
-                        foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Downgrade))
+                        foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade))
                         {
                             //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
                             if ((objMod.Category == "Handling" && Convert.ToInt32(objVehicle.TotalHandling) < 1) ||

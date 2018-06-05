@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
-        private bool _blnInstalled = true;
+        private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
@@ -90,7 +90,7 @@ namespace Chummer.Backend.Equipment
         {
             if (e.Action != NotifyCollectionChangedAction.Add &&
                 e.Action != NotifyCollectionChangedAction.Replace) return;
-            if (Installed && Parent?.ParentVehicle == null) return;
+            if (Equipped && Parent?.ParentVehicle == null) return;
             foreach (Gear objGear in e.NewItems)
             {
                 objGear.ChangeEquippedStatus(false);
@@ -244,7 +244,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-            objWriter.WriteElementString("installed", _blnInstalled.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             if (_nodAllowGear != null)
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
@@ -304,7 +304,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
-            objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            if (!_blnEquipped)
+            {
+                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+            }
             _nodAllowGear = objNode["allowgear"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
 
@@ -343,10 +347,10 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
 
-            if (blnCopy && !Installed)
+            if (blnCopy && !Equipped)
             {
-                _blnInstalled = true;
-                Installed = false;
+                _blnEquipped = true;
+                Equipped = false;
             }
         }
 
@@ -648,14 +652,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not this Accessory is installed and contributing towards the Weapon's stats.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
+            get => _blnEquipped;
             set
             {
-                if (_blnInstalled != value)
+                if (_blnEquipped != value)
                 {
-                    _blnInstalled = value;
+                    _blnEquipped = value;
                     if (Parent?.ParentVehicle == null)
                     {
                         foreach (Gear objGear in Gear)
@@ -799,7 +803,7 @@ namespace Chummer.Backend.Equipment
                                 objGear.ChangeEquippedStatus(false);
                             }
                         }
-                        else if (Installed)
+                        else if (Equipped)
                         {
                             foreach (Gear objGear in Gear)
                             {

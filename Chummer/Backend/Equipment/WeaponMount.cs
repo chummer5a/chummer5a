@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
-		private bool _blnInstalled = true;
+		private bool _blnEquipped = true;
 		private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
@@ -145,7 +145,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-			objWriter.WriteElementString("installed", _blnInstalled.ToString());
+			objWriter.WriteElementString("equuipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
 			objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
@@ -204,7 +204,11 @@ namespace Chummer.Backend.Equipment
 		    objNode.TryGetStringFieldQuickly("source", ref _strSource);
 		    objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
-			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+		    if (!_blnEquipped)
+		    {
+		        objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+		    }
 
             XmlNode xmlChildrenNode = objNode["weapons"];
             if (xmlChildrenNode != null)
@@ -491,10 +495,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
-            set => _blnInstalled = value;
+            get => _blnEquipped;
+            set => _blnEquipped = value;
         }
 
         /// <summary>

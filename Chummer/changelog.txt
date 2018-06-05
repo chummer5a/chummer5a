@@ -23,6 +23,8 @@ Application Changes:
 - Fixed an issue with shapeshifters generating their attributes in duplicate when transitioning to career. 
 - Fixed an issue with increasing quantities of Gear not working when using non-English strings.
 - Fixed a regression in which pre-installed gear, cyberware and armor mods would not confer the correct ratings.
+- Repaired some lingering issues with object tag conversion that caused problems when reloading vehicles and selecting certain objects. Fixes #2785
+- Added an ICanEquip interface to support easily changing the equipped state of an object.
 
 Data Changes:
 
