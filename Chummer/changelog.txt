@@ -25,6 +25,7 @@ Application Changes:
 - Fixed a regression in which pre-installed gear, cyberware and armor mods would not confer the correct ratings.
 - Repaired some lingering issues with object tag conversion that caused problems when reloading vehicles and selecting certain objects. Fixes #2785
 - Added an ICanEquip interface to support easily changing the equipped state of an object.
+- Fixed an issue with total armor values being concatenated along with the damage resistance pool from improvements instead of added together.
 
 Data Changes:
 
