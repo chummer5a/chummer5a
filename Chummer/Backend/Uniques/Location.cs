@@ -69,9 +69,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = new Guid();
+                _strName = objNode.InnerText;
+            }
+            else
+            {
+                objNode.TryGetStringFieldQuickly("name", ref _strName);
+                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
             if (Parent == null || Parent.Contains(this)) return;
                 Parent.Add(this);
         }
