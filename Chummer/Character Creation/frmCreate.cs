@@ -13736,7 +13736,7 @@ namespace Chummer
             XmlNode xmlCyberwares = objXmlKit["cyberwares"];
             if (xmlCyberwares != null)
             {
-                XmlNodeList xmlCyberwaresList = xmlWeapons.SelectNodes("cyberware");
+                XmlNodeList xmlCyberwaresList = xmlCyberwares.SelectNodes("cyberware");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
                 pgbProgress.Maximum = xmlCyberwaresList.Count;
