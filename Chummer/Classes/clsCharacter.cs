@@ -208,12 +208,12 @@ namespace Chummer
         #endif
         private readonly ObservableCollection<LimitModifier> _lstLimitModifiers = new ObservableCollection<LimitModifier>();
         private readonly ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
-        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
-        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
+        private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
+        private readonly TaggedObservableCollection<Vehicle> _lstVehicles = new TaggedObservableCollection<Vehicle>();
         private readonly ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
         private readonly ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
         private readonly ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
@@ -8263,12 +8263,12 @@ namespace Chummer
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
-        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
+        public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
-        public ObservableCollection<Weapon> Weapons => _lstWeapons;
+        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Lifestyles.
@@ -8283,7 +8283,7 @@ namespace Chummer
         /// <summary>
         /// Vehicles.
         /// </summary>
-        public ObservableCollection<Vehicle> Vehicles => _lstVehicles;
+        public TaggedObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.

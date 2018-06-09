@@ -30,6 +30,7 @@ Application Changes:
 - Fixed a crash when loading cyberware PACKS.
 - Changed power tab list display to an autoresizing table.
 - Fixed incorrect usage of String_Error for Modular Cyberlimb and Karma Calculation.
+- Merged the various methods for purchasing Cyberware into a single method attached to the object. Fixes issues with some objects not properly applying Free and Markup properties to the cyberware.
 
 Data Changes:
 

@@ -3454,5 +3454,90 @@ namespace Chummer.Backend.Equipment
             else
                 characterObject.Cyberware.Remove(this);
         }
+
+        /// <summary>
+        /// Purchases a selected piece of Cyberware with a given Grade and Rating. 
+        /// </summary>
+        /// <param name="objNode"></param>
+        /// <param name="objGrade"></param>
+        /// <param name="intRating"></param>
+        /// <param name="objCharacter"></param>
+        /// <param name="objVehicle"></param>
+        /// <param name="lstCyberwareCollection"></param>
+        /// <param name="lstVehicleCollection"></param>
+        /// <param name="lstWeaponCollection"></param>
+        /// <param name="decMarkup"></param>
+        /// <param name="blnFree"></param>
+        /// <param name="strExpenseString"></param>
+        /// <returns></returns>
+        public bool Purchase(Cyberware objCyberware, XmlNode objNode,Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        {
+            // Create the Cyberware object.
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
+            objCyberware.Create(objNode, objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
+            if (objCyberware.InternalId.IsEmptyGuid())
+            {
+                return false;
+            }
+
+            if (blnFree)
+                objCyberware.Cost = "0";
+
+            decimal decCost = objCyberware.TotalCost;
+
+            // Multiply the cost if applicable.
+            char chrAvail = objCyberware.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && objCharacter.Options.MultiplyRestrictedCost)
+                decCost *= objCharacter.Options.RestrictedCostMultiplier;
+            if (chrAvail == 'F' && objCharacter.Options.MultiplyForbiddenCost)
+                decCost *= objCharacter.Options.ForbiddenCostMultiplier;
+
+            // Apply a markup if applicable.
+            if (decMarkup != 0 && !blnFree)
+            {
+                decCost *= 1 + (decMarkup / 100.0m);
+            }
+
+            // Check the item's Cost and make sure the character can afford it.
+            if (!blnFree)
+            {
+                if (decCost > objCharacter.Nuyen)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+
+                if (objCharacter.Created)
+                {
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    string strEntry = LanguageManager.GetString(strExpenseString, GlobalOptions.Language);
+                    objExpense.Create(decCost * -1,
+                        strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                        objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Nuyen -= decCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
+                    objExpense.Undo = objUndo;
+                }
+            }
+
+            lstCyberwareCollection.Add(objCyberware);
+
+            foreach (Weapon objWeapon in lstWeapons)
+            {
+                objWeapon.ParentVehicle = objVehicle;
+                lstWeaponCollection.Add(objWeapon);
+            }
+
+            foreach (Vehicle objLoopVehicle in lstVehicles)
+            {
+                lstVehicleCollection.Add(objLoopVehicle);
+            }
+            return true;
+        }
     }
 }

@@ -6107,40 +6107,12 @@ namespace Chummer
                 blnAddAgain = frmPickCyberware.AddAgain;
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
-
-                // Create the Cyberware object.
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<Vehicle> lstVehicles = new List<Vehicle>();
-                objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
-                if (objCyberware.InternalId.IsEmptyGuid())
+                if (objCyberware.Purchase(objCyberware, objXmlCyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, CharacterObject, objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
                 {
-                    frmPickCyberware.Dispose();
-                    continue;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
-
-                if (frmPickCyberware.FreeCost)
-                    objCyberware.Cost = "0";
-                objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
-                objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
-
-                objMod.Cyberware.Add(objCyberware);
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    objWeapon.ParentVehicle = objVehicle;
-                    objMod.Weapons.Add(objWeapon);
-                }
-
-                // Create the Weapon Node if one exists.
-                foreach (Vehicle objLoopVehicle in lstVehicles)
-                {
-                    CharacterObject.Vehicles.Add(objLoopVehicle);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
 
                 frmPickCyberware.Dispose();
             }

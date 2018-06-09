@@ -8771,74 +8771,12 @@ namespace Chummer
                 blnAddAgain = frmPickCyberware.AddAgain;
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
-
-                // Create the Cyberware object.
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<Vehicle> lstVehicles = new List<Vehicle>();
-                objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
-                if (objCyberware.InternalId.IsEmptyGuid())
+                if (objCyberware.Purchase(objCyberware, objXmlCyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,CharacterObject,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
                 {
-                    frmPickCyberware.Dispose();
-                    continue;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
-
-                if (frmPickCyberware.FreeCost)
-                    objCyberware.Cost = "0";
-
-                decimal decCost = objCyberware.TotalCost;
-
-                // Multiply the cost if applicable.
-                char chrAvail = objCyberware.TotalAvailTuple().Suffix;
-                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                    decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                    decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-                // Apply a markup if applicable.
-                if (frmPickCyberware.Markup != 0 && !frmPickCyberware.FreeCost)
-                {
-                    decCost *= 1 + (frmPickCyberware.Markup / 100.0m);
-                }
-
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickCyberware.FreeCost)
-                {
-                    if (decCost > CharacterObject.Nuyen)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        frmPickCyberware.Dispose();
-                        continue;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    string strEntry = LanguageManager.GetString("String_ExpensePurchaseVehicleCyberware", GlobalOptions.Language);
-                    objExpense.Create(decCost * -1, strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen -= decCost;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
-                    objExpense.Undo = objUndo;
-                }
-
-                objMod.Cyberware.Add(objCyberware);
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    objWeapon.ParentVehicle = objVehicle;
-                    objMod.Weapons.Add(objWeapon);
-                }
-
-                foreach (Vehicle objLoopVehicle in lstVehicles)
-                {
-                    CharacterObject.Vehicles.Add(objLoopVehicle);
-                }
-                
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
 
                 frmPickCyberware.Dispose();
             }
@@ -14517,66 +14455,15 @@ namespace Chummer
             // Open the Cyberware XML file and locate the selected piece.
             XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]") : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
-            // Create the Cyberware object.
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
-            objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
-            if (objCyberware.InternalId.IsEmptyGuid())
-                return false;
-
-            // Adjust for Black Market Pipeline Discount
-            objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
-            
-            // Apply the ESS discount if applicable.
-            if (CharacterObjectOptions.AllowCyberwareESSDiscounts)
-                objCyberware.ESSDiscount = frmPickCyberware.SelectedESSDiscount;
-
-            decimal decCost = objCyberware.TotalCost;
-
-            // Multiply the cost if applicable.
-            char chrAvail = objCyberware.TotalAvailTuple().Suffix;
-            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-            // Check the item's Cost and make sure the character can afford it.
-            if (!frmPickCyberware.FreeCost)
+            if (objCyberware.Purchase(objCyberware, objXmlCyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, CharacterObject, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
             {
-                if (decCost > CharacterObject.Nuyen)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Remove any Improvements created by the Cyberware.
-                    ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
-                    return frmPickCyberware.AddAgain;
-                }
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpensePurchaseCyberware" : "String_ExpensePurchaseBioware", GlobalOptions.Language);
-                objExpense.Create(decCost * -1, strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Nuyen -= decCost;
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.AddCyberware, objCyberware.InternalId);
-                objExpense.Undo = objUndo;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+                DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
             }
 
-            DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
-            
-            if (objSelectedCyberware != null)
-                objSelectedCyberware.Children.Add(objCyberware);
-            else
-                CharacterObject.Cyberware.Add(objCyberware);
-
-            CharacterObject.Weapons.AddRange(lstWeapons);
-            CharacterObject.Vehicles.AddRange(lstVehicles);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            frmPickCyberware.Dispose();
             
             return frmPickCyberware.AddAgain;
         }
