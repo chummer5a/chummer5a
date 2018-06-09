@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -23381,7 +23381,7 @@
 			<power translated="True">
 				<id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
 				<name>Commanding Voice</name>
-				<translate>Gebieterischer Ton</translate>
+				<translate>Befehlsstimme</translate>
 				<altpage>207</altpage>
 			</power>
 			<!--<power>
