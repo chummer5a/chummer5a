@@ -29,6 +29,7 @@ Application Changes:
 - Fixed issues with the priority selection window that caused spells, complex forms and AI programs to not be changed when reselecting priorities if the new priority doesn't include those settings.
 - Fixed a crash when loading cyberware PACKS.
 - Changed power tab list display to an autoresizing table.
+- Fixed incorrect usage of String_Error for Modular Cyberlimb and Karma Calculation.
 
 Data Changes:
 
