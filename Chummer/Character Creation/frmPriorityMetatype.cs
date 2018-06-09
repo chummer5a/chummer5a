@@ -790,28 +790,18 @@ namespace Chummer
 
                             // Set starting magic
                             int intTemp = 0;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
-                                _objCharacter.MAG.MetatypeMinimum = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp))
-                                _objCharacter.SpellLimit = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp))
-                                _objCharacter.MAG.MetatypeMaximum = intTemp;
+                            _objCharacter.MAG.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 0;
+                            _objCharacter.SpellLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
+                            _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier));
                             // Set starting resonance
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
-                                _objCharacter.RES.MetatypeMinimum = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp))
-                                _objCharacter.CFPLimit = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp))
-                                _objCharacter.RES.MetatypeMaximum = intTemp;
+                            _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 0;
+                            _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
+                            _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intForce, intMaxModifier));
                             // Set starting depth
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
-                                _objCharacter.DEP.MetatypeMinimum = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp))
-                                _objCharacter.AINormalProgramLimit = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp))
-                                _objCharacter.AIAdvancedProgramLimit = intTemp;
-                            if (xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp))
-                                _objCharacter.DEP.MetatypeMaximum = intTemp;
+                            _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 0;
+                            _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
+                            _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
+                            _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intForce, intMaxModifier));
 
                             // Set Free Skills/Skill Groups
                             int intFreeLevels = 0;

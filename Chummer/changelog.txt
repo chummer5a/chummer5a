@@ -26,6 +26,7 @@ Application Changes:
 - Repaired some lingering issues with object tag conversion that caused problems when reloading vehicles and selecting certain objects. Fixes #2785
 - Added an ICanEquip interface to support easily changing the equipped state of an object.
 - Fixed an issue with total armor values being concatenated along with the damage resistance pool from improvements instead of added together.
+- Fixed issues with the priority selection window that caused spells, complex forms and AI programs to not be changed when reselecting priorities if the new priority doesn't include those settings.
 
 Data Changes:
 
