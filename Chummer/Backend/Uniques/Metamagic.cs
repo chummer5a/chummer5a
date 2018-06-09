@@ -29,7 +29,7 @@ namespace Chummer
     /// A Metamagic or Echo.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -81,7 +81,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += " (" + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
@@ -309,12 +309,12 @@ namespace Chummer
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
-                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + ' ' + strText;
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsMetamagic,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -340,5 +340,24 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (Grade <= 0)
+                return false;
+            string strMessage;
+            if (characterObject.MAGEnabled)
+                strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+            else if (characterObject.RESEnabled)
+                strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+            else
+                return false;
+            if (!characterObject.ConfirmDelete(strMessage))
+                return false;
+
+            characterObject.Metamagics.Remove(this);
+            ImprovementManager.RemoveImprovements(characterObject, SourceType, InternalId);
+            return true;
+        }
     }
 }

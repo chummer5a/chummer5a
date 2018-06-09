@@ -52,12 +52,6 @@ namespace Chummer.UI.Powers
             InitializeTable();
             ResumeLayout();
         }
-
-        public void MissingDatabindingsWorkaround()
-        {
-            //TODO: Databind this
-            CalculatePowerPoints();
-        }
         
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
@@ -97,9 +91,9 @@ namespace Chummer.UI.Powers
                 }
             };
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
-            //Keep everything visible until ready to display everything. This 
+            //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
 
@@ -109,7 +103,7 @@ namespace Chummer.UI.Powers
             SuspendLayout();
             DoubleBuffered = true;
 
-            CalculatePowerPoints();
+            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
 
             parts.TaskEnd("MakePowerDisplay()");
 
@@ -216,7 +210,6 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
-                    MissingDatabindingsWorkaround();
                 }
             }
             while (blnAddAgain);
@@ -337,7 +330,8 @@ namespace Chummer.UI.Powers
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
             adeptWayColumn.AddDependency(nameof(Power.Rating));
 
-            TableColumn<Power> geasColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            /*
+             TableColumn<Power> geasColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
             {
                 ValueGetter = (p => p.DiscountedGeas),
                 ValueUpdater = (p, check) => p.DiscountedGeas = check,
@@ -348,6 +342,7 @@ namespace Chummer.UI.Powers
                 Tag = "Checkbox_Power_Geas"
             };
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
+            */
 
             TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
             {
@@ -364,7 +359,6 @@ namespace Chummer.UI.Powers
 
                     if (frmPowerNotes.DialogResult == DialogResult.OK)
                         p.Notes = frmPowerNotes.Notes;
-                    p.ForceEvent(nameof(Power.Notes));
                 },
                 Alignment = Alignment.Center
             })
@@ -396,9 +390,7 @@ namespace Chummer.UI.Powers
                             objGear.Extra = string.Empty;
                         }
                     }
-                    p.Deleting = true;
-                    ImprovementManager.RemoveImprovements(p.CharacterObject, Improvement.ImprovementSource.Power, p.InternalId);
-                    p.CharacterObject.Powers.Remove(p);
+                    p.DeletePower();
                     p.UnbindPower();
 
                     if (frmParent is CharacterShared objParent)
@@ -413,7 +405,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(ratingColumn);
             _table.Columns.Add(powerPointsColumn);
             _table.Columns.Add(adeptWayColumn);
-            _table.Columns.Add(geasColumn);
+            //_table.Columns.Add(geasColumn);
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(deleteColumn);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);

@@ -13,7 +13,7 @@ namespace CrashHandler
 		[MarshalAs(UnmanagedType.Bool)]
         internal bool ClientPointers;
 	}
-    
+
     internal static class NativeMethods
 	{
 		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]

@@ -211,7 +211,7 @@ namespace Chummer
                 DialogResult = DialogResult.Cancel;
                 return;
             }
-            
+
             lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
             cboSkill.ValueMember = "Value";

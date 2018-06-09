@@ -54,7 +54,7 @@ namespace Chummer
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                     select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
-            
+
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
             cboImprovemetType.ValueMember = "Value";
@@ -218,33 +218,34 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpecialAttribute":
+                {
+                    List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                    lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                    lstAbbrevs.Remove("ESS");
+                    /*
+                    if (!_objCharacter.MAGEnabled)
                     {
-                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
-                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
-                        lstAbbrevs.Remove("ESS");
-                        if (!_objCharacter.MAGEnabled)
-                        {
-                            lstAbbrevs.Remove("MAG");
-                            lstAbbrevs.Remove("MAGAdept");
-                        }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
-                            lstAbbrevs.Remove("MAGAdept");
-
-                        if (!_objCharacter.RESEnabled)
-                            lstAbbrevs.Remove("RES");
-                        if (!_objCharacter.DEPEnabled)
-                            lstAbbrevs.Remove("DEP");
-
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
-                        {
-                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
-                        };
-
-                        frmPickAttribute.ShowDialog(this);
-
-                        if (frmPickAttribute.DialogResult == DialogResult.OK)
-                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                        lstAbbrevs.Remove("MAG");
+                        lstAbbrevs.Remove("MAGAdept");
                     }
+                    else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        lstAbbrevs.Remove("MAGAdept");
+
+                    if (!_objCharacter.RESEnabled)
+                        lstAbbrevs.Remove("RES");
+                    if (!_objCharacter.DEPEnabled)
+                        lstAbbrevs.Remove("DEP");
+                        */
+                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                    {
+                        Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                    };
+
+                    frmPickAttribute.ShowDialog(this);
+
+                    if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                }
                     break;
                 case "SelectSkill":
                     {
@@ -301,7 +302,7 @@ namespace Chummer
                             DropdownItems = lstDropdownItems,
                             Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                         };
-                        
+
                         frmPickSkill.ShowDialog(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)

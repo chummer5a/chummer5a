@@ -50,8 +50,8 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
-            tipTooltip.SetToolTip(chkLimited, LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
-            tipTooltip.SetToolTip(chkExtended, LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkLimited, LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkExtended, LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
 
             MoveControls();
             // Load the Spells information.
@@ -66,7 +66,7 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-            
+
             //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
             //in Career Mode. Create mode manages itself.
             int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
@@ -341,7 +341,7 @@ namespace Chummer
                 {
                     limit.Add(improvement.ImprovedName);
                 }
-                
+
                 if (limit.Count != 0 && limit.Any(l => strDescriptor.Contains(l)))
                     continue;
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ?? objXmlSpell.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -358,7 +358,7 @@ namespace Chummer
                 }
                 lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayName));
             }
-            
+
             lstSpellItems.Sort(CompareListItems.CompareNames);
             lstSpells.BeginUpdate();
             lstSpells.DataSource = null;
@@ -422,12 +422,12 @@ namespace Chummer
                         return;
                     }
                 }
-                if (!objXmlSpell.RequirementsMet(_objCharacter, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
+                if (!objXmlSpell.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
                 {
                     return;
                 }
             }
-            
+
             _strSelectedSpell = strSelectedItem;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
@@ -485,7 +485,7 @@ namespace Chummer
                 chkFreeBonus.Checked = false;
                 chkFreeBonus.Visible = false;
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 return;
             }
 
@@ -802,11 +802,11 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
-            tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
+                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             _blnRefresh = false;
         }
         #endregion

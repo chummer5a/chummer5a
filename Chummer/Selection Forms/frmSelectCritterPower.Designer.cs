@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -51,7 +50,6 @@ namespace Chummer
             this.cboCategory = new System.Windows.Forms.ComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
@@ -279,15 +277,6 @@ namespace Chummer
             this.lblPowerPointsLabel.Text = "Points:";
             this.lblPowerPointsLabel.Visible = false;
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // cmdOKAdd
             // 
             this.cmdOKAdd.Location = new System.Drawing.Point(448, 246);
@@ -387,7 +376,6 @@ namespace Chummer
         private System.Windows.Forms.ComboBox cboCategory;
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Label lblPowerPointsLabel;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Label lblKarma;
         private System.Windows.Forms.Label lblKarmaLabel;

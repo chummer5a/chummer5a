@@ -19,7 +19,6 @@
   using System;
 using System.Collections.Generic;
   using System.Collections.Specialized;
-  using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
  ﻿using Chummer.Backend.Equipment;
@@ -420,6 +419,8 @@ namespace Chummer
                     chkBonusLPRandomize.Checked = false;
                     nudBonusLP.Value = _objSourceLifestyle.BonusLP;
                 }
+
+                _objLifestyle.BaseLifestyle = _objSourceLifestyle.BaseLifestyle;
             }
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
@@ -434,6 +435,50 @@ namespace Chummer
 
             if (_objSourceLifestyle != null)
             {
+                int intMinComfort = 0;
+                int intMaxComfort = 0;
+                int intMinArea = 0;
+                int intMaxArea = 0;
+                int intMinSec = 0;
+                int intMaxSec = 0;
+                string strBaseLifestyle = _objSourceLifestyle.BaseLifestyle;
+
+                // Calculate the limits of the 3 aspects.
+                // Comforts.
+                XmlNode xmlNode = _xmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
+                if (intMaxComfort < intMinComfort)
+                    intMaxComfort = intMinComfort;
+                // Area.
+                xmlNode = _xmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
+                if (intMaxArea < intMinArea)
+                    intMaxArea = intMinArea;
+                // Security.
+                xmlNode = _xmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + strBaseLifestyle + "\"]");
+                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
+                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
+                if (intMaxSec < intMinSec)
+                    intMaxSec = intMinSec;
+
+                // Calculate the cost of Positive Qualities.
+                foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities)
+                {
+                    intMaxArea += objQuality.AreaMaximum;
+                    intMaxComfort += objQuality.ComfortMaximum;
+                    intMaxSec += objQuality.SecurityMaximum;
+                    intMinArea += objQuality.Area;
+                    intMinComfort += objQuality.Comfort;
+                    intMinSec += objQuality.Security;
+                }
+                _blnSkipRefresh = true;
+
+                nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
+                nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
+                nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
+
                 txtLifestyleName.Text = _objSourceLifestyle.Name;
                 nudRoommates.Value = _objSourceLifestyle.Roommates;
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
@@ -442,6 +487,7 @@ namespace Chummer
                 nudSecurity.Value = _objSourceLifestyle.Security;
                 cboBaseLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
                 chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+                chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
             }
 
             cboBaseLifestyle.EndUpdate();
@@ -455,11 +501,6 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtLifestyleName.Text))
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
             _blnAddAgain = false;
             AcceptForm();
         }
@@ -546,7 +587,7 @@ namespace Chummer
                     return;
                 }
                 blnAddAgain = frmSelectLifestyleQuality.AddAgain;
-                
+
                 XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
 
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
@@ -567,23 +608,17 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
+            if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
 
-            string strQualityId = treLifestyleQualities.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strQualityId))
+            if (treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality)
             {
-                LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FirstOrDefault(x => x.InternalId == strQualityId);
-                if (objQuality != null)
+                if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
                 {
-                    if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
-                    {
-                        return;
-                    }
-                    _objLifestyle.LifestyleQualities.Remove(objQuality);
-                    treLifestyleQualities.SelectedNode.Remove();
-                    CalculateValues();
+                    return;
                 }
+                _objLifestyle.LifestyleQualities.Remove(objQuality);
+                CalculateValues();
             }
         }
 
@@ -595,11 +630,18 @@ namespace Chummer
                 lblQualityCostLabel.Visible = true;
                 lblQualitySourceLabel.Visible = true;
                 chkQualityContributesLP.Visible = true;
-                lblQualityLp.Text = objQuality.LP.ToString();
+                chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
+
+                _blnSkipRefresh = true;
+                chkQualityContributesLP.Checked = objQuality.ContributesLP;
+                _blnSkipRefresh = false;
+
+                lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strPage = objQuality.Page(GlobalOptions.Language);
-                lblQualitySource.Text = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblQualitySource.Text = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
             }
             else
@@ -611,15 +653,22 @@ namespace Chummer
                 lblQualityLp.Text = string.Empty;
                 lblQualityCost.Text = string.Empty;
                 lblQualitySource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblQualitySource, null);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, null);
                 cmdDeleteQuality.Enabled = false;
             }
         }
 
         private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
+            if (_blnSkipRefresh)
+                return;
+
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
+            {
                 objQuality.ContributesLP = chkQualityContributesLP.Checked;
+                lblQualityLp.Text = objQuality.LP.ToString();
+                CalculateValues();
+            }
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -660,6 +709,17 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            if (string.IsNullOrEmpty(txtLifestyleName.Text))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (Convert.ToInt32(lblTotalLP.Text) < 0)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlLifestyle == null)
@@ -690,7 +750,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            
+
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             XmlNode xmlAspect = _objLifestyle.GetNode();
@@ -700,19 +760,20 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                    tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
@@ -831,7 +892,7 @@ namespace Chummer
                     decBaseNuyen += decCost;
             }
             _blnSkipRefresh = true;
-            
+
             nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
             nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
             nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
@@ -854,18 +915,25 @@ namespace Chummer
 
             //calculate the total LP
             xmlNode = _objLifestyle.GetNode();
-            intLP += Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            int intBaseLP = Convert.ToInt32(xmlNode?["lp"]?.InnerText);
+            intLP += intBaseLP;
             intLP -= intComfortsValue;
             intLP -= intAreaValue;
             intLP -= intSecurityValue;
             intLP += intRoommatesValue;
             intLP += decimal.ToInt32(nudBonusLP.Value);
 
+            intLP = Math.Min(intLP, intBaseLP * 2);
+
             if (strBaseLifestyle == "Street")
             {
                 decNuyen += intComfortsValue * 50;
                 decNuyen += intAreaValue * 50;
                 decNuyen += intSecurityValue * 50;
+            }
+            else
+            {
+                intMultiplier += 10 * (intComfortsValue + intAreaValue + intSecurityValue);
             }
 
             if (!chkTrustFund.Checked)

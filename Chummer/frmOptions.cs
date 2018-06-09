@@ -325,7 +325,7 @@ namespace Chummer
                 TranslateForm();
                 Cursor = Cursors.Default;
             }
-            
+
             OptionsChanged(sender,e);
         }
 
@@ -561,7 +561,7 @@ namespace Chummer
                     cboSheetLanguage.SelectedValue = _strSelectedLanguage;
                 }
             }
-            
+
             PopulatePDFParameters();
             MoveControls();
         }
@@ -722,7 +722,7 @@ namespace Chummer
             lblKarmaSummoningFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaSustainingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaWeaponFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
-            
+
             intWidth = 0;
             int intMargin = treSourcebook.Left;
             foreach (TreeNode objNode in treSourcebook.Nodes)
@@ -1013,6 +1013,7 @@ namespace Chummer
             GlobalOptions.Dronemods = chkDronemods.Checked;
             GlobalOptions.DronemodsMaximumPilot = chkDronemodsMaximumPilot.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
+            GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
         }
 
         /// <summary>
@@ -1043,6 +1044,7 @@ namespace Chummer
                 objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
                 objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString());
                 objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
+                objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
 
                 // Save the SourcebookInfo.
                 RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
@@ -1228,7 +1230,7 @@ namespace Chummer
         private void PopulateLimbCountList()
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
-            
+
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/limbcounts/limb"))
                 if (objXmlNodeList != null)
                     foreach (XmlNode objXmlNode in objXmlNodeList)
@@ -1259,7 +1261,7 @@ namespace Chummer
         private void PopulatePDFParameters()
         {
             List<ListItem> lstPdfParameters = new List<ListItem>();
-            
+
             int intIndex = 0;
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
@@ -1295,14 +1297,14 @@ namespace Chummer
         private void SetToolTips()
         {
             const int width = 100;
-            tipTooltip.SetToolTip(chkUnarmedSkillImprovements, LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkIgnoreArt, LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkCyberlegMovement, LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkDontDoubleQualityPurchases, LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkDontDoubleQualityRefunds, LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkStrictSkillGroups, LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkAllowInitiation, LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
-            tipTooltip.SetToolTip(chkUseCalculatedPublicAwareness, LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkUnarmedSkillImprovements, LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkIgnoreArt, LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkCyberlegMovement, LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkDontDoubleQualityPurchases, LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkDontDoubleQualityRefunds, LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkStrictSkillGroups, LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkAllowInitiation, LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
+            GlobalOptions.ToolTipProcessor.SetToolTip(chkUseCalculatedPublicAwareness, LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
         }
 
         private void PopulateSettingsList()
@@ -1314,7 +1316,7 @@ namespace Chummer
             foreach (string filePath in settingsFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument();
-                
+
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
@@ -1411,7 +1413,7 @@ namespace Chummer
 
                 lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
             }
-            
+
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
@@ -1495,6 +1497,7 @@ namespace Chummer
             chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
             txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
+            chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
         }
 
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
@@ -1536,7 +1539,7 @@ namespace Chummer
             string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", strLanguage);
 
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
@@ -1763,7 +1766,7 @@ namespace Chummer
                     txtCharacterRosterPath.Text = dlgSelectFolder.SelectedPath;
             }
         }
-        
+
         private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.

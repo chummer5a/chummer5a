@@ -126,7 +126,7 @@ namespace Chummer
         {
             AcceptForm();
         }
-        
+
         private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
         {
             cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;

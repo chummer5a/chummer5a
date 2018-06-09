@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -271,29 +271,35 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
+            if (XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strBaseLifestyle}\"]") == null && XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strName}\"]") != null)
+            {
+                string baselifestyle = _strName;
+                _strName = _strBaseLifestyle;
+                _strBaseLifestyle = baselifestyle;
+            }
             if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
             {
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
-                {
-                    List<ListItem> lstQualities = new List<ListItem>();
-                    using (XmlNodeList xmlLifestyleList = XmlManager.Load("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
-                        if (xmlLifestyleList != null)
-                            foreach (XmlNode xmlLifestyle in xmlLifestyleList)
-                            {
-                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                                lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
-                            }
-                    frmSelectItem frmSelect = new frmSelectItem
                     {
-                        GeneralItems = lstQualities,
-                        Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
-                    };
-                    frmSelect.ShowDialog();
-                    if (frmSelect.DialogResult == DialogResult.Cancel)
-                        return;
-                    _strBaseLifestyle = frmSelect.SelectedItem;
-                }
+                        List<ListItem> lstQualities = new List<ListItem>();
+                        using (XmlNodeList xmlLifestyleList = XmlManager.Load("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
+                            if (xmlLifestyleList != null)
+                                foreach (XmlNode xmlLifestyle in xmlLifestyleList)
+                                {
+                                    string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                                    lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
+                                }
+                        frmSelectItem frmSelect = new frmSelectItem
+                        {
+                            GeneralItems = lstQualities,
+                            Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
+                        };
+                        frmSelect.ShowDialog();
+                        if (frmSelect.DialogResult == DialogResult.Cancel)
+                            return;
+                        _strBaseLifestyle = frmSelect.SelectedItem;
+                    }
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
@@ -358,11 +364,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Converts old lifestyle structures to new standards. 
+        /// Converts old lifestyle structures to new standards.
         /// </summary>
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
-            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property. 
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion <= new Version("5.197.0") && xmlLifestyleNode["costforarea"] == null)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
@@ -424,7 +430,7 @@ namespace Chummer.Backend.Equipment
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("lifestyle");
-            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("name", CustomName);
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -502,6 +508,12 @@ namespace Chummer.Backend.Equipment
             set => _strName = value;
         }
 
+        public string CustomName
+        {
+            get => _strName;
+            set => _strName = value;
+        }
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -521,8 +533,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(Name))
-                strReturn += " (\"" + Name + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += " (\"" + CustomName + "\")";
 
             return strReturn;
         }
@@ -798,7 +810,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle. 
+        /// Whether the character is the primary tenant for the Lifestyle.
         /// </summary>
         public bool PrimaryTenant
         {
@@ -892,7 +904,7 @@ namespace Chummer.Backend.Equipment
         public decimal BaseCost => Cost * Math.Max(CostMultiplier + BaseCostMultiplier, 1);
 
         /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has. 
+        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
         public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
 
@@ -973,6 +985,31 @@ namespace Chummer.Backend.Equipment
                 _guiID = guiTemp;
         }
 
+        /// <summary>
+        /// Purchases an additional month of the selected lifestyle. 
+        /// </summary>
+        /// <param name="CharacterObject">Character to use.</param>
+        public void IncrementMonths(Character CharacterObject)
+        {
+            // Create the Expense Log Entry.
+            decimal decAmount = TotalMonthlyCost;
+                if (decAmount > CharacterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen -= decAmount;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
+            objExpense.Undo = objUndo;
+
+            Increments += 1;
+        }
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
@@ -983,7 +1020,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1005,5 +1042,10 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
+        }
     }
 }

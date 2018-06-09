@@ -82,7 +82,7 @@ namespace Chummer
         public ObservableCollection<StoryModule> Modules => _lstStoryModules;
 
         public ConcurrentDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
-        
+
         public StoryModule GeneratePersistentModule(string strFunction)
         {
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = \"" + strFunction + "\"]");

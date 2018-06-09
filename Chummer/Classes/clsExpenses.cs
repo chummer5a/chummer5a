@@ -179,7 +179,7 @@ namespace Chummer
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
         }
-        
+
         #endregion
 
         #region Properties
@@ -369,7 +369,15 @@ namespace Chummer
         public decimal Amount
         {
             get => _decAmount;
-            set => _decAmount = value;
+            set
+            {
+                if (_decAmount != value)
+                {
+                    _decAmount = value;
+                    if (!Refund)
+                        _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
+                }
+            }
         }
 
         /// <summary>
@@ -387,7 +395,7 @@ namespace Chummer
         public string DisplayReason(string strLanguage)
         {
             if (Refund)
-                return Reason + " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+                return Reason + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
             return Reason;
         }
 
@@ -397,7 +405,15 @@ namespace Chummer
         public ExpenseType Type
         {
             get => _objExpenseType;
-            set => _objExpenseType = value;
+            set
+            {
+                if (_objExpenseType != value)
+                {
+                    _objExpenseType = value;
+                    if (Amount > 0 && !Refund)
+                        _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
+                }
+            }
         }
 
         /// <summary>
@@ -406,7 +422,15 @@ namespace Chummer
         public bool Refund
         {
             get => _blnRefund;
-            set => _blnRefund = value;
+            set
+            {
+                if (_blnRefund != value)
+                {
+                    _blnRefund = value;
+                    if (Amount > 0)
+                        _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
+                }
+            }
         }
 
         /// <summary>

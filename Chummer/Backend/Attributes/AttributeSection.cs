@@ -22,17 +22,55 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-	public class AttributeSection : INotifyPropertyChanged
+	public class AttributeSection : INotifyMultiplePropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            if (PropertyChanged != null)
+            {
+                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+            }
+        }
+
+        private static readonly DependancyGraph<string> AttributeSectionDependencyGraph =
+            new DependancyGraph<string>(
+            );
+
+        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
 	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
@@ -96,8 +134,8 @@ namespace Chummer.Backend.Attributes
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
-                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0)
+                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
                     CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
@@ -188,6 +226,8 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }
@@ -283,7 +323,7 @@ namespace Chummer.Backend.Attributes
 		}
 
 		/// <summary>
-		/// Reset the databindings for all character attributes. 
+		/// Reset the databindings for all character attributes.
 		/// This method is used to support hot-swapping attributes for shapeshifters.
 		/// </summary>
 		public void ResetBindings()
@@ -311,9 +351,12 @@ namespace Chummer.Backend.Attributes
 	        get => _eAttributeCategory;
 	        set
 	        {
-	            _eAttributeCategory = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AttributeCategory)));
-            }
+	            if (_eAttributeCategory != value)
+	            {
+	                _eAttributeCategory = value;
+	                OnPropertyChanged();
+	            }
+	        }
 	    }
         #endregion
     }

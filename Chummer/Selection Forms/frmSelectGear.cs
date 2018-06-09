@@ -100,7 +100,7 @@ namespace Chummer
             }
 
             XPathNodeIterator objXmlCategoryList;
-            
+
             // Populate the Gear Category list.
             if (_setAllowedCategories.Count > 0)
             {
@@ -437,7 +437,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + ' ' + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
             }
         }
 
@@ -481,7 +481,7 @@ namespace Chummer
         {
             set => _eCapacityStyle = value;
         }
-        
+
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
@@ -517,7 +517,7 @@ namespace Chummer
                 nudRating.Minimum = 0;
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 return;
             }
 
@@ -536,7 +536,7 @@ namespace Chummer
                 nudRating.Minimum = 0;
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
                 return;
             }
 
@@ -545,8 +545,9 @@ namespace Chummer
 
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
@@ -896,7 +897,7 @@ namespace Chummer
                 strFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
 
             strFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            
+
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
@@ -941,7 +942,7 @@ namespace Chummer
                         continue;
                     }
                 }
-                
+
                 if (!blnDoUIUpdate && blnTerminateAfterFirst)
                 {
                     lstGears.Add(new ListItem(string.Empty, string.Empty));

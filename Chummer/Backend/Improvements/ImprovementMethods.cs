@@ -231,8 +231,6 @@ namespace Chummer
                     return objImprovementAdder.mademan;
                 case "FAME":
                     return objImprovementAdder.fame;
-                case "BORNRICH":
-                    return objImprovementAdder.bornrich;
                 case "ERASED":
                     return objImprovementAdder.erased;
                 case "OVERCLOCKER":
@@ -555,6 +553,8 @@ namespace Chummer
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
                     return objImprovementAdder.metageneticlimit;
+                case "NATURALWEAPON":
+                    return objImprovementAdder.naturalweapon;
                 // No method matches, return a null pointer
                 default:
                     return null;

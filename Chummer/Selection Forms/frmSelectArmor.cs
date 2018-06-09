@@ -389,7 +389,7 @@ namespace Chummer
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
-                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.Language));
+                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
@@ -477,13 +477,15 @@ namespace Chummer
         {
             int intWidth = lblArmorLabel.Width;
             intWidth = Math.Max(intWidth, lblCapacityLabel.Width);
+            intWidth = Math.Max(intWidth, lblArmorValueLabel.Width);
             intWidth = Math.Max(intWidth, lblAvailLabel.Width);
             intWidth = Math.Max(intWidth, lblCostLabel.Width);
+            intWidth = Math.Max(intWidth, lblTestLabel.Width);
 
             lblArmor.Left = lblArmorLabel.Left + intWidth + 6;
             lblCapacity.Left = lblCapacityLabel.Left + intWidth + 6;
             lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-            lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
+            lblTest.Left = lblTestLabel.Left + intWidth + 6;
             lblCost.Left = lblCostLabel.Left + intWidth + 6;
 
             nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
@@ -510,10 +512,11 @@ namespace Chummer
                 lblArmor.Text = _objSelectedArmor.DisplayName(GlobalOptions.Language);
 
                 string strPage = _objSelectedArmor.Page(GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
+                    CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + strSpaceCharacter +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 
                 lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
                 lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;
@@ -538,7 +541,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
                 lblArmor.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
 
                 lblArmorValue.Text = string.Empty;
                 lblCapacity.Text = string.Empty;

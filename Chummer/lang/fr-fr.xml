@@ -40,12 +40,24 @@
       <text>Karma</text>
     </string>
     <string>
+      <key>String_SumtoTen</key>
+      <text>Système à 10 points</text>
+    </string>
+    <string>
+      <key>String_LifeModule</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
+      <key>String_Life_Module</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
       <key>String_Page</key>
       <text>page</text>
     </string>
     <string>
       <key>String_Of</key>
-      <text>sur</text>
+      <text xml:space="preserve"> sur </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -1258,7 +1270,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de CHR.</text>
+      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -5588,19 +5600,39 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Dispo. Max :</text>
+      <text>Dispo. max :</text>
     </string>
     <string>
+      <key>Label_SelectBP_StartingKarma</key>
+      <text>Karma de\ndépart :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_SumToX</key>
+      <text>Système à\nX points :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Max. nuyen\nen Karma :</text>
+    </string>
+	<string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignorer les règles de création</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Saisissez le nombre de Points de création disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de création disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Saisisswz le nombre de points de Karma disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
+    </string>
+    <string>
+      <key>String_SelectBP_PrioritySummary</key>
+      <text>Saisissez la disponibilité maximum autorisée lors de la création de votre personnage.</text>
+    </string>
+    <string>
+      <key>String_SelectBP_LifeModuleSummary</key>
+      <text>Saissisez la disponibilité maximum et le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>Tip_SelectBP_IgnoreRules</key>

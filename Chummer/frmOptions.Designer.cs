@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -101,7 +100,7 @@ namespace Chummer
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
-            this.cboSheetLanguage = new Chummer.ElasticComboBox();
+            this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
             this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
             this.nudNuyenDecimalsMaximum = new System.Windows.Forms.NumericUpDown();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
@@ -115,7 +114,6 @@ namespace Chummer
             this.lblPDFOffset = new System.Windows.Forms.Label();
             this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
             this.cmdPDFTest = new System.Windows.Forms.Button();
-            this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
             this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
             this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -126,9 +124,7 @@ namespace Chummer
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.lblPDFAppPath = new System.Windows.Forms.Label();
             this.lblXSLT = new System.Windows.Forms.Label();
-            this.cboXSLT = new Chummer.ElasticComboBox();
             this.lblLanguage = new System.Windows.Forms.Label();
-            this.cboLanguage = new Chummer.ElasticComboBox();
             this.cmdVerify = new System.Windows.Forms.Button();
             this.cmdVerifyData = new System.Windows.Forms.Button();
             this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
@@ -148,10 +144,8 @@ namespace Chummer
             this.chkAllowSkillDiceRolling = new System.Windows.Forms.CheckBox();
             this.label36 = new System.Windows.Forms.Label();
             this.nudBP = new System.Windows.Forms.NumericUpDown();
-            this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
-            this.cboLimbCount = new Chummer.ElasticComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
             this.chkAllowHoverIncrement = new System.Windows.Forms.CheckBox();
@@ -166,6 +160,8 @@ namespace Chummer
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
+            this.nudKarmaMysticAdeptPowerPoint = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
             this.nudKarmaInitiationFlat = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaKnowledgeSpecialization = new System.Windows.Forms.Label();
             this.nudKarmaKnowledgeSpecialization = new System.Windows.Forms.NumericUpDown();
@@ -281,13 +277,16 @@ namespace Chummer
             this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
             this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
             this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
-            this.cboSetting = new Chummer.ElasticComboBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.nudKarmaMysticAdeptPowerPoint = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
+            this.cboSetting = new Chummer.ElasticComboBox();
+            this.cboSheetLanguage = new Chummer.ElasticComboBox();
+            this.cboPDFParameters = new Chummer.ElasticComboBox();
+            this.cboXSLT = new Chummer.ElasticComboBox();
+            this.cboLanguage = new Chummer.ElasticComboBox();
+            this.cboBuildMethod = new Chummer.ElasticComboBox();
+            this.cboLimbCount = new Chummer.ElasticComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -325,6 +324,7 @@ namespace Chummer
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabKarmaCosts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaKnowledgeSpecialization)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).BeginInit();
@@ -354,7 +354,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -1014,8 +1013,6 @@ namespace Chummer
             this.chkUnarmedSkillImprovements.TabIndex = 0;
             this.chkUnarmedSkillImprovements.Tag = "Checkbox_Options_UnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Text = "Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses";
-            this.tipTooltip.SetToolTip(this.chkUnarmedSkillImprovements, "Enabling this house rule allows Knucks to benefit from bonuses that apply to unar" +
-        "med attacks including DV bonuses.");
             this.chkUnarmedSkillImprovements.UseVisualStyleBackColor = true;
             this.chkUnarmedSkillImprovements.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -1043,7 +1040,7 @@ namespace Chummer
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(807, 576);
+            this.tabGeneral.Size = new System.Drawing.Size(807, 606);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Tag = "Tab_Options_General";
             this.tabGeneral.Text = "General";
@@ -1078,6 +1075,7 @@ namespace Chummer
             // tabGlobal
             // 
             this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGlobal.Controls.Add(this.chkHideCharacterRoster);
             this.tabGlobal.Controls.Add(this.cboSheetLanguage);
             this.tabGlobal.Controls.Add(this.chkLiveUpdateCleanCharacterFiles);
             this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMaximum);
@@ -1113,16 +1111,17 @@ namespace Chummer
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
             // 
-            // cboSheetLanguage
+            // chkHideCharacterRoster
             // 
-            this.cboSheetLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSheetLanguage.FormattingEnabled = true;
-            this.cboSheetLanguage.Location = new System.Drawing.Point(136, 33);
-            this.cboSheetLanguage.Name = "cboSheetLanguage";
-            this.cboSheetLanguage.Size = new System.Drawing.Size(162, 21);
-            this.cboSheetLanguage.TabIndex = 34;
-            this.cboSheetLanguage.TooltipText = "";
-            this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
+            this.chkHideCharacterRoster.AutoSize = true;
+            this.chkHideCharacterRoster.Location = new System.Drawing.Point(8, 290);
+            this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
+            this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
+            this.chkHideCharacterRoster.TabIndex = 35;
+            this.chkHideCharacterRoster.Tag = "Checkbox_Options_HideCharacterRoster";
+            this.chkHideCharacterRoster.Text = "Hide the Character Roster";
+            this.chkHideCharacterRoster.UseVisualStyleBackColor = true;
+            this.chkHideCharacterRoster.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkLiveUpdateCleanCharacterFiles
             // 
@@ -1139,7 +1138,7 @@ namespace Chummer
             // 
             // nudNuyenDecimalsMaximum
             // 
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 315);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 347);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1153,7 +1152,7 @@ namespace Chummer
             // lblNuyenDecimalsMaximumLabel
             // 
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(5, 317);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(5, 349);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
             this.lblNuyenDecimalsMaximumLabel.TabIndex = 31;
@@ -1162,7 +1161,7 @@ namespace Chummer
             // 
             // nudNuyenDecimalsMinimum
             // 
-            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(269, 293);
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(269, 325);
             this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1176,7 +1175,7 @@ namespace Chummer
             // lblNuyenDecimalsMinimumLabel
             // 
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(5, 295);
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(5, 327);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
             this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
             this.lblNuyenDecimalsMinimumLabel.TabIndex = 29;
@@ -1203,7 +1202,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Controls.Add(this.lblPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.nudPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.cmdPDFTest);
-            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 420);
+            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 452);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
             this.grpSelectedSourcebook.Size = new System.Drawing.Size(392, 80);
             this.grpSelectedSourcebook.TabIndex = 27;
@@ -1276,17 +1275,6 @@ namespace Chummer
             this.cmdPDFTest.UseVisualStyleBackColor = true;
             this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
             // 
-            // cboPDFParameters
-            // 
-            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(152, 348);
-            this.cboPDFParameters.Name = "cboPDFParameters";
-            this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
-            this.cboPDFParameters.TabIndex = 26;
-            this.cboPDFParameters.TooltipText = "";
-            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkPreferNightlyBuilds
             // 
             this.chkPreferNightlyBuilds.AutoSize = true;
@@ -1326,7 +1314,7 @@ namespace Chummer
             // lblPDFParametersLabel
             // 
             this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 353);
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 385);
             this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
             this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
             this.lblPDFParametersLabel.TabIndex = 19;
@@ -1359,7 +1347,7 @@ namespace Chummer
             // 
             // cmdPDFAppPath
             // 
-            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 384);
+            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 416);
             this.cmdPDFAppPath.Name = "cmdPDFAppPath";
             this.cmdPDFAppPath.Size = new System.Drawing.Size(27, 23);
             this.cmdPDFAppPath.TabIndex = 11;
@@ -1369,7 +1357,7 @@ namespace Chummer
             // 
             // txtPDFAppPath
             // 
-            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 386);
+            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 418);
             this.txtPDFAppPath.Name = "txtPDFAppPath";
             this.txtPDFAppPath.ReadOnly = true;
             this.txtPDFAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1378,7 +1366,7 @@ namespace Chummer
             // lblPDFAppPath
             // 
             this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 389);
+            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 421);
             this.lblPDFAppPath.Name = "lblPDFAppPath";
             this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
             this.lblPDFAppPath.TabIndex = 9;
@@ -1395,17 +1383,6 @@ namespace Chummer
             this.lblXSLT.Tag = "Label_Options_DefaultCharacterSheet";
             this.lblXSLT.Text = "Default Character Sheet:";
             // 
-            // cboXSLT
-            // 
-            this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(304, 33);
-            this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(238, 21);
-            this.cboXSLT.TabIndex = 8;
-            this.cboXSLT.TooltipText = "";
-            this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // lblLanguage
             // 
             this.lblLanguage.AutoSize = true;
@@ -1415,17 +1392,6 @@ namespace Chummer
             this.lblLanguage.TabIndex = 0;
             this.lblLanguage.Tag = "Label_Options_Language";
             this.lblLanguage.Text = "Language:";
-            // 
-            // cboLanguage
-            // 
-            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLanguage.FormattingEnabled = true;
-            this.cboLanguage.Location = new System.Drawing.Point(136, 6);
-            this.cboLanguage.Name = "cboLanguage";
-            this.cboLanguage.Size = new System.Drawing.Size(162, 21);
-            this.cboLanguage.TabIndex = 1;
-            this.cboLanguage.TooltipText = "";
-            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // cmdVerify
             // 
@@ -1492,12 +1458,12 @@ namespace Chummer
             this.tabPage2.Controls.Add(this.lblNuyenPerBP);
             this.tabPage2.Controls.Add(this.label36);
             this.tabPage2.Controls.Add(this.nudBP);
-            this.tabPage2.Controls.Add(this.cboBuildMethod);
             this.tabPage2.Controls.Add(this.lblMaxAvail);
             this.tabPage2.Controls.Add(this.nudMaxAvail);
-            this.tabPage2.Controls.Add(this.cboLimbCount);
             this.tabPage2.Controls.Add(this.chkPrintSkillsWithZeroRating);
             this.tabPage2.Controls.Add(this.chkPrintExpenses);
+            this.tabPage2.Controls.Add(this.cboBuildMethod);
+            this.tabPage2.Controls.Add(this.cboLimbCount);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -1672,17 +1638,6 @@ namespace Chummer
             0});
             this.nudBP.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // cboBuildMethod
-            // 
-            this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboBuildMethod.FormattingEnabled = true;
-            this.cboBuildMethod.Location = new System.Drawing.Point(5, 140);
-            this.cboBuildMethod.Name = "cboBuildMethod";
-            this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
-            this.cboBuildMethod.TabIndex = 5;
-            this.cboBuildMethod.TooltipText = "";
-            this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
-            // 
             // lblMaxAvail
             // 
             this.lblMaxAvail.AutoSize = true;
@@ -1705,16 +1660,6 @@ namespace Chummer
             0,
             0});
             this.nudMaxAvail.ValueChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // cboLimbCount
-            // 
-            this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLimbCount.FormattingEnabled = true;
-            this.cboLimbCount.Location = new System.Drawing.Point(166, 5);
-            this.cboLimbCount.Name = "cboLimbCount";
-            this.cboLimbCount.Size = new System.Drawing.Size(210, 21);
-            this.cboLimbCount.TabIndex = 1;
-            this.cboLimbCount.TooltipText = "";
             // 
             // tabPage1
             // 
@@ -2019,6 +1964,24 @@ namespace Chummer
             this.tabKarmaCosts.TabIndex = 1;
             this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
             this.tabKarmaCosts.Text = "Karma Costs";
+            // 
+            // nudKarmaMysticAdeptPowerPoint
+            // 
+            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(191, 576);
+            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
+            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
+            this.nudKarmaMysticAdeptPowerPoint.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // lblKarmaMysticAdeptPowerPoint
+            // 
+            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(8, 578);
+            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
+            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
+            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
             // 
             // nudKarmaInitiationFlat
             // 
@@ -2625,7 +2588,7 @@ namespace Chummer
             this.tabOptionalRules.Controls.Add(this.chkMoreLethalGameplay);
             this.tabOptionalRules.Location = new System.Drawing.Point(4, 22);
             this.tabOptionalRules.Name = "tabOptionalRules";
-            this.tabOptionalRules.Size = new System.Drawing.Size(807, 576);
+            this.tabOptionalRules.Size = new System.Drawing.Size(807, 606);
             this.tabOptionalRules.TabIndex = 2;
             this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
             this.tabOptionalRules.Text = "Optional Rules";
@@ -2873,7 +2836,7 @@ namespace Chummer
             this.tabHouseRules.Controls.Add(this.chkUnarmedSkillImprovements);
             this.tabHouseRules.Location = new System.Drawing.Point(4, 22);
             this.tabHouseRules.Name = "tabHouseRules";
-            this.tabHouseRules.Size = new System.Drawing.Size(807, 576);
+            this.tabHouseRules.Size = new System.Drawing.Size(807, 606);
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
@@ -2912,7 +2875,6 @@ namespace Chummer
             this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
             this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
     "skill group";
-            this.tipTooltip.SetToolTip(this.chkCompensateSkillGroupKarmaDifference, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
             this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
             this.chkCompensateSkillGroupKarmaDifference.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -2926,7 +2888,6 @@ namespace Chummer
             this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
             this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
     "rules";
-            this.tipTooltip.SetToolTip(this.chkMysAdeptSecondMAGAttribute, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
             this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
             this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -2939,7 +2900,6 @@ namespace Chummer
             this.chkAllowPointBuySpecializationsOnKarmaSkills.TabIndex = 34;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Tag = "Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills";
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Text = "Allow skill points to be used to buy specializations for karma-bought skills";
-            this.tipTooltip.SetToolTip(this.chkAllowPointBuySpecializationsOnKarmaSkills, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
             this.chkAllowPointBuySpecializationsOnKarmaSkills.UseVisualStyleBackColor = true;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3093,8 +3053,6 @@ namespace Chummer
             this.chkDontDoubleQualityRefunds.TabIndex = 21;
             this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
             this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
-            this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
-        "e at their normal price instead of doubling them.");
             this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
             this.chkDontDoubleQualityRefunds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3119,7 +3077,6 @@ namespace Chummer
             this.chkAllowCyberwareESSDiscounts.TabIndex = 19;
             this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
-            this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
             this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
             this.chkAllowCyberwareESSDiscounts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3272,7 +3229,6 @@ namespace Chummer
             this.chkAllowInitiation.TabIndex = 7;
             this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
             this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
-            this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Allows Initiation/Submersion using Karma during Create mode.");
             this.chkAllowInitiation.UseVisualStyleBackColor = true;
             this.chkAllowInitiation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3285,7 +3241,6 @@ namespace Chummer
             this.chkStrictSkillGroups.TabIndex = 6;
             this.chkStrictSkillGroups.Tag = "Checkbox_Options_StrictSkillGroups";
             this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
-            this.tipTooltip.SetToolTip(this.chkStrictSkillGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
             this.chkStrictSkillGroups.UseVisualStyleBackColor = true;
             this.chkStrictSkillGroups.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3298,8 +3253,6 @@ namespace Chummer
             this.chkDontDoubleQualityPurchases.TabIndex = 5;
             this.chkDontDoubleQualityPurchases.Tag = "Checkbox_Options_DontDoubleQualityPurchases";
             this.chkDontDoubleQualityPurchases.Text = "Don\'t double the cost of purchasing Positive Qualities in Career Mode";
-            this.tipTooltip.SetToolTip(this.chkDontDoubleQualityPurchases, "Allows characters in Career mode to purchase Positive Qualities and buy off Negat" +
-        "ive at their normal price instead of doubling them.");
             this.chkDontDoubleQualityPurchases.UseVisualStyleBackColor = true;
             this.chkDontDoubleQualityPurchases.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3312,8 +3265,6 @@ namespace Chummer
             this.chkCyberlegMovement.TabIndex = 2;
             this.chkCyberlegMovement.Tag = "Checkbox_Options_CyberlegMovement";
             this.chkCyberlegMovement.Text = "Use Cyberleg Stats for Movement";
-            this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s AGI when calculating" +
-        " movement rates.");
             this.chkCyberlegMovement.UseVisualStyleBackColor = true;
             this.chkCyberlegMovement.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -3326,21 +3277,8 @@ namespace Chummer
             this.chkIgnoreArt.TabIndex = 1;
             this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
             this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
-            this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art " +
-        "requirement detailed in Street Grimoire.");
             this.chkIgnoreArt.UseVisualStyleBackColor = true;
             this.chkIgnoreArt.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // cboSetting
-            // 
-            this.cboSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSetting.FormattingEnabled = true;
-            this.cboSetting.Location = new System.Drawing.Point(74, 6);
-            this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(176, 21);
-            this.cboSetting.TabIndex = 1;
-            this.cboSetting.TooltipText = "";
-            this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
             // 
             // lblSetting
             // 
@@ -3369,34 +3307,81 @@ namespace Chummer
             this.txtSettingName.Size = new System.Drawing.Size(190, 20);
             this.txtSettingName.TabIndex = 3;
             // 
-            // tipTooltip
+            // cboSetting
             // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 15000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 500;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
+            this.cboSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSetting.FormattingEnabled = true;
+            this.cboSetting.Location = new System.Drawing.Point(74, 6);
+            this.cboSetting.Name = "cboSetting";
+            this.cboSetting.Size = new System.Drawing.Size(176, 21);
+            this.cboSetting.TabIndex = 1;
+            this.cboSetting.TooltipText = "";
+            this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
             // 
-            // nudKarmaMysticAdeptPowerPoint
+            // cboSheetLanguage
             // 
-            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(191, 576);
-            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
-            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
-            this.nudKarmaMysticAdeptPowerPoint.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboSheetLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSheetLanguage.FormattingEnabled = true;
+            this.cboSheetLanguage.Location = new System.Drawing.Point(136, 33);
+            this.cboSheetLanguage.Name = "cboSheetLanguage";
+            this.cboSheetLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboSheetLanguage.TabIndex = 34;
+            this.cboSheetLanguage.TooltipText = "";
+            this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
             // 
-            // lblKarmaMysticAdeptPowerPoint
+            // cboPDFParameters
             // 
-            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
-            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(8, 578);
-            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
-            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
-            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
+            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPDFParameters.FormattingEnabled = true;
+            this.cboPDFParameters.Location = new System.Drawing.Point(152, 380);
+            this.cboPDFParameters.Name = "cboPDFParameters";
+            this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
+            this.cboPDFParameters.TabIndex = 26;
+            this.cboPDFParameters.TooltipText = "";
+            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // cboXSLT
+            // 
+            this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboXSLT.FormattingEnabled = true;
+            this.cboXSLT.Location = new System.Drawing.Point(304, 33);
+            this.cboXSLT.Name = "cboXSLT";
+            this.cboXSLT.Size = new System.Drawing.Size(238, 21);
+            this.cboXSLT.TabIndex = 8;
+            this.cboXSLT.TooltipText = "";
+            this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // cboLanguage
+            // 
+            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLanguage.FormattingEnabled = true;
+            this.cboLanguage.Location = new System.Drawing.Point(136, 6);
+            this.cboLanguage.Name = "cboLanguage";
+            this.cboLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboLanguage.TabIndex = 1;
+            this.cboLanguage.TooltipText = "";
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+            // 
+            // cboBuildMethod
+            // 
+            this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboBuildMethod.FormattingEnabled = true;
+            this.cboBuildMethod.Location = new System.Drawing.Point(5, 140);
+            this.cboBuildMethod.Name = "cboBuildMethod";
+            this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
+            this.cboBuildMethod.TabIndex = 5;
+            this.cboBuildMethod.TooltipText = "";
+            this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
+            // 
+            // cboLimbCount
+            // 
+            this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLimbCount.FormattingEnabled = true;
+            this.cboLimbCount.Location = new System.Drawing.Point(166, 5);
+            this.cboLimbCount.Name = "cboLimbCount";
+            this.cboLimbCount.Size = new System.Drawing.Size(210, 21);
+            this.cboLimbCount.TabIndex = 1;
+            this.cboLimbCount.TooltipText = "";
             // 
             // frmOptions
             // 
@@ -3464,6 +3449,7 @@ namespace Chummer
             this.tabPage3.ResumeLayout(false);
             this.tabKarmaCosts.ResumeLayout(false);
             this.tabKarmaCosts.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaKnowledgeSpecialization)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).EndInit();
@@ -3495,7 +3481,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3682,7 +3667,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkCyberlegMovement;
         private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
         private System.Windows.Forms.CheckBox chkStrictSkillGroups;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.Label lblPDFParametersLabel;
         private System.Windows.Forms.Label label3;
@@ -3762,5 +3746,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkNoArmorEncumbrance;
         private System.Windows.Forms.NumericUpDown nudKarmaMysticAdeptPowerPoint;
         private System.Windows.Forms.Label lblKarmaMysticAdeptPowerPoint;
+        private System.Windows.Forms.CheckBox chkHideCharacterRoster;
     }
 }

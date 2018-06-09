@@ -68,7 +68,7 @@ namespace Chummer
             OldObject = objOldObject;
             OldIndex = intOldIndex;
         }
-        
+
         public object OldObject { get; set; }
         public int OldIndex { get; set; }
     }

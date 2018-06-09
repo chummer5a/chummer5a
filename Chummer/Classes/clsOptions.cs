@@ -179,8 +179,24 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _hideCharacterRoster;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
+
+        public static ToolTip ToolTipProcessor { get; } = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip
+        {
+            AllowLinksHandling = true,
+            AutoPopDelay = 3600000,
+            BaseStylesheet = null,
+            InitialDelay = 250,
+            IsBalloon = false,
+            MaximumSize = new System.Drawing.Size(0, 0),
+            OwnerDraw = true,
+            ReshowDelay = 100,
+            TooltipCssClass = "htmltooltip",
+            //UseAnimation = true,
+            //UseFading = true
+        };
 
         // Omae Information.
         private static bool _omaeEnabled;
@@ -352,7 +368,7 @@ namespace Chummer
             if (_objBaseChummerKey == null)
                 return;
             _objBaseChummerKey.CreateSubKey("Sourcebook");
-            
+
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
@@ -373,6 +389,8 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
 
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
+
+            LoadBoolFromRegistry(ref _hideCharacterRoster, "hidecharacterroster");
 
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
@@ -459,6 +477,16 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
+        /// </summary>
+        public static bool HideCharacterRoster
+        {
+            get => _hideCharacterRoster;
+            set => _hideCharacterRoster = value;
+        }
+
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>
@@ -488,7 +516,7 @@ namespace Chummer
             get => _lifeModuleEnabled;
             set => _lifeModuleEnabled = value;
         }
-        
+
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
@@ -621,6 +649,7 @@ namespace Chummer
         public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
 
         private static XmlDocument _xmlClipboard = new XmlDocument();
+
         /// <summary>
         /// Clipboard.
         /// </summary>

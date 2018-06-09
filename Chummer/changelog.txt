@@ -1,4 +1,101 @@
-Future Build 199
+Future Build 201
+
+Application Changes:
+
+- Reverted use of databinding for Visible attribute in career and create forms due to flaky behaviour.
+- Removed incorrect visibility binding for the Rating of knowledge skills.
+- Fixed behaviour of attribute-based databindings to work properly when loading characters.
+- Fixed an issue with the SelectSpecialAttribute improvement not allowing the selection of non-active special attributes.
+- Fixed an issue in create mode in which ignoring creation rules would not properly allow all 'ware grades to be visible. 
+- Fixed visibility of the Type combobox for knowledge skills in career mode.
+- Removed possibly-legacy code that caused odd behaviour for mentor spirits that provided skill bonuses, particularly the Doom mentor.
+- Layout change for frmSelectArmor to prevent the Test text from overlapping.
+- Fixed purchasing weapons in career mode not properly adding other weapons that they're added by.
+- Created a new weapon property, SizeCategory. This is used to overrides the default category for the weapon it's applied to, allowing it to be mounted as though it were a weapon of the particular type. Intended to be used for exotic weapons in vehicle weapon mounts. 
+- Gear attached to weapons can now show the Capacity remaining/used.
+- Refactored behaviour of the Swap Quality button to be a method attached to the quality itself. 
+- Fixed an issue with Swap Quality causing constant prompts about unavailable qualities.
+- Fixed behaviour of the SpecialTab and EnableAttribute bonuses causing their relevant children being removed when using Reapply Improvements.
+- Added missing DamageResistance bonus improvements to all types of armour for sheets.
+- Fixed behaviour of improvements that reduce the maximum of an attribute is reduced to match the value when another attribute is already at maximum.
+- Fixed a regression with shapeshifter attributes not resetting bindings properly.
+- Fixed Martial Arts techniques not being properly displayed using their localised names in the treeview.
+- Fixed an issue with shapeshifters generating their attributes in duplicate when transitioning to career. 
+- Fixed an issue with increasing quantities of Gear not working when using non-English strings.
+- Fixed a regression in which pre-installed gear, cyberware and armor mods would not confer the correct ratings.
+- Repaired some lingering issues with object tag conversion that caused problems when reloading vehicles and selecting certain objects. Fixes #2785
+- Added an ICanEquip interface to support easily changing the equipped state of an object.
+- Fixed an issue with total armor values being concatenated along with the damage resistance pool from improvements instead of added together.
+- Fixed issues with the priority selection window that caused spells, complex forms and AI programs to not be changed when reselecting priorities if the new priority doesn't include those settings.
+- Fixed a crash when loading cyberware PACKS.
+- Changed power tab list display to an autoresizing table.
+
+Data Changes:
+
+- Removed the ability to add Fake SINs to other Fake SINs.
+- Removed the ability to add multiple Advanced Basic Safety Systems to a weapon. 
+- Added SizeCategory references to the Grapple Gun, Ares S-III Super Squirt, Ares Screech Sonic Rifle, FN-AAL Gyrojet Pistol, Fichetti Pain Inducer, Parashield Dart Pistol, Parashield Dart Rifle and Tactical Grapple Gun.
+- Added a customdata file to have Customised Agility and Strength not apply Grade modifiers from their parent (ie, an Alphaware limb's customisation cost will not increase to 6000¥.) Closes #2702 but should probably be referred to CGL for errata clarification.
+- Fixed incorrect 'walk' speed for the Magical Flight drake power. Existing characters with this power will need to Reapply Improvements, manually edit the improvement, or remove and re-add the power.
+
+New Strings:
+
+- Checkbox_Options_HideCharacterRoster
+- ColumnHeader_Notes
+- ColumnHeader_Power_Points
+- ColumnHeader_Action
+
+Build 200
+
+Application Changes:
+
+- Fixed a bug where changing tabs would often mark a character as having changes that need to be saved.
+- Implemented a cap on Lifestyle Points from assorted sources for Advanced Lifestyles; currently this is hardcoded to the base LP * 2. Closes #2640
+- Fixed an issue with old lifestyles not loading properly.
+- Changed MadeMan from selectcontact to addcontact and added backwards compatibility to convert old characters
+- Tooltips of fading, drain, and armor dice values will now spell out each modifier instead of having them all grouped under one umbrella.
+- Fixed issues where AI characters' limit values' tooltips displayed values as if the character was following AI rules from Data Trails.
+- Values for the counterspelling dice numerical up-down are now saved with characters, and their effects on spell defense dice are now displayed separately through parentheses next to base values for those spell defense dice.
+- Fixed behaviour of Jack of All Trades improvement again to properly deduct karma for skills over the threshold.
+- Regression fix for behaviour of initiation tab in career and create mode either not being visible, or hiding Group/Ordeal checkboxes.
+- Fixed controls overlapping when selecting a shapeshifter or other metatype with a lot of standard qualities.
+- Fixed a cache issue with the TrustFund property that caused advanced lifestyles to crash.
+- Advanced Lifestyles are no longer allowed to be accepted with more lifestyle points spent than maximum.
+- Fixed adept powers causing a crash when toggling their discount from Adept Ways.
+- Fixed missing databindings for skill controls due to visible = false shenanigans in the designer.
+- Fixed an issue with the Disable Improvements button incorrectly disabling all improvements.
+- Fixed an issue with Martial Arts Techniques not being able to be purchased for different martial arts.
+- Ugly workaround for issue with foci binding panel not being visible.
+- Fixed behaviour of contacts to allow being flagged as free without having an associated improvement.
+- Fixed an issue with the selection and creation of Cyberware Suites through the special menu not working properly.
+- Fixed modular cyberware that doesn't have an inherent location being unable to mount to modular mount points with sides, such as arms.
+- Fixed an issue in which the first technique purchased for a martial art in career mode would not be free.
+- Fixed behaviour loading lifestyles that caused a crash if loading a lifestyle that had more than the base amount of points spent on comforts, area or security.
+
+Data Changes:
+- Regression fix for shapeshifters not properly getting their MAG attribute enabled. 
+- Added missing melee weapon categories for the Small, Standard, Large, Huge and Heavy drone weapon mounts from Rigger 5. Existing drones should either remove and re-add the drone or edit the weapon mount in order to regenerate the weapon category.
+- Soul Swallower quality now requires the Essence Drain power.
+- Latent Dracomorphosis no longer contributes towards quality limit in create mode.
+- Added an amend entry to allow the College Education qualities from Run Faster and Sail Away, Sweet Sister to stack.
+- Added missing limits to Hand & Foot Webbing bioware.
+- Fixed missing bonus for Magical Flight power.
+- Added DMSO rounds for the Ares Super-Squirt per German SR5. Requires the SR5G book to be enabled.
+
+New Strings:
+
+- String_Handling
+- String_Sensor
+- String_Pilot
+- String_VehicleBody
+- Message_SelectAdvancedLifestyle_OverLPLimit
+- MessageTitle_SelectAdvancedLifestyle_OverLPLimit
+
+Removed Strings:
+
+- String_AttributePilot
+
+Build 199
 
 Application Changes:
 
@@ -125,7 +222,20 @@ Application Changes:
 - Added the ability for any lifestyle to support bonus LP, not just Traveler, and if the user is editing a lifestyle that supports bonus LP, they can opt to manually edit the value or set it to a random 1D6 value.
 - Fixed an issue where the "Quality Contributes to LP" checkbox did not function properly in the advanced lifestyle selection window.
 - Shifted around some labels in the advanced lifestyle selection window so that they make more intuitive sense.
-- Changed power tab list display to autoresizing table
+- Decrementing months/weeks/days from a lifestyle now generates an expense log entry to help keep track of things.
+- Editing a lifestyle in career mode now deducts from the character's nuyen if the lifestyle after changes has a greater total cost than before (e.g. it has 1 month paid and the user adds a quality to the lifestyle that has a nuyen cost). An expense log entry is now also generated after editing a lifestyle, regardless of whether nuyen is deducted or not.
+- Fixed an issue where recoil compensation from strength was displayed incorrectly.
+- Fixed a bug where drain attributes could be selected for a custom tradition of a physical adept (who would always drain with BOD + WIL regardless). This also fixes an associated bug where attempting to select drain attributes for a custom tradition on a physical adept would cause Chummer5a to freeze up and behave weirdly.
+- Fixed an issue where the option to calculate contact points based off of total CHA value would sometimes not work.
+- Fixed issues where the tooltips and/or displayed values for Street Cred, Notoriety, and Public Awareness were sometimes incorrect or missing factors that contributed to the particular value.
+- Fixed an issue where the enabletab and disabletab bonus nodes would work off of any children nodes in a semi-chaotic fashion instead of checking only "name" nodes for tabs that should be affected.
+- Fixed an issue where magic users who were neither adepts nor had any magician abilities could not select a tradition.
+- The Initiation tab now defaults to being enabled if the user has either magic or resonance enabled, and now works through the disabletab bonus as an opt-out instead of the enabletab bonus as an opt-in.
+- Fixed an issue where switching from a mystic adept to a physical adept when the character had spells and/or rituals that could still be used by a physical adept would still cause the character to lose access to those spells.
+- Unhardcoded the Born Rich bonus.
+- Corrected Advanced Lifestyle cost calculation for increased Comforts, Area and Security values. Fixes #2625
+- Made the Garage Lifestyle qualities available multiple times per Lifestyle
+- Moved the logic for toggling Prototype Transhuman-affected bioware from Character into the Improvement system. Resolves an issue with Reapply Improvements permanently disabling the Cyberware's bonus. Existing characters that have been affected by this behaviour will need to amend it manually. 
 
 Data Changes:
 
@@ -196,9 +306,10 @@ New Strings:
 - Label_QualityCost
 - Label_QualitySource
 - Checkbox_Randomize1D6
-- ColumnHeader_Notes
-- ColumnHeader_Power_Points
-- ColumnHeader_Action
+- String_ExpenseDecreaseLifestyle
+- String_ExpenseModifiedLifestyle
+- String_Space
+- Tip_Skill_OffHand
 
 Changed Strings:
 
@@ -207,6 +318,7 @@ Changed Strings:
 - Message_ComplexFormLimit
 - Message_PriorityComplexFormLimit
 - Label_SelectAdvancedLifestyle_LPContribution
+- String_Of
 
 Removed Strings:
 

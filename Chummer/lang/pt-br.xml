@@ -348,7 +348,7 @@
     </string>
     <string>
       <key>String_Of</key>
-      <text>de</text>
+      <text xml:space="preserve"> de </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -1836,7 +1836,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Seu número de Sprites registrados não pode exceder seu valor de CAR.</text>
+      <text>Seu número de Sprites registrados não pode exceder seu valor de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>

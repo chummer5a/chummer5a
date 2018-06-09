@@ -28,7 +28,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -73,7 +73,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += " (" + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
             }
@@ -283,12 +283,12 @@ namespace Chummer
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
-                strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + ' ' + strText;
+                strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsEnhancement,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -313,5 +313,23 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (Grade <= 0)
+                return false;
+            string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
+            if (!characterObject.ConfirmDelete(strMessage))
+                return false;
+
+            characterObject.Enhancements.Remove(this);
+            foreach (Power objPower in characterObject.Powers)
+            {
+                if (objPower.Enhancements.Contains(this))
+                    objPower.Enhancements.Remove(this);
+            }
+
+            return true;
+        }
     }
 }

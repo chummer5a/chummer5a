@@ -161,7 +161,7 @@ namespace ChummerDataViewer.Model
                 disposedValue = true;
             }
         }
-        
+
         public void Dispose()
         {
             Dispose(true);

@@ -20,11 +20,11 @@ using System;
 using System.Xml;
 
 namespace Chummer.Backend.Skills
-{ 
+{
     public sealed class ExoticSkill : Skill
     {
         private string _strSpecific;
-        
+
         public ExoticSkill(Character character, XmlNode node) : base(character, node)
         {
         }
@@ -36,19 +36,13 @@ namespace Chummer.Backend.Skills
 
         public override bool AllowDelete => !CharacterObject.Created;
 
-        public override int CurrentSpCost()
-        {
-            return Math.Max(BasePoints, 0);
-        }
+        public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
         /// <summary>
         /// How much karma this costs. Return value during career mode is undefined
         /// </summary>
         /// <returns></returns>
-        public override int CurrentKarmaCost()
-        {
-            return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
-        }
+        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
         public override bool IsExoticSkill => true;
 

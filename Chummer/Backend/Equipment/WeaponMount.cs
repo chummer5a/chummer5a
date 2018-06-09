@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
 		private string _strSource = string.Empty;
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
-		private bool _blnInstalled = true;
+		private bool _blnEquipped = true;
 		private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
@@ -145,7 +145,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-			objWriter.WriteElementString("installed", _blnInstalled.ToString());
+			objWriter.WriteElementString("equuipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
 			objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
@@ -204,7 +204,11 @@ namespace Chummer.Backend.Equipment
 		    objNode.TryGetStringFieldQuickly("source", ref _strSource);
 		    objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
-			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+		    if (!_blnEquipped)
+		    {
+		        objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+		    }
 
             XmlNode xmlChildrenNode = objNode["weapons"];
             if (xmlChildrenNode != null)
@@ -290,7 +294,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteEndElement();
 		}
         /// <summary>
-        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy. 
+        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy.
         /// </summary>
         /// <param name="xmlNode"></param>
         public void CreateByName(XmlNode xmlNode)
@@ -301,7 +305,7 @@ namespace Chummer.Backend.Equipment
             if (xmlDataNode != null)
             {
                 objMount.Create(xmlDataNode);
-                
+
                 xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"]?.InnerText}\" and category = \"Flexibility\"]");
                 if (xmlDataNode != null)
                 {
@@ -491,10 +495,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
-            set => _blnInstalled = value;
+            get => _blnEquipped;
+            set => _blnEquipped = value;
         }
 
         /// <summary>
@@ -525,7 +529,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Vehicle that the Mod is attached to. 
+        /// Vehicle that the Mod is attached to.
         /// </summary>
         public Vehicle Parent => _vehicle;
 
@@ -695,10 +699,10 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
 		{
             StringBuilder strReturn = new StringBuilder(DisplayNameShort(strLanguage));
-            
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (WeaponMountOptions.Count > 0)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
@@ -706,15 +710,15 @@ namespace Chummer.Backend.Equipment
                     {
                         blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                     }
                 }
-                strReturn.Length -= 2;
+                strReturn.Length -= 1 + strSpaceCharacter.Length;
                 if (blnCloseParantheses)
                     strReturn.Append(')');
-                if (!string.IsNullOrWhiteSpace(_strLocation))
+                if (!string.IsNullOrWhiteSpace(Location))
                 {
-                    strReturn.Append($" - {Location}");
+                    strReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter + Location);
                 }
             }
 
@@ -774,7 +778,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsVehicleWeaponMount,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -819,6 +823,19 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponMount", GlobalOptions.Language)))
+                return false;
+            DeleteWeaponMount();
+            return Parent.WeaponMounts.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class WeaponMountOption : IHasName, IHasXmlNode

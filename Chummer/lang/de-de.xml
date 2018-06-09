@@ -43,7 +43,11 @@
 		</string>
 		<string>
 			<key>String_Of</key>
-			<text>von</text>
+			<text xml:space="preserve"> von </text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"> </text>
 		</string>
 		<string>
 			<key>String_Remaining</key>
@@ -112,6 +116,26 @@
 		<string>
 			<key>Label_LP</key>
 			<text>LP:</text>
+		</string>
+		<string>
+			<key>Label_BonusLP</key>
+			<text>Bonus LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityLP</key>
+			<text>Gabe LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityCost</key>
+			<text>Gabe Kosten:</text>
+		</string>
+		<string>
+			<key>Label_QualitySource</key>
+			<text>Gabe Quelle:</text>
+		</string>
+		<string>
+			<key>Checkbox_Randomize1D6</key>
+			<text>Zufällig 1W6</text>
 		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
@@ -1091,7 +1115,7 @@
 		</string>
 		<string>
 			<key>Message_RegisteredSpriteLimit</key>
-			<text>Die Anzahl registrierter Sprites kann Ihr Charisma-Attribut nicht überschreiten.</text>
+			<text>Die Anzahl registrierter Sprites kann Ihr Logik-Attribut nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_RegisteredSpriteLimit</key>
@@ -1918,6 +1942,14 @@
 			<text>Gekaufter Lebensstil</text>
 		</string>
 		<string>
+			<key>String_ExpenseDecreaseLifestyle</key>
+			<text>Verringerter Lebensstil</text>
+		</string>
+		<string>
+			<key>String_ExpenseModifiedLifestyle</key>
+			<text>Modifizierter Lebensstil</text>
+		</string>
+		<string>
 			<key>String_ExpensePurchaseCyberware</key>
 			<text>Gekaufte Cyberware</text>
 		</string>
@@ -2382,6 +2414,10 @@
 			<text>Gabe austauschen</text>
 		</string>
 		<string>
+			<key>Button_DeleteQuality</key>
+			<text>Gabe entfernen</text>
+		</string>
+		<string>
 			<key>Button_AddContact</key>
 			<text>Connection &amp;hinzufügen</text>
 		</string>
@@ -2467,7 +2503,7 @@
 		</string>
 		<string>
 			<key>Label_CustomKnowledgeSkillsReminder</key>
-			<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+			<text>Denken sie daran, dass sie auch eigene Fertigkeiten und Spezialisierungen eintragen können!</text>
 		</string>
 		<string>
 			<key>Button_AddSkill</key>
@@ -3582,6 +3618,10 @@
 		<string>
 			<key>Tip_Skill_Wounds</key>
 			<text>Wunden</text>
+		</string>
+		<string>
+			<key>Tip_Skill_OffHand</key>
+			<text>Nebenhand</text>
 		</string>
 		<string>
 			<key>Tip_SkillGroup_Skills</key>
@@ -8125,6 +8165,10 @@
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Tenant</key>
 			<text>Hauptmieter</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_LPContribution</key>
+			<text>Trägt zu Lebensstilpunkten bei</text>
 		</string>
 		<string>
 			<key>Message_File_Cannot_Be_Accessed</key>
