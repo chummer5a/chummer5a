@@ -809,7 +809,8 @@ namespace Chummer
                 int intReturn = MaxLevels;
                 if (intReturn == 0)
                 {
-                    intReturn = Math.Max(intReturn, MAGAttributeObject.TotalValue);
+                    // if unspecified, max rating = MAG
+                    intReturn = MAGAttributeObject.TotalValue;
                 }
                 if (BoostedSkill != null)
                 {

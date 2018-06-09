@@ -4267,6 +4267,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Button_AddPower</key>
       <text>&amp;Add Power</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Action</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Power Points</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Notes</key>
+      <text>Notes</text>
+    </string>
     <!-- End Region -->
     <!-- Region Technomancer Tab -->
     <string>

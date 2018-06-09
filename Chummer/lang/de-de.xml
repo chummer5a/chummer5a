@@ -2643,6 +2643,18 @@
 			<key>Button_AddPower</key>
 			<text>Kraft &amp;hinzufügen</text>
 		</string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Handlung</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Kraftpunkte</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Notes</key>
+      <text>Notizen</text>
+    </string>
 		<string>
 			<key>Label_ComplexForms</key>
 			<text>Komplexe Formen</text>

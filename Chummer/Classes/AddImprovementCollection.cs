@@ -3685,7 +3685,15 @@ namespace Chummer.Classes
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
                     CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
+
+                    // fix: refund power points, if bonus would make power exceede maximum
+                    if (objBoostedPower.TotalMaximumLevels < objBoostedPower.Rating + intLevels)
+                    {
+                        objBoostedPower.Rating = Math.Max(objBoostedPower.TotalMaximumLevels - intLevels, 0);
+                    }
+
                     objBoostedPower.OnPropertyChanged(nameof(objBoostedPower.TotalRating));
+                    objBoostedPower.OnPropertyChanged(nameof(objBoostedPower.FreeLevels));
                 }
             }
         }

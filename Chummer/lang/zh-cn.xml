@@ -2846,6 +2846,14 @@
 			<key>Button_AddPower</key>
 			<text>添加异能(&amp;A)</text>
 		</string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>动作</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>能力点</text>
+    </string>
 		<!-- Technomancer Tab -->
 		<string>
 			<key>Label_ComplexForms</key>

@@ -3905,6 +3905,24 @@ namespace Chummer
                             objCharacter.AIPrograms.Remove(objProgram);
                         }
                         break;
+                    case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                    case Improvement.ImprovementType.AdeptPowerFreePoints:
+                        // Get the power improved by this improvement
+                        Power objImprovedPower = objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objImprovement.ImprovedName &&
+                                        objPower.Extra == objImprovement.UniqueName);
+                        if (objImprovedPower != null)
+                        {
+                            if (objImprovedPower.TotalRating <= 0)
+                            {
+                                objImprovedPower.DeletePower();
+                                objImprovedPower.UnbindPower();
+                            }
+
+                            objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                            objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
+                                ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
+                        }
+                        break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
                         foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
