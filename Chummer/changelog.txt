@@ -40,6 +40,7 @@ Data Changes:
 - Fixed incorrect 'walk' speed for the Magical Flight drake power. Existing characters with this power will need to Reapply Improvements, manually edit the improvement, or remove and re-add the power.
 - Fixed translation for Commanding Voice in German.
 - Added a customdata entry to move Commanding Voice from Stolen Souls into Street Grimoire, per German data changes.
+- Added a customdata entry to swap the pricing of seeker shafts and monotip arrow heads per German data changes.
 
 New Strings:
 
