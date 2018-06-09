@@ -38,6 +38,7 @@ Data Changes:
 - Added a customdata file to have Customised Agility and Strength not apply Grade modifiers from their parent (ie, an Alphaware limb's customisation cost will not increase to 6000¥.) Closes #2702 but should probably be referred to CGL for errata clarification.
 - Fixed incorrect 'walk' speed for the Magical Flight drake power. Existing characters with this power will need to Reapply Improvements, manually edit the improvement, or remove and re-add the power.
 - Fixed translation for Commanding Voice in German.
+- Added a customdata entry to move Commanding Voice from Stolen Souls into Street Grimoire, per German data changes.
 
 New Strings:
 
