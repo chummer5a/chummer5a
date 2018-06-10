@@ -41,6 +41,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly HashSet<string> _setDealerConnectionMaps;
         private readonly HashSet<string> _setBlackMarketMaps;
         private bool _blnBlackMarketDiscount;
 
@@ -57,6 +58,11 @@ namespace Chummer
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(imp =>
+                imp.Enabled && imp.ImproveType == Improvement.ImprovementType.DealerConnection))
+            {
+                _setDealerConnectionMaps.Add(objImprovement.UniqueName);
+            }
         }
 
         private void frmSelectVehicle_Load(object sender, EventArgs e)
@@ -336,6 +342,13 @@ namespace Chummer
                     if (chkBlackMarketDiscount.Checked)
                     {
                         decCost *= 0.9m;
+                    }
+
+                    foreach (string set in _setDealerConnectionMaps)
+                    {
+                        if (!objXmlVehicle.SelectSingleNode("category").Value.StartsWith(set)) continue;
+                        decCost *= 0.9m;
+                        break;
                     }
                 }
 
