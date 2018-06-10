@@ -281,24 +281,25 @@ namespace Chummer
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblCMPenalty = new System.Windows.Forms.Label();
 			this.tabDefences = new System.Windows.Forms.TabPage();
+			this.tlpSpellDefense = new System.Windows.Forms.TableLayoutPanel();
 			this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
-			this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceManipMental = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceIllusionPhysical = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceIllusionMana = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttWIL = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttLOG = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttINT = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttCHA = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttSTR = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttREA = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttAGI = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDecAttBOD = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDetection = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDirectSoakPhysical = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceDirectSoakMana = new Chummer.LabelWithToolTip();
-			this.lblSpellDefenceIndirectSoak = new Chummer.LabelWithToolTip();
 			this.lblSpellDefenceIndirectDodge = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceIndirectSoak = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDirectSoakMana = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDirectSoakPhysical = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDetection = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttBOD = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttAGI = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttREA = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttSTR = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttCHA = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttINT = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttLOG = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceDecAttWIL = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceIllusionMana = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceIllusionPhysical = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceManipMental = new Chummer.LabelWithToolTip();
+			this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
 			this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
 			this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -1190,7 +1191,6 @@ namespace Chummer
 			this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-			this.tlpSpellDefense = new System.Windows.Forms.TableLayoutPanel();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1215,6 +1215,7 @@ namespace Chummer
 			this.tabOtherInfo.SuspendLayout();
 			this.tabConditionMonitor.SuspendLayout();
 			this.tabDefences.SuspendLayout();
+			this.tlpSpellDefense.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
 			this.mnuCreateMenu.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -1307,7 +1308,6 @@ namespace Chummer
 			this.cmsTechnique.SuspendLayout();
 			this.cmsAdvancedProgram.SuspendLayout();
 			this.cmsWeaponMount.SuspendLayout();
-			this.tlpSpellDefense.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// lblTraditionSource
@@ -1349,8 +1349,8 @@ namespace Chummer
             this.pgbProgress});
 			this.StatusStrip.Location = new System.Drawing.Point(0, 698);
 			this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(1066, 24);
-            this.StatusStrip.TabIndex = 24;
+			this.StatusStrip.Size = new System.Drawing.Size(1353, 24);
+			this.StatusStrip.TabIndex = 24;
 			this.StatusStrip.Text = "StatusStrip1";
 			// 
 			// tssKarmaLabel
@@ -3331,8 +3331,8 @@ namespace Chummer
 			this.tabInfo.Location = new System.Drawing.Point(0, 0);
 			this.tabInfo.Name = "tabInfo";
 			this.tabInfo.SelectedIndex = 0;
-            this.tabInfo.Size = new System.Drawing.Size(193, 695);
-            this.tabInfo.TabIndex = 50;
+			this.tabInfo.Size = new System.Drawing.Size(247, 673);
+			this.tabInfo.TabIndex = 50;
 			// 
 			// tabOtherInfo
 			// 
@@ -3380,7 +3380,7 @@ namespace Chummer
 			this.tabOtherInfo.Location = new System.Drawing.Point(4, 22);
 			this.tabOtherInfo.Name = "tabOtherInfo";
 			this.tabOtherInfo.Padding = new System.Windows.Forms.Padding(3);
-			this.tabOtherInfo.Size = new System.Drawing.Size(185, 669);
+			this.tabOtherInfo.Size = new System.Drawing.Size(239, 647);
 			this.tabOtherInfo.TabIndex = 1;
 			this.tabOtherInfo.Tag = "Tab_OtherInfo";
 			this.tabOtherInfo.Text = "Other Info";
@@ -3598,8 +3598,8 @@ namespace Chummer
 			this.tabConditionMonitor.Location = new System.Drawing.Point(4, 22);
 			this.tabConditionMonitor.Name = "tabConditionMonitor";
 			this.tabConditionMonitor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConditionMonitor.Size = new System.Drawing.Size(185, 669);
-            this.tabConditionMonitor.TabIndex = 2;
+			this.tabConditionMonitor.Size = new System.Drawing.Size(185, 669);
+			this.tabConditionMonitor.TabIndex = 2;
 			this.tabConditionMonitor.Tag = "Tab_ConditionMonitor";
 			this.tabConditionMonitor.Text = "Condition Monitor";
 			// 
@@ -3659,188 +3659,254 @@ namespace Chummer
 			this.tabDefences.Location = new System.Drawing.Point(4, 22);
 			this.tabDefences.Name = "tabDefences";
 			this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDefences.Size = new System.Drawing.Size(239, 669);
+			this.tabDefences.Size = new System.Drawing.Size(185, 669);
 			this.tabDefences.TabIndex = 4;
 			this.tabDefences.Tag = "String_SpellDefense";
 			this.tabDefences.Text = "Spell Defence";
 			// 
+			// tlpSpellDefense
+			// 
+			this.tlpSpellDefense.ColumnCount = 2;
+			this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+			this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tlpSpellDefense.Controls.Add(this.lblCounterspellingDiceLabel, 0, 0);
+			this.tlpSpellDefense.Controls.Add(this.nudCounterspellingDice, 1, 0);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel, 0, 1);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodge, 1, 1);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoak, 1, 2);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakMana, 1, 3);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysical, 1, 4);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetection, 1, 5);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBOD, 1, 6);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGI, 1, 7);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREA, 1, 8);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTR, 1, 9);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHA, 1, 10);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINT, 1, 11);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOG, 1, 12);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWIL, 1, 13);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionMana, 1, 14);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel, 0, 15);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionManaLabel, 0, 14);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINTLabel, 0, 10);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOGLabel, 0, 11);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWILLabel, 0, 13);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysical, 1, 15);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMental, 1, 16);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysicalLabel, 0, 17);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMentalLabel, 0, 16);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysical, 1, 17);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoakLabel, 0, 2);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel, 0, 3);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel, 0, 4);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetectionLabel, 0, 5);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBODLabel, 0, 6);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGILabel, 0, 7);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREALabel, 0, 8);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTRLabel, 0, 9);
+			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHALabel, 0, 12);
+			this.tlpSpellDefense.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tlpSpellDefense.Location = new System.Drawing.Point(3, 3);
+			this.tlpSpellDefense.Name = "tlpSpellDefense";
+			this.tlpSpellDefense.RowCount = 18;
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpSpellDefense.Size = new System.Drawing.Size(179, 663);
+			this.tlpSpellDefense.TabIndex = 63;
+			// 
 			// nudCounterspellingDice
 			// 
 			this.nudCounterspellingDice.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.nudCounterspellingDice.Location = new System.Drawing.Point(177, 3);
+			this.nudCounterspellingDice.Location = new System.Drawing.Point(137, 3);
 			this.nudCounterspellingDice.Name = "nudCounterspellingDice";
-			this.nudCounterspellingDice.Size = new System.Drawing.Size(53, 20);
+			this.nudCounterspellingDice.Size = new System.Drawing.Size(39, 20);
 			this.nudCounterspellingDice.TabIndex = 61;
 			// 
-			// lblSpellDefenceManipPhysical
+			// lblSpellDefenceIndirectDodge
 			// 
-			this.lblSpellDefenceManipPhysical.AutoSize = true;
-			this.lblSpellDefenceManipPhysical.Location = new System.Drawing.Point(177, 330);
-			this.lblSpellDefenceManipPhysical.Name = "lblSpellDefenceManipPhysical";
-			this.lblSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceManipPhysical.TabIndex = 60;
-			this.lblSpellDefenceManipPhysical.Text = "0";
-			this.lblSpellDefenceManipPhysical.ToolTipText = "";
-			// 
-			// lblSpellDefenceManipMental
-			// 
-			this.lblSpellDefenceManipMental.AutoSize = true;
-			this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(177, 311);
-			this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
-			this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceManipMental.TabIndex = 58;
-			this.lblSpellDefenceManipMental.Text = "0";
-			this.lblSpellDefenceManipMental.ToolTipText = "";
-			// 
-			// lblSpellDefenceIllusionPhysical
-			// 
-			this.lblSpellDefenceIllusionPhysical.AutoSize = true;
-			this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(177, 292);
-			this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
-			this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
-			this.lblSpellDefenceIllusionPhysical.Text = "0";
-			this.lblSpellDefenceIllusionPhysical.ToolTipText = "";
-			// 
-			// lblSpellDefenceIllusionMana
-			// 
-			this.lblSpellDefenceIllusionMana.AutoSize = true;
-			this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(177, 273);
-			this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
-			this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIllusionMana.TabIndex = 54;
-			this.lblSpellDefenceIllusionMana.Text = "0";
-			this.lblSpellDefenceIllusionMana.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttWIL
-			// 
-			this.lblSpellDefenceDecAttWIL.AutoSize = true;
-			this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(177, 254);
-			this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
-			this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttWIL.TabIndex = 52;
-			this.lblSpellDefenceDecAttWIL.Text = "0";
-			this.lblSpellDefenceDecAttWIL.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttLOG
-			// 
-			this.lblSpellDefenceDecAttLOG.AutoSize = true;
-			this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(177, 235);
-			this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
-			this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttLOG.TabIndex = 51;
-			this.lblSpellDefenceDecAttLOG.Text = "0";
-			this.lblSpellDefenceDecAttLOG.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttINT
-			// 
-			this.lblSpellDefenceDecAttINT.AutoSize = true;
-			this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(177, 216);
-			this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
-			this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttINT.TabIndex = 50;
-			this.lblSpellDefenceDecAttINT.Text = "0";
-			this.lblSpellDefenceDecAttINT.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttCHA
-			// 
-			this.lblSpellDefenceDecAttCHA.AutoSize = true;
-			this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(177, 197);
-			this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
-			this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttCHA.TabIndex = 49;
-			this.lblSpellDefenceDecAttCHA.Text = "0";
-			this.lblSpellDefenceDecAttCHA.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttSTR
-			// 
-			this.lblSpellDefenceDecAttSTR.AutoSize = true;
-			this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(177, 178);
-			this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
-			this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttSTR.TabIndex = 48;
-			this.lblSpellDefenceDecAttSTR.Text = "0";
-			this.lblSpellDefenceDecAttSTR.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttREA
-			// 
-			this.lblSpellDefenceDecAttREA.AutoSize = true;
-			this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(177, 159);
-			this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
-			this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttREA.TabIndex = 40;
-			this.lblSpellDefenceDecAttREA.Text = "0";
-			this.lblSpellDefenceDecAttREA.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttAGI
-			// 
-			this.lblSpellDefenceDecAttAGI.AutoSize = true;
-			this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(177, 140);
-			this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
-			this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttAGI.TabIndex = 38;
-			this.lblSpellDefenceDecAttAGI.Text = "0";
-			this.lblSpellDefenceDecAttAGI.ToolTipText = "";
-			// 
-			// lblSpellDefenceDecAttBOD
-			// 
-			this.lblSpellDefenceDecAttBOD.AutoSize = true;
-			this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(177, 121);
-			this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
-			this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttBOD.TabIndex = 36;
-			this.lblSpellDefenceDecAttBOD.Text = "0";
-			this.lblSpellDefenceDecAttBOD.ToolTipText = "";
-			// 
-			// lblSpellDefenceDetection
-			// 
-			this.lblSpellDefenceDetection.AutoSize = true;
-			this.lblSpellDefenceDetection.Location = new System.Drawing.Point(177, 102);
-			this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
-			this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDetection.TabIndex = 34;
-			this.lblSpellDefenceDetection.Text = "0";
-			this.lblSpellDefenceDetection.ToolTipText = "";
-			// 
-			// lblSpellDefenceDirectSoakPhysical
-			// 
-			this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
-			this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(177, 83);
-			this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
-			this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
-			this.lblSpellDefenceDirectSoakPhysical.Text = "0";
-			this.lblSpellDefenceDirectSoakPhysical.ToolTipText = "";
-			// 
-			// lblSpellDefenceDirectSoakMana
-			// 
-			this.lblSpellDefenceDirectSoakMana.AutoSize = true;
-			this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(177, 64);
-			this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
-			this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
-			this.lblSpellDefenceDirectSoakMana.Text = "0";
-			this.lblSpellDefenceDirectSoakMana.ToolTipText = "";
+			this.lblSpellDefenceIndirectDodge.AutoSize = true;
+			this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(137, 26);
+			this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
+			this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIndirectDodge.TabIndex = 26;
+			this.lblSpellDefenceIndirectDodge.Text = "0";
+			this.lblSpellDefenceIndirectDodge.ToolTipText = "";
 			// 
 			// lblSpellDefenceIndirectSoak
 			// 
 			this.lblSpellDefenceIndirectSoak.AutoSize = true;
-			this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(177, 45);
+			this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(137, 45);
 			this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
 			this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
 			this.lblSpellDefenceIndirectSoak.TabIndex = 28;
 			this.lblSpellDefenceIndirectSoak.Text = "0";
 			this.lblSpellDefenceIndirectSoak.ToolTipText = "";
 			// 
-			// lblSpellDefenceIndirectDodge
+			// lblSpellDefenceDirectSoakMana
 			// 
-			this.lblSpellDefenceIndirectDodge.AutoSize = true;
-			this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(177, 26);
-			this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
-			this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIndirectDodge.TabIndex = 26;
-			this.lblSpellDefenceIndirectDodge.Text = "0";
-			this.lblSpellDefenceIndirectDodge.ToolTipText = "";
+			this.lblSpellDefenceDirectSoakMana.AutoSize = true;
+			this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(137, 64);
+			this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
+			this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
+			this.lblSpellDefenceDirectSoakMana.Text = "0";
+			this.lblSpellDefenceDirectSoakMana.ToolTipText = "";
+			// 
+			// lblSpellDefenceDirectSoakPhysical
+			// 
+			this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
+			this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(137, 83);
+			this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
+			this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
+			this.lblSpellDefenceDirectSoakPhysical.Text = "0";
+			this.lblSpellDefenceDirectSoakPhysical.ToolTipText = "";
+			// 
+			// lblSpellDefenceDetection
+			// 
+			this.lblSpellDefenceDetection.AutoSize = true;
+			this.lblSpellDefenceDetection.Location = new System.Drawing.Point(137, 102);
+			this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
+			this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDetection.TabIndex = 34;
+			this.lblSpellDefenceDetection.Text = "0";
+			this.lblSpellDefenceDetection.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttBOD
+			// 
+			this.lblSpellDefenceDecAttBOD.AutoSize = true;
+			this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(137, 121);
+			this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
+			this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttBOD.TabIndex = 36;
+			this.lblSpellDefenceDecAttBOD.Text = "0";
+			this.lblSpellDefenceDecAttBOD.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttAGI
+			// 
+			this.lblSpellDefenceDecAttAGI.AutoSize = true;
+			this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(137, 140);
+			this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
+			this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttAGI.TabIndex = 38;
+			this.lblSpellDefenceDecAttAGI.Text = "0";
+			this.lblSpellDefenceDecAttAGI.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttREA
+			// 
+			this.lblSpellDefenceDecAttREA.AutoSize = true;
+			this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(137, 159);
+			this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
+			this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttREA.TabIndex = 40;
+			this.lblSpellDefenceDecAttREA.Text = "0";
+			this.lblSpellDefenceDecAttREA.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttSTR
+			// 
+			this.lblSpellDefenceDecAttSTR.AutoSize = true;
+			this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(137, 178);
+			this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
+			this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttSTR.TabIndex = 48;
+			this.lblSpellDefenceDecAttSTR.Text = "0";
+			this.lblSpellDefenceDecAttSTR.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttCHA
+			// 
+			this.lblSpellDefenceDecAttCHA.AutoSize = true;
+			this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(137, 197);
+			this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
+			this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttCHA.TabIndex = 49;
+			this.lblSpellDefenceDecAttCHA.Text = "0";
+			this.lblSpellDefenceDecAttCHA.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttINT
+			// 
+			this.lblSpellDefenceDecAttINT.AutoSize = true;
+			this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(137, 216);
+			this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
+			this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttINT.TabIndex = 50;
+			this.lblSpellDefenceDecAttINT.Text = "0";
+			this.lblSpellDefenceDecAttINT.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttLOG
+			// 
+			this.lblSpellDefenceDecAttLOG.AutoSize = true;
+			this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(137, 235);
+			this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
+			this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttLOG.TabIndex = 51;
+			this.lblSpellDefenceDecAttLOG.Text = "0";
+			this.lblSpellDefenceDecAttLOG.ToolTipText = "";
+			// 
+			// lblSpellDefenceDecAttWIL
+			// 
+			this.lblSpellDefenceDecAttWIL.AutoSize = true;
+			this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(137, 254);
+			this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
+			this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttWIL.TabIndex = 52;
+			this.lblSpellDefenceDecAttWIL.Text = "0";
+			this.lblSpellDefenceDecAttWIL.ToolTipText = "";
+			// 
+			// lblSpellDefenceIllusionMana
+			// 
+			this.lblSpellDefenceIllusionMana.AutoSize = true;
+			this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(137, 273);
+			this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
+			this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionMana.TabIndex = 54;
+			this.lblSpellDefenceIllusionMana.Text = "0";
+			this.lblSpellDefenceIllusionMana.ToolTipText = "";
+			// 
+			// lblSpellDefenceIllusionPhysical
+			// 
+			this.lblSpellDefenceIllusionPhysical.AutoSize = true;
+			this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(137, 292);
+			this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
+			this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
+			this.lblSpellDefenceIllusionPhysical.Text = "0";
+			this.lblSpellDefenceIllusionPhysical.ToolTipText = "";
+			// 
+			// lblSpellDefenceManipMental
+			// 
+			this.lblSpellDefenceManipMental.AutoSize = true;
+			this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(137, 311);
+			this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
+			this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceManipMental.TabIndex = 58;
+			this.lblSpellDefenceManipMental.Text = "0";
+			this.lblSpellDefenceManipMental.ToolTipText = "";
+			// 
+			// lblSpellDefenceManipPhysical
+			// 
+			this.lblSpellDefenceManipPhysical.AutoSize = true;
+			this.lblSpellDefenceManipPhysical.Location = new System.Drawing.Point(137, 330);
+			this.lblSpellDefenceManipPhysical.Name = "lblSpellDefenceManipPhysical";
+			this.lblSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceManipPhysical.TabIndex = 60;
+			this.lblSpellDefenceManipPhysical.Text = "0";
+			this.lblSpellDefenceManipPhysical.ToolTipText = "";
 			// 
 			// mnuCreateMenu
 			// 
@@ -4075,8 +4141,8 @@ namespace Chummer
             this.tsbCopy});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1066, 25);
-            this.toolStrip.TabIndex = 53;
+			this.toolStrip.Size = new System.Drawing.Size(1353, 25);
+			this.toolStrip.TabIndex = 53;
 			this.toolStrip.Text = "ToolStrip";
 			// 
 			// tsbSave
@@ -4526,11 +4592,9 @@ namespace Chummer
 			// 
 			// splitMain
 			// 
-			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.BackColor = System.Drawing.SystemColors.InactiveCaption;
-			this.splitMain.Location = new System.Drawing.Point(0, 0);
+			this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitMain.Location = new System.Drawing.Point(0, 25);
 			this.splitMain.Name = "splitMain";
 			// 
 			// splitMain.Panel1
@@ -4543,9 +4607,9 @@ namespace Chummer
 			// 
 			this.splitMain.Panel2.BackColor = System.Drawing.SystemColors.Control;
 			this.splitMain.Panel2.Controls.Add(this.tabInfo);
-            this.splitMain.Size = new System.Drawing.Size(1066, 695);
-            this.splitMain.SplitterDistance = 869;
-            this.splitMain.TabIndex = 54;
+			this.splitMain.Size = new System.Drawing.Size(1353, 673);
+			this.splitMain.SplitterDistance = 1102;
+			this.splitMain.TabIndex = 54;
 			// 
 			// tabCharacterTabs
 			// 
@@ -4572,8 +4636,8 @@ namespace Chummer
 			this.tabCharacterTabs.Location = new System.Drawing.Point(0, 0);
 			this.tabCharacterTabs.Name = "tabCharacterTabs";
 			this.tabCharacterTabs.SelectedIndex = 0;
-            this.tabCharacterTabs.Size = new System.Drawing.Size(869, 695);
-            this.tabCharacterTabs.TabIndex = 33;
+			this.tabCharacterTabs.Size = new System.Drawing.Size(1102, 673);
+			this.tabCharacterTabs.TabIndex = 33;
 			this.tabCharacterTabs.Tag = "";
 			this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
 			// 
@@ -4608,7 +4672,7 @@ namespace Chummer
 			this.tabCommon.Location = new System.Drawing.Point(4, 22);
 			this.tabCommon.Name = "tabCommon";
 			this.tabCommon.Padding = new System.Windows.Forms.Padding(3);
-			this.tabCommon.Size = new System.Drawing.Size(1094, 669);
+			this.tabCommon.Size = new System.Drawing.Size(1094, 647);
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
 			this.tabCommon.Text = "Common";
@@ -4734,7 +4798,7 @@ namespace Chummer
 			// 
 			this.lblQualityBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBP.AutoSize = true;
-			this.lblQualityBP.Location = new System.Drawing.Point(58, 622);
+			this.lblQualityBP.Location = new System.Drawing.Point(58, 600);
 			this.lblQualityBP.Name = "lblQualityBP";
 			this.lblQualityBP.Size = new System.Drawing.Size(43, 13);
 			this.lblQualityBP.TabIndex = 70;
@@ -4744,7 +4808,7 @@ namespace Chummer
 			// 
 			this.lblQualityBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBPLabel.AutoSize = true;
-			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 622);
+			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 600);
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
 			this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
 			this.lblQualityBPLabel.TabIndex = 69;
@@ -4755,7 +4819,7 @@ namespace Chummer
 			// 
 			this.lblQualitySource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySource.AutoSize = true;
-			this.lblQualitySource.Location = new System.Drawing.Point(232, 622);
+			this.lblQualitySource.Location = new System.Drawing.Point(232, 600);
 			this.lblQualitySource.Name = "lblQualitySource";
 			this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
 			this.lblQualitySource.TabIndex = 68;
@@ -4765,7 +4829,7 @@ namespace Chummer
 			// 
 			this.lblQualitySourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySourceLabel.AutoSize = true;
-			this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 622);
+			this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 600);
 			this.lblQualitySourceLabel.Name = "lblQualitySourceLabel";
 			this.lblQualitySourceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblQualitySourceLabel.TabIndex = 67;
@@ -4816,7 +4880,7 @@ namespace Chummer
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
-			this.treQualities.Size = new System.Drawing.Size(273, 553);
+			this.treQualities.Size = new System.Drawing.Size(273, 531);
 			this.treQualities.TabIndex = 64;
 			this.treQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treQualities_AfterSelect);
 			this.treQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treQualities_KeyDown);
@@ -5002,8 +5066,8 @@ namespace Chummer
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
-            this.treLimit.Size = new System.Drawing.Size(299, 631);
-            this.treLimit.TabIndex = 79;
+			this.treLimit.Size = new System.Drawing.Size(299, 36);
+			this.treLimit.TabIndex = 79;
 			this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
 			// 
 			// cmdDeleteLimitModifier
@@ -5085,8 +5149,8 @@ namespace Chummer
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
-            this.treMartialArts.Size = new System.Drawing.Size(315, 631);
-            this.treMartialArts.TabIndex = 2;
+			this.treMartialArts.Size = new System.Drawing.Size(315, 36);
+			this.treMartialArts.TabIndex = 2;
 			this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
 			this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
 			this.treMartialArts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -5946,8 +6010,8 @@ namespace Chummer
 			this.panSprites.AutoScroll = true;
 			this.panSprites.Location = new System.Drawing.Point(8, 445);
 			this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(850, 221);
-            this.panSprites.TabIndex = 25;
+			this.panSprites.Size = new System.Drawing.Size(850, 0);
+			this.panSprites.TabIndex = 25;
 			// 
 			// cmdAddComplexForm
 			// 
@@ -6332,8 +6396,8 @@ namespace Chummer
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
-            this.treCritterPowers.Size = new System.Drawing.Size(333, 634);
-            this.treCritterPowers.TabIndex = 15;
+			this.treCritterPowers.Size = new System.Drawing.Size(333, 39);
+			this.treCritterPowers.TabIndex = 15;
 			this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
 			this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
 			this.treCritterPowers.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -6418,8 +6482,8 @@ namespace Chummer
 			this.txtGroupNotes.Location = new System.Drawing.Point(418, 554);
 			this.txtGroupNotes.Multiline = true;
 			this.txtGroupNotes.Name = "txtGroupNotes";
-            this.txtGroupNotes.Size = new System.Drawing.Size(414, 109);
-            this.txtGroupNotes.TabIndex = 117;
+			this.txtGroupNotes.Size = new System.Drawing.Size(414, 0);
+			this.txtGroupNotes.TabIndex = 117;
 			this.txtGroupNotes.Visible = false;
 			this.txtGroupNotes.TextChanged += new System.EventHandler(this.txtGroupNotes_TextChanged);
 			this.txtGroupNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
@@ -6482,8 +6546,8 @@ namespace Chummer
 			this.treMetamagic.Location = new System.Drawing.Point(8, 77);
 			this.treMetamagic.Name = "treMetamagic";
 			this.treMetamagic.ShowNodeToolTips = true;
-            this.treMetamagic.Size = new System.Drawing.Size(351, 586);
-            this.treMetamagic.TabIndex = 96;
+			this.treMetamagic.Size = new System.Drawing.Size(351, 0);
+			this.treMetamagic.TabIndex = 96;
 			this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
 			this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
 			this.treMetamagic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -7595,8 +7659,8 @@ namespace Chummer
             treeNode18});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
-            this.treCyberware.Size = new System.Drawing.Size(295, 630);
-            this.treCyberware.TabIndex = 28;
+			this.treCyberware.Size = new System.Drawing.Size(295, 35);
+			this.treCyberware.TabIndex = 28;
 			this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
 			this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
 			this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -8311,8 +8375,8 @@ namespace Chummer
 			this.treFoci.ShowLines = false;
 			this.treFoci.ShowPlusMinus = false;
 			this.treFoci.ShowRootLines = false;
-            this.treFoci.Size = new System.Drawing.Size(308, 289);
-            this.treFoci.TabIndex = 91;
+			this.treFoci.Size = new System.Drawing.Size(308, 595);
+			this.treFoci.TabIndex = 91;
 			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
 			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
 			// 
@@ -8539,8 +8603,8 @@ namespace Chummer
 			this.tabArmor.Location = new System.Drawing.Point(4, 22);
 			this.tabArmor.Name = "tabArmor";
 			this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(853, 643);
-            this.tabArmor.TabIndex = 1;
+			this.tabArmor.Size = new System.Drawing.Size(184, 48);
+			this.tabArmor.TabIndex = 1;
 			this.tabArmor.Tag = "Tab_Armor";
 			this.tabArmor.Text = "Armor";
 			// 
@@ -8953,8 +9017,8 @@ namespace Chummer
 			this.tabWeapons.Controls.Add(this.cmdFireWeapon);
 			this.tabWeapons.Location = new System.Drawing.Point(4, 22);
 			this.tabWeapons.Name = "tabWeapons";
-            this.tabWeapons.Size = new System.Drawing.Size(853, 643);
-            this.tabWeapons.TabIndex = 2;
+			this.tabWeapons.Size = new System.Drawing.Size(184, 48);
+			this.tabWeapons.TabIndex = 2;
 			this.tabWeapons.Tag = "Tab_Weapons";
 			this.tabWeapons.Text = "Weapons";
 			// 
@@ -10040,8 +10104,8 @@ namespace Chummer
 			this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
 			this.tabLifestyle.Name = "tabLifestyle";
 			this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(853, 643);
-            this.tabLifestyle.TabIndex = 0;
+			this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
+			this.tabLifestyle.TabIndex = 0;
 			this.tabLifestyle.Tag = "Tab_Lifestyle";
 			this.tabLifestyle.Text = "Lifestyle";
 			// 
@@ -12372,8 +12436,8 @@ namespace Chummer
             treeNode23});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(403, 630);
-            this.treVehicles.TabIndex = 30;
+			this.treVehicles.Size = new System.Drawing.Size(403, 35);
+			this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
 			this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
@@ -12892,7 +12956,7 @@ namespace Chummer
 			this.tabKarma.Location = new System.Drawing.Point(4, 22);
 			this.tabKarma.Name = "tabKarma";
 			this.tabKarma.Padding = new System.Windows.Forms.Padding(3);
-			this.tabKarma.Size = new System.Drawing.Size(861, 669);
+			this.tabKarma.Size = new System.Drawing.Size(1094, 647);
 			this.tabKarma.TabIndex = 11;
 			this.tabKarma.Tag = "Tab_Karma";
 			this.tabKarma.Text = "Karma and Nuyen";
@@ -12925,8 +12989,8 @@ namespace Chummer
 			this.splitKarmaNuyen.Panel2.Controls.Add(this.cmdNuyenSpent);
 			this.splitKarmaNuyen.Panel2.Controls.Add(this.cmdNuyenGained);
 			this.splitKarmaNuyen.Panel2.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel2_Resize);
-			this.splitKarmaNuyen.Size = new System.Drawing.Size(855, 663);
-			this.splitKarmaNuyen.SplitterDistance = 420;
+			this.splitKarmaNuyen.Size = new System.Drawing.Size(1088, 641);
+			this.splitKarmaNuyen.SplitterDistance = 534;
 			this.splitKarmaNuyen.TabIndex = 6;
 			// 
 			// chkShowFreeKarma
@@ -12946,7 +13010,7 @@ namespace Chummer
 			this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			chartArea1.Name = "KarmaArea";
 			this.chtKarma.ChartAreas.Add(chartArea1);
-			this.chtKarma.Location = new System.Drawing.Point(0, 452);
+			this.chtKarma.Location = new System.Drawing.Point(0, 430);
 			this.chtKarma.Name = "chtKarma";
 			this.chtKarma.Size = new System.Drawing.Size(409, 208);
 			this.chtKarma.TabIndex = 4;
@@ -12990,7 +13054,7 @@ namespace Chummer
 			this.lstKarma.Location = new System.Drawing.Point(0, 32);
 			this.lstKarma.MultiSelect = false;
 			this.lstKarma.Name = "lstKarma";
-			this.lstKarma.Size = new System.Drawing.Size(409, 598);
+			this.lstKarma.Size = new System.Drawing.Size(409, 576);
 			this.lstKarma.TabIndex = 0;
 			this.lstKarma.UseCompatibleStateImageBehavior = false;
 			this.lstKarma.View = System.Windows.Forms.View.Details;
@@ -13044,7 +13108,7 @@ namespace Chummer
 			this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			chartArea2.Name = "NuyenArea";
 			this.chtNuyen.ChartAreas.Add(chartArea2);
-			this.chtNuyen.Location = new System.Drawing.Point(0, 452);
+			this.chtNuyen.Location = new System.Drawing.Point(0, 430);
 			this.chtNuyen.Name = "chtNuyen";
 			this.chtNuyen.Size = new System.Drawing.Size(410, 208);
 			this.chtNuyen.TabIndex = 7;
@@ -13076,7 +13140,7 @@ namespace Chummer
 			this.lstNuyen.Location = new System.Drawing.Point(0, 32);
 			this.lstNuyen.MultiSelect = false;
 			this.lstNuyen.Name = "lstNuyen";
-			this.lstNuyen.Size = new System.Drawing.Size(410, 598);
+			this.lstNuyen.Size = new System.Drawing.Size(410, 576);
 			this.lstNuyen.TabIndex = 3;
 			this.lstNuyen.UseCompatibleStateImageBehavior = false;
 			this.lstNuyen.View = System.Windows.Forms.View.Details;
@@ -13157,8 +13221,8 @@ namespace Chummer
 			// 
 			this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdChangeStartWeek.AutoSize = true;
-            this.cmdChangeStartWeek.Location = new System.Drawing.Point(-601, 6);
-            this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
+			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-1270, 6);
+			this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
 			this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
 			this.cmdChangeStartWeek.TabIndex = 4;
 			this.cmdChangeStartWeek.Tag = "Button_ChangeStartWeek";
@@ -13204,8 +13268,8 @@ namespace Chummer
 			this.lstCalendar.Location = new System.Drawing.Point(8, 35);
 			this.lstCalendar.MultiSelect = false;
 			this.lstCalendar.Name = "lstCalendar";
-            this.lstCalendar.Size = new System.Drawing.Size(847, 628);
-            this.lstCalendar.TabIndex = 1;
+			this.lstCalendar.Size = new System.Drawing.Size(178, 33);
+			this.lstCalendar.TabIndex = 1;
 			this.lstCalendar.UseCompatibleStateImageBehavior = false;
 			this.lstCalendar.View = System.Windows.Forms.View.Details;
 			this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
@@ -13262,7 +13326,7 @@ namespace Chummer
 			this.tabImprovements.Controls.Add(this.cmdAddImprovement);
 			this.tabImprovements.Location = new System.Drawing.Point(4, 22);
 			this.tabImprovements.Name = "tabImprovements";
-			this.tabImprovements.Size = new System.Drawing.Size(861, 669);
+			this.tabImprovements.Size = new System.Drawing.Size(1094, 647);
 			this.tabImprovements.TabIndex = 14;
 			this.tabImprovements.Tag = "Tab_Improvements";
 			this.tabImprovements.Text = "Improvements";
@@ -13383,8 +13447,8 @@ namespace Chummer
 			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
 			this.treImprovements.ShowNodeToolTips = true;
-            this.treImprovements.Size = new System.Drawing.Size(295, 631);
-            this.treImprovements.TabIndex = 81;
+			this.treImprovements.Size = new System.Drawing.Size(295, 609);
+			this.treImprovements.TabIndex = 81;
 			this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
 			this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
 			this.treImprovements.DoubleClick += new System.EventHandler(this.treImprovements_DoubleClick);
@@ -13477,7 +13541,7 @@ namespace Chummer
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(838, 583);
+			this.panContacts.Size = new System.Drawing.Size(838, 595);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
 			this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
@@ -13554,8 +13618,8 @@ namespace Chummer
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(847, 637);
-            this.tabEnemies.TabIndex = 1;
+			this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Tag = "Label_Enemies";
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -13621,8 +13685,8 @@ namespace Chummer
 			this.tabPets.Location = new System.Drawing.Point(4, 22);
 			this.tabPets.Name = "tabPets";
 			this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(847, 637);
-            this.tabPets.TabIndex = 4;
+			this.tabPets.Size = new System.Drawing.Size(178, 42);
+			this.tabPets.TabIndex = 4;
 			this.tabPets.Tag = "Tab_Pets";
 			this.tabPets.Text = "Pets and Cohorts";
 			// 
@@ -14097,72 +14161,6 @@ namespace Chummer
 			this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
 			this.tsWeaponMountLocation.Text = "Rename &Location";
 			// 
-			// tlpSpellDefense
-			// 
-			this.tlpSpellDefense.ColumnCount = 2;
-			this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-			this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tlpSpellDefense.Controls.Add(this.lblCounterspellingDiceLabel, 0, 0);
-			this.tlpSpellDefense.Controls.Add(this.nudCounterspellingDice, 1, 0);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel, 0, 1);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodge, 1, 1);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoak, 1, 2);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakMana, 1, 3);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysical, 1, 4);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetection, 1, 5);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBOD, 1, 6);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGI, 1, 7);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREA, 1, 8);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTR, 1, 9);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHA, 1, 10);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINT, 1, 11);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOG, 1, 12);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWIL, 1, 13);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionMana, 1, 14);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel, 0, 15);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionManaLabel, 0, 14);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINTLabel, 0, 10);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOGLabel, 0, 11);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWILLabel, 0, 13);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysical, 1, 15);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMental, 1, 16);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysicalLabel, 0, 17);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMentalLabel, 0, 16);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysical, 1, 17);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoakLabel, 0, 2);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel, 0, 3);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel, 0, 4);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetectionLabel, 0, 5);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBODLabel, 0, 6);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGILabel, 0, 7);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREALabel, 0, 8);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTRLabel, 0, 9);
-			this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHALabel, 0, 12);
-			this.tlpSpellDefense.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tlpSpellDefense.Location = new System.Drawing.Point(3, 3);
-			this.tlpSpellDefense.Name = "tlpSpellDefense";
-			this.tlpSpellDefense.RowCount = 18;
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpSpellDefense.Size = new System.Drawing.Size(233, 663);
-			this.tlpSpellDefense.TabIndex = 63;
-			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14211,6 +14209,8 @@ namespace Chummer
 			this.tabConditionMonitor.ResumeLayout(false);
 			this.tabConditionMonitor.PerformLayout();
 			this.tabDefences.ResumeLayout(false);
+			this.tlpSpellDefense.ResumeLayout(false);
+			this.tlpSpellDefense.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
 			this.mnuCreateMenu.ResumeLayout(false);
 			this.mnuCreateMenu.PerformLayout();
@@ -14328,8 +14328,6 @@ namespace Chummer
 			this.cmsTechnique.ResumeLayout(false);
 			this.cmsAdvancedProgram.ResumeLayout(false);
 			this.cmsWeaponMount.ResumeLayout(false);
-			this.tlpSpellDefense.ResumeLayout(false);
-			this.tlpSpellDefense.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

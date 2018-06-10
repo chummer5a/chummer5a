@@ -15978,9 +15978,6 @@ namespace Chummer
             // Vehicle Tab.
             cmdDeleteVehicle.Left = cmdAddVehicle.Left + cmdAddVehicle.Width + 6;
             cmdAddVehicleLocation.Left = cmdDeleteVehicle.Left + cmdDeleteVehicle.Width + 6;
-            // Expense Tab.
-            cmdKarmaSpent.Left = cmdKarmaGained.Left + cmdKarmaGained.Width + 6;
-            cmdNuyenSpent.Left = cmdNuyenGained.Left + cmdNuyenGained.Width + 6;
             // Improvements Tab.
             cmdImprovementsEnableAll.Left = chkImprovementActive.Left + chkImprovementActive.Width + 6;
             cmdImprovementsDisableAll.Left = cmdImprovementsEnableAll.Left + cmdImprovementsEnableAll.Width + 6;
@@ -16389,15 +16386,17 @@ namespace Chummer
             // Expense Tab.
             cmdKarmaSpent.Left = cmdKarmaGained.Left + cmdKarmaGained.Width + 6;
             cmdKarmaEdit.Left = cmdKarmaSpent.Left + cmdKarmaSpent.Width + 6;
+            chkShowFreeKarma.Left = cmdKarmaEdit.Left + cmdKarmaEdit.Width + 6;
             cmdNuyenSpent.Left = cmdNuyenGained.Left + cmdNuyenGained.Width + 6;
             cmdNuyenEdit.Left = cmdNuyenSpent.Left + cmdNuyenSpent.Width + 6;
-
+            chkShowFreeNuyen.Left = cmdNuyenEdit.Left + cmdNuyenEdit.Width + 6;
             // Calendar Tab.
             cmdEditWeek.Left = cmdAddWeek.Left + cmdAddWeek.Width + 6;
 
             // Improvements tab.
             cmdEditImprovement.Left = cmdAddImprovement.Left + cmdAddImprovement.Width + 6;
             cmdDeleteImprovement.Left = cmdEditImprovement.Left + cmdEditImprovement.Width + 6;
+            cmdAddImprovementGroup.Left = cmdDeleteImprovement.Left + cmdDeleteImprovement.Width + 6;
             lblImprovementType.Left = lblImprovementTypeLabel.Left + lblImprovementTypeLabel.Width + 6;
 
             // Other Info tab.
