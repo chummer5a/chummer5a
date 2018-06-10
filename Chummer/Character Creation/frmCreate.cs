@@ -4319,13 +4319,13 @@ namespace Chummer
             // Locate the selected Quality.
             if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
             {
-                string strInternalIDToRemove = objSelectedQuality.QualityId;
+                string strInternalIDToRemove = objSelectedQuality.InternalId;
                 // Can't do a foreach because we're removing items, this is the next best thing
                 bool blnFirstRemoval = true;
                 for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
-                    if (objLoopQuality.QualityId == strInternalIDToRemove)
+                    if (objLoopQuality.InternalId == strInternalIDToRemove)
                     {
                         if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
                             break;
