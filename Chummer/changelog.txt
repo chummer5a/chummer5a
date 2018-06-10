@@ -33,6 +33,7 @@ Application Changes:
 - Merged the various methods for purchasing Cyberware into a single method attached to the object. Fixes issues with some objects not properly applying Free and Markup properties to the cyberware.
 - Added the calculation for Dealer Connection into the Vehicle Selection window.
 - Fixed an issue with deleting qualities that caused all duplicated qualities (Addiction, for example) to be removed if one was deleted.
+- Fixed an issue with attribute tooltips not updating properly if bonuses and penalties even out.
 
 Data Changes:
 

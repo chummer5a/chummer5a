@@ -732,7 +732,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    if (intHighest > intBaseValue)
+                    if (intHighest >= intBaseValue)
                         strModifier = strNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
@@ -748,7 +748,7 @@ namespace Chummer.Backend.Attributes
                             intHighest += strValues.Item2;
                         }
                     }
-                    if (intHighest > intBaseValue)
+                    if (intHighest >= intBaseValue)
                         strModifier = strNewModifier;
                 }
                 else
