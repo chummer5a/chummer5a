@@ -10638,69 +10638,7 @@ namespace Chummer
         public void RefreshSelectedArmor()
         {
             _blnSkipRefresh = true;
-            string strSelectedId = treArmor.SelectedNode?.Tag is Location objLocation ? objLocation.InternalId : treArmor.SelectedNode?.Tag.ToString();
-            bool blnNoneSelected = string.IsNullOrEmpty(strSelectedId);
-            cmdDeleteArmor.Enabled = !blnNoneSelected && strSelectedId != "Node_SelectedArmor";
-
-            if (blnNoneSelected || treArmor.SelectedNode.Level == 0)
-            {
-                lblArmorDeviceRatingLabel.Visible = false;
-                lblArmorDeviceRating.Visible = false;
-                lblArmorAttackLabel.Visible = false;
-                lblArmorAttack.Visible = false;
-                lblArmorSleazeLabel.Visible = false;
-                lblArmorSleaze.Visible = false;
-                lblArmorDataProcessingLabel.Visible = false;
-                lblArmorDataProcessing.Visible = false;
-                lblArmorFirewallLabel.Visible = false;
-                lblArmorFirewall.Visible = false;
-
-                if (blnNoneSelected)
-                {
-                    cmdArmorEquipAll.Visible = false;
-                    cmdArmorUnEquipAll.Visible = false;
-                    lblArmorEquippedLabel.Visible = false;
-                    lblArmorEquipped.Visible = false;
-                }
-                else
-                {
-                    cmdArmorEquipAll.Visible = true;
-                    cmdArmorUnEquipAll.Visible = true;
-                    lblArmorEquippedLabel.Visible = true;
-                    StringBuilder strArmorEquipped = new StringBuilder();
-                    foreach (Armor objLoopArmor in CharacterObject.Armor)
-                    {
-                        if (objLoopArmor.Equipped && (objLoopArmor.Location.InternalId == strSelectedId || objLoopArmor.Location == null && strSelectedId == "Node_SelectedArmor"))
-                        {
-                            strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
-                            strArmorEquipped.Append(LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(');
-                            strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                            strArmorEquipped.AppendLine(")");
-                        }
-                    }
-                    if (strArmorEquipped.Length > 0)
-                    {
-                        strArmorEquipped.Length -= 1;
-                        lblArmorEquipped.Text = strArmorEquipped.ToString();
-                    }
-                    else
-                        lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                    lblArmorEquipped.Visible = true;
-                }
-
-                chkIncludedInArmor.Enabled = false;
-                chkIncludedInArmor.Checked = false;
-                lblArmorValue.Text = string.Empty;
-                lblArmorAvail.Text = string.Empty;
-                lblArmorCost.Text = string.Empty;
-                lblArmorSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource, null);
-                chkArmorEquipped.Enabled = false;
-                nudArmorRating.Enabled = false;
-                _blnSkipRefresh = false;
-                return;
-            }
-
+            cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
             lblArmorEquipped.Visible = false;
             cmdArmorEquipAll.Visible = false;
             cmdArmorUnEquipAll.Visible = false;
@@ -10722,7 +10660,7 @@ namespace Chummer
 
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
                 lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 if (objArmor.MaxRating == 0)
                 {
                     nudArmorRating.Enabled = false;
@@ -10760,14 +10698,26 @@ namespace Chummer
                     cmdDeleteArmor.Enabled = false;
                 lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
                 lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblArmorCapacity.Text = objArmor.CapacityDisplayStyle == CapacityStyle.Zero ? "[0]" : objArmorMod.CalculatedCapacity;
+                lblArmorCapacity.Text = objArmor.CapacityDisplayStyle == CapacityStyle.Zero
+                    ? "[0]"
+                    : objArmorMod.CalculatedCapacity;
                 if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + " (" + objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + " (" +
+                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##",
+                                                GlobalOptions.CultureInfo) +
+                                            LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                            LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblArmorCost.Text =
+                    objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 string strPage = objArmorMod.DisplayPage(GlobalOptions.Language);
-                lblArmorSource.Text = CommonFunctions.LanguageBookShort(objArmorMod.Source, GlobalOptions.Language) + ' ' + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objArmorMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblArmorSource.Text = CommonFunctions.LanguageBookShort(objArmorMod.Source, GlobalOptions.Language) +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource,
+                    CommonFunctions.LanguageBookLong(objArmorMod.Source, GlobalOptions.Language) +
+                    LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) +
+                    LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
                 chkArmorEquipped.Checked = objArmorMod.Equipped;
                 chkArmorEquipped.Enabled = true;
                 if (objArmorMod.MaximumRating > 1)
@@ -10791,20 +10741,20 @@ namespace Chummer
                     cmdDeleteArmor.Enabled = false;
                 lblArmorValue.Text = string.Empty;
                 lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                /* 
+
+                CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
+
                 if (objArmorMod != null)
                     lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
                 else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                     lblArmorCapacity.Text = "[0]";
                 else
-                */
-                //TODO: Capacity parenting stuff
-                lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
+                    lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
 
                 lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strPage = objSelectedGear.DisplayPage(GlobalOptions.Language);
-                lblArmorSource.Text = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language) + ' ' + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblArmorSource.Text = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Page", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
                 if (objSelectedGear.MaxRating > 1)
@@ -10819,6 +10769,7 @@ namespace Chummer
                     nudArmorRating.Enabled = false;
                     nudArmorRating.Value = 1;
                 }
+
                 lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString();
                 lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString();
                 lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString();
@@ -10835,10 +10786,83 @@ namespace Chummer
                 lblArmorFirewallLabel.Visible = true;
                 lblArmorFirewall.Visible = true;
             }
-
+            else if (treArmor.SelectedNode?.Tag is Location objLocation)
+            {
+                cmdArmorEquipAll.Visible = true;
+                cmdArmorUnEquipAll.Visible = true;
+                lblArmorEquippedLabel.Visible = true;
+                StringBuilder strArmorEquipped = new StringBuilder();
+                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
+                {
+                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
+                    strArmorEquipped.Append(" (");
+                    strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
+                    strArmorEquipped.AppendLine(")");
+                }
+                if (strArmorEquipped.Length > 0)
+                {
+                    strArmorEquipped.Length -= 1;
+                    lblArmorEquipped.Text = strArmorEquipped.ToString();
+                }
+                else
+                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                lblArmorEquipped.Visible = true;
+            }
+            else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+            {
+                cmdArmorEquipAll.Visible = true;
+                cmdArmorUnEquipAll.Visible = true;
+                lblArmorEquippedLabel.Visible = true;
+                StringBuilder strArmorEquipped = new StringBuilder();
+                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                {
+                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
+                    strArmorEquipped.Append(" (");
+                    strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
+                    strArmorEquipped.AppendLine(")");
+                }
+                if (strArmorEquipped.Length > 0)
+                {
+                    strArmorEquipped.Length -= 1;
+                    lblArmorEquipped.Text = strArmorEquipped.ToString();
+                }
+                else
+                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                lblArmorEquipped.Visible = true;
+            }
+            else
+            {
+                lblArmorDeviceRatingLabel.Visible = false;
+                lblArmorDeviceRating.Visible = false;
+                lblArmorAttackLabel.Visible = false;
+                lblArmorAttack.Visible = false;
+                lblArmorSleazeLabel.Visible = false;
+                lblArmorSleaze.Visible = false;
+                lblArmorDataProcessingLabel.Visible = false;
+                lblArmorDataProcessing.Visible = false;
+                lblArmorFirewallLabel.Visible = false;
+                lblArmorFirewall.Visible = false;
+                cmdArmorEquipAll.Visible = false;
+                cmdArmorUnEquipAll.Visible = false;
+                lblArmorEquippedLabel.Visible = false;
+                lblArmorEquipped.Visible = false;
+                chkIncludedInArmor.Enabled = false;
+                chkIncludedInArmor.Checked = false;
+                lblArmorValue.Text = string.Empty;
+                lblArmorAvail.Text = string.Empty;
+                lblArmorCost.Text = string.Empty;
+                lblArmorSource.Text = string.Empty;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblArmorSource, null);
+                nudArmorRating.Maximum = 1;
+                nudArmorRating.Enabled = false;
+                nudArmorRating.Value = 1;
+                chkArmorEquipped.Enabled = false;
+                _blnSkipRefresh = false;
+                return;
+            }
             _blnSkipRefresh = false;
         }
-        
+
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
         /// </summary>
