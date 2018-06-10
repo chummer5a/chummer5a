@@ -2045,6 +2045,18 @@ namespace Chummer
                 }
             }
             Timekeeper.Finish("load_char_imp");
+
+            Timekeeper.Start("load_char_contacts");
+
+            // Contacts.
+            foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
+            {
+                Contact objContact = new Contact(this);
+                objContact.Load(xmlContact);
+                _lstContacts.Add(objContact);
+            }
+
+            Timekeeper.Finish("load_char_contacts");
             Timekeeper.Start("load_char_quality");
             // Qualities
             Quality objLivingPersonaQuality = null;
@@ -2121,10 +2133,41 @@ namespace Chummer
                         if (LastSavedVersion <= new Version("5.200.0") && objQuality.Name == "Made Man" &&
                             objQuality.Bonus["selectcontact"] != null)
                         {
-                            string selectedContactGUID = Improvements
-                                .FirstOrDefault(x => x.SourceName == objQuality.InternalId &&
-                                                     x.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty)
-                                .ImprovedName;
+                            string selectedContactGUID = (Improvements.FirstOrDefault(x => x.SourceName == objQuality.InternalId && x.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty))?.ImprovedName;
+                            if (string.IsNullOrWhiteSpace(selectedContactGUID))
+                            {
+                                selectedContactGUID = Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)?.GUID;
+                            }
+
+                            if (string.IsNullOrWhiteSpace(selectedContactGUID))
+                            {
+                                // Populate the Magician Traditions list.
+                                List<ListItem> lstContacts = new List<ListItem>();
+                                foreach (Contact objContact in Contacts.Where(contact => contact.IsGroup))
+                                {
+                                    lstContacts.Add(new ListItem(objContact.Name, objContact.GUID));
+                                }
+
+                                if (lstContacts.Count > 1)
+                                {
+                                    lstContacts.Sort(CompareListItems.CompareNames);
+                                }
+
+                                frmSelectItem frmPickItem = new frmSelectItem
+                                {
+                                    DropdownItems = lstContacts
+                                };
+                                frmPickItem.ShowDialog();
+
+                                // Make sure the dialogue window was not canceled.
+                                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                {
+                                    return false;
+                                }
+
+                                selectedContactGUID = frmPickItem.SelectedItem;
+                                frmPickItem.Dispose();
+                            }
                             objQuality.Bonus = xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Made Man\"]/bonus");
                             objQuality.Extra = string.Empty;
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
@@ -2284,18 +2327,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_wloc");
-
-            Timekeeper.Start("load_char_contacts");
-            
-            // Contacts.
-            foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
-            {
-                Contact objContact = new Contact(this);
-                objContact.Load(xmlContact);
-                _lstContacts.Add(objContact);
-            }
-
-            Timekeeper.Finish("load_char_contacts");
 
             Timekeeper.Start("load_char_sfoci");
 
