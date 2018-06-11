@@ -3692,7 +3692,7 @@ namespace Chummer.Backend.Equipment
                     intDicePool = objSkill.Pool;
                 }
 
-                string strReturn = strSkill + strSpaceCharacter + '(' + intDicePool.ToString(GlobalOptions.CultureInfo) + ')';
+                string strReturn = objSkill?.DisplayName ?? strKey + strSpaceCharacter + '(' + intDicePool.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (!string.IsNullOrEmpty(objSkill?.Specialization) && !objSkill.IsExoticSkill)
                 {

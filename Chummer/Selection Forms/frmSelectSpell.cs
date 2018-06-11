@@ -129,7 +129,7 @@ namespace Chummer
                     continue;
                 if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
                     continue;
-                _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode(@"translate")?.Value ?? strCategory));
+                _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
