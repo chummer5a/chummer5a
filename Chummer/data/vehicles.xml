@@ -9575,7 +9575,7 @@
         <name>Amenities (Luxury)</name>
         <name>Rigger Interface</name>
       </mods>
-      <seats>8-10</seats>
+      <seats>8</seats>
     </vehicle>
     <!-- Missing: EMC Kommodore (Would require adjustments in code,
          since it uses building block where each part receives part of the slots) -->
