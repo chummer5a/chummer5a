@@ -71,7 +71,7 @@ namespace Chummer.UI.Skills
             chkKarma.Visible = !skill.CharacterObject.Created;
             cboSpec.Visible  = !skill.CharacterObject.Created;
 
-            cboSelectAttribute.Visible = skill.CharacterObject.Created;
+            cboSelectAttribute.Visible = false;
             btnCareerIncrease.Visible = skill.CharacterObject.Created;
             lblCareerSpec.Visible = skill.CharacterObject.Created;
             btnAddSpec.Visible = skill.CharacterObject.Created;
