@@ -343,12 +343,12 @@ namespace Chummer
                     {
                         decCost *= 0.9m;
                     }
-
-                    foreach (string set in _setDealerConnectionMaps)
+                    if (_setDealerConnectionMaps != null)
                     {
-                        if (!objXmlVehicle.SelectSingleNode("category").Value.StartsWith(set)) continue;
-                        decCost *= 0.9m;
-                        break;
+                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category").Value.StartsWith(set)))
+                        {
+                            decCost *= 0.9m;
+                        }
                     }
                 }
 
