@@ -14866,7 +14866,8 @@ namespace Chummer
                             break;
                     }
 
-                    blnCopyEnabled = treVehicles.SelectedNode?.Tag is IHasChildren<Gear>;
+                    // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
+                    blnCopyEnabled = true;
                 }
             }
 
