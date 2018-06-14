@@ -3460,6 +3460,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode"></param>
         /// <param name="objGrade"></param>
+        /// <param name="objImprovementSource"></param>
         /// <param name="intRating"></param>
         /// <param name="objCharacter"></param>
         /// <param name="objVehicle"></param>
@@ -3470,12 +3471,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnFree"></param>
         /// <param name="strExpenseString"></param>
         /// <returns></returns>
-        public bool Purchase(Cyberware objCyberware, XmlNode objNode,Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        public bool Purchase(Cyberware objCyberware, XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
-            objCyberware.Create(objNode, objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
+            objCyberware.Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
             if (objCyberware.InternalId.IsEmptyGuid())
             {
                 return false;
