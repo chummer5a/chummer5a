@@ -40344,7 +40344,7 @@
       </bonus>
       <powers>
         <power select="Smell">Enhanced Senses</power>
-        <power select="Antlers: DV (STR+1)P, AP -1">Natural Weapons</power>
+        <power select="Antlers: DV (STR+1)P, AP -1">Natural Weapon</power>
         <power rating="2">Armor</power>
         <power>AR-Parallelism</power>
         <power>Resonance Feed</power>
