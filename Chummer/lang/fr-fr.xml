@@ -3947,6 +3947,42 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <!-- Individual Form- and UserControl-specific strings below this point -->
     <!-- Contacts/Enemies -->
     <string>
+      <key>String_Relationships</key>
+      <text>Contacts</text>
+    </string>
+    <string>
+      <key>Button_SwapOrdering</key>
+      <text>Changer l'&amp;ordre</text>
+    </string>
+    <string>
+      <key>Button_ContactsExpansionToggle</key>
+      <text>&amp;Tout développer/réduire</text>
+    </string>
+    <string>
+      <key>Label_FreeContactPoints</key>
+      <text>Points gratuits restants pour les contacts :</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Blackmail</key>
+      <text>Chantage</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Family</key>
+      <text>Famille</text>
+    </string>
+    <string>
+      <key>Label_Contact_PersonalLife</key>
+      <text>Vie personnelle :</text>
+    </string>
+    <string>
+      <key>Label_Contact_PreferredPayment</key>
+      <text>Méthode de paiement préférée :</text>
+    </string>
+    <string>
+      <key>Label_Contact_HobbiesVice</key>
+      <text>Vices ou hobbies :</text>
+    </string>
+    <string>
       <key>Label_Contact_Connection</key>
       <text>Influence :</text>
     </string>
