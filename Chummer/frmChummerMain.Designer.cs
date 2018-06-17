@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -89,7 +89,6 @@ namespace Chummer
             this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.tabForms = new System.Windows.Forms.TabControl();
             this.mnuChummerDiscord = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
@@ -698,14 +697,6 @@ namespace Chummer
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Visible = false;
             // 
-            // toolTip
-            // 
-            this.toolTip.AllowLinksHandling = true;
-            this.toolTip.BaseStylesheet = null;
-            this.toolTip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.toolTip.OwnerDraw = true;
-            this.toolTip.TooltipCssClass = "htmltooltip";
-            // 
             // tabForms
             // 
             this.tabForms.Dock = System.Windows.Forms.DockStyle.Top;
@@ -787,7 +778,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripButton tsbPrint;
         private System.Windows.Forms.ToolStripButton printPreviewToolStripButton;
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip toolTip;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsUpdate;
         private System.Windows.Forms.ToolStripButton tsbSave;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpRevisionHistory;

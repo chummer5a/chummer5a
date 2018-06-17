@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
 using System.Globalization;
@@ -42,7 +36,7 @@ namespace ChummerDataViewer
 		{
 			string exception = stacktrace.Split(':')[0];
 
-			string location = stacktrace.Split(new string[] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
+			string location = stacktrace.Split(new [] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
 
 			if (location != null) return exception + " : " + location;
 

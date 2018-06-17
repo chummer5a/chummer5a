@@ -19,9 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -41,7 +38,7 @@ namespace Chummer
         string ModDataProcessing { get; set; }
         string ModFirewall { get; set; }
         string Overclocked { get; set; }
-        
+
         string CanFormPersona { get; set; }
         bool IsCommlink { get; }
 
@@ -63,7 +60,7 @@ namespace Chummer
     public static class MatrixAttributes
     {
         private static readonly string[] s_LstMatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
-        public static ReadOnlyCollection<string> MatrixAttributeStrings { get { return Array.AsReadOnly(s_LstMatrixAttributeStrings); } }
+        public static ReadOnlyCollection<string> MatrixAttributeStrings => Array.AsReadOnly(s_LstMatrixAttributeStrings);
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker
@@ -131,6 +128,7 @@ namespace Chummer
         /// Gets a Matrix Attribute string based on its name
         /// </summary>
         /// <param name="strAttributeName">Name of the Matrix Attribute</param>
+        /// <param name="objThis">Object whose Matrix Attribute to get.</param>
         /// <returns></returns>
         public static string GetMatrixAttributeString(this IHasMatrixAttributes objThis, string strAttributeName)
         {
@@ -230,9 +228,9 @@ namespace Chummer
         {
             if (objThis == null)
                 return false;
-            
-            string strTemp = string.Empty;
-            Action<string> funcAttributePropertySetter = null;
+
+            string strTemp;
+            Action<string> funcAttributePropertySetter;
 
             if (cboChangedAttributeCBO == cboAttack)
             {

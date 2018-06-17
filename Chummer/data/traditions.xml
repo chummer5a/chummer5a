@@ -18,6 +18,22 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
+
+<!-- Documentation of the tags used in traditions.xml
+
+<tradition> a container for a single tradition
+	<name> Human readable name of the tradition
+	<drain> specifies wich attributes are used by this tradition to resist drain (as defined in <drainattributes>)
+	<source> The Rulebook of this tradition
+	<page> reference to the page in the rulebook the tradition is described in
+	<spirits> Container of the Spirits this tradition can summon
+		<spiritcombat> specifies the combat spirit the tradition can summon (as defined in <spirits>)
+		<spiritdetection> specifies the detection spirit the tradition can summon (as defined in <spirits>)
+		<spirithealth> specifies the healer/health spirit the tradition can summon (as defined in <spirits>)
+		<spiritillusion> specifies the illusion spirit the tradition can summon (as defined in <spirits>)
+		<spiritmanipulation> specifies the manipulation spirit the tradition can summon (as defined in <spirits>)
+		
+-->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema traditions.xsd">
   <version>0</version>
@@ -511,6 +527,10 @@
         <spiritillusion>Spirit of Fire</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
+      <bonus>
+        <drainresist>2</drainresist>
+
+      </bonus>
     </tradition>
     <tradition>
       <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
@@ -1796,7 +1816,7 @@
         <power>Fear</power>
         <power>Magical Guard</power>
         <power>Mimicry</power>
-        <power>Possesion (Blood)</power>
+        <power>Possession (Blood)</power>
         <power>Realistic Form</power>
         <power>Sapience</power>
       </powers>
@@ -1804,7 +1824,7 @@
         <skill attr="int">Assensing</skill>
         <skill attr="wil">Astral Combat</skill>
         <skill attr="mag">Counterspelling</skill>
-        <skill attr="cha">Impersination</skill>
+        <skill attr="cha">Impersonation</skill>
         <skill attr="int">Perception</skill>
         <skill attr="agi">Unarmed Combat</skill>
       </skills>
@@ -1841,18 +1861,18 @@
         <power select="Low-Light Vision">Enhanced Senses</power>
         <power select="Smell">Enhanced Senses</power>
         <power>Fear</power>
-        <power>Immunity to Normal Weapons</power>
-        <power>Immunity to Pathogens</power>
-        <power>Immunity to Toxins</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
         <power>Movement</power>
         <power>Possession</power>
         <power>Sapience</power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat</skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
     <spirit>
@@ -1886,21 +1906,21 @@
         <power>Confusion</power>
         <power>Deathly Aura</power>
         <power select="Low-Light">Enhanced Senses</power>
-        <power>Thermographic Vision)</power>
+        <power>Thermographic Vision</power>
         <power>Guard</power>
-        <power>Immunity to Normal Weapons</power>
-        <power>Immunity to Pathogens</power>
-        <power>Immunity to Toxins</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
         <power>Inﬂuence</power>
         <power>Possession</power>
         <power>Sapience</power>
         <power>Search </power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat</skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
     <spirit>
@@ -1935,21 +1955,21 @@
         <power>Engulf</power>
         <power>Fear</power>
         <power>Guard</power>
-        <power>Immunity to Normal Weapons</power>
-        <power>Immunity to Pathogens</power>
-        <power>Immunity to Toxins</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
         <power>Magical Guard</power>
         <power>Possession</power>
         <power>Sapience</power>
         <power>Silence </power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Counterspelling</skill>
-        <skill>Exotic Ranged Weapon</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat</skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="mag">Counterspelling</skill>
+        <skill attr="agi">Exotic Ranged Weapon</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
     <spirit>
@@ -1983,19 +2003,19 @@
         <power>Elemental Attack</power>
         <power>Deathly Aura</power>
         <power>Engulf</power>
-        <power>Immunity to Normal Weapons</power>
-        <power>Immunity to Pathogens</power>
-        <power>Immunity to Toxins</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
         <power>Possession</power>
         <power>Sapience</power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Exotic Ranged Weapon</skill>
-        <skill>Flight</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat </skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="agi">Exotic Ranged Weapon</skill>
+        <skill attr="str">Flight</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat </skill>
       </skills>
     </spirit>
     <spirit>
@@ -2027,19 +2047,19 @@
         <power>Binding</power>
         <power>Deathly Aura</power>
         <power>Guard</power>
-        <power>Immunity to Normal Weapons</power>
-        <power>Immunity to Pathogens</power>
-        <power>Immunity to Toxins</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
         <power>Possession</power>
         <power>Sapience</power>
         <power>Search</power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Exotic Ranged Weapon</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat</skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="agi">Exotic Ranged Weapon</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
     <spirit>
@@ -2334,7 +2354,7 @@
         <power>Stealth</power>
       </powers>
       <skills>
-        <skill attr="bod">Free Fall</skill>
+        <skill attr="bod">Free-Fall</skill>
         <skill attr="int">Navigation</skill>
         <skill attr="int">Perception</skill>
         <skill attr="rea">Pilot Aircraft</skill>

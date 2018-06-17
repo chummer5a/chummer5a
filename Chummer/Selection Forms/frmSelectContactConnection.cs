@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -24,14 +24,14 @@ namespace Chummer
 {
     public partial class frmSelectContactConnection : Form
     {
-        private int _intMembership = 0;
-        private int _intAreaOfInfluence = 0;
-        private int _intMagicalResources = 0;
-        private int _intMatrixResources = 0;
+        private int _intMembership;
+        private int _intAreaOfInfluence;
+        private int _intMagicalResources;
+        private int _intMatrixResources;
         private string _strGroupName = string.Empty;
         private Color _objColour;
-        private bool _blnFree = false;
-        private bool _blnSkipUpdate = false;
+        private bool _blnFree;
+        private bool _blnSkipUpdate;
 
         #region Control Events
         public frmSelectContactConnection()
@@ -140,26 +140,6 @@ namespace Chummer
                 _objColour = dlgColour.Color;
             }
         }
-
-        private void cboField_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (string strItem in ((ComboBox)sender).Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(strItem, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
-                {
-                    intWidth = intNewWidth;
-                }
-            }
-            objSender.DropDownWidth = intWidth;
-        }
         #endregion
 
         #region Properties
@@ -168,14 +148,8 @@ namespace Chummer
         /// </summary>
         public int Membership
         {
-            get
-            {
-                return _intMembership;
-            }
-            set
-            {
-                _intMembership = value;
-            }
+            get => _intMembership;
+            set => _intMembership = value;
         }
 
         /// <summary>
@@ -183,14 +157,8 @@ namespace Chummer
         /// </summary>
         public int AreaOfInfluence
         {
-            get
-            {
-                return _intAreaOfInfluence;
-            }
-            set
-            {
-                _intAreaOfInfluence = value;
-            }
+            get => _intAreaOfInfluence;
+            set => _intAreaOfInfluence = value;
         }
 
         /// <summary>
@@ -198,14 +166,8 @@ namespace Chummer
         /// </summary>
         public int MagicalResources
         {
-            get
-            {
-                return _intMagicalResources;
-            }
-            set
-            {
-                _intMagicalResources = value;
-            }
+            get => _intMagicalResources;
+            set => _intMagicalResources = value;
         }
 
         /// <summary>
@@ -213,14 +175,8 @@ namespace Chummer
         /// </summary>
         public int MatrixResources
         {
-            get
-            {
-                return _intMatrixResources;
-            }
-            set
-            {
-                _intMatrixResources = value;
-            }
+            get => _intMatrixResources;
+            set => _intMatrixResources = value;
         }
 
         /// <summary>
@@ -228,14 +184,8 @@ namespace Chummer
         /// </summary>
         public string GroupName
         {
-            get
-            {
-                return _strGroupName;
-            }
-            set
-            {
-                _strGroupName = value;
-            }
+            get => _strGroupName;
+            set => _strGroupName = value;
         }
 
         /// <summary>
@@ -243,14 +193,8 @@ namespace Chummer
         /// </summary>
         public Color Colour
         {
-            get
-            {
-                return _objColour;
-            }
-            set
-            {
-                _objColour = value;
-            }
+            get => _objColour;
+            set => _objColour = value;
         }
 
         /// <summary>
@@ -258,14 +202,8 @@ namespace Chummer
         /// </summary>
         public bool Free
         {
-            get
-            {
-                return _blnFree;
-            }
-            set
-            {
-                _blnFree = value;
-            }
+            get => _blnFree;
+            set => _blnFree = value;
         }
         #endregion
 

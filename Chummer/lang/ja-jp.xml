@@ -2935,6 +2935,14 @@
       <key>Button_AddPower</key>
       <text>パワーを追加 (&amp;A)</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>行動</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>パワーポイント</text>
+    </string>
     <!-- Technomancer Tab -->
     <string>
       <key>Label_ComplexForms</key>
@@ -3675,10 +3683,6 @@
       <text>イニシエーションﾝ</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>格闘動作</text>
-    </string>
-    <string>
       <key>Tip_BuildSpecialAttributes</key>
       <text>特殊能力値は【エッジ】, 【魔力】, 【共振力】です.</text>
     </string>
@@ -3693,10 +3697,6 @@
     <string>
       <key>Tip_BuildFoci</key>
       <text>収束具の結合には, 【フォース】1点につき {0} BP必要です.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>格闘動作は1つにつき {0} BP必要です.</text>
     </string>
     <!-- Other Info Tab -->
     <string>
@@ -4214,7 +4214,7 @@
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>"{0}" という名前のスイートはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のスイートはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4319,7 +4319,7 @@
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>"{0}" という名前のKitはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のKitはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>
@@ -5560,11 +5560,11 @@
       <text>高度なライフスタイルを作成</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>有利な資質</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>不利な資質</text>
     </string>
     <string>
@@ -6050,7 +6050,7 @@
     </string>
     <!-- Select Program Window -->
     <string>
-      <key>Title_SelectProgram</key>
+      <key>Title_SelectComplexForm</key>
       <text>プログラムを選択</text>
     </string>
     <string>
@@ -6877,10 +6877,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectLimitModifier</key>
       <text>Select Limit Modifier</text>
     </string>
@@ -7313,15 +7309,15 @@
       <text>Power Point</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Target</key>
+      <key>Label_SelectComplexForm_Target</key>
       <text>Target:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Duration</key>
+      <key>Label_SelectComplexForm_Duration</key>
       <text>Duration:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_FV</key>
+      <key>Label_SelectComplexForm_FV</key>
       <text>FV:</text>
     </string>
     <string>

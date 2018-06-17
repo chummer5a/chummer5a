@@ -8,8 +8,10 @@
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.Calendar.xslt"/>
+  <xsl:include href="xt.ComplexForms.xslt"/>
   <xsl:include href="xt.ConditionMonitor.xslt"/>
   <xsl:include href="xt.Contacts.xslt"/>
+  <xsl:include href="xt.CritterPowers.xslt"/>
   <xsl:include href="xt.Expenses.xslt"/>
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
@@ -98,6 +100,7 @@
                   </xsl:choose>
                 </td>
               </tr>
+              <xsl:if test="playername != ''">
               <tr>
                 <td width="16.66%" class="title">
                   <xsl:value-of select="$lang.Player"/>:
@@ -106,6 +109,7 @@
                   <xsl:value-of select="playername"/>
                 </td>
               </tr>
+              </xsl:if>
               <tr>
                 <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Metatype"/>:
@@ -250,21 +254,9 @@
               <div class="block" id="AttributesBlock">
             <table class="tablestyle" style="max-width: 100%;">
               <tr>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Physical"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Mental"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Special"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
+                <th width="25%"><xsl:value-of select="$lang.PhysicalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.MentalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.SpecialAttributes"/></th>
                 <th width="25%">
                   <xsl:value-of select="$lang.Initiative"/>
                 </th>
@@ -507,10 +499,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -528,10 +520,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -549,10 +541,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -595,10 +587,26 @@
                     <table class="tablestyle">
                       <tr>
                         <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.PhysicalTrack"/>
+                          <xsl:choose>
+                            <xsl:when test="physicalcmiscorecm = 'True'">
+                              <xsl:value-of select="$lang.CoreTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="$lang.PhysicalTrack" />
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
                         <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.StunTrack"/>
+                          <xsl:choose>
+                            <xsl:when test="stuncmismatrixcm = 'True'">
+                              <xsl:value-of select="$lang.MatrixTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:if test="physicalcmiscorecm != 'True'">
+                                <xsl:value-of select="$lang.StunTrack" />
+                              </xsl:if>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
                       </tr>
                       <tr>
@@ -622,28 +630,35 @@
                           </xsl:call-template><br />
                           <xsl:value-of select="$lang.PhysicalNaturalRecovery"/>: <xsl:value-of select="physicalcmnaturalrecovery"/>
                         </td>
-                        <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
-                          <xsl:call-template name="ConditionMonitor">
-                            <xsl:with-param name="PenaltyBox">
-                              <xsl:value-of select="cmthreshold"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="Offset">
-                              <xsl:value-of select="stuncmthresholdoffset"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="TotalBoxes">
-                              <xsl:value-of select="stuncm"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="DamageTaken">
-                              <xsl:value-of select="stuncmfilled"/>
-                            </xsl:with-param>
-                          </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
-                        </td>
+                        <xsl:choose>
+                          <xsl:when test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
+                              <xsl:call-template name="ConditionMonitor">
+                                <xsl:with-param name="PenaltyBox">
+                                  <xsl:value-of select="cmthreshold"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="Offset">
+                                  <xsl:value-of select="stuncmthresholdoffset"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="TotalBoxes">
+                                  <xsl:value-of select="stuncm"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="DamageTaken">
+                                  <xsl:value-of select="stuncmfilled"/>
+                                </xsl:with-param>
+                              </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
+                            </td>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </tr>
                     </table>
                   </div>
                   <xsl:call-template name="RowSummary">
                     <xsl:with-param name="text" select="$lang.ConditionMonitor"/>
-                    <xsl:with-param name="buttons" select="'CMBlock'"/>
+                    <xsl:with-param name="blockname" select="'CMBlock'"/>
                   </xsl:call-template>
                 </td>
               </tr>
@@ -771,43 +786,38 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
-              <xsl:call-template name="armor"/>
-              <xsl:variable name="sumarmor">
-                <xsl:value-of select="sum(armors/armor[equipped='True']/armor)"/>
-              </xsl:variable>
-              <xsl:variable name="otherarmor" select="armor - $sumarmor"/>
-              <xsl:if test="$otherarmor != 0">
+              <xsl:variable name="inarmor" select="armors/armor[equipped = 'True']"/>
+              <xsl:if test="$inarmor">
+                <xsl:for-each select="armors/armor[equipped = 'True']">
+                  <xsl:sort select="name"/>
+                  <xsl:call-template name="armor"/>
+                </xsl:for-each>
                 <tr>
-                  <td>
-                    <xsl:value-of select="$lang.Other"/>
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="$lang.Modifiers"/>
+                  <td style="font-weight: bold">
+                    <xsl:value-of select="$lang.TotalArmor"/>
                   </td>
-                  <td style="text-align: center">
-                    <xsl:call-template name="fnx-pad-l">
-                      <xsl:with-param name="string" select="$otherarmor"/>
-                      <xsl:with-param name="length" select="2"/>
-                    </xsl:call-template>
+                  <td style="font-weight: bold; text-align: center;">
+                    <xsl:value-of select="armor"/>
                   </td>
                   <td/>
                   <td/>
                   <td/>
                 </tr>
               </xsl:if>
-              <tr>
-                <td style="font-weight: bold">
-                  <xsl:value-of select="$lang.Total"/>
-                </td>
-                <td style="font-weight: bold; text-align: center; text-decoration: overline;">
-                  <xsl:call-template name="fnx-pad-l">
-                    <xsl:with-param name="string" select="armor"/>
-                    <xsl:with-param name="length" select="2"/>
+              <xsl:if test="armors/armor[equipped != 'True']">
+                <xsl:if test="$inarmor">
+                  <xsl:call-template name="Xline">
+                    <xsl:with-param name="height" select="'N'"/>
                   </xsl:call-template>
-                </td>
-                <td/>
-                <td/>
-                <td/>
-              </tr>
+                  <tr><td colspan="100%" style="font-weight: bold">
+                      <xsl:value-of select="$lang.OtherArmor"/>
+                  </td></tr>
+                </xsl:if>
+                <xsl:for-each select="armors/armor[equipped != 'True']">
+                  <xsl:sort select="name"/>
+                  <xsl:call-template name="armor"/>
+                </xsl:for-each>
+              </xsl:if>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -1075,21 +1085,36 @@
               </tr>
               <xsl:if test="arts != ''">
                 <tr>
-                  <th width="100%"><xsl:value-of select="$lang.Arts"/></th>
+                  <td width="80%">
+                    <strong><xsl:value-of select="$lang.Arts"/></strong>
+                  </td>
+                  <td/>
+                  <td/>
                 </tr>
-                <tr><td>
-                  <xsl:for-each select="arts/art">
-                    <xsl:sort select="name"/>
-                    <xsl:value-of select="name"/>
-                    <xsl:value-of select="source"/>
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="page"/>
-                    <xsl:if test="notes !=''">
-                      <br><xsl:value-of select="notes"/></br>
-                    </xsl:if>
-                    <xsl:if test="last() &gt; 1">; </xsl:if>
-                  </xsl:for-each>
-                </td></tr>
+                <xsl:for-each select="arts/art">
+                  <xsl:sort select="name"/>
+                  <xsl:if test="position() != 1">
+                    <xsl:call-template name="Xline"/>
+                  </xsl:if>
+                  <tr>
+                    <td style="text-align: left">
+                      <xsl:value-of select="name"/>
+                    </td>
+                    <td/>
+                    <td style="text-align: center">
+                      <xsl:value-of select="source"/>
+                      <xsl:text> </xsl:text>
+                      <xsl:value-of select="page"/>
+                    </td>
+                  </tr>
+                  <xsl:if test="notes != '' and $ProduceNotes">
+                    <tr><td colspan="100%" class="notesrow2">
+                      <xsl:call-template name="PreserveLineBreaks">
+                        <xsl:with-param name="text" select="notes"/>
+                      </xsl:call-template>
+                    </td></tr>
+                  </xsl:if>
+                </xsl:for-each>
               </xsl:if>
               <xsl:if test="metamagics/metamagic">
                 <tr>
@@ -1160,11 +1185,18 @@
               <xsl:for-each select="spirits/spirit">
                 <xsl:sort select="name"/>
                 <tr>
-                  <td><xsl:value-of select="name"/></td>
+                  <td>
+                    <xsl:value-of select="name"/>
+                    <xsl:if test="crittername != ''">: <xsl:value-of select="crittername"/></xsl:if>
+                  </td>
                   <td style="text-align: center"><xsl:value-of select="force"/></td>
                   <td style="text-align: center"><xsl:value-of select="services"/></td>
                   <td style="text-align: center">
                     <xsl:choose>
+                      <xsl:when test="fettered = 'True'">
+                        <xsl:value-of select="$lang.Bound"/>
+                        (<xsl:value-of select="$lang.Fettered"/>)
+                      </xsl:when>
                       <xsl:when test="bound = 'True'">
                         <xsl:value-of select="$lang.Bound"/>
                       </xsl:when>
@@ -1198,11 +1230,11 @@
 <!-- ** ** ** end of magic user details ** ** ** -->
 
 <!--
-      *                      *
-      ***                      ***
+      *                                     *
+      ***                                 ***
       *****     Technomancer details    *****
-      ***                      ***
-      *                      *
+      ***                                 ***
+      *                                     *
 -->
       <xsl:if test="resenabled = 'True'">
         <div class="block" id="StreamBlock">
@@ -1211,15 +1243,17 @@
               <th width="25%" style="text-align: left">
                 <xsl:value-of select="$lang.Stream"/>
               </th>
-              <th width="10%">
+              <th width="20%">
                 <xsl:value-of select="$lang.Drain"/>
               </th>
-              <th width="55%"/>
+              <th width="45%"/>
               <th width="10%"/>
             </tr>
             <tr>
               <td><xsl:value-of select="stream"/></td>
-              <td><xsl:value-of select="drain"/></td>
+              <td style="text-align:center;">
+			    <xsl:value-of select="drainattributes"/> (<xsl:value-of select="drain"/>)
+			  </td>
               <td/>
               <td style="text-align:center;">
                 <xsl:value-of select="tradition/source" />
@@ -1287,17 +1321,7 @@
         <xsl:if test="complexforms/complexform">
           <div class="block" id="ComplexFormsBlock">
             <table class="tablestyle">
-              <tr>
-                <th width="40%" style="text-align: left">
-                  <xsl:value-of select="$lang.ComplexForm"/>
-                </th>
-                <th width="15%"><xsl:value-of select="$lang.Target"/></th>
-                <th width="15%"><xsl:value-of select="$lang.Duration"/></th>
-                <th width="15%"><xsl:value-of select="$lang.FV"/></th>
-                <th width="5%"/>
-                <th width="10%"/>
-              </tr>
-              <xsl:call-template name="complexforms"/>
+              <xsl:call-template name="ComplexForms"/>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -1322,7 +1346,10 @@
               <xsl:for-each select="spirits/spirit">
                 <xsl:sort select="name"/>
                 <tr>
-                  <td><xsl:value-of select="name"/></td>
+                  <td>
+                    <xsl:value-of select="name"/>
+                    <xsl:if test="crittername != ''">: <xsl:value-of select="crittername"/></xsl:if>
+                  </td>
                   <td style="text-align: center"><xsl:value-of select="force"/></td>
                   <td style="text-align: center"><xsl:value-of select="services"/></td>
                   <td style="text-align: center">
@@ -1404,14 +1431,7 @@
         <xsl:if test="critterpowers/critterpower">
           <div class="block" id="CritterBlock">
             <table class="tablestyle">
-              <tr>
-                <th width="50%" style="text-align: left">
-                  <xsl:value-of select="$lang.Critter"/>
-                </th>
-                <th width="30%"><xsl:value-of select="$lang.Rating"/></th>
-                <th width="20%"/>
-              </tr>
-              <xsl:call-template name="critterpowers"/>
+              <xsl:call-template name="CritterPowers"/>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -1421,11 +1441,11 @@
         </xsl:if>
 
 <!--
-        *                      *
-        ***                      ***
+        *                                  *
+        ***                              ***
         *****      notes and such      *****
-        ***                      ***
-        *                      *
+        ***                              ***
+        *                                  *
 -->
       <xsl:if test="$ProduceNotes">
         <xsl:if test="concat(concept,description,background,notes,gamenotes) != ''">
@@ -1583,8 +1603,6 @@
   </xsl:template>
 
   <xsl:template name="armor">
-    <xsl:for-each select="armors/armor">
-      <xsl:sort select="name"/>
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -1698,7 +1716,6 @@
       <xsl:call-template name="Xline">
         <xsl:with-param name="cntl" select="last()-position()"/>
       </xsl:call-template>
-    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="meleeweapons">
@@ -2006,7 +2023,7 @@
         </xsl:if>
       </td>
       <td style="vertical-align:top; text-align:center;">
-        <xsl:value-of select="tradition/drain" />
+        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drain" />)
       </td>
       <td style="vertical-align:top; text-align:center;">
         <xsl:value-of select="tradition/spiritcombat" />
@@ -2344,101 +2361,6 @@
           </td>
         </tr>
       </xsl:if>
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template name="critterpowers">
-    <xsl:for-each select="critterpowers/critterpower">
-      <xsl:sort select="name"/>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td>
-          <xsl:value-of select="name"/>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="rating"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-        </td>
-      </tr>
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template name="complexforms">
-    <xsl:for-each select="complexforms/complexform">
-      <xsl:sort select="name"/>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td>
-          <xsl:value-of select="name"/>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-          <xsl:if test="programoptions/programoption"> (<xsl:for-each select="programoptions/programoption">
-            <xsl:sort select="name"/>
-            <xsl:value-of select="name"/>
-            <xsl:if test="rating &gt; 0">
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="rating"/>
-            </xsl:if>
-            <xsl:if test="last() &gt; 1">; </xsl:if>
-          </xsl:for-each>)
-          </xsl:if>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="target"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="duration"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="fv"/>
-        </td>
-        <td/>
-        <td style="text-align: center">
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-        </td>
-      </tr>
       <xsl:if test="notes != '' and $ProduceNotes">
         <tr>
           <xsl:if test="position() mod 2 != 1">
@@ -3158,7 +3080,7 @@
       <xsl:if test="extra != '' and $xtra = 'A'">
         (<xsl:value-of select="extra"/>)
       </xsl:if>
-      <xsl:if test="qty != 1"> x<xsl:value-of select="qty"/></xsl:if>
+      <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:choose>
         <xsl:when test="children/gear">
           <xsl:text> </xsl:text>
@@ -3213,8 +3135,7 @@
           <xsl:if test="extra != '' and $xtra = 'A'">
             (<xsl:value-of select="extra"/>)
           </xsl:if>
-          <xsl:if test="qty != 1">
-            x<xsl:value-of select="qty"/>
+          <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/>
           </xsl:if>
           <xsl:choose>
             <xsl:when test="children/gear">

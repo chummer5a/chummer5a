@@ -215,7 +215,7 @@
             </xsl:choose>
           </table>
         </td></tr>
-        <xsl:if test="mods/mod/weapons/weapon[type = 'Ranged'] or weapons/weapon[type = 'Ranged']">
+        <xsl:if test="mods/mod/weapons/weapon[type = 'Ranged'] or weaponmounts/weaponmount/weapons/weapon[type = 'Ranged'] or weapons/weapon[type = 'Ranged']">
           <!-- Vehicle Ranged Weapon Section -->
           <tr><td>
             <table width="100%">
@@ -252,6 +252,12 @@
                 </th>
               </tr>
               <xsl:for-each select="mods/mod/weapons/weapon[type = 'Ranged']">
+                <xsl:sort select="name"/>
+                <xsl:call-template name="RangedWeapons">
+                  <xsl:with-param name="weapon" select="weapon"/>
+                </xsl:call-template>
+              </xsl:for-each>
+              <xsl:for-each select="weaponmounts/weaponmount/weapons/weapon[type = 'Ranged']">
                 <xsl:sort select="name"/>
                 <xsl:call-template name="RangedWeapons">
                   <xsl:with-param name="weapon" select="weapon"/>
@@ -432,7 +438,7 @@
             <xsl:text> </xsl:text>
             <xsl:value-of select="rating"/>
           </xsl:if>
-          <xsl:if test="qty > 1">  x<xsl:value-of select="qty"/></xsl:if>
+          <xsl:if test="qty > 1"> ×<xsl:value-of select="qty"/></xsl:if>
           <xsl:if test="children/gear">
             (<xsl:for-each select="children/gear">
               <xsl:sort select="name"/>

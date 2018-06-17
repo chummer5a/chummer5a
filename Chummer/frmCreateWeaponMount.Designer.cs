@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -53,7 +53,6 @@ namespace Chummer
             this.cmdAddMod = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.SuspendLayout();
             // 
@@ -288,7 +287,7 @@ namespace Chummer
             this.cmdDeleteMod.Name = "cmdDeleteMod";
             this.cmdDeleteMod.Size = new System.Drawing.Size(122, 23);
             this.cmdDeleteMod.TabIndex = 67;
-            this.cmdDeleteMod.Tag = "Button_AddMod";
+            this.cmdDeleteMod.Tag = "Button_DeleteMod";
             this.cmdDeleteMod.Text = "Delete Mod";
             this.cmdDeleteMod.UseVisualStyleBackColor = true;
             this.cmdDeleteMod.Click += new System.EventHandler(this.cmdDeleteMod_Click);
@@ -299,6 +298,7 @@ namespace Chummer
             this.cmdAddMod.Name = "cmdAddMod";
             this.cmdAddMod.Size = new System.Drawing.Size(122, 23);
             this.cmdAddMod.TabIndex = 66;
+            this.cmdAddMod.Tag = "Button_AddMod";
             this.cmdAddMod.Text = "Add Mod";
             this.cmdAddMod.UseVisualStyleBackColor = true;
             this.cmdAddMod.Click += new System.EventHandler(this.cmdAddMod_Click);
@@ -311,6 +311,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 69;
             this.lblSource.Text = "[Source]";
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -321,20 +322,6 @@ namespace Chummer
             this.lblSourceLabel.TabIndex = 68;
             this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // frmCreateWeaponMount
             // 
@@ -405,6 +392,5 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddMod;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
@@ -7,7 +6,7 @@ namespace Translator
 {
     static class Program
     {
-        private static frmTranslatorMain s_FrmMain = null;
+        private static frmTranslatorMain s_FrmMain;
         [STAThread]
         private static void Main()
         {
@@ -17,12 +16,6 @@ namespace Translator
             Application.Run(s_FrmMain);
         }
 
-        public static frmTranslatorMain MainForm
-        {
-            get
-            {
-                return s_FrmMain;
-            }
-        }
+        public static frmTranslatorMain MainForm => s_FrmMain;
     }
 }

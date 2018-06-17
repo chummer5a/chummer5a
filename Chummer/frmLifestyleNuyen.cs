@@ -56,7 +56,7 @@ namespace Chummer
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") x " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") × " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
                 + " = " + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
@@ -65,17 +65,17 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice { get; set; } = 0;
+        public int Dice { get; set; }
 
         /// <summary>
         /// Extra number that is added to the dice roll.
         /// </summary>
-        public decimal Extra { get; set; } = 0;
+        public decimal Extra { get; set; }
 
         /// <summary>
         /// D6 multiplier for the Lifestyle.
         /// </summary>
-        public decimal Multiplier { get; set; } = 0;
+        public decimal Multiplier { get; set; }
 
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
@@ -10,7 +9,7 @@ namespace CrashHandler
 {
 	static class Program
 	{
-		static Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
+		static readonly Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
 		{
 			{"crash", ShowCrashReport }
 		};
@@ -34,13 +33,17 @@ namespace CrashHandler
 					Application.Run(new frmNoMoreUserInput(dmper));
 				}
 			}
-			finally 
+			finally
 			{
 				//Last ditch attempt at closing chummer if not done yet
 				try
 				{
 					dmper?.Process?.Kill();
-				} catch { }
+				}
+			    catch
+			    {
+			        // ignored
+			    }
 			}
 		}
 
@@ -49,7 +52,7 @@ namespace CrashHandler
 		/// </summary>
 		[STAThread]
 		static void Main(string[] args)
-		{ 
+		{
             for (int i = 0; i < args.Length - 1; ++i)
             {
                 if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))

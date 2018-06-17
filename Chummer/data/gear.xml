@@ -293,7 +293,7 @@
       <name>Ammo: Stick-n-Shock Flechette Rounds</name>
       <category>Ammunition</category>
       <rating>0</rating>
-      <source>TVG</source>
+      <source>TSG</source>
       <page>29</page>
       <avail>6R</avail>
       <cost>110</cost>
@@ -485,7 +485,7 @@
       <source>RG</source>
       <page>55</page>
       <avail>8R</avail>
-      <cost>75</cost>
+      <cost>150</cost>
       <costfor>10</costfor>
     </gear>
     <gear>
@@ -506,6 +506,20 @@
         <damage>-4</damage>
         <userange>Light Pistol</userange>
       </weaponbonus>
+    </gear>
+    <gear>
+      <id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
+      <name>Ammo: DMSO Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5G</source>
+      <page>436</page>
+      <avail>2R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <cost>20</cost>
+      <costfor>10</costfor>
     </gear>
     <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
@@ -1149,7 +1163,7 @@
     </gear>
     <gear>
       <id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
-      <name>Paint Grenade</name>
+      <name>Grenade: Paint</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
@@ -1160,13 +1174,116 @@
     </gear>
     <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
-      <name>Smokebomb</name>
+      <name>Grenade: Smokebomb</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>HT</source>
       <page>187</page>
       <avail>6</avail>
-      <addweapon>Smokebomb</addweapon>
+      <addweapon>Grenade: Smokebomb</addweapon>
+      <cost>25</cost>
+    </gear>
+    <gear>
+      <id>922c2a9b-88a8-47bf-a3ac-378a0e86be9c</id>
+      <name>Grenade: Flash-Bang, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>6R</avail>
+      <addweapon>Grenade: Flash-Bang, Aerodynamic</addweapon>
+      <cost>100</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>4d27ebbf-02e8-45e7-9c0a-7151f1e4faae</id>
+      <name>Grenade: Flash-Pak, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4</avail>
+      <addweapon>Grenade: Flash-Pak, Aerodynamic</addweapon>
+      <cost>125</cost>
+    </gear>
+    <gear>
+      <id>afde3ea3-2db2-4049-b54a-f471e8c11102</id>
+      <name>Grenade: Fragmentation, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>11F</avail>
+      <addweapon>Grenade: Fragmentation, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>e7a602bd-33f4-485b-8a18-a253b7e73a77</id>
+      <name>Grenade: High Explosive, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>11F</avail>
+      <addweapon>Grenade: High Explosive, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>1ceef439-32d7-4e1b-a13b-0223dfadf784</id>
+      <name>Grenade: Gas, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <addweapon>Grenade: Gas, Aerodynamic</addweapon>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>13208e69-2cc6-43c4-98ff-e0295cdf3b68</id>
+      <name>Grenade: Smoke, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>4R</avail>
+      <addweapon>Grenade: Smoke, Aerodynamic</addweapon>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>2b58af45-2097-4607-a0d4-e251b64332af</id>
+      <name>Grenade: Thermal Smoke, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>435</page>
+      <avail>6R</avail>
+      <addweapon>Grenade: Thermal Smoke, Aerodynamic</addweapon>
+      <cost>60</cost>
+    </gear>
+    <gear>
+      <id>ff32c75d-9cb8-499e-8926-eb0728b2748b</id>
+      <name>Grenade: Paint, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint, Aerodynamic</addweapon>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>32d933f1-638e-4022-bed7-7cf846cb4f20</id>
+      <name>Grenade: Smokebomb, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>HT</source>
+      <page>187</page>
+      <avail>6</avail>
+      <addweapon>Grenade: Smokebomb, Aerodynamic</addweapon>
       <cost>25</cost>
     </gear>
     <gear>
@@ -2801,10 +2918,12 @@
           <name>Agent</name>
           <category>Software</category>
           <rating>3</rating>
-          <usegear>
-            <name>Love Life Management</name>
-            <category>Software</category>
-          </usegear>
+          <gears>
+            <usegear>
+              <name>Love Life Management</name>
+              <category>Software</category>
+            </usegear>
+          </gears>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4414,16 +4533,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>8</avail>
+      <avail>Rating * 2</avail>
       <bonus>
-        <selectskill />
+        <activesoft>
+          <val>Rating</val>
+        </activesoft>
       </bonus>
       <cost>Rating * 5000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Activesoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>d9d017c4-b3b5-4d28-9c41-870d69287cfb</id>
@@ -4432,21 +4548,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>4</avail>
+      <avail>Rating</avail>
       <bonus>
-        <knowsoft>
-          <pick />
+        <skillsoft excludecategory="Language">
           <val>Rating</val>
-          <notgroup>Language</notgroup>
-          <require>skilljack</require>
-        </knowsoft>
+        </skillsoft>
       </bonus>
       <cost>Rating * 2000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Knowsoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>c4599705-6b8c-45d0-8687-63a720043f7d</id>
@@ -4455,21 +4563,13 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>442</page>
-      <avail>2</avail>
+      <avail>Rating</avail>
       <bonus>
-        <knowsoft>
-          <pick />
+        <skillsoft skillcategory="Language">
           <val>Rating</val>
-          <group>Language</group>
-          <require>skilljack</require>
-        </knowsoft>
+        </skillsoft>
       </bonus>
       <cost>Rating * 1000</cost>
-      <skill>Varies</skill>
-      <tags>
-        <tag>Skillsoft</tag>
-        <tag>Linguasoft</tag>
-      </tags>
     </gear>
     <gear>
       <id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
@@ -4948,6 +5048,50 @@
       <cost>50</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Grids (Mainly for TranslateExtra) -->
+    <gear>
+      <id>b97df325-ff46-42e5-823e-d81f6df39d16</id>
+      <name>Public Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>43adba99-3484-43be-9ea8-7836c0afe2b9</id>
+      <name>Local Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>f52b018a-a80d-4fcb-87d3-50cf9db2347e</id>
+      <name>Global Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <!-- End Region -->
     <!-- Region RFID Tags -->
     <gear>
       <id>84bb92e7-ce13-4eb6-bf9e-15bf3887469c</id>
@@ -5386,6 +5530,13 @@
       <bonus>
         <selecttext />
       </bonus>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fake SIN</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <cost>Rating * 2500</cost>
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Custom</addoncategory>
@@ -6248,7 +6399,7 @@
       <category>Sensor Functions</category>
       <rating>8</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>153</page>
       <avail>8</avail>
       <armorcapacity>[1]</armorcapacity>
       <capacity>[1]</capacity>
@@ -7851,6 +8002,7 @@
           <name>Alchemy</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7867,6 +8019,7 @@
           <name>Disenchanting</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7878,6 +8031,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7888,6 +8044,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7898,6 +8057,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7908,6 +8070,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7923,6 +8088,7 @@
           <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
+        <selecttradition />
       </bonus>
       <cost>Rating * 18000</cost>
     </gear>
@@ -7954,6 +8120,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -7964,6 +8133,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -7979,6 +8151,7 @@
           <name>Combat</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -7990,6 +8163,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8000,6 +8176,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8010,6 +8189,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8025,6 +8207,7 @@
           <name>Detection</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8036,6 +8219,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8046,6 +8232,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8056,6 +8245,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8071,6 +8263,7 @@
           <name>Health</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8082,6 +8275,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8092,6 +8288,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8102,6 +8301,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8117,6 +8319,7 @@
           <name>Illusion</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8128,6 +8331,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8138,6 +8344,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8148,6 +8357,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8163,6 +8375,7 @@
           <name>Manipulation</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8174,6 +8387,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8239,10 +8455,7 @@
       <page>318</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Alchemy</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8255,10 +8468,7 @@
       <page>319</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Disenchanting</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8270,6 +8480,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8280,6 +8493,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8290,6 +8506,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8300,6 +8519,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8310,6 +8532,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4500</cost>
     </gear>
     <gear>
@@ -8320,6 +8545,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 750</cost>
     </gear>
     <gear>
@@ -8330,6 +8558,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8340,6 +8571,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8350,6 +8584,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8360,6 +8597,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8370,6 +8610,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8380,6 +8623,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8390,6 +8636,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8400,6 +8649,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8410,6 +8662,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8420,6 +8675,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8430,6 +8688,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8440,6 +8701,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8450,6 +8714,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8460,6 +8727,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8470,6 +8740,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8480,6 +8753,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8490,6 +8766,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8500,6 +8779,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8510,6 +8792,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8520,6 +8805,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8669,6 +8957,9 @@
       <page>326</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>ef37af30-1204-4918-af66-dfbdd33cd045</id>
@@ -8679,6 +8970,9 @@
       <page>317</page>
       <avail>0</avail>
       <cost>20</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
@@ -8689,6 +8983,9 @@
       <page>24</page>
       <avail>6</avail>
       <cost>350</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
@@ -8699,10 +8996,13 @@
       <page>24</page>
       <avail>8</avail>
       <cost>4500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
-      <name>Orichalum</name>
+      <name>Orichalcum</name>
       <category>Magical Supplies</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -8718,6 +9018,9 @@
       <source>SG</source>
       <page>212</page>
       <avail>4</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>2000</cost>
     </gear>
     <gear>
@@ -8788,6 +9091,9 @@
       <source>SG</source>
       <page>213</page>
       <avail>Rating * Rating</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>Rating * 1500</cost>
     </gear>
     <gear>
@@ -13501,7 +13807,7 @@
       <source>CF</source>
       <page>153</page>
       <avail>+4F</avail>
-      <cost>Rating x 200</cost>
+      <cost>Rating * 200</cost>
       <required>
         <geardetails>
           <name>Altskin</name>
@@ -14215,6 +14521,17 @@
       <cost>30</cost>
     </gear>
     <gear>
+      <id>355086f4-63ee-4244-aba6-3b84eddd9592</id>
+      <name>Grenade: Smoke, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>3R</avail>
+      <addweapon>Grenade: Smoke, Aerodynamic (2050)</addweapon>
+      <cost>30</cost>
+    </gear>
+    <gear>
       <id>7eb45820-7ef0-4a7c-ba0e-99e4dda66b02</id>
       <name>Minigrenade: Smoke (2050)</name>
       <category>Ammunition</category>
@@ -14234,6 +14551,17 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Grenade: Offensive (2050)</addweapon>
+      <cost>45</cost>
+    </gear>
+    <gear>
+      <id>18286c99-ad70-4e66-a048-3ffa3007eabd</id>
+      <name>Grenade: Offensive, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Offensive, Aerodynamic (2050)</addweapon>
       <cost>45</cost>
     </gear>
     <gear>
@@ -14259,6 +14587,17 @@
       <cost>45</cost>
     </gear>
     <gear>
+      <id>8bb8839c-487a-478a-ab74-6b1e9b85b4d1</id>
+      <name>Grenade: Defensive, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Defensive, Aerodynamic (2050)</addweapon>
+      <cost>45</cost>
+    </gear>
+    <gear>
       <id>d12aabe8-9ca6-4ce7-9ea3-e9874ea66e6c</id>
       <name>Minigrenade: Defensive (2050)</name>
       <category>Ammunition</category>
@@ -14267,17 +14606,6 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Minigrenade: Defensive (2050)</addweapon>
-      <cost>60</cost>
-    </gear>
-    <gear>
-      <id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
-      <name>Minigrenade: Shock (2050)</name>
-      <category>Ammunition</category>
-      <rating>0</rating>
-      <source>2050</source>
-      <page>191</page>
-      <avail>8F</avail>
-      <addweapon>Minigrenade: Shock (2050)</addweapon>
       <cost>60</cost>
     </gear>
     <gear>
@@ -14293,14 +14621,48 @@
       <costfor>1</costfor>
     </gear>
     <gear>
+      <id>f6471d39-4e6f-41e5-a946-f0b55ccb2ded</id>
+      <name>Grenade: Shock, Aerodynamic (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>5F</avail>
+      <addweapon>Grenade: Shock, Aerodynamic (2050)</addweapon>
+      <cost>30</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>443dd750-a30b-4e60-9464-fe2b65f85889</id>
+      <name>Minigrenade: Shock (2050)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>2050</source>
+      <page>191</page>
+      <avail>8F</avail>
+      <addweapon>Minigrenade: Shock (2050)</addweapon>
+      <cost>60</cost>
+    </gear>
+    <gear>
       <id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
-      <name>Halloweener Molotov Cocktail</name>
+      <name>Grenade: Halloweener Molotov Cocktail</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>TSG</source>
       <page>29</page>
       <avail>4F</avail>
-      <addweapon>Halloweener Molotov Cocktail</addweapon>
+      <addweapon>Grenade: Halloweener Molotov Cocktail</addweapon>
+      <cost>50</cost>
+    </gear>
+    <gear>
+      <id>089af282-4ffb-4aea-86e9-bac83474e27e</id>
+      <name>Grenade: Halloweener Molotov Cocktail, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>TSG</source>
+      <page>29</page>
+      <avail>4F</avail>
+      <addweapon>Grenade: Halloweener Molotov Cocktail, Aerodynamic</addweapon>
       <cost>50</cost>
     </gear>
     <!-- Ammo -->
@@ -14700,13 +15062,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>6200</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
       <firewall>0</firewall>
-      <programs>0</programs>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14718,13 +15079,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>13200</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14736,13 +15096,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>111000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>3</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14754,13 +15113,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>150000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14772,13 +15130,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>364000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14790,13 +15147,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>514000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14808,13 +15164,12 @@
       <page>169</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>990000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>5</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <!-- End Region -->
@@ -14828,13 +15183,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>620</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
+      <firewall>1</firewall>
+      <programs>2</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14846,13 +15200,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>1300</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>2</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14864,13 +15217,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>11000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14882,13 +15234,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>15000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>4</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14900,13 +15251,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>37000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14918,13 +15268,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>51500</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14936,13 +15285,12 @@
       <page>170</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>450000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>6</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <!-- End Region -->
@@ -14956,13 +15304,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>3000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>2</devicerating>
       <firewall>0</firewall>
-      <programs>0</programs>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14974,13 +15321,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>6500</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>1</dataprocessing>
+      <devicerating>3</devicerating>
+      <firewall>1</firewall>
+      <programs>1</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -14992,13 +15338,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>60000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>3</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15010,13 +15355,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>75000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>3</dataprocessing>
+      <devicerating>4</devicerating>
+      <firewall>3</firewall>
+      <programs>4</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15028,13 +15372,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>364000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>4</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15046,13 +15389,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>250000</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>5</dataprocessing>
+      <devicerating>5</devicerating>
+      <firewall>4</firewall>
+      <programs>5</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15064,13 +15406,12 @@
       <page>171</page>
       <avail>0</avail>
       <attack>0</attack>
-      <attributearray>0</attributearray>
       <capacity>0</capacity>
       <cost>499999</cost>
-      <dataprocessing>0</dataprocessing>
-      <devicerating>1</devicerating>
-      <firewall>0</firewall>
-      <programs>0</programs>
+      <dataprocessing>6</dataprocessing>
+      <devicerating>6</devicerating>
+      <firewall>5</firewall>
+      <programs>6</programs>
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -15315,7 +15656,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 10000</cost>
+      <cost>(Rating) * 10000</cost>
     </gear>
     <gear>
       <id>b852dbe0-50fa-418f-b67a-69d144a7c586</id>
@@ -15325,7 +15666,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 100</cost>
+      <cost>(Rating) * 100</cost>
     </gear>
     <gear>
       <id>e427a6d4-2e52-4cc4-ac6d-74da8584bc30</id>
@@ -15335,7 +15676,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 5000</cost>
+      <cost>(Rating) * 5000</cost>
     </gear>
     <gear>
       <id>e155d77e-3430-45b6-bd10-a717597793e8</id>
@@ -15345,7 +15686,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>eea34a5e-1ca6-4e45-8e12-b6ccb24029dd</id>
@@ -15386,7 +15727,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 200</cost>
+      <cost>(Rating) * 200</cost>
     </gear>
     <gear>
       <id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
@@ -15396,7 +15737,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)+1</avail>
-      <cost>(Rating) x 300</cost>
+      <cost>(Rating) * 300</cost>
     </gear>
     <gear>
       <id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
@@ -15406,7 +15747,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)+2</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>26402dc8-911c-471f-a818-0d997662fd60</id>
@@ -15416,7 +15757,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1500</cost>
+      <cost>(Rating) * 1500</cost>
     </gear>
     <gear>
       <id>8098a4d0-2636-48d8-bc99-ccddf22ee736</id>
@@ -15426,7 +15767,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 100</cost>
+      <cost>(Rating) * 100</cost>
     </gear>
     <gear>
       <id>f6ec312f-a265-4a1c-b729-d18281c998f2</id>
@@ -15436,7 +15777,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)F</avail>
-      <cost>(Rating) x 10000</cost>
+      <cost>(Rating) * 10000</cost>
     </gear>
     <gear>
       <id>2f252f42-0cad-4c31-ab10-5147feaa159f</id>
@@ -15476,7 +15817,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 200</cost>
+      <cost>(Rating) * 200</cost>
     </gear>
     <gear>
       <id>e3b53939-a0c8-4c73-8d1e-0e19c9abd968</id>
@@ -15486,7 +15827,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>f89f5119-3a1f-45ec-9119-0c687294e5e2</id>
@@ -15496,7 +15837,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 1000</cost>
+      <cost>(Rating) * 1000</cost>
     </gear>
     <gear>
       <id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
@@ -15506,7 +15847,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 2000</cost>
+      <cost>(Rating) * 2000</cost>
     </gear>
     <gear>
       <id>89dfc727-9313-4830-8bd7-929d5b0d2771</id>
@@ -15516,7 +15857,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 3000</cost>
+      <cost>(Rating) * 3000</cost>
     </gear>
     <gear>
       <id>80588ca3-1fd2-4c44-9c7a-b6a8dfda02ec</id>
@@ -15526,7 +15867,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)</avail>
-      <cost>(Rating) x 500</cost>
+      <cost>(Rating) * 500</cost>
     </gear>
     <gear>
       <id>8bcb9d5b-51a1-4ab2-a7b8-c5afe69f3832</id>
@@ -15536,7 +15877,7 @@
       <source>2050</source>
       <page>195</page>
       <avail>(Rating)R</avail>
-      <cost>(Rating) x 1500</cost>
+      <cost>(Rating) * 1500</cost>
     </gear>
     <gear>
       <id>c589f3ce-f181-4fc3-a344-455798913188</id>

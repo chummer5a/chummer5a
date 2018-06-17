@@ -2169,6 +2169,7 @@
       <page>449</page>
       <hide />
       <range>Light Crossbows</range>
+      <sizecategory>Light Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
     </weapon>
     <weapon>
@@ -2190,6 +2191,7 @@
       <page>104</page>
       <hide />
       <range>Tasers</range>
+      <sizecategory>Tasers</sizecategory>
       <spec>Sprayer</spec>
     </weapon>
     <weapon>
@@ -2211,6 +2213,7 @@
       <page>449</page>
       <hide />
       <range>Tasers</range>
+      <sizecategory>Tasers</sizecategory>
       <spec>Flare Launcher</spec>
     </weapon>
     <weapon>
@@ -2340,6 +2343,9 @@
       <cost>100</cost>
       <source>SR5</source>
       <page>435</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
       <id>fdee91ef-c382-49c4-87f6-b9166b9bd9fa</id>
@@ -2359,6 +2365,7 @@
       <source>SR5</source>
       <page>435</page>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
@@ -2379,6 +2386,7 @@
       <source>SR5</source>
       <page>435</page>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
@@ -2446,7 +2454,7 @@
     </weapon>
     <weapon>
       <id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
-      <name>Smokebomb</name>
+      <name>Grenade: Smokebomb</name>
       <category>Gear</category>
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -2508,6 +2516,195 @@
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
+      <id>96810fa9-62c5-4638-b2b4-000e0910bd9a</id>
+      <name>Grenade: Flash-Bang, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>10S (10m Radius)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>6R</avail>
+      <cost>100</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>54a82bb7-aacb-4b74-83ea-bfb441a81d60</id>
+      <name>Grenade: Flash-Pak, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4</avail>
+      <cost>125</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>d05adb5b-68d2-4905-8609-35e8e23310c4</id>
+      <name>Grenade: Fragmentation, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>18P(f) (-1/m)</damage>
+      <ap>+5</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>11F</avail>
+      <cost>100</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>a3fd9a2b-fc58-488b-be61-260bff2cfdca</id>
+      <name>Grenade: Gas, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Chemical (10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4R</avail>
+      <cost>40</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>12d26925-582e-488e-b5ed-5202c9a78e33</id>
+      <name>Grenade: High Explosive, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>16P (-2/m)</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>11F</avail>
+      <cost>100</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>26ef6028-225a-40f5-9686-713155b991f4</id>
+      <name>Grenade: Paint, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>8R</avail>
+      <cost>100</cost>
+      <source>RG</source>
+      <page>102</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>4473b30c-1918-407a-923f-776f63610b24</id>
+      <name>Grenade: Smokebomb, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(3m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>6</avail>
+      <cost>25</cost>
+      <source>HT</source>
+      <page>187</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>d7a09743-bee3-4736-a8cd-913adb07eab5</id>
+      <name>Grenade: Smoke, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4R</avail>
+      <cost>40</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>9f39a37c-b53c-4b22-be27-c5ff35f1bb93</id>
+      <name>Grenade: Thermal Smoke, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>6R</avail>
+      <cost>60</cost>
+      <source>SR5</source>
+      <page>435</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
       <id>44eca724-0196-407c-820c-7631a6d4c981</id>
       <name>Harpoon</name>
       <category>Gear</category>
@@ -2524,8 +2721,9 @@
       <cost>125</cost>
       <source>RG</source>
       <page>24</page>
-      <range>Standard Grenade</range>
-      <spec>Aerodynamic</spec>
+      <range>Aerodynamic Grenade</range>
+      <spec>Blades</spec>
+      <spec2>Non-Aerodynamic</spec2>
       <useskill>Throwing Weapons</useskill>
     </weapon>
     <weapon>
@@ -5640,6 +5838,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Light Pistols</range>
+      <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5666,6 +5865,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Shotguns (flechette)</range>
+      <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5732,6 +5932,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Heavy Pistols</range>
+      <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5758,6 +5959,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Submachine Guns</range>
+      <sizecategory>Submachine Guns</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5843,6 +6045,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Heavy Pistols</range>
+      <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -5869,6 +6072,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <range>Sporting Rifles</range>
+      <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -7339,6 +7543,29 @@
     </weapon>
     <!--End Region -->
     <!--End Region -->
+    <!-- Region Street Grimoire -->
+    <weapon>
+      <id>f24167cc-3be9-4956-be8f-2b7c0554bb15</id>
+      <name>Elemental Body</name>
+      <category>Unarmed</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(MAG*2)P</damage>
+      <ap>-{MAG}*0.5</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SG</source>
+      <page>170</page>
+      <allowaccessory>False</allowaccessory>
+      <hide />
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <!-- End Region -->
     <!-- Region Chrome Flesh-->
     <!-- Region Chrome Flesh Cyber-Weapons -->
     <weapon>
@@ -7734,6 +7961,7 @@
         </accessory>
       </accessories>
       <range>Heavy Crossbows</range>
+      <sizecategory>Heavy Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
     </weapon>
     <weapon>
@@ -8451,7 +8679,6 @@
       <category>Sporting Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <spec>Sporting Rifles</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -8509,22 +8736,17 @@
       <category>Light Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <spec>Semi-Automatics</spec>
       <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>8P</damage>
-      <ap>-1</ap>
+      <damage>7P</damage>
+      <ap>0</ap>
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>16(c)</ammo>
       <avail>7R</avail>
       <cost>325</cost>
-      <accessorymounts>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-      </accessorymounts>
+      <source>SHB2</source>
+      <page>0</page>
       <accessories>
         <accessory>
           <name>Flashlight, Standard</name>
@@ -8533,10 +8755,15 @@
           <name>Advanced Safety System, Basic</name>
         </accessory>
       </accessories>
-      <useskill>Pistols</useskill>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
       <range>Light Pistols</range>
-      <source>SHB2</source>
-      <page>0</page>
+      <spec>Semi-Automatics</spec>
+      <useskill>Pistols</useskill>
     </weapon>
     <weapon>
       <id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>
@@ -9087,7 +9314,7 @@
     <weapon>
       <id>b75bf551-8ad5-469a-a0ae-7cc4fa62a663</id>
       <name>Cyber Submachine Gun (2050)</name>
-      <category>Machine Pistols</category>
+      <category>Submachine Guns</category>
       <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
@@ -10242,6 +10469,28 @@
       <cost>30</cost>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <source>2050</source>
+      <page>191</page>
+    </weapon>
+    <weapon>
+      <id>9bc4858d-1b45-4803-892b-31984898e0a1</id>
+      <name>Grenade: Shock, Aerodynamic (2050)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>10S (10m Radius)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>5F</avail>
+      <cost>30</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10283,6 +10532,28 @@
       <cost>45</cost>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <source>2050</source>
+      <page>191</page>
+    </weapon>
+    <weapon>
+      <id>e604b64d-b0a4-4e9f-87c0-aa3b33285fb0</id>
+      <name>Grenade: Defensive, Aerodynamic (2050)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>16P (-2/m)</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4F</avail>
+      <cost>45</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10323,6 +10594,28 @@
       <cost>35</cost>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <source>2050</source>
+      <page>191</page>
+    </weapon>
+    <weapon>
+      <id>eb34f76b-3789-4c57-ae9d-52455ed3ebe2</id>
+      <name>Grenade: Offensive, Aerodynamic (2050)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>18P(f) (-1/m)</damage>
+      <ap>+5</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4F</avail>
+      <cost>35</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10363,6 +10656,28 @@
       <cost>30</cost>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <source>2050</source>
+      <page>191</page>
+    </weapon>
+    <weapon>
+      <id>96cc1ff9-ab6a-42e1-bd34-ec34b7dfa732</id>
+      <name>Grenade: Smoke, Aerodynamic (2050)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(10m Radius)</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>3R</avail>
+      <cost>30</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10698,7 +11013,7 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <spec>Semi-Automatics</spec>
+      <spec>Revolvers</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -11379,7 +11694,7 @@
     <weapon>
       <id>5057a725-87eb-409b-8fd1-004b3e3d614f</id>
       <name>Steyr UCR Underbarrel Shotgun</name>
-      <category>Underbarrel Weapons</category>
+      <category>Shotguns</category>
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -11734,7 +12049,7 @@
     </weapon>
     <weapon>
       <id>8d9b4142-ba34-4ba8-96a0-27fc0889a225</id>
-      <name>Halloweener Molotov Cocktail</name>
+      <name>Grenade: Halloweener Molotov Cocktail</name>
       <category>Gear</category>
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -11749,6 +12064,28 @@
       <cost>50</cost>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <source>TSG</source>
+      <page>29</page>
+    </weapon>
+    <weapon>
+      <id>4a2b0090-3a9c-4b0b-9e6a-0181b210140d</id>
+      <name>Grenade: Halloweener Molotov Cocktail, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>9P (-3/m)</damage>
+      <ap>-6</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4F</avail>
+      <cost>50</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
       <source>TSG</source>
       <page>29</page>
     </weapon>
@@ -11941,6 +12278,7 @@
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>SR5</source>
       <page>432</page>
@@ -12092,6 +12430,7 @@
       </forbidden>
       <allowgear>
         <gearcategory>Autosofts</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <rating>0</rating>
       <avail>12F</avail>
@@ -12223,10 +12562,11 @@
       </required>
       <forbidden>
         <oneof>
+          <accessory>Advanced Safety System, Basic</accessory>
+          <accessory>Advanced Safety System, Electro Shocker</accessory>
+          <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
           <accessory>Advanced Safety System, Immobilization</accessory>
           <accessory>Advanced Safety System, Self Destruct</accessory>
-          <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
-          <accessory>Advanced Safety System, Electro Shocker</accessory>
         </oneof>
       </forbidden>
       <rating>0</rating>
@@ -12842,6 +13182,7 @@
       <cost>200</cost>
       <allowgear>
         <gearcategory>Commlinks</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>RG</source>
       <page>53</page>
@@ -13658,6 +13999,7 @@
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
       <source>2050</source>
       <page>189</page>

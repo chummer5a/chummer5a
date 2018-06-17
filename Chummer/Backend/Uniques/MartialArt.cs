@@ -1,11 +1,25 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -14,7 +28,8 @@ namespace Chummer
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -22,9 +37,9 @@ namespace Chummer
         private int _intKarmaCost = 7;
         private int _intRating = 1;
         private Guid _guiID;
-        private ObservableCollection<MartialArtTechnique> _lstTechniques = new ObservableCollection<MartialArtTechnique>();
+        private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private bool _blnIsQuality;
 
         #region Create, Save, Load, and Print Methods
@@ -45,7 +60,7 @@ namespace Chummer
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
+            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
             {
@@ -105,18 +120,23 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
-            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialartadvantages/martialartadvantage"))
-            {
-                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                objTechnique.Load(nodTechnique);
-                _lstTechniques.Add(objTechnique);
-            }
-            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialarttechniques/martialarttechnique"))
-            {
-                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                objTechnique.Load(nodTechnique);
-                _lstTechniques.Add(objTechnique);
-            }
+            using (XmlNodeList xmlLegacyTechniqueList = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
+                if (xmlLegacyTechniqueList != null)
+                    foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                    {
+                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                        objTechnique.Load(nodTechnique);
+                        _lstTechniques.Add(objTechnique);
+                    }
+
+            using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
+                if (xmlTechniqueList != null)
+                    foreach (XmlNode nodTechnique in xmlTechniqueList)
+                    {
+                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                        objTechnique.Load(nodTechnique);
+                        _lstTechniques.Add(objTechnique);
+                    }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
@@ -125,6 +145,8 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialart");
@@ -236,8 +258,8 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public ObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
-        public IList<MartialArtTechnique> Children => Techniques;
+        public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
+        public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
         /// Notes.
@@ -248,7 +270,7 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
@@ -270,31 +292,107 @@ namespace Chummer
         #region Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
         {
+            if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
-                ContextMenuStrip = cmsMartialArt
+                Tag = this,
+                ContextMenuStrip = cmsMartialArt,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (IsQuality)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
 
-            foreach (MartialArtTechnique objAdvantage in Techniques)
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
+            foreach (MartialArtTechnique objTechnique in Techniques)
             {
-                objNode.Nodes.Add(objAdvantage.CreateTreeNode(cmsMartialArtTechnique));
-                objNode.Expand();
+                TreeNode objLoopNode = objTechnique.CreateTreeNode(cmsMartialArtTechnique);
+                if (objLoopNode != null)
+                {
+                    lstChildNodes.Add(objLoopNode);
+                    objNode.Expand();
+                }
             }
 
             return objNode;
         }
+
+        public static bool Purchase(Character objCharacter)
+        {
+            frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
+            frmPickMartialArt.ShowDialog();
+
+            if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
+                return false;
+
+            // Open the Martial Arts XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+
+            MartialArt objMartialArt = new MartialArt(objCharacter);
+            objMartialArt.Create(objXmlArt);
+
+            objCharacter.MartialArts.Add(objMartialArt);
+            if (!objCharacter.Created) return true;
+            int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
+            if (intKarmaCost > objCharacter.Karma)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                return false;
+            }
+
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+            objCharacter.ExpenseEntries.AddWithSort(objExpense);
+            objCharacter.Karma -= intKarmaCost;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
+            objExpense.Undo = objUndo;
+            return true;
+        }
+
+        public bool Remove(Character objCharacter)
+        {
+            // Delete the selected Martial Art.
+            if (IsQuality) return false;
+            if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                InternalId);
+            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+            foreach (MartialArtTechnique objAdvantage in Techniques)
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter,
+                    Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+            }
+
+            _objCharacter.MartialArts.Remove(this);
+            return true;
+        }
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (IsQuality)
+                {
+                    return SystemColors.GrayText;
+                }
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
+
     }
 }

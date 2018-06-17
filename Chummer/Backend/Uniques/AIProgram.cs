@@ -1,9 +1,24 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,7 +27,8 @@ namespace Chummer
     /// <summary>
     /// An AI Program or Advanced Program.
     /// </summary>
-    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode
+    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -35,8 +51,9 @@ namespace Chummer
 
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
-        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="boolCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
+        public void Create(XmlNode objXmlProgramNode, string strExtra = "", bool boolCanDelete = true)
         {
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -48,7 +65,9 @@ namespace Chummer
             if (!objXmlProgramNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
-            _boolIsAdvancedProgram = boolIsAdvancedProgram;
+            string strCategory = string.Empty;
+            if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
+                _boolIsAdvancedProgram = strCategory == "Advanced Programs";
         }
 
         /// <summary>
@@ -91,6 +110,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("aiprogram");
@@ -152,7 +172,7 @@ namespace Chummer
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
                     strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
-                strReturn += " (" + strExtra + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -160,13 +180,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                return DisplayNameShort(GlobalOptions.Language);
-            }
-        }
+        public string DisplayName => DisplayNameShort(GlobalOptions.Language);
 
         /// <summary>
         /// AI Advanced Program's requirement program.
@@ -182,8 +196,12 @@ namespace Chummer
         /// </summary>
         public string DisplayRequiresProgram(string strLanguage)
         {
-            XmlNode objNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
-            return objNode?["translate"]?.InnerText ?? objNode?["name"]?.InnerText ?? LanguageManager.GetString("String_None", strLanguage);
+            if (string.IsNullOrEmpty(RequiresProgram))
+                return LanguageManager.GetString("String_None", strLanguage);
+            if (strLanguage == GlobalOptions.Language)
+                return RequiresProgram;
+
+            return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
 
         /// <summary>
@@ -230,7 +248,7 @@ namespace Chummer
         /// </summary>
         public bool IsAdvancedProgram => _boolIsAdvancedProgram;
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
@@ -249,27 +267,52 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsAIProgram)
         {
+            if (!CanDelete && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = DisplayName,
-                Tag = InternalId,
-                ContextMenuStrip = cmsAIProgram
+                Tag = this,
+                ContextMenuStrip = cmsAIProgram,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (!CanDelete)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (!CanDelete)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (!CanDelete) return false;
+            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram", GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.AIProgram,
+                InternalId);
+
+            return characterObject.AIPrograms.Remove(this);
+        }
     }
 }

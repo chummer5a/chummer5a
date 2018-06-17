@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -85,34 +80,19 @@ namespace Chummer
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
-        public string SelectedLimit
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedLimit => _strReturnValue;
 
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
-        public string SelectedDisplayLimit
-        {
-            get
-            {
-                return _strSelectedDisplayLimit;
-            }
-        }
+        public string SelectedDisplayLimit => _strSelectedDisplayLimit;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
         #endregion
     }

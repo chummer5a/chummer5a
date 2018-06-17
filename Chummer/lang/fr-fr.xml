@@ -40,12 +40,24 @@
       <text>Karma</text>
     </string>
     <string>
+      <key>String_SumtoTen</key>
+      <text>Système à 10 points</text>
+    </string>
+    <string>
+      <key>String_LifeModule</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
+      <key>String_Life_Module</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
       <key>String_Page</key>
       <text>page</text>
     </string>
     <string>
       <key>String_Of</key>
-      <text>sur</text>
+      <text xml:space="preserve"> sur </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -1258,7 +1270,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de CHR.</text>
+      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -1550,7 +1562,7 @@
     </string>
     <string>
       <key>Message_FocusMaximumForce</key>
-      <text>La Puissance totale de tous les Foci liés ne peut pas excéder 5 x MAG.</text>
+      <text>La Puissance totale de tous les Foci liés ne peut pas excéder 5 × MAG.</text>
     </string>
     <string>
       <key>Message_FocusMaximumNumber</key>
@@ -2829,7 +2841,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Les personnages reçoivent (INT + LOG) x 3 points gratuits à dépenser dans des Compétences de connaissance génériques et des langues. Les points de Compétence de connaissance additionels coûtent 2 PC chaque. Une langue d'indice 0 est considérée comme votre langue maternelle.</text>
+      <text>Les personnages reçoivent (INT + LOG) × 3 points gratuits à dépenser dans des Compétences de connaissance génériques et des langues. Les points de Compétence de connaissance additionels coûtent 2 PC chaque. Une langue d'indice 0 est considérée comme votre langue maternelle.</text>
     </string>
     <!-- Martial Arts Tab -->
     <string>
@@ -2917,6 +2929,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Button_AddPower</key>
       <text>&amp;Ajout Pouvoir</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Action</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Pts de Pouvoir</text>
     </string>
     <!-- Technomancer Tab -->
     <string>
@@ -3658,10 +3678,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Initiation ou submersion</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>Manoeuvres d'arts martiaux</text>
-    </string>
-    <string>
       <key>Tip_BuildSpecialAttributes</key>
       <text>Les attributs spéciaux sont Charisme, Magie et Résonance.</text>
     </string>
@@ -3676,10 +3692,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Tip_BuildFoci</key>
       <text>Chaque Focus lié coûte un nombre de Points de création égal à sa Puissance.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>Chaque manoeuvre d'art martial coûte 2 Points de création.</text>
     </string>
     <!-- Other Info Tab -->
     <string>
@@ -3792,7 +3804,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_OtherAstralInitiative</key>
-      <text>L'Initiative astrale est calculée avec INT x 2.</text>
+      <text>L'Initiative astrale est calculée avec INT × 2.</text>
     </string>
     <string>
       <key>Tip_OtherAstralInitiativePasses</key>
@@ -3800,11 +3812,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_OtherBallisticArmor</key>
-      <text>Seule la plus grande des valeurs d'Armure Balistique est utilisée pour determiner votre indice d'Armure Balistique.\nSi le total des valeurs d'Armure Balistique de toute les pièces portées dépasse CON x 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
+      <text>Seule la plus grande des valeurs d'Armure Balistique est utilisée pour determiner votre indice d'Armure Balistique.\nSi le total des valeurs d'Armure Balistique de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
     </string>
     <string>
       <key>Tip_OtherImpactArmor</key>
-      <text>Seule la plus grande des valeurs d'Armure d'Impact est utilisée pour determiner votre indice d'Armure d'Impact.\nSi le total des valeurs d'Armure d'Impact de toute les pièces portées dépasse CON x 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
+      <text>Seule la plus grande des valeurs d'Armure d'Impact est utilisée pour determiner votre indice d'Armure d'Impact.\nSi le total des valeurs d'Armure d'Impact de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
     </string>
     <string>
       <key>Tip_OtherEssence</key>
@@ -4197,7 +4209,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>Une suite Cyberware nommée "{0}" existe déja dans le fichier "{1}". Veuillez choisir un autre nom.</text>
+      <text>Une suite Cyberware nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4302,7 +4314,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>Un Kit nommée "{0}" existe déja dans le fichier "{1}". Veuillez choisir un autre nom.</text>
+      <text>Un Kit nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>
@@ -5085,27 +5097,27 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_Options_NewRating</key>
-      <text>x nouvel Indice</text>
+      <text>× nouvel Indice</text>
     </string>
     <string>
       <key>Label_Options_NewRatingPlus</key>
-      <text>x nouvel Indice) +</text>
+      <text>× nouvel Indice) +</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>
-      <text>x coût en PC</text>
+      <text>× coût en PC</text>
     </string>
     <string>
       <key>Label_Options_Rating</key>
-      <text>x Indice</text>
+      <text>× Indice</text>
     </string>
     <string>
       <key>Label_Options_Force</key>
-      <text>x Force</text>
+      <text>× Force</text>
     </string>
     <string>
       <key>Label_Options_ServicesOwed</key>
-      <text>x nombre de Services dûs</text>
+      <text>× nombre de Services dûs</text>
     </string>
     <string>
       <key>Label_Options_PerKarma</key>
@@ -5113,7 +5125,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_Options_ConnectionLoyalty</key>
-      <text> x (Influence + Loyauté)</text>
+      <text> × (Influence + Loyauté)</text>
     </string>
     <string>
       <key>Label_Options_Maximum</key>
@@ -5277,7 +5289,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
-      <text>Limiter les compétences au plus grand de 20 dés ou de 2 x (Attribut Naturel + Indice de Comp) (SR4A, 61)</text>
+      <text>Limiter les compétences au plus grand de 20 dés ou de 2 × (Attribut Naturel + Indice de Comp) (SR4A, 61)</text>
     </string>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
@@ -5289,7 +5301,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
-      <text>Pts Contact gratuits : CHR x</text>
+      <text>Pts Contact gratuits : CHR ×</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsBP</key>
@@ -5523,11 +5535,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Niveau de vie avançés</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Traits positifs</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Traits négatifs</text>
     </string>
     <string>
@@ -5588,19 +5600,39 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Dispo. Max :</text>
+      <text>Dispo. max :</text>
     </string>
     <string>
+      <key>Label_SelectBP_StartingKarma</key>
+      <text>Karma de\ndépart :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_SumToX</key>
+      <text>Système à\nX points :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Max. nuyen\nen Karma :</text>
+    </string>
+	<string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignorer les règles de création</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Saisissez le nombre de Points de création disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de création disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Saisisswz le nombre de points de Karma disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
+    </string>
+    <string>
+      <key>String_SelectBP_PrioritySummary</key>
+      <text>Saisissez la disponibilité maximum autorisée lors de la création de votre personnage.</text>
+    </string>
+    <string>
+      <key>String_SelectBP_LifeModuleSummary</key>
+      <text>Saissisez la disponibilité maximum et le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>Tip_SelectBP_IgnoreRules</key>
@@ -6013,7 +6045,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Select Program Window -->
     <string>
-      <key>Title_SelectProgram</key>
+      <key>Title_SelectComplexForm</key>
       <text>Sélection d'un Programme</text>
     </string>
     <string>
@@ -6744,10 +6776,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Impossible de supprimer</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Vous devez sélectionner une limite pour ajouter un modificateur</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectLimitModifier</key>
       <text>Sélectionnez une Limite modifiée</text>
     </string>
@@ -6905,7 +6933,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>
-      <text>Les sorts à portée étendue ont pour rayon (Puissnace x MAG x 10) metres mais ont leur drain augmenté de +2.</text>
+      <text>Les sorts à portée étendue ont pour rayon (Puissnace × MAG × 10) metres mais ont leur drain augmenté de +2.</text>
     </string>
     <string>
       <key>String_CustomItem_SelectText</key>
@@ -6960,11 +6988,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Point de pouvoir</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Target</key>
+      <key>Label_SelectComplexForm_Target</key>
       <text>Cible:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Duration</key>
+      <key>Label_SelectComplexForm_Duration</key>
       <text>Durée:</text>
     </string>
     <string>
@@ -7004,7 +7032,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Appliquer le correctif d'impression Linux</text>
     </string>
     <string>
-      <key>Label_SelectProgram_FV</key>
+      <key>Label_SelectComplexForm_FV</key>
       <text>VT:</text>
     </string>
     <string>

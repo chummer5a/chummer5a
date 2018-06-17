@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 ﻿using System.Windows.Forms;
 
@@ -33,7 +33,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            
+
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
                 string strName = LanguageManager.TranslateExtra(lstObject.Item1, GlobalOptions.Language);
@@ -80,28 +80,16 @@ namespace Chummer
         /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strReturnPower;
-            }
-        }
+        public string SelectedPower => _strReturnPower;
 
-        public string SelectedPowerExtra
-        {
-            get { return _strReturnExtra; }
-        }
+        public string SelectedPowerExtra => _strReturnExtra;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
         #endregion
     }

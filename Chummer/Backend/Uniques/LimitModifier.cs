@@ -1,9 +1,25 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -21,7 +37,8 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
-    public class LimitModifier : IHasInternalId, IHasName
+    [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
+    public class LimitModifier : IHasInternalId, IHasName, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -29,7 +46,7 @@ namespace Chummer
         private string _strLimit = string.Empty;
         private string _strCondition = string.Empty;
         private int _intBonus;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public LimitModifier(Character objCharacter)
@@ -40,11 +57,10 @@ namespace Chummer
         }
 
         /// Create a Skill Limit Modifier from an XmlNode.
-        /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
+        /// <param name="objXmlLimitModifierNode">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlLimitModifierNode)
         {
-            _strName = objXmlLimitModifierNode["name"].InnerText;
+            _strName = objXmlLimitModifierNode["name"]?.InnerText ?? string.Empty;
 
             if (objXmlLimitModifierNode["bonus"] != null)
             {
@@ -62,6 +78,7 @@ namespace Chummer
         /// <param name="strName">The name of the modifier.</param>
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
+        /// <param name="strCondition">Condition when the limit modifier is to be activated.</param>
         public void Create(string strName, int intBonus, string strLimit, string strCondition)
         {
             _strName = strName;
@@ -105,6 +122,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("limitmodifier");
@@ -196,21 +214,21 @@ namespace Chummer
         {
             get
             {
-                string strBonus = string.Empty;
+                string strBonus;
                 if (_intBonus > 0)
                     strBonus = '+' + _intBonus.ToString();
                 else
                     strBonus = _intBonus.ToString();
 
-                string strReturn = DisplayNameShort + " [" + strBonus + ']';
+                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += " (" + _strCondition + ')';
+                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
                 return strReturn;
             }
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objNode = new TreeNode
@@ -218,15 +236,36 @@ namespace Chummer
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
                 Text = DisplayName,
-                Tag = InternalId
+                Tag = this,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
+                return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
+                           GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
+            // No character-created limits found, which means it comes from an improvement.
+            // TODO: ImprovementSource exists for a reason.
+            MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
     }
 }

@@ -47,6 +47,7 @@
                     </xs:element>
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="canbuywithspellpoints" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="careeronly" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="chargenlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="chargenonly" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="contributetolimit" type="xs:string" minOccurs="0" maxOccurs="1" />

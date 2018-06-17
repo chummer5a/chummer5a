@@ -1,9 +1,25 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,7 +28,8 @@ namespace Chummer
     /// <summary>
     /// An Initiation Grade.
     /// </summary>
-    public class InitiationGrade : IHasInternalId
+    [DebuggerDisplay("{" + nameof(Grade) + "}")]
+    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -78,6 +95,24 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("ordeal", ref _blnOrdeal);
             objNode.TryGetBoolFieldQuickly("schooling", ref _blnSchooling);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        {
+            objWriter.WriteStartElement("initiationgrade");
+            objWriter.WriteElementString("grade", Grade.ToString());
+            objWriter.WriteElementString("group", Group.ToString());
+            objWriter.WriteElementString("ordeal", Ordeal.ToString());
+            objWriter.WriteElementString("schooling", Schooling.ToString());
+            objWriter.WriteElementString("technomancer", Technomancer.ToString());
+            if (_objOptions.PrintNotes)
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteEndElement();
         }
         #endregion
 
@@ -165,29 +200,24 @@ namespace Chummer
         /// </summary>
         public string Text(string strLanguage)
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
-            strReturn.Append(' ');
-            strReturn.Append(_intGrade.ToString());
+            strReturn.Append(strSpaceCharacter);
+            strReturn.Append(Grade.ToString());
             if (Group || Ordeal)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 if (Group)
                 {
-                    if (_blnTechnomancer)
-                        strReturn.Append(LanguageManager.GetString("String_Network", strLanguage));
-                    else
-                        strReturn.Append(LanguageManager.GetString("String_Group", strLanguage));
+                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Ordeal)
                 {
-                    if (Technomancer)
-                        strReturn.Append(LanguageManager.GetString("String_Task", strLanguage));
-                    else
-                        strReturn.Append(LanguageManager.GetString("String_Ordeal", strLanguage));
+                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Schooling)
                 {
@@ -207,6 +237,19 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
 
         #region Methods
@@ -217,15 +260,53 @@ namespace Chummer
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
                 Text = Text(GlobalOptions.Language),
-                Tag = InternalId
+                Tag = this,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
+
+        public int CompareTo(object obj)
+        {
+            return CompareTo((InitiationGrade)obj);
+        }
+
+        public int CompareTo(InitiationGrade obj)
+        {
+            return Grade.CompareTo(obj.Grade);
+        }
         #endregion
+
+        public bool Remove(Character characterObject)
+        {
+            // Stop if this isn't the highest grade
+            if (characterObject.MAGEnabled)
+            {
+                if (Grade != characterObject.InitiateGrade)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language)))
+                    return false;
+                characterObject.InitiateGrade = Math.Max(characterObject.InitiateGrade-= 1, 0);
+            }
+            else if (characterObject.RESEnabled)
+            {
+                if (Grade != characterObject.SubmersionGrade)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language)))
+                    return false;
+                characterObject.SubmersionGrade = Math.Max(characterObject.SubmersionGrade -= 1, 0);
+            }
+            else
+                return false;
+            return true;
+        }
     }
 }

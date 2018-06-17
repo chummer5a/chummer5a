@@ -2500,11 +2500,18 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality>Uneducated</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2568,11 +2575,19 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2635,11 +2650,19 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2702,12 +2725,17 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality>Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2774,11 +2802,16 @@
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2842,11 +2875,16 @@
             </positive>
             <negative>
               <quality select="Pollution">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2910,11 +2948,16 @@
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>115</karma>
@@ -2979,11 +3022,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3039,7 +3087,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3052,7 +3105,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
@@ -3108,7 +3161,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3123,7 +3181,7 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -3179,7 +3237,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3194,7 +3257,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -3258,11 +3321,16 @@
               <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3327,7 +3395,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3393,7 +3466,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3457,7 +3535,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3524,7 +3607,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3589,7 +3677,12 @@
           </qualities>
           <karma>120</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3656,7 +3749,12 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3728,7 +3826,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3794,7 +3897,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3860,7 +3968,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -3927,7 +4040,12 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -4060,7 +4178,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -4139,7 +4262,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4214,7 +4342,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -4292,7 +4425,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4373,7 +4511,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <qualities>
@@ -4453,7 +4596,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -4529,7 +4677,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>125</karma>
@@ -4607,7 +4760,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4687,7 +4845,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4769,7 +4932,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4851,7 +5019,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -4931,7 +5104,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -5007,7 +5185,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -5085,7 +5268,13 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5159,7 +5348,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5237,7 +5431,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>4</karma>
@@ -5313,7 +5512,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>130</karma>
@@ -5393,7 +5597,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -5475,7 +5684,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5554,7 +5768,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5633,7 +5852,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5713,7 +5937,12 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5827,11 +6056,16 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -5895,11 +6129,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -5962,11 +6201,16 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6030,11 +6274,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6098,14 +6347,19 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6168,12 +6422,17 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6237,11 +6496,16 @@
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6306,11 +6570,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6369,7 +6638,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6383,7 +6657,7 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -6438,7 +6712,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6454,7 +6733,7 @@
             </positive>
             <negative>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -6509,7 +6788,12 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -6522,7 +6806,7 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -6585,11 +6869,16 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6652,11 +6941,16 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6720,11 +7014,16 @@
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6787,12 +7086,17 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <karma>8</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6856,11 +7160,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6923,12 +7232,17 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <karma>140</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <powers>
@@ -6991,12 +7305,17 @@
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7064,11 +7383,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7133,12 +7457,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <karma>12</karma>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7204,7 +7533,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7270,11 +7604,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -7396,11 +7735,16 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7483,12 +7827,17 @@
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7571,11 +7920,16 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7659,11 +8013,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7747,14 +8106,19 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7837,12 +8201,17 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -7926,11 +8295,16 @@
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8015,11 +8389,16 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8103,12 +8482,17 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8194,12 +8578,17 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8285,12 +8674,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8378,11 +8772,16 @@
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -8466,11 +8865,16 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8555,11 +8959,16 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8642,11 +9051,16 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8729,12 +9143,17 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8817,11 +9236,16 @@
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8905,14 +9329,19 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -8997,14 +9426,19 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9087,13 +9521,18 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9176,13 +9615,18 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9266,13 +9710,18 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
@@ -9411,11 +9860,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9500,12 +9954,17 @@
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9589,11 +10048,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9678,11 +10142,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9770,11 +10239,16 @@
               <quality select="Metahuman Form Only; Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Metahuman Form Only; Colored Fur">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9859,11 +10333,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only; Pollution">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9948,11 +10427,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10039,11 +10523,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10130,11 +10619,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10223,11 +10717,16 @@
             </positive>
             <negative>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10315,12 +10814,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10408,11 +10912,16 @@
               <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10496,11 +11005,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10585,11 +11099,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10673,11 +11192,16 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10762,11 +11286,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10850,11 +11379,16 @@
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10940,14 +11474,19 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11035,14 +11574,19 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11127,13 +11671,18 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11218,13 +11767,18 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11309,13 +11863,18 @@
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -11449,16 +12008,21 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11527,18 +12091,23 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11607,16 +12176,21 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11685,17 +12259,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11764,20 +12343,25 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11846,17 +12430,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -11924,18 +12513,23 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12005,18 +12599,23 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12086,19 +12685,24 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12168,7 +12772,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12177,12 +12781,17 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12252,7 +12861,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -12260,12 +12869,17 @@
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12335,7 +12949,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
@@ -12344,11 +12958,16 @@
               <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12418,16 +13037,21 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12496,17 +13120,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12575,16 +13204,21 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12653,17 +13287,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12731,17 +13370,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12811,17 +13455,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12895,18 +13544,23 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -12978,17 +13632,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13059,17 +13718,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13141,17 +13805,22 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
@@ -13282,11 +13951,16 @@
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13371,11 +14045,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13458,11 +14137,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13545,12 +14229,17 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13634,14 +14323,19 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13725,11 +14419,16 @@
             </positive>
             <negative>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13814,11 +14513,16 @@
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13904,11 +14608,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -13993,12 +14702,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14085,12 +14799,17 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14177,12 +14896,17 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14270,11 +14994,16 @@
               <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14358,11 +15087,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14447,11 +15181,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14535,11 +15274,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14623,11 +15367,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14710,11 +15459,16 @@
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14799,11 +15553,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14893,11 +15652,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -14983,11 +15747,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15073,11 +15842,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15163,11 +15937,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
@@ -15308,11 +16087,16 @@
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15398,11 +16182,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15486,11 +16275,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15575,11 +16369,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15667,11 +16466,16 @@
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15756,11 +16560,16 @@
             </positive>
             <negative>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15845,11 +16654,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -15936,11 +16750,16 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16027,11 +16846,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16119,12 +16943,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16212,12 +17041,17 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16306,11 +17140,16 @@
               <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
@@ -16394,11 +17233,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16483,11 +17327,16 @@
               <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16572,11 +17421,16 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16661,11 +17515,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16749,11 +17608,16 @@
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16839,13 +17703,18 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -16934,12 +17803,17 @@
             </positive>
             <negative>
               <quality select="Shapeshifter Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17025,12 +17899,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17116,12 +17995,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17207,12 +18091,17 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
@@ -17353,11 +18242,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17444,11 +18338,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17533,11 +18432,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17623,11 +18527,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17719,7 +18628,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17805,11 +18719,16 @@
             </positive>
             <negative>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17895,11 +18814,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -17987,11 +18911,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18080,11 +19009,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18174,12 +19108,17 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18268,12 +19207,17 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18363,11 +19307,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18457,11 +19406,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18547,11 +19501,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18637,11 +19596,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18727,11 +19691,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18816,11 +19785,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -18907,11 +19881,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19003,11 +19982,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19095,11 +20079,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19187,11 +20176,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19279,11 +20273,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
@@ -19425,11 +20424,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19506,11 +20510,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19585,11 +20594,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19665,11 +20679,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19744,14 +20763,19 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19827,11 +20851,16 @@
             </positive>
             <negative>
               <quality select="Pollution; Shapeshifter Form Only">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19907,11 +20936,16 @@
             <negative>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -19989,11 +21023,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -20072,11 +21111,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20156,12 +21200,17 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20240,12 +21289,17 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20325,11 +21379,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20405,11 +21464,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20485,11 +21549,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20564,11 +21633,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20644,11 +21718,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20723,11 +21802,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20804,12 +21888,17 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20890,11 +21979,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -20972,11 +22066,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21054,11 +22153,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21136,11 +22240,16 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
@@ -21275,11 +22384,16 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21358,11 +22472,16 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -21439,11 +22558,16 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21520,11 +22644,16 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21604,11 +22733,16 @@
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21687,11 +22821,16 @@
             </positive>
             <negative>
               <quality select="Pollution">Allergy (Common, Mild)</quality>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21770,11 +22909,16 @@
               <quality>Celerity</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21853,11 +22997,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -21923,7 +23072,12 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -21951,7 +23105,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
@@ -22007,7 +23161,12 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22037,7 +23196,7 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -22096,7 +23255,12 @@
             <power>Shift (Metahuman Form)</power>
           </powers>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22123,7 +23287,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -22193,11 +23357,16 @@
               <quality>Webbed Digits</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22275,11 +23444,16 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22357,11 +23531,16 @@
               <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22439,11 +23618,16 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22520,12 +23704,17 @@
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality>Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22604,7 +23793,12 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -22683,14 +23877,19 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22772,14 +23971,19 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
               <quality>Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22859,11 +24063,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -22945,11 +24154,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
@@ -23031,11 +24245,16 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Uneducated</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+              <name>critter</name>
+            </enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>

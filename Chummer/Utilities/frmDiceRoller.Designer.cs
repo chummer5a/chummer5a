@@ -79,6 +79,7 @@ namespace Chummer
             this.lblD6.Name = "lblD6";
             this.lblD6.Size = new System.Drawing.Size(21, 13);
             this.lblD6.TabIndex = 2;
+            this.lblD6.Tag = "String_D6";
             this.lblD6.Text = "D6";
             // 
             // cmdRollDice

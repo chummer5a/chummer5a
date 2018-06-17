@@ -388,7 +388,7 @@
     </bioware>
     <bioware>
       <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
-      <name>Reflex Recorder (Skill)</name>
+      <name>Reflex Recorder</name>
       <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
@@ -862,6 +862,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{arm}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -887,6 +888,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{leg}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2343,10 +2345,10 @@
       <cost>62000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>LOG</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2361,10 +2363,10 @@
       <cost>65000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>INT</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>161</page>
@@ -3536,7 +3538,7 @@
       <cost>Rating * 50000</cost>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset>Rating</thresholdoffset>
+          <sharedthresholdoffset>Rating</sharedthresholdoffset>
         </conditionmonitor>
       </bonus>
       <forbidden>
@@ -3546,7 +3548,7 @@
       </forbidden>
       <rating>12</rating>
       <source>2050</source>
-      <page>205</page>
+      <page>206</page>
     </bioware>
     <bioware>
       <id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>

@@ -16,28 +16,26 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+ using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace Chummer
 {
     public partial class frmPrintMultiple : Form
     {
         private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
-        List<Character> _lstCharacters = null;
+        List<Character> _lstCharacters;
 
         #region Control Events
         public frmPrintMultiple()
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
             MoveControls();
 
             _workerPrinter.WorkerReportsProgress = true;
@@ -62,7 +60,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName),
+                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language),
                         Tag = strFileName
                     };
                     treCharacters.Nodes.Add(objNode);
@@ -105,7 +103,10 @@ namespace Chummer
 
         private void DoPrint(object sender, DoWorkEventArgs e)
         {
-            Action funcIncreaseProgress = new Action(() => prgProgress.Value += 1);
+            void FuncIncreaseProgress()
+            {
+                prgProgress.Value += 1;
+            }
 
             Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
             for (int i = 0; i < lstCharacters.Length; ++i)
@@ -115,8 +116,7 @@ namespace Chummer
                     e.Cancel = true;
                     return;
                 }
-                Character objCharacter = lstCharacters[i];
-                objCharacter = new Character
+                lstCharacters[i] = new Character
                 {
                     FileName = treCharacters.Nodes[i].Tag.ToString()
                 };
@@ -128,7 +128,7 @@ namespace Chummer
                 if (_workerPrinter.CancellationPending)
                     throw new OperationCanceledException();
                 objCharacter.Load();
-                prgProgress.Invoke(funcIncreaseProgress);
+                prgProgress.Invoke((Action) FuncIncreaseProgress);
             });
 
             if (_workerPrinter.CancellationPending)
@@ -139,21 +139,9 @@ namespace Chummer
 
         private frmViewer _frmPrintView;
 
-        public frmViewer PrintViewForm
-        {
-            get
-            {
-                return _frmPrintView;
-            }
-        }
+        public frmViewer PrintViewForm => _frmPrintView;
 
-        public IList<Character> CharacterList
-        {
-            get
-            {
-                return _lstCharacters;
-            }
-        }
+        public IList<Character> CharacterList => _lstCharacters;
 
         private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
         {

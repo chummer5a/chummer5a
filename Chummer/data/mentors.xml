@@ -734,10 +734,12 @@
           <name>Adept: 2 free levels of Improved Potential</name>
           <bonus>
             <selectpowers>
-              <selectpower
-                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
-              <selectpower
-                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -1096,12 +1098,7 @@
       <name>Monkey</name>
       <advantage>All: +2 dice to gymnastics tests involving climbing.</advantage>
       <disadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent’s face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Gymnastics</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
+      <bonus />
       <choices>
         <choice>
           <name>Magician: +2 dice for spells, preparations, and rituals of the manipulation type.</name>
@@ -1218,8 +1215,9 @@
           <name>Adept: 1 free level of Improved Potential.</name>
           <bonus>
             <selectpowers>
-              <selectpower
-                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -1477,7 +1475,9 @@
       <name>Wolpertinger</name>
       <advantage>All: +2 dice to dodge tests.</advantage>
       <disadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
-      <bonus />
+      <bonus>
+        <dodge>2</dodge>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice for Illusion Spells.</name>
@@ -1533,7 +1533,7 @@
       <disadvantage>A follower of Giraffe stumbles through social etiquette, as she believes the small talk and chitchat that are the core of social chatter are fundamentally dishonest and not worthy of her efforts. She can make a wide range of situations awkward and receives –2 dice for Etiquette skill tests. </disadvantage>
       <choices>
         <choice>
-          <name>+2 dice on Assensing Tets</name>
+          <name>+2 dice on Assensing Tests</name>
           <bonus>
             <specificskill>
               <name>Assensing</name>
@@ -1566,7 +1566,7 @@
     <mentor>
       <id>e8e25c51-bca0-4647-b345-f7f1d7a06be3</id>
       <name>Dolphin</name>
-      <advantage>All: +2 dice on Artisan skill tests or Pilot (Watercraft) skill tests (choose one)</advantage>
+      <advantage>All: +2 dice on Artisan skill tests or Pilot Watercraft skill tests (choose one)</advantage>
       <disadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is difficult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. Atonement is up to the gamemaster but can involve time and money spent with charities.</disadvantage>
       <choices>
         <choice>
@@ -1579,10 +1579,10 @@
           </bonus>
         </choice>
         <choice>
-          <name>+2 on Pilot (Watercraft) Tests</name>
+          <name>+2 on Pilot Watercraft Tests</name>
           <bonus>
             <specificskill>
-              <name>Pilot (Watercraft)</name>
+              <name>Pilot Watercraft</name>
               <bonus>2</bonus>
             </specificskill>
           </bonus>
@@ -1612,7 +1612,7 @@
     <mentor>
       <id>cf290b67-e417-4cd6-a36e-d28f35bdc18d</id>
       <name>Whale</name>
-      <advantage>All: +2 dice to Swimming or Pilot (Watercraft) skill tests (choose one)</advantage>
+      <advantage>All: +2 dice to Swimming or Pilot Watercraft skill tests (choose one)</advantage>
       <disadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</disadvantage>
       <choices>
         <choice>
@@ -1625,10 +1625,10 @@
           </bonus>
         </choice>
         <choice>
-          <name>+2 on Pilot (Watercraft) Tests</name>
+          <name>+2 on Pilot Watercraft Tests</name>
           <bonus>
             <specificskill>
-              <name>Pilot (Watercraft)</name>
+              <name>Pilot Watercraft</name>
               <bonus>2</bonus>
             </specificskill>
           </bonus>
@@ -1652,7 +1652,7 @@
     <mentor>
       <id>9ca5be05-1420-4592-81a5-1b59bb93545d</id>
       <name>Horse</name>
-      <advantage>All: +2 dice to Running or Pilot Ground Craft) tests (choose one)</advantage>
+      <advantage>All: +2 dice to Running or Pilot Ground Craft tests (choose one)</advantage>
       <disadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</disadvantage>
       <choices>
         <choice>
@@ -1665,10 +1665,10 @@
           </bonus>
         </choice>
         <choice>
-          <name>+2 on Pilot (Groundcraft) Tests</name>
+          <name>+2 on Pilot Ground Craft Tests</name>
           <bonus>
             <specificskill>
-              <name>Pilot (Groundcraft)</name>
+              <name>Pilot Ground Craft</name>
               <bonus>2</bonus>
             </specificskill>
           </bonus>
@@ -1974,7 +1974,7 @@
       <advantage>Gain +4 ranks of (Choose Holy Text) Knowledge Skill.</advantage>
       <disadvantage>When a follower of a Holy Text wishes to take an action that is contrary to the teaching of the text (whatever that text is), they must pass a Charisma + Willpower (4) Test to take the action.</disadvantage>
       <bonus>
-        <selectskill knowledgeskills="True">
+        <selectskill knowledgeskills="True" limittoskill="Holy Text">
           <val>4</val>
           <applytorating>True</applytorating>
         </selectskill>
@@ -2003,6 +2003,7 @@
           <bonus>
             <selectpowers>
               <selectpower limittopowers="Mystic Armor,Empathic Healing" />
+              <val>1</val>
             </selectpowers>
           </bonus>
         </choice>
@@ -2032,7 +2033,9 @@
           <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Killing Hands,Plague Cloud" />
+              <selectpower limittopowers="Killing Hands,Plague Cloud">
+                <val>1</val>
+              </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -2045,6 +2048,14 @@
       <name>War</name>
       <advantage>All: After character creation, may purchase combat skills at rank 3 or higher for 1 less Karma</advantage>
       <disadvantage>If it looks as if they are going to lose a battle, those with the War mentor must pass a Charisma + Willpower (4) Test, or else use all means necessary—including the lives, nuyen, and honor of their teammates—to overcome their adversary.</disadvantage>
+      <bonus>
+        <skillcategorykarmacost>
+          <name>Combat Active</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
@@ -2106,6 +2117,12 @@
       <name>Green Man</name>
       <advantage>All: +2 dice pool modifer for Negotiation Tests.</advantage>
       <disadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Negotiation</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
@@ -2472,7 +2489,7 @@
       <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
       <name>Squirrel</name>
       <advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
-      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tets or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -2770,7 +2787,7 @@
       <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he wouldn't take any consideration. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
       <choices>
         <choice>
-          <name>+2 dice on Pilot Ground Craft Tets</name>
+          <name>+2 dice on Pilot Ground Craft Tests</name>
           <bonus>
             <specificskill>
               <name>Pilot Ground Craft</name>
@@ -2779,7 +2796,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>+2 dice on Intimidation Tets</name>
+          <name>+2 dice on Intimidation Tests</name>
           <bonus>
             <specificskill>
               <name>Intimidation</name>

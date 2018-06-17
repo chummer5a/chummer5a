@@ -16,34 +16,37 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 using System.IO;
 using System.Linq;
  using System.Runtime;
- using System.Runtime.InteropServices;
-﻿using System.Threading;
-﻿using System.Windows.Forms;
+ using System.Threading;
+ using System.Windows.Forms;
 ﻿using Chummer.Backend;
 
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
-    static class Program
+    internal static class Program
     {
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        private static Mutex s_MutexGlobal;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            using (s_MutexGlobal = new Mutex(false, @"Global\" + strChummerGuid))
+            using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
-                ProfileOptimization.SetProfileRoot(Application.StartupPath);
-                ProfileOptimization.StartProfile("chummerprofile");
+                IsMono = Type.GetType("Mono.Runtime") != null;
+                // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
+                if (!IsMono)
+                {
+                    ProfileOptimization.SetProfileRoot(Application.StartupPath);
+                    ProfileOptimization.StartProfile("chummerprofile");
+                }
+
                 Stopwatch sw = Stopwatch.StartNew();
                 //If debuging and launched from other place (Bootstrap), launch debugger
                 if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
@@ -51,7 +54,7 @@ namespace Chummer
                     Debugger.Launch();
                 }
                 sw.TaskEnd("dbgchk");
-                //Various init stuff (that mostly "can" be removed as they serve 
+                //Various init stuff (that mostly "can" be removed as they serve
                 //debugging more than function
 
 
@@ -62,24 +65,22 @@ namespace Chummer
                 sw.TaskEnd("fixcwd");
                 //Log exceptions that is caught. Wanting to know about this cause of performance
                 AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
-                AppDomain.CurrentDomain.FirstChanceException += s_Heatmap.OnException;
+                AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
 
-                string info =
+                string strInfo =
                     $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
                 sw.TaskEnd("infogen");
 
-                Log.Info(info);
+                Log.Info(strInfo);
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 sw.TaskEnd("languagefreestartup");
-//#if !DEBUG
+#if !DEBUG
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
                 {
                     if (e.ExceptionObject is Exception ex)
@@ -88,40 +89,57 @@ namespace Chummer
                     //main.Hide();
                     //main.ShowInTaskbar = false;
                 };
-//#endif
+#endif
 
                 sw.TaskEnd("Startup");
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                s_FrmMainForm = new frmChummerMain();
-                Application.Run(s_FrmMainForm);
+                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                {
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-                Log.Info(s_Heatmap.GenerateInfo());
+                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                {
+                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Make sure the default language has been loaded before attempting to open the Main Form.
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
+
+                MainForm = new frmChummerMain();
+                Application.Run(MainForm);
+
+                Log.Info(ExceptionHeatmap.GenerateInfo());
             }
         }
 
-        private static frmChummerMain s_FrmMainForm;
         /// <summary>
         /// Main application form.
         /// </summary>
         public static frmChummerMain MainForm
         {
-            get
-            {
-                return s_FrmMainForm;
-            }
-            set
-            {
-                s_FrmMainForm = value;
-            }
+            get;
+            set;
         }
 
-        static readonly ExceptionHeatMap s_Heatmap = new ExceptionHeatMap();
+        /// <summary>
+        /// Whether the application is running under Mono (true) or .NET (false)
+        /// </summary>
+        public static bool IsMono
+        {
+            get;
+            private set;
+        }
+
+        private static ExceptionHeatMap ExceptionHeatmap { get; } = new ExceptionHeatMap();
 
         static void FixCwd()
         {
-            //If launched by file assiocation, the cwd is file location. 
+            //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
             if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))
@@ -138,7 +156,8 @@ namespace Chummer
 
         public static Mutex GlobalChummerMutex
         {
-            get { return s_MutexGlobal; }
+            get;
+            private set;
         }
     }
 }

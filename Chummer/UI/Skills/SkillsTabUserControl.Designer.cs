@@ -15,9 +15,10 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                UnbindSkillsTabUserControl();
             }
             base.Dispose(disposing);
         }
@@ -37,13 +38,13 @@ namespace Chummer.UI.Skills
             this.lblBuyWithKarma = new System.Windows.Forms.Label();
             this.lblActiveKarma = new System.Windows.Forms.Label();
             this.lblActiveSp = new System.Windows.Forms.Label();
-            this.cboSort = new System.Windows.Forms.ComboBox();
+            this.cboSort = new ElasticComboBox();
             this.lblActiveSkills = new System.Windows.Forms.Label();
             this.btnExotic = new System.Windows.Forms.Button();
-            this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
+            this.cboDisplayFilter = new ElasticComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboSortKnowledge = new System.Windows.Forms.ComboBox();
-            this.cboDisplayFilterKnowledge = new System.Windows.Forms.ComboBox();
+            this.cboSortKnowledge = new ElasticComboBox();
+            this.cboDisplayFilterKnowledge = new ElasticComboBox();
             this.lblCustomKnowledgeSkillsReminder = new System.Windows.Forms.Label();
             this.lblKnoBwk = new System.Windows.Forms.Label();
             this.lblKnoKarma = new System.Windows.Forms.Label();
@@ -385,14 +386,14 @@ namespace Chummer.UI.Skills
 
         private System.Windows.Forms.SplitContainer splitSkills;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboDisplayFilter;
+        private ElasticComboBox cboDisplayFilter;
         private System.Windows.Forms.Button btnExotic;
         private System.Windows.Forms.Button btnKnowledge;
         private System.Windows.Forms.Label lblActiveSkills;
         private System.Windows.Forms.Label lblKnowledgeSkillPoints;
         private System.Windows.Forms.Label lblKnowledgeSkillPointsTitle;
         private System.Windows.Forms.Label lblKnowledgeSkills;
-        private System.Windows.Forms.ComboBox cboSort;
+        private ElasticComboBox cboSort;
         private System.Windows.Forms.Label lblBuyWithKarma;
         private System.Windows.Forms.Label lblActiveKarma;
         private System.Windows.Forms.Label lblActiveSp;
@@ -403,8 +404,8 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblKnoBwk;
         private System.Windows.Forms.Button btnResetCustomDisplayAttribute;
         private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
-        private System.Windows.Forms.ComboBox cboSortKnowledge;
-        private System.Windows.Forms.ComboBox cboDisplayFilterKnowledge;
+        private ElasticComboBox cboSortKnowledge;
+        private ElasticComboBox cboDisplayFilterKnowledge;
         private System.Windows.Forms.TableLayoutPanel tlpKnoweldgeSkillsHeader;
     }
 }

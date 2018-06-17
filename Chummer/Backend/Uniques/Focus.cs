@@ -1,22 +1,36 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     /// <summary>
     /// A Focus.
     /// </summary>
-    public class Focus : IHasInternalId, IHasName
+    [DebuggerDisplay("{GearObject?.DisplayName(GlobalOptions.DefaultLanguage)}")]
+    public class Focus : IHasInternalId
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
-        private string _strName = string.Empty;
-        private Guid _guiGearId;
-        private int _intRating;
 
         #region Constructor, Create, Save, and Load Methods
         public Focus(Character objCharacter)
@@ -34,9 +48,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("focus");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("gearid", _guiGearId.ToString("D"));
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("gearid", GearObject?.InternalId);
             objWriter.WriteEndElement();
         }
 
@@ -46,10 +58,15 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            _strName = objNode["name"].InnerText;
-            _intRating = Convert.ToInt32(objNode["rating"].InnerText);
-            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            string strGearId = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("gearid", ref strGearId))
+            {
+                GearObject = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGearId) ??
+                             (_objCharacter.Armor.FindArmorGear(strGearId) ?? (_objCharacter.Weapons.FindWeaponGear(strGearId) ??
+                                                                               (_objCharacter.Cyberware.FindCyberwareGear(strGearId) ??
+                                                                                _objCharacter.Vehicles.FindVehicleGear(strGearId))));
+            }
         }
         #endregion
 
@@ -59,39 +76,16 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public string DisplayName { get; set; }
-
         /// <summary>
         /// Foci's name.
         /// </summary>
-        public string Name
-        {
-            get => _strName;
-            set => _strName = value;
-        }
-
-        /// <summary>
-        /// GUID of the linked Gear.
-        /// TODO: Replace this with a pointer to the Gear instead of having to do lookups.
-        /// </summary>
-        public string GearId
-        {
-            get => _guiGearId.ToString("D");
-            set
-            {
-                if (Guid.TryParse(value, out Guid guiTemp))
-                    _guiGearId = guiTemp;
-            }
-        }
+        public Gear GearObject { get; set; }
 
         /// <summary>
         /// Rating of the Foci.
         /// </summary>
-        public int Rating
-        {
-            get => _intRating;
-            set => _intRating = value;
-        }
+        public int Rating => GearObject?.Rating ?? 0;
+
         #endregion
     }
 }

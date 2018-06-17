@@ -16,12 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
  using System.Linq;
+ using System.Text;
  using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -29,7 +31,7 @@ namespace Chummer
     public partial class frmCreateImprovement : Form
     {
         private readonly Character _objCharacter;
-        private readonly XmlDocument _objDocument = null;
+        private readonly XmlDocument _objDocument;
         private string _strSelect = string.Empty;
         private Improvement _objEditImprovement;
 
@@ -52,7 +54,7 @@ namespace Chummer
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                     select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
-            
+
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
             cboImprovemetType.ValueMember = "Value";
@@ -216,33 +218,34 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpecialAttribute":
+                {
+                    List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                    lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                    lstAbbrevs.Remove("ESS");
+                    /*
+                    if (!_objCharacter.MAGEnabled)
                     {
-                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
-                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
-                        lstAbbrevs.Remove("ESS");
-                        if (!_objCharacter.MAGEnabled)
-                        {
-                            lstAbbrevs.Remove("MAG");
-                            lstAbbrevs.Remove("MAGAdept");
-                        }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
-                            lstAbbrevs.Remove("MAGAdept");
-
-                        if (!_objCharacter.RESEnabled)
-                            lstAbbrevs.Remove("RES");
-                        if (!_objCharacter.DEPEnabled)
-                            lstAbbrevs.Remove("DEP");
-
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
-                        {
-                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
-                        };
-
-                        frmPickAttribute.ShowDialog(this);
-
-                        if (frmPickAttribute.DialogResult == DialogResult.OK)
-                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                        lstAbbrevs.Remove("MAG");
+                        lstAbbrevs.Remove("MAGAdept");
                     }
+                    else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        lstAbbrevs.Remove("MAGAdept");
+
+                    if (!_objCharacter.RESEnabled)
+                        lstAbbrevs.Remove("RES");
+                    if (!_objCharacter.DEPEnabled)
+                        lstAbbrevs.Remove("DEP");
+                        */
+                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                    {
+                        Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                    };
+
+                    frmPickAttribute.ShowDialog(this);
+
+                    if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                }
                     break;
                 case "SelectSkill":
                     {
@@ -258,15 +261,52 @@ namespace Chummer
                     break;
                 case "SelectKnowSkill":
                     {
-                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter)
+                        List<ListItem> lstDropdownItems = new List<ListItem>();
+                        HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                        foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
-                            ShowKnowledgeSkills = true,
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                        }
+                        StringBuilder objFilter = new StringBuilder();
+                        if (setProcessedSkillNames.Count > 0)
+                        {
+                            objFilter.Append("not(");
+                            foreach (string strName in setProcessedSkillNames)
+                            {
+                                objFilter.Append("name = \"" + strName + "\" or ");
+                            }
+
+                            objFilter.Length -= 4;
+                            objFilter.Append(')');
+                        }
+
+                        string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
+                        using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
+                        {
+                            if (xmlSkillList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlSkill in xmlSkillList)
+                                {
+                                    string strName = xmlSkill["name"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                                }
+                            }
+                        }
+
+                        lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                        frmSelectItem frmPickSkill = new frmSelectItem
+                        {
+                            DropdownItems = lstDropdownItems,
                             Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                         };
+
                         frmPickSkill.ShowDialog(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)
-                            txtSelect.Text = frmPickSkill.SelectedSkill;
+                            txtSelect.Text = frmPickSkill.SelectedItem;
                     }
                     break;
                 case "SelectSkillCategory":
@@ -346,12 +386,14 @@ namespace Chummer
 
             // Build the XML for the Improvement.
             XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
-            if (objFetchNode == null) return;
+            string strInternal = objFetchNode?["internal"]?.InnerText;
+            if (string.IsNullOrEmpty(strInternal))
+                return;
             objWriter.WriteStartDocument();
             // <bonus>
             objWriter.WriteStartElement("bonus");
             // <whatever element>
-            objWriter.WriteStartElement(objFetchNode["internal"]?.InnerText);
+            objWriter.WriteStartElement(strInternal);
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
@@ -380,7 +422,7 @@ namespace Chummer
             objStream.Position = 0;
 
             // Read it back in as an XmlDocument.
-            StreamReader objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
             XmlDocument objBonusXml = new XmlDocument();
             strXml = objReader.ReadToEnd();
             objBonusXml.LoadXml(strXml);
@@ -448,10 +490,7 @@ namespace Chummer
         /// </summary>
         public Improvement EditImprovementObject
         {
-            set
-            {
-                _objEditImprovement = value;
-            }
+            set => _objEditImprovement = value;
         }
         #endregion
     }

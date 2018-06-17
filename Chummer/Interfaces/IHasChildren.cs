@@ -16,16 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
     public interface IHasChildren<T>
     {
-        IList<T> Children { get; }
+        TaggedObservableCollection<T> Children { get; }
     }
 }

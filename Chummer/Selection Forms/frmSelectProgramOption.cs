@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -30,9 +30,9 @@ namespace Chummer
         private string _strProgramCategory = string.Empty;
         private readonly List<string> _lstTags = new List<string>();
 
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         #region Control Events
@@ -90,27 +90,34 @@ namespace Chummer
             {
                 string strSource = xmlOption["source"].InnerText;
                 string strPage = xmlOption["altpage"]?.InnerText ?? xmlOption["page"].InnerText;
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblSource.Text = string.Empty;
 
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void lstOptions_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
+                AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -120,8 +127,11 @@ namespace Chummer
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 
@@ -129,23 +139,14 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of the Program the Option will be added to.
         /// </summary>
         public string ProgramName
         {
-            set
-            {
-                _strProgramName = value;
-            }
+            set => _strProgramName = value;
         }
 
         /// <summary>
@@ -153,33 +154,19 @@ namespace Chummer
         /// </summary>
         public string ProgramCategory
         {
-            set
-            {
-                _strProgramCategory = value;
-            }
+            set => _strProgramCategory = value;
         }
 
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public IList<string> ProgramTags
-        {
-            get
-            {
-                return _lstTags;
-            }
-        }
+        public IList<string> ProgramTags => _lstTags;
 
         /// <summary>
         /// Program Option that was selected in the dialogue.
         /// </summary>
-        public string SelectedOption
-        {
-            get
-            {
-                return _strSelectedOption;
-            }
-        }
+        public string SelectedOption => _strSelectedOption;
+
         #endregion
 
         #region Methods

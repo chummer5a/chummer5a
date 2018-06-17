@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmDiceHits : Form
     {
-        private int _intDice = 0;
+        private int _intDice;
 
         #region Control Events
         public frmDiceHits()
@@ -35,7 +35,8 @@ namespace Chummer
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + ' ' + _intDice.ToString() + "D6: ";
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + strSpaceCharacter + _intDice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ':' + strSpaceCharacter;
             nudDiceResult.Maximum = _intDice;
             nudDiceResult.Minimum = 0;
             lblResult.Text = string.Empty;
@@ -54,14 +55,8 @@ namespace Chummer
         /// </summary>
         public int Dice
         {
-            get
-            {
-                return _intDice;
-            }
-            set
-            {
-                _intDice = value;
-            }
+            get => _intDice;
+            set => _intDice = value;
         }
 
         /// <summary>
@@ -69,10 +64,7 @@ namespace Chummer
         /// </summary>
         public string Title
         {
-            set
-            {
-                Text = value;
-            }
+            set => Text = value;
         }
 
         /// <summary>
@@ -80,22 +72,14 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result
-        {
-            get
-            {
-                return decimal.ToInt32(nudDiceResult.Value);
-            }
-        }
+        public int Result => decimal.ToInt32(nudDiceResult.Value);
+
         #endregion
 
         #region Methods

@@ -13,9 +13,10 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                UnbindSpiritControl();
             }
             base.Dispose(disposing);
         }
@@ -41,7 +42,6 @@ namespace Chummer
             this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.tsCreateCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.txtCritterName = new System.Windows.Forms.TextBox();
             this.chkFettered = new System.Windows.Forms.CheckBox();
@@ -201,20 +201,6 @@ namespace Chummer
             this.tsCreateCharacter.Text = "Create Critter";
             this.tsCreateCharacter.Click += new System.EventHandler(this.tsCreateCharacter_Click);
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // imgNotes
             // 
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
@@ -287,7 +273,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
         private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
         private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
         private System.Windows.Forms.TextBox txtCritterName;

@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -27,7 +26,7 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private readonly List<ListItem> _lstAttributes = null;
+        private readonly List<ListItem> _lstAttributes;
 
         #region Control Events
         public frmSelectAttribute(params string[] lstAttributeAbbrevs)
@@ -80,23 +79,14 @@ namespace Chummer
         /// <summary>
         /// Attribute that was selected in the dialogue.
         /// </summary>
-        public string SelectedAttribute
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedAttribute => _strReturnValue;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -104,22 +94,14 @@ namespace Chummer
         /// </summary>
         public bool ShowMetatypeMaximum
         {
-            set
-            {
-                chkDoNotAffectMetatypeMaximum.Visible = value;
-            }
+            set => chkDoNotAffectMetatypeMaximum.Visible = value;
         }
 
         /// <summary>
         /// Whether or not the Metatype Maximum value should be affected as well.
         /// </summary>
-        public bool DoNotAffectMetatypeMaximum
-        {
-            get
-            {
-                return chkDoNotAffectMetatypeMaximum.Checked;
-            }
-        }
+        public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
+
         #endregion
     }
 }

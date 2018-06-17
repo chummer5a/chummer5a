@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectNumber : Form
     {
-        private decimal _decReturnValue = 0;
+        private decimal _decReturnValue;
 
         #region Control Events
         public frmSelectNumber(int intDecimalPlaces = 2)
@@ -56,14 +56,8 @@ namespace Chummer
         /// </summary>
         public decimal SelectedValue
         {
-            get
-            {
-                return _decReturnValue;
-            }
-            set
-            {
-                nudNumber.Value = value;
-            }
+            get => _decReturnValue;
+            set => nudNumber.Value = value;
         }
 
         /// <summary>
@@ -71,10 +65,7 @@ namespace Chummer
         /// </summary>
         public decimal Minimum
         {
-            set
-            {
-                nudNumber.Minimum = value;
-            }
+            set => nudNumber.Minimum = value;
         }
 
         /// <summary>
@@ -82,10 +73,7 @@ namespace Chummer
         /// </summary>
         public decimal Maximum
         {
-            set
-            {
-                nudNumber.Maximum = value;
-            }
+            set => nudNumber.Maximum = value;
         }
 
         /// <summary>
@@ -93,10 +81,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>

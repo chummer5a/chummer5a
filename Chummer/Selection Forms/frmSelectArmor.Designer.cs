@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace Chummer
 {
     partial class frmSelectArmor
@@ -13,9 +15,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -33,9 +35,6 @@ namespace Chummer
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
@@ -45,13 +44,13 @@ namespace Chummer
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.dgvArmor = new System.Windows.Forms.DataGridView();
             this.Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ArmorName = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Armor = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Capacity = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Special = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Source = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListDetail = new System.Windows.Forms.TabPage();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
@@ -78,15 +77,7 @@ namespace Chummer
             this.lblArmorLabel = new System.Windows.Forms.Label();
             this.lstArmor = new System.Windows.Forms.ListBox();
             this.tabBrowse = new System.Windows.Forms.TabPage();
-            this.Source = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.Cost = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Special = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Armor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ArmorName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.Avail = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabListDetail.SuspendLayout();
@@ -185,13 +176,13 @@ namespace Chummer
             this.dgvArmor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArmor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Guid,
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewTextBoxColumn6,
-            this.dataGridViewTextBoxColumn7});
+            this.ArmorName,
+            this.Armor,
+            this.Capacity,
+            this.Special,
+            this.Avail,
+            this.Source,
+            this.Cost});
             this.dgvArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvArmor.Location = new System.Drawing.Point(3, 3);
             this.dgvArmor.MultiSelect = false;
@@ -213,80 +204,94 @@ namespace Chummer
             this.Guid.ReadOnly = true;
             this.Guid.Visible = false;
             // 
-            // dataGridViewTextBoxColumn1
+            // ArmorName
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "ArmorName";
+            this.ArmorName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.ArmorName.DataPropertyName = "ArmorName";
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 60;
+            this.ArmorName.DefaultCellStyle = dataGridViewCellStyle2;
+            this.ArmorName.HeaderText = "Name";
+            this.ArmorName.Name = "ArmorName";
+            this.ArmorName.ReadOnly = true;
+            this.ArmorName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ArmorName.TranslationTag = null;
+            this.ArmorName.Width = 60;
             // 
-            // dataGridViewTextBoxColumn2
+            // Armor
             // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Armor";
-            this.dataGridViewTextBoxColumn2.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Armor";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 59;
+            this.Armor.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Armor.DataPropertyName = "Armor";
+            this.Armor.FillWeight = 50F;
+            this.Armor.HeaderText = "Armor";
+            this.Armor.Name = "Armor";
+            this.Armor.ReadOnly = true;
+            this.Armor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Armor.TranslationTag = null;
+            this.Armor.Width = 59;
             // 
-            // dataGridViewTextBoxColumn3
+            // Capacity
             // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Capacity";
-            this.dataGridViewTextBoxColumn3.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn3.HeaderText = "Capacity";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 73;
+            this.Capacity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Capacity.DataPropertyName = "Capacity";
+            this.Capacity.FillWeight = 50F;
+            this.Capacity.HeaderText = "Capacity";
+            this.Capacity.Name = "Capacity";
+            this.Capacity.ReadOnly = true;
+            this.Capacity.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Capacity.TranslationTag = null;
+            this.Capacity.Width = 73;
             // 
-            // dataGridViewTextBoxColumn4
+            // Special
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "Special";
+            this.Special.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Special.DataPropertyName = "Special";
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Special";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Width = 67;
+            this.Special.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Special.HeaderText = "Special";
+            this.Special.Name = "Special";
+            this.Special.ReadOnly = true;
+            this.Special.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Special.TranslationTag = null;
+            this.Special.Width = 67;
             // 
-            // dataGridViewTextBoxColumn5
+            // Avail
             // 
-            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "Avail";
-            this.dataGridViewTextBoxColumn5.FillWeight = 30F;
-            this.dataGridViewTextBoxColumn5.HeaderText = "Avail";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.Width = 55;
+            this.Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Avail.DataPropertyName = "Avail";
+            this.Avail.FillWeight = 30F;
+            this.Avail.HeaderText = "Avail";
+            this.Avail.Name = "Avail";
+            this.Avail.ReadOnly = true;
+            this.Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Avail.TranslationTag = null;
+            this.Avail.Width = 55;
             // 
-            // dataGridViewTextBoxColumn6
+            // Source
             // 
-            this.dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "Source";
-            this.dataGridViewTextBoxColumn6.HeaderText = "Source";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Width = 66;
+            this.Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Source.DataPropertyName = "Source";
+            this.Source.HeaderText = "Source";
+            this.Source.Name = "Source";
+            this.Source.ReadOnly = true;
+            this.Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Source.TranslationTag = null;
+            this.Source.Width = 66;
             // 
-            // dataGridViewTextBoxColumn7
+            // Cost
             // 
-            this.dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "Cost";
+            this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Cost.DataPropertyName = "Cost";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
             dataGridViewCellStyle4.Format = "#,0.##¥";
             dataGridViewCellStyle4.NullValue = null;
-            this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridViewTextBoxColumn7.FillWeight = 60F;
-            this.dataGridViewTextBoxColumn7.HeaderText = "Cost";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.Width = 53;
+            this.Cost.DefaultCellStyle = dataGridViewCellStyle4;
+            this.Cost.FillWeight = 60F;
+            this.Cost.HeaderText = "Cost";
+            this.Cost.Name = "Cost";
+            this.Cost.ReadOnly = true;
+            this.Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Cost.TranslationTag = null;
+            this.Cost.Width = 53;
             // 
             // tabControl
             // 
@@ -339,7 +344,7 @@ namespace Chummer
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(324, 209);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(324, 251);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 64;
@@ -351,7 +356,7 @@ namespace Chummer
             // chkBlackMarketDiscount
             // 
             this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(381, 123);
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(381, 165);
             this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
             this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
             this.chkBlackMarketDiscount.TabIndex = 63;
@@ -407,7 +412,7 @@ namespace Chummer
             // lblTest
             // 
             this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(487, 74);
+            this.lblTest.Location = new System.Drawing.Point(379, 97);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
             this.lblTest.TabIndex = 49;
@@ -416,7 +421,7 @@ namespace Chummer
             // lblTestLabel
             // 
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(436, 74);
+            this.lblTestLabel.Location = new System.Drawing.Point(321, 97);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
             this.lblTestLabel.TabIndex = 48;
@@ -426,7 +431,7 @@ namespace Chummer
             // nudMarkup
             // 
             this.nudMarkup.DecimalPlaces = 2;
-            this.nudMarkup.Location = new System.Drawing.Point(381, 146);
+            this.nudMarkup.Location = new System.Drawing.Point(381, 188);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -445,7 +450,7 @@ namespace Chummer
             // lblMarkupLabel
             // 
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(321, 148);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(321, 190);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
             this.lblMarkupLabel.TabIndex = 53;
@@ -455,7 +460,7 @@ namespace Chummer
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(436, 148);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(436, 190);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 55;
@@ -483,7 +488,7 @@ namespace Chummer
             // chkFreeItem
             // 
             this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(324, 123);
+            this.chkFreeItem.Location = new System.Drawing.Point(324, 165);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
             this.chkFreeItem.TabIndex = 52;
@@ -495,17 +500,16 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(378, 181);
+            this.lblSource.Location = new System.Drawing.Point(378, 223);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 57;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(321, 181);
+            this.lblSourceLabel.Location = new System.Drawing.Point(321, 223);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 56;
@@ -515,7 +519,7 @@ namespace Chummer
             // lblCost
             // 
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(378, 97);
+            this.lblCost.Location = new System.Drawing.Point(378, 120);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(34, 13);
             this.lblCost.TabIndex = 51;
@@ -524,7 +528,7 @@ namespace Chummer
             // lblCostLabel
             // 
             this.lblCostLabel.AutoSize = true;
-            this.lblCostLabel.Location = new System.Drawing.Point(321, 97);
+            this.lblCostLabel.Location = new System.Drawing.Point(321, 120);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblCostLabel.TabIndex = 50;
@@ -593,91 +597,9 @@ namespace Chummer
             this.tabBrowse.Text = "Browse";
             this.tabBrowse.UseVisualStyleBackColor = true;
             // 
-            // Source
-            // 
-            this.Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Source.DataPropertyName = "Source";
-            this.Source.HeaderText = "Source";
-            this.Source.Name = "Source";
-            this.Source.ReadOnly = true;
-            // 
             // tmrSearch
             // 
             this.tmrSearch.Interval = 250;
-            // 
-            // Cost
-            // 
-            this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle5.Format = "#,0.##¥";
-            dataGridViewCellStyle5.NullValue = null;
-            this.Cost.DefaultCellStyle = dataGridViewCellStyle5;
-            this.Cost.FillWeight = 60F;
-            this.Cost.HeaderText = "Cost";
-            this.Cost.Name = "Cost";
-            this.Cost.ReadOnly = true;
-            // 
-            // Special
-            // 
-            this.Special.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Special.DataPropertyName = "Special";
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Special.DefaultCellStyle = dataGridViewCellStyle6;
-            this.Special.HeaderText = "Special";
-            this.Special.Name = "Special";
-            this.Special.ReadOnly = true;
-            // 
-            // Capacity
-            // 
-            this.Capacity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Capacity.DataPropertyName = "Capacity";
-            this.Capacity.FillWeight = 50F;
-            this.Capacity.HeaderText = "Capacity";
-            this.Capacity.Name = "Capacity";
-            this.Capacity.ReadOnly = true;
-            // 
-            // Armor
-            // 
-            this.Armor.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Armor.DataPropertyName = "Armor";
-            this.Armor.FillWeight = 50F;
-            this.Armor.HeaderText = "Armor";
-            this.Armor.Name = "Armor";
-            this.Armor.ReadOnly = true;
-            // 
-            // ArmorName
-            // 
-            this.ArmorName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.ArmorName.DataPropertyName = "ArmorName";
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ArmorName.DefaultCellStyle = dataGridViewCellStyle7;
-            this.ArmorName.HeaderText = "Name";
-            this.ArmorName.Name = "ArmorName";
-            this.ArmorName.ReadOnly = true;
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
-            // Avail
-            // 
-            this.Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Avail.DataPropertyName = "Avail";
-            this.Avail.FillWeight = 30F;
-            this.Avail.HeaderText = "Avail";
-            this.Avail.Name = "Avail";
-            this.Avail.ReadOnly = true;
             // 
             // frmSelectArmor
             // 
@@ -748,23 +670,15 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmor;
         private System.Windows.Forms.Label lblArmorLabel;
         private System.Windows.Forms.ListBox lstArmor;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Source;
         private System.Windows.Forms.Timer tmrSearch;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Cost;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Special;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Capacity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Armor;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ArmorName;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Avail;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
+        private DataGridViewTextBoxColumnTranslated ArmorName;
+        private DataGridViewTextBoxColumnTranslated Armor;
+        private DataGridViewTextBoxColumnTranslated Capacity;
+        private DataGridViewTextBoxColumnTranslated Special;
+        private DataGridViewTextBoxColumnTranslated Avail;
+        private DataGridViewTextBoxColumnTranslated Source;
+        private DataGridViewTextBoxColumnTranslated Cost;
     }
 }

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -37,7 +37,7 @@ namespace Chummer
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
             DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty) : objDateTimeInfo.LongDatePattern;
+            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
             datDate.Value = DateTime.Now;
 
             txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
@@ -89,14 +89,8 @@ namespace Chummer
         /// </summary>
         public string Reason
         {
-            get
-            {
-                return txtDescription.Text;
-            }
-            set
-            {
-                txtDescription.Text = value;
-            }
+            get => txtDescription.Text;
+            set => txtDescription.Text = value;
         }
 
         /// <summary>
@@ -104,14 +98,8 @@ namespace Chummer
         /// </summary>
         public bool Refund
         {
-            get
-            {
-                return chkRefund.Checked;
-            }
-            set
-            {
-                chkRefund.Checked = value;
-            }
+            get => chkRefund.Checked;
+            set => chkRefund.Checked = value;
         }
 
         /// <summary>
@@ -119,14 +107,8 @@ namespace Chummer
         /// </summary>
         public DateTime SelectedDate
         {
-            get
-            {
-                return datDate.Value;
-            }
-            set
-            {
-                datDate.Value = value;
-            }
+            get => datDate.Value;
+            set => datDate.Value = value;
         }
 
         /// <summary>

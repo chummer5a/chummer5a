@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,8 +31,8 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public EventHandler ContactDetailChanged { get; set; }
-        public EventHandler DeleteContact { get; set; }
+        public event TextEventHandler ContactDetailChanged;
+        public event EventHandler DeleteContact;
 
         #region Control Events
         public PetControl(Contact objContact)
@@ -56,6 +56,14 @@ namespace Chummer
             DoDataBindings();
 
             _blnLoading = false;
+        }
+
+        public void UnbindPetControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
@@ -140,7 +148,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
             if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
             {
@@ -151,11 +159,11 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(@Application.StartupPath);
-                Uri uriFile = new Uri(@_objContact.FileName);
+                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriFile = new Uri(_objContact.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
@@ -171,7 +179,7 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
@@ -190,8 +198,8 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += "\n\n" + _objContact.Notes;
-                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
         }
@@ -212,18 +220,23 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
-            {
-                string strName = xmlMetatypeNode["name"].InnerText;
-                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
-                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
-                {
-                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
-                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
-                }
-            }
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
+                if (xmlMetatypesList != null)
+                    foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)
+                    {
+                        string strName = xmlMetatypeNode["name"]?.InnerText;
+                        string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                        lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                        XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
+                        if (xmlMetavariantsList != null)
+                            foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
+                            {
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
+                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                            }
+                    }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);
 
@@ -240,7 +253,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
                 DataSourceUpdateMode.OnPropertyChanged);
 
             // Properties controllable by the character themselves
@@ -255,13 +268,8 @@ namespace Chummer
             /// <summary>
             /// Contact object this is linked to.
             /// </summary>
-        public Contact ContactObject
-        {
-            get
-            {
-                return _objContact;
-            }
-        }
+        public Contact ContactObject => _objContact;
+
         #endregion
     }
 }

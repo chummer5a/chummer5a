@@ -18,24 +18,22 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private List<Gear> _lstGear = new List<Gear>();
-        private List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
-        private List<ListItem> _lstGeneralItems = new List<ListItem>();
-        private string _strMode = "Gear";
+        private IList<Gear> _lstGear = new List<Gear>();
+        private IList<Vehicle> _lstVehicles = new List<Vehicle>();
+        private IList<ListItem> _lstGeneralItems = new List<ListItem>();
+        private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
+        private string _strSelectItemOnLoad = string.Empty;
 
         #region Control Events
         public frmSelectItem()
@@ -47,51 +45,47 @@ namespace Chummer
 
         private void frmSelectItem_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            IList<ListItem> lstItems = new List<ListItem>();
 
             if (_strMode == "Gear")
             {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
                     string strAmmoName = objGear.DisplayNameShort(GlobalOptions.Language);
                     // Retrieve the plugin information if it has any.
-                    if (objGear.GearChildren.Count > 0)
+                    if (objGear.Children.Count > 0)
                     {
                         string strPlugins = string.Empty;
-                        foreach (Gear objChild in objGear.GearChildren)
+                        foreach (Gear objChild in objGear.Children)
                         {
-                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
+                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpaceCharacter;
                         }
                         // Remove the trailing comma.
                         strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                         // Append the plugin information to the name.
-                        strAmmoName += " [" + strPlugins + ']';
+                        strAmmoName += strSpaceCharacter + '[' + strPlugins + ']';
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + objGear.Rating.ToString() + ')';
-                    strAmmoName += " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                        strAmmoName += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + objGear.Rating.ToString() + ')';
+                    strAmmoName += strSpaceCharacter + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                     lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }
             }
             else if (_strMode == "Vehicles")
             {
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 // Add each of the items to a new List.
                 foreach (Vehicle objVehicle in _lstVehicles)
                 {
                     lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.DisplayName(GlobalOptions.Language)));
                 }
             }
-            else if (_strMode == "VehicleMods")
-            {
-                // Add each of the items to a new List.
-                foreach (VehicleMod objMod in _lstVehicleMods)
-                {
-                    lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
-                }
-            }
             else if (_strMode == "General")
             {
+                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 lstItems = _lstGeneralItems;
             }
             else if (_strMode == "Dropdown")
@@ -105,14 +99,13 @@ namespace Chummer
 
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("licenses.xml");
-                    XmlNodeList objXmlList = objXmlDocument.SelectNodes("/chummer/licenses/license");
-
-                    foreach (XmlNode objNode in objXmlList)
-                    {
-                        string strInnerText = objNode.InnerText;
-                        lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
+                    using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                        if (objXmlList != null)
+                            foreach (XmlNode objNode in objXmlList)
+                            {
+                                string strInnerText = objNode.InnerText;
+                                lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
+                            }
                 }
                 else
                 {
@@ -123,9 +116,9 @@ namespace Chummer
                         {
                             lstItems.Add(new ListItem(objCyberware.InternalId, objCyberware.DisplayName(GlobalOptions.Language)));
                         }
-                        foreach (Gear objGear in objCyberware.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objCyberware.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
-                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                         }
                     }
 
@@ -142,14 +135,14 @@ namespace Chummer
                             {
                                 lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
                             }
-                            foreach (Gear objGear in objMod.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in objMod.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
-                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                             }
                         }
-                        foreach (Gear objGear in objArmor.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objArmor.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
-                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                         }
                     }
 
@@ -166,17 +159,17 @@ namespace Chummer
                             {
                                 lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
                             }
-                            foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
-                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                             }
                         }
                     }
 
                     // Gear.
-                    foreach (Gear objGear in _objCharacter.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                    foreach (Gear objGear in _objCharacter.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                     {
-                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                     }
 
                     // Vehicles.
@@ -204,9 +197,9 @@ namespace Chummer
                                     {
                                         lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
                                     }
-                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                                     {
-                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                                     }
                                 }
                             }
@@ -229,16 +222,16 @@ namespace Chummer
                                     {
                                         lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
                                     }
-                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                                     {
-                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                                     }
                                 }
                             }
                         }
-                        foreach (Gear objGear in objVehicle.Gear.DeepWhere(x => x.GearChildren, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objVehicle.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
-                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                         }
                     }
                 }
@@ -260,7 +253,22 @@ namespace Chummer
                 if (cboAmmo.SelectedIndex != -1)
                     AcceptForm();
             }
+            if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
+            {
+                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                {
+                    string strOldSelected = cboAmmo.SelectedValue?.ToString();
+                    cboAmmo.SelectedValue = _strSelectItemOnLoad;
+                    if (cboAmmo.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
+                        cboAmmo.SelectedValue = strOldSelected;
+                }
+                else
+                    cboAmmo.Text = _strSelectItemOnLoad;
+            }
             cboAmmo.EndUpdate();
+
+            if (cboAmmo.Items.Count < 0)
+                cmdOK.Enabled = false;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -272,26 +280,6 @@ namespace Chummer
         {
             AcceptForm();
         }
-
-        private void cboAmmo_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (ListItem objItem in ((ComboBox)sender).Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
-                {
-                    intWidth = intNewWidth;
-                }
-            }
-            objSender.DropDownWidth = intWidth;
-        }
         #endregion
 
         #region Properties
@@ -302,7 +290,7 @@ namespace Chummer
         {
             set
             {
-                _lstGear = (List<Gear>)value;
+                _lstGear = value;
                 _strMode = "Gear";
             }
         }
@@ -314,20 +302,8 @@ namespace Chummer
         {
             set
             {
-                _lstVehicles = (List<Vehicle>)value;
+                _lstVehicles = value;
                 _strMode = "Vehicles";
-            }
-        }
-
-        /// <summary>
-        /// List of Vehicle Mods that the user can select.
-        /// </summary>
-        public IList<VehicleMod> VehicleMods
-        {
-            set
-            {
-                _lstVehicleMods = (List<VehicleMod>)value;
-                _strMode = "VehicleMods";
             }
         }
 
@@ -338,7 +314,7 @@ namespace Chummer
         {
             set
             {
-                _lstGeneralItems = (List<ListItem>)value;
+                _lstGeneralItems = value;
                 _strMode = "General";
             }
         }
@@ -350,7 +326,7 @@ namespace Chummer
         {
             set
             {
-                _lstGeneralItems = (List<ListItem>)value;
+                _lstGeneralItems = value;
                 _strMode = "Dropdown";
             }
         }
@@ -378,32 +354,21 @@ namespace Chummer
                     return cboAmmo.SelectedValue.ToString();
                 return cboAmmo.Text;
             }
+            set => _strSelectItemOnLoad = value;
         }
 
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>
-        public string SelectedName
-        {
-            get
-            {
-                return cboAmmo.Text;
-            }
-        }
+        public string SelectedName => cboAmmo.Text;
 
         /// <summary>
         /// Whether or not the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect
         {
-            get
-            {
-                return _blnAllowAutoSelect;
-            }
-            set
-            {
-                _blnAllowAutoSelect = value;
-            }
+            get => _blnAllowAutoSelect;
+            set => _blnAllowAutoSelect = value;
         }
 
         /// <summary>
@@ -411,10 +376,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -422,10 +384,7 @@ namespace Chummer
         /// </summary>
         public string ForceItem
         {
-            set
-            {
-                _strForceItem = value;
-            }
+            set => _strForceItem = value;
         }
         #endregion
 

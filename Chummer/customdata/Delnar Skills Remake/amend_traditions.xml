@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <spirits>
+    <spirit>
+      <skills>
+        <skill xpathfilter="text() = 'Astral Combat' or text() = 'Navigation' or text() = 'Exotic Ranged Weapon'  or text() = 'Artisan'" amendoperation="remove" />
+        <skill xpathfilter="text() = 'Assensing'" amendoperation="replace" attr="mag">Astral</skill>
+        <skill xpathfilter="text() = 'Perception'" amendoperation="replace" attr="int">Query</skill>
+        <skill xpathfilter="text() = 'Pilot Aircraft'" amendoperation="replace" attr="rea">Pilot Aerospace</skill>
+        <skill xpathfilter="text() = 'Pilot Ground Craft'" amendoperation="replace" attr="rea">Pilot Groundcraft</skill>
+        <skill xpathfilter="text() = 'Running' or text() = 'Flight'" amendoperation="replace" attr="str">Athletics</skill>
+        <skill xpathfilter="text() = 'Swimming'" amendoperation="replace" attr="str">Aquatics</skill>
+        <skill xpathfilter="text() = 'Gymnastics' or text() = 'Free-Fall'" amendoperation="replace" attr="str">Acrobatics</skill>
+        <skill xpathfilter="text() = 'Blades'" amendoperation="replace" attr="agi">Edged Weapons</skill>
+        <skill xpathfilter="text() = 'Clubs'" amendoperation="replace" attr="agi">Blunt Weapons</skill>
+        <skill xpathfilter="text() = 'Impersonation'" amendoperation="replace" attr="cha">Acting</skill>
+        <skill xpathfilter="text() = 'Negotiation'" amendoperation="replace" attr="cha">Persuade</skill>
+        <skill xpathfilter="text() = 'Con' or text() = 'Etiquette'" amendoperation="replace" attr="cha">Socialize</skill>
+        <skill xpathfilter="text() = 'Leadership' or text() = 'Intimidation'" amendoperation="replace" attr="cha">Command</skill>
+      </skills>
+    </spirit>
+  </spirits>
+</chummer>

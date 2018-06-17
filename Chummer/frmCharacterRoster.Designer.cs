@@ -15,9 +15,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -404,7 +404,6 @@ namespace Chummer
             // 
             // tsSort
             // 
-            this.tsSort.Enabled = false;
             this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
             this.tsSort.Name = "tsSort";
             this.tsSort.Size = new System.Drawing.Size(177, 22);
@@ -491,6 +490,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 552);
+            this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterBlock);
             this.Controls.Add(this.tabCharacterText);
             this.Controls.Add(this.picMugshot);
@@ -500,6 +500,8 @@ namespace Chummer
             this.MinimumSize = new System.Drawing.Size(586, 585);
             this.Name = "frmCharacterRoster";
             this.Text = "Character Roster";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCharacterRoster_FormClosing);
+            this.Load += new System.EventHandler(this.frmCharacterRoster_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tabCharacterText.ResumeLayout(false);
             this.panCharacterBio.ResumeLayout(false);

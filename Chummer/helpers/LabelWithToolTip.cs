@@ -16,64 +16,59 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public sealed class LabelWithToolTip : Label
     {
-        private readonly ToolTip _tt;
+        private readonly int _intToolTipWrap;
 
-        private string _strToolTipText = string.Empty;
-        public string TooltipText
+        private ToolTip _tt;
+        public ToolTip ToolTipObject
         {
-            get
+            get => _tt;
+            private set
             {
-                return _strToolTipText;
-            }
-            set
-            {
-                if (_strToolTipText != value)
+                if (_tt != value)
                 {
-                    _strToolTipText = value;
-                    if (!string.IsNullOrEmpty(value))
-                        _tt.SetToolTip(this, value);
+                    _tt?.Hide(this);
+                    _tt = value;
                 }
             }
         }
 
-        public LabelWithToolTip() : this(null) { }
-
-        public LabelWithToolTip(ToolTip objToolTip) : base()
+        private string _strToolTipText = string.Empty;
+        public string ToolTipText
         {
-            _tt = objToolTip;
-            if (_tt == null)
+            get => _strToolTipText;
+            set
             {
-                _tt = new ToolTip
+                value = value.WordWrap(_intToolTipWrap);
+                if (_strToolTipText != value)
                 {
-                    AutoPopDelay = 1500,
-                    InitialDelay = 400,
-                    UseAnimation = true,
-                    UseFading = true,
-                    Active = true
-                };
+                    _strToolTipText = value;
+                    _tt.SetToolTip(this, value);
+                }
             }
-
-            MouseEnter += Label_MouseEnter;
-            MouseLeave += Label_MouseLeave;
         }
 
-        private void Label_MouseEnter(object sender, EventArgs ea)
+        public LabelWithToolTip() : this(GlobalOptions.ToolTipProcessor) { }
+
+        public LabelWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
         {
-            if (!string.IsNullOrEmpty(TooltipText))
+            ToolTipObject = objToolTip;
+            _intToolTipWrap = intToolTipWrap;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                _tt.Show(TooltipText, Parent);
+                if (_tt != null && _tt != GlobalOptions.ToolTipProcessor)
+                    _tt.Dispose();
             }
-        }
-        private void Label_MouseLeave(object sender, EventArgs ea)
-        {
-            _tt.Hide(this);
+            base.Dispose(disposing);
         }
     }
 }

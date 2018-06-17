@@ -1,9 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,6 +31,7 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
+    [DebuggerDisplay("{Name(GlobalOptions.DefaultLanguage)}")]
     public class StackedFocus
     {
         private Guid _guiID;
@@ -51,15 +71,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
-            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
-            _blnBonded = objNode["bonded"]?.InnerText == System.Boolean.TrueString;
-            foreach (XmlNode nodGear in objNode.SelectNodes("gears/gear"))
-            {
-                Gear objGear = new Gear(_objCharacter);
-                objGear.Load(nodGear);
-                _lstGear.Add(objGear);
-            }
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
+            _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+            using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+                if (nodGearList != null)
+                    foreach (XmlNode nodGear in nodGearList)
+                    {
+                        Gear objGear = new Gear(_objCharacter);
+                        objGear.Load(nodGear);
+                        _lstGear.Add(objGear);
+                    }
         }
         #endregion
 
@@ -125,7 +147,7 @@ namespace Chummer
                     intPosition = strFocusName.IndexOf(',');
                     if (intPosition > -1)
                         strFocusName = strFocusName.Substring(0, intPosition);
-                    int intKarmaMultiplier = 1;
+                    int intKarmaMultiplier;
                     int intExtraKarmaCost = 0;
                     switch (strFocusName)
                     {
@@ -197,12 +219,12 @@ namespace Chummer
         /// <summary>
         /// Stacked Focus Name.
         /// </summary>
-        public string Name(string strLanguage)
+        public string Name(CultureInfo objCulture, string strLanguage)
         {
             StringBuilder strbldReturn = new StringBuilder();
             foreach (Gear objGear in Gear)
             {
-                strbldReturn.Append(objGear.DisplayName(strLanguage));
+                strbldReturn.Append(objGear.DisplayName(objCulture, strLanguage));
                 strbldReturn.Append(", ");
             }
 
@@ -216,10 +238,8 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public IList<Gear> Gear
-        {
-            get => _lstGear;
-        }
+        public IList<Gear> Gear => _lstGear;
+
         #endregion
 
         #region Methods
@@ -228,8 +248,8 @@ namespace Chummer
             TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
 
             objNode.Name = InternalId;
-            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.Language);
-            objNode.Tag = InternalId;
+            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            objNode.Tag = this;
             objNode.Checked = Bonded;
 
             return objNode;

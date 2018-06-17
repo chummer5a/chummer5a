@@ -53,7 +53,7 @@ namespace Chummer
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxDescription.Size = new System.Drawing.Size(358, 102);
             this.textBoxDescription.TabIndex = 23;
-            this.textBoxDescription.Text = "Description";
+            this.textBoxDescription.Text = "[Description]";
             this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
             // labelCompanyName
@@ -65,7 +65,7 @@ namespace Chummer
             this.labelCompanyName.Name = "labelCompanyName";
             this.labelCompanyName.Size = new System.Drawing.Size(355, 65);
             this.labelCompanyName.TabIndex = 22;
-            this.labelCompanyName.Text = "Company Name";
+            this.labelCompanyName.Text = "[Company Name]";
             // 
             // labelCopyright
             // 
@@ -76,7 +76,7 @@ namespace Chummer
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(355, 17);
             this.labelCopyright.TabIndex = 21;
-            this.labelCopyright.Text = "Copyright";
+            this.labelCopyright.Text = "[Copyright]";
             this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelVersion
@@ -88,7 +88,7 @@ namespace Chummer
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(355, 17);
             this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Version";
+            this.labelVersion.Text = "[Version]";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelProductName
@@ -100,7 +100,7 @@ namespace Chummer
             this.labelProductName.Name = "labelProductName";
             this.labelProductName.Size = new System.Drawing.Size(355, 17);
             this.labelProductName.TabIndex = 19;
-            this.labelProductName.Text = "Product Name";
+            this.labelProductName.Text = "[Product Name]";
             this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel
@@ -147,6 +147,7 @@ namespace Chummer
             this.textBoxContributors.Size = new System.Drawing.Size(204, 124);
             this.textBoxContributors.TabIndex = 25;
             this.textBoxContributors.Text = "Thank You to All GitHub Contributors!";
+            this.textBoxContributors.Tag = "About_Label_Contributors";
             // 
             // okButton
             // 
@@ -184,6 +185,7 @@ namespace Chummer
             this.txtDisclaimer.Size = new System.Drawing.Size(358, 124);
             this.txtDisclaimer.TabIndex = 26;
             this.txtDisclaimer.Text = "Disclaimer";
+            this.txtDisclaimer.Tag = "About_Label_Disclaimer";
             this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
             // frmAbout

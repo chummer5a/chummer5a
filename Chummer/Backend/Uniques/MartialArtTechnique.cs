@@ -1,9 +1,24 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,7 +27,8 @@ namespace Chummer
     /// <summary>
     /// A Martial Arts Technique.
     /// </summary>
-    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -20,7 +36,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strSourceId = string.Empty;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public MartialArtTechnique(Character objCharacter)
@@ -32,7 +48,6 @@ namespace Chummer
 
         /// Create a Martial Art Technique from an XmlNode.
         /// <param name="xmlTechniqueDataNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         public void Create(XmlNode xmlTechniqueDataNode)
         {
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("id", ref _strSourceId))
@@ -48,7 +63,6 @@ namespace Chummer
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
-                    return;
                 }
             }
         }
@@ -95,6 +109,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialarttechnique");
@@ -120,10 +135,7 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set
-            {
-                _strName = value;
-            }
+            set => _strName = value;
         }
 
         /// <summary>
@@ -135,7 +147,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -168,7 +180,7 @@ namespace Chummer
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
@@ -188,22 +200,54 @@ namespace Chummer
         #endregion
 
         #region Methods
+
+        public bool Remove(Character objCharacter)
+        {
+            // Find the selected Advantage object.
+            //TODO: Advantages should know what their parent is. 
+            objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
+            if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                GlobalOptions.Language)))
+                return false;
+
+            ImprovementManager.RemoveImprovements(objCharacter,
+                Improvement.ImprovementSource.MartialArtTechnique, InternalId);
+
+            objMartialArt.Techniques.Remove(this);
+            return true;
+        }
+        #endregion
+
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
         {
+            //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            //return null;
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
-                ContextMenuStrip = cmsMartialArtTechnique
+                Tag = this,
+                ContextMenuStrip = cmsMartialArtTechnique,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
     }

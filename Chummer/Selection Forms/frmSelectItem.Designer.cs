@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectItem
     {
@@ -30,7 +30,7 @@
         {
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cboAmmo = new System.Windows.Forms.ComboBox();
+            this.cboAmmo = new ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -73,7 +73,6 @@
             this.cboAmmo.Name = "cboAmmo";
             this.cboAmmo.Size = new System.Drawing.Size(276, 21);
             this.cboAmmo.TabIndex = 2;
-            this.cboAmmo.DropDown += new System.EventHandler(this.cboAmmo_DropDown);
             // 
             // lblAmmoLabel
             // 
@@ -125,7 +124,7 @@
 
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.ComboBox cboAmmo;
+        private ElasticComboBox cboAmmo;
         private System.Windows.Forms.Label lblAmmoLabel;
         private System.Windows.Forms.Label lblDescription;
     }

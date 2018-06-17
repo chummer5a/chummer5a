@@ -17,9 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Linq;
 using System.Xml;
-using Chummer.Datastructures;
 
 namespace Chummer.Backend.Skills
 {
@@ -58,22 +56,24 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Re-create a saved SkillSpecialization from an XmlNode;
         /// </summary>
-        /// <param name = "objNode" > XmlNode to load.</param>
-        public static SkillSpecialization Load(XmlNode objNode, Skill objParent)
+        /// <param name="xmlNode">XmlNode to load.</param>
+        /// <param name="objParent">Parent skill to which the specialization belongs</param>
+        public static SkillSpecialization Load(XmlNode xmlNode, Skill objParent)
         {
-            if (!Guid.TryParse(objNode["guid"].InnerText, out Guid guiTemp))
+            if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objNode["name"]?.InnerText, objNode["free"]?.InnerText == bool.TrueString, objParent)
+            return new SkillSpecialization(xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, objParent)
             {
                 _guiID = guiTemp
             };
         }
 
-        /// Print the object's XML to the XmlWriter.        /// <summary>
-
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("skillspecialization");
@@ -88,10 +88,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get { return _guiID.ToString("D"); }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Skill Specialization's name.
@@ -104,7 +101,7 @@ namespace Chummer.Backend.Skills
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
@@ -127,7 +124,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Name
         {
-            get { return _strName; }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -141,10 +138,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is this a forced specialization or player entered
         /// </summary>
-        public bool Free
-        {
-            get { return _strFree; }
-        }
+        public bool Free => _strFree;
 
         #endregion
     }

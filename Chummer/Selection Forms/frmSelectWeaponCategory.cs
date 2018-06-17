@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -30,7 +30,7 @@ namespace Chummer
 
         public string WeaponType { get; set; }
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
         public frmSelectWeaponCategory()
@@ -43,31 +43,23 @@ namespace Chummer
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
-            XmlNodeList objXmlCategoryList;
             List<ListItem> lstCategory = new List<ListItem>();
-            if (!string.IsNullOrEmpty(_strForceCategory))
-            {
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
-            }
-            else
-            {
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            }
+            using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
+                ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                : _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (objXmlCategoryList != null)
+                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    {
+                        if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                        {
+                            string strType = objXmlCategory.Attributes?["type"]?.Value;
+                            if (string.IsNullOrEmpty(strType) || strType != WeaponType)
+                                continue;
+                        }
 
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
-                if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
-                {
-                    if (objXmlCategory.Attributes["type"] == null)
-                        continue;
-
-                    if (objXmlCategory.Attributes["type"].Value != WeaponType)
-                        continue;
-                }
-
-                string strInnerText = objXmlCategory.InnerText;
-                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes["translate"]?.InnerText ?? strInnerText));
-            }
+                        string strInnerText = objXmlCategory.InnerText;
+                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
 
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
@@ -99,23 +91,14 @@ namespace Chummer
         /// <summary>
         /// Weapon Category that was selected in the dialogue.
         /// </summary>
-        public string SelectedCategory
-        {
-            get
-            {
-                return _strSelectedCategory;
-            }
-        }
+        public string SelectedCategory => _strSelectedCategory;
 
         /// <summary>
         /// Description to show in the window.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>

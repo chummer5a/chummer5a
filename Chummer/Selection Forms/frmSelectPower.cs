@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -34,7 +34,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XPathNavigator _xmlBasePowerDataNode;
 
         #region Control Events
         public frmSelectPower(Character objCharacter)
@@ -44,7 +44,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Powers information.
-            _objXmlDocument = XmlManager.Load("powers.xml");
+            _xmlBasePowerDataNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)
@@ -56,12 +56,14 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            AddAgain = false;
             AcceptForm();
         }
 
         private void lstPowers_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            AddAgain = false;
+            AcceptForm();
         }
 
         private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
@@ -70,34 +72,36 @@ namespace Chummer
                 return;
 
             string strSelectedId = lstPowers.SelectedValue?.ToString();
+            XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
+                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+
+            if (objXmlPower != null)
             {
                 // Display the information for the selected Power.
-                XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedId + "\"]");
-
-                string strPowerPointsText = objXmlPower["points"].InnerText;
-                if (objXmlPower["levels"]?.InnerText == System.Boolean.TrueString)
+                string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
+                if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
                 {
                     strPowerPointsText += $" / {LanguageManager.GetString("Label_Power_Level", GlobalOptions.Language)}";
                 }
-                string strExtrPointCost = objXmlPower["extrapointcost"]?.InnerText;
+                string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 if (!string.IsNullOrEmpty(strExtrPointCost))
                 {
                     strPowerPointsText = strExtrPointCost + " + " + strPowerPointsText;
                 }
                 lblPowerPoints.Text = strPowerPointsText;
 
-                string strSource = objXmlPower["source"].InnerText;
-                string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"].InnerText;
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblPowerPoints.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
             }
         }
 
@@ -109,7 +113,7 @@ namespace Chummer
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -172,18 +176,15 @@ namespace Chummer
         /// </summary>
         public string LimitToPowers
         {
-            set
-            {
-                _strLimitToPowers = value;
-            }
+            set => _strLimitToPowers = value;
         }
 
         /// <summary>
         /// Limit the selections based on the Rating of an external source, where 1 Rating = 0.25 PP.
         /// </summary>
-        public int LimitToRating 
+        public int LimitToRating
         {
-            set { _decLimitToRating = value * PointsPerLevel; } 
+            set => _decLimitToRating = value * PointsPerLevel;
         }
 
         /// <summary>
@@ -208,22 +209,21 @@ namespace Chummer
                         objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
                 if (objFilter.Length > 0)
                 {
-                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ')';
+                    strFilter += " and (" + objFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
             }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
-            XmlNodeList objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]");
             List<ListItem> lstPower = new List<ListItem>();
-            foreach (XmlNode objXmlPower in objXmlPowerList)
+            foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
-                decimal decPoints = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-                string strExtraPointCost = objXmlPower["extrapointcost"]?.InnerText;
-                string strName = objXmlPower["name"].InnerText;
+                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
+                string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
+                string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(strExtraPointCost))
                 {
-                    //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
+                    //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
                     if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                         decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
                 }
@@ -232,10 +232,10 @@ namespace Chummer
                     continue;
                 }
 
-                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
-                lstPower.Add(new ListItem(objXmlPower["id"].InnerText, objXmlPower["translate"]?.InnerText ?? strName));
+                lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
             }
             lstPower.Sort(CompareListItems.CompareNames);
             _blnLoading = true;
@@ -261,9 +261,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
-                XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
 
-                if (objXmlPower.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     DialogResult = DialogResult.OK;
