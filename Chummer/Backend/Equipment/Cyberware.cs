@@ -3476,7 +3476,7 @@ namespace Chummer.Backend.Equipment
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
-            objCyberware.Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
+            objCyberware.Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
             if (objCyberware.InternalId.IsEmptyGuid())
             {
                 return false;
