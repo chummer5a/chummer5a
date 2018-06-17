@@ -743,6 +743,25 @@
       <maxlevels>3</maxlevels>
     </power>
     <power>
+      <id>95412b12-c02f-4041-9282-71f444786e04</id>
+      <name>Commanding Voice (pre-errata)</name>
+      <points>.25</points>
+      <levels>True</levels>
+      <limit>3</limit>
+      <source>SG</source>
+      <page>170</page>
+      <bonus>
+        <specificskill>
+          <name>Intimidation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Leadership</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+    </power>
+    <power>
       <id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
       <name>Counterstrike</name>
       <points>1</points>
