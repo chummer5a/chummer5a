@@ -41,7 +41,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly HashSet<string> _setDealerConnectionMaps;
+        private readonly HashSet<string> _setDealerConnectionMaps = new HashSet<string>();
         private readonly HashSet<string> _setBlackMarketMaps;
         private bool _blnBlackMarketDiscount;
 
@@ -58,6 +58,7 @@ namespace Chummer
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
+
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(imp =>
                 imp.Enabled && imp.ImproveType == Improvement.ImprovementType.DealerConnection))
             {
