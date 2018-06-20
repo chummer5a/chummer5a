@@ -9427,6 +9427,159 @@
       </mods>
     </vehicle>
     <!-- End Region -->
+    <!-- Region Schattenhandbuch 3 -->
+    <vehicle>
+      <id>ed101e66-64fc-4a07-b1e5-dfc13526f4a5</id>
+      <name>Plex-Cab</name>
+      <page>215</page>
+      <source>SHB3</source>
+      <accel>2</accel>
+      <armor>6</armor>
+      <avail>8R</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>14000</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Removed Manual Controls</name>
+        <name>GridLink</name>
+        <name>Rigger Interface</name>
+        <name>Enhanced Image Screens</name>
+      </mods>
+      <seats>2-6</seats>
+    </vehicle>
+    <vehicle>
+      <id>7b728361-e755-4c86-815b-3018b17e7753</id>
+      <name>oTTo</name>
+      <page>216</page>
+      <source>SHB3</source>
+      <accel>1</accel>
+      <armor>13</armor>
+      <avail>9R</avail>
+      <body>12</body>
+      <category>Cars</category>
+      <cost>26000</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Removed Manual Controls</name>
+        <name>Off-Road Suspension</name>
+        <name>GridLink</name>
+        <name>Metahuman Adjustment</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>25ef3104-a0aa-449c-bbd2-be6aa9ade610</id>
+      <name>VW Urban Clipper</name>
+      <page>217</page>
+      <source>SHB3</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Trucks</category>
+      <cost>34000</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name rating="4">Sensor Enhancement</name>
+      </mods>
+      <seats>1</seats>
+    </vehicle>
+    <vehicle>
+      <id>1f0a690e-3b60-49de-9271-9ab7305e135e</id>
+      <name>Link-Bus</name>
+      <page>218</page>
+      <source>SHB3</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>10R</avail>
+      <body>20</body>
+      <category>Trucks</category>
+      <cost>75000</cost>
+      <handling>2/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Removed Manual Controls</name>
+        <name>GridLink</name>
+        <name>Interior Cameras</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <seats>8-10</seats>
+    </vehicle>
+    <vehicle>
+      <id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
+      <name>Eurocopter FC</name>
+      <page>219</page>
+      <source>SHB3</source>
+      <accel>3</accel>
+      <armor>16</armor>
+      <avail>11R</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>360000</cost>
+      <handling>6</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>ECM</name>
+        <name rating="1">Passenger Protection System</name> <!-- no rating specified in book -->
+        <name>Amenities (Luxury)</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <seats>8</seats>
+    </vehicle>
+    <!-- Missing: EMC Kommodore (Would require adjustments in code,
+         since it uses building block where each part receives part of the slots) -->
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->

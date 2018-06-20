@@ -2937,6 +2937,12 @@
 				<translate>Schattenhandbuch 2</translate>
 				<altcode>SHB2</altcode>
 			</book>
+      <book>
+        <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
+        <name>Schattenhandbuch 3 (German Handbook)</name>
+        <translate>Schattenhandbuch 3</translate>
+        <code>SHB3</code>
+      </book>
 			<book>
 				<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
 				<name>Rigger 5.0</name>
