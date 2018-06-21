@@ -36,6 +36,7 @@ Application Changes:
 - Fixed an issue with attribute tooltips not updating properly if bonuses and penalties even out.
 - Fixed a typo in the Select Spell window that prevented categories from being translated.
 - Fixed skill names in weapon dicepool tooltips not showing the correct translated displayname.
+- Fixed behaviour of lifestyles causing a crash after being edited.
 
 Data Changes:
 
