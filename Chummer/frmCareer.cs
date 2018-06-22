@@ -14945,89 +14945,85 @@ namespace Chummer
             _blnSkipRefresh = true;
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0)
             {
-                lblLifestyleCost.Text = string.Empty;
-                lblLifestyleMonths.Text = string.Empty;
-                lblLifestyleSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblLifestyleSource, null);
-                lblBaseLifestyle.Text = string.Empty;
-                lblLifestyleQualities.Text = string.Empty;
-                cmdIncreaseLifestyleMonths.Visible = false;
-                cmdDecreaseLifestyleMonths.Visible = false;
-                lblLifestyleMonthsLabel.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(cmdIncreaseLifestyleMonths, string.Empty);
-                GlobalOptions.ToolTipProcessor.SetToolTip(cmdDecreaseLifestyleMonths, string.Empty);
+                tblLifestyleDetails.Visible = false;
 
                 _blnSkipRefresh = false;
                 return;
             }
 
-            if (treLifestyles.SelectedNode.Level > 0)
+            // Locate the selected Lifestyle.
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
             {
-                // Locate the selected Lifestyle.
-                if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle)) return;
+                _blnSkipRefresh = false;
+                return;
+            }
 
-                cmdIncreaseLifestyleMonths.Visible = true;
-                cmdDecreaseLifestyleMonths.Visible = true;
+            tblLifestyleDetails.Visible = true;
+            cmdIncreaseLifestyleMonths.Visible = true;
+            cmdDecreaseLifestyleMonths.Visible = true;
 
-                lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
-                string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
-                lblLifestyleSource.Text = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Page", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
-                //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
+            string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
+            lblLifestyleSource.Text = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage;
+            GlobalOptions.ToolTipProcessor.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Page", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
+            //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-                string strIncrementString;
-                // Change the Cost/Month label.
-                switch (objLifestyle.IncrementType)
+            string strIncrementString;
+            // Change the Cost/Month label.
+            switch (objLifestyle.IncrementType)
+            {
+                case LifestyleIncrement.Day:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
+                    break;
+                case LifestyleIncrement.Week:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
+                    break;
+                default:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
+                    break;
+            }
+            lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
+
+            lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
+            GlobalOptions.ToolTipProcessor.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
+            GlobalOptions.ToolTipProcessor.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
+
+            if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+            {
+                string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
+
+                lblLifestyleQualities.Text = string.Empty;
+
+                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
-                    case LifestyleIncrement.Day:
-                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
-                        strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                        break;
-                    case LifestyleIncrement.Week:
-                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
-                        strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
-                        break;
-                    default:
-                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
-                        strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
-                        break;
-                }
-                lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
-
-                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
-                GlobalOptions.ToolTipProcessor.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
-                GlobalOptions.ToolTipProcessor.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
-
-                if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
-                {
-                    string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
-
-                    lblLifestyleQualities.Text = string.Empty;
-
-                    foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
-
-                        strQualities += objImprovement.Value > 0
-                            ? objImprovement.ImproveSource + " [+" + objImprovement.Value + "%]"
-                            : objImprovement.ImproveSource + " [" + objImprovement.Value + "%]";
-                    }
-
                     if (strQualities.Length > 0)
                         strQualities += ", ";
 
-                    strQualities += string.Join(", ", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
+                    strQualities += objImprovement.Value > 0
+                        ? objImprovement.ImproveSource + " [+" + objImprovement.Value + "%]"
+                        : objImprovement.ImproveSource + " [" + objImprovement.Value + "%]";
+                }
 
-                    lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
-                    lblLifestyleQualities.Text += strQualities;
-                }
-                else
+                if (objLifestyle.FreeGrids.Count > 0)
                 {
-                    lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                    lblLifestyleQualities.Text = string.Empty;
+                    if (strQualities.Length > 0)
+                        strQualities += ", ";
+
+                    strQualities += string.Join(", ",
+                        objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
                 }
+
+                lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
+                lblLifestyleQualities.Text += strQualities;
+            }
+            else
+            {
+                lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblLifestyleQualities.Text = string.Empty;
             }
             _blnSkipRefresh = false;
         }
@@ -16144,17 +16140,6 @@ namespace Chummer
             lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
 
             // Street Gear tab.
-            // Lifestyles tab.
-            lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
-            lblLifestyleSource.Left = lblLifestyleSourceLabel.Left + lblLifestyleSourceLabel.Width + 6;
-
-            intWidth = lblLifestyleComfortsLabel.Width;
-
-            lblBaseLifestyle.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
-
-            lblLifestyleQualitiesLabel.Left = lblBaseLifestyle.Left + 132;
-            lblLifestyleQualities.Left = lblLifestyleQualitiesLabel.Left + 14;
-            lblLifestyleQualities.Width = tabLifestyle.Width - lblLifestyleQualities.Left - 10;
 
             // Armor tab.
             intWidth = lblArmorValueLabel.Width;
