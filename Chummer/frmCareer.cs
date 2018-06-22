@@ -638,6 +638,16 @@ namespace Chummer
             PrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
             SpecialAttributes.CollectionChanged += AttributeCollectionChanged;
 
+            // Condition Monitor.
+            int intCMPhysical = CharacterObject.PhysicalCM;
+            int intCMStun = CharacterObject.StunCM;
+            int intCMOverflow = CharacterObject.CMOverflow;
+            int intCMThreshold = CharacterObject.CMThreshold;
+            int intStunCMThresholdOffset = CharacterObject.StunCMThresholdOffset;
+            int intPhysicalCMThresholdOffset = CharacterObject.PhysicalCMThresholdOffset;
+
+            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow, true, CharacterObject.PhysicalCMFilled);
+            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0, true, CharacterObject.StunCMFilled);
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
@@ -12765,16 +12775,20 @@ namespace Chummer
         /// <param name="intThreshold">Show an increase in modifiers every <paramref name="intThreshold"/> boxes.</param>
         /// <param name="intThresholdOffset">Initial threshold for penalties from <paramref name="intThreshold"/> should be offset by this much.</param>
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
-        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow)
+        /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
+        /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
+        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
+            CheckBox currentBox = null;
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
                 foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag);
-
+                    if (intCurrentBoxTag == value && check)
+                        currentBox = chkCmBox;
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
@@ -12797,6 +12811,10 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = string.Empty;
                     }
+                }
+                if (currentBox != null && check)
+                {
+                    currentBox.Checked = true;
                 }
             }
             else
