@@ -8344,8 +8344,8 @@ namespace Chummer
         {
             if (!e.Node.Checked)
             {
-                string strSelectedId = e.Node.Tag.ToString();
-                Focus objFocus = CharacterObject.Foci.FirstOrDefault(x => x.GearObject.InternalId == strSelectedId);
+                if (!(e.Node.Tag is IHasInternalId objId)) return;
+                Focus objFocus = CharacterObject.Foci.FirstOrDefault(x => x.GearObject.InternalId == objId.InternalId);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -8359,7 +8359,7 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == strSelectedId);
+                    StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == objId.InternalId);
 
                     if (objStack != null)
                     {

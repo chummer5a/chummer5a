@@ -38,6 +38,7 @@ Application Changes:
 - Fixed skill names in weapon dicepool tooltips not showing the correct translated displayname.
 - Fixed behaviour of lifestyles causing a crash after being edited.
 - Fixed a crash when toggling the state of Adept Way discounting for powers.
+- Fixed an issue with foci not properly being removed when unbonded.
 
 Data Changes:
 
