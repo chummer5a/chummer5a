@@ -37,6 +37,7 @@ Application Changes:
 - Fixed a typo in the Select Spell window that prevented categories from being translated.
 - Fixed skill names in weapon dicepool tooltips not showing the correct translated displayname.
 - Fixed behaviour of lifestyles causing a crash after being edited.
+- Fixed a crash when toggling the state of Adept Way discounting for powers.
 
 Data Changes:
 
