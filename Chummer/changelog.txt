@@ -39,6 +39,7 @@ Application Changes:
 - Fixed behaviour of lifestyles causing a crash after being edited.
 - Fixed a crash when toggling the state of Adept Way discounting for powers.
 - Fixed an issue with foci not properly being removed when unbonded.
+- PDF is now the default export choice.
 
 Data Changes:
 

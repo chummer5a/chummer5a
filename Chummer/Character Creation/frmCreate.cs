@@ -15733,6 +15733,11 @@ namespace Chummer
                 IsDirty = true;
             }
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
     }
 }
 
