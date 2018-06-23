@@ -41,6 +41,7 @@ Application Changes:
 - Fixed an issue with foci not properly being removed when unbonded.
 - PDF is now the default export choice.
 - Fixed a regression with condition monitor checkboxes not properly remaining highlighted when first loaded.
+- Fixed an issue with foci not updating their displayname properly in the Foci window.
 
 Data Changes:
 
@@ -52,6 +53,7 @@ Data Changes:
 - Fixed translation for Commanding Voice in German.
 - Added a customdata entry to move Commanding Voice from Stolen Souls into Street Grimoire, per German data changes.
 - Added a customdata entry to swap the pricing of seeker shafts and monotip arrow heads per German data changes.
+- Added content from Street Lethal. 
 
 New Strings:
 

@@ -8467,6 +8467,8 @@ namespace Chummer
                         }
                     }
                 }
+
+                treFoci.SelectedNode.Text = objSelectedFocus.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 CharacterObject.Foci.Add(objFocus);
                 objSelectedFocus.Bonded = true;
             }
@@ -8512,6 +8514,7 @@ namespace Chummer
                         }
                     }
                     objStack.Bonded = true;
+                    treFoci.SelectedNode.Text = objStackGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
 

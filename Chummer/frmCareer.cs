@@ -11744,6 +11744,8 @@ namespace Chummer
                 {
                     objSelectedFocus.ChangeEquippedStatus(false);
                 }
+
+                treFoci.SelectedNode.Text = objSelectedFocus.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             else
             {
@@ -11828,6 +11830,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 objStackedFocus.Bonded = true;
+                treFoci.SelectedNode.Text = objStackGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
 
             IsCharacterUpdateRequested = true;
