@@ -12563,7 +12563,7 @@
       </accessorymounts>
     </weapon>
     <weapon>
-      <id>21628e04-95d0-4ba4-bc66-fcbed5a1bf8e</id>
+      <id>ced53705-2d9c-4ee6-b612-550f6ae63980</id>
       <name>Krime Tingler</name>
       <category>Tasers</category>
       <type>Ranged</type>
@@ -15618,7 +15618,7 @@
     </accessory>
     <!-- Region Street Lethal -->
     <accessory>
-      <id>e62964cd-767f-4b10-b456-d87f5a04b64e</id>
+      <id>5fac79b3-5eff-44f8-a13c-e1eba38df873</id>
       <name>Terracotta Arms Pup Silencer</name>
       <mount>Barrel</mount>
       <forbidden>
