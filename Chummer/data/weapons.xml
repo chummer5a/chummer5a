@@ -19,7 +19,7 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema weapons.xsd">
+   xsi:schemaLocation="http://www.w3.org/2001/XMLSchema weapons.xsd">
   <version>0</version>
   <categories>
     <category blackmarket="Weapons" type="melee">Blades</category>
@@ -39,6 +39,7 @@
     <category blackmarket="Weapons" type="gun">Machine Pistols</category>
     <category blackmarket="Weapons" type="gun">Submachine Guns</category>
     <category blackmarket="Weapons" type="gun">Assault Rifles</category>
+    <category blackmarket="Weapons" type="gun">Carbines</category>
     <category blackmarket="Weapons" type="gun">Sporting Rifles</category>
     <category blackmarket="Weapons" type="gun">Sniper Rifles</category>
     <category blackmarket="Weapons" type="gun">Shotguns</category>
@@ -12666,7 +12667,9 @@
       <accessories>
         <accessory>Electronic Firing</accessory>
         <accessory>Personalized Grip</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12689,7 +12692,9 @@
       <range>Heavy Pistols</range>
       <ammocategory>Heavy Pistols</ammocategory>
       <accessories>
-        <accessory>Laser Sight</accessory>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12831,8 +12836,12 @@
       <source>SL</source>
       <page>29</page>
       <accessories>
-        <accessory>Gas-Vent 2 System</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Gas-Vent 2 System</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Barrel</mount>
@@ -12860,7 +12869,9 @@
       <source>SL</source>
       <page>29</page>
       <accessories>
-        <accessory>Custom Look</accessory>
+        <accessory>
+          <name>Custom Look</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Barrel</mount>
@@ -12887,8 +12898,13 @@
       <source>SL</source>
       <page>31</page>
       <accessories>
-        <accessory rating="6">Ceramic Components</accessory>
-        <accessory>Silencer</accessory>
+        <accessory>
+          <name>Ceramic Components</name>
+          <rating>6</rating>
+        </accessory>
+        <accessory>
+          <name>Silencer</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12909,7 +12925,9 @@
       <source>SL</source>
       <page>32</page>
       <accessories>
-        <accessory>Laser Sight</accessory>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12930,7 +12948,9 @@
       <source>SL</source>
       <page>32</page>
       <accessories>
-        <accessory>Laser Sight</accessory>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12951,9 +12971,15 @@
       <source>SL</source>
       <page>33</page>
       <accessories>
-        <accessory>Bayonet</accessory>
-        <accessory>Melee Hardening</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Bayonet</name>
+        </accessory>
+        <accessory>
+          <name>Melee Hardening</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12974,9 +13000,15 @@
       <source>SL</source>
       <page>33</page>
       <accessories>
-        <accessory>Bayonet</accessory>
-        <accessory>Melee Hardening</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Bayonet</name>
+        </accessory>
+        <accessory>
+          <name>Melee Hardening</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13015,7 +13047,9 @@
       <source>SL</source>
       <page>34</page>
       <accessories>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13036,8 +13070,12 @@
       <source>SL</source>
       <page>35</page>
       <accessories>
-        <accessory>Smartgun System, Internal</accessory>
-        <accessory>Safe Target System</accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+        <accessory>
+          <name>Safe Target System</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13058,8 +13096,12 @@
       <source>SL</source>
       <page>35</page>
       <accessories>
-        <accessory>Smartgun System, Internal</accessory>
-        <accessory>Folding Stock</accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13080,7 +13122,9 @@
       <source>SL</source>
       <page>36</page>
       <accessories>
-        <accessory>Folding Stock</accessory>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13101,10 +13145,18 @@
       <source>SL</source>
       <page>36</page>
       <accessories>
-        <accessory>Improved Rangefinder</accessory>
-        <accessory>Low-light Flashlight</accessory>
-        <accessory>Slide Mount</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Improved Rangefinder</name>
+        </accessory>
+        <accessory>
+          <name>Low-light Flashlight</name>
+        </accessory>
+        <accessory>
+          <name>Slide Mount</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13125,8 +13177,12 @@
       <source>SL</source>
       <page>36</page>
       <accessories>
-        <accessory>Laser Sight</accessory>
-        <accessory>Underbarrel Grenade Launcher</accessory>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
+        <accessory>
+          <name>Underbarrel Grenade Launcher</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13147,8 +13203,13 @@
       <source>SL</source>
       <page>38</page>
       <accessories>
-        <accessory rating="1">Extreme Environment Modification</accessory>
-        <accessory>Melee Hardening</accessory>
+        <accessory>
+          <name>Extreme Environment Modification</name>
+          <rating>1</rating>
+        </accessory>
+        <accessory>
+          <name>Melee Hardening</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13245,8 +13306,12 @@
       <source>SL</source>
       <page>39</page>
       <accessories>
-        <accessory>Additional Clip</accessory>
-        <accessory>Imaging Scope</accessory>
+        <accessory>
+          <name>Additional Clip</name>
+        </accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13267,8 +13332,12 @@
       <source>SL</source>
       <page>39</page>
       <accessories>
-        <accessory>Additional Clip</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Additional Clip</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13307,8 +13376,12 @@
       <source>SL</source>
       <page>40</page>
       <accessories>
-        <accessory>Melee Hardening</accessory>
-        <accessory>Shock Pad</accessory>
+        <accessory>
+          <name>Melee Hardening</name>
+        </accessory>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
       </accessories>
       <addweapon>Krime Whammy (Melee)</addweapon>
     </weapon>
@@ -13349,8 +13422,12 @@
       <source>SL</source>
       <page>41</page>
       <accessories>
-        <accessory>Personalized Grip</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Personalized Grip</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -13380,8 +13457,12 @@
       <source>SL</source>
       <page>41</page>
       <accessories>
-        <accessory>Personalized Grip</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Personalized Grip</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -13411,8 +13492,12 @@
       <source>SL</source>
       <page>41</page>
       <accessories>
-        <accessory>Personalized Grip</accessory>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+          <name>Personalized Grip</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -13490,7 +13575,9 @@
       <source>SL</source>
       <page>42</page>
       <accessories>
-        <accessory>Imaging Scope</accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -13511,7 +13598,9 @@
       <source>SL</source>
       <page>43</page>
       <accessories>
-        <accessory>Foregrip</accessory>
+        <accessory>
+          <name>Foregrip</name>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -15745,7 +15834,7 @@
     </accessory>
     <accessory>
       <id>a16a52a9-3b57-4e3c-96f6-564616bcd576</id>
-      <name>Red Dot Sights</name>
+  <name>Red Dot Sights</name>
       <mount>Top</mount>
       <hide />
       <rating>0</rating>
