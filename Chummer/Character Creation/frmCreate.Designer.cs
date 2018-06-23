@@ -9268,7 +9268,7 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(6, 48);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(5998, 4748);
+			this.panEnemies.Size = new System.Drawing.Size(6646, 5288);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -9308,7 +9308,7 @@ namespace Chummer
 			this.panPets.Location = new System.Drawing.Point(6, 33);
 			this.panPets.Margin = new System.Windows.Forms.Padding(0);
 			this.panPets.Name = "panPets";
-			this.panPets.Size = new System.Drawing.Size(6001, 4766);
+			this.panPets.Size = new System.Drawing.Size(6649, 5306);
 			this.panPets.TabIndex = 24;
 			// 
 			// cmdAddPet
