@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -2643,18 +2643,18 @@
 			<key>Button_AddPower</key>
 			<text>Kraft &amp;hinzufügen</text>
 		</string>
-    <string>
-      <key>ColumnHeader_Action</key>
-      <text>Handlung</text>
-    </string>
-    <string>
-      <key>ColumnHeader_Power_Points</key>
-      <text>Kraftpunkte</text>
-    </string>
-    <string>
-      <key>ColumnHeader_Notes</key>
-      <text>Notizen</text>
-    </string>
+		<string>
+			<key>ColumnHeader_Action</key>
+			<text>Handlung</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Power_Points</key>
+			<text>Kraftpunkte</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Notes</key>
+			<text>Notizen</text>
+		</string>
 		<string>
 			<key>Label_ComplexForms</key>
 			<text>Komplexe Formen</text>
@@ -8958,9 +8958,17 @@
 			<key>Tip_ComplexFormFadingSeeDescription</key>
 			<text>Siehe Beschreibung der Komplexem Form</text>
 		</string>
-	    <string>
+		<string>
 			<key>Label_Options_KarmaMysticAdeptPowerPoint</key>
 			<text>Magieradept Kraftpunkt</text>
+		</string>
+		<string>
+			<key>String_VehicleBody</key>
+			<text>Rumpf</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharacterRoster</key>
+			<text>Hide the Character Roster</text>
 		</string>
 	</strings>
 </chummer>

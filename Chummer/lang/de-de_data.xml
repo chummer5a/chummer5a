@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1147,14 +1147,14 @@
 			<armor>
 				<id>efa1f97d-1408-4f75-befe-4e0b22f9f2c5</id>
 				<name>Rockblood Old School Line</name>
-				<translate>Rockblood Old School Line</translate>
-				<altpage>186</altpage>
+				<translate>Rockblood Oldschool</translate>
+				<altpage>184</altpage>
 			</armor>
 			<armor>
 				<id>74ccca34-925c-4149-a58b-501e69cabe46</id>
 				<name>Rockblood Signature Armored Shirt</name>
-				<translate>Rockblood Signature Armored Shirt</translate>
-				<altpage>486</altpage>
+				<translate>Rockblood Panzerhemd</translate>
+				<altpage>185</altpage>
 			</armor>
 		</armors>
 		<mods>
@@ -2813,6 +2813,24 @@
 				<translate>Genetische Optimierung (Willenskraft)</translate>
 				<altpage>159</altpage>
 			</bioware>
+			<bioware>
+				<id>ee1d31e8-f5c9-4326-8139-3e591003f736</id>
+				<name>Tusk(s), Small</name>
+				<translate>Hauer (Klein)</translate>
+				<altpage>123</altpage>
+			</bioware>
+			<bioware>
+				<id>34310f59-55d5-4e95-8966-a97b20a388ce</id>
+				<name>Tusk(s), Medium</name>
+				<translate>Hauer (Mittel)</translate>
+				<altpage>123</altpage>
+			</bioware>
+			<bioware>
+				<id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
+				<name>Tusk(s), Large</name>
+				<translate>Hauer (Groß)</translate>
+				<altpage>123</altpage>
+			</bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -2937,12 +2955,13 @@
 				<translate>Schattenhandbuch 2</translate>
 				<altcode>SHB2</altcode>
 			</book>
-      <book>
-        <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-        <name>Schattenhandbuch 3 (German Handbook)</name>
-        <translate>Schattenhandbuch 3</translate>
-        <code>SHB3</code>
-      </book>
+			<book>
+				<id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
+				<name>Schattenhandbuch 3 (German Handbook)</name>
+				<translate>Schattenhandbuch 3</translate>
+				<code>SHB3</code>
+				<altcode>SHB3</altcode>
+			</book>
 			<book>
 				<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
 				<name>Rigger 5.0</name>
@@ -3068,6 +3087,12 @@
 				<name>The Seattle Gambit</name>
 				<translate>The Seattle Gambit</translate>
 				<altcode>TSG</altcode>
+			</book>
+			<book>
+				<id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+				<name>Street Lethal</name>
+				<translate>Street Lethal</translate>
+				<altcode>SL</altcode>
 			</book>
 		</books>
 	</chummer>
@@ -7493,11 +7518,6 @@
 				<altpage></altpage>
 			</metatype>
 			<metatype>
-				<name>Ross Seal</name>
-				<page>79</page>
-				<translate>Rossrobbe</translate>
-			</metatype>
-			<metatype>
 				<id>1598214f-42a0-472d-82bf-d9e3c3043067</id>
 				<name>North Pole Reindeer</name>
 				<translate>Nordpol-Rentier</translate>
@@ -7724,6 +7744,18 @@
 				<name>Rook (Crow)</name>
 				<translate>Gauner (Krähe)</translate>
 				<altpage>143</altpage>
+			</metatype>
+			<metatype>
+				<id>14ccfb1c-342d-4fce-b637-397308f03d03</id>
+				<name>Musk Ox</name>
+				<translate>Musk Ox</translate>
+				<altpage>74</altpage>
+			</metatype>
+			<metatype>
+				<id>fde9e842-9a09-437d-bde9-61eaf4ccfd68</id>
+				<name>Ross Seal</name>
+				<translate>Ross Seal</translate>
+				<altpage>76</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -9954,26 +9986,32 @@
 			<cyberware>
 				<id>3d4b52fd-a8e8-4dd7-b390-8512e673e88a</id>
 				<name>Antenna Grill</name>
-				<translate>Antenna Grill</translate>
-				<altpage>184</altpage>
+				<translate>Antennenspange</translate>
+				<altpage>185</altpage>
 			</cyberware>
 			<cyberware>
 				<id>d37dd5d2-97d2-47f6-87a1-f55328142ad5</id>
 				<name>Horn Compartment</name>
-				<translate>Horn Compartment</translate>
+				<translate>Hornbehälter</translate>
 				<altpage>185</altpage>
 			</cyberware>
 			<cyberware>
 				<id>d17bef68-2419-45fe-9bb4-e050d61d1352</id>
 				<name>Troll Roarer</name>
-				<translate>Troll Roarer</translate>
-				<altpage>187</altpage>
+				<translate>Trollröhre</translate>
+				<altpage>185</altpage>
 			</cyberware>
 			<cyberware>
 				<id>971c1d63-9a36-4907-82a5-364f25060fa7</id>
 				<name>Busted Ware</name>
 				<translate>Busted Ware</translate>
 				<altpage>30</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>9890a165-f9b9-4a73-88f2-3b01bc2a9f2e</id>
+				<name>Nanotattoos</name>
+				<translate>Nanotatoos</translate>
+				<altpage>149</altpage>
 			</cyberware>
 		</cyberwares>
 	</chummer>
@@ -10136,7 +10174,7 @@
 			<category translate="Einbruchswerkzeug" translated="True">Breaking and Entering Gear</category>
 			<category translate="BTLs" translated="True">BTLs</category>
 			<category translate="Kommlinks" translated="True">Commlinks</category>
-			<category translate="Programme, Standard" translated="True">Common Programs</category>
+			<category translate="Standardprogramme" translated="True">Common Programs</category>
 			<category translate="Kommunikation und Gegenmaßnahmen" translated="True">Communications and Countermeasures</category>
 			<category translate="Eigene" translated="True">Custom</category>
 			<category translate="Verkleidungen" translated="True">Disguises</category>
@@ -16479,8 +16517,8 @@
 			<gear>
 				<id>7358fa13-7af0-4af8-ab91-7283feaa536e</id>
 				<name>Elemental Binding Materials (2050)</name>
-				<page>207</page>
 				<translate>Bindungsmaterialien für Elementare</translate>
+				<altpage>207</altpage>
 			</gear>
 			<gear translated="True">
 				<id>82334694-a630-42c4-95d6-eb1345e4ed82</id>
@@ -16590,11 +16628,11 @@
 				<translate>Spinrad Industries Trompe L'Oeil</translate>
 				<altpage>126</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>852430de-6634-45ac-be56-b5f75468ba59</id>
 				<name>Shiawase Jishi</name>
 				<translate>Shiawase Jishi</translate>
-				<altpage>93</altpage>
+				<altpage>97</altpage>
 			</gear>
 			<gear>
 				<id>b1897e5e-2384-4e99-8720-bb377447c6cc</id>
@@ -16929,20 +16967,20 @@
 			<gear>
 				<id>24299462-b0d1-470e-b520-64fb755421db</id>
 				<name>Reinforced Microwire (100m)</name>
-				<translate>Reinforced Microwire (100m)</translate>
-				<altpage>185</altpage>
+				<translate>Verstärktes Microwire (100m)</translate>
+				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>54fc44f0-fc74-4efb-a323-1bd47c8ca5e1</id>
 				<name>Reinforced Standard Rope (100m)</name>
-				<translate>Reinforced Standard Rope (100m)</translate>
-				<altpage>185</altpage>
+				<translate>Verstärktes Standardseil (100m)</translate>
+				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>3a9dc42d-6fb8-42f2-93c3-554d67a7eb6a</id>
 				<name>Reinforced Stealth Rope (100m)</name>
-				<translate>Reinforced Stealth Rope (100m)</translate>
-				<altpage>185</altpage>
+				<translate>Verstärktes Camouflageseil (100m)</translate>
+				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>900b78b7-3430-46a2-92a0-b4dbae0455eb</id>
@@ -17421,26 +17459,26 @@
 			<gear>
 				<id>e6d5c030-9aa7-46da-a9cb-7db33bbfd23f</id>
 				<name>Folding Metachair, basic</name>
-				<translate>Folding Metachair, basic</translate>
-				<altpage>184</altpage>
+				<translate>Faltbarer Meta-Stuhl, Standard</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>0007e417-d83b-4066-ba77-c3ea4c1aa4b6</id>
 				<name>Folding Metachair, self-assembly</name>
-				<translate>Folding Metachair, self-assembly</translate>
-				<altpage>184</altpage>
+				<translate>Faltbarer Meta-Stuhl, Standard, selbstaufbauend</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>30e2f962-3ced-4fc8-a46c-41c26db2332b</id>
 				<name>Folding MaxiMetachair, basic</name>
-				<translate>Folding MaxiMetachair, basic</translate>
-				<altpage>184</altpage>
+				<translate>Faltbarer Meta-Stuhl, Maxi</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>6d55b4d0-ea27-42d6-be1b-83ccdcac65e7</id>
 				<name>Folding MaxiMetachair, self-assembly</name>
-				<translate>Folding MaxiMetachair, self-assembly</translate>
-				<altpage>184</altpage>
+				<translate>Faltbarer Meta-Stuhl, Maxi, selbstaufbauend</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
@@ -17501,6 +17539,90 @@
 				<name>Overwriter Nanites</name>
 				<translate>Overwriter Nanites</translate>
 				<altpage>83</altpage>
+			</gear>
+			<gear>
+				<id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
+				<name>Ammo: DMSO Rounds</name>
+				<translate>Munition: DMSO-Gelpacks</translate>
+				<altpage>436</altpage>
+			</gear>
+			<gear>
+				<id>74680c75-67a1-41d2-8a78-3238161f85a0</id>
+				<name>Broken Sony CIY-720</name>
+				<translate>Broken Sony CIY-720</translate>
+				<altpage>249</altpage>
+			</gear>
+			<gear>
+				<id>de50bb02-7f90-4c76-9984-e7d2b3248726</id>
+				<name>GPS Monitor</name>
+				<translate>GPS Monitor</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>3fc588dc-ec8b-4483-8796-f8a068698ea4</id>
+				<name>Mini-Multitool</name>
+				<translate>Mini-Multitool</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>a75fb825-dc62-46ff-8e8a-454b7a9442ba</id>
+				<name>Micro-Lighter</name>
+				<translate>Micro-Lighter</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>4d08fb85-0756-4f99-9dfe-6e2592ee22b4</id>
+				<name>Hidden Compartment</name>
+				<translate>Hidden Compartment</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>63a4180e-97bc-4954-b5c2-a1029d834638</id>
+				<name>Phosphorescent Blade Coating</name>
+				<translate>Phosphorescent Blade Coating</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>09ed9d86-59a2-4ac9-ac3f-70816f3485fb</id>
+				<name>ARO of Local Maps</name>
+				<translate>ARO of Local Maps</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
+				<name>Can Make Commcalls</name>
+				<translate>Can Make Commcalls</translate>
+				<altpage>422</altpage>
+			</gear>
+			<gear>
+				<id>8e4e5c33-63f4-437a-ae64-1e54276bd13d</id>
+				<name>Generator</name>
+				<translate>Generator</translate>
+				<altpage>74</altpage>
+			</gear>
+			<gear>
+				<id>355086f4-63ee-4244-aba6-3b84eddd9592</id>
+				<name>Grenade: Smoke, Aerodynamic (2050)</name>
+				<translate>Grenade: Smoke, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</gear>
+			<gear>
+				<id>18286c99-ad70-4e66-a048-3ffa3007eabd</id>
+				<name>Grenade: Offensive, Aerodynamic (2050)</name>
+				<translate>Grenade: Offensive, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</gear>
+			<gear>
+				<id>8bb8839c-487a-478a-ab74-6b1e9b85b4d1</id>
+				<name>Grenade: Defensive, Aerodynamic (2050)</name>
+				<translate>Grenade: Defensive, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</gear>
+			<gear>
+				<id>f6471d39-4e6f-41e5-a946-f0b55ccb2ded</id>
+				<name>Grenade: Shock, Aerodynamic (2050)</name>
+				<translate>Grenade: Shock, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -20803,6 +20925,24 @@
 				<altdisadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
+			<mentor>
+				<id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
+				<name>Great Mother</name>
+				<translate>Große Mutter</translate>
+				<altadvantage>All: When not in an urban area, gain +1 to any skill test with skills in the Outdoors skill group.</altadvantage>
+				<altdisadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</altdisadvantage>
+				<altpage>94</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
+						<translate>Magician: +2 for health spells, preparations, and spell rituals.</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Empathic Healing for free.</name>
+						<translate>Adept: Gain Empathic Healing for free.</translate>
+					</choice>
+				</choices>
+			</mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -21147,6 +21287,12 @@
 				<id>2bd5228e-6698-4905-aecb-45fa5653456c</id>
 				<name>Enhanced Mist Form</name>
 				<translate>Enhanced Mist Form</translate>
+				<altpage>165</altpage>
+			</metamagic>
+			<metamagic>
+				<id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
+				<name>Spiritual Sacrifice</name>
+				<translate>Spiritual Sacrifice</translate>
 				<altpage>165</altpage>
 			</metamagic>
 		</metamagics>
@@ -22761,6 +22907,37 @@
 				<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
 			</limb>
 		</limbcounts>
+		<blackmarketpipelinecategories>
+			<category translate="Armor">Armor</category>
+			<category translate="Bioware">Bioware</category>
+			<category translate="Cyberware">Cyberware</category>
+			<category translate="Drugs">Drugs</category>
+			<category translate="Electronics">Electronics</category>
+			<category translate="Vehicles">Vehicles</category>
+			<category translate="Weapons">Weapons</category>
+		</blackmarketpipelinecategories>
+		<pdfarguments>
+			<pdfargument>
+				<name>Web Browser</name>
+				<translate>Web Browser</translate>
+			</pdfargument>
+			<pdfargument>
+				<name>Acrobat-style</name>
+				<translate>Acrobat-style</translate>
+			</pdfargument>
+			<pdfargument>
+				<name>Unix-style</name>
+				<translate>Unix-style</translate>
+			</pdfargument>
+			<pdfargument>
+				<name>Sumatra - Re-use instance</name>
+				<translate>Sumatra - Re-use instance</translate>
+			</pdfargument>
+			<pdfargument>
+				<name>Sumatra</name>
+				<translate>Sumatra</translate>
+			</pdfargument>
+		</pdfarguments>
 	</chummer>
 	<chummer file="paragons.xml">
 		<categories>
@@ -22769,172 +22946,406 @@
 		</categories>
 		<mentors>
 			<mentor>
+				<id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
 				<name>01</name>
-				<advantage>+1 Würfel für das Kompilieren und Registrieren von Sprites jeder Art.</advantage>
-				<disadvantage>Null-Eins ist die Perfektion des Codes und verlangt seinen Anhängern das Gleiche ab oder erteilt ihnen zumindest eine harte Lektion, wenn sie fehlschlagen. Null-Eins-Technomancer müssen 2 Punkte Edge ausgeben, um einen Patzer zu negieren oder einen kritischen Patzer abzuschwächen.</disadvantage>
-				<page>162</page>
 				<translate>01</translate>
+				<altadvantage>+1 Würfel für das Kompilieren und Registrieren von Sprites jeder Art.</altadvantage>
+				<altdisadvantage>Null-Eins ist die Perfektion des Codes und verlangt seinen Anhängern das Gleiche ab oder erteilt ihnen zumindest eine harte Lektion, wenn sie fehlschlagen. Null-Eins-Technomancer müssen 2 Punkte Edge ausgeben, um einen Patzer zu negieren oder einen kritischen Patzer abzuschwächen.</altdisadvantage>
+				<altpage>162</altpage>
 			</mentor>
 			<mentor>
+				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
 				<name>Alias</name>
-				<advantage>+2 Würfel auf Verschleierungsproben, +1 Würfel für Infiltrator- oder Spürhund-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Alias-Technomancer können es nicht ertragen, für ihren Lebensunterhalt zu zahlen, und müssen daher ihre Fähigkeiten einsetzen, um einen Lebensstil vorzutäuschen (siehe Handbuch für Hacker, S. 86).</disadvantage>
-				<page>162</page>
 				<translate>Alias</translate>
+				<altadvantage>+2 Würfel auf Verschleierungsproben</altadvantage>
+				<altdisadvantage>Alias-Technomancer können es nicht ertragen, für ihren Lebensunterhalt zu zahlen, und müssen daher ihre Fähigkeiten einsetzen, um einen Lebensstil vorzutäuschen (siehe Handbuch für Hacker, S. 86).</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Crack spirtes</name>
+						<translate>+1 Würfel für Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 dice for Sleuth Sprites</name>
+						<translate>+1 Würfel für Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
 				<name>Abort</name>
-				<advantage>+2 Würfel auf alle Absturzproben, +1 Würfel für dissonante Infiltrator- oder Stör-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Einem Abbruch-Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um im Matrixkampf eine andere Handlung auszuführen als die Software seiner Gegner zum Absturz zu bringen.</disadvantage>
-				<page>191</page>
 				<translate>Abbruch</translate>
+				<altadvantage>+2 Würfel auf alle Absturzproben</altadvantage>
+				<altdisadvantage>Einem Abbruch-Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um im Matrixkampf eine andere Handlung auszuführen als die Software seiner Gegner zum Absturz zu bringen.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 dice for dissonant Crack sprites</name>
+						<translate>+1 Würfel für dissonante Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 dice for dissonant Fault sprites</name>
+						<translate>+1 Würfel für dissonante Stör-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>6f709558-5cf8-4b4d-898c-d7d4b1fc0c80</id>
 				<name>Archivist</name>
-				<advantage>+2 Würfel auf alle Schmökerproben, +1 Würfel für Code- oder Daten-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Technomancer, die dem Archivar folgen, können nicht absichtlich Daten vernichten oder beschädigen. Dem Technomancer muss eine Willenskraft + Logik (3)-Probe gelingen, um absichtlich Daten zu löschen oder zu beschädigen (oder um einen Sprite dazu zu instruieren).</disadvantage>
-				<page>162</page>
 				<translate>Archivar</translate>
+				<altadvantage>+2 Würfel auf alle Schmökerproben</altadvantage>
+				<altdisadvantage>Technomancer, die dem Archivar folgen, können nicht absichtlich Daten vernichten oder beschädigen. Dem Technomancer muss eine Willenskraft + Logik (3)-Probe gelingen, um absichtlich Daten zu löschen oder zu beschädigen (oder um einen Sprite dazu zu instruieren).</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Code sprites</name>
+						<translate>+1 Würfel für Code-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Data sprites</name>
+						<translate>+1 Würfel für Daten-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>5405d069-c0df-4bb2-b66f-92a2fbf040f9</id>
 				<name>Architect</name>
-				<advantage>+2 Würfel auf Editier-Proben, +1 Würfel für Daten- oder Maschinen-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>–1 Würfel auf Absturz-Proben</disadvantage>
-				<page>162</page>
 				<translate>Architekt</translate>
+				<altadvantage>+2 Würfel auf Editier-Proben</altadvantage>
+				<altdisadvantage>–1 Würfel auf Absturz-Proben</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Data sprites</name>
+						<translate>+1 Würfel für Daten-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Machine sprites</name>
+						<translate>+1 Würfel für Maschinen-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>d2baacaa-6fa1-4953-8b01-b5398a405645</id>
 				<name>Babel</name>
-				<advantage>+1 auf online abgelegte Gebräuche- und Sprachproben, +1 Würfel für Kurier- oder Lehrer-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Geheimhaltung ist ein Fluch für die Kommunikation, daher muss Babel-Technomancern eine Willenskraft + Logik (3)-Probe gelingen, um etwas zu verschlüsseln.</disadvantage>
-				<page>162</page>
 				<translate>Babel</translate>
+				<altadvantage>+1 auf online abgelegte Gebräuche- und Sprachproben</altadvantage>
+				<altdisadvantage>Geheimhaltung ist ein Fluch für die Kommunikation, daher muss Babel-Technomancern eine Willenskraft + Logik (3)-Probe gelingen, um etwas zu verschlüsseln.</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Courier sprites</name>
+						<translate>+1 Würfel für Kurier-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Tutor sprites</name>
+						<translate>+1 Würfel für Lehrer-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
 				<name>The Black Hat</name>
-				<advantage>+2 Würfel auf Ausnutzen-Proben, +1 Würfel für Infiltrator- oder Stör-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Technomancer, die dem Schwarzen Hut folgen, können nur schwer der Versuchung widerstehen, in einen Knoten einzudringen, der ihnen irgendwie interessant erscheint. Dem Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um dieser Versuchung zu widerstehen, wenn sich eine entsprechende Gelegenheit ergibt.</disadvantage>
-				<page>163</page>
 				<translate>Der Schwarze Hut</translate>
+				<altadvantage>+2 Würfel auf Ausnutzen-Proben</altadvantage>
+				<altdisadvantage>Technomancer, die dem Schwarzen Hut folgen, können nur schwer der Versuchung widerstehen, in einen Knoten einzudringen, der ihnen irgendwie interessant erscheint. Dem Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um dieser Versuchung zu widerstehen, wenn sich eine entsprechende Gelegenheit ergibt.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Crack sprites</name>
+						<translate>+1 Würfel für Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Fault sprites</name>
+						<translate>+1 Würfel für Stör-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>b74d032e-5d39-4e4a-b043-0707ffa00b5e</id>
 				<name>Cryptome</name>
-				<advantage>+2 Würfel auf alle Verschlüsselungs- und Entschlüsselungs-Proben, +1 Würfel für Daten- oder Kurier-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Technomancer, die Kryptom folgen, geben Geheimnisse nur ungern aus der Hand, und schon gar nicht an unzuverlässige Quellen. Dem Technomancer muss eine Willenskraft + Logik (3)-Probe gelingen, um ein Geheimnis oder eine vertrauliche Information an jemanden weiterzugeben, dem er nicht vollständig vertraut – und solches Vertrauen ist selten.</disadvantage>
-				<page>163</page>
 				<translate>Kryptom</translate>
+				<altadvantage>+2 Würfel auf alle Verschlüsselungs- und Entschlüsselungs-Proben</altadvantage>
+				<altdisadvantage>Technomancer, die Kryptom folgen, geben Geheimnisse nur ungern aus der Hand, und schon gar nicht an unzuverlässige Quellen. Dem Technomancer muss eine Willenskraft + Logik (3)-Probe gelingen, um ein Geheimnis oder eine vertrauliche Information an jemanden weiterzugeben, dem er nicht vollständig vertraut – und solches Vertrauen ist selten.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Courier sprites</name>
+						<translate>+1 Würfel für Kurier-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Data sprites</name>
+						<translate>+1 Würfel für Daten-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>fa271f4e-608f-4cdc-a118-54d714b68a85</id>
 				<name>Daedalus</name>
-				<advantage>+2 Würfel auf Hardware-Proben, +1 Würfel für Maschinen- oder Stör-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Technomancer, die Daedalus folgen, interagieren mit Maschinen, an oder mit denen sie arbeiten, noch unterbewusster als üblich. Daher sind Modifikationen, die sie einbauen, eher auf Leute mit ihren Gaben und ihrer Weltsicht ausgerichtet und weniger etwas, was für Weltliche oder auch Nicht-Daedalus-Technomancer intuitiv einsichtig wäre. Geräte, die von solchen Technomancern gebaut oder modifiziert werden, haben ein undurchsichtigeres Interface als normal und bringen jedem, der sie benutzen will, einen Modifikator von –2.</disadvantage>
-				<page>162</page>
 				<translate>Daedalus</translate>
+				<altadvantage>+2 Würfel auf Hardware-Proben</altadvantage>
+				<altdisadvantage>Technomancer, die Daedalus folgen, interagieren mit Maschinen, an oder mit denen sie arbeiten, noch unterbewusster als üblich. Daher sind Modifikationen, die sie einbauen, eher auf Leute mit ihren Gaben und ihrer Weltsicht ausgerichtet und weniger etwas, was für Weltliche oder auch Nicht-Daedalus-Technomancer intuitiv einsichtig wäre. Geräte, die von solchen Technomancern gebaut oder modifiziert werden, haben ein undurchsichtigeres Interface als normal und bringen jedem, der sie benutzen will, einen Modifikator von –2.</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Machine sprites</name>
+						<translate>+1 Würfel für Maschinen-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Fault sprites</name>
+						<translate>+1 Würfel für Stör-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
 				<name>Delphi</name>
-				<advantage>+2 Würfel auf Analyse-Proben, +1 Würfel für Code- oder Lehrer-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Delphi-Technomancer können sich nicht gut auf unerwartete Situationen einstellen. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um in Situationen, die sie nicht eingeplant haben, eine schnelle Entscheidung zu treffen.</disadvantage>
-				<page>162</page>
 				<translate>Delphi</translate>
+				<altadvantage>+2 Würfel auf Analyse-Proben</altadvantage>
+				<altdisadvantage>Delphi-Technomancer können sich nicht gut auf unerwartete Situationen einstellen. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um in Situationen, die sie nicht eingeplant haben, eine schnelle Entscheidung zu treffen.</altdisadvantage>
+				<altpage>162</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Code sprites</name>
+						<translate>+1 Würfel für Code-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Tutor sprites</name>
+						<translate>+1 Würfel für Lehrer-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
 				<name>Disinformation</name>
-				<advantage>+1 Würfel auf alle Proben auf Fertigkeiten aus der Einfluss-Fertigkeitsgruppe, +1 Würfel für dissonante Daten- oder Lehrer-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Desinformations-Technomancern muss eine Willenskraft + Charisma (3)-Probe gelingen, um wahre, vollständige oder nicht-manipulierte Informationen über die Matrix an nicht-dissonante Technomancer weiterzugeben.</disadvantage>
-				<page>191</page>
 				<translate>Desinformation</translate>
+				<altadvantage>+1 Würfel auf alle Proben auf Fertigkeiten aus der Einfluss-Fertigkeitsgruppe</altadvantage>
+				<altdisadvantage>Desinformations-Technomancern muss eine Willenskraft + Charisma (3)-Probe gelingen, um wahre, vollständige oder nicht-manipulierte Informationen über die Matrix an nicht-dissonante Technomancer weiterzugeben.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Data sprites</name>
+						<translate>+1 Würfel für dissonante Daten-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Tutor sprites</name>
+						<translate>+1 Würfel für dissonante Lehrer-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>da2f3bad-d934-461a-aa92-60fc6e5c3ef7</id>
 				<name>Echelon</name>
-				<advantage>+1 Würfel auf Aufspüren- und Schnüffler-Proben, +1 Würfel für Infiltrator- oder Spürhund-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Anhänger von Lauscher arbeiten besessen daran, Informationen über alles zu sammeln, was um sie herum vorgeht. Wenn sie unvorbereitet, ohne die von ihnen benötigten Informationen, erwischt werden oder sie blind in eine Situation geraten, erleiden sie einen Würfelpoolmodifikator von –1 auf alle Handlungen, solange diese Situation anhält.</disadvantage>
-				<page>163</page>
 				<translate>Lauscher</translate>
+				<altadvantage>+1 Würfel auf Aufspüren- und Schnüffler-Proben</altadvantage>
+				<altdisadvantage>Anhänger von Lauscher arbeiten besessen daran, Informationen über alles zu sammeln, was um sie herum vorgeht. Wenn sie unvorbereitet, ohne die von ihnen benötigten Informationen, erwischt werden oder sie blind in eine Situation geraten, erleiden sie einen Würfelpoolmodifikator von –1 auf alle Handlungen, solange diese Situation anhält.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Crack sprites</name>
+						<translate>+1 Würfel für Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Sleuth sprites</name>
+						<translate>+1 Würfel für Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>de755412-5cae-4859-880f-75a7bd68d5a4</id>
 				<name>Flow</name>
-				<advantage>+2 Würfel auf Improvisations-Proben, +1 Würfel für Code- oder Daten-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>–1 Würfel auf Angriffsproben beim Matrixkampf.</disadvantage>
-				<page>163</page>
 				<translate>Flow</translate>
+				<altadvantage>+2 Würfel auf Improvisations-Proben</altadvantage>
+				<altdisadvantage>–1 Würfel auf Angriffsproben beim Matrixkampf.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Code sprites</name>
+						<translate>+1 Würfel für Code-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Data sprites</name>
+						<translate>+1 Würfel für Daten-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>fc11f3d0-4fa1-4425-9ae0-69e6edd9868d</id>
 				<name>Idoru</name>
-				<advantage>+2 Würfel auf Überreden-Proben, +1 Würfel für Infiltrator- oder Spürhund-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Anhängern von Idoru muss eine Willenskraft + Logik (3)-Probe gelingen, um Daten nicht zu ihren Gunsten zu manipulieren, wenn es die Situation erfordert.</disadvantage>
-				<page>163</page>
 				<translate>Idoru</translate>
+				<altadvantage>+2 Würfel auf Überreden-Proben</altadvantage>
+				<altdisadvantage>Anhängern von Idoru muss eine Willenskraft + Logik (3)-Probe gelingen, um Daten nicht zu ihren Gunsten zu manipulieren, wenn es die Situation erfordert.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Crack sprites</name>
+						<translate>+1 Würfel für Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Sleuth sprites</name>
+						<translate>+1 Würfel für Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>c9a8412b-47c4-43b6-a439-fab9ad906040</id>
 				<name>Intrusion Countermeasure (IC)</name>
-				<advantage>+2 Würfel auf alle Matrix-Schadenswiderstandproben außer Schwund, +1 Würfel für Paladin-Sprites</advantage>
-				<disadvantage>Wenn es einem IC-Technomancer misslingt, etwas zu schützen, für das er sich verantwortlich fühlt, oder wenn er ein selbst gestecktes Ziel nicht erreicht, erleidet er einen Würfelpoolmodifikator von –1 auf alle Handlungen, bis er für sein Versagen Buße getan hat.</disadvantage>
-				<page>163</page>
 				<translate>Intrusion Countermeasure (IC)</translate>
+				<altadvantage>+2 Würfel auf alle Matrix-Schadenswiderstandproben außer Schwund, +1 Würfel für Paladin-Sprites</altadvantage>
+				<altdisadvantage>Wenn es einem IC-Technomancer misslingt, etwas zu schützen, für das er sich verantwortlich fühlt, oder wenn er ein selbst gestecktes Ziel nicht erreicht, erleidet er einen Würfelpoolmodifikator von –1 auf alle Handlungen, bis er für sein Versagen Buße getan hat.</altdisadvantage>
+				<altpage>163</altpage>
 			</mentor>
 			<mentor>
+				<id>a5a230a8-7aa8-4759-a5e2-0ccf3f3e0dd9</id>
 				<name>Jormungand</name>
-				<advantage>+2 Würfel auf Korrumpieren-Proben, +1 Würfel für dissonante Code- oder Daten-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Jormungand-Technomancer sind destruktiv und werden jede Gelegenheit nutzen, einen Knoten zu verwüsten, indem sie seine Daten permanent vernichten oder korrumpieren. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um einen Knoten, in den sie gehackt sind, unbeschädigt zu lassen.</disadvantage>
-				<page>191</page>
 				<translate>Jormungand</translate>
+				<altadvantage>+2 Würfel auf Korrumpieren-Proben</altadvantage>
+				<altdisadvantage>Jormungand-Technomancer sind destruktiv und werden jede Gelegenheit nutzen, einen Knoten zu verwüsten, indem sie seine Daten permanent vernichten oder korrumpieren. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um einen Knoten, in den sie gehackt sind, unbeschädigt zu lassen.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Data sprites</name>
+						<translate>+1 Würfel für dissonante Daten-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Code sprites</name>
+						<translate>+1 Würfel für dissonante Code-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>a366564e-1da4-4684-9552-dfbb50a986cb</id>
 				<name>Nemesis</name>
-				<advantage>+2 Würfel auf Überreden-Proben, +1 Würfel für dissonante Spürhund- oder Stör-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Einem Nemesis-Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um sich selbst davon abzuhalten, jene zu bestrafen, die es seiner Meinung nach verdient haben.</disadvantage>
-				<page>191</page>
 				<translate>Nemesis</translate>
+				<altadvantage>+2 Würfel auf Überreden-Proben</altadvantage>
+				<altdisadvantage>Einem Nemesis-Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um sich selbst davon abzuhalten, jene zu bestrafen, die es seiner Meinung nach verdient haben.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Fault sprites</name>
+						<translate>+1 Würfel für dissonante Stör-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Sleuth sprites</name>
+						<translate>+1 Würfel für dissonante Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>dfe40900-5ab6-4b6f-a190-1711898e8f81</id>
 				<name>Noise</name>
-				<advantage>+2 Würfel auf Improvisierenproben, +1 Würfel für dissonante Code- oder Kurier-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Rauschen-Technomancer sind mehr als andere vom ständigen Flüstern der Matrix abhängig, daher erleiden sie die doppelten Modifikatoren auf Matrix- und Nicht-Matrix-Handlungen, wenn sie sich in statischen oder toten Zonen befinden</disadvantage>
-				<page>191</page>
 				<translate>Rauschen</translate>
+				<altadvantage>+2 Würfel auf Improvisierenproben</altadvantage>
+				<altdisadvantage>Rauschen-Technomancer sind mehr als andere vom ständigen Flüstern der Matrix abhängig, daher erleiden sie die doppelten Modifikatoren auf Matrix- und Nicht-Matrix-Handlungen, wenn sie sich in statischen oder toten Zonen befinden.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Courier sprites</name>
+						<translate>+1 Würfel für dissonante Kurier-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Code sprites</name>
+						<translate>+1 Würfel für dissonante Code-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>a91fb6a7-5b73-4627-9f73-4d58efd5b538</id>
 				<name>Probe</name>
-				<advantage>+2 Würfel auf alle Scan-Proben, +1 Würfel für Infiltrator- oder Spürhund-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Sonden-Technomancer erhalten einen Würfelpoolmodifikator von –2 auf Eiliges Hacken, also wenn sie nicht vorher das Ziel sondieren.</disadvantage>
-				<page>163</page>
 				<translate>Sonde</translate>
+				<altadvantage>+2 Würfel auf alle Scan-Proben</altadvantage>
+				<altdisadvantage>Sonden-Technomancer erhalten einen Würfelpoolmodifikator von –2 auf Eiliges Hacken, also wenn sie nicht vorher das Ziel sondieren.</altdisadvantage>
+				<altpage>163</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Crack sprites</name>
+						<translate>+1 Würfel für Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Sleuth sprites</name>
+						<translate>+1 Würfel für Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>b15294e5-5f3d-4e59-bbca-5a722e06663b</id>
 				<name>Pulse</name>
-				<advantage>+2 Würfel auf Matrixinitiative-Proben</advantage>
-				<disadvantage>–2 Würfel auf Hacking-Proben, wenn nicht eilig gehackt wird.</disadvantage>
-				<page>163</page>
 				<translate>Puls</translate>
+				<altadvantage>+2 Würfel auf Matrixinitiative-Proben</altadvantage>
+				<altdisadvantage>–2 Würfel auf Hacking-Proben, wenn nicht eilig gehackt wird.</altdisadvantage>
+				<altpage>163</altpage>
 			</mentor>
 			<mentor>
+				<id>498135a7-10e1-4c5e-9455-996beb0dce95</id>
 				<name>Shooter</name>
-				<advantage>+2 Würfel auf alle Matrix-Angriffsproben, +1 Würfel für Paladin- oder Panzer-Sprites (Spieler muss sich für einen der beiden entscheiden).</advantage>
-				<disadvantage>Einem Technomancer, der Todesschütze folgt, muss eine Willenskraft + Logik (3)-Probe gelingen, um sich aus einem Matrixkampf zurückzuziehen.</disadvantage>
-				<page>164</page>
 				<translate>Todesschütze</translate>
+				<altadvantage>+2 Würfel auf alle Matrix-Angriffsproben</altadvantage>
+				<altdisadvantage>A Shooter technomancer must succeed in a Willpower + Logic (3) Test to retreat from a Matrix fight.</altdisadvantage>
+				<altpage>164</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Paladin sprites</name>
+						<translate>+1 Würfel für Paladin-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Tank sprites</name>
+						<translate>+1 Würfel für Panzer-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>e17e1825-730a-40ce-99e3-0daf05a9d68d</id>
 				<name>Snuff</name>
-				<advantage>+2 Würfel auf alle Schnüffler-Proben, +1 Würfel für dissonante Infiltrator- oder Spürhund-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>Snuff-Technomancer erleiden einen Würfelpoolmodifikator von –2 bei Widerstandsproben gegen die Abhängigkeit von BTL oder Matrixmedien.</disadvantage>
-				<page>191</page>
 				<translate>Snuff</translate>
+				<altadvantage>+2 Würfel auf alle Schnüffler-Proben</altadvantage>
+				<altdisadvantage>Snuff-Technomancer erleiden einen Würfelpoolmodifikator von –2 bei Widerstandsproben gegen die Abhängigkeit von BTL oder Matrixmedien.</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Crack sprites</name>
+						<translate>+1 Würfel für dissonante Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Sleuth sprites</name>
+						<translate>+1 Würfel für dissonante Spürhund-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>c2208cf0-4848-4a96-bbdd-e0a1b2291e28</id>
 				<name>Tiamat</name>
-				<advantage>+2 Würfel auf Matrixkampf, +2 Würfel für dissonante Infiltrator- oder Panzer-Sprites (eine Sorte wählen)</advantage>
-				<disadvantage>–1 Würfel auf alle Hackingproben</disadvantage>
-				<page>191</page>
 				<translate>Tiamat</translate>
+				<altadvantage>+2 Würfel auf Matrixkampf</altadvantage>
+				<altdisadvantage>–1 Würfel auf alle Hackingproben</altdisadvantage>
+				<altpage>191</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for dissonant Crack sprites</name>
+						<translate>+2 Würfel für dissonante Infiltrator-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for dissonant Tank sprites</name>
+						<translate>+2 Würfel für dissonante Panzer-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 			<mentor>
+				<id>bb2e04c3-467c-42d1-bf92-29d457bede47</id>
 				<name>The World Tree</name>
-				<advantage>+2 Würfel auf Analyse-Proben, +1 Würfel für Code- oder Kurier-Sprites (Spieler muss sich für einen der beiden entscheiden)</advantage>
-				<disadvantage>Weltenbaum-Technomancer lassen sich leicht von Informationen ablenken, die sie interessant finden. Wenn er sich neuen Informationen, ungewöhnlichen Daten oder Phänomenen gegenübersieht, muss dem Technomancer eine Willenskraft + Charisma (3)-Probe gelingen, um der Versuchung zu widerstehen, seine momentane Aufgabe liegen zu lassen und die Informationen zu analysieren und an sich zu bringen (falls möglich).</disadvantage>
-				<page>164</page>
 				<translate>Der Weltenbaum</translate>
+				<altadvantage>+2 Würfel auf Analyse-Proben</altadvantage>
+				<altdisadvantage>Weltenbaum-Technomancer lassen sich leicht von Informationen ablenken, die sie interessant finden. Wenn er sich neuen Informationen, ungewöhnlichen Daten oder Phänomenen gegenübersieht, muss dem Technomancer eine Willenskraft + Charisma (3)-Probe gelingen, um der Versuchung zu widerstehen, seine momentane Aufgabe liegen zu lassen und die Informationen zu analysieren und an sich zu bringen (falls möglich).</altdisadvantage>
+				<altpage>164</altpage>
+				<choices>
+					<choice>
+						<name>+1 die for Code sprites</name>
+						<translate>+1 Würfel für Code-Sprites</translate>
+					</choice>
+					<choice>
+						<name>+1 die for Courier sprites</name>
+						<translate>+1 Würfel für Kurier-Sprites</translate>
+					</choice>
+				</choices>
 			</mentor>
 		</mentors>
 	</chummer>
@@ -23563,6 +23974,18 @@
 				<name>Ventriloquism</name>
 				<translate>Bauchredner</translate>
 				<altpage>156</altpage>
+			</power>
+			<power>
+				<id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
+				<name>Keratin Control</name>
+				<translate>Keratin Control</translate>
+				<altpage>24</altpage>
+			</power>
+			<power>
+				<id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
+				<name>Living Focus</name>
+				<translate>Living Focus</translate>
+				<altpage>24</altpage>
 			</power>
 		</powers>
 		<enhancements>
@@ -28444,12 +28867,11 @@
 				<altpage>188</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>397eee55-11eb-4ede-bede-a8a13befa21c</id>
 				<name>Community Connection</name>
 				<translate>Gemeindeverbindungen</translate>
-				<altpage>188</altpage>
-				<altnameonpage></altnameonpage>
+				<altpage>187</altpage>
 			</quality>
 			<quality>
 				<id>fd5468e4-a671-4c84-a9ec-590b94ae6ae3</id>
@@ -28465,12 +28887,11 @@
 				<altpage>188</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>3a5b909e-7b37-471d-a24a-3fda7c18d837</id>
 				<name>Nasty Trog</name>
 				<translate>Gemeiner Trog</translate>
-				<altpage>188</altpage>
-				<altnameonpage></altnameonpage>
+				<altpage>187</altpage>
 			</quality>
 			<quality>
 				<id>8d8dee2e-868b-4eda-87b5-959dd55304e0</id>
@@ -28492,12 +28913,11 @@
 				<altpage>188</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>14b5b9c0-5180-47ec-8bf9-f422d3196744</id>
 				<name>Trog Networker</name>
 				<translate>Trog-Netzwerker</translate>
-				<altpage>189</altpage>
-				<altnameonpage></altnameonpage>
+				<altpage>188</altpage>
 			</quality>
 			<quality>
 				<id>e4bceac5-8f1d-4090-90fc-ad5e94bca8d7</id>
@@ -31702,11 +32122,11 @@
 				<name>Corporation: Lone Star Security Services</name>
 				<translate>Konzern: Lone Star Security Services</translate>
 				<specs>
-					<spec translate="Seattle Operationen">Seattle Operations</spec>
 					<spec translate="Unternehmensfinanzen">Corporate Finances</spec>
 					<spec translate="Unternehmenspolitik">Corporate Politics</spec>
 					<spec translate="Unternehmensgerüchte">Corporate Rumors</spec>
 					<spec translate="Unternehmenssicherheit">Corporate Security</spec>
+					<spec translate="Chicago Operations">Chicago Operations</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -34571,6 +34991,12 @@
 				<translate>Schutzbande</translate>
 				<altpage>127</altpage>
 			</spell>
+			<spell>
+				<id>65a02e9c-6472-406e-b5d1-17ec184c8ed2</id>
+				<name>Pulse</name>
+				<translate>Pulse</translate>
+				<altpage>21</altpage>
+			</spell>
 		</spells>
 	</chummer>
 	<chummer file="streams.xml">
@@ -37103,8 +37529,8 @@
 			</vehicle>
 			<vehicle translated="True">
 				<id>e338dcf9-3149-4519-9228-589354be5667</id>
-				<name>Messerschmitt-Kawasaki Jagdschreccke</name>
-				<translate>Messerschmitt-Kawasaki Jagdschreccke</translate>
+				<name>Messerschmitt-Kawasaki Jagdschrecke</name>
+				<translate>Messerschmitt-Kawasaki Jagdschrecke</translate>
 				<altpage>69</altpage>
 			</vehicle>
 			<vehicle translated="True">
@@ -37125,17 +37551,17 @@
 				<translate>Mitsuhama Honson</translate>
 				<altpage>72</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>139fb6cb-a4c5-4ba2-8cf2-f10b9e187093</id>
 				<name>BMW Trollhammer</name>
 				<translate>BMW Trollhammer</translate>
-				<altpage>184</altpage>
+				<altpage>185</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d706917a-ae42-4134-a1bb-0dc276e02fbe</id>
 				<name>Ford Titan</name>
 				<translate>Ford Titan</translate>
-				<altpage>184</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle translated="True">
 				<id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
@@ -37244,6 +37670,42 @@
 				<name>Lone Star SecureSector Mk2</name>
 				<translate>Lone Star SecureSector Mk2</translate>
 				<altpage>40</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>cd05b23c-f14d-4d76-8037-ec5d99c90cb0</id>
+				<name>Jena Robotnik Araneus</name>
+				<translate>Jena Robotnik Araneus</translate>
+				<altpage>59</altpage>
+			</vehicle>
+			<vehicle>
+				<id>ed101e66-64fc-4a07-b1e5-dfc13526f4a5</id>
+				<name>Plex-Cab</name>
+				<translate>Plex-Cab</translate>
+				<altpage>215</altpage>
+			</vehicle>
+			<vehicle>
+				<id>7b728361-e755-4c86-815b-3018b17e7753</id>
+				<name>oTTo</name>
+				<translate>oTTo</translate>
+				<altpage>216</altpage>
+			</vehicle>
+			<vehicle>
+				<id>25ef3104-a0aa-449c-bbd2-be6aa9ade610</id>
+				<name>VW Urban Clipper</name>
+				<translate>VW Urban Clipper</translate>
+				<altpage>217</altpage>
+			</vehicle>
+			<vehicle>
+				<id>1f0a690e-3b60-49de-9271-9ab7305e135e</id>
+				<name>Link-Bus</name>
+				<translate>Link-Bus</translate>
+				<altpage>218</altpage>
+			</vehicle>
+			<vehicle>
+				<id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
+				<name>Eurocopter FC</name>
+				<translate>Eurocopter FC</translate>
+				<altpage>219</altpage>
 			</vehicle>
 		</vehicles>
 		<mods>
@@ -38312,7 +38774,7 @@
 			<mod>
 				<id>140ade78-b25c-44fd-9775-a0ebf256d90c</id>
 				<name>Yerz Kit</name>
-				<translate>Yerz Kit</translate>
+				<translate>Yerz-Bausatz</translate>
 				<altpage>187</altpage>
 			</mod>
 			<mod>
@@ -40341,7 +40803,7 @@
 				<translate>Browning Max-Power</translate>
 				<altpage>185</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>36e7b132-6b4d-4932-86e0-9b8a1afe6c00</id>
 				<name>Colt Manhunter (2050)</name>
 				<translate>Colt Manhunter</translate>
@@ -40830,7 +41292,7 @@
 			<weapon translated="True">
 				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
 				<name>Colt Manhunter</name>
-				<translate>Colt Manhunter A1</translate>
+				<translate>Colt Manhunter</translate>
 				<altpage>170</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -41268,8 +41730,8 @@
 			<weapon>
 				<id>78beeb28-9ae6-418d-97bb-1d45ac19cee8</id>
 				<name>Osmium Mace</name>
-				<translate>Osmium Mace</translate>
-				<altpage>185</altpage>
+				<translate>Osmiumstreitkolben</translate>
+				<altpage>184</altpage>
 			</weapon>
 			<weapon>
 				<id>4189afe7-ec22-40f7-9e5d-fef42b9c9a00</id>
@@ -41294,6 +41756,42 @@
 				<name>Rocket: Incendiary</name>
 				<translate>Rocket: Incendiary</translate>
 				<altpage>29</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
+				<name>Chakram</name>
+				<translate>Chakram</translate>
+				<altpage>129</altpage>
+			</weapon>
+			<weapon>
+				<id>581fed02-2312-4a75-95ba-25215b12ab5f</id>
+				<name>Colt Manhunter</name>
+				<translate>Colt Manhunter</translate>
+				<altpage>18</altpage>
+			</weapon>
+			<weapon>
+				<id>9bc4858d-1b45-4803-892b-31984898e0a1</id>
+				<name>Grenade: Shock, Aerodynamic (2050)</name>
+				<translate>Grenade: Shock, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</weapon>
+			<weapon>
+				<id>e604b64d-b0a4-4e9f-87c0-aa3b33285fb0</id>
+				<name>Grenade: Defensive, Aerodynamic (2050)</name>
+				<translate>Grenade: Defensive, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</weapon>
+			<weapon>
+				<id>eb34f76b-3789-4c57-ae9d-52455ed3ebe2</id>
+				<name>Grenade: Offensive, Aerodynamic (2050)</name>
+				<translate>Grenade: Offensive, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
+			</weapon>
+			<weapon>
+				<id>96cc1ff9-ab6a-42e1-bd34-ec34b7dfa732</id>
+				<name>Grenade: Smoke, Aerodynamic (2050)</name>
+				<translate>Grenade: Smoke, Aerodynamic (2050)</translate>
+				<altpage>191</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -41774,8 +42272,8 @@
 			<accessory>
 				<id>bf18c385-77bf-4f45-a51c-c17fd702526f</id>
 				<name>Gecko Grip</name>
-				<page>51</page>
 				<translate>Geckogriff</translate>
+				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
@@ -42896,6 +43394,21 @@
 				<name>C - 15,000¥</name>
 				<translate>C - 15,000¥</translate>
 			</priority>
+			<priority>
+				<id>cb4060e7-61b9-40d7-b97f-9ab9129bfc26</id>
+				<name>E - 6,000¥</name>
+				<translate>E - 6,000¥</translate>
+			</priority>
+			<priority>
+				<id>6d8d3a6f-80fd-4c5c-93fc-ee754f4a44f1</id>
+				<name>D - 15,000¥</name>
+				<translate>D - 15,000¥</translate>
+			</priority>
+			<priority>
+				<id>9e0f8c4d-5020-4efe-8f65-6d729ab7138c</id>
+				<name>E - 6,000¥</name>
+				<translate>E - 6,000¥</translate>
+			</priority>
 		</priorities>
 	</chummer>
 	<chummer file="contacts.xml">
@@ -43579,5 +44092,30 @@
 				<translate>Straßenabschaum</translate>
 			</gameplayoption>
 		</gameplayoptions>
+	</chummer>
+	<chummer file="vessels.xml">
+		<categories>
+			<category translate="Inanimate Vessels">Inanimate Vessels</category>
+		</categories>
+		<metatypes>
+			<metatype>
+				<id>523fff8a-2875-4830-b390-5a965a3ca468</id>
+				<name>Plasteel Homunculus</name>
+				<translate>Plasteel Homunculus</translate>
+				<altpage>87</altpage>
+			</metatype>
+			<metatype>
+				<id>81ff437c-9482-41f1-bb05-991561962234</id>
+				<name>Stone Homunculus</name>
+				<translate>Stone Homunculus</translate>
+				<altpage>87</altpage>
+			</metatype>
+			<metatype>
+				<id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
+				<name>Wicker Man</name>
+				<translate>Wicker Man</translate>
+				<altpage>87</altpage>
+			</metatype>
+		</metatypes>
 	</chummer>
 </chummer>

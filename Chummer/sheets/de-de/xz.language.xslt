@@ -169,7 +169,7 @@
   <xsl:variable name="lang.Player"    select="'Spieler'"/>
   <xsl:variable name="lang.Points"    select="'Punkte'"/>
   <xsl:variable name="lang.Pool"      select="'Pool'"/>
-  <xsl:variable name="lang.Power"      select="'Kräft'"/>
+  <xsl:variable name="lang.Power"      select="'Kraft'"/>
   <xsl:variable name="lang.Powers"    select="'Kräfte'"/>
   <xsl:variable name="lang.Priorities"  select="'Prioritäten'"/>
   <xsl:variable name="lang.Processor"    select="'Prozessor'"/>
