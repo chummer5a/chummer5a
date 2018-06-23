@@ -12623,7 +12623,9 @@
       <source>SL</source>
       <page>26</page>
       <accessories>
-        <accessory rating="6">Ceramic Components</accessory>
+          <accessory>
+              <name rating="6">Ceramic/Plasteel Components</name>
+          </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12644,7 +12646,9 @@
       <source>SL</source>
       <page>27</page>
       <accessories>
-        <accessory>Smartgun System, Internal</accessory>
+        <accessory>
+            <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -12665,8 +12669,12 @@
       <source>SL</source>
       <page>27</page>
       <accessories>
-        <accessory>Electronic Firing</accessory>
-        <accessory>Personalized Grip</accessory>
+        <accessory>
+            <name>Electronic Firing</name>
+        </accessory>
+        <accessory>
+            <name>Personalized Grip</name>
+        </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
         </accessory>
@@ -12814,7 +12822,7 @@
       <ammocategory>Sporting Rifles</ammocategory>
       <accessories>
         <accessory>
-          <name>Longbarrel</name>
+          <name>Long Barrel</name>
         </accessory>
       </accessories>
     </weapon>
@@ -12899,7 +12907,7 @@
       <page>31</page>
       <accessories>
         <accessory>
-          <name>Ceramic Components</name>
+          <name>Ceramic/Plasteel Components</name>
           <rating>6</rating>
         </accessory>
         <accessory>
@@ -13074,7 +13082,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
         <accessory>
-          <name>Safe Target System</name>
+          <name>Safe Target System, Base</name>
         </accessory>
       </accessories>
     </weapon>
@@ -13149,7 +13157,7 @@
           <name>Improved Range Finder</name>
         </accessory>
         <accessory>
-          <name>Low-light Flashlight</name>
+          <name>Flashlight, Low Light</name>
         </accessory>
         <accessory>
           <name>Slide Mount</name>
@@ -13307,7 +13315,7 @@
       <page>39</page>
       <accessories>
         <accessory>
-          <name>Additional Clip</name>
+          <name>Additional Clip/Magazine (Non-Pistol)</name>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
@@ -13333,7 +13341,7 @@
       <page>39</page>
       <accessories>
         <accessory>
-          <name>Additional Clip</name>
+          <name>Additional Clip/Magazine (Non-Pistol)</name>
         </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -15834,7 +15842,7 @@
     </accessory>
     <accessory>
       <id>a16a52a9-3b57-4e3c-96f6-564616bcd576</id>
-  <name>Red Dot Sights</name>
+      <name>Red Dot Sight</name>
       <mount>Top</mount>
       <hide />
       <rating>0</rating>
