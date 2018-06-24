@@ -9279,7 +9279,7 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>8</max>
+            <max>7</max>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -9299,7 +9299,7 @@
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
-            <max>7</max>
+            <max>8</max>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
