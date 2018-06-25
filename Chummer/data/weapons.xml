@@ -12116,7 +12116,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>+4</conceal>
-      <accuracy>3+number({STRAugmented} >= 5)+number({STRAugmented} >= 7)</accuracy>
+      <accuracy>5</accuracy>
       <reach>1</reach>
       <damage>(STR+3)P</damage>
       <ap>-2</ap>
@@ -12268,7 +12268,7 @@
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>(STR+4)P</damage>
-      <ap>-5</ap>
+      <ap>0</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -12294,6 +12294,27 @@
       <cost>200</cost>
       <source>SL</source>
       <page>22</page>
+      <addweapon>Gunstock War Club (Thrown)</addweapon>
+    </weapon>
+    <weapon>
+      <id>fac169e5-77ea-431f-b3cb-34fd64ce8dd0</id>
+      <name>Gunstock War Club (Thrown)</name>
+      <category>Clubs</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>1</reach>
+      <damage>(STR+3)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>10</avail>
+      <cost>200</cost>
+      <source>SL</source>
+      <page>22</page>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <hide />
     </weapon>
     <weapon>
       <id>cf1b2de4-957b-4d5d-9c38-d81d080e92d8</id>
@@ -12604,6 +12625,13 @@
       <source>SL</source>
       <page>26</page>
       <range>Holdouts</range>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>da54338e-e0c8-4f16-8a05-25431f13bccb</id>
@@ -12679,6 +12707,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>0e2d3c7b-d092-45fa-8136-4a9a9c99e2f1</id>
@@ -12704,6 +12733,12 @@
           <name>Laser Sight</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>bad08133-2783-463a-b187-fd6210c163ff</id>
@@ -12752,6 +12787,14 @@
       <cost>150</cost>
       <source>SL</source>
       <page>29</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <addweapon>Barrens Special: Bayonet</addweapon>
     </weapon>
     <weapon>
       <id>4378e735-859d-4606-9396-f9af248487e2</id>
@@ -12825,6 +12868,13 @@
           <name>Long Barrel</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>cbac989a-92f4-4eb8-a6ff-a9b5f7571d5d</id>
@@ -12935,8 +12985,16 @@
       <accessories>
         <accessory>
           <name>Laser Sight</name>
+          <mount>Top</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>f7077fa5-b3e7-488d-badb-d0be38975ec1</id>
@@ -12958,8 +13016,16 @@
       <accessories>
         <accessory>
           <name>Laser Sight</name>
+          <mount>Top</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>a6402dd0-fa9d-4c3f-83e5-695510058420</id>
@@ -12989,6 +13055,12 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>bda98b10-6aa3-49d6-a44b-e2feba5683bf</id>
@@ -13007,17 +13079,13 @@
       <cost>375</cost>
       <source>SL</source>
       <page>33</page>
-      <accessories>
-        <accessory>
-          <name>Bayonet</name>
-        </accessory>
-        <accessory>
-          <name>Melee Hardening</name>
-        </accessory>
-        <accessory>
-          <name>Smartgun System, Internal</name>
-        </accessory>
-      </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>3a4f4008-8d0c-430f-abe1-b4142d337da1</id>
@@ -13059,6 +13127,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>dd591e1f-2ebf-40ba-be8e-ccd4c5b8daf8</id>
@@ -13085,6 +13154,13 @@
           <name>Safe Target System, Base</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>6e21f323-e111-44ee-ac10-6e465249bcc7</id>
@@ -13106,18 +13182,28 @@
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
         </accessory>
         <accessory>
           <name>Folding Stock</name>
+          <mount>Stock</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>2502d04d-8082-4356-9cf9-c8beccde53fc</id>
       <name>Ares Stalwart</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
+      <conceal>+4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13134,13 +13220,21 @@
           <name>Folding Stock</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>463372d1-b005-4d09-90eb-ceced9ebccea</id>
       <name>Colt M23A2</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
+      <conceal>+4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13155,24 +13249,36 @@
       <accessories>
         <accessory>
           <name>Improved Range Finder</name>
+          <mount>Top</mount>
         </accessory>
         <accessory>
           <name>Flashlight, Low Light</name>
+          <mount>Side</mount>
         </accessory>
         <accessory>
           <name>Slide Mount</name>
+          <mount>Under</mount>
         </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>63f03317-e192-4354-a504-106dc6b78004</id>
       <name>Izom Artemis</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
+      <conceal>+4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13192,6 +13298,13 @@
           <name>Underbarrel Grenade Launcher</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>f1f2016a-8e4d-43d4-847d-a2eb007c52f0</id>
@@ -13219,6 +13332,14 @@
           <name>Melee Hardening</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>ba44a481-9acc-4baa-a2f2-af8891515ddd</id>
@@ -13237,6 +13358,14 @@
       <cost>500</cost>
       <source>SL</source>
       <page>38</page>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>5b4e09a0-4ad6-4bb0-bfee-52572773718e</id>
@@ -13257,6 +13386,24 @@
       <page>38</page>
       <addweapon>Onotari HL-13 Personal Defense Weapon</addweapon>
       <addweapon>Onotari HL-13 Urban Assault</addweapon>
+        <accessories>
+          <accessory>
+            <name>Slide Mount</name>
+            <mount>Under</mount>
+          </accessory>
+          <accessory>
+            <name>Smartgun System, Internal</name>
+            <mount>Internal</mount>
+          </accessory>
+        </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>19d63a61-29f4-4892-a6eb-8042cd171676</id>
@@ -13276,6 +13423,20 @@
       <cost>500</cost>
       <source>SL</source>
       <page>38</page>
+      <accessories>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>6704239c-42c0-43c2-8d4c-3f8ff6c01212</id>
@@ -13295,6 +13456,24 @@
       <cost>500</cost>
       <source>SL</source>
       <page>38</page>
+      <accessories>
+        <accessory>
+          <name>Slide Mount</name>
+          <mount>Under</mount>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>75a192ee-b109-4c68-a139-65de302f622d</id>
@@ -13316,11 +13495,21 @@
       <accessories>
         <accessory>
           <name>Additional Clip/Magazine (Non-Pistol)</name>
+          <mount>Side</mount>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
+          <mount>Top</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>f5ae45ef-f4f6-4d9a-873f-81e4ee973dc1</id>
@@ -13342,11 +13531,21 @@
       <accessories>
         <accessory>
           <name>Additional Clip/Magazine (Non-Pistol)</name>
+          <mount>Side</mount>
         </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>309098a2-5693-4f4b-9bf7-2302485ea9ac</id>
@@ -13365,6 +13564,14 @@
       <cost>750</cost>
       <source>SL</source>
       <page>40</page>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
     </weapon>
     <weapon>
       <id>dddebf4a-dabf-417f-9f44-54de9ac88e2e</id>
@@ -13391,6 +13598,14 @@
           <name>Shock Pad</name>
         </accessory>
       </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+        <mount>Top</mount>
+      </accessorymounts>
       <addweapon>Krime Whammy (Melee)</addweapon>
     </weapon>
     <weapon>
@@ -13717,8 +13932,157 @@
       <cost>0</cost>
       <source>SL</source>
       <page>46</page>
-      <hide />
     </weapon>
+    <weapon>
+      <id>fb545997-dcd5-48d4-963e-4f0c797e5982</id>
+      <name>Stoner-Ares M-22A1</name>
+      <category>Heavy Machine Guns</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>18P</damage>
+      <ap>-6</ap>
+      <mode>FA</mode>
+      <rc>-6</rc>
+      <ammo>200(belt)</ammo>
+      <avail>24F</avail>
+      <cost>29000</cost>
+      <source>SL</source>
+      <page>130</page>
+      <accessories>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <spec>Machine Guns</spec>
+    </weapon>
+    <weapon>
+      <id>e9a6bd24-c551-4cc1-be0a-aca373c44049</id>
+      <name>Aztechnology Blood Drinker Combat Axe</name>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>10</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(STR+3)P</damage>
+      <ap>-3</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12F</avail>
+      <cost>500</cost>
+      <source>SL</source>
+      <page>130</page>
+      <spec>Axes</spec>
+    </weapon>
+      <weapon>
+          <id>5fb07347-76a1-4d15-b1b5-b24e3880563b</id>
+          <name>Horizon-Flynn Defense-Com Commlink Holdout</name>
+          <category>Hold-outs</category>
+          <type>Ranged</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>5P</damage>
+          <ap>0</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>2(b)</ammo>
+          <avail>10</avail>
+          <cost>400</cost>
+          <source>SL</source>
+          <page>131</page>
+      </weapon>
+      <weapon>
+          <id>a47ed70f-5eea-4938-b613-54ed33407894</id>
+          <name>Horizon-Flynn Defense-Com Commlink Knife</name>
+          <category>Blades</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>5</accuracy>
+          <reach>0</reach>
+          <damage>(STR)P</damage>
+          <ap>-2</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>10</avail>
+          <cost>250</cost>
+          <source>SL</source>
+          <page>131</page>
+      </weapon>
+      <weapon>
+          <id>ea649a24-659b-4343-8719-2ae43da73237</id>
+          <name>Horizon-Flynn Defense-Com Commlink Taser</name>
+          <category>Tasers</category>
+          <type>Ranged</type>
+          <conceal>0</conceal>
+          <accuracy>5</accuracy>
+          <reach>0</reach>
+          <damage>6S(e)</damage>
+          <ap>-4</ap>
+          <mode>SS</mode>
+          <rc>0</rc>
+          <ammo>4(b)</ammo>
+          <avail>10</avail>
+          <cost>300</cost>
+          <source>SL</source>
+          <page>131</page>
+      </weapon>
+      <weapon>
+          <id>7158a75f-6c6c-4854-a7cc-51cec011572d</id>
+          <name>Lone Star Remington 995</name>
+          <category>Shotguns</category>
+          <type>Ranged</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>11P</damage>
+          <ap>-1</ap>
+          <mode>SA</mode>
+          <rc>0</rc>
+          <ammo>8(c)</ammo>
+          <avail>6R</avail>
+          <cost>1000</cost>
+          <source>SL</source>
+          <page>131</page>
+          <accessorymounts>
+              <mount>Stock</mount>
+              <mount>Side</mount>
+              <mount>Internal</mount>
+              <mount>Barrel</mount>
+              <mount>Under</mount>
+              <mount>Top</mount>
+          </accessorymounts>
+      </weapon>
+      <weapon>
+          <id>7bc2f035-ce0d-4f0a-8c14-dd62fdb3f4f4</id>
+          <name>Lone Star Bates-Brown Tactical Combat Boots</name>
+          <category>Unarmed</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-4</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>10</avail>
+          <cost>250</cost>
+          <source>SL</source>
+          <page>131</page>
+          <useskill>Unarmed Combat</useskill>
+      </weapon>
     <!-- End Region -->
   </weapons>
   <accessories>

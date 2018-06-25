@@ -16271,6 +16271,17 @@
     <!-- Region Positive Qualities -->
     <!-- TODO: FixedValues for quality karma values based on level? -->
     <quality>
+      <id>21e19949-5481-47a6-939b-d3522ba3a7c8</id>
+      <name>Corporate Loyalist</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
       <id>07916773-5aa2-4c8b-b239-932a9359428a</id>
       <name>Location Attunement I</name>
       <karma>5</karma>
