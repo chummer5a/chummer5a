@@ -4807,7 +4807,7 @@ namespace Chummer
 			// 
 			this.lblQualityBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBP.AutoSize = true;
-			this.lblQualityBP.Location = new System.Drawing.Point(58, 625);
+			this.lblQualityBP.Location = new System.Drawing.Point(54, 656);
 			this.lblQualityBP.Name = "lblQualityBP";
 			this.lblQualityBP.Size = new System.Drawing.Size(43, 13);
 			this.lblQualityBP.TabIndex = 70;
@@ -4817,7 +4817,7 @@ namespace Chummer
 			// 
 			this.lblQualityBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualityBPLabel.AutoSize = true;
-			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 625);
+			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 656);
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
 			this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
 			this.lblQualityBPLabel.TabIndex = 69;
@@ -4828,7 +4828,7 @@ namespace Chummer
 			// 
 			this.lblQualitySource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySource.AutoSize = true;
-			this.lblQualitySource.Location = new System.Drawing.Point(232, 625);
+			this.lblQualitySource.Location = new System.Drawing.Point(232, 656);
 			this.lblQualitySource.Name = "lblQualitySource";
 			this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
 			this.lblQualitySource.TabIndex = 68;
@@ -4839,7 +4839,7 @@ namespace Chummer
 			// 
 			this.lblQualitySourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblQualitySourceLabel.AutoSize = true;
-			this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 625);
+			this.lblQualitySourceLabel.Location = new System.Drawing.Point(181, 656);
 			this.lblQualitySourceLabel.Name = "lblQualitySourceLabel";
 			this.lblQualitySourceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblQualitySourceLabel.TabIndex = 67;
@@ -4890,7 +4890,7 @@ namespace Chummer
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
-			this.treQualities.Size = new System.Drawing.Size(273, 556);
+			this.treQualities.Size = new System.Drawing.Size(273, 590);
 			this.treQualities.TabIndex = 64;
 			this.treQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treQualities_AfterSelect);
 			this.treQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treQualities_KeyDown);
@@ -6121,7 +6121,7 @@ namespace Chummer
             treeNode13});
 			this.treAIPrograms.ShowNodeToolTips = true;
 			this.treAIPrograms.ShowRootLines = false;
-			this.treAIPrograms.Size = new System.Drawing.Size(295, 590);
+			this.treAIPrograms.Size = new System.Drawing.Size(295, 615);
 			this.treAIPrograms.TabIndex = 71;
 			this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
 			this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);
@@ -8387,7 +8387,7 @@ namespace Chummer
 			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.treFoci.CheckBoxes = true;
-			this.treFoci.Location = new System.Drawing.Point(310, 351);
+			this.treFoci.Location = new System.Drawing.Point(307, 351);
 			this.treFoci.Name = "treFoci";
 			this.treFoci.ShowLines = false;
 			this.treFoci.ShowPlusMinus = false;
@@ -12504,7 +12504,7 @@ namespace Chummer
             treeNode23});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
-			this.treVehicles.Size = new System.Drawing.Size(403, 0);
+			this.treVehicles.Size = new System.Drawing.Size(403, 633);
 			this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
@@ -13286,7 +13286,7 @@ namespace Chummer
 			// 
 			this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdChangeStartWeek.AutoSize = true;
-			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-8253, 6);
+			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-9155, 6);
 			this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
 			this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
 			this.cmdChangeStartWeek.TabIndex = 4;
@@ -13512,7 +13512,7 @@ namespace Chummer
 			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
 			this.treImprovements.ShowNodeToolTips = true;
-			this.treImprovements.Size = new System.Drawing.Size(295, 0);
+			this.treImprovements.Size = new System.Drawing.Size(295, 634);
 			this.treImprovements.TabIndex = 81;
 			this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
 			this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
@@ -13683,7 +13683,7 @@ namespace Chummer
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+			this.tabEnemies.Size = new System.Drawing.Size(1080, 640);
 			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Tag = "Label_Enemies";
 			this.tabEnemies.Text = "Enemies";
@@ -13726,7 +13726,7 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(6, 49);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(7821, 5313);
+			this.panEnemies.Size = new System.Drawing.Size(1068, 585);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -13750,7 +13750,7 @@ namespace Chummer
 			this.tabPets.Location = new System.Drawing.Point(4, 22);
 			this.tabPets.Name = "tabPets";
 			this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPets.Size = new System.Drawing.Size(178, 42);
+			this.tabPets.Size = new System.Drawing.Size(1080, 640);
 			this.tabPets.TabIndex = 4;
 			this.tabPets.Tag = "Tab_Pets";
 			this.tabPets.Text = "Pets and Cohorts";
@@ -13764,7 +13764,7 @@ namespace Chummer
 			this.panPets.Location = new System.Drawing.Point(6, 33);
 			this.panPets.Margin = new System.Windows.Forms.Padding(0);
 			this.panPets.Name = "panPets";
-			this.panPets.Size = new System.Drawing.Size(7821, 5332);
+			this.panPets.Size = new System.Drawing.Size(1071, 604);
 			this.panPets.TabIndex = 25;
 			// 
 			// cmdAddPet
@@ -14230,6 +14230,7 @@ namespace Chummer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(1353, 722);
 			this.Controls.Add(this.splitMain);
 			this.Controls.Add(this.StatusStrip);
