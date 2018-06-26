@@ -16335,6 +16335,16 @@
       <source>SL</source>
       <page>127</page>
     </quality>
+    <quality>
+      <id>8d9cc4fa-ce95-423a-8db8-724372903b3d</id>
+      <name>Battle Hardened</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
     <!-- End Region -->
     <!-- Region Negative Qualities -->
     <quality>
@@ -16362,6 +16372,24 @@
       <page>127</page>
     </quality>
     <quality>
+      <id>bb0cd874-a7bb-4863-b393-23ef0eda6313</id>
+      <name>Every Man For Himself</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
+      <id>bb0cd874-a7bb-4863-b393-23ef0eda6313</id>
+      <name>No Man Left Behind</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
       <id>e4956c8e-119f-4670-9dcf-30f4709863ae</id>
       <name>Stay Out of My Way</name>
       <karma>-9</karma>
@@ -16378,6 +16406,16 @@
       <bonus />
       <source>SL</source>
       <page>127</page>
+    </quality>
+    <quality>
+      <id>0f9a0d45-a3c5-454d-8581-a5a1804e522e</id>
+      <name>Thousand-Yard Stare</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
     </quality>
     <!-- End Region -->
     <!-- End Region -->

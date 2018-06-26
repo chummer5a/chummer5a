@@ -3254,7 +3254,9 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null);
+                blnAddAgain = treGear.SelectedNode.Tag is Location objLocation
+                    ? PickGear(null, objLocation)
+                    : PickGear(null);
             }
             while (blnAddAgain);
         }

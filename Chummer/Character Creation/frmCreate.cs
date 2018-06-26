@@ -3424,7 +3424,7 @@ namespace Chummer
         {
             bool blnAddAgain;
             string id = string.Empty;
-            if (treGear.SelectedNode?.Tag is IHasInternalId objNode)
+            if (treGear.SelectedNode?.Tag is Location objNode)
             {
                 id = objNode.InternalId;
             }
