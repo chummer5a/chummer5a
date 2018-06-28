@@ -64,6 +64,8 @@ New Strings:
 - ColumnHeader_Notes
 - ColumnHeader_Power_Points
 - ColumnHeader_Action
+- MessageTitle_NoValidWeaponMount
+- Message_NoValidWeaponMount
 
 Build 200
 

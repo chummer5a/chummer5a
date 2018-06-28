@@ -10699,19 +10699,33 @@ namespace Chummer
             List<ListItem> lstItems = new List<ListItem>();
             foreach (WeaponMount objVehicleWeaponMount in objVehicle.WeaponMounts)
             {
-                lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId, objVehicleWeaponMount.DisplayName(GlobalOptions.Language)));
-                foreach (VehicleMod objVehicleMod in objVehicleWeaponMount.Mods)
-                {
-                    if (objVehicleMod.Name.Contains("Drone Arm") ||
-                        objVehicleMod.Name.StartsWith("Mechanical Arm"))
-                        lstItems.Add(new ListItem(objVehicleMod.InternalId, objVehicleMod.DisplayName(GlobalOptions.Language)));
-                }
+                //TODO: RAW, some mounts can have multiple weapons attached. Needs support in the Weapon Mount class itself, ideally a 'CanMountThisWeapon' bool or something.  
+                if ((objVehicleWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) ||
+                    objVehicleWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) &&
+                    objVehicleWeaponMount.Weapons.Count == 0)
+                    lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId,
+                        objVehicleWeaponMount.DisplayName(GlobalOptions.Language)));
+                else
+                    foreach (VehicleMod objVehicleMod in objVehicleWeaponMount.Mods)
+                    {
+                        if ((objVehicleMod.Name.Contains("Drone Arm") ||
+                            objVehicleMod.Name.StartsWith("Mechanical Arm")) &&
+                            objVehicleMod.Weapons.Count == 0)
+                            lstItems.Add(new ListItem(objVehicleMod.InternalId,
+                                objVehicleMod.DisplayName(GlobalOptions.Language)));
+                    }
             }
             foreach (VehicleMod objVehicleMod in objVehicle.Mods)
             {
-                if (objVehicleMod.Name.Contains("Drone Arm") ||
-                    objVehicleMod.Name.StartsWith("Mechanical Arm"))
+                if ((objVehicleMod.Name.Contains("Drone Arm") ||
+                    objVehicleMod.Name.StartsWith("Mechanical Arm")) && objVehicleMod.Weapons.Count == 0)
                     lstItems.Add(new ListItem(objVehicleMod.InternalId, objVehicleMod.DisplayName(GlobalOptions.Language)));
+            }
+
+            if (lstItems.Count == 0)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NoValidWeaponMount", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NoValidWeaponMount", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             frmPickItem.GeneralItems = lstItems;
@@ -10753,9 +10767,14 @@ namespace Chummer
             }
 
             if (objWeaponMount != null)
+            {
+                objWeapon.ParentMount = objWeaponMount;
                 objWeaponMount.Weapons.Add(objWeapon);
+            }
             else
+            {
                 objMod.Weapons.Add(objWeapon);
+            }
             
             IsDirty = true;
         }
@@ -15542,6 +15561,7 @@ namespace Chummer
                         lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
                     }
 
+                    cmdVehicleMoveToInventory.Enabled = true;
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboVehicleWeaponAmmo.BeginUpdate();
                     cboVehicleWeaponAmmo.ValueMember = "Value";
