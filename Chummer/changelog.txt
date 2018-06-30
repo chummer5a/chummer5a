@@ -43,6 +43,7 @@ Application Changes:
 - Fixed a regression with condition monitor checkboxes not properly remaining highlighted when first loaded.
 - Fixed an issue with foci not updating their displayname properly in the Foci window.
 - Fixed a regression in which attribute modifiers could exceed the current value + 4.
+- Fixed some issues with the creation and deletion of custom Improvements.
 
 Data Changes:
 

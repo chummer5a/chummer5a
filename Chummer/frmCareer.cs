@@ -5339,7 +5339,15 @@ namespace Chummer
 
             if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                 return;
+            TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
 
+            if (newNode != null)
+            {
+                newNode.Text = frmPickImprovement.NewImprovement.CustomName;
+                newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
+                newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
+            }
+            else {Utils.BreakIfDebug();}
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;

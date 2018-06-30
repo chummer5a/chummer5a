@@ -448,17 +448,17 @@ namespace Chummer
             }
 
             // Find the newly-created Improvement and attach its custom name.
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
+            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == strGuid);
+            if (objImprovement != null)
             {
-                if (objImprovement.SourceName == strGuid)
-                {
-                    objImprovement.CustomName = txtName.Text;
-                    objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
-                    objImprovement.Custom = true;
-                    objImprovement.Notes = strNotes;
-                    objImprovement.SortOrder = intOrder;
-                }
+                objImprovement.CustomName = txtName.Text;
+                objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
+                objImprovement.Custom = true;
+                objImprovement.Notes = strNotes;
+                objImprovement.SortOrder = intOrder;
+                NewImprovement = objImprovement;
             }
+            else {Utils.BreakIfDebug();}
 
             DialogResult = DialogResult.OK;
         }
@@ -492,6 +492,9 @@ namespace Chummer
         {
             set => _objEditImprovement = value;
         }
+
+        public Improvement NewImprovement;
+
         #endregion
     }
 }
