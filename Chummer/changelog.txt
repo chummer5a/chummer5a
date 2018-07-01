@@ -4,6 +4,10 @@ Application Changes:
 
 - Fixed incorect behavior with filtering columns on the select window browse tab. 
 
+Data Changes:
+
+- Added alternate Druid tradition from Forbidden Arcana. 
+
 Build 201
 
 Application Changes:
