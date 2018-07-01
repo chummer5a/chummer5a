@@ -1,33 +1,33 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectArmorMod
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectArmorMod
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
@@ -50,7 +50,6 @@
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
@@ -195,7 +194,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 20;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -240,6 +239,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(367, 153);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -247,10 +247,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 17;
@@ -294,20 +294,6 @@
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // chkBlackMarketDiscount
             // 
             this.chkBlackMarketDiscount.AutoSize = true;
@@ -331,6 +317,7 @@
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
             // frmSelectArmorMod
             // 
@@ -377,34 +364,33 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.Label lblRatingLabel;
-		private System.Windows.Forms.Label lblCost;
-		private System.Windows.Forms.Label lblCostLabel;
-		private System.Windows.Forms.Label lblAvail;
-		private System.Windows.Forms.Label lblAvailLabel;
-		private System.Windows.Forms.Label lblA;
-		private System.Windows.Forms.Label lblALabel;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.ListBox lstMod;
-		private System.Windows.Forms.NumericUpDown nudRating;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.CheckBox chkFreeItem;
-		private System.Windows.Forms.Label lblCapacity;
-		private System.Windows.Forms.Label lblCapacityLabel;
-		private System.Windows.Forms.NumericUpDown nudMarkup;
-		private System.Windows.Forms.Label lblMarkupLabel;
-		private System.Windows.Forms.Label lblMarkupPercentLabel;
-		private System.Windows.Forms.Label lblTest;
-		private System.Windows.Forms.Label lblTestLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private System.Windows.Forms.Label lblRatingLabel;
+        private System.Windows.Forms.Label lblCost;
+        private System.Windows.Forms.Label lblCostLabel;
+        private System.Windows.Forms.Label lblAvail;
+        private System.Windows.Forms.Label lblAvailLabel;
+        private System.Windows.Forms.Label lblA;
+        private System.Windows.Forms.Label lblALabel;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.ListBox lstMod;
+        private System.Windows.Forms.NumericUpDown nudRating;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.CheckBox chkFreeItem;
+        private System.Windows.Forms.Label lblCapacity;
+        private System.Windows.Forms.Label lblCapacityLabel;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupLabel;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.Label lblTest;
+        private System.Windows.Forms.Label lblTestLabel;
+        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
     }
 }

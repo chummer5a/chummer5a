@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vehicles.xsd">
+  <vehicles>
+    <vehicle>
+      <name>Horizon Noizquito (Microdrone)</name> <!-- Not in Player Rules -->
+      <hide />
+    </vehicle>
+	  <vehicle>
+      <name>Medusa Extensions (Mini)</name>
+      <hide />
+    </vehicle>
+
+<!-- TODO: Handle GTS Tower, it should have a retrans unit and a drone landing rack -->
+    <vehicle>
+      <name>GTS Tower (Large)</name>
+      <mods amendoperation="replace">
+        <name>Landing Drone Rack (Mini)</name>
+        <name>Landing Drone Rack (Mini)</name>
+        <name>Landing Drone Rack (Mini)</name>
+        <name>Landing Drone Rack (Mini)</name>
+        <name>Retrans Unit</name>
+      </mods>
+    </vehicle>
+
+    <vehicle>
+      <name>Avibras-Nissan AN 822</name>
+      <accel>3</accel>
+<!--      <gears>
+        <gear rating="2" maxrating="3">Sensor Array</gear>
+      </gears> -->
+    </vehicle>
+  </vehicles>
+  <mods>
+    <!-- Weapon Mounts from Core -->
+    <mod>
+      <name>Weapon Mount</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Heavy Weapon Mount</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Manual Operation</name>
+      <hide />
+    </mod>
+    <!-- End -->
+    <!-- Stolen Souls modifications -->
+    <mod>
+      <name>Chameleon Coating[Stolen Souls]</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Dash Light Bar</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Emergency Light Bar</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Siren</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</name>
+      <hide />
+    </mod>
+    <mod>
+      <name>Smuggling Compartment (Troll)</name>
+      <hide />
+    </mod>
+    <!-- End -->
+    <mod>
+      <name>Yerz Kit</name>
+      <hide />
+    </mod>
+  </mods>
+</chummer>

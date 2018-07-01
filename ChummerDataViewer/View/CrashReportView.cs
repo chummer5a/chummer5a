@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
+using System.Globalization;
 
 namespace ChummerDataViewer
 {
-	public partial class CrashReportView : UserControl
+	public sealed partial class CrashReportView : UserControl
 	{
 		private readonly CrashReport _report;
 		private readonly DownloaderWorker _worker;
@@ -23,9 +18,9 @@ namespace ChummerDataViewer
 			InitializeComponent();
 
 			lblBuildType.Text = report.BuildType;
-			lblGuid.Text = report.Guid.ToString();
+			lblGuid.Text = report.Guid.ToString("D");
 			lblVersion.Text = report.Version.ToString(3);
-			lblDate.Text = report.Timestamp.ToString("d MMM yy");
+			lblDate.Text = report.Timestamp.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
 
 			if (report.StackTrace != null)
 			{
@@ -37,11 +32,11 @@ namespace ChummerDataViewer
 		}
 
 		//TODO: move this to a better place
-		private string GuessStack(string stacktrace)
+		private static string GuessStack(string stacktrace)
 		{
 			string exception = stacktrace.Split(':')[0];
 
-			string location = stacktrace.Split(new string[] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
+			string location = stacktrace.Split(new [] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
 
 			if (location != null) return exception + " : " + location;
 

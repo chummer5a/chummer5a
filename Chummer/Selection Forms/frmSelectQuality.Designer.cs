@@ -1,34 +1,33 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectQuality
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectQuality
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.lstQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new System.Windows.Forms.ComboBox();
@@ -44,7 +43,6 @@
             this.chkMetagenetic = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkNotMetagenetic = new System.Windows.Forms.CheckBox();
             this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
             this.nudValueBP = new System.Windows.Forms.NumericUpDown();
@@ -52,6 +50,7 @@
             this.lblMinimumBP = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumBP)).BeginInit();
@@ -95,7 +94,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 5;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -218,15 +217,6 @@
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // chkNotMetagenetic
             // 
             this.chkNotMetagenetic.AutoSize = true;
@@ -241,7 +231,7 @@
             // 
             // nudMinimumBP
             // 
-            this.nudMinimumBP.Location = new System.Drawing.Point(296, 102);
+            this.nudMinimumBP.Location = new System.Drawing.Point(296, 122);
             this.nudMinimumBP.Minimum = new decimal(new int[] {
             100,
             0,
@@ -255,7 +245,7 @@
             // 
             // nudValueBP
             // 
-            this.nudValueBP.Location = new System.Drawing.Point(296, 141);
+            this.nudValueBP.Location = new System.Drawing.Point(362, 122);
             this.nudValueBP.Minimum = new decimal(new int[] {
             100,
             0,
@@ -269,7 +259,7 @@
             // 
             // nudMaximumBP
             // 
-            this.nudMaximumBP.Location = new System.Drawing.Point(296, 180);
+            this.nudMaximumBP.Location = new System.Drawing.Point(430, 122);
             this.nudMaximumBP.Minimum = new decimal(new int[] {
             100,
             0,
@@ -284,7 +274,7 @@
             // lblMinimumBP
             // 
             this.lblMinimumBP.AutoSize = true;
-            this.lblMinimumBP.Location = new System.Drawing.Point(293, 86);
+            this.lblMinimumBP.Location = new System.Drawing.Point(293, 106);
             this.lblMinimumBP.Name = "lblMinimumBP";
             this.lblMinimumBP.Size = new System.Drawing.Size(51, 13);
             this.lblMinimumBP.TabIndex = 19;
@@ -294,22 +284,32 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(293, 125);
+            this.label2.Location = new System.Drawing.Point(359, 106);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 13);
+            this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 20;
-            this.label2.Tag = "Label_CreateImprovementValue";
-            this.label2.Text = "Value:";
+            this.label2.Tag = "Label_CreateImprovementExactly";
+            this.label2.Text = "Exactly:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(293, 164);
+            this.label3.Location = new System.Drawing.Point(427, 106);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 21;
             this.label3.Tag = "Label_CreateImprovementMaximum";
             this.label3.Text = "Maximum:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(293, 84);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 13);
+            this.label1.TabIndex = 22;
+            this.label1.Tag = "Label_FilterByKarma";
+            this.label1.Text = "Filter by Karma:";
             // 
             // frmSelectQuality
             // 
@@ -318,6 +318,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(517, 454);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblMinimumBP);
@@ -355,26 +356,25 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.ListBox lstQualities;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.CheckBox chkLimitList;
-		private System.Windows.Forms.Label lblBP;
-		private System.Windows.Forms.Label lblBPLabel;
-		private System.Windows.Forms.CheckBox chkFree;
-		private System.Windows.Forms.CheckBox chkMetagenetic;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.ListBox lstQualities;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ComboBox cboCategory;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.CheckBox chkLimitList;
+        private System.Windows.Forms.Label lblBP;
+        private System.Windows.Forms.Label lblBPLabel;
+        private System.Windows.Forms.CheckBox chkFree;
+        private System.Windows.Forms.CheckBox chkMetagenetic;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.CheckBox chkNotMetagenetic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;
@@ -382,5 +382,6 @@
         private System.Windows.Forms.Label lblMinimumBP;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label1;
     }
 }

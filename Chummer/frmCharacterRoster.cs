@@ -1,429 +1,921 @@
-﻿using System;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using TheArtOfDev.HtmlRenderer.WinForms;
-using TreeView = Chummer.helpers.TreeView;
 
 namespace Chummer
 {
-	public partial class frmCharacterRoster : Form
-	{
-		List<CharacterCache> lstCharacterCache = new List<CharacterCache>();
-		HtmlToolTip tipTooltip = new HtmlToolTip();
+    public partial class frmCharacterRoster : Form
+    {
+        private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
 
-		public frmCharacterRoster()
-		{
+        private readonly FileSystemWatcher watcherCharacterRosterFolder;
+        private bool _blnSkipUpdate;
+
+        public frmCharacterRoster()
+        {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            GlobalOptions.Instance.MRUChanged += MruChanged;
-			treCharacterList.ItemDrag += treCharacterList_ItemDrag;
-			treCharacterList.DragEnter += treCharacterList_DragEnter;
-			treCharacterList.DragDrop += treCharacterList_DragDrop;
-			treCharacterList.DragOver += treCharacterList_DragOver;
-			LoadCharacters();
-			MoveControls();
-		}
+            ContextMenuStrip[] lstCMSToTranslate =
+            {
+                cmsRoster
+            };
 
-	    private void MruChanged()
-	    {
-            //TODO: Cheaper way to do this than rebuilding the list every time?
-            treCharacterList.Nodes.Clear();
-	        LoadCharacters();
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
+            {
+                watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
+            }
+        }
+        private void frmCharacterRoster_Load(object sender, EventArgs e)
+        {
+            GlobalOptions.MRUChanged += PopulateCharacterList;
+            treCharacterList.ItemDrag += treCharacterList_ItemDrag;
+            treCharacterList.DragEnter += treCharacterList_DragEnter;
+            treCharacterList.DragDrop += treCharacterList_DragDrop;
+            treCharacterList.DragOver += treCharacterList_DragOver;
+
+            if (watcherCharacterRosterFolder != null)
+            {
+                watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Deleted += RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Renamed += RefreshWatchListOnly;
+            }
+
+            LoadCharacters();
             MoveControls();
-	    }
+        }
 
+        private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
+        {
 
-	    private void LoadCharacters()
-		{
-			TreeNode objFavouriteNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_FavouriteCharacters")) {Tag = "Favourite"};
-			TreeNode objRecentNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_RecentCharacters")) {Tag = "Recent"};
-			TreeNode objWatchNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_WatchFolder")) {Tag = "Watch"};
-			bool blnAddRecent = true;
-			bool blnAddFavourite = true;
-			bool blnAddWatch = true;
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList("stickymru").Where(File.Exists) )
-			{
-				if (blnAddFavourite)
-				{
-					treCharacterList.Nodes.Add(objFavouriteNode);
+            GlobalOptions.MRUChanged -= PopulateCharacterList;
+            treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
+            treCharacterList.DragEnter -= treCharacterList_DragEnter;
+            treCharacterList.DragDrop -= treCharacterList_DragDrop;
+            treCharacterList.DragOver -= treCharacterList_DragOver;
 
-					blnAddFavourite = false;
-				}
-				CacheCharacter(strFile, objFavouriteNode);
-			}
+            if (watcherCharacterRosterFolder != null)
+            {
+                watcherCharacterRosterFolder.Changed -= RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Created -= RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Deleted -= RefreshWatchListOnly;
+                watcherCharacterRosterFolder.Renamed -= RefreshWatchListOnly;
+            }
+        }
 
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList().Where(File.Exists))
-			{
-				if (blnAddRecent)
-				{
-					treCharacterList.Nodes.Add(objRecentNode);
-					blnAddRecent = false;
-				}
-				CacheCharacter(strFile, objRecentNode);
-			}
+        public void RefreshWatchListOnly(object sender, EventArgs e)
+        {
+            if (_blnSkipUpdate)
+                return;
 
-			if (!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
-			{
-				string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath);
-				//Make sure we're not loading a character that was already loaded by the MRU list.
-				if (objFiles.Length > 0)
-				{
-					foreach (string strFile in objFiles.Where(strFile => strFile.EndsWith(".chum5")))
-					{
-						var cache = lstCharacterCache.FirstOrDefault(objCache => objCache.FilePath == strFile);
-                        var loaded = false;
-                        if (cache != null)
-					    {
-					        foreach (TreeNode rootNode in treCharacterList.Nodes)
-					        {
-					            if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == lstCharacterCache.IndexOf(cache)))
-					            {
-					                loaded = true;
-					            }
-					        }
+            SuspendLayout();
+            LoadCharacters(false, false);
+            MoveControls();
+            ResumeLayout();
+        }
+
+        public void PopulateCharacterList(object sender, TextEventArgs e)
+        {
+            if (_blnSkipUpdate)
+                return;
+
+            SuspendLayout();
+            if (e?.Text != "mru")
+            {
+                treCharacterList.Nodes.Clear();
+                _lstCharacterCache.Clear();
+                LoadCharacters();
+                GC.Collect();
+            }
+            else
+            {
+                LoadCharacters(false);
+            }
+
+            MoveControls();
+            ResumeLayout();
+        }
+
+        public void RefreshNodes()
+        {
+            foreach (TreeNode objTypeNode in treCharacterList.Nodes)
+            {
+                foreach (TreeNode objCharacterNode in objTypeNode.Nodes)
+                {
+                    string strFile = objCharacterNode.Tag.ToString();
+                    if (_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && objCache != null)
+                    {
+                        objCharacterNode.Text = CalculatedName(objCache);
+                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>');
+                        if (!string.IsNullOrEmpty(objCache.ErrorText))
+                        {
+                            objCharacterNode.ForeColor = Color.Red;
+                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine + objCache.ErrorText;
                         }
-                        if (loaded) continue;
-                        if (blnAddWatch)
-					        {
-					            treCharacterList.Nodes.Add(objWatchNode);
-					            blnAddWatch = false;
-					        }
-					    CacheCharacter(strFile, objWatchNode);
-					}
-				}
-			}
-			treCharacterList.ExpandAll();
-		}
+                        else
+                            objCharacterNode.ForeColor = SystemColors.WindowText;
+                    }
+                    else
+                    {
+                        objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+                        objCharacterNode.ToolTipText = strFile.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine +
+                                                       LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine +
+                                                       LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
+                        objCharacterNode.ForeColor = Color.Red;
+                    }
+                }
+            }
+        }
+
+        private void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true)
+        {
+            ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
+            bool blnAddFavouriteNode = false;
+            TreeNode objFavouriteNode = null;
+            TreeNode[] lstFavoritesNodes = null;
+            if (blnRefreshFavorites)
+            {
+                objFavouriteNode = treCharacterList.FindNode("Favourite", false);
+                if (objFavouriteNode == null)
+                {
+                    objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters", GlobalOptions.Language)) {Tag = "Favourite"};
+                    blnAddFavouriteNode = true;
+                }
+
+                lstFavoritesNodes = new TreeNode[lstFavorites.Count];
+            }
+
+            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+
+            List<string> lstWatch = new List<string>();
+            if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
+            {
+                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5");
+                for (int i = 0; i < objFiles.Length; ++i)
+                {
+                    string strFile = objFiles[i];
+                    // Make sure we're not loading a character that was already loaded by the MRU list.
+                    if (lstFavorites.Contains(strFile) ||
+                        lstRecents.Contains(strFile))
+                        continue;
+
+                    lstWatch.Add(strFile);
+                }
+            }
+
+            bool blnAddWatchNode = false;
+            TreeNode objWatchNode = null;
+            TreeNode[] lstWatchNodes = null;
+            if (blnRefreshWatch)
+            {
+                objWatchNode = treCharacterList.FindNode("Watch", false);
+                if (objWatchNode == null && lstWatch.Count > 0)
+                {
+                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) {Tag = "Watch"};
+                    blnAddWatchNode = true;
+                }
+
+                lstWatchNodes = new TreeNode[lstWatch.Count];
+            }
+
+            bool blnAddRecentNode = false;
+            TreeNode objRecentNode = null;
+            TreeNode[] lstRecentsNodes = null;
+            if (blnRefreshRecents)
+            {
+                // Add any characters that are open to the displayed list so we can have more than 10 characters listed
+                foreach (CharacterShared objCharacterForm in Program.MainForm.OpenCharacterForms)
+                {
+                    string strFile = objCharacterForm.CharacterObject.FileName;
+                    // Make sure we're not loading a character that was already loaded by the MRU list.
+                    if (lstFavorites.Contains(strFile) ||
+                        lstRecents.Contains(strFile) ||
+                        lstWatch.Contains(strFile))
+                        continue;
+
+                    lstRecents.Add(strFile);
+                }
+
+                foreach (string strFavorite in lstFavorites)
+                    lstRecents.Remove(strFavorite);
+
+                objRecentNode = treCharacterList.FindNode("Recent", false);
+                if (objRecentNode == null && lstRecents.Count > 0)
+                {
+                    objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters", GlobalOptions.Language)) { Tag = "Recent" };
+                    blnAddRecentNode = true;
+                }
+
+                lstRecentsNodes = new TreeNode[lstRecents.Count];
+            }
+            Parallel.Invoke(
+                () => {
+                    if (objFavouriteNode != null && lstFavoritesNodes != null)
+                    {
+                        object lstFavoritesNodesLock = new object();
+
+                        Parallel.For(0, lstFavorites.Count, i =>
+                        {
+                            string strFile = lstFavorites[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstFavoritesNodesLock)
+                                lstFavoritesNodes[i] = objNode;
+                        });
+
+                        if (blnAddFavouriteNode)
+                        {
+                            for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                            {
+                                TreeNode objNode = lstFavoritesNodes[i];
+                                if (objNode != null)
+                                    objFavouriteNode.Nodes.Add(objNode);
+                            }
+                        }
+                    }
+                },
+                () => {
+                    if (objRecentNode != null && lstRecentsNodes != null)
+                    {
+                        object lstRecentsNodesLock = new object();
+
+                        Parallel.For(0, lstRecents.Count, i =>
+                        {
+                            string strFile = lstRecents[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstRecentsNodesLock)
+                                lstRecentsNodes[i] = objNode;
+                        });
+
+                        if (blnAddRecentNode)
+                        {
+                            for (int i = 0; i < lstRecentsNodes.Length; i++)
+                            {
+                                TreeNode objNode = lstRecentsNodes[i];
+                                if (objNode != null)
+                                    objRecentNode.Nodes.Add(objNode);
+                            }
+                        }
+                    }
+                },
+                () =>
+                {
+                    if (objWatchNode != null && lstWatchNodes != null)
+                    {
+                        object lstWatchNodesLock = new object();
+
+                        Parallel.For(0, lstWatch.Count, i =>
+                        {
+                            string strFile = lstWatch[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstWatchNodesLock)
+                                lstWatchNodes[i] = objNode;
+                        });
+
+                        if (blnAddWatchNode)
+                        {
+                            for (int i = 0; i < lstWatchNodes.Length; i++)
+                            {
+                                TreeNode objNode = lstWatchNodes[i];
+                                if (objNode != null)
+                                    objWatchNode.Nodes.Add(objNode);
+                            }
+                        }
+                    }
+                });
+            if (objFavouriteNode != null)
+            {
+                if (blnAddFavouriteNode)
+                {
+                    treCharacterList.Nodes.Add(objFavouriteNode);
+                    objFavouriteNode.Expand();
+                }
+                else
+                {
+                    objFavouriteNode.Nodes.Clear();
+                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstFavoritesNodes[i];
+                        if (objNode != null)
+                            objFavouriteNode.Nodes.Add(objNode);
+                    }
+                }
+            }
+
+            if (objRecentNode != null)
+            {
+                if (blnAddRecentNode)
+                {
+                    treCharacterList.Nodes.Add(objRecentNode);
+                    objRecentNode.Expand();
+                }
+                else
+                {
+                    objRecentNode.Nodes.Clear();
+                    for (int i = 0; i < lstRecentsNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstRecentsNodes[i];
+                        if (objNode != null)
+                            objRecentNode.Nodes.Add(objNode);
+                    }
+                }
+            }
+            if (objWatchNode != null)
+            {
+                if (blnAddWatchNode)
+                {
+                    treCharacterList.Nodes.Add(objWatchNode);
+                    objWatchNode.Expand();
+                }
+                else
+                {
+                    objWatchNode.Nodes.Clear();
+                    for (int i = 0; i < lstWatchNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstWatchNodes[i];
+                        if (objNode != null)
+                            objWatchNode.Nodes.Add(objNode);
+                    }
+                }
+            }
+            treCharacterList.ExpandAll();
+        }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        /// <param name="objParentNode"></param>
-        private void CacheCharacter(string strFile, TreeNode objParentNode)
-		{
+        private TreeNode CacheCharacter(string strFile)
+        {
+            CharacterCache objCache = new CharacterCache();
+            string strErrorText = string.Empty;
+            XPathNavigator xmlSourceNode;
             if (!File.Exists(strFile))
-                return;
-			XmlDocument objXmlSource = new XmlDocument();
-			// If we run into any problems loading the character cache, fail out early.
-		    try
-		    {
-		        using (StreamReader sr = new StreamReader(strFile, true))
-		        {
-		            objXmlSource.Load(sr);
-		        }
-		    }
-		    catch (IOException)
-		    {
-		        return;
-		    }
-		    catch (XmlException)
-		    {
-		        return;
-		    }
-			CharacterCache objCache = new CharacterCache();
-			XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
-			if (objXmlSourceNode != null)
-			{
-				objCache.Description = objXmlSourceNode["description"]?.InnerText;
-				objCache.BuildMethod = objXmlSourceNode["buildmethod"]?.InnerText;
-				objCache.Background = objXmlSourceNode["background"]?.InnerText;
-				objCache.CharacterNotes = objXmlSourceNode["notes"]?.InnerText;
-				objCache.GameNotes = objXmlSourceNode["gamenotes"]?.InnerText;
-				objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
-				objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;
-				objCache.Metatype = objXmlSourceNode["metatype"]?.InnerText;
-				objCache.PlayerName = objXmlSourceNode["player"]?.InnerText;
-				objCache.CharacterName = objXmlSourceNode["name"]?.InnerText;
-				objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
-				objCache.Created = Convert.ToBoolean(objXmlSourceNode["created"]?.InnerText);
-				objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
-				if (!string.IsNullOrEmpty(objXmlSourceNode["mugshot"]?.InnerText))
-				{
-					byte[] bytImage = Convert.FromBase64String(objXmlSourceNode["mugshot"]?.InnerText);
-					MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
-					objStream.Write(bytImage, 0, bytImage.Length);
-					Image imgMugshot = Image.FromStream(objStream, true);
-					objCache.Mugshot = imgMugshot;
-				}
-				else
-				{
-                    int intMainMugshotIndex = 0;
-                    objXmlSourceNode.TryGetInt32FieldQuickly("mainmugshotindex", ref intMainMugshotIndex);
-                    XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
-                    List<string> lstMugshots = (from XmlNode objXmlMugshot in objXmlMugshotsList where !string.IsNullOrWhiteSpace(objXmlMugshot.InnerText) select objXmlMugshot.InnerText).ToList();
-					if (intMainMugshotIndex >= lstMugshots.Count)
-						intMainMugshotIndex = 0;
-					else if (intMainMugshotIndex < 0)
-					{
-						if (lstMugshots.Count > 0)
-							intMainMugshotIndex = lstMugshots.Count - 1;
-						else
-							intMainMugshotIndex = 0;
-					}
-					if (lstMugshots.Count > 0)
+            {
+                xmlSourceNode = null;
+                strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
+            }
+            else
+            {
+                // If we run into any problems loading the character cache, fail out early.
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                     {
-                        byte[] bytImage = Convert.FromBase64String(lstMugshots.ElementAt(intMainMugshotIndex));
-                        MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                        objStream.Write(bytImage, 0, bytImage.Length);
-                        Image imgMugshot = Image.FromStream(objStream, true);
-                        objCache.Mugshot = imgMugshot;
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.Load(objStreamReader);
+                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
                     }
-                    else
-                        objCache.Mugshot = null;
-				}
-			}
-			objCache.FilePath = strFile;
-			objCache.FileName = strFile.Split('\\').ToArray().Last();
-			lstCharacterCache.Add(objCache);
-            TreeNode objNode = new TreeNode();
-            objNode.Tag = lstCharacterCache.IndexOf(objCache);
+                }
+                catch (Exception ex)
+                {
+                    xmlSourceNode = null;
+                    strErrorText = ex.ToString();
+                }
+            }
 
-			objNode.Text = CalculatedName(objCache);
-			objNode.ToolTipText = objCache.FilePath;
-			objParentNode.Nodes.Add(objNode);
-		}
+            if (xmlSourceNode != null)
+            {
+                objCache.Description = xmlSourceNode.SelectSingleNode("description")?.Value;
+                objCache.BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
+                objCache.Background = xmlSourceNode.SelectSingleNode("background")?.Value;
+                objCache.CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
+                objCache.GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
+                objCache.Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
+                objCache.Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
+                objCache.Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
+                objCache.Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
+                objCache.PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
+                objCache.CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
+                objCache.CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
+                objCache.Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
+                objCache.Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
+                string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
+                string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
+                if (!string.IsNullOrEmpty(strMugshotBase64))
+                {
+                    objCache.Mugshot = strMugshotBase64.ToImage();
+                }
+                else
+                {
+                    XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
+                    if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
+                    {
+                        XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
+                        if (xmlMugshotList.Count > intMainMugshotIndex)
+                        {
+                            int intIndex = 0;
+                            foreach (XPathNavigator xmlMugshot in xmlMugshotList)
+                            {
+                                if (intMainMugshotIndex == intIndex)
+                                {
+                                    objCache.Mugshot = xmlMugshot.Value.ToImage();
+                                    break;
+                                }
 
-		/// <summary>
-		/// Generates a name for the treenode based on values contained in the CharacterCache object. 
-		/// </summary>
-		/// <param name="objCache"></param>
-		/// <returns></returns>
-		private static string CalculatedName(CharacterCache objCache)
-		{
-			string strName = objCache.CharacterAlias;
-			if (string.IsNullOrEmpty(strName))
-			{
-				strName = string.IsNullOrEmpty(objCache.CharacterName) ? LanguageManager.Instance.GetString("String_UnnamedCharacter") : objCache.CharacterName;
-			}
-			string strBuildMethod = LanguageManager.Instance.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
-			bool blnCreated = objCache.Created;
-			string strCreated = LanguageManager.Instance.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
-			string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
-			return strReturn;
-		}
+                                intIndex += 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                objCache.ErrorText = strErrorText;
+            }
 
-		/// <summary>
-		/// Update the labels and images based on the selected treenode.
-		/// </summary>
-		/// <param name="objCache"></param>
-		private void UpdateCharacter(CharacterCache objCache)
-		{
-			txtCharacterBio.Text = objCache.Description;
-			txtCharacterBackground.Text = objCache.Background;
-			txtCharacterNotes.Text = objCache.CharacterNotes;
-			txtGameNotes.Text = objCache.GameNotes;
-			txtCharacterConcept.Text = objCache.Concept;
-			lblCareerKarma.Text = objCache.Karma;
-			lblMetatype.Text = objCache.Metatype;
-			lblPlayerName.Text = objCache.PlayerName;
-			lblCharacterName.Text = objCache.CharacterName;
-			lblCharacterAlias.Text = objCache.CharacterAlias;
-			lblEssence.Text = objCache.Essence;
-            lblFilePath.Text = objCache.FileName;
-			tipTooltip.SetToolTip(lblFilePath,objCache.FilePath);
-			picMugshot.Image = objCache.Mugshot;
-		}
+            objCache.FilePath = strFile;
+            objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 
-		#region Form Methods
+            if (!_lstCharacterCache.TryAdd(strFile, objCache))
+                _lstCharacterCache[strFile] = objCache;
 
-		private void MoveControls()
-		{
+            TreeNode objNode = new TreeNode
+            {
+                ContextMenuStrip = cmsRoster,
+                Text = CalculatedName(objCache),
+                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'),
+                Tag = strFile
+            };
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                objNode.ForeColor = Color.Red;
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine + objCache.ErrorText;
+            }
+
+            return objNode;
+        }
+
+        /// <summary>
+        /// Generates a name for the treenode based on values contained in the CharacterCache object.
+        /// </summary>
+        /// <param name="objCache">Cache from which to generate name.</param>
+        /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
+        /// <returns></returns>
+        private static string CalculatedName(CharacterCache objCache, bool blnAddMarkerIfOpen = true)
+        {
+            string strReturn;
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+            }
+            else
+            {
+                strReturn = objCache.CharacterAlias;
+                if (string.IsNullOrEmpty(strReturn))
+                {
+                    strReturn = objCache.CharacterName;
+                    if (string.IsNullOrEmpty(strReturn))
+                        strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                }
+
+                string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
+                if (string.IsNullOrEmpty(strBuildMethod))
+                    strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
+                strReturn += $" ({strBuildMethod} - {strCreated})";
+            }
+            if (blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
+                strReturn = "* " + strReturn;
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Update the labels and images based on the selected treenode.
+        /// </summary>
+        /// <param name="objCache"></param>
+        private void UpdateCharacter(CharacterCache objCache)
+        {
+            if (objCache != null)
+            {
+                txtCharacterBio.Text = objCache.Description;
+                txtCharacterBackground.Text = objCache.Background;
+                txtCharacterNotes.Text = objCache.CharacterNotes;
+                txtGameNotes.Text = objCache.GameNotes;
+                txtCharacterConcept.Text = objCache.Concept;
+                lblCareerKarma.Text = objCache.Karma;
+                lblPlayerName.Text = objCache.PlayerName;
+                lblCharacterName.Text = objCache.CharacterName;
+                lblCharacterAlias.Text = objCache.CharacterAlias;
+                lblEssence.Text = objCache.Essence;
+                lblFilePath.Text = objCache.FileName;
+                lblSettings.Text = objCache.SettingsFile;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
+                picMugshot.Image = objCache.Mugshot;
+
+                // Populate character information fields.
+                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                if (objMetatypeNode == null)
+                {
+                    objMetatypeDoc = XmlManager.Load("critters.xml");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                }
+
+                string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+
+                if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
+                {
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
+
+                    strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                }
+                lblMetatype.Text = strMetatype;
+            }
+            else
+            {
+                txtCharacterBio.Text = string.Empty;
+                txtCharacterBackground.Text = string.Empty;
+                txtCharacterNotes.Text = string.Empty;
+                txtGameNotes.Text = string.Empty;
+                txtCharacterConcept.Text = string.Empty;
+                lblCareerKarma.Text = string.Empty;
+                lblMetatype.Text = string.Empty;
+                lblPlayerName.Text = string.Empty;
+                lblCharacterName.Text = string.Empty;
+                lblCharacterAlias.Text = string.Empty;
+                lblEssence.Text = string.Empty;
+                lblFilePath.Text = string.Empty;
+                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, string.Empty);
+                lblSettings.Text = string.Empty;
+                picMugshot.Image = null;
+            }
+            ProcessMugshotSizeMode();
+        }
+
+        #region Form Methods
+
+        private void MoveControls()
+        {
             int intWidth = 0;
-            int intMargin = 0;
+            int intMargin = treCharacterList.Left;
             foreach (TreeNode objNode in treCharacterList.Nodes)
             {
                 intMargin = Math.Max(intMargin, objNode.Bounds.Left);
-                intWidth =
-                    (from TreeNode objChildNode in objNode.Nodes select objChildNode.Bounds.Right).Concat(new[] { intWidth })
-                    .Max();
+                intWidth = Math.Max(intWidth, objNode.GetRightMostEdge());
             }
-            intWidth += intMargin;
+            intWidth += intMargin - treCharacterList.Left;
 
             int intDifference = intWidth - treCharacterList.Width;
             treCharacterList.Width = intWidth;
             tabCharacterText.Left = treCharacterList.Width + 12;
             tabCharacterText.Width -= intDifference;
-
-            lblPlayerNameLabel.Left = tabCharacterText.Left;
-            lblCharacterNameLabel.Left = tabCharacterText.Left;
-            lblCareerKarmaLabel.Left = tabCharacterText.Left;
-            lblMetatypeLabel.Left = tabCharacterText.Left;
-            lblCharacterAliasLabel.Left = tabCharacterText.Left;
-            lblEssenceLabel.Left = tabCharacterText.Left;
-            lblFilePathLabel.Left = tabCharacterText.Left;
-            intWidth = lblPlayerNameLabel.Right;
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblMetatypeLabel.Right > intWidth)
-            {
-                intWidth = lblMetatypeLabel.Right;
-            }
-            if (lblCharacterAliasLabel.Right > intWidth)
-            {
-                intWidth = lblCharacterAliasLabel.Right;
-            }
-            if (lblEssenceLabel.Right > intWidth)
-            {
-                intWidth = lblEssenceLabel.Right;
-            }
-            if (lblFilePathLabel.Right > intWidth)
-            {
-                intWidth = lblFilePathLabel.Right;
-            }
-            intWidth += 12;
-            lblEssence.Left = intWidth;
-            lblPlayerName.Left = intWidth;
-            lblCareerKarma.Left = intWidth;
-            lblCharacterAlias.Left = intWidth;
-            lblMetatype.Left = intWidth;
-            lblCharacterName.Left = intWidth;
-            lblFilePath.Left = intWidth;
+            tlpCharacterBlock.Left = tabCharacterText.Left;
         }
 
-		private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			if (treCharacterList.SelectedNode.Level > 0)
-			{
-				CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-				UpdateCharacter(objCache);
-			}
-			treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
-		}
-
-		private void treCharacterList_DoubleClick(object sender, EventArgs e)
-		{
-			if (treCharacterList.SelectedNode.Level > 0)
-			{
-				CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-				GlobalOptions.Instance.MainForm.LoadCharacter(objCache.FilePath);
-			}
-		}
-		private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
+        private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode?.Level > 0 && treCharacterList.SelectedNode.Parent?.Tag.ToString() != "Recent")
+            CharacterCache objCache = null;
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                RemoveSelected(treCharacterList.SelectedNode);
+                _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
             }
-		}
+            UpdateCharacter(objCache);
+            treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
+        }
 
-		private void treCharacterList_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = DragDropEffects.Move;
-		}
+        private void treCharacterList_DoubleClick(object sender, EventArgs e)
+        {
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode != null && objSelectedNode.Level > 0)
+            {
+                string strFile = objSelectedNode.Tag.ToString();
+                if (!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
+                {
+                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Cursor = Cursors.WaitCursor;
+                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    {
+                        objOpenCharacter = Program.MainForm.LoadCharacter(strFile);
+                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        objSelectedNode.Text = CalculatedName(objCache);
+                    }
+                    Cursor = Cursors.Default;
+                }
+            }
+        }
+        private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                TreeNode t = treCharacterList.SelectedNode;
 
-		private void treCharacterList_DragOver(object sender, DragEventArgs e)
-		{
-            TreeView treSenderView = sender as TreeView;
-            if (treSenderView == null)
+                if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+                {
+                    switch (t.Parent.Tag.ToString())
+                    {
+                        case "Recent":
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
+                            break;
+                        case "Favourite":
+                            GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void treCharacterList_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void treCharacterList_DragOver(object sender, DragEventArgs e)
+        {
+            if (!(sender is TreeView treSenderView))
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
-			TreeNode objNode = treSenderView.GetNodeAt(pt).Parent;
-			if (objNode.Tag.ToString() != "Watch")
-			{
-				objNode.BackColor = SystemColors.ControlDark;
-			}
+            TreeNode objNode = treSenderView.GetNodeAt(pt);
+            if (objNode != null)
+            {
+                if (objNode.Parent != null)
+                    objNode = objNode.Parent;
+                if (objNode.Tag.ToString() != "Watch")
+                {
+                    objNode.BackColor = SystemColors.ControlDark;
+                }
+            }
 
-			// Clear the background colour for all other Nodes.
-			treCharacterList.ClearNodeBackground(objNode);
-		}
-		private void treCharacterList_DragDrop(object sender, DragEventArgs e)
-		{
-			// Do not allow the root element to be moved.
-			if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
-				return;
+            // Clear the background colour for all other Nodes.
+            treCharacterList.ClearNodeBackground(objNode);
+        }
+        private void treCharacterList_DragDrop(object sender, DragEventArgs e)
+        {
+            // Do not allow the root element to be moved.
+            if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
+                return;
 
-			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
-			{
-			    TreeView treSenderView = sender as TreeView;
-			    if (treSenderView == null)
-			        return;
+            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            {
+                if (!(sender is TreeView treSenderView))
+                    return;
                 Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
                 if (nodDestinationNode.Level > 0)
                     nodDestinationNode = nodDestinationNode.Parent;
-				if (nodDestinationNode.Tag.ToString() != "Watch")
-				{
-                    TreeNode nodNewNode = e.Data.GetData("System.Windows.Forms.TreeNode") as TreeNode;
-                    int intCharacterIndex;
-                    CharacterCache objCache = null;
-				    if (nodNewNode == null)
-				        return;
-                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < lstCharacterCache.Count)
-                        objCache = lstCharacterCache[intCharacterIndex];
-
-				    if (objCache == null)
+                string strDestinationNode = nodDestinationNode.Tag.ToString();
+                if (strDestinationNode != "Watch")
+                {
+                    if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
                         return;
-				    switch (nodDestinationNode.Tag.ToString())
-				    {
-				        case "Recent":
-				            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
-				            GlobalOptions.Instance.AddToMRUList(objCache.FilePath);
-				            break;
-				        case "Favourite":
-				            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-				            GlobalOptions.Instance.AddToMRUList(objCache.FilePath, "stickymru");
-				            break;
-				        default:
-				            return;
-				    }
-				    TreeNode nodClonedNewNode = nodNewNode.Clone() as TreeNode;
-				    if (nodClonedNewNode != null)
-				    {
-				        nodDestinationNode.Nodes.Add(nodClonedNewNode);
-				        nodDestinationNode.Expand();
-				    }
-				    nodNewNode.Remove();
-				}
-			}
-		}
 
-		private void treCharacterList_ItemDrag(object sender, ItemDragEventArgs e)
-		{
-			DoDragDrop(e.Item, DragDropEffects.Move);
-		}
+                    if (nodNewNode.Level == 0 || nodNewNode.Parent == nodDestinationNode)
+                        return;
+                    if (_lstCharacterCache.TryGetValue(nodNewNode.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+                    {
+                        switch (strDestinationNode)
+                        {
+                            case "Recent":
+                                GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                                break;
+                            case "Favourite":
+                                GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
 
-		private void RemoveSelected(TreeNode sender)
-		{
-			CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-			GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
-			sender.Remove();
-		}
-		#endregion
-		#region Classes
-		/// <summary>
-		/// Caches a subset of a full character's properties for loading purposes. 
-		/// </summary>
-		private class CharacterCache
-		{
-			internal string FilePath { get; set; }
-			internal string FileName { get; set; }
-			internal string Description { get; set; }
-			internal string Background { get; set; }
-			internal string GameNotes { get; set; }
-			internal string CharacterNotes { get; set; }
-			internal string Concept { get; set; }
-			internal string Karma { get; set; }
-			internal string Metatype { get; set; }
-			internal string PlayerName { get; set; }
-			internal string CharacterName { get; set; }
-			internal string CharacterAlias { get; set; }
-			internal Image Mugshot { get; set; }
-			public string BuildMethod { get; internal set; }
-			public bool Created { get; internal set; }
-			public string Essence { get; internal set; }
-		}
-		#endregion
-	}
+        private void treCharacterList_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        {
+            ProcessMugshotSizeMode();
+        }
+
+        private void ProcessMugshotSizeMode()
+        {
+            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+        #endregion
+        #region Classes
+        /// <summary>
+        /// Caches a subset of a full character's properties for loading purposes.
+        /// </summary>
+        private sealed class CharacterCache
+        {
+            internal string FilePath { get; set; }
+            internal string FileName { get; set; }
+            internal string ErrorText { get; set; }
+            internal string Description { get; set; }
+            internal string Background { get; set; }
+            internal string GameNotes { get; set; }
+            internal string CharacterNotes { get; set; }
+            internal string Concept { get; set; }
+            internal string Karma { get; set; }
+            internal string Metatype { get; set; }
+            internal string Metavariant { get; set; }
+            internal string PlayerName { get; set; }
+            internal string CharacterName { get; set; }
+            internal string CharacterAlias { get; set; }
+            internal string BuildMethod { get; set; }
+            internal string Essence { get; set; }
+            internal Image Mugshot { get; set; }
+            internal bool Created { get; set; }
+            public string SettingsFile { get; set; }
+        }
+        #endregion
+
+        private void tsDelete_Click(object sender, EventArgs e)
+        {
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            {
+                switch (t.Parent.Tag.ToString())
+                {
+                    case "Recent":
+                        GlobalOptions.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
+                        break;
+                    case "Favourite":
+                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                        break;
+                }
+            }
+        }
+
+        private void tsSort_Click(object sender, EventArgs e)
+        {
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t != null)
+            {
+                string strSelectedTag = t.Tag.ToString();
+                if (_lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+                {
+                    switch (t.Parent.Tag.ToString())
+                    {
+                        case "Recent":
+                        {
+                            _blnSkipUpdate = true;
+                            SuspendLayout();
+
+                                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+                            for (int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
+                            {
+                                string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
+                                if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+                                    lstSorted.Add(new Tuple<string, string>(CalculatedName(objLoopCache, false), strLoopFile));
+                                else
+                                    lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+                            }
+
+                            lstSorted.Sort();
+                            for (int i = 0; i < lstSorted.Count; ++i)
+                                GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
+
+                            LoadCharacters(false, true, false);
+                            MoveControls();
+                            ResumeLayout();
+                            treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+                            break;
+                        }
+                        case "Favourite":
+                        {
+                            _blnSkipUpdate = true;
+                            SuspendLayout();
+
+                                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+                            for (int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
+                            {
+                                string strLoopFile = GlobalOptions.FavoritedCharacters[i];
+                                if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+                                    lstSorted.Add(new Tuple<string, string>(CalculatedName(objLoopCache, false), strLoopFile));
+                                else
+                                    lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+                            }
+
+                            lstSorted.Sort();
+                            for (int i = 0; i < lstSorted.Count; ++i)
+                                GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
+
+                            _blnSkipUpdate = false;
+
+                            LoadCharacters(true, false, false);
+                            MoveControls();
+                            ResumeLayout();
+                            treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void tsToggleFav_Click(object sender, EventArgs e)
+        {
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            {
+                switch (t.Parent.Tag.ToString())
+                {
+                    case "Recent":
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
+                        break;
+                    case "Favourite":
+                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                        break;
+                    case "Watch":
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
+                        break;
+                }
+                treCharacterList.SelectedNode = t;
+            }
+        }
+
+        private void TreeView_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Generic event for all TreeViews to allow right-clicking to select a TreeNode so the proper ContextMenu is shown.
+            //if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            //{
+            TreeView objTree = (TreeView)sender;
+            objTree.SelectedNode = objTree.HitTest(e.X, e.Y).Node;
+            //}
+            if (ModifierKeys == Keys.Control)
+            {
+                if (!objTree.SelectedNode.IsExpanded)
+                {
+                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    {
+                        objNode.ExpandAll();
+                    }
+                }
+                else
+                {
+                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    {
+                        objNode.Collapse();
+                    }
+                }
+            }
+        }
+
+        private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            string strFile = objSelectedNode.Tag.ToString();
+            if (string.IsNullOrEmpty(strFile))
+                return;
+            Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            Cursor = Cursors.WaitCursor;
+            if (objOpenCharacter != null)
+            {
+                Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+            }
+            Cursor = Cursors.Default;
+        }
+    }
 }

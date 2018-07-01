@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!-- Character sheet with skills listed in alphabetically order (English - US) -->
-<!-- Version -500 -->
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Character sheet with skills listed alphabetically -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="xz.en-us.xslt"/>
+  <xsl:import href="xz.language.xslt"/>
+  
+  <xsl:import href="Shadowrun 5 set.xslt"/>
+  <xsl:import href="Shadowrun 5 set CSS.xslt"/>
+  <xsl:import href="xs.SkillsGroupedAssorted.xslt"/>
 
-	<xsl:import href="Shadowrun 5 includes.xslt"/>
-	<xsl:import href="xs.SkillsGroupedAssorted.xslt"/>
-
-	<!-- Set global control variables -->
-	<xsl:variable name="lang" select="'en'"/>
+  <!-- Set global control variables -->
+  <xsl:variable name="PrintSkillCategoryNames" select="false()"/>
 </xsl:stylesheet>

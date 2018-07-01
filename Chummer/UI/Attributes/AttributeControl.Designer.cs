@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Attributes
+namespace Chummer.UI.Attributes
 {
     partial class AttributeControl
     {
@@ -13,9 +13,10 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                UnbindAttributeControl();
             }
             base.Dispose(disposing);
         }
@@ -28,13 +29,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmdImproveATT = new Chummer.helpers.Button();
-            this.lblValue = new Chummer.helpers.Label();
-            this.lblName = new Chummer.helpers.Label();
-            this.lblLimits = new Chummer.helpers.Label();
-            this.cmdBurnEdge = new Chummer.helpers.Button();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
-            this.nudBase = new Chummer.helpers.NumericUpDownEx();
+            this.cmdImproveATT = new Chummer.ButtonWithToolTip();
+            this.lblValue = new Chummer.LabelWithToolTip();
+            this.lblName = new Chummer.LabelWithToolTip();
+            this.lblLimits = new Chummer.LabelWithToolTip();
+            this.cmdBurnEdge = new Chummer.ButtonWithToolTip();
+            this.nudKarma = new Chummer.NumericUpDownEx();
+            this.nudBase = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
             this.SuspendLayout();
@@ -49,18 +50,20 @@
             this.cmdImproveATT.Size = new System.Drawing.Size(24, 24);
             this.cmdImproveATT.TabIndex = 75;
             this.cmdImproveATT.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cmdImproveATT.ToolTipText = "";
             this.cmdImproveATT.UseVisualStyleBackColor = true;
             this.cmdImproveATT.Click += new System.EventHandler(this.cmdImproveATT_Click);
             // 
             // lblValue
             // 
             this.lblValue.AutoSize = true;
+            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblValue.Location = new System.Drawing.Point(226, 5);
             this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(19, 13);
+            this.lblValue.Size = new System.Drawing.Size(22, 13);
             this.lblValue.TabIndex = 74;
             this.lblValue.Text = "[0]";
-            this.lblValue.TooltipText = null;
+            this.lblValue.ToolTipText = null;
             // 
             // lblName
             // 
@@ -70,7 +73,7 @@
             this.lblName.Size = new System.Drawing.Size(61, 13);
             this.lblName.TabIndex = 71;
             this.lblName.Text = "Attrib (ATT)";
-            this.lblName.TooltipText = null;
+            this.lblName.ToolTipText = null;
             // 
             // lblLimits
             // 
@@ -80,7 +83,7 @@
             this.lblLimits.Size = new System.Drawing.Size(45, 13);
             this.lblLimits.TabIndex = 72;
             this.lblLimits.Text = "1 / 6 (9)";
-            this.lblLimits.TooltipText = null;
+            this.lblLimits.ToolTipText = null;
             // 
             // cmdBurnEdge
             // 
@@ -91,12 +94,13 @@
             this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
             this.cmdBurnEdge.TabIndex = 78;
             this.cmdBurnEdge.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cmdBurnEdge.ToolTipText = "";
             this.cmdBurnEdge.UseVisualStyleBackColor = true;
             this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(165, 1);
             this.nudKarma.Name = "nudKarma";
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
@@ -106,16 +110,11 @@
             // 
             // nudBase
             // 
-            this.nudBase.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudBase.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudBase.Location = new System.Drawing.Point(119, 1);
             this.nudBase.Name = "nudBase";
             this.nudBase.Size = new System.Drawing.Size(40, 20);
             this.nudBase.TabIndex = 76;
-            this.nudBase.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.nudBase.BeforeValueIncrement += new System.ComponentModel.CancelEventHandler(this.nudBase_BeforeValueIncrement);
             this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
             // 
@@ -141,12 +140,12 @@
 
         #endregion
 
-        private Chummer.helpers.Button cmdImproveATT;
-        internal Chummer.helpers.Label lblValue;
-        internal Chummer.helpers.Label lblName;
-        internal Chummer.helpers.Label lblLimits;
-        internal Chummer.helpers.NumericUpDownEx nudKarma;
-        internal Chummer.helpers.NumericUpDownEx nudBase;
-		private Chummer.helpers.Button cmdBurnEdge;
-	}
+        private ButtonWithToolTip cmdImproveATT;
+        private LabelWithToolTip lblValue;
+        private LabelWithToolTip lblName;
+        private LabelWithToolTip lblLimits;
+        private NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudBase;
+        private ButtonWithToolTip cmdBurnEdge;
+    }
 }

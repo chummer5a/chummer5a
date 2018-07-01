@@ -1,6 +1,6 @@
-﻿namespace CrashHandler
+namespace CrashHandler
 {
-	partial class frmCrashReporter
+	public sealed partial class frmCrashReporter
 	{
 		/// <summary>
 		/// Required designer variable.

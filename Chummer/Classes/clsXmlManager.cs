@@ -16,168 +16,526 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Linq;
- using System.Text;
+using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Windows.Forms;
- using System.Xml.Linq;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Chummer
 {
     // ReSharper disable InconsistentNaming
-	public sealed class XmlManager
-	{
-		/// <summary>
-		/// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.
-		/// </summary>
-		private class XmlReference
-		{
-		    /// <summary>
-			/// Date/Time stamp on the XML file.
-			/// </summary>
-			public DateTime FileDate { get; set; }
+    public static class XmlManager
+    {
+        /// <summary>
+        /// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.
+        /// </summary>
+        private sealed class XmlReference
+        {
+            /// <summary>
+            /// Date/Time stamp on the XML file.
+            /// </summary>
+            public DateTime FileDate { get; set; }
 
-		    /// <summary>
-			/// Name of the XML file.
-			/// </summary>
-			public string FileName { get; set; } = string.Empty;
+            /// <summary>
+            /// Name of the XML file.
+            /// </summary>
+            public string FileName { get; set; } = string.Empty;
 
-		    /// <summary>
+            /// <summary>
+            /// Language of the XML file.
+            /// </summary>
+            public string Language { get; set; } = GlobalOptions.DefaultLanguage;
+
+            /// <summary>
             /// Whether or not the XML file has been successfully checked for duplicate guids.
             /// </summary>
-		    public bool DuplicatesChecked { get; set; }
+            public bool DuplicatesChecked { get; set; }
 
-			/// <summary>
-			/// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
-			/// </summary>
-			public XmlDocument XmlContent { get; set; } = new XmlDocument();
-		}
+            /// <summary>
+            /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
+            /// </summary>
+            public XmlDocument XmlContent { get; set; } = new XmlDocument();
+        }
 
-	    private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
+        private static readonly HashSet<XmlReference> s_LstXmlDocuments = new HashSet<XmlReference>();
+        private static readonly object s_LstXmlDocumentsLock = new object();
+        private static readonly List<string> s_LstDataDirectories = new List<string>();
+        private static readonly HashSet<string> s_SetFilesWithCachedDocs = new HashSet<string>();
 
-		#region Constructor and Instance
-		static XmlManager()
-		{
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-		}
-
-		XmlManager()
-		{
-		}
-
-		/// <summary>
-		/// Glboal XmlManager instance.
-		/// </summary>
-		public static XmlManager Instance { get; } = new XmlManager();
-
-	    #endregion
-
-		#region Methods
-		/// <summary>
-		/// Load the selected XML file and its associated custom file.
-		/// </summary>
-		/// <param name="strFileName">Name of the XML file to load.</param>
-		public XmlDocument Load(string strFileName)
-		{
-			string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
-		    if (!File.Exists(strPath))
-		    {
-		        Utils.BreakIfDebug();
-		        return null;
-		    }
-		    DateTime datDate = File.GetLastWriteTime(strPath);
-
-			// Look to see if this XmlDocument is already loaded.
-            bool blnLoadFile = false;
-            XmlReference objReference = _lstXmlDocuments.Find(x => x.FileName == strFileName);
-            if (objReference == null)
-			{
-                // The file was not found in the reference list, so it must be loaded.
-                objReference = new XmlReference();
-                blnLoadFile = true;
-				_lstXmlDocuments.Add(objReference);
-			}
-            // The file was found in the List, so check the last write time.
-            else if (datDate != objReference.FileDate)
+        #region Constructor
+        static XmlManager()
+        {
+            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
-				// The last write time does not match, so it must be reloaded.
-				blnLoadFile = true;
-			}
+                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
+            }
+        }
+        #endregion
 
-			// Create a new document that everything will be merged into.
-			XmlDocument objDoc;
-			XmlDocument objXmlFile = new XmlDocument();
+        #region Methods
+        public static void RebuildDataDirectoryInfo()
+        {
+            s_SetFilesWithCachedDocs.Clear();
+            s_LstDataDirectories.Clear();
+            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            {
+                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
+            }
+        }
 
-			if (blnLoadFile)
-			{
+        /// <summary>
+        /// Load the selected XML file and its associated custom file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [Annotations.NotNull]
+        public static XmlDocument Load(string strFileName, string strLanguage = "", bool blnLoadFile = false)
+        {
+            bool blnFileFound = false;
+            string strPath = string.Empty;
+            foreach (string strDirectory in s_LstDataDirectories)
+            {
+                strPath = Path.Combine(strDirectory, strFileName);
+                if (File.Exists(strPath))
+                {
+                    blnFileFound = true;
+                    break;
+                }
+            }
+            if (!blnFileFound)
+            {
+                Utils.BreakIfDebug();
+                return new XmlDocument();
+            }
+
+            if (!s_SetFilesWithCachedDocs.Contains(strFileName))
+                blnLoadFile = true;
+
+            DateTime datDate = File.GetLastWriteTime(strPath);
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+
+            // Look to see if this XmlDocument is already loaded.
+            XmlReference objReference;
+            lock (s_LstXmlDocumentsLock)
+            {
+                objReference = s_LstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
+                if (objReference == null || blnLoadFile)
+                {
+                    // The file was not found in the reference list, so it must be loaded.
+                    objReference = new XmlReference();
+                    blnLoadFile = true;
+                    s_LstXmlDocuments.Add(objReference);
+                }
+                // The file was found in the List, so check the last write time and language.
+                else if (datDate != objReference.FileDate || strLanguage != objReference.Language)
+                {
+                    // The last write time and/or language does not match, so it must be reloaded.
+                    blnLoadFile = true;
+                }
+            }
+
+            // Create a new document that everything will be merged into.
+            XmlDocument objDoc;
+            XmlDocument objXmlFile = new XmlDocument();
+
+            if (blnLoadFile)
+            {
                 objDoc = new XmlDocument();
                 // write the root chummer node.
                 XmlNode objCont = objDoc.CreateElement("chummer");
                 objDoc.AppendChild(objCont);
+                XmlElement objDocElement = objDoc.DocumentElement;
                 // Load the base file and retrieve all of the child nodes.
-                objXmlFile.Load(strPath);
-			    XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*");
-			    if (xmlNodeList != null)
-			        foreach (XmlNode objNode in xmlNodeList)
-			        {
-			            // Append the entire child node to the new document.
-			            objDoc.DocumentElement.AppendChild(objDoc.ImportNode(objNode, true));
-			        }
-
-			    // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
-				if (strFileName != "improvements.xml")
-				{
-                    strPath = Path.Combine(Application.StartupPath, "data");
-					foreach (string strFile in Directory.GetFiles(strPath, "override*_" + strFileName))
-					{
-						objXmlFile.Load(strFile);
-						foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-						{
-							foreach (XmlNode objType in objNode.ChildNodes)
-							{
-								if (objType["id"] != null)
-								{
-									XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"]");
-									if (objItem != null)
-										objItem.InnerXml = objType.InnerXml;
-								}
-								else if (objType["name"] != null)
-								{
-									XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"]");
-									if (objItem != null)
-										objItem.InnerXml = objType.InnerXml;
-								}
-							}
-						}
-					}
-
-                    // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-                    foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                     {
-                        objXmlFile.Load(strFile);
-                        foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
+                        objXmlFile.Load(objStreamReader);
+                    }
+
+                    if (objDocElement != null)
+                    {
+                        using (XmlNodeList xmlNodeList = objXmlFile.SelectNodes("/chummer/*"))
+                        {
+                            if (xmlNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objNode in xmlNodeList)
+                                {
+                                    // Append the entire child node to the new document.
+                                    objDocElement.AppendChild(objDoc.ImportNode(objNode, true));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (IOException)
+                {
+                }
+                catch (XmlException)
+                {
+                }
+
+                // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
+                if (strFileName != "improvements.xml")
+                {
+                    foreach (string strLoopPath in s_LstDataDirectories)
+                    {
+                        DoProcessCustomDataFiles(objXmlFile, objDoc, strLoopPath, strFileName);
+                    }
+                }
+
+                // Load the translation file for the current base data file if the selected language is not en-us.
+                if (strLanguage != GlobalOptions.DefaultLanguage)
+                {
+                    // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
+                    // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
+                    XmlDocument objDataDoc = LanguageManager.GetDataDocument(strLanguage);
+                    if (objDataDoc != null)
+                    {
+                        XmlNode xmlBaseChummerNode = objDoc.SelectSingleNode("/chummer");
+                        using (XmlNodeList xmlTranslationTypeNodeList = objDataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]/*"))
+                            if (xmlTranslationTypeNodeList?.Count > 0)
+                                foreach (XmlNode objType in xmlTranslationTypeNodeList)
+                                {
+                                    AppendTranslations(objDoc, objType, xmlBaseChummerNode);
+                                }
+                    }
+                }
+
+                // Cache the merged document and its relevant information.
+                objReference.FileDate = datDate;
+                objReference.FileName = strFileName;
+                objReference.Language = strLanguage;
+                if (GlobalOptions.LiveCustomData)
+                    objReference.XmlContent = objDoc.Clone() as XmlDocument;
+                else
+                    objReference.XmlContent = objDoc;
+
+                s_SetFilesWithCachedDocs.Add(strFileName);
+            }
+            else
+            {
+                // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
+                // (which we don't want and also results in multiple copies of each custom item).
+                // Pull the document from cache.
+                if (GlobalOptions.LiveCustomData)
+                    objDoc = objReference.XmlContent.Clone() as XmlDocument;
+                else
+                    objDoc = objReference.XmlContent;
+            }
+
+            if (objDoc == null)
+                objDoc = new XmlDocument();
+            if (strFileName == "improvements.xml")
+                return objDoc;
+
+            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            bool blnHasLiveCustomData = false;
+            if (GlobalOptions.LiveCustomData)
+            {
+                strPath = Path.Combine(Application.StartupPath, "livecustomdata");
+                if (Directory.Exists(strPath))
+                {
+                    blnHasLiveCustomData = DoProcessCustomDataFiles(objXmlFile, objDoc, strPath, strFileName, SearchOption.AllDirectories);
+                }
+            }
+
+            // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
+            if (!objReference.DuplicatesChecked || blnHasLiveCustomData)
+            {
+                using (XmlNodeList xmlNodeList = objDoc.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            // Only process nodes that have children and are not the version node
+                            if (objNode.Name != "version" && objNode.HasChildNodes)
+                            {
+                                // Parse the node into an XDocument for LINQ parsing.
+                                CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
+                            }
+                        }
+
+                objReference.DuplicatesChecked = true;
+            }
+
+            return objDoc;
+        }
+
+        public static XPathNavigator GetFastNavigator(this XmlDocument xmlDoc)
+        {
+            MemoryStream memStream = new MemoryStream();
+            xmlDoc.Save(memStream);
+            memStream.Position = 0;
+            return new XPathDocument(memStream).CreateNavigator();
+        }
+
+        private static void CheckIdNodes(XContainer xmlParentNode, string strFileName)
+        {
+            HashSet<string> lstDuplicateIDs = new HashSet<string>();
+            List<string> lstItemsWithMalformedIDs = new List<string>();
+            // Not a dictionary specifically so duplicates can be caught. Item1 is ID, Item2 is the item's name.
+            List<Tuple<string, string>> lstItemsWithIDs = new List<Tuple<string, string>>();
+
+            foreach (XElement objLoopNode in xmlParentNode.Elements())
+            {
+                string strId = (string)objLoopNode.Element("id") ?? string.Empty;
+                if (!string.IsNullOrEmpty(strId))
+                {
+                    string strItemName = (string)objLoopNode.Element("name") ?? (string)objLoopNode.Element("stage") ?? (string)objLoopNode.Element("category") ?? strId;
+                    if (!lstDuplicateIDs.Contains(strId) && lstItemsWithIDs.Any(x => x.Item1 == strId))
+                    {
+                        lstDuplicateIDs.Add(strId);
+                        if (strItemName == strId)
+                            strItemName = string.Empty;
+                    }
+                    if (!strId.IsGuid())
+                        lstItemsWithMalformedIDs.Add(strItemName);
+                    lstItemsWithIDs.Add(new Tuple<string, string>(strId, strItemName));
+                }
+
+                // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
+                CheckIdNodes(objLoopNode, strFileName);
+            }
+
+            if (lstDuplicateIDs.Count > 0)
+            {
+                string strDuplicatesNames = string.Join(Environment.NewLine, lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                        .Replace("{0}", lstDuplicateIDs.Count.ToString())
+                        .Replace("{1}", strFileName)
+                        .Replace("{2}", strDuplicatesNames));
+            }
+
+            if (lstItemsWithMalformedIDs.Count > 0)
+            {
+                string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                        .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
+                        .Replace("{1}", strFileName)
+                        .Replace("{2}", strMalformedIdNames));
+            }
+        }
+
+        private static void AppendTranslations(XmlDocument xmlDataDocument, XmlNode xmlTranslationListParentNode, XmlNode xmlDataParentNode)
+        {
+            foreach (XmlNode objChild in xmlTranslationListParentNode.ChildNodes)
+            {
+                XmlNode xmlItem = null;
+                string strChildName = objChild["id"]?.InnerText;
+                if (!string.IsNullOrEmpty(strChildName))
+                {
+                    xmlItem = xmlDataParentNode.SelectSingleNode(xmlTranslationListParentNode.Name + '/' + objChild.Name + "[id = \"" + strChildName + "\"]");
+                }
+                if (xmlItem == null)
+                {
+                    strChildName = objChild["name"]?.InnerText.Replace("&amp;", "&");
+                    if (!string.IsNullOrEmpty(strChildName))
+                    {
+                        xmlItem = xmlDataParentNode.SelectSingleNode(xmlTranslationListParentNode.Name + '/' + objChild.Name + "[name = \"" + strChildName + "\"]");
+                    }
+                }
+                // If this is a translatable item, find the proper node and add/update this information.
+                if (xmlItem != null)
+                {
+                    XmlNode xmlLoopNode = objChild["translate"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altpage"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altcode"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altnotes"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altadvantage"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altdisadvantage"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["altnameonpage"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    xmlLoopNode = objChild["alttexts"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
+                    string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        // Handle Category name translations.
+                        (xmlItem as XmlElement)?.SetAttribute("translate", strTranslate);
+                    }
+
+                    // Sub-children to also process with the translation
+                    XmlNode xmlSubItemsNode = objChild["specs"];
+                    if (xmlSubItemsNode != null)
+                    {
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                    }
+                    xmlSubItemsNode = objChild["metavariants"];
+                    if (xmlSubItemsNode != null)
+                    {
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                    }
+                    xmlSubItemsNode = objChild["choices"];
+                    if (xmlSubItemsNode != null)
+                    {
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                    }
+                    xmlSubItemsNode = objChild["talents"];
+                    if (xmlSubItemsNode != null)
+                    {
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                    }
+                    xmlSubItemsNode = objChild["versions"];
+                    if (xmlSubItemsNode != null)
+                    {
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                    }
+                }
+                else
+                {
+                    string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        // Handle Category name translations.
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(xmlTranslationListParentNode.Name + '/' + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]") as XmlElement;
+                        // Expected result is null if not found.
+                        objItem?.SetAttribute("translate", strTranslate);
+                    }
+                }
+            }
+        }
+
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.TopDirectoryOnly)
+        {
+            bool blnReturn = false;
+            XmlElement objDocElement = xmlDataDoc.DocumentElement;
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            foreach (XmlNode objType in objNode.ChildNodes)
+                            {
+                                string strFilter = string.Empty;
+                                XmlNode xmlIdNode = objType["id"];
+                                if (xmlIdNode != null)
+                                    strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                else
+                                {
+                                    xmlIdNode = objType["name"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                }
+                                // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
+                                if (objAmendingNodeExtraIds?.Count > 0)
+                                {
+                                    foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                    {
+                                        if (!string.IsNullOrEmpty(strFilter))
+                                            strFilter += " and ";
+                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(strFilter))
+                                {
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
+                                    if (objItem != null)
+                                    {
+                                        objItem.InnerXml = objType.InnerXml;
+                                        blnReturn = true;
+                                    }
+                                }
+                            }
+                        }
+            }
+
+            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "custom*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
                         {
                             // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
                             List<XmlNode> lstDelete = new List<XmlNode>();
                             foreach (XmlNode objChild in objNode.ChildNodes)
                             {
-                                if (objChild.ParentNode != null)
+                                XmlNode objParentNode = objChild.ParentNode;
+                                if (objParentNode != null)
                                 {
-                                    // Only do this if the child has the name or id field since this is what we must match on.
-                                    if (objChild["id"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-                                                                    objChild.Name + "[name = \"" +
-                                                                    objChild["id"].InnerText + "\"]"))
+                                    string strFilter = string.Empty;
+                                    XmlNode xmlIdNode = objChild["id"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
+                                    XmlNode xmlNameNode = objChild["name"];
+                                    if (xmlNameNode != null)
                                     {
-                                        lstDelete.Add(objChild);
+                                        if (!string.IsNullOrEmpty(strFilter))
+                                            strFilter += " and ";
+                                        strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + '\"';
                                     }
-                                    else if (objChild["name"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-                                                                    objChild.Name + "[name = \"" +
-                                                                    objChild["name"].InnerText + "\"]"))
+                                    // Only do this if the child has the name or id field since this is what we must match on.
+                                    if (!string.IsNullOrEmpty(strFilter))
                                     {
-                                        lstDelete.Add(objChild);
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                            lstDelete.Add(objChild);
                                     }
                                 }
                             }
@@ -187,567 +545,657 @@ namespace Chummer
                                 objNode.RemoveChild(objRemoveNode);
                             }
 
-                            // Append the entire child node to the new document.
-                            objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
+                            if (objDocElement?[objNode.Name] != null)
+                            {
+                                /* We need to do this to avoid creating multiple copies of the root node, ie
+                                    <chummer>
+                                        <metatypes>
+                                            <metatype>Standard</metatype>
+                                        </metatypes>
+                                        <metatypes>
+                                            <metatype>Custom</metatype>
+                                        </metatypes>
+                                    </chummer>
+                                    Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                */
+                                foreach (XmlNode childNode in objNode.ChildNodes)
+                                {
+                                    objDocElement?[objNode.Name].AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                }
+                            }
+                            else
+                            {
+                                // Append the entire child node to the new document.
+                                objDocElement?.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                            }
+
+                            blnReturn = true;
+                        }
+            }
+
+            // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "amend*_" + strFileName, eSearchOption))
+            {
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    {
+                        xmlFile.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                    if (xmlNodeList?.Count > 0)
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer") || blnReturn;
+                        }
+            }
+
+            return blnReturn;
+        }
+
+        /// <summary>
+        /// Deep search a document to amend with a new node.
+        /// If Attributes exist for the amending node, the Attributes for the original node will all be overwritten.
+        /// </summary>
+        /// <param name="objDoc">Document element in which to operate.</param>
+        /// <param name="objAmendingNode">The amending (new) node.</param>
+        /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
+        /// <returns>True if any amends were made, False otherwise.</returns>
+        private static bool AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath)
+        {
+            bool blnReturn = false;
+            string strFilter = string.Empty;
+            string strOperation = string.Empty;
+            bool blnAddIfNotFound = true;
+            XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
+            if (objAmendingNodeAttribs != null)
+            {
+                // This attribute is not used by the node itself, so it can be removed to speed up node importing later on.
+                objAmendingNodeAttribs.RemoveNamedItem("isidnode");
+
+                // Gets the custom XPath filter defined for what children to fetch. If it exists, use that as the XPath filter for targeting nodes.
+                XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
+                if (objCustomXPath != null)
+                {
+                    strFilter = objCustomXPath.InnerText.Replace("&amp;", "&").Replace("&quot;", "\"");
+                }
+                else
+                {
+                    // Fetch the old node based on identifiers present in the amending node (id or name)
+                    XmlNode objAmendingNodeId = objAmendingNode["id"];
+                    if (objAmendingNodeId != null)
+                    {
+                        strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                    }
+                    else
+                    {
+                        objAmendingNodeId = objAmendingNode["name"];
+                        if (objAmendingNodeId != null)
+                        {
+                            strFilter = "name = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                        }
+                    }
+                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                    using (XmlNodeList xmlChildrenWithIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
+                    {
+                        if (xmlChildrenWithIds != null)
+                        {
+                            foreach (XmlNode objExtraId in xmlChildrenWithIds)
+                            {
+                                if (!string.IsNullOrEmpty(strFilter))
+                                    strFilter += " and ";
+                                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                            }
                         }
                     }
                 }
 
-				// Load the translation file for the current base data file if the selected language is not en-us.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					// Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
-					// The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-					if (LanguageManager.Instance.DataDoc != null)
-					{
-						foreach (XmlNode objNode in LanguageManager.Instance.DataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]"))
-						{
-							foreach (XmlNode objType in objNode.ChildNodes)
-							{
-								foreach (XmlNode objChild in objType.ChildNodes)
-								{
-								    if (objChild["name"] != null)
-								    {
-								        // If this is a translatable item, find the proper node and add/update this information.
-								        XmlNode objItem =
-								            objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" +
-								                                    objChild["name"].InnerXml.Replace("&amp;", "&") + "\"]");
-								        if (objItem != null)
-								        {
-								            if (objChild["translate"] != null)
-								            {
-                                                objItem.InnerXml += "<translate>" + objChild["translate"].InnerXml + "</translate>";
-                                            }
-								            if (objChild["page"] != null)
-								            {
-                                                objItem.InnerXml += "<altpage>" + objChild["page"].InnerXml + "</altpage>";
-                                            }
-								            if (objChild["code"] != null)
-								            {
-                                                objItem.InnerXml += "<altcode>" + objChild["code"].InnerXml + "</altcode>";
-                                            }
-								            if (objChild["advantage"] != null)
-								            {
-                                                objItem.InnerXml += "<altadvantage>" + objChild["advantage"].InnerXml + "</altadvantage>";
-                                            }
-								            if (objChild["disadvantage"] != null)
-								            {
-                                                objItem.InnerXml += "<altdisadvantage>" + objChild["disadvantage"].InnerXml + "</altdisadvantage>";
-											}
-											if (objChild.Attributes?["translate"] != null)
-											{
-												// Handle Category name translations.
-												(objItem as XmlElement)?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
-											}
+                // Gets the specific operation to execute on this node.
+                XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
+                if (objAmendOperation != null)
+                {
+                    strOperation = objAmendOperation.InnerText;
+                }
 
-											// Check for Skill Specialization information.
-											if (strFileName == "skills.xml")
+                // Get info on whether this node should be appended if no target node is found
+                XmlNode objAddIfNotFound = objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
+                if (objAddIfNotFound != null)
+                {
+                    blnAddIfNotFound = objAddIfNotFound.InnerText == bool.TrueString;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = '[' + strFilter + ']';
+
+            // AddNode operation will always add this node in its current state.
+            // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
+            if (strOperation == "addnode")
+            {
+                using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
+                {
+                    if (xmlParentNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                        {
+                            xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                        }
+
+                        blnReturn = true;
+                    }
+                }
+
+                return blnReturn;
+            }
+
+            string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
+
+            XmlNodeList objNodesToEdit = objDoc.SelectNodes(strNewXPath);
+
+            List<XmlNode> lstElementChildren = null;
+            // Pre-cache list of elements if we don't have an operation specified or have recurse specified
+            if ((string.IsNullOrEmpty(strOperation) || strOperation == "recurse"))
+            {
+                lstElementChildren = new List<XmlNode>();
+                if (objAmendingNode.HasChildNodes)
+                {
+                    foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                    {
+                        if (objChild.NodeType == XmlNodeType.Element)
+                        {
+                            lstElementChildren.Add(objChild);
+                        }
+                    }
+                }
+            }
+
+            switch (strOperation)
+            {
+                // These operations are supported
+                case "remove":
+                    // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
+                    // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
+                case "replace":
+                case "append":
+                    break;
+                case "recurse":
+                    // Operation only supported if we have children
+                    if (lstElementChildren?.Count > 0)
+                        break;
+                    goto default;
+                // If no supported operation is specified, the default is...
+                default:
+                    // ..."recurse" if we have children...
+                    if (lstElementChildren?.Count > 0)
+                        strOperation = "recurse";
+                    // ..."append" if we don't have children and there's no target...
+                    else if (objNodesToEdit?.Count == 0)
+                        strOperation = "append";
+                    // ..."replace" if we don't have children and there are one or more targets.
+                    else
+                        strOperation = "replace";
+                    break;
+            }
+
+            // We found nodes to target with the amend!
+            if (objNodesToEdit?.Count > 0)
+            {
+                // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
+                if (strOperation == "recurse")
+                {
+                    if (lstElementChildren?.Count > 0)
+                    {
+                        foreach (XmlNode objChild in lstElementChildren)
+                        {
+                            blnReturn = AmendNodeChildern(objDoc, objChild, strNewXPath);
+                        }
+                    }
+                }
+                // ... otherwise loop through any nodes that satisfy the XPath filter.
+                else
+                {
+                    foreach (XmlNode objNodeToEdit in objNodesToEdit)
+                    {
+                        XmlNode xmlParentNode = objNodeToEdit.ParentNode;
+                        // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
+                        if (strOperation == "remove")
+                        {
+                            xmlParentNode?.RemoveChild(objNodeToEdit);
+                        }
+                        else
+                        {
+                            switch (strOperation)
+                            {
+                                case "append":
+                                    if (objAmendingNode.HasChildNodes)
+                                    {
+                                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                                        {
+                                            XmlNodeType eChildNodeType = objChild.NodeType;
+
+                                            // Skip adding comments, they're pointless for the purposes of Chummer5a's code
+                                            if (eChildNodeType == XmlNodeType.Comment)
+                                                continue;
+
+                                            // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
+                                            if (eChildNodeType == XmlNodeType.Text ||
+                                                eChildNodeType == XmlNodeType.Attribute ||
+                                                eChildNodeType == XmlNodeType.CDATA)
                                             {
-                                                if (objChild["specs"] != null)
+                                                bool blnItemFound = false;
+                                                if (objNodeToEdit.HasChildNodes)
                                                 {
-                                                    foreach (XmlNode objSpec in objChild.SelectNodes("specs/spec"))
+                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                     {
-                                                        if (objSpec.Attributes?["translate"] != null)
+                                                        if (objChildToEdit.NodeType == eChildNodeType)
                                                         {
-                                                            XmlElement objSpecItem = objItem.SelectSingleNode("specs/spec[. = \"" + objSpec.InnerXml + "\"]") as XmlElement;
-                                                            objSpecItem?.SetAttribute("translate", objSpec.Attributes["translate"].InnerXml);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            // Check for Metavariant information.
-                                            else if (strFileName == "metatypes.xml")
-                                            {
-                                                if (objChild["metavariants"] != null)
-                                                {
-                                                    foreach (XmlNode objMetavariant in objChild.SelectNodes("metavariants/metavariant"))
-                                                    {
-                                                        if (objMetavariant["name"] != null && objChild["name"] != null)
-                                                        {
-                                                            XmlNode objMetavariantItem =
-                                                                objDoc.SelectSingleNode(
-                                                                    "/chummer/metatypes/metatype[name = \"" +
-                                                                    objChild["name"].InnerXml +
-                                                                    "\"]/metavariants/metavariant[name = \"" +
-                                                                    objMetavariant["name"].InnerXml + "\"]");
-                                                            if (objMetavariantItem != null)
+                                                            if (eChildNodeType != XmlNodeType.Attribute || objChildToEdit.Name == objChild.Name)
                                                             {
-                                                                if (objMetavariant["translate"] != null)
-                                                                {
-                                                                    objMetavariantItem.InnerXml += "<translate>" +
-                                                                                                   objMetavariant[
-                                                                                                       "translate"].InnerXml +
-                                                                                                   "</translate>";
-                                                                }
-                                                                if (objMetavariant["page"] != null)
-                                                                {
-                                                                    objMetavariantItem.InnerXml += "<altpage>" +
-                                                                                                   objMetavariant["page"]
-                                                                                                       .InnerXml +
-                                                                                                   "</altpage>";
-                                                                }
+                                                                objChildToEdit.Value += objChild.Value;
+                                                                blnItemFound = true;
+                                                                break;
                                                             }
                                                         }
                                                     }
                                                 }
+                                                if (blnItemFound)
+                                                    continue;
                                             }
-                                            // Check for Martial Art Advantage information.
-                                            else if (strFileName == "martialarts.xml")
+
+                                            objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
+                                        }
+                                    }
+                                    else if (objNodeToEdit.HasChildNodes)
+                                    {
+                                        using (XmlNodeList xmlGrandParentNodeList = objDoc.SelectNodes(strXPath))
+                                        {
+                                            if (xmlGrandParentNodeList?.Count > 0)
                                             {
-                                                if (objChild["advantages"] != null)
+                                                foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
                                                 {
-                                                    foreach (XmlNode objAdvantage in objChild.SelectNodes("techniques/technique"))
-                                                    {
-                                                        if (objAdvantage.Attributes?["translate"] != null)
-                                                        {
-                                                            XmlElement objAdvantageItem = objItem.SelectSingleNode("techniques/technique[. = \"" + objAdvantage.InnerXml + "\"]") as XmlElement;
-                                                            objAdvantageItem?.SetAttribute("translate", objAdvantage.Attributes["translate"].InnerXml);
-                                                        }
-                                                    }
+                                                    xmlGrandparentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
                                                 }
                                             }
-                                            // Check for Mentor Spirit/Paragon choice information.
-                                            else if (strFileName == "mentors.xml" || strFileName == "paragons.xml")
+                                        }
+                                    }
+                                    break;
+                                case "replace":
+                                    xmlParentNode?.ReplaceChild(objDoc.ImportNode(objAmendingNode, true), objNodeToEdit);
+                                    break;
+                            }
+                        }
+                    }
+
+                    blnReturn = true;
+                }
+            }
+            // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
+            else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && blnAddIfNotFound)
+            {
+                using (XmlNodeList xmlParentNodeList = objDoc.SelectNodes(strXPath))
+                {
+                    if (xmlParentNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                        {
+                            xmlParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
+                        }
+                        blnReturn = true;
+                    }
+                }
+            }
+
+            return blnReturn;
+        }
+
+        /// <summary>
+        /// Verify the contents of the language data translation file.
+        /// </summary>
+        /// <param name="strLanguage">Language to check.</param>
+        /// <param name="lstBooks">List of books.</param>
+        public static void Verify(string strLanguage, List<string> lstBooks)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return;
+            XmlDocument objLanguageDoc = new XmlDocument();
+            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
+
+            try
+            {
+                using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                {
+                    objLanguageDoc.Load(objStreamReader);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+            catch (XmlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+
+            XPathNavigator objLanguageNavigator = objLanguageDoc.GetFastNavigator();
+
+            string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
+            FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
+
+            objWriter.WriteStartDocument();
+            // <results>
+            objWriter.WriteStartElement("results");
+
+            string strPath = Path.Combine(Application.StartupPath, "data");
+            foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
+            {
+                string strFileName = Path.GetFileName(strFile);
+
+                if (!string.IsNullOrEmpty(strFileName) &&
+                    // Do not bother to check custom files.
+                    !strFileName.StartsWith("amend") &&
+                    !strFileName.StartsWith("custom") &&
+                    !strFileName.StartsWith("override") &&
+                    // These file types don't have translations and/or don't properly support them
+                    !strFile.EndsWith("packs.xml") &&
+                    !strFile.EndsWith("lifemodules.xml") &&
+                    !strFile.EndsWith("sheets.xml"))
+                {
+                    // Load the current English file.
+                    XPathNavigator objEnglishDoc = Load(strFileName).GetFastNavigator();
+                    XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
+
+                    // First pass: make sure the document exists.
+                    bool blnExists = false;
+                    XPathNavigator objLanguageRoot = objLanguageNavigator.SelectSingleNode("/chummer/chummer[@file = \"" + strFileName + "\"]");
+                    if (objLanguageRoot != null)
+                        blnExists = true;
+
+                    // <file name="x" needstobeadded="y">
+                    objWriter.WriteStartElement("file");
+                    objWriter.WriteAttributeString("name", strFileName);
+
+                    if (blnExists)
+                    {
+                        foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
+                        {
+                            string strTypeName = objType.Name;
+                            bool blnTypeWritten = false;
+                            foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
+                            {
+                                // If the Node has a source element, check it and see if it's in the list of books that were specified.
+                                // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
+                                bool blnContinue = true;
+                                XPathNavigator xmlSource = objChild.SelectSingleNode("source");
+                                if (xmlSource != null)
+                                {
+                                    blnContinue = false;
+                                    foreach (string strBook in lstBooks)
+                                    {
+                                        if (strBook == xmlSource.Value)
+                                        {
+                                            blnContinue = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (blnContinue)
+                                {
+                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
+                                    {
+                                        string strChildName = objChild.Name;
+                                        XPathNavigator xmlTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);
+                                        XPathNavigator xmlName = objChild.SelectSingleNode("name");
+                                        // Look for a matching entry in the Language file.
+                                        if (xmlName != null)
+                                        {
+                                            string strChildNameElement = xmlName.Value;
+                                            XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[name = \"" + strChildNameElement + "\"]");
+                                            if (xmlNode != null)
                                             {
-                                                if (objChild["choices"] != null)
+                                                // A match was found, so see what elements, if any, are missing.
+                                                bool blnTranslate = false;
+                                                bool blnAltPage = false;
+                                                bool blnAdvantage = false;
+                                                bool blnDisadvantage = false;
+
+                                                if (objChild.HasChildren)
                                                 {
-                                                    foreach (XmlNode objChoice in objChild.SelectNodes("choices/choice"))
+                                                    if (xmlNode.SelectSingleNode("translate") != null)
+                                                        blnTranslate = true;
+
+                                                    // Do not mark page as missing if the original does not have it.
+                                                    if (objChild.SelectSingleNode("page") != null)
                                                     {
-                                                        if (objChoice["name"] != null && objChoice["translate"] != null)
+                                                        if (xmlNode.SelectSingleNode("altpage") != null)
+                                                            blnAltPage = true;
+                                                    }
+                                                    else
+                                                        blnAltPage = true;
+
+                                                    if (strFile.EndsWith("mentors.xml") || strFile.EndsWith("paragons.xml"))
+                                                    {
+                                                        if (xmlNode.SelectSingleNode("altadvantage") != null)
+                                                            blnAdvantage = true;
+                                                        if (xmlNode.SelectSingleNode("altdisadvantage") != null)
+                                                            blnDisadvantage = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        blnAdvantage = true;
+                                                        blnDisadvantage = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    blnAltPage = true;
+                                                    if (xmlNode.SelectSingleNode("@translate") != null)
+                                                        blnTranslate = true;
+                                                }
+
+                                                // At least one pice of data was missing so write out the result node.
+                                                if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
+                                                    // <results>
+                                                    objWriter.WriteStartElement(strChildName);
+                                                    objWriter.WriteElementString("name", strChildNameElement);
+                                                    if (!blnTranslate)
+                                                        objWriter.WriteElementString("missing", "translate");
+                                                    if (!blnAltPage)
+                                                        objWriter.WriteElementString("missing", "altpage");
+                                                    if (!blnAdvantage)
+                                                        objWriter.WriteElementString("missing", "altadvantage");
+                                                    if (!blnDisadvantage)
+                                                        objWriter.WriteElementString("missing", "altdisadvantage");
+                                                    // </results>
+                                                    objWriter.WriteEndElement();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (!blnTypeWritten)
+                                                {
+                                                    blnTypeWritten = true;
+                                                    objWriter.WriteStartElement(strTypeName);
+                                                }
+                                                // No match was found, so write out that the data item is missing.
+                                                // <result>
+                                                objWriter.WriteStartElement(strChildName);
+                                                objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                                                objWriter.WriteElementString("name", strChildNameElement);
+                                                // </result>
+                                                objWriter.WriteEndElement();
+                                            }
+
+                                            if (strFileName == "metatypes.xml")
+                                            {
+                                                XPathNavigator xmlMetavariants = objChild.SelectSingleNode("metavariants");
+                                                if (xmlMetavariants != null)
+                                                {
+                                                    foreach (XPathNavigator objMetavariant in xmlMetavariants.Select("metavariant"))
+                                                    {
+                                                        string strMetavariantName = objMetavariant.SelectSingleNode("name").Value;
+                                                        XPathNavigator objTranslate = objLanguageRoot.SelectSingleNode("metatypes/metatype[name = \"" + strChildNameElement + "\"]/metavariants/metavariant[name = \"" + strMetavariantName + "\"]");
+                                                        if (objTranslate != null)
                                                         {
-                                                            XmlNode objChoiceItem = objItem.SelectSingleNode("choices/choice[name = \"" + objChoice["name"].InnerXml + "\"]");
-                                                            if (objChoiceItem != null)
-                                                                objChoiceItem.InnerXml += "<translate>" + objChoice["translate"].InnerXml + "</translate>";
+                                                            bool blnTranslate = objTranslate.SelectSingleNode("translate") != null;
+                                                            bool blnAltPage = objTranslate.SelectSingleNode("altpage") != null;
+
+                                                            // Item exists, so make sure it has its translate attribute populated.
+                                                            if (!blnTranslate || !blnAltPage)
+                                                            {
+                                                                if (!blnTypeWritten)
+                                                                {
+                                                                    blnTypeWritten = true;
+                                                                    objWriter.WriteStartElement(strTypeName);
+                                                                }
+                                                                // <result>
+                                                                objWriter.WriteStartElement("metavariants");
+                                                                objWriter.WriteStartElement("metavariant");
+                                                                objWriter.WriteElementString("name", strMetavariantName);
+                                                                if (!blnTranslate)
+                                                                    objWriter.WriteElementString("missing", "translate");
+                                                                if (!blnAltPage)
+                                                                    objWriter.WriteElementString("missing", "altpage");
+                                                                objWriter.WriteEndElement();
+                                                                // </result>
+                                                                objWriter.WriteEndElement();
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (!blnTypeWritten)
+                                                            {
+                                                                blnTypeWritten = true;
+                                                                objWriter.WriteStartElement(strTypeName);
+                                                            }
+                                                            // <result>
+                                                            objWriter.WriteStartElement("metavariants");
+                                                            objWriter.WriteStartElement("metavariant");
+                                                            objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                                                            objWriter.WriteElementString("name", strMetavariantName);
+                                                            objWriter.WriteEndElement();
+                                                            // </result>
+                                                            objWriter.WriteEndElement();
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-									}
-									else if (objChild.Attributes?["translate"] != null)
-									{
-                                        // Handle Category name translations.
-                                        XmlElement objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]") as XmlElement;
-                                        // Expected result is null if not found.
-                                        objItem?.SetAttribute("translate", objChild.Attributes["translate"].InnerXml);
-									}
-								}
-							}
-						}
-					}
-				}
+                                        else if (strChildName == "#comment")
+                                        {
+                                            //Ignore this node, as it's a comment node.
+                                        }
+                                        else
+                                        {
+                                            string strChildInnerText = objChild.Value;
+                                            if (!string.IsNullOrEmpty(strChildInnerText))
+                                            {
+                                                // The item does not have a name which means it should have a translate CharacterAttribute instead.
+                                                XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text() = \"" + strChildInnerText + "\"]");
+                                                if (objNode != null)
+                                                {
+                                                    // Make sure the translate attribute is populated.
+                                                    if (objNode.SelectSingleNode("@translate") == null)
+                                                    {
+                                                        if (!blnTypeWritten)
+                                                        {
+                                                            blnTypeWritten = true;
+                                                            objWriter.WriteStartElement(strTypeName);
+                                                        }
+                                                        // <result>
+                                                        objWriter.WriteStartElement(strChildName);
+                                                        objWriter.WriteElementString("name", strChildInnerText);
+                                                        objWriter.WriteElementString("missing", "translate");
+                                                        // </result>
+                                                        objWriter.WriteEndElement();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
+                                                    // No match was found, so write out that the data item is missing.
+                                                    // <result>
+                                                    objWriter.WriteStartElement(strChildName);
+                                                    objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                                                    objWriter.WriteElementString("name", strChildInnerText);
+                                                    // </result>
+                                                    objWriter.WriteEndElement();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (blnTypeWritten)
+                                objWriter.WriteEndElement();
+                        }
 
-				// Cache the merged document and its relevant information.
-				objReference.FileDate = datDate;
-				objReference.FileName = strFileName;
-			    if (GlobalOptions.Instance.LiveCustomData)
-			        objReference.XmlContent = objDoc.Clone() as XmlDocument;
-			    else
-			        objReference.XmlContent = objDoc;
-			}
-			else
-			{
-                // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
-                // (which we don't want and also results in multiple copies of each custom item).
-                // Pull the document from cache.
-			    if (GlobalOptions.Instance.LiveCustomData)
-			        objDoc = objReference.XmlContent.Clone() as XmlDocument;
-			    else
-			        objDoc = objReference.XmlContent;
-			}
+                        // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
+                        foreach (XPathNavigator objType in objLanguageRoot.SelectChildren(XPathNodeType.Element))
+                        {
+                            foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
+                            {
+                                string strChildNameElement = objChild.SelectSingleNode("name")?.Value;
+                                // Look for a matching entry in the English file.
+                                if (!string.IsNullOrEmpty(strChildNameElement))
+                                {
+                                    string strChildName = objChild.Name;
+                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + '/' + strChildName + "[name = \"" + strChildNameElement + "\"]");
+                                    if (objNode == null)
+                                    {
+                                        // <noentry>
+                                        objWriter.WriteStartElement("noentry");
+                                        objWriter.WriteStartElement(strChildName);
+                                        objWriter.WriteElementString("name", strChildNameElement);
+                                        objWriter.WriteEndElement();
+                                        // </noentry>
+                                        objWriter.WriteEndElement();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                        objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
 
-            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-            if (GlobalOptions.Instance.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
-			{
-				strPath = Path.Combine(Application.StartupPath, "customdata");
-			    if (Directory.Exists(strPath))
-			    {
-			        foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
-			        {
-			            objXmlFile.Load(strFile);
-			            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
-			            {
-			                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-			                List<XmlNode> lstDelete = new List<XmlNode>();
-			                foreach (XmlNode objChild in objNode.ChildNodes)
-			                {
-			                    // Only do this if the child has the name or id field since this is what we must match on.
-			                    if (objChild["id"] != null &&
-			                        null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-			                                                        objChild.Name + "[name = \"" +
-			                                                        objChild["id"].InnerText + "\"]"))
-			                    {
-			                        lstDelete.Add(objChild);
-			                    }
-			                    else if (objChild["name"] != null &&
-			                             null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-			                                                             objChild.Name + "[name = \"" +
-			                                                             objChild["name"].InnerText + "\"]"))
-			                    {
-			                        lstDelete.Add(objChild);
-			                    }
-			                }
-			                // Remove the offending items from the node we're about to merge in.
-			                foreach (XmlNode objRemoveNode in lstDelete)
-			                {
-			                    objNode.RemoveChild(objRemoveNode);
-			                }
+                    // </file>
+                    objWriter.WriteEndElement();
+                }
+            }
 
-			                // Append the entire child node to the new document.
-			                objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
-			            }
-			        }
-			    }
-			}
-
-            //Check for non-unique guids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-		    if (strFileName == "improvements.xml" || objReference.DuplicatesChecked) return objDoc;
-		    {
-		        foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
-		        {
-                    //Ignore the version node, if present. 
-		            if (objNode.Name == "version" || !objNode.HasChildNodes) continue;
-                    //Parse the node into an XDocument for LINQ parsing. 
-		            XDocument y = XDocument.Parse(objNode.OuterXml);
-		            string strNode = (from XmlNode o in objNode.ChildNodes where o.NodeType != XmlNodeType.Comment select o.Name).FirstOrDefault();
-
-		            //Grab the first XML node that isn't a comment. 
-		            if (strNode == null) continue;
-		            var duplicatesList = y.Descendants(strNode)
-		                .GroupBy(g => (string) g.Element("id") ?? "")
-		                .Where(g => g.Count() > 1)
-		                .Select(g => g.Key)
-		                .ToList();
-		            int i = duplicatesList.Count(o => !string.IsNullOrWhiteSpace(o));
-		            if (i <= 0)
-		            {
-		                objReference.DuplicatesChecked = true;
-		                continue;
-		            }
-		            string duplicates = string.Join("\n", duplicatesList);
-		            MessageBox.Show(
-		                LanguageManager.Instance.GetString("Message_DuplicateGuidWarning")
-		                    .Replace("{0}", i.ToString())
-		                    .Replace("{1}", strFileName)
-		                    .Replace("{2}", duplicates));
-		        }
-		    }
-
-		    return objDoc;
-		}
-
-		/// <summary>
-		/// Verify the contents of the language data translation file.
-		/// </summary>
-		/// <param name="strLanguage">Language to check.</param>
-		/// <param name="lstBooks">List of books.</param>
-		public void Verify(string strLanguage, List<string> lstBooks)
-		{
-			XmlDocument objLanguageDoc = new XmlDocument();
-			string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
-            string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
-			objLanguageDoc.Load(strFilePath);
-
-			string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
-			FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-			objWriter.Formatting = Formatting.Indented;
-			objWriter.Indentation = 1;
-			objWriter.IndentChar = '\t';
-
-			objWriter.WriteStartDocument();
-			// <results>
-			objWriter.WriteStartElement("results");
-
-			string strPath = Path.Combine(Application.StartupPath, "data");
-			foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
-			{
-				string strFileName = Path.GetFileName(strFile);
-
-				// Do not bother to check custom files.
-				if (!string.IsNullOrEmpty(strFileName) && !strFileName.StartsWith("custom") && !strFile.StartsWith("override") && !strFile.Contains("packs.xml") && !strFile.Contains("ranges.xml"))
-				{
-					// Load the current English file.
-					XmlDocument objEnglishDoc = Load(strFileName);
-					XmlNode objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
-
-					// First pass: make sure the document exists.
-					bool blnExists = false;
-					XmlNode objLanguageRoot = objLanguageDoc.SelectSingleNode("/chummer/chummer[@file = \"" + strFileName + "\"]");
-					if (objLanguageRoot != null)
-						blnExists = true;
-
-					// <file name="x" exists="y">
-					objWriter.WriteStartElement("file");
-					objWriter.WriteAttributeString("name", strFileName);
-					objWriter.WriteAttributeString("exists", blnExists.ToString());
-
-					if (blnExists)
-					{
-						foreach (XmlNode objType in objEnglishRoot.ChildNodes)
-						{
-							objWriter.WriteStartElement(objType.Name);
-							foreach (XmlNode objChild in objType.ChildNodes)
-							{
-								// If the Node has a source element, check it and see if it's in the list of books that were specified.
-								// This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-								bool blnContinue = false;
-								if (objChild["source"] != null)
-								{
-									foreach (string strBook in lstBooks)
-									{
-										if (strBook == objChild["source"].InnerText)
-										{
-											blnContinue = true;
-											break;
-										}
-									}
-								}
-								else
-									blnContinue = true;
-
-								if (blnContinue)
-								{
-									if (objType.Name != "version" && !((objType.Name == "costs" || objType.Name == "safehousecosts") && strFile.EndsWith("lifestyles.xml")))
-									{
-										// Look for a matching entry in the Language file.
-										if (objChild["name"] != null)
-										{
-											XmlNode objNode = objLanguageRoot.SelectSingleNode(objType.Name + "/" + objChild.Name + "[name = \"" + objChild["name"].InnerText + "\"]");
-											if (objNode != null)
-											{
-												// A match was found, so see what elements, if any, are missing.
-												bool blnTranslate = false;
-												bool blnAltPage = false;
-												bool blnAdvantage = false;
-												bool blnDisadvantage = false;
-
-												if (objChild.HasChildNodes)
-												{
-													if (objNode["translate"] != null)
-														blnTranslate = true;
-
-													// Do not mark page as missing if the original does not have it.
-													if (objChild["page"] != null)
-													{
-														if (objNode["page"] != null)
-															blnAltPage = true;
-													}
-													else
-														blnAltPage = true;
-
-													if (strFile.EndsWith("mentors.xml") || strFile.EndsWith("paragons.xml"))
-													{
-														if (objNode["advantage"] != null)
-															blnAdvantage = true;
-														if (objNode["disadvantage"] != null)
-															blnDisadvantage = true;
-													}
-													else
-													{
-														blnAdvantage = true;
-														blnDisadvantage = true;
-													}
-												}
-												else
-												{
-													blnAltPage = true;
-													if (objNode.Attributes?["translate"] != null)
-														blnTranslate = true;
-												}
-
-												// At least one pice of data was missing so write out the result node.
-												if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
-												{
-													// <results>
-													objWriter.WriteStartElement(objChild.Name);
-													objWriter.WriteAttributeString("exists", "True");
-													objWriter.WriteElementString("name", objChild["name"].InnerText);
-													if (!blnTranslate)
-														objWriter.WriteElementString("missing", "translate");
-													if (!blnAltPage)
-														objWriter.WriteElementString("missing", "page");
-													if (!blnAdvantage)
-														objWriter.WriteElementString("missing", "advantage");
-													if (!blnDisadvantage)
-														objWriter.WriteElementString("missing", "disadvantage");
-													// </results>
-													objWriter.WriteEndElement();
-												}
-											}
-											else
-											{
-												// No match was found, so write out that the data item is missing.
-												// <result>
-												objWriter.WriteStartElement(objChild.Name);
-												objWriter.WriteAttributeString("exists", "False");
-												objWriter.WriteElementString("name", objChild["name"].InnerText);
-												// </result>
-												objWriter.WriteEndElement();
-											}
-
-											if (strFileName == "metatypes.xml")
-											{
-												if (objChild["metavariants"] != null)
-												{
-													foreach (XmlNode objMetavariant in objChild.SelectNodes("metavariants/metavariant"))
-													{
-														XmlNode objTranslate = objLanguageRoot.SelectSingleNode("metatypes/metatype[name = \"" + objChild["name"].InnerText + "\"]/metavariants/metavariant[name = \"" + objMetavariant["name"].InnerText + "\"]");
-														if (objTranslate != null)
-														{
-															bool blnTranslate = false;
-															bool blnAltPage = false;
-
-															if (objTranslate["translate"] != null)
-																blnTranslate = true;
-															if (objTranslate["page"] != null)
-																blnAltPage = true;
-
-															// Item exists, so make sure it has its translate attribute populated.
-															if (!blnTranslate || !blnAltPage)
-															{
-																// <result>
-																objWriter.WriteStartElement("metavariants");
-																objWriter.WriteStartElement("metavariant");
-																objWriter.WriteAttributeString("exists", "True");
-																objWriter.WriteElementString("name", objMetavariant["name"].InnerText);
-																if (!blnTranslate)
-																	objWriter.WriteElementString("missing", "translate");
-																if (!blnAltPage)
-																	objWriter.WriteElementString("missing", "page");
-																objWriter.WriteEndElement();
-																// </result>
-																objWriter.WriteEndElement();
-															}
-														}
-														else
-														{
-															// <result>
-															objWriter.WriteStartElement("metavariants");
-															objWriter.WriteStartElement("metavariant");
-															objWriter.WriteAttributeString("exists", "False");
-															objWriter.WriteElementString("name", objMetavariant.InnerText);
-															objWriter.WriteEndElement();
-															// </result>
-															objWriter.WriteEndElement();
-														}
-													}
-												}
-											}
-
-											if (strFile == "martialarts.xml")
-											{
-												if (objChild["advantages"] != null)
-												{
-                                                    foreach (XmlNode objAdvantage in objChild.SelectNodes("techniques/technique"))
-													{
-                                                        XmlNode objTranslate = objLanguageRoot.SelectSingleNode("martialarts/martialart[name = \"" + objChild["name"].InnerText + "\"]/techniques/technique[. = \"" + objAdvantage.InnerText + "\"]");
-														if (objTranslate != null)
-														{
-															// Item exists, so make sure it has its translate attribute populated.
-															if (objTranslate.Attributes?["translate"] == null)
-															{
-																// <result>
-																objWriter.WriteStartElement("martialarts");
-																objWriter.WriteStartElement("advantage");
-																objWriter.WriteAttributeString("exists", "True");
-																objWriter.WriteElementString("name", objAdvantage.InnerText);
-																objWriter.WriteElementString("missing", "translate");
-																objWriter.WriteEndElement();
-																// </result>
-																objWriter.WriteEndElement();
-															}
-														}
-														else
-														{
-															// <result>
-															objWriter.WriteStartElement("martialarts");
-															objWriter.WriteStartElement("advantage");
-															objWriter.WriteAttributeString("exists", "False");
-															objWriter.WriteElementString("name", objAdvantage.InnerText);
-															objWriter.WriteEndElement();
-															// </result>
-															objWriter.WriteEndElement();
-														}
-													}
-												}
-											}
-										}
-										else if (objChild.Name == "#comment")
-										{
-											//Ignore this node, as it's a comment node.
-										}
-										else if (!string.IsNullOrEmpty(objChild.InnerText))
-										{
-											// The item does not have a name which means it should have a translate CharacterAttribute instead.
-											XmlNode objNode =
-												objLanguageRoot.SelectSingleNode(objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerText + "\"]");
-											if (objNode != null)
-											{
-												// Make sure the translate attribute is populated.
-												if (objNode.Attributes?["translate"] == null)
-												{
-													// <result>
-													objWriter.WriteStartElement(objChild.Name);
-													objWriter.WriteAttributeString("exists", "True");
-													objWriter.WriteElementString("name", objChild.InnerText);
-													objWriter.WriteElementString("missing", "translate");
-													// </result>
-													objWriter.WriteEndElement();
-												}
-											}
-											else
-											{
-												// No match was found, so write out that the data item is missing.
-												// <result>
-												objWriter.WriteStartElement(objChild.Name);
-												objWriter.WriteAttributeString("exists", "False");
-												objWriter.WriteElementString("name", objChild.InnerText);
-												// </result>
-												objWriter.WriteEndElement();
-											}
-										}
-									}
-								}
-							}
-							objWriter.WriteEndElement();
-						}
-
-						// Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
-						foreach (XmlNode objType in objLanguageRoot.ChildNodes)
-						{
-							foreach (XmlNode objChild in objType.ChildNodes)
-							{
-								// Look for a matching entry in the English file.
-								if (objChild["name"] != null)
-								{
-									XmlNode objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" + objChild["name"].InnerText + "\"]");
-									if (objNode == null)
-									{
-										// <noentry>
-										objWriter.WriteStartElement("noentry");
-										objWriter.WriteStartElement(objChild.Name);
-										objWriter.WriteElementString("name", objChild["name"].InnerText);
-										objWriter.WriteEndElement();
-										// </noentry>
-										objWriter.WriteEndElement();
-									}
-								}
-							}
-						}
-					}
-
-					// </file>
-					objWriter.WriteEndElement();
-				}
-			}
-
-			// </results>
-			objWriter.WriteEndElement();
-			objWriter.WriteEndDocument();
-			objWriter.Close();
-			objStream.Close();
-		}
-		#endregion
-	}
+            // </results>
+            objWriter.WriteEndElement();
+            objWriter.WriteEndDocument();
+            objWriter.Close();
+        }
+        #endregion
+    }
 }
