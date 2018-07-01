@@ -290,7 +290,7 @@ namespace Chummer
                 string strSelectedCategory = cboCategory.SelectedValue?.ToString();
                 if (string.IsNullOrEmpty(strSelectedCategory) || strSelectedCategory == "Show All")
                 {
-                    dgvWeapons.Columns[5].Visible = true;
+                    //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
                     dgvWeapons.Columns[8].Visible = true;
@@ -301,17 +301,17 @@ namespace Chummer
                          strSelectedCategory == "Exotic Melee Weapons" ||
                          strSelectedCategory == "Unarmed")
                 {
-                    dgvWeapons.Columns[5].Visible = false;
+                    //dgvWeapons.Columns[5].Visible = false;
                     dgvWeapons.Columns[6].Visible = false;
                     dgvWeapons.Columns[7].Visible = false;
-                    dgvWeapons.Columns[8].Visible = true;
+                    dgvWeapons.Columns[8].Visible = false;
                 }
                 else
                 {
-                    dgvWeapons.Columns[5].Visible = true;
+                    //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
-                    dgvWeapons.Columns[8].Visible = false;
+                    dgvWeapons.Columns[8].Visible = true;
                 }
                 dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;

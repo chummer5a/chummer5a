@@ -1,3 +1,9 @@
+Future Build 202
+
+Application Changes:
+
+- Fixed incorect behavior with filtering columns on the select window browse tab. 
+
 Build 201
 
 Application Changes:
