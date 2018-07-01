@@ -1,4 +1,15 @@
-Future Build 201
+Future Build 202
+
+Application Changes:
+
+- Fixed incorect behavior with filtering columns on the select window browse tab. 
+- Fixsed an issue with carbines defaulting to using the Pistols skill.
+
+Data Changes:
+
+- Added alternate Druid tradition from Forbidden Arcana. 
+
+Build 201
 
 Application Changes:
 
@@ -56,7 +67,7 @@ Data Changes:
 - Added a customdata entry to move Commanding Voice from Stolen Souls into Street Grimoire, per German data changes.
 - Added a customdata entry to swap the pricing of seeker shafts and monotip arrow heads per German data changes.
 - Added content from Street Lethal. 
-- Fixed incorrect REA and INT stats for the Nosferatu quality
+- Fixed incorrect REA and INT stats for the Nosferatu quality.
 - Increase rating of arrows to compensate for Street Lethal's TrollBow.
 
 New Strings:
