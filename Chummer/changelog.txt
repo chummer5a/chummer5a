@@ -3,6 +3,7 @@ Future Build 202
 Application Changes:
 
 - Fixed incorect behavior with filtering columns on the select window browse tab. 
+- Fixsed an issue with carbines defaulting to using the Pistols skill.
 
 Data Changes:
 

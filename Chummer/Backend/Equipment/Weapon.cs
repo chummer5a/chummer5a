@@ -2988,6 +2988,7 @@ namespace Chummer.Backend.Equipment
                             strSkill = "Archery";
                             break;
                         case "Assault Rifles":
+                        case "Carbines":
                         case "Machine Pistols":
                         case "Submachine Guns":
                             strSkill = "Automatics";
@@ -3627,6 +3628,7 @@ namespace Chummer.Backend.Equipment
                             strSkill = "Archery";
                             break;
                         case "Assault Rifles":
+                        case "Carbines":
                         case "Machine Pistols":
                         case "Submachine Guns":
                             strSkill = "Automatics";
