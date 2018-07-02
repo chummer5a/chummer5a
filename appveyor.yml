@@ -85,7 +85,7 @@ install:
     else
     {
       Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
-    }"
+    }
 nuget:
   account_feed: true
   project_feed: true
