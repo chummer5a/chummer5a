@@ -55,7 +55,7 @@ install:
     Write-Host "Environment Variable: $env:OldMinorVersion"
     $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
 
-    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyInformationalVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', 
+    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', 
     [System.Text.RegularExpressions.RegexOptions]::MultiLine)
 
     $content = [IO.File]::ReadAllText($assemblyFile)
