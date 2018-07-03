@@ -1032,7 +1032,7 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(Character characterObject, decimal percentage)
         {
-            if (characterObject.Created || IncludedInWeapon) return;
+            if (!characterObject.Created || IncludedInWeapon) return;
             Parent.WeaponAccessories.Remove(this);
 
             // Create the Expense Log Entry for the sale.

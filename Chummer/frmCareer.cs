@@ -7283,7 +7283,7 @@ namespace Chummer
 
                 IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
             }
-            else if (treCyberware.SelectedNode?.Tag is Gear objGear)
+            else if (treCyberware.SelectedNode?.Tag is ICanSell vendorTrash)
             {
                 frmSellItem frmSell = new frmSellItem();
                 frmSell.ShowDialog(this);
@@ -7291,23 +7291,9 @@ namespace Chummer
                 if (frmSell.DialogResult == DialogResult.Cancel)
                     return;
 
-                        // Create the Expense Log Entry for the sale.
-                        decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                        decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
-                        objExpense.Create(decAmount, strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen += decAmount;
-
-                if (objGear.Parent is Gear objParent)
-                    objParent.Children.Remove(objGear);
-                else
-                {
-                    CharacterObject.Cyberware.FindCyberwareGear(objGear.InternalId, out objCyberware);
-                    objCyberware.Gear.Remove(objGear);
-                }
+                vendorTrash.Sell(CharacterObject, frmSell.SellPercent);
             }
+            else {Utils.BreakIfDebug();}
             
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -7325,35 +7311,7 @@ namespace Chummer
 
                 selectedObject.Sell(CharacterObject, frmSell.SellPercent);
             }
-            else if (treArmor.SelectedNode?.Tag is Gear objGear)
-            {
-                CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objArmor, out ArmorMod objMod);
-                // Record the cost of the Armor with the ArmorMod.
-                decimal decOriginal = objMod?.TotalCost ?? objArmor.TotalCost;
-
-                frmSellItem frmSell = new frmSellItem();
-                frmSell.ShowDialog(this);
-
-                if (frmSell.DialogResult == DialogResult.Cancel)
-                    return;
-
-                if (objGear.Parent is Gear objParent)
-                    objParent.Children.Remove(objGear);
-                else if (objMod != null)
-                    objMod.Gear.Remove(objGear);
-                else
-                    objArmor.Gear.Remove(objGear);
-
-                // Create the Expense Log Entry for the sale.
-                decimal decNewCost = objMod?.TotalCost ?? objArmor.TotalCost;
-                decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                decAmount += objGear.DeleteGear() * frmSell.SellPercent;
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Nuyen += decAmount;
-
-            }
+            else {Utils.BreakIfDebug();}
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -7372,10 +7330,7 @@ namespace Chummer
                 
                 vendorTrash.Sell(CharacterObject, frmSell.SellPercent);
             }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            else {Utils.BreakIfDebug();}
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

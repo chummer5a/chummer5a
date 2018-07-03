@@ -4618,6 +4618,26 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(Character characterObject)
         {
+            if (!CanBeRemoved()) return false;
+            DeleteWeapon();
+            if (characterObject.Weapons.Any(weapon => weapon == this))
+            {
+                return characterObject.Weapons.Remove(this);
+            }
+            if (Parent != null)
+                return Parent.Children.Remove(this);
+            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
+            //else if (objWeapon.parent != null)
+            //    objWeaponMount.Weapons.Remove(objWeapon);
+            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+        }
+
+        /// <summary>
+        /// Check whether the weapon is not removeable due to various restrictions. 
+        /// </summary>
+        /// <returns></returns>
+        private bool CanBeRemoved()
+        {
             // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
             if (Cyberware)
             {
@@ -4637,28 +4657,32 @@ namespace Chummer.Backend.Equipment
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
+
             if (Category == "Gear")
             {
-                string message = LanguageManager.GetString(ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon", GlobalOptions.Language);
-                MessageBox.Show(message, LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string message = LanguageManager.GetString(
+                    ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
+                    GlobalOptions.Language);
+                MessageBox.Show(message,
+                    LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
-            DeleteWeapon();
-            if (characterObject.Weapons.Any(weapon => weapon == this))
-            {
-                return characterObject.Weapons.Remove(this);
-            }
-            if (Parent != null)
-                return Parent.Children.Remove(this);
-            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
-            //else if (objWeapon.parent != null)
-            //    objWeaponMount.Weapons.Remove(objWeapon);
-            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+
+            return true;
         }
 
         public void Sell(Character characterObject, decimal percentage)
         {
-            throw new NotImplementedException();
+            decimal decAmount = TotalCost * percentage;
+            string expense = ParentVehicle != null ? "String_ExpenseSoldVehicleWeapon" : "String_ExpenseSoldWeapon";
+            if (!Remove(characterObject)) return;
+
+            // Create the Expense Log Entry for the sale.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString(expense, GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
         }
     }
 }

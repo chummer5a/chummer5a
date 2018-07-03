@@ -2685,8 +2685,8 @@ namespace Chummer.Backend.Equipment
             decimal decNewCost = 0;
             if (CharacterObject.Gear.Any(gear => gear == this))
             {
-                CharacterObject.Gear.Remove(this);
                 decOriginal = TotalCost;
+                CharacterObject.Gear.Remove(this);
             }
             else if (Parent != null && Parent is IHasChildrenAndCost<Gear> parentObject)
             {
