@@ -1236,7 +1236,7 @@ namespace Chummer
                             cmdAddSpell.Enabled = CharacterObject.MagicianEnabled;
                             tabCharacterTabs.TabPages.Remove(tabAdept);
 
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
