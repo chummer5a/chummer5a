@@ -1554,7 +1554,6 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(Character characterObject, decimal percentage)
         {
-            if (characterObject.Created) return;
             characterObject.Armor.Remove(this);
 
             // Create the Expense Log Entry for the sale.
