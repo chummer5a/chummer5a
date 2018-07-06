@@ -5002,7 +5002,7 @@ namespace Chummer
                 objWeaponMount = selectedMount;
                 objVehicle = selectedMount.Parent;
             }
-            else if (treVehicles.SelectedNode?.Tag is VehicleMod selectedMod && (objMod.Name.StartsWith("Mechanical Arm") || objMod.Name.Contains("Drone Arm")))
+            else if (treVehicles.SelectedNode?.Tag is VehicleMod selectedMod && (selectedMod.Name.StartsWith("Mechanical Arm") || selectedMod.Name.Contains("Drone Arm")))
             {
                 objMod = selectedMod;
                 objVehicle = selectedMod.Parent;

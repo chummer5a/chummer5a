@@ -16201,9 +16201,6 @@
           <conceal operation="greaterthanorequals">4</conceal>
         </weapondetails>
       </required>
-      <addunderbarrels>
-        <weapon>Krime Stun-O-Net</weapon>
-      </addunderbarrels>
       <source>SL</source>
       <page>46</page>
     </accessory>
