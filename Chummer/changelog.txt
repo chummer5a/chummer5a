@@ -7,6 +7,7 @@ Application Changes:
 - Changed JSON to be the default export method.
 - Fixed behaviour of sell methods for Armor Mods, Gear, Vehicles, Weapons, Weapon Accessories and Weapon Mounts.
 - Fixed odd behaviour when using the optional rule to have mystic adepts purchase a second magic attribute.
+- Fixed issues with selecting and adding Cyberware Suites.
 
 Data Changes:
 
