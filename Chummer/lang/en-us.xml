@@ -5659,7 +5659,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_RecoilAccessories</key>
-      <text> + {0} ({1} (Deployable))</text>
+      <text>{0} ({1} (Deployable))</text>
     </string>
     <string>
       <key>Tip_RemainingVehicleModCapacity</key>

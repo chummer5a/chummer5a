@@ -5182,7 +5182,7 @@
     </string>
     <string>
       <key>Tip_RecoilAccessories</key>
-      <text> + {0} ({1} (Utilizável))</text>
+      <text>{0} ({1} (Utilizável))</text>
     </string>
     <string>
       <key>Tip_RemainingVehicleModCapacity</key>

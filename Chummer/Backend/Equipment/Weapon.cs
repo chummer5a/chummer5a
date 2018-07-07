@@ -2282,7 +2282,7 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += WeaponAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon).AsParallel().Sum(objAccessory => objAccessory.TotalCost);
+                decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.TotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
                 if (Children.Count > 0)
@@ -2640,6 +2640,14 @@ namespace Chummer.Backend.Equipment
                     {
                         lstLoopRCGroup[objAccessory.RCGroup - 1] = new Tuple<string, int>(objAccessory.DisplayName(GlobalOptions.Language), intItemRC);
                     }
+                    if (objAccessory.RCDeployable)
+                    {
+                        lstRCDeployGroups = lstLoopRCGroup;
+                    }
+                    else
+                    {
+                        lstRCGroups = lstLoopRCGroup;
+                    }
                 }
                 else if (!string.IsNullOrEmpty(objAccessory.RC) && int.TryParse(objAccessory.RC, out int intLoopRCBonus))
                 {
@@ -2752,7 +2760,7 @@ namespace Chummer.Backend.Equipment
             strRC = intRCBase.ToString(objCulture);
             if (intRCFull > intRCBase)
             {
-                strRC += strSpaceCharacter + intRCFull.ToString(objCulture);
+                strRC += $"{strSpaceCharacter}({intRCFull.ToString(objCulture)})";
             }
 
             if (blnRefreshRCToolTip)
