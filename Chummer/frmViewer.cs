@@ -182,7 +182,7 @@ namespace Chummer
             webBrowser1.ShowPrintPreviewDialog();
         }
 
-        private void cmdSaveHTML_Click(object sender, EventArgs e)
+        private void tsSaveAsHTML_Click(object sender, EventArgs e)
         {
             // Save the generated output as HTML.
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
@@ -260,8 +260,8 @@ namespace Chummer
         {
             cmdPrint.Enabled = false;
             tsPrintPreview.Enabled = false;
-            cmdSaveHTML.Enabled = false;
-            tsSaveAsPdf.Enabled = false;
+            tsSaveAsHtml.Enabled = false;
+            cmdSaveAsPdf.Enabled = false;
             webBrowser1.DocumentText =
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
                 "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
@@ -446,8 +446,8 @@ namespace Chummer
             {
                 cmdPrint.Enabled = true;
                 tsPrintPreview.Enabled = true;
-                cmdSaveHTML.Enabled = true;
-                tsSaveAsPdf.Enabled = true;
+                tsSaveAsHtml.Enabled = true;
+                cmdSaveAsPdf.Enabled = true;
             }
             if (GlobalOptions.PrintToFileFirst)
                 File.Delete(_strName);
@@ -460,13 +460,13 @@ namespace Chummer
             int intWidth = cmdPrint.Width;
             cmdPrint.AutoSize = false;
             cmdPrint.Width = intWidth + 20;
-            cmdSaveHTML.Left = cmdPrint.Right + 6;
+            cmdSaveAsPdf.Left = cmdPrint.Right + 6;
 
             lblCharacterSheet.Left = cboLanguage.Left - lblCharacterSheet.Width - 6;
-            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveHTML.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
+            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveAsPdf.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
         }
 
-        private void tsSaveAsPdf_Click(object sender, EventArgs e)
+        private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);

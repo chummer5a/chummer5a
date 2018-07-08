@@ -232,5 +232,10 @@
       <name>The Seattle Gambit</name>
       <code>TSG</code>
     </book>
+	  <book>
+		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+		  <name>Street Lethal</name>
+		  <code>SL</code>
+	  </book>
   </books>
 </chummer>

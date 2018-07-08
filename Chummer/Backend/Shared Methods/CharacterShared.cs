@@ -5220,7 +5220,7 @@ namespace Chummer
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
                                 {
-                                    TreeNode objNode = treImprovements.FindNode(objImprovement.SourceName);
+                                    TreeNode objNode = treImprovements.FindNode(objImprovement.InternalId);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -5228,7 +5228,7 @@ namespace Chummer
                                         if (objParent.Tag.ToString() == "Node_SelectedImprovements" && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                    objNode = treLimit.FindNode(objImprovement.SourceName);
+                                    objNode = treLimit.FindNode(objImprovement.InternalId);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;

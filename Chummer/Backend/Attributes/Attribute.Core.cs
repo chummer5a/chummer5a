@@ -465,7 +465,9 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intMeat = Value + AttributeModifiers;
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
+            //TODO: Should probably be in AttributeModifiers property directly?
+            int intMeat = Value + Math.Min(AttributeModifiers,4+AugmentedMaximumModifiers);
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.

@@ -129,14 +129,15 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiId);
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
-            objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
-            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
-            objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
-            objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
                 _eEntityType = ConvertToSpiritType(strTemp);
+            objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
+            objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
+            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+            Force = _intForce;
+            objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
+            objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -472,11 +473,19 @@ namespace Chummer
             get => _intForce;
             set
             {
-                if (_intForce != value)
+                switch (EntityType)
                 {
-                    _intForce = value;
-                    OnPropertyChanged();
+                    case SpiritType.Spirit when value > CharacterObject.MaxSpiritForce:
+                        value = CharacterObject.MaxSpiritForce;
+                        break;
+                    case SpiritType.Sprite when value > CharacterObject.MaxSpriteLevel:
+                        value = CharacterObject.MaxSpriteLevel;
+                        break;
                 }
+
+                if (_intForce == value) return;
+                _intForce = value;
+                OnPropertyChanged();
             }
         }
 

@@ -1711,9 +1711,17 @@
       <key>Message_CyberzombieRequirementsStimulator</key>
       <text>Must have an Invoked Memory Stimulator</text>
     </string>
+      <string>
+          <key>MessageTitle_CyberzombieRequirements</key>
+          <text>Cyberzombie Requirements</text>
+    </string>
     <string>
-      <key>MessageTitle_CyberzombieRequirements</key>
-      <text>Cyberzombie Requirements</text>
+      <key>MessageTitle_NoValidWeaponMount</key>
+      <text>No Valid Weapon Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidWeaponMount</key>
+      <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
     </string>
     <string>
       <key>Message_CyberzombieConfirm</key>
@@ -5651,7 +5659,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_RecoilAccessories</key>
-      <text> + {0} ({1} (Deployable))</text>
+      <text>{0} ({1} (Deployable))</text>
     </string>
     <string>
       <key>Tip_RemainingVehicleModCapacity</key>

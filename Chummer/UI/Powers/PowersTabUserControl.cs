@@ -82,7 +82,7 @@ namespace Chummer.UI.Powers
             _objCharacter.Powers.ListChanged += (sender, e) => {
                 if (e.ListChangedType == ListChangedType.ItemChanged)
                 {
-                    string propertyName = e.PropertyDescriptor.Name;
+                    string propertyName = e.PropertyDescriptor?.Name;
                     if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                     {
                         // recalculation of power points on rating/free levels change

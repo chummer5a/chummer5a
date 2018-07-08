@@ -19076,7 +19076,7 @@
       </powers>
       <skills>
         <skill rating="5">Astral Combat</skill>
-        <skill rating="5" spec="Lightning">Exotic Range Weapon</skill>
+        <skill rating="5" spec="Lightning">Exotic Ranged Weapon</skill>
         <skill rating="5">Flight</skill>
         <skill rating="6">Perception</skill>
         <skill rating="5">Unarmed Combat</skill>
@@ -22458,7 +22458,7 @@
       <skills>
         <skill rating="4">Gymnastics</skill>
         <skill rating="4">Perception</skill>
-        <skill rating="6">Shadowing</skill>
+        <skill rating="6">Sneaking</skill>
         <skill rating="5">Unarmed Combat</skill>
       </skills>
       <source>HS</source>
@@ -27644,9 +27644,9 @@
       <inimin>(F*2)</inimin>
       <inimax>(F*2)</inimax>
       <iniaug>(F*2)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
       <magmin>F</magmin>
       <magmax>F</magmax>
       <magaug>F</magaug>
@@ -27735,9 +27735,9 @@
       <inimin>(F*2)-1</inimin>
       <inimax>(F*2)-1</inimax>
       <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
       <magmin>F</magmin>
       <magmax>F</magmax>
       <magaug>F</magaug>
@@ -27825,9 +27825,9 @@
       <inimin>(F*2)+3</inimin>
       <inimax>(F*2)+3</inimax>
       <iniaug>(F*2)+3</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
       <magmin>F</magmin>
       <magmax>F</magmax>
       <magaug>F</magaug>
@@ -27917,9 +27917,9 @@
       <inimin>(F*2)+2</inimin>
       <inimax>(F*2)+2</inimax>
       <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
       <magmin>F</magmin>
       <magmax>F</magmax>
       <magaug>F</magaug>
@@ -28009,9 +28009,9 @@
       <inimin>(F*2)+2</inimin>
       <inimax>(F*2)+2</inimax>
       <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
       <magmin>F</magmin>
       <magmax>F</magmax>
       <magaug>F</magaug>
@@ -40258,7 +40258,7 @@
         <power select="Sonar">Enhanced Senses</power>
         <power rating="2">Armor</power>
         <power>AR-Parallelism</power>
-        <power>Cozenge</power>
+        <power>Cozenage</power>
         <power>Gremlins</power>
         <power>Tunnel</power>
       </powers>
@@ -40344,7 +40344,7 @@
       </bonus>
       <powers>
         <power select="Smell">Enhanced Senses</power>
-        <power select="Antlers: DV (STR+1)P, AP -1">Natural Weapons</power>
+        <power select="Antlers: DV (STR+1)P, AP -1">Natural Weapon</power>
         <power rating="2">Armor</power>
         <power>AR-Parallelism</power>
         <power>Resonance Feed</power>
@@ -40687,7 +40687,7 @@
         <power>Gestalt Consciousness</power>
         <power rating="3">Fragile</power>
         <power>AR-Parallelism</power>
-        <power>Cozenge</power>
+        <power>Cozenage</power>
         <power>Gremlins</power>
         <power>Tunnel</power>
       </powers>

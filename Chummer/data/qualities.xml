@@ -9279,7 +9279,7 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>8</max>
+            <max>7</max>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -9299,7 +9299,7 @@
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
-            <max>7</max>
+            <max>8</max>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
@@ -16266,6 +16266,158 @@
       <source>TSG</source>
       <page>30</page>
     </quality>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <!-- Region Positive Qualities -->
+    <!-- TODO: FixedValues for quality karma values based on level? -->
+    <quality>
+      <id>21e19949-5481-47a6-939b-d3522ba3a7c8</id>
+      <name>Corporate Loyalist</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>07916773-5aa2-4c8b-b239-932a9359428a</id>
+      <name>Location Attunement I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>257afab2-b281-4e27-b6d2-1b02b409637a</id>
+      <name>Location Attunement II</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>3619084e-9c13-48d0-b985-0d15aa9d885a</id>
+      <name>Location Attunement III</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>52d00c91-76d5-4b06-b475-f49637ea9763</id>
+      <name>Natural Leader</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>e9a11971-48a2-4c9a-89b4-16c844e197ba</id>
+      <name>Observant</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>8d9cc4fa-ce95-423a-8db8-724372903b3d</id>
+      <name>Battle Hardened</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Negative Qualities -->
+    <quality>
+      <id>0d1d5e5d-5a11-4dff-9776-3cf088ab8ea7</id>
+      <name>Corporate Pariah I</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>7bce4053-611b-4b58-8e1d-fc9dde20fd9f</id>
+      <name>Corporate Pariah II</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>bb0cd874-a7bb-4863-b393-23ef0eda6313</id>
+      <name>Every Man For Himself</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
+      <id>7b051d98-e95b-48f9-8fbb-dae69a739913</id>
+      <name>No Man Left Behind</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
+      <id>e4956c8e-119f-4670-9dcf-30f4709863ae</id>
+      <name>Stay Out of My Way</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>a3c1f52d-edee-4927-899f-18265e75de1c</id>
+      <name>This Is Your Last Chance</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>0f9a0d45-a3c5-454d-8581-a5a1804e522e</id>
+      <name>Thousand-Yard Stare</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <!-- End Region -->
     <!-- End Region -->
   </qualities>
 </chummer>

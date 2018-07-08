@@ -2966,6 +2966,42 @@
       <page>186</page>
     </armor>
     <!-- End Region -->
+    <!-- Region Street Lethal-->
+    <armor>
+      <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <category>Armor</category>
+      <armor>20</armor>
+      <armorcapacity>20</armorcapacity>
+      <avail>30F</avail>
+      <cost>35000</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Must be visible, only for Intimidation</condition>
+        </limitmodifier>
+      </bonus>
+      <mods>
+        <name>Custom Fit</name>
+        <name>Gear Access</name>
+        <name>Holster</name>
+      </mods>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <armor>
+      <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
+      <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+      <category>Armor</category>
+      <armor>+10</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>12F</avail>
+      <cost>3000</cost>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <!-- End Region -->
   </armors>
   <mods>
     <!-- Region Shadowrun 5 -->

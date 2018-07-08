@@ -114,7 +114,7 @@
       <id>39042c0a-4b22-4762-8d56-623033860178</id>
       <name>Arrow: Monotip Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>HT</source>
       <page>187</page>
       <avail>8R</avail>
@@ -525,7 +525,7 @@
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
       <name>Arrow: Standard</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>SR5</source>
       <page>423</page>
       <avail>Rating</avail>
@@ -536,7 +536,7 @@
       <id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
       <name>Arrow: Injection</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>SR5</source>
       <page>424</page>
       <avail>(Rating + 2)R</avail>
@@ -593,7 +593,7 @@
       <id>dd6e4f80-8200-47fa-8f78-9204e9c0f70d</id>
       <name>Arrow: Barbed Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>23</page>
       <avail>(Rating)R</avail>
@@ -607,7 +607,7 @@
       <id>d09f3ebd-28fb-4375-ad0f-49fd1b521c12</id>
       <name>Arrow: Explosive Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>23</page>
       <avail>(Rating)F</avail>
@@ -623,7 +623,7 @@
       <id>8fb09c1d-f890-444b-bb2b-cf1a5e6825b8</id>
       <name>Arrow: Hammerhead</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>Rating</avail>
@@ -639,7 +639,7 @@
       <id>f245f0d0-22ba-4367-97ee-6762df9137bc</id>
       <name>Arrow: Incendiary Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>12F</avail>
@@ -653,7 +653,7 @@
       <id>1cdea5f7-df85-4ebe-bc32-f8dbfa27dad3</id>
       <name>Arrow: Screamer Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>Rating</avail>
@@ -669,7 +669,7 @@
       <id>4ddbecdf-fc04-4b1d-851b-63d5e9e57dbb</id>
       <name>Arrow: Stick-n-Shock</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>(Rating)R</avail>
@@ -684,7 +684,7 @@
       <id>258049dc-6f94-4d41-be97-cadeba20ff36</id>
       <name>Arrow: Stick-n-Shock w/Static Shaft</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>6R</avail>

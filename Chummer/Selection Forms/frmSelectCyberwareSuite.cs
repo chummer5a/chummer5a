@@ -95,6 +95,8 @@ namespace Chummer
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
+            lstCyberware.ValueMember = "Value";
+            lstCyberware.DisplayMember = "Name";
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -103,9 +105,9 @@ namespace Chummer
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
+            if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\"]");
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {

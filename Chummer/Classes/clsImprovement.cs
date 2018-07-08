@@ -35,7 +35,7 @@ using System.ComponentModel;
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
-    public class Improvement: IHasNotes
+    public class Improvement: IHasNotes, IHasInternalId
     {
         private string DisplayDebug()
         {
@@ -1781,7 +1781,7 @@ namespace Chummer
         {
             TreeNode nodImprovement = new TreeNode
             {
-                Tag = SourceName,
+                Tag = this,
                 Text = CustomName,
                 ToolTipText = Notes.WordWrap(100),
                 ContextMenuStrip = cmsImprovement,
@@ -1807,6 +1807,8 @@ namespace Chummer
         }
         #endregion
         #endregion
+
+        public string InternalId => SourceName;
     }
 
     public struct ImprovementDictionaryKey

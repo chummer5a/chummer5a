@@ -1,4 +1,26 @@
-Future Build 201
+Future Build 202
+
+Application Changes:
+
+- Fixed incorect behavior with filtering columns on the select window browse tab. 
+- Fixed an issue with carbines defaulting to using the Pistols skill.
+- Changed JSON to be the default export method.
+- Fixed behaviour of sell methods for Armor Mods, Gear, Vehicles, Weapons, Weapon Accessories and Weapon Mounts.
+- Fixed odd behaviour when using the optional rule to have mystic adepts purchase a second magic attribute.
+- Fixed issues with selecting and adding Cyberware Suites.
+- Fixed an issue with preinstalled weapon accessories that have non-preinstalled gear not calculating costs correctly. Fixes #2846
+- Minor fixes for recoil compensation calculation.
+- SelectTradition and SelectRestricted improvements no longer spawn a selection window if not required.
+- Fixed refresh behaviour of Prototype Transhuman to work immediately on change of prototype transhuman status. Little more chatty than I'd like, but it works well enough.
+- Fixed issues with loading older characters that had a Spirit Force/Sprite Level abpve the maximum they're supposed to.
+
+Data Changes:
+
+- Added alternate Druid tradition from Forbidden Arcana. 
+- Fixed an incorrect availability on the Krime Tingler.
+- Fixed category of the Krime Gloves to be Unarmed.
+
+Build 201
 
 Application Changes:
 
@@ -36,6 +58,14 @@ Application Changes:
 - Fixed an issue with attribute tooltips not updating properly if bonuses and penalties even out.
 - Fixed a typo in the Select Spell window that prevented categories from being translated.
 - Fixed skill names in weapon dicepool tooltips not showing the correct translated displayname.
+- Fixed behaviour of lifestyles causing a crash after being edited.
+- Fixed a crash when toggling the state of Adept Way discounting for powers.
+- Fixed an issue with foci not properly being removed when unbonded.
+- PDF is now the default export choice.
+- Fixed a regression with condition monitor checkboxes not properly remaining highlighted when first loaded.
+- Fixed an issue with foci not updating their displayname properly in the Foci window.
+- Fixed a regression in which attribute modifiers could exceed the current value + 4.
+- Fixed some issues with the creation and deletion of custom Improvements.
 
 Data Changes:
 
@@ -47,6 +77,9 @@ Data Changes:
 - Fixed translation for Commanding Voice in German.
 - Added a customdata entry to move Commanding Voice from Stolen Souls into Street Grimoire, per German data changes.
 - Added a customdata entry to swap the pricing of seeker shafts and monotip arrow heads per German data changes.
+- Added content from Street Lethal. 
+- Fixed incorrect REA and INT stats for the Nosferatu quality.
+- Increase rating of arrows to compensate for Street Lethal's TrollBow.
 
 New Strings:
 
@@ -54,6 +87,8 @@ New Strings:
 - ColumnHeader_Notes
 - ColumnHeader_Power_Points
 - ColumnHeader_Action
+- MessageTitle_NoValidWeaponMount
+- Message_NoValidWeaponMount
 
 Build 200
 

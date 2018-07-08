@@ -611,6 +611,7 @@ namespace Chummer
                     new DependancyGraphNode<string>(nameof(Essence),
                         new DependancyGraphNode<string>(nameof(CyberwareEssence)),
                         new DependancyGraphNode<string>(nameof(BiowareEssence)),
+                        new DependancyGraphNode<string>(nameof(PrototypeTranshumanEssenceUsed)),
                         new DependancyGraphNode<string>(nameof(EssenceHole))
                     )
                 ),
@@ -12580,6 +12581,7 @@ namespace Chummer
             }
             if (lstNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
             {
+                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
                 _decCachedBiowareEssence = decimal.MinValue;
             }
             if (lstNamesOfChangedProperties.Contains(nameof(EssenceHole)))
@@ -12588,6 +12590,7 @@ namespace Chummer
             }
             if (lstNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
             {
+                _decCachedBiowareEssence = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
             }
             if (lstNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
