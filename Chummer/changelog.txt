@@ -10,11 +10,14 @@ Application Changes:
 - Fixed issues with selecting and adding Cyberware Suites.
 - Fixed an issue with preinstalled weapon accessories that have non-preinstalled gear not calculating costs correctly. Fixes #2846
 - Minor fixes for recoil compensation calculation.
+- SelectTradition and SelectRestricted improvements no longer spawn a selection window if not required.
+- Fixed refresh behaviour of Prototype Transhuman to work immediately on change of prototype transhuman status. Little more chatty than I'd like, but it works well enough.
 
 Data Changes:
 
 - Added alternate Druid tradition from Forbidden Arcana. 
 - Fixed an incorrect availability on the Krime Tingler.
+- Fixed category of the Krime Gloves to be Unarmed.
 
 Build 201
 

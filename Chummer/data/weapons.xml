@@ -12355,7 +12355,7 @@
     <weapon>
       <id>559655cd-a883-4beb-9d19-ed59b51d27a5</id>
       <name>Krime Gloves</name>
-      <category>Clubs</category>
+      <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Phsical</accuracy>
@@ -12374,7 +12374,7 @@
     <weapon>
       <id>80b53580-d3fb-4d33-bfe5-f3c727fe5d8f</id>
       <name>Krime Gloves: Stun Pad</name>
-      <category>Clubs</category>
+      <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
