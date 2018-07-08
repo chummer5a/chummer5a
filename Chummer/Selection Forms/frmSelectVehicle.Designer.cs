@@ -1,33 +1,33 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectVehicle
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectVehicle
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.lblVehiclePilot = new System.Windows.Forms.Label();
@@ -66,7 +66,6 @@
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
@@ -338,7 +337,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 31;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -388,6 +387,7 @@
             // 
             // nudUsedVehicleDiscount
             // 
+            this.nudUsedVehicleDiscount.DecimalPlaces = 2;
             this.nudUsedVehicleDiscount.Location = new System.Drawing.Point(577, 206);
             this.nudUsedVehicleDiscount.Maximum = new decimal(new int[] {
             50,
@@ -400,7 +400,7 @@
             0,
             0});
             this.nudUsedVehicleDiscount.Name = "nudUsedVehicleDiscount";
-            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(41, 20);
+            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(48, 20);
             this.nudUsedVehicleDiscount.TabIndex = 24;
             this.nudUsedVehicleDiscount.Value = new decimal(new int[] {
             20,
@@ -413,7 +413,7 @@
             // lblUsedVehicleDiscountPercentLabel
             // 
             this.lblUsedVehicleDiscountPercentLabel.AutoSize = true;
-            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(617, 208);
+            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(631, 208);
             this.lblUsedVehicleDiscountPercentLabel.Name = "lblUsedVehicleDiscountPercentLabel";
             this.lblUsedVehicleDiscountPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblUsedVehicleDiscountPercentLabel.TabIndex = 25;
@@ -422,6 +422,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(481, 257);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -429,10 +430,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 28;
@@ -475,20 +476,6 @@
             this.lblTestLabel.TabIndex = 18;
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // chkBlackMarketDiscount
             // 
@@ -597,50 +584,49 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.Label lblVehiclePilot;
-		private System.Windows.Forms.Label lblVehiclePilotLabel;
-		private System.Windows.Forms.Label lblVehicleArmor;
-		private System.Windows.Forms.Label lblVehicleArmorLabel;
-		private System.Windows.Forms.Label lblVehicleBody;
-		private System.Windows.Forms.Label lblVehicleBodyLabel;
-		private System.Windows.Forms.Label lblVehicleSpeed;
-		private System.Windows.Forms.Label lblVehicleSpeedLabel;
-		private System.Windows.Forms.Label lblVehicleCost;
-		private System.Windows.Forms.Label lblVehicleCostLabel;
-		private System.Windows.Forms.Label lblVehicleAvail;
-		private System.Windows.Forms.Label lblVehicleAvailLabel;
-		private System.Windows.Forms.Label lblVehicleAccel;
-		private System.Windows.Forms.Label lblVehicleAccelLabel;
-		private System.Windows.Forms.Label lblVehicleHandling;
-		private System.Windows.Forms.Label lblVehicleHandlingLabel;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.ListBox lstVehicle;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.Label lblVehicleSensor;
-		private System.Windows.Forms.Label lblVehicleSensorLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.CheckBox chkFreeItem;
-		private System.Windows.Forms.CheckBox chkUsedVehicle;
-		private System.Windows.Forms.Label lblUsedVehicleDiscountLabel;
-		private System.Windows.Forms.NumericUpDown nudUsedVehicleDiscount;
-		private System.Windows.Forms.Label lblUsedVehicleDiscountPercentLabel;
-		private System.Windows.Forms.NumericUpDown nudMarkup;
-		private System.Windows.Forms.Label lblMarkupLabel;
-		private System.Windows.Forms.Label lblMarkupPercentLabel;
-		private System.Windows.Forms.Label lblTest;
-		private System.Windows.Forms.Label lblTestLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.Label lblVehiclePilot;
+        private System.Windows.Forms.Label lblVehiclePilotLabel;
+        private System.Windows.Forms.Label lblVehicleArmor;
+        private System.Windows.Forms.Label lblVehicleArmorLabel;
+        private System.Windows.Forms.Label lblVehicleBody;
+        private System.Windows.Forms.Label lblVehicleBodyLabel;
+        private System.Windows.Forms.Label lblVehicleSpeed;
+        private System.Windows.Forms.Label lblVehicleSpeedLabel;
+        private System.Windows.Forms.Label lblVehicleCost;
+        private System.Windows.Forms.Label lblVehicleCostLabel;
+        private System.Windows.Forms.Label lblVehicleAvail;
+        private System.Windows.Forms.Label lblVehicleAvailLabel;
+        private System.Windows.Forms.Label lblVehicleAccel;
+        private System.Windows.Forms.Label lblVehicleAccelLabel;
+        private System.Windows.Forms.Label lblVehicleHandling;
+        private System.Windows.Forms.Label lblVehicleHandlingLabel;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.ListBox lstVehicle;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ComboBox cboCategory;
+        private System.Windows.Forms.Label lblVehicleSensor;
+        private System.Windows.Forms.Label lblVehicleSensorLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.CheckBox chkFreeItem;
+        private System.Windows.Forms.CheckBox chkUsedVehicle;
+        private System.Windows.Forms.Label lblUsedVehicleDiscountLabel;
+        private System.Windows.Forms.NumericUpDown nudUsedVehicleDiscount;
+        private System.Windows.Forms.Label lblUsedVehicleDiscountPercentLabel;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupLabel;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.Label lblTest;
+        private System.Windows.Forms.Label lblTestLabel;
+        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label lblVehicleSeatsLabel;
         private System.Windows.Forms.Label lblVehicleSeats;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;

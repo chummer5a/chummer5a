@@ -1,22 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Xml;
-using Chummer;
-using Chummer.Datastructures;
 
-namespace Chummer.Skills
-{ 
-	class ExoticSkill : Skill
-	{
-		private static readonly TranslatedField<string> _specificTranslator = new TranslatedField<string>();
-		private string _specific;
-		private string _translated;
+namespace Chummer.Backend.Skills
+{
+    public sealed class ExoticSkill : Skill
+    {
+        private string _strSpecific;
 
-		static ExoticSkill()
-		{
-			XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
+        public ExoticSkill(Character character, XmlNode node) : base(character, node)
+        {
+        }
 
 		    if (exotic != null)
 		    {
@@ -32,14 +43,15 @@ namespace Chummer.Skills
                     }
                 }
 
-		        _specificTranslator.AddRange(elem);
-		    }
-		}
+        public override bool AllowDelete => !CharacterObject.Created;
 
+        public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
-		public ExoticSkill(Character character, XmlNode node) : base(character, node)
-		{
-		}
+        /// <summary>
+        /// How much karma this costs. Return value during career mode is undefined
+        /// </summary>
+        /// <returns></returns>
+        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
 		public void Load(XmlNode node)
 		{
@@ -47,35 +59,32 @@ namespace Chummer.Skills
             node.TryGetStringFieldQuickly("translated", ref _translated);
 		}
 
-		public override bool AllowDelete
-		{
-		    get
-		    {
-		        return !CharacterObject.Created;
-		    }
-		}
+        /// <summary>
+        /// Called during save to allow derived classes to save additional infomation required to rebuild state
+        /// </summary>
+        /// <param name="writer"></param>
+        protected override void SaveExtendedData(XmlTextWriter writer)
+        {
+            writer.WriteElementString("specific", _strSpecific);
+        }
 
-		public override int CurrentSpCost()
-		{
-			return BasePoints;
-		}
+        public string Specific
+        {
+            get => _strSpecific;
+            set
+            {
+                _strSpecific = value;
+                OnPropertyChanged();
+            }
+        }
 
-		/// <summary>
-		/// How much karma this costs. Return value during career mode is undefined
-		/// </summary>
-		/// <returns></returns>
-		public override int CurrentKarmaCost()
-		{
-			return RangeCost(Base + FreeKarma(), LearnedRating);
-		}
+        public string DisplaySpecific(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Specific;
 
-		public override bool IsExoticSkill
-		{
-		    get
-		    {
-		        return true;
-		    }
-		}
+            return LanguageManager.TranslateExtra(Specific, strLanguage);
+        }
 
 		/// <summary>
 		/// Called during save to allow derived classes to save additional infomation required to rebuild state
@@ -110,3 +119,14 @@ namespace Chummer.Skills
 		}
 	}
 }
+
+        public void Load(XmlNode node)
+        {
+            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
+        }
+        public override bool IsExoticSkill => true;
+        public override string DisplaySpecializationMethod(string strLanguage)
+        {
+            return DisplaySpecific(strLanguage);
+        }
+    }

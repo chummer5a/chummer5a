@@ -16,31 +16,25 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+ using System;
+ using System.IO;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmAddToken : Form
     {
         // used when the user has filled out the information
-        private InitiativeUserControl parentControl;
+        private readonly InitiativeUserControl parentControl;
         private Character _character;
 
         public frmAddToken(InitiativeUserControl init)
         {
             InitializeComponent();
-            //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
-            
+
         }
 
         /// <summary>
@@ -48,8 +42,10 @@ namespace Chummer
         /// </summary>
         private void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+            };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 LoadCharacter(openFileDialog.FileName);
@@ -63,21 +59,23 @@ namespace Chummer
         {
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
-                bool blnLoaded = false;
-                Character objCharacter = new Character();
-                objCharacter.FileName = fileName;
-                blnLoaded = objCharacter.Load();
-
-                if (!blnLoaded)
+                Cursor = Cursors.WaitCursor;
+                Character objCharacter = new Character
                 {
-                    ;   // TODO edward setup error page
+                    FileName = fileName
+                };
+                if (!objCharacter.Load())
+                {
+                    Cursor = Cursors.Default;   // TODO edward setup error page
                     return; // we obviously cannot init
                 }
 
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
-                nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
+                if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
+                    nudInitStart.Value = intTemp;
                 _character = objCharacter;
+                Cursor = Cursors.Default;
             }
         }
 
@@ -100,21 +98,34 @@ namespace Chummer
         {
             if (_character != null)
             {
-                _character.InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue;
-                _character.InitialInit = (int)nudInitStart.Value;
-                _character.Delayed = false;
-                _character.InitPasses = (int)nudInit.Value;
                 _character.Name = txtName.Text;
+                _character.InitPasses = (int)nudInit.Value;
+                _character.Delayed = false;
+                _character.InitialInit = (int)nudInitStart.Value;
             }
             else
-                _character = new Character()
+            {
+                _character = new Character
                 {
                     Name = txtName.Text,
                     InitPasses = (int)nudInit.Value,
-                    InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue,
                     Delayed = false,
                     InitialInit = (int)nudInitStart.Value
                 };
+            }
+            if (chkAutoRollInit.Checked)
+            {
+                int intInitPasses = _character.InitPasses;
+                int intInitRoll = intInitPasses;
+                for (int j = 0; j < intInitPasses; ++j)
+                {
+                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                }
+                _character.InitRoll = intInitRoll + _character.InitialInit;
+            }
+            else
+                _character.InitRoll = int.MinValue;
+
             parentControl.AddToken(_character);
             Close();
         }

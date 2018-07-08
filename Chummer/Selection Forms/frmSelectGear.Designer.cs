@@ -1,33 +1,33 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectGear
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectGear
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstGear = new System.Windows.Forms.ListBox();
@@ -56,15 +56,12 @@
             this.nudMarkup = new System.Windows.Forms.NumericUpDown();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.chkHacked = new System.Windows.Forms.CheckBox();
             this.chkStack = new System.Windows.Forms.CheckBox();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.chkInherentProgram = new System.Windows.Forms.CheckBox();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -127,8 +124,13 @@
             // 
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(422, 127);
+            this.nudRating.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(37, 20);
+            this.nudRating.Size = new System.Drawing.Size(97, 20);
             this.nudRating.TabIndex = 11;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
@@ -183,7 +185,7 @@
             // lblMaximumCapacity
             // 
             this.lblMaximumCapacity.AutoSize = true;
-            this.lblMaximumCapacity.Location = new System.Drawing.Point(362, 296);
+            this.lblMaximumCapacity.Location = new System.Drawing.Point(362, 289);
             this.lblMaximumCapacity.Name = "lblMaximumCapacity";
             this.lblMaximumCapacity.Size = new System.Drawing.Size(101, 13);
             this.lblMaximumCapacity.TabIndex = 30;
@@ -211,7 +213,7 @@
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Location = new System.Drawing.Point(559, 349);
+            this.cmdOKAdd.Location = new System.Drawing.Point(559, 351);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 37;
@@ -242,17 +244,17 @@
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(413, 321);
+            this.lblSource.Location = new System.Drawing.Point(419, 311);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 32;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(362, 321);
+            this.lblSourceLabel.Location = new System.Drawing.Point(362, 311);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 31;
@@ -286,8 +288,13 @@
             0,
             0,
             0});
+            this.nudGearQty.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudGearQty.Name = "nudGearQty";
-            this.nudGearQty.Size = new System.Drawing.Size(56, 20);
+            this.nudGearQty.Size = new System.Drawing.Size(97, 20);
             this.nudGearQty.TabIndex = 14;
             this.nudGearQty.Value = new decimal(new int[] {
             1,
@@ -333,6 +340,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(422, 222);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -340,10 +348,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 20;
@@ -368,25 +376,12 @@
             this.lblMarkupPercentLabel.TabIndex = 21;
             this.lblMarkupPercentLabel.Text = "%";
             // 
-            // chkHacked
-            // 
-            this.chkHacked.AutoSize = true;
-            this.chkHacked.Location = new System.Drawing.Point(525, 181);
-            this.chkHacked.Name = "chkHacked";
-            this.chkHacked.Size = new System.Drawing.Size(64, 17);
-            this.chkHacked.TabIndex = 18;
-            this.chkHacked.Tag = "Label_SelectGear_Hacked";
-            this.chkHacked.Text = "Hacked";
-            this.chkHacked.UseVisualStyleBackColor = true;
-            this.chkHacked.Visible = false;
-            this.chkHacked.CheckedChanged += new System.EventHandler(this.chkHacked_CheckedChanged);
-            // 
             // chkStack
             // 
             this.chkStack.AutoSize = true;
             this.chkStack.Checked = true;
             this.chkStack.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkStack.Location = new System.Drawing.Point(484, 154);
+            this.chkStack.Location = new System.Drawing.Point(525, 154);
             this.chkStack.Name = "chkStack";
             this.chkStack.Size = new System.Drawing.Size(54, 17);
             this.chkStack.TabIndex = 15;
@@ -413,43 +408,6 @@
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
             // 
-            // chkInherentProgram
-            // 
-            this.chkInherentProgram.AutoSize = true;
-            this.chkInherentProgram.Location = new System.Drawing.Point(484, 128);
-            this.chkInherentProgram.Name = "chkInherentProgram";
-            this.chkInherentProgram.Size = new System.Drawing.Size(107, 17);
-            this.chkInherentProgram.TabIndex = 12;
-            this.chkInherentProgram.Tag = "Label_SelectGear_InherentProgram";
-            this.chkInherentProgram.Text = "Inherent Program";
-            this.chkInherentProgram.UseVisualStyleBackColor = true;
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
-            // chkAerodynamic
-            // 
-            this.chkAerodynamic.AutoSize = true;
-            this.chkAerodynamic.Location = new System.Drawing.Point(464, 97);
-            this.chkAerodynamic.Name = "chkAerodynamic";
-            this.chkAerodynamic.Size = new System.Drawing.Size(87, 17);
-            this.chkAerodynamic.TabIndex = 39;
-            this.chkAerodynamic.Tag = "Checkbox_Aerodynamic";
-            this.chkAerodynamic.Text = "Aerodynamic";
-            this.chkAerodynamic.UseVisualStyleBackColor = true;
-            this.chkAerodynamic.Visible = false;
-            // 
             // chkBlackMarketDiscount
             // 
             this.chkBlackMarketDiscount.AutoSize = true;
@@ -466,7 +424,7 @@
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(362, 337);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(362, 332);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
@@ -475,6 +433,18 @@
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(362, 355);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 66;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            // 
             // frmSelectGear
             // 
             this.AcceptButton = this.cmdOK;
@@ -482,14 +452,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(646, 414);
+            this.Controls.Add(this.chkShowOnlyAffordItems);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
-            this.Controls.Add(this.chkAerodynamic);
-            this.Controls.Add(this.chkInherentProgram);
             this.Controls.Add(this.lblTest);
             this.Controls.Add(this.lblTestLabel);
             this.Controls.Add(this.chkStack);
-            this.Controls.Add(this.chkHacked);
             this.Controls.Add(this.nudMarkup);
             this.Controls.Add(this.lblMarkupLabel);
             this.Controls.Add(this.chkDoItYourself);
@@ -533,46 +501,43 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.ListBox lstGear;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.NumericUpDown nudRating;
-		private System.Windows.Forms.Label lblRatingLabel;
-		private System.Windows.Forms.Label lblCost;
-		private System.Windows.Forms.Label lblCostLabel;
-		private System.Windows.Forms.Label lblAvail;
-		private System.Windows.Forms.Label lblAvailLabel;
-		private System.Windows.Forms.Label lblMaximumCapacity;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.ListBox lstGear;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ComboBox cboCategory;
+        private System.Windows.Forms.NumericUpDown nudRating;
+        private System.Windows.Forms.Label lblRatingLabel;
+        private System.Windows.Forms.Label lblCost;
+        private System.Windows.Forms.Label lblCostLabel;
+        private System.Windows.Forms.Label lblAvail;
+        private System.Windows.Forms.Label lblAvailLabel;
+        private System.Windows.Forms.Label lblMaximumCapacity;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblGearDeviceRating;
+        private System.Windows.Forms.Label lblGearDeviceRating;
         private System.Windows.Forms.Label lblGearDeviceRatingLabel;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.Label lblCapacity;
-		private System.Windows.Forms.Label lblCapacityLabel;
-		private System.Windows.Forms.NumericUpDown nudGearQty;
-		private System.Windows.Forms.Label lblGearQtyLabel;
-		private System.Windows.Forms.CheckBox chkFreeItem;
-		private System.Windows.Forms.CheckBox chkDoItYourself;
-		private System.Windows.Forms.NumericUpDown nudMarkup;
-		private System.Windows.Forms.Label lblMarkupLabel;
-		private System.Windows.Forms.Label lblMarkupPercentLabel;
-		private System.Windows.Forms.CheckBox chkHacked;
-		private System.Windows.Forms.CheckBox chkStack;
-		private System.Windows.Forms.Label lblTest;
-		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.CheckBox chkInherentProgram;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.CheckBox chkAerodynamic;
-		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.Label lblCapacity;
+        private System.Windows.Forms.Label lblCapacityLabel;
+        private System.Windows.Forms.NumericUpDown nudGearQty;
+        private System.Windows.Forms.Label lblGearQtyLabel;
+        private System.Windows.Forms.CheckBox chkFreeItem;
+        private System.Windows.Forms.CheckBox chkDoItYourself;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupLabel;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.CheckBox chkStack;
+        private System.Windows.Forms.Label lblTest;
+        private System.Windows.Forms.Label lblTestLabel;
+        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
     }
 }

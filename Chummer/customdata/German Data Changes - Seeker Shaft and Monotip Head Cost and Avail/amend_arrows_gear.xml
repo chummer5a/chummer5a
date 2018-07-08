@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Swaos the price and availability of the seeker shaft and -->
+<chummer>
+    <gears>
+	    <gear>
+		    <id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
+		    <avail>8R</avail>
+		    <cost>(Rating * 30)</cost>
+	    </gear>
+	    <gear>
+		    <id>39042c0a-4b22-4762-8d56-623033860178</id>
+		    <avail>12F</avail>
+		    <cost>45</cost>
+	    </gear>
+    </gears>
+</chummer>

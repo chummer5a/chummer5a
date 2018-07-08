@@ -1,4 +1,22 @@
-﻿using System;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,279 +25,397 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Equipment;
 using Chummer.Backend.Powers;
 using Chummer.UI.Shared;
+using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
 
 namespace Chummer.UI.Powers
 {
-	public partial class PowersTabUserControl : UserControl
-	{
-		public event PropertyChangedEventHandler ChildPropertyChanged; 
+    public partial class PowersTabUserControl : UserControl
+    {
+        // TODO: check, if this can be removed???
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        
+        private TableView<Power> _table;
 
-		private BindingListDisplay<Power> _powers;
-		public PowersTabUserControl()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+        public PowersTabUserControl()
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-		public void MissingDatabindingsWorkaround()
-		{
-			//TODO: Databind this
-			CalculatePowerPoints();
-		}
+            _dropDownList = GenerateDropdownFilter();
 
-		private bool _loadCalled;
-		private bool _initialized;
-		private Character _character;
-		private List<Tuple<string, Predicate<Power>>> _dropDownList;
-		private List<Tuple<string, IComparer<Power>>>  _sortList;
-		private bool _searchMode;
+            SuspendLayout();
+            InitializeTable();
+            ResumeLayout();
+        }
+        
+        private Character _objCharacter;
+        private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
+        private bool _blnSearchMode;
+        
+        private void PowersTabUserControl_Load(object sender, EventArgs e)
+        {
+            if (_objCharacter == null)
+            {
+                if (ParentForm != null)
+                    ParentForm.Cursor = Cursors.WaitCursor;
+                RealLoad();
+                if (ParentForm != null)
+                    ParentForm.Cursor = Cursors.Default;
+            }
+        }
+        
+        public void RealLoad()
+        {
+            if (ParentForm is CharacterShared frmParent)
+                _objCharacter = frmParent.CharacterObject;
+            else
+            {
+                Utils.BreakIfDebug();
+                _objCharacter = new Character();
+            }
 
-		public Character ObjCharacter
-		{
-			set
-			{
-				_character = value;
-				RealLoad();
-			}
-			get { return _character; }
-		}
+            _objCharacter.Powers.ListChanged += (sender, e) => {
+                if (e.ListChangedType == ListChangedType.ItemChanged)
+                {
+                    string propertyName = e.PropertyDescriptor?.Name;
+                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                    {
+                        // recalculation of power points on rating/free levels change
+                        CalculatePowerPoints();
+                    }
+                }
+            };
 
-		private void PowersTabUserControl_Load(object sender, EventArgs e)
-		{
-			_loadCalled = true;
-			RealLoad();
-		}
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
+            Stopwatch parts = Stopwatch.StartNew();
+            //Keep everything visible until ready to display everything. This
+            //seems to prevent redrawing everything each time anything is added
+            //Not benched, but should be faster
 
-		private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
-		{
-			if (_initialized) return;
+            //Might also be useless horseshit, 2 lines
 
-			if (!(_character != null && _loadCalled)) return;
+            //Visible = false;
+            SuspendLayout();
+            DoubleBuffered = true;
 
-			_initialized = true;  //Only do once
-			Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
-			Stopwatch parts = Stopwatch.StartNew();
-			//Keep everything visible until ready to display everything. This 
-			//seems to prevent redrawing everything each time anything is added
-			//Not benched, but should be faster
+            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			//Might also be useless horseshit, 2 lines
+            parts.TaskEnd("MakePowerDisplay()");
 
-			//Visible = false;
-			//this.SuspendLayout();
-			MakePowerDisplays();
+            cboDisplayFilter.DataSource = _dropDownList;
+            cboDisplayFilter.ValueMember = "Item2";
+            cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.SelectedIndex = 1;
+            cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
 
-			parts.TaskEnd("MakePowerDisplay()");
+            parts.TaskEnd("_ddl databind");
 
-			_dropDownList = GenerateDropdownFilter();
+            //Visible = true;
+            //this.ResumeLayout(false);
+            //this.PerformLayout();
+            parts.TaskEnd("visible");
 
-			parts.TaskEnd("GenerateDropDown()");
+            _table.Height = pnlPowers.Height - _table.Top;
+            _table.Width = pnlPowers.Width - _table.Left;
+            _table.Items = _objCharacter.Powers;
 
-			_sortList = GenerateSortList();
+            parts.TaskEnd("resize");
+            //this.Update();
+            ResumeLayout(true);
+            //this.PerformLayout();
+            sw.Stop();
+            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+        }
+        
+        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        {
+            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
+            {
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
+            };
 
-			parts.TaskEnd("GenerateSortList()");
+            /*
+            using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category"))
+                if (xmlPowerCategoryList != null)
+                    foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
+                    {
+                        string strName = xmlCategoryNode.InnerText;
+                        ret.Add(new Tuple<string, Predicate<Power>>(
+                            $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
+                            power => power.Category == strName));
+                    }
+                    */
 
-			
-			cboDisplayFilter.DataSource = _dropDownList;
-			cboDisplayFilter.ValueMember = "Item2";
-			cboDisplayFilter.DisplayMember = "Item1";
-			cboDisplayFilter.SelectedIndex = 0;
-			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+            return ret;
+        }
+        
+        private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
+            {
+                if (selectedItem.Item2 == null)
+                {
+                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
+                    _blnSearchMode = true;
+                    cboDisplayFilter.Text = string.Empty;
+                }
+                else
+                {
+                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+                    _blnSearchMode = false;
+                    _table.Filter = selectedItem.Item2;
+                }
+            }
+        }
 
-			parts.TaskEnd("_ddl databind");
+        private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        {
+            if (_blnSearchMode)
+            {
+                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+            }
+        }
 
-			cboSort.DataSource = _sortList;
-			cboSort.ValueMember = "Item2";
-			cboSort.DisplayMember = "Item1";
-			cboSort.SelectedIndex = 0;
-			cboSort.MaxDropDownItems = _sortList.Count;
+        private void cmdAddPower_Click(object sender, EventArgs e)
+        {
+            // Open the Cyberware XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+            bool blnAddAgain;
 
-			parts.TaskEnd("_sort databind");
+            do
+            {
+                frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+                frmPickPower.ShowDialog(this);
 
-			_powers.ChildPropertyChanged += ChildPropertyChanged;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickPower.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickPower.AddAgain;
 
-			//Visible = true;
-			//this.ResumeLayout(false);
-			//this.PerformLayout();
-			parts.TaskEnd("visible");
-			Panel1_Resize();
-			parts.TaskEnd("resize");
-			sw.Stop();
-			Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-			//this.Update();
-			//this.ResumeLayout(true);
-			//this.PerformLayout();
-		}
+                Power objPower = new Power(_objCharacter);
 
-		private List<Tuple<string, IComparer<Power>>> GenerateSortList()
-		{
-			List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
-			{
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
-					new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
-					new PowerSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-				new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Power_SortAction"),
-					new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
-				//new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
-				//	new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
-			};
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                frmPickPower.Dispose();
+                if (objPower.Create(objXmlPower))
+                {
+                    _objCharacter.Powers.Add(objPower);
+                }
+            }
+            while (blnAddAgain);
+        }
 
-			return ret;
-		}
-		
-		private List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
-		{
-			List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
-			{
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_Search"), null),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterAll"), power => true),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingAboveZero"),
-					power => power.Rating > 0),
-				new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingZero"),
-					power => power.Rating == 0)
-			};
-			//TODO: TRANSLATIONS
+        public void RefreshPowerInfo(object sender, EventArgs e)
+        {
+            CalculatePowerPoints();
+        }
 
-			ret.AddRange(
-				from XmlNode objNode 
-				in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category")
-				let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
-				select new Tuple<string, Predicate<Power>>(
-					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
-					power => power.Category == objNode.InnerText));
+        /// <summary>
+        /// Calculate the number of Adept Power Points used.
+        /// </summary>
+        public void CalculatePowerPoints()
+        {
+            int intPowerPointsTotal = PowerPointsTotal;
+            decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
+            lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
+        }
 
-			return ret;
-		}
+        private int PowerPointsTotal
+        {
+            get
+            {
+                int intMAG;
+                if (_objCharacter.IsMysticAdept)
+                {
+                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                    intMAG = _objCharacter.Options.MysAdeptSecondMAGAttribute ? _objCharacter.MAGAdept.TotalValue : _objCharacter.MysticAdeptPowerPoints;
+                }
+                else
+                {
+                    // The character is just an Adept, so use the full value.
+                    intMAG = _objCharacter.MAG.TotalValue;
+                }
 
-		private void MakePowerDisplays()
-		{
-			Stopwatch sw = Stopwatch.StartNew();
+                // Add any Power Point Improvements to MAG.
+                intMAG += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
-			_powers = new BindingListDisplay<Power>(_character.Powers,
-				power => new PowerControl(power))
-			{
-				Location = new Point(3, 3),
-			};
-			pnlPowers.Controls.Add(_powers);
+                return Math.Max(intMAG, 0);
+            }
+        }
 
-			sw.TaskEnd("_powers add");
+        private void InitializeTable()
+        {
+            _table = new TableView<Power>()
+            {
+                Location = new Point(3, 3)
+            };
+            _table.ToolTip = _tipTooltip;
+            // create columns
+            TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Power",
+                Extractor = (power => power.DisplayName),
+                Tag = "String_Power",
+                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2)
+            };
+            nameColumn.AddDependency(nameof(Power.DisplayName));
 
-		}
+            TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Action",
+                Extractor = (power => power.DisplayAction),
+                Tag = "ColumnHeader_Action",
+                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2)
+            };
+            actionColumn.AddDependency(nameof(Power.DisplayAction));
 
-		private void Panel1_Resize()
-		{
-			int height = pnlPowers.Height;
-			const int intWidth = 255;
-			if (_powers == null) return;
-			_powers.Height = height - _powers.Top;
-			_powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
-		}
+            TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
+            {
+                EnabledExtractor = (p => p.LevelsEnabled),
+                MinExtractor = (p => p.FreeLevels),
+                MaxExtractor = (p => p.TotalMaximumLevels),
+                ValueUpdater = (p, newRating) =>
+                {
+                    int delta = ((int)newRating) - p.TotalRating;
+                    if (delta != 0)
+                    {
+                        p.Rating += delta;
+                    }
 
-		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			ComboBox csender = (ComboBox) sender;
-			Tuple<string, Predicate<Power>> selectedItem = (Tuple<string, Predicate<Power>>)csender.SelectedItem;
+                },
+                ValueGetter = (p => p.TotalRating),
+            })
+            {
+                Text = "Rating",
+                Tag = "String_Rating",
+                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+            };
+            ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
+            ratingColumn.AddDependency(nameof(Power.FreeLevels));
+            ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
+            ratingColumn.AddDependency(nameof(Power.TotalRating));
 
-			if (selectedItem.Item2 == null)
-			{
-				csender.DropDownStyle = ComboBoxStyle.DropDown;
-				_searchMode = true;
-				
-			}
-			else
-			{
-				csender.DropDownStyle = ComboBoxStyle.DropDownList;
-				_searchMode = false;
-				_powers.Filter(selectedItem.Item2);
-			}
-		}
+            TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Power Points",
+                Extractor = (power => power.DisplayPoints),
+                Tag = "ColumnHeader_Power_Points",
+                ToolTipExtractor = (item => item.ToolTip)
+            };
+            powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
+            powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
-		private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			ComboBox csender = (ComboBox)sender;
-			Tuple<string, IComparer<Power>> selectedItem = (Tuple<string, IComparer<Power>>)csender.SelectedItem;
+            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            {
+                ValueGetter = (p => p.DiscountedAdeptWay),
+                ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
+                VisibleExtractor = (p => p.AdeptWayDiscountEnabled),
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Adept Way",
+                Tag = "Checkbox_Power_AdeptWay"
+            };
+            adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
+            adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
+            adeptWayColumn.AddDependency(nameof(Power.Rating));
 
-			_powers.Sort(selectedItem.Item2);
-		}
+            /*
+             TableColumn<Power> geasColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            {
+                ValueGetter = (p => p.DiscountedGeas),
+                ValueUpdater = (p, check) => p.DiscountedGeas = check,
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Geas",
+                Tag = "Checkbox_Power_Geas"
+            };
+            geasColumn.AddDependency(nameof(Power.DiscountedGeas));
+            */
 
-		private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
-		{
-			if (_searchMode)
-			{
-				_powers.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
-			}
-		}
+            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
+            {
+                Image = Chummer.Properties.Resources.note_edit,
+                Size = GetImageSize(Chummer.Properties.Resources.note_edit),
+            })
+            {
+                ClickHandler = p => {
+                    frmNotes frmPowerNotes = new frmNotes
+                    {
+                        Notes = p.Notes
+                    };
+                    frmPowerNotes.ShowDialog(this);
 
-		private void cmdAddPower_Click(object sender, EventArgs e)
-		{
-			frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
-			frmPickPower.ShowDialog(this);
+                    if (frmPowerNotes.DialogResult == DialogResult.OK)
+                        p.Notes = frmPowerNotes.Notes;
+                },
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Notes",
+                Tag = "ColumnHeader_Notes",
+                ToolTipExtractor = (p => {
+                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(p.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                    return strTooltip.WordWrap(100);
+                })
+            };
+            noteColumn.AddDependency(nameof(Power.Notes));
 
-			// Make sure the dialogue window was not canceled.
-			if (frmPickPower.DialogResult == DialogResult.Cancel)
-				return;
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
+            {
+                ClickHandler = p =>
+                {
+                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                    Form frmParent = ParentForm;
+                    if (p.FreeLevels > 0)
+                    {
+                        string strImprovementSourceName = p.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == p.Name && x.UniqueName == p.Extra)?.SourceName;
+                        Gear objGear = p.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
+                        if (objGear != null)
+                        {
+                            objGear.Equipped = false;
+                            objGear.Extra = string.Empty;
+                        }
+                    }
+                    p.DeletePower();
+                    p.UnbindPower();
 
-			Power objPower = new Power(ObjCharacter);
+                    if (frmParent is CharacterShared objParent)
+                        objParent.IsCharacterUpdateRequested = true;
+                },
+                EnabledExtractor = (p => p.FreeLevels == 0)
+            });
+            deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
-			// Open the Cyberware XML file and locate the selected piece.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+            _table.Columns.Add(nameColumn);
+            _table.Columns.Add(actionColumn);
+            _table.Columns.Add(ratingColumn);
+            _table.Columns.Add(powerPointsColumn);
+            _table.Columns.Add(adeptWayColumn);
+            //_table.Columns.Add(geasColumn);
+            _table.Columns.Add(noteColumn);
+            _table.Columns.Add(deleteColumn);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
 
-			XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-			objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
-			ObjCharacter.Powers.Add(objPower);
-			MissingDatabindingsWorkaround();
-			if (frmPickPower.AddAgain)
-				cmdAddPower_Click(sender, e);
-		}
+            pnlPowers.Controls.Add(_table);
+        }
 
-		/// <summary>
-		/// Calculate the number of Adept Power Points used.
-		/// </summary>
-		public void CalculatePowerPoints()
-		{
-			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
-			ValidateVisibility();
-		}
-
-		private int PowerPointsTotal
-		{
-			get
-			{
-				int intMAG;
-				if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
-				{
-					// If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-					intMAG = ObjCharacter.MysticAdeptPowerPoints;
-				}
-				else
-				{
-					// The character is just an Adept, so use the full value.
-					intMAG = ObjCharacter.MAG.TotalValue;
-				}
-
-				// Add any Power Point Improvements to MAG.
-				intMAG += ObjCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
-
-				return intMAG;
-			}
-		}
-
-		private decimal PowerPointsRemaining
-		{
-			get
-			{
-				return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
-			}
-		}
-
-		private void ValidateVisibility()
-		{
-			lblDiscountLabel.Visible = _character.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
-		}
-	}
+        private static Size GetImageSize(Image image)
+        {
+            return new Size(image.Width, image.Height);
+        }
+    }
 }

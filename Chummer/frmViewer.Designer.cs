@@ -1,89 +1,93 @@
-﻿using System;
+using System;
 
 namespace Chummer
 {
-	partial class frmViewer
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmViewer
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
-            this.cmdSaveHTML = new SplitButton();
+            this.tsSaveAsHtml = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSaveAsXml = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsSaveAsPdf = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdSaveAsPdf = new SplitButton();
             this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdPrint = new SplitButton();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboXSLT = new Chummer.ElasticComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.cboLanguage = new Chummer.ElasticComboBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.SuspendLayout();
             // 
-            // cmdSaveHTML
+            // tsSaveAsHtml
             // 
-            this.cmdSaveHTML.AutoSize = true;
-            this.cmdSaveHTML.ContextMenuStrip = this.cmsSaveButton;
-            this.cmdSaveHTML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.cmdSaveHTML.Location = new System.Drawing.Point(98, 12);
-            this.cmdSaveHTML.Name = "cmdSaveHTML";
-            this.cmdSaveHTML.Size = new System.Drawing.Size(107, 23);
-            this.cmdSaveHTML.SplitMenuStrip = this.cmsSaveButton;
-            this.cmdSaveHTML.TabIndex = 1;
-            this.cmdSaveHTML.Tag = "Button_Viewer_SaveAsHtml";
-            this.cmdSaveHTML.Text = "Save as HTML";
-            this.cmdSaveHTML.UseVisualStyleBackColor = true;
-            this.cmdSaveHTML.Click += new System.EventHandler(this.cmdSaveHTML_Click);
+            this.tsSaveAsHtml.Enabled = false;
+            this.tsSaveAsHtml.Name = "tsSaveAsHtml";
+            this.tsSaveAsHtml.Size = new System.Drawing.Size(139, 22);
+            this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
+            this.tsSaveAsHtml.Text = "Save as &HTML";
+            this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
             // 
             // cmsSaveButton
             // 
             this.cmsSaveButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsSaveAsXml,
-            this.tsSaveAsPdf});
+            this.tsSaveAsHtml});
             this.cmsSaveButton.Name = "cmsPrintButton";
             this.cmsSaveButton.Size = new System.Drawing.Size(140, 48);
             // 
             // tsSaveAsXml
             // 
+            this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
-            this.tsSaveAsXml.Click += new EventHandler(this.tsSaveAsXml_Click);
+            this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
             // 
-            // tsSaveAsPdf
+            // cmdSaveAsPdf
             // 
-            this.tsSaveAsPdf.Name = "tsSaveAsPdf";
-            this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
-            this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
-            this.tsSaveAsPdf.Text = "Save as PDF";
-            this.tsSaveAsPdf.Click += new EventHandler(this.tsSaveAsPdf_Click);
+            this.cmdSaveAsPdf.AutoSize = true;
+            this.cmdSaveAsPdf.ContextMenuStrip = this.cmsSaveButton;
+            this.cmdSaveAsPdf.Enabled = false;
+            this.cmdSaveAsPdf.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cmdSaveAsPdf.Location = new System.Drawing.Point(98, 12);
+            this.cmdSaveAsPdf.Name = "cmdSaveAsPdf";
+            this.cmdSaveAsPdf.Size = new System.Drawing.Size(107, 23);
+            this.cmdSaveAsPdf.SplitMenuStrip = this.cmsSaveButton;
+            this.cmdSaveAsPdf.TabIndex = 1;
+            this.cmdSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
+            this.cmdSaveAsPdf.Text = "&Save as PDF";
+            this.cmdSaveAsPdf.UseVisualStyleBackColor = true;
+            this.cmdSaveAsPdf.Click += new System.EventHandler(this.cmdSaveAsPdf_Click);
             // 
             // cmsPrintButton
             // 
@@ -91,10 +95,10 @@ namespace Chummer
             this.tsPrintPreview});
             this.cmsPrintButton.Name = "cmsPrintButton";
             this.cmsPrintButton.Size = new System.Drawing.Size(144, 26);
-            this.cmsPrintButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsPrintPreview
             // 
+            this.tsPrintPreview.Enabled = false;
             this.tsPrintPreview.Name = "tsPrintPreview";
             this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
             this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
@@ -105,6 +109,7 @@ namespace Chummer
             // 
             this.cmdPrint.AutoSize = true;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
+            this.cmdPrint.Enabled = false;
             this.cmdPrint.Location = new System.Drawing.Point(12, 12);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(80, 23);
@@ -117,23 +122,27 @@ namespace Chummer
             // 
             // cboXSLT
             // 
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(509, 14);
+            this.cboXSLT.Location = new System.Drawing.Point(518, 14);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(216, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(254, 21);
             this.cboXSLT.TabIndex = 4;
+            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // lblCharacterSheet
             // 
+            this.lblCharacterSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCharacterSheet.AutoSize = true;
-            this.lblCharacterSheet.Location = new System.Drawing.Point(416, 17);
+            this.lblCharacterSheet.Location = new System.Drawing.Point(257, 17);
             this.lblCharacterSheet.Name = "lblCharacterSheet";
             this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterSheet.TabIndex = 3;
             this.lblCharacterSheet.Tag = "Label_Viewer_CharacterSheet";
             this.lblCharacterSheet.Text = "Character Sheet:";
+            this.lblCharacterSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // webBrowser1
             // 
@@ -148,14 +157,27 @@ namespace Chummer
             this.webBrowser1.TabIndex = 5;
             this.webBrowser1.WebBrowserShortcutsEnabled = false;
             // 
+            // cboLanguage
+            // 
+            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLanguage.FormattingEnabled = true;
+            this.cboLanguage.Location = new System.Drawing.Point(350, 14);
+            this.cboLanguage.Name = "cboLanguage";
+            this.cboLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboLanguage.TabIndex = 104;
+            this.cboLanguage.TooltipText = "";
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+            // 
             // frmViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 637);
+            this.Controls.Add(this.cboLanguage);
             this.Controls.Add(this.lblCharacterSheet);
             this.Controls.Add(this.cboXSLT);
-            this.Controls.Add(this.cmdSaveHTML);
+            this.Controls.Add(this.cmdSaveAsPdf);
             this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.cmdPrint);
             this.Name = "frmViewer";
@@ -170,20 +192,21 @@ namespace Chummer
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
-		internal SplitButton cmdPrint;
-		private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
-		private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
-		internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-		private System.Windows.Forms.ComboBox cboXSLT;
-		private System.Windows.Forms.Label lblCharacterSheet;
-		private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
-		internal SplitButton cmdSaveHTML;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
+        #endregion
+        internal SplitButton cmdPrint;
+        private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
+        private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
+        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
+        private ElasticComboBox cboXSLT;
+        private System.Windows.Forms.Label lblCharacterSheet;
+        private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
+        internal System.Windows.Forms.ToolStripMenuItem tsSaveAsHtml;
+        private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
+        private SplitButton cmdSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private ElasticComboBox cboLanguage;
     }
 
 }

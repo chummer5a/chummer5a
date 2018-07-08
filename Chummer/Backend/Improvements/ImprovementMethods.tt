@@ -1,0 +1,77 @@
+<#@ template debug="false" hostspecific="true" language="C#" #><#@ output extension=".cs" #><#@ assembly name="EnvDTE" #><#@ import namespace="System.IO" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="EnvDTE" #>/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
+using System.Xml;
+using Chummer.Classes;
+
+namespace Chummer
+{
+    public static class ImprovementMethods
+    {
+        /// <summary>
+        /// Gets an AddImprovementCollection function based on its name.
+        /// </summary>
+        /// <param name="strMethodName">Name of the function, in all uppercase.</param>
+        /// <param name="objImprovementAdder">Container for the function (since they're not static, we need a container).</param>
+        /// <returns>Function pointer to the named function if one is found. If none are found, returns a null pointer.</returns>
+        public static Action<XmlNode> GetMethod(string strMethodName, [Annotations.NotNull] AddImprovementCollection objImprovementAdder)
+        {
+            // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
+            switch (strMethodName)
+            {
+<#
+        EnvDTE.DTE dte = (EnvDTE.DTE) ((IServiceProvider) this.Host).GetService(typeof(EnvDTE.DTE));
+
+        // Modus operandi is to take the .cs file containing all the methods we want, parse it line-by-line, and each time we find a method name, we add it to a list of method names.
+        // Once we have all the method names, we construct a giant switch-case block that functions as a static Dictionary for AddImprovementCollection methods.
+
+        string strAddImprovementCollectionFilePath = System.IO.Path.Combine(dte.ActiveDocument.Path,"..\\..\\Classes\\AddImprovementCollection.cs");
+        if (File.Exists(strAddImprovementCollectionFilePath))
+        {
+            List<string> lststrMethodNames = new List<string>();
+            StreamReader objReader = File.OpenText(strAddImprovementCollectionFilePath);
+            string strLine;
+            while ((strLine = objReader.ReadLine()) != null)
+            {
+                // Trim away the newlines and empty spaces at the beginning and end of lines
+                strLine = strLine.Trim('\n').Trim('\r').Trim();
+
+                // Check if this line contains a method name. This is kind of hacky, as it relies on every improvement method using "(XmlNode bonusNode)" as its argument
+                if (strLine.StartsWith("public void ") && strLine.EndsWith("(XmlNode bonusNode)"))
+                {
+                    lststrMethodNames.Add(strLine.Substring(("public void ").Length, strLine.Length - ("public void ").Length - ("(XmlNode bonusNode)").Length));
+                }
+            }
+            // Now we add cases for each method, and each case returns a pointer to the function that we're looking for
+            foreach (string strMethodName in lststrMethodNames)
+            {
+#>
+                case "<#= strMethodName.ToUpperInvariant() #>":
+                    return objImprovementAdder.<#= strMethodName #>;
+<#
+            }
+        }
+#>
+                // No method matches, return a null pointer
+                default:
+                    return null;
+            }
+        }
+    }
+}
