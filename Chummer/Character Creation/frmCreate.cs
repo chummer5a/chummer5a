@@ -4814,6 +4814,10 @@ namespace Chummer
                     continue;
                 }
 
+                if (frmPickArmorMod.FreeCost)
+                {
+                    objMod.Cost = "0";
+                }
                 objArmor.ArmorMods.Add(objMod);
 
                 // Add any Weapons created by the Mod.
