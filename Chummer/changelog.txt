@@ -12,6 +12,7 @@ Application Changes:
 - Minor fixes for recoil compensation calculation.
 - SelectTradition and SelectRestricted improvements no longer spawn a selection window if not required.
 - Fixed refresh behaviour of Prototype Transhuman to work immediately on change of prototype transhuman status. Little more chatty than I'd like, but it works well enough.
+- Fixed issues with loading older characters that had a Spirit Force/Sprite Level abpve the maximum they're supposed to.
 
 Data Changes:
 
