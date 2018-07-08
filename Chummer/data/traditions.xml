@@ -660,7 +660,7 @@
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Air</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Spirit of Earth</spiritmanipulation>
       </spirits>
@@ -720,7 +720,7 @@
         <spiritdetection>Spirit of Earth</spiritdetection>
         <spirithealth>Spirit of Guidance</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
-        <spiritmanipulation>Spirit of Plants</spiritmanipulation>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
@@ -732,7 +732,7 @@
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
         <spiritdetection>Spirit of Beasts</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
@@ -746,7 +746,7 @@
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
         <spiritdetection>Spirit of Guidance</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Man</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
@@ -762,7 +762,7 @@
         <spiritdetection>Spirit of Earth</spiritdetection>
         <spirithealth>Guardian Spirit</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
-        <spiritmanipulation>Spirit of Plants</spiritmanipulation>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <!-- End Region -->
@@ -779,6 +779,36 @@
         <spirithealth>Spirit of Water</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <!-- End Region -->
+    <!-- Region Schattenhandbuch 3 -->
+    <tradition>
+      <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
+      <name>Dr.-Singer-School</name>
+      <drain>WIL + CHA</drain>
+      <source>SHB3</source>
+      <page>169</page>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Task Spirit</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Guidance</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
+      <name>Storm Children</name>
+      <drain>WIL + INT</drain>
+      <source>SHB3</source>
+      <page>169</page>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Beasts</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Plant Spirit</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
       </spirits>
     </tradition>
     <!-- End Region -->
@@ -1170,7 +1200,7 @@
       <int>F+0</int>
       <log>F+0</log>
       <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
+      <ini>(F*2)+2</ini>
       <source>SG</source>
       <page>193</page>
       <optionalpowers>

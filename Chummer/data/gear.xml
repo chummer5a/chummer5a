@@ -16323,5 +16323,17 @@
     </gear>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <gear>
+      <id>be56ed13-cff0-47a8-b6ba-556f2313f64f</id>
+      <name>Urban Explorer Daedalus Replacement Parachute</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>48</page>
+      <avail>-</avail>
+      <cost>750</cost>
+    </gear>
+    <!-- End Region -->
   </gears>
 </chummer>

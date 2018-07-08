@@ -11079,7 +11079,7 @@
     </weapon>
     <weapon>
       <id>ad28b2dd-4f4f-4089-af6b-39f3ff6900fd</id>
-      <name>HK Urban Fighter</name>
+      <name>HK Urban Fighter (ADL)</name>
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -12562,7 +12562,7 @@
     <weapon>
       <id>912ef37a-37b2-459c-a4c9-f84f33e4c4d9</id>
       <name>Winchester Airbow</name>
-      <category>Bows</category>
+      <category>Crossbows</category>
       <type>Ranged</type>
       <conceal>+4</conceal>
       <accuracy>5</accuracy>
@@ -13415,7 +13415,7 @@
       <hide />
       <type>Ranged</type>
       <conceal>+2</conceal>
-      <accuracy>3</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
       <ap>-2</ap>
@@ -13857,7 +13857,7 @@
       <avail>8R</avail>
       <cost>1500</cost>
       <source>SL</source>
-      <page>429</page>
+      <page>43</page>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
