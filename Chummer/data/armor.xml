@@ -2963,10 +2963,34 @@
         </specificskill>
       </bonus>
       <source>TCT</source>
-      <page>186</page>
     </armor>
     <!-- End Region -->
     <!-- Region Street Lethal-->
+    <armor>
+      <id>403adcb1-0739-4b20-816f-7854005eb227</id>
+      <name>Urban Explorer Daedalus</name>
+      <category>Specialty Armor</category>
+      <armor>9</armor>
+      <armorcapacity>4</armorcapacity>
+      <avail>8</avail>
+      <cost>3200</cost>
+      <mods>
+        <name>Parachute (Urban Explorer Daedalus)</name>
+      </mods>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
+    <armor>
+      <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
+      <name>Urban Explorer Daedalus: Helmet</name>
+      <category>Specialty Armor</category>
+      <armor>+2</armor>
+      <armorcapacity>6</armorcapacity>
+      <avail>-</avail>
+      <cost>100</cost>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
     <armor>
       <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
       <name>Ares Arms Bug Stomper Custom Armor</name>
@@ -3816,6 +3840,20 @@
       <cost>50</cost>
       <source>CA</source>
       <page>138</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <mod>
+      <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
+      <name>Parachute (Urban Explorer Daedalus)</name>
+      <category>Parachute</category>
+      <hide />
+      <maxrating>0</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>8</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>48</page>
     </mod>
     <!-- End Region -->
   </mods>

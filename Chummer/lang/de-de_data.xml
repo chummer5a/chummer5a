@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1156,6 +1156,30 @@
 				<translate>Rockblood Panzerhemd</translate>
 				<altpage>185</altpage>
 			</armor>
+      <armor>
+        <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
+        <name>Urban Explorer Daedalus: Helmet</name>
+        <translate>Urban Explorer Daedalus: Helm</translate>
+        <altpage>48</altpage>
+      </armor>
+      <armor>
+        <id>403adcb1-0739-4b20-816f-7854005eb227</id>
+        <name>Urban Explorer Daedalus</name>
+        <translate>Urban Explorer Daedalus</translate>
+        <altpage>48</altpage>
+      </armor>
+      <armor>
+        <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
+        <name>Ares Arms Bug Stomper Custom Armor</name>
+        <translate>Ares Firewatch "Bug Stomper"</translate>
+        <altpage>136</altpage>
+      </armor>
+      <armor>
+        <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
+        <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+        <translate>EVO/Yamatetsu Naval Technologies Rampart</translate>
+        <altpage>137</altpage>
+      </armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1443,7 +1467,7 @@
 			<mod>
 				<id>aec187e5-5eca-4f27-9181-b39991579d76</id>
 				<name>Drag Handle</name>
-				<translate>Zuggriff</translate>
+				<translate>Zugriff</translate>
 				<altpage>25</altpage>
 			</mod>
 			<mod>
@@ -1505,6 +1529,12 @@
 				<name>AR Fashion</name>
 				<translate>AR-Mode</translate>
 				<altpage>140</altpage>
+			</mod>
+			<mod>
+        <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
+        <name>Parachute (Urban Explorer Daedalus)</name>
+				<translate>Fallschirm (Urban Explorer Daedalus)</translate>
+				<altpage>48</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -2959,7 +2989,6 @@
 				<id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
 				<name>Schattenhandbuch 3 (German Handbook)</name>
 				<translate>Schattenhandbuch 3</translate>
-				<code>SHB3</code>
 				<altcode>SHB3</altcode>
 			</book>
 			<book>
@@ -3091,7 +3120,7 @@
 			<book>
 				<id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
 				<name>Street Lethal</name>
-				<translate>Street Lethal</translate>
+				<translate>Tödliche Schatten</translate>
 				<altcode>SL</altcode>
 			</book>
 		</books>
@@ -3305,7 +3334,7 @@
 			<power>
 				<id>bd881fa0-89e4-4734-816f-7ffe7cf5f35f</id>
 				<name>Sapience</name>
-				<translate>Bewußtsein</translate>
+				<translate>Bewusstsein</translate>
 				<altpage>395</altpage>
 			</power>
 			<power>
@@ -7757,6 +7786,30 @@
 				<translate>Ross Seal</translate>
 				<altpage>76</altpage>
 			</metatype>
+      <metatype>
+        <id>9c4e06f8-74b9-4088-9681-01e9d44d4a24</id>
+        <name>Chalk Wyvern</name>
+        <translate>Kalkwyvern</translate>
+        <altpage>170</altpage>
+      </metatype>
+      <metatype>
+        <id>75aa9c20-8c7f-4a99-8b69-06c0056f5ffe</id>
+        <name>Meta-Badger</name>
+        <translate>Grubendachs</translate>
+        <altpage>207</altpage>
+      </metatype>
+      <metatype>
+        <id>8e1bd9aa-a042-405a-af6b-8aa1fcf42b62</id>
+        <name>Armored Isopod</name>
+        <translate>Panzerassel</translate>
+        <altpage>208</altpage>
+      </metatype>
+      <metatype>
+        <id>259c1bbb-e7b3-4bea-a07a-e60c4a09ca03</id>
+        <name>Crack-Rock</name>
+        <translate>Steinbeißer</translate>
+        <altpage>209</altpage>
+      </metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -17623,6 +17676,12 @@
 				<name>Grenade: Shock, Aerodynamic (2050)</name>
 				<translate>Grenade: Shock, Aerodynamic (2050)</translate>
 				<altpage>191</altpage>
+			</gear>
+			<gear>
+        <id>be56ed13-cff0-47a8-b6ba-556f2313f64f</id>
+        <name>Urban Explorer Daedalus Replacement Parachute</name>
+				<translate>Urban Explorer Daedalus Ersatzfallschirm</translate>
+				<altpage>48</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -28952,6 +29011,90 @@
 				<translate>Busted Cyberware</translate>
 				<altpage>188</altpage>
 			</quality>
+      <quality>
+        <id>21e19949-5481-47a6-939b-d3522ba3a7c8</id>
+        <name>Corporate Loyalist</name>
+        <translate>Loyaler Konzernbürger</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>07916773-5aa2-4c8b-b239-932a9359428a</id>
+        <name>Location Attunement I</name>
+        <translate>Ortsverbundenheit I</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>257afab2-b281-4e27-b6d2-1b02b409637a</id>
+        <name>Location Attunement II</name>
+        <translate>Ortsverbundenheit II</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>3619084e-9c13-48d0-b985-0d15aa9d885a</id>
+        <name>Location Attunement III</name>
+        <translate>Ortsverbundenheit III</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>52d00c91-76d5-4b06-b475-f49637ea9763</id>
+        <name>Natural Leader</name>
+        <translate>Geborener Anführer</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>e9a11971-48a2-4c9a-89b4-16c844e197ba</id>
+        <name>Observant</name>
+        <translate>Wachsam</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>8d9cc4fa-ce95-423a-8db8-724372903b3d</id>
+        <name>Battle Hardened</name>
+        <translate>Kampfgestählt</translate>
+        <altpage>189</altpage>
+      </quality>
+      <quality>
+        <id>0d1d5e5d-5a11-4dff-9776-3cf088ab8ea7</id>
+        <name>Corporate Pariah I</name>
+        <translate>Paria I</translate>
+        <altpage>134</altpage>
+      </quality>
+      <quality>
+        <id>7bce4053-611b-4b58-8e1d-fc9dde20fd9f</id>
+        <name>Corporate Pariah II</name>
+        <translate>Paria II</translate>
+        <altpage>134</altpage>
+      </quality>
+      <quality>
+        <id>bb0cd874-a7bb-4863-b393-23ef0eda6313</id>
+        <name>Every Man For Himself</name>
+        <translate>Jeder kämpft für sich</translate>
+        <altpage>189</altpage>
+      </quality>
+      <quality>
+        <id>7b051d98-e95b-48f9-8fbb-dae69a739913</id>
+        <name>No Man Left Behind</name>
+        <translate>Niemand wird zurückgelassen</translate>
+        <altpage>189</altpage>
+      </quality>
+      <quality>
+        <id>e4956c8e-119f-4670-9dcf-30f4709863ae</id>
+        <name>Stay Out of My Way</name>
+        <translate>Ellenbogenmentalität</translate>
+        <altpage>134</altpage>
+      </quality>
+      <quality>
+        <id>a3c1f52d-edee-4927-899f-18265e75de1c</id>
+        <name>This Is Your Last Chance</name>
+        <translate>Das ist ihre letzte Chance</translate>
+        <altpage>133</altpage>
+      </quality>
+      <quality>
+        <id>0f9a0d45-a3c5-454d-8581-a5a1804e522e</id>
+        <name>Thousand-Yard Stare</name>
+        <translate>Leerer Blick</translate>
+        <altpage>189</altpage>
+      </quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -35362,6 +35505,18 @@
 				<translate>Dark Magic</translate>
 				<altpage>165</altpage>
 			</tradition>
+      <tradition>
+        <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
+        <name>Dr.-Singer-School</name>
+				<translate>Dr.-Singer-Schule</translate>
+				<altpage>169</altpage>
+			</tradition>
+      <tradition>
+        <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
+        <name>Storm Children</name>
+				<translate>Sturmkinder</translate>
+				<altpage>169</altpage>
+			</tradition>
 		</traditions>
 		<spirits>
 			<spirit>
@@ -41633,7 +41788,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>ad28b2dd-4f4f-4089-af6b-39f3ff6900fd</id>
-				<name>HK Urban Fighter</name>
+				<name>HK Urban Fighter (ADL)</name>
 				<translate>HK Urban Fighter</translate>
 				<altpage>21</altpage>
 			</weapon>
@@ -41793,6 +41948,384 @@
 				<translate>Grenade: Smoke, Aerodynamic (2050)</translate>
 				<altpage>191</altpage>
 			</weapon>
+      <weapon>
+        <id>34a9f54c-59b3-43dc-a2ec-aef07095a02c</id>
+        <name>Krime Bill</name>
+        <translate>Krime Hippe</translate>
+        <altpage>18</altpage>
+      </weapon>
+      <weapon>
+        <id>acd7a37d-704e-402f-ab4e-0c2e195a6484</id>
+        <name>Krime Reaver Axe</name>
+        <translate>Krime Reaver Axt</translate>
+        <altpage>20</altpage>
+      </weapon>
+      <weapon>
+        <id>4a57fae3-a9f8-489c-9bfb-f4a09875de9a</id>
+        <name>Krime Reaver Pick</name>
+        <translate>Krime Reaver Hacke</translate>
+        <altpage>20</altpage>
+      </weapon>
+      <weapon>
+        <id>ef24fa36-5887-4644-9ff0-39945679ff3c</id>
+        <name>Traditional Macuahuitl</name>
+        <translate>Traditionelles Macuahuitl</translate>
+        <altpage>21</altpage>
+      </weapon>
+      <weapon>
+        <id>b5ea11b4-ceff-4ec4-b082-45bfb5db5b2a</id>
+        <name>Modern Macuahuitl</name>
+        <translate>Modernes Macuahuitl</translate>
+        <altpage>21</altpage>
+      </weapon>
+      <weapon>
+        <id>dda1f2ae-2fb7-4c99-abbb-bc1c5ec1e3ae</id>
+        <name>Fluid-Motion Mace</name>
+        <translate>Flüssigkeule</translate>
+        <altpage>22</altpage>
+      </weapon>
+      <weapon>
+        <id>fac169e5-77ea-431f-b3cb-34fd64ce8dd0</id>
+        <name>Gunstock War Club</name>
+        <translate>Gewehrschaft-Kriegskeule</translate>
+        <altpage>22</altpage>
+      </weapon>
+      <weapon>
+        <id>f91f4a63-99e7-40f8-b3b6-9a1040018069</id>
+        <name>Gunstock War Club (Thrown)</name>
+        <translate>Gewehrschaft-Kriegskeule (Als Wurfwaffe)</translate>
+        <altpage>22</altpage>
+      </weapon>
+      <weapon>
+        <id>559655cd-a883-4beb-9d19-ed59b51d27a5</id>
+        <name>Krime Gloves</name>
+        <translate>Krime Handschuhe</translate>
+        <altpage>23</altpage>
+      </weapon>
+      <weapon>
+        <id>80b53580-d3fb-4d33-bfe5-f3c727fe5d8f</id>
+        <name>Krime Gloves: Stun Pad</name>
+        <translate>Krime Handschuhe: Schockhandfläche</translate>
+        <altpage>23</altpage>
+      </weapon>
+      <weapon>
+        <id>884d8ed3-3e21-4bf6-b0e5-2197b3d8bc5f</id>
+        <name>Krime Stun Lance</name>
+        <translate>Krime Betäubungslanze</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>5aa40509-e444-4802-8ba5-201447f74a0e</id>
+        <name>Krime Trollbow (Rating 6)</name>
+        <translate>Krime Trollbogen (Stufe 6)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>eaadb58d-9096-4528-8f1a-b6f0e33a903a</id>
+        <name>Krime Trollbow (Rating 7)</name>
+        <translate>Krime Trollbogen (Stufe 7)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>027ec050-747c-4b2d-bbd0-bb7573825460</id>
+        <name>Krime Trollbow (Rating 8)</name>
+        <translate>Krime Trollbogen (Stufe 8)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>fb54d2f2-b9ed-4c95-af38-345e5f2c666d</id>
+        <name>Krime Trollbow (Rating 9)</name>
+        <translate>Krime Trollbogen (Stufe 9)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>0e881b55-4f29-4a79-a8e7-ca9dbdefcd94</id>
+        <name>Krime Trollbow (Rating 10)</name>
+        <translate>Krime Trollbogen (Stufe 10)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>0d40d167-2fec-4173-854e-a62ac202c820</id>
+        <name>Krime Trollbow (Rating 11)</name>
+        <translate>Krime Trollbogen (Stufe 11)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>84f3940c-95b0-42df-8142-2a6378908792</id>
+        <name>Krime Trollbow (Rating 12)</name>
+        <translate>Krime Trollbogen (Stufe 12)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>a77f68e5-d05c-4591-a8f7-2cb8c3bfaa14</id>
+        <name>Krime Trollbow Horns</name>
+        <translate>Krime Trollbogen (Klingen)</translate>
+        <altpage>24</altpage>
+      </weapon>
+      <weapon>
+        <id>03713add-261a-440c-a965-f6bcea5e4aeb</id>
+        <name>Narcoject One</name>
+        <translate>Narcoject One</translate>
+        <altpage>28</altpage>
+      </weapon>
+      <weapon>
+        <id>7a6bd334-1937-4bf9-b601-ad7d2e0f5fcf</id>
+        <name>Terracotta Arms Pup</name>
+        <translate>Terracotta Arms Pup</translate>
+        <altpage>26</altpage>
+      </weapon>
+      <weapon>
+        <id>bad08133-2783-463a-b187-fd6210c163ff</id>
+        <name>Ares Striker</name>
+        <translate>Ares Striker</translate>
+        <altpage>29</altpage>
+      </weapon>
+      <weapon>
+        <id>5fed1380-b7fa-43ec-b80d-252898aaf64a</id>
+        <name>Barrens Special</name>
+        <translate>Barrens Spezial</translate>
+        <altpage>29</altpage>
+      </weapon>
+      <weapon>
+        <id>4378e735-859d-4606-9396-f9af248487e2</id>
+        <name>Barrens Special: Bayonet</name>
+        <translate>Barens Spezial: Bajonett</translate>
+        <altpage>29</altpage>
+      </weapon>
+      <weapon>
+        <id>6a419d5a-5779-42be-b9e8-a700094037ec</id>
+        <name>Browning Phantom</name>
+        <translate>Browning Phantom</translate>
+        <altpage>30</altpage>
+      </weapon>
+      <weapon>
+        <id>9cdf4a80-efc1-4c96-bc99-c67c880be39e</id>
+        <name>Cavalier Champion</name>
+        <translate>Cavalier Champion</translate>
+        <altpage>30</altpage>
+      </weapon>
+      <weapon>
+        <id>cbac989a-92f4-4eb8-a6ff-a9b5f7571d5d</id>
+        <name>Cavalier Thunderstruck</name>
+        <translate>Cavalier Thunderstruck</translate>
+        <altpage>31</altpage>
+      </weapon>
+      <weapon>
+        <id>88336c7d-f599-4e83-aea7-4d1fcab5e296</id>
+        <name>Hammerli Gemini</name>
+        <translate>Hämmerli Gemini</translate>
+        <altpage>31</altpage>
+      </weapon>
+      <weapon>
+        <id>65b7803a-0efe-44d9-8b85-6410644f079d</id>
+        <name>HK Urban Fighter</name>
+        <translate>HK Urban Fighter International</translate>
+        <altpage>32</altpage>
+      </weapon>
+      <weapon>
+        <id>c3588f24-9bbb-495d-8a1d-8d21b00c958b</id>
+        <name>Morrissey Alta</name>
+        <translate>Morrissey Alta</translate>
+        <altpage>33</altpage>
+      </weapon>
+      <weapon>
+        <id>f7077fa5-b3e7-488d-badb-d0be38975ec1</id>
+        <name>Morrissey Elite</name>
+        <translate>Morrissey Elite</translate>
+        <altpage>33</altpage>
+      </weapon>
+      <weapon>
+        <id>a6402dd0-fa9d-4c3f-83e5-695510058420</id>
+        <name>Nemesis Arms Praetorian</name>
+        <translate>Nemesis Arms Praetorian II</translate>
+        <altpage>33</altpage>
+      </weapon>
+      <weapon>
+        <id>bda98b10-6aa3-49d6-a44b-e2feba5683bf</id>
+        <name>Onotari Arms Vagabond</name>
+        <translate>Onotari Arms Vagabond</translate>
+        <altpage>34</altpage>
+      </weapon>
+      <weapon>
+        <id>f8227e2d-4a63-4e91-bed2-c40c5b665b3f</id>
+        <name>Cavalier Flash</name>
+        <translate>Cavalier Flash</translate>
+        <altpage>35</altpage>
+      </weapon>
+      <weapon>
+        <id>6e21f323-e111-44ee-ac10-6e465249bcc7</id>
+        <name>Onotari Arms S-3K</name>
+        <translate>Onotari Arms S-3K</translate>
+        <altpage>36</altpage>
+      </weapon>
+      <weapon>
+        <id>2502d04d-8082-4356-9cf9-c8beccde53fc</id>
+        <name>Ares Stalwart</name>
+        <translate>Ares Stalwart</translate>
+        <altpage>37</altpage>
+      </weapon>
+      <weapon>
+        <id>463372d1-b005-4d09-90eb-ceced9ebccea</id>
+        <name>Colt M23A2</name>
+        <translate>Colt M23A2</translate>
+        <altpage>37</altpage>
+      </weapon>
+      <weapon>
+        <id>63f03317-e192-4354-a504-106dc6b78004</id>
+        <name>Izom Artemis</name>
+        <translate>Izom Artemis</translate>
+        <altpage>37</altpage>
+      </weapon>
+      <weapon>
+        <id>ba44a481-9acc-4baa-a2f2-af8891515ddd</id>
+        <name>Krime Happiness</name>
+        <translate>Krime Happiness</translate>
+        <altpage>39</altpage>
+      </weapon>
+      <weapon>
+        <id>5b4e09a0-4ad6-4bb0-bfee-52572773718e</id>
+        <name>Onotari HL-13</name>
+        <translate>Onotari HL-13</translate>
+        <altpage>39</altpage>
+      </weapon>
+      <weapon>
+        <id>19d63a61-29f4-4892-a6eb-8042cd171676</id>
+        <name>Onotari HL-13 Personal Defense Weapon</name>
+        <translate>Onotari HL-13 (MP)</translate>
+        <altpage>39</altpage>
+      </weapon>
+      <weapon>
+        <id>6704239c-42c0-43c2-8d4c-3f8ff6c01212</id>
+        <name>Onotari HL-13 Urban Assault</name>
+        <translate>Onotari HL-13 (Karabiner)</translate>
+        <altpage>39</altpage>
+      </weapon>
+      <weapon>
+        <id>75a192ee-b109-4c68-a139-65de302f622d</id>
+        <name>PSG Enforcer</name>
+        <translate>HK PSG Enforcer</translate>
+        <altpage>40</altpage>
+      </weapon>
+      <weapon>
+        <id>f5ae45ef-f4f6-4d9a-873f-81e4ee973dc1</id>
+        <name>Beretta Northstar</name>
+        <translate>Beretta Northstar</translate>
+        <altpage>40</altpage>
+      </weapon>
+      <weapon>
+        <id>309098a2-5693-4f4b-9bf7-2302485ea9ac</id>
+        <name>Krime Boom</name>
+        <translate>Krime Boom</translate>
+        <altpage>41</altpage>
+      </weapon>
+      <weapon>
+        <id>dddebf4a-dabf-417f-9f44-54de9ac88e2e</id>
+        <name>Krime Whammy</name>
+        <translate>Krime Whammy</translate>
+        <altpage>41</altpage>
+      </weapon>
+      <weapon>
+        <id>9b9d6fc8-b181-4f63-bc47-5b0d60189cf2</id>
+        <name>Krime Whammy (Melee)</name>
+        <translate>Krime Whammy (Nahkampf)</translate>
+        <altpage>41</altpage>
+      </weapon>
+      <weapon>
+        <id>5e6759c6-1e51-4b3b-b400-6610d080d966</id>
+        <name>Krime Triple-Troll Minigun</name>
+        <translate>Krime Triple-Troll Minigun</translate>
+        <altpage>42</altpage>
+      </weapon>
+      <weapon>
+        <id>cc196c96-0aac-4091-a273-17e27145659a</id>
+        <name>Krime Triple-Ork Minigun</name>
+        <translate>Krime Triple-Ork Microgun</translate>
+        <altpage>42</altpage>
+      </weapon>
+      <weapon>
+        <id>6fc1592a-1d6a-4625-b8ef-b48737711e77</id>
+        <name>Krime Triple-Dwarf Minigun</name>
+        <translate>Krime Triple-Dwarf Nanogun</translate>
+        <altpage>42</altpage>
+      </weapon>
+      <weapon>
+        <id>5e730bc6-4e50-4a15-b3ca-fc1d1a52526f</id>
+        <name>M79B1 LAW Rocket</name>
+        <translate>M79B1 LAW Rocket</translate>
+        <altpage>43</altpage>
+      </weapon>
+      <weapon>
+        <id>48299fd8-e705-4fce-a998-598cdb17aea2</id>
+        <name>Phalanx Systems Vogeljager II</name>
+        <translate>Phalanx Systems Vogeljäger II</translate>
+        <altpage>43</altpage>
+      </weapon>
+      <weapon>
+        <id>df26dd8f-f26f-4d6b-b98c-fbaf810b569e</id>
+        <name>Terracotta X-6 MGL</name>
+        <translate>Terracotta X-6 MGL</translate>
+        <altpage>44</altpage>
+      </weapon>
+      <weapon>
+        <id>39a6ea40-087e-4caa-b5a5-94d7c2a203f3</id>
+        <name>Narcoject Gas Gun</name>
+        <translate>Narcoject Gas Gun</translate>
+        <altpage>44</altpage>
+      </weapon>
+      <weapon>
+        <id>fb50cff6-1cf0-4686-9694-c5aa4cb2023d</id>
+        <name>Narcoject PEP</name>
+        <translate>Narcoject PEP</translate>
+        <altpage>45</altpage>
+      </weapon>
+      <weapon>
+        <id>823ffbe6-b8a9-43f6-91e1-ba3e312ce577</id>
+        <name>Narcoject Trackstopper</name>
+        <translate>Narcoject Trackstopper</translate>
+        <altpage>45</altpage>
+      </weapon>
+      <weapon>
+        <id>fb545997-dcd5-48d4-963e-4f0c797e5982</id>
+        <name>Stoner-Ares M-22A1</name>
+        <translate>Stoner-Ares M-22A1</translate>
+        <altpage>137</altpage>
+      </weapon>
+      <weapon>
+        <id>e9a6bd24-c551-4cc1-be0a-aca373c44049</id>
+        <name>Aztechnology Blood Drinker Combat Axe</name>
+        <translate>Aztechnology Bluttrinker</translate>
+        <altpage>137</altpage>
+      </weapon>
+      <weapon>
+        <id>5fb07347-76a1-4d15-b1b5-b24e3880563b</id>
+        <name>Horizon-Flynn Defense-Com Commlink Holdout</name>
+        <translate>Horizon-Flynn Defense-Com: Holdout-Pistole</translate>
+        <altpage>137</altpage>
+      </weapon>
+      <weapon>
+        <id>a47ed70f-5eea-4938-b613-54ed33407894</id>
+        <name>Horizon-Flynn Defense-Com Commlink Knife</name>
+        <translate>Horizon-Flynn Defense-Com: Messer</translate>
+        <altpage>137</altpage>
+      </weapon>
+      <weapon>
+        <id>ea649a24-659b-4343-8719-2ae43da73237</id>
+        <name>Horizon-Flynn Defense-Com Commlink Taser</name>
+        <translate>Horizon-Flynn Defense-Com: Taser</translate>
+        <altpage>137</altpage>
+      </weapon>
+      <weapon>
+        <id>7158a75f-6c6c-4854-a7cc-51cec011572d</id>
+        <name>Lone Star Remington 995</name>
+        <translate>Remington 995</translate>
+        <altpage>138</altpage>
+      </weapon>
+      <weapon>
+        <id>7bc2f035-ce0d-4f0a-8c14-dd62fdb3f4f4</id>
+        <name>Lone Star Bates-Brown Tactical Combat Boots</name>
+        <translate>Taktische Kampfstiefel</translate>
+        <altpage>138</altpage>
+      </weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -42473,6 +43006,42 @@
 				<translate>Überlebensmesser WiFi-Vorteile</translate>
 				<altpage>424</altpage>
 			</accessory>
+      <accessory>
+        <id>5fac79b3-5eff-44f8-a13c-e1eba38df873</id>
+        <name>Terracotta Arms Pup Silencer</name>
+        <translate>Terracotta Arms Pup Schalldämpfer</translate>
+        <altpage>27</altpage>
+      </accessory>
+      <accessory>
+        <id>6f84482e-5a9d-4fb3-bad3-4fbbfa569919</id>
+        <name>HK Urban Fighter Spare Clip</name>
+        <translate>HK Urban Fighter Ersatzladestreifen</translate>
+        <altpage>32</altpage>
+      </accessory>
+      <accessory>
+        <id>abe43262-a891-455b-849b-df2bb05a7ef8</id>
+        <name>Additional Clip/Magazine (Non-Pistol)</name>
+        <translate>Zusätzlicher Ladestreifen/Zusätzliches internes Magazin</translate>
+        <altpage>47</altpage>
+      </accessory>
+      <accessory>
+        <id>37d3ffa9-b33e-4280-845c-bee0d063f193</id>
+        <name>Krime Pack</name>
+        <translate>Krime Pack</translate>
+        <altpage>46</altpage>
+      </accessory>
+      <accessory>
+        <id>7629baa4-2240-45f3-b3d5-066dfc536877</id>
+        <name>Narcoject Dazzler</name>
+        <translate>Narcoject Dazzler</translate>
+        <altpage>47</altpage>
+      </accessory>
+      <accessory>
+        <id>a16a52a9-3b57-4e3c-96f6-564616bcd576</id>
+        <name>Red Dot Sight</name>
+        <translate>Rotpunktvisier</translate>
+        <altpage>47</altpage>
+      </accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
