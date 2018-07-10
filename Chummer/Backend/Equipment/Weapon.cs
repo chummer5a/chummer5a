@@ -3272,6 +3272,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                objRange.Append($" + {ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange)}");
+
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");
 

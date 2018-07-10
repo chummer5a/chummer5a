@@ -15,6 +15,7 @@ Application Changes:
 - Fixed issues with loading older characters that had a Spirit Force/Sprite Level abpve the maximum they're supposed to.
 - Armor Mods purchased in create mode can be discounted to Free again in create mode.
 - Fixed an issue with armour that has Ratings not properly loading the maximum rating.
+- Properly added ThrowRange improvement to throwing weapons.
 
 Data Changes:
 
