@@ -289,7 +289,7 @@ namespace Chummer.UI.Powers
                     int delta = ((int)newRating) - p.TotalRating;
                     if (delta != 0)
                     {
-                        p.Rating += delta;
+                        p.TotalRating += delta;
                     }
 
                 },

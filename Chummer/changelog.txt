@@ -16,6 +16,7 @@ Application Changes:
 - Armor Mods purchased in create mode can be discounted to Free again in create mode.
 - Fixed an issue with armour that has Ratings not properly loading the maximum rating.
 - Properly added ThrowRange improvement to throwing weapons.
+- Fixed a layout quirk with adept powers that caused them to revert to the free levels provided by foci if a focus is in use. Should fix #2859 but needs more testing.
 
 Data Changes:
 
