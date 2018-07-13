@@ -38,6 +38,10 @@ namespace Chummer.UI.Table
         {
             base.UpdateValue(newValue);
             T tValue = newValue as T;
+            if (MinExtractor != null)
+            {
+                _spinner.Minimum = MinExtractor(tValue);
+            }
             if (MaxExtractor != null)
             {
                 _spinner.Maximum = MaxExtractor(tValue);
@@ -54,10 +58,6 @@ namespace Chummer.UI.Table
                 updating = true;
                 _spinner.Value = value;
                 updating = false;
-            }
-            if (MinExtractor != null)
-            {
-                _spinner.Minimum = MinExtractor(tValue);
             }
         }
         

@@ -5950,6 +5950,7 @@
       <name>Natural Venom (Exhaled, Deadly)</name>
       <karma>18</karma>
       <category>Positive</category>
+      <metagenetic>True</metagenetic>
       <bonus />
       <forbidden>
         <oneof>

@@ -770,7 +770,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
                 objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
