@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -5542,7 +5542,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_LimitedSpell</key>
-			<text>Limited Spell</text>
+			<text>Limited Spell (SG 212)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_LimitedSpell</key>
@@ -5550,7 +5550,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_ExtendedSpell</key>
-			<text>大范围法术</text>
+			<text>大范围法术 (SR5 285)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>

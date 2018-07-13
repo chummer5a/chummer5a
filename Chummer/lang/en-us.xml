@@ -8441,7 +8441,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>Limited Spell</text>
+      <text>Limited Spell (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -8449,11 +8449,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_ExtendedSpell</key>
-      <text>Extended Spell</text>
+      <text>Extended Spell (SR5 285)</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Alchemical Preparation</text>
+      <text>Alchemical Preparation (SR5 305)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>

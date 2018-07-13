@@ -7776,7 +7776,7 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>Feitiço Limitado</text>
+      <text>Feitiço Limitado (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -7784,11 +7784,11 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_ExtendedSpell</key>
-      <text>Feitiço Extendido</text>
+      <text>Feitiço Extendido (SR5 285)</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Preparação Alquímica</text>
+      <text>Preparação Alquímica (SR5 305)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>

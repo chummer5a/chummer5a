@@ -6185,7 +6185,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>Sort limité</text>
+      <text>Sort limité (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -7093,7 +7093,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Préparation Alchimique</text>
+      <text>Préparation Alchimique (SR5 305)</text>
     </string>
     <string>
       <key>Checkbox_Options_Knucks</key>

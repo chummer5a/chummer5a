@@ -23,6 +23,7 @@ Data Changes:
 - Added alternate Druid tradition from Forbidden Arcana. 
 - Fixed an incorrect availability on the Krime Tingler.
 - Fixed category of the Krime Gloves to be Unarmed.
+- Added page references for Extended, Alchemical and Limited spells on the Spell Select window.
 
 Build 201
 

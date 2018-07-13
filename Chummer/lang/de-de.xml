@@ -5089,7 +5089,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_LimitedSpell</key>
-			<text>Eingeschränkter Zauberspruch</text>
+			<text>Eingeschränkter Zauberspruch (SG 212)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_LimitedSpell</key>
@@ -6702,7 +6702,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_ExtendedSpell</key>
-			<text>Ausgedehnter Spruch</text>
+			<text>Ausgedehnter Spruch (SR5 285)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
@@ -7374,7 +7374,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_Alchemical</key>
-			<text>Alchemistisches Erzeugnis</text>
+			<text>Alchemistisches Erzeugnis (SR5 305)</text>
 		</string>
 		<string>
 			<key>String_Improvement_SelectLimitNamed</key>
