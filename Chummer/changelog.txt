@@ -17,12 +17,15 @@ Application Changes:
 - Fixed an issue with armour that has Ratings not properly loading the maximum rating.
 - Properly added ThrowRange improvement to throwing weapons.
 - Fixed a layout quirk with adept powers that caused them to revert to the free levels provided by foci if a focus is in use. Should fix #2859 but needs more testing.
+- Fixed a typo in the loading behaviour of different knowledge skill specialisation karma costs that prevented it from being saved or loaded properly. Fixes #2858
 
 Data Changes:
 
 - Added alternate Druid tradition from Forbidden Arcana. 
 - Fixed an incorrect availability on the Krime Tingler.
 - Fixed category of the Krime Gloves to be Unarmed.
+- Added Area Knowledge: Neo-Tokyo knowledge skill. Fixes #2865
+- Added missing Metagenetic flag to the Natural Venom (Exhaled, Deadly) quality. Fixes #2862
 
 Build 201
 
