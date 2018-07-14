@@ -6025,9 +6025,17 @@ namespace Chummer
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };
-                XmlNode xmlAddModCategory = objXmlArmor["addmodcategory"];
+                XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
+                {
+                    frmPickArmorMod.AllowedCategories = "," + xmlAddModCategory.InnerText;
+                    frmPickArmorMod.ExcludeGeneralCategory = true;
+                }
+                else
+                {
+                    xmlAddModCategory = objXmlArmor["addmodcategory"];
                     frmPickArmorMod.AllowedCategories += "," + xmlAddModCategory.InnerText;
+                }
 
                 frmPickArmorMod.ShowDialog(this);
 

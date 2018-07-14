@@ -18,6 +18,7 @@ Application Changes:
 - Properly added ThrowRange improvement to throwing weapons.
 - Fixed a layout quirk with adept powers that caused them to revert to the free levels provided by foci if a focus is in use. Should fix #2859 but needs more testing.
 - Fixed a typo in the loading behaviour of different knowledge skill specialisation karma costs that prevented it from being saved or loaded properly. Fixes #2858
+- Added support for armor mod selection being limited to a single category via the forcemodcategory node.
 
 Data Changes:
 
