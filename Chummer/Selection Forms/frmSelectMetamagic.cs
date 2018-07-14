@@ -88,18 +88,18 @@ namespace Chummer
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
                     string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                    lblSource.SetToolTip(string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
         }
 

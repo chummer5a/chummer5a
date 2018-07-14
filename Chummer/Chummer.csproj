@@ -249,6 +249,7 @@
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\TooltipFactory.cs" />
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -287,6 +288,7 @@
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\IHasSource.cs" />
     <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>

@@ -540,7 +540,7 @@ namespace Chummer
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
                 lblSettings.Text = objCache.SettingsFile;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
+                lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -576,7 +576,7 @@ namespace Chummer
                 lblCharacterAlias.Text = string.Empty;
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblFilePath, string.Empty);
+                lblFilePath.SetToolTip(string.Empty);
                 lblSettings.Text = string.Empty;
                 picMugshot.Image = null;
             }

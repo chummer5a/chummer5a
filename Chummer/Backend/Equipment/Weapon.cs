@@ -1,22 +1,9 @@
-/*  This file
-s part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
- *  Chu
-er5a is free software: you 
-n redistribute it 
-d/or modify
- *  it under t
- terms of the GNU
-eneral Public License a
-published by
- *  the
-ree Software Foundati
-, either version 3 of the License
-or
- *  (at your o
-using Chummer;
-
-n) any later version.
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
  *  Chummer5a is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -426,7 +413,11 @@ namespace Chummer.Backend.Equipment
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
+
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -754,6 +745,8 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
+
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -4694,6 +4687,11 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString(expense, GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             characterObject.ExpenseEntries.AddWithSort(objExpense);
             characterObject.Nuyen += decAmount;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

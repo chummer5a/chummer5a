@@ -596,7 +596,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, Convert.ToInt32(lblSlots.Text));
-                        GlobalOptions.ToolTipProcessor.SetToolTip(lblVehicleCapacityLabel, LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
+                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
                     }
                     else
                     {
@@ -641,7 +641,7 @@ namespace Chummer
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -660,7 +660,7 @@ namespace Chummer
                 lblVehicleCapacity.Visible = false;
                 lblLimit.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
             _blnSkipUpdate = false;
         }

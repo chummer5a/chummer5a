@@ -185,14 +185,15 @@ namespace Chummer
 
         public static ToolTip ToolTipProcessor { get; } = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip
         {
+            UseAnimation = true,
             AllowLinksHandling = true,
             AutoPopDelay = 3600000,
             BaseStylesheet = null,
             InitialDelay = 250,
             IsBalloon = false,
-            MaximumSize = new System.Drawing.Size(0, 0),
             OwnerDraw = true,
             ReshowDelay = 100,
+            ShowAlways = true,
             TooltipCssClass = "htmltooltip",
             //UseAnimation = true,
             //UseFading = true

@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -217,7 +217,10 @@ namespace Chummer.Backend.Equipment
                     _strExtra = ImprovementManager.SelectedValue;
                 }
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -364,6 +367,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -1260,5 +1265,10 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

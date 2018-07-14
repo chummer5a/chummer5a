@@ -638,10 +638,7 @@ namespace Chummer
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                string strPage = objQuality.Page(GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblQualitySource.Text = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                objQuality.SetSourceDetail(lblSource);
                 cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
             }
             else
@@ -653,7 +650,7 @@ namespace Chummer
                 lblQualityLp.Text = string.Empty;
                 lblQualityCost.Text = string.Empty;
                 lblQualitySource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblQualitySource, null);
+                lblQualitySource.SetToolTip(null);
                 cmdDeleteQuality.Enabled = false;
             }
         }
@@ -762,18 +759,18 @@ namespace Chummer
                 {
                     string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                    lblSource.SetToolTip(string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.

@@ -215,7 +215,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
                 lblCapacity.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
@@ -344,7 +344,7 @@ namespace Chummer
             string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         /// <summary>

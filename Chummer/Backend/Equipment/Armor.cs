@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip,IHasSource
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -382,6 +382,8 @@ namespace Chummer.Backend.Equipment
 
                 Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
             }
+
+            SourceDetail = new SourceString(_strSource,_strPage);
         }
 
         /// <summary>
@@ -560,6 +562,8 @@ namespace Chummer.Backend.Equipment
                     Equipped = false;
                 }
             }
+
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -870,6 +874,7 @@ namespace Chummer.Backend.Equipment
 
             return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
         }
+        public SourceString SourceDetail { get; private set; }
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1563,6 +1568,15 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             characterObject.ExpenseEntries.AddWithSort(objExpense);
             characterObject.Nuyen += decAmount;
+        }
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
 
         public TaggedObservableCollection<Gear> Children => Gear;

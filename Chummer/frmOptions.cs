@@ -1297,14 +1297,14 @@ namespace Chummer
         private void SetToolTips()
         {
             const int width = 100;
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkUnarmedSkillImprovements, LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkIgnoreArt, LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkCyberlegMovement, LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkDontDoubleQualityPurchases, LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkDontDoubleQualityRefunds, LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkStrictSkillGroups, LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkAllowInitiation, LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkUseCalculatedPublicAwareness, LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
+            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
+            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
+            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
+            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
+            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
+            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
+            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
+            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
         }
 
         private void PopulateSettingsList()

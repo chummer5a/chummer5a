@@ -28,7 +28,7 @@ namespace Chummer
     /// An Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -73,6 +73,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
@@ -83,6 +84,8 @@ namespace Chummer
                 }
             }*/
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -308,6 +311,11 @@ namespace Chummer
                 return false;
             string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
             return character.ConfirmDelete(strMessage) && character.Arts.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

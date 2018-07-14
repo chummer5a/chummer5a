@@ -78,7 +78,7 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
 
@@ -147,8 +147,7 @@ namespace Chummer
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                     LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
@@ -156,7 +155,7 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
         }
 

@@ -163,7 +163,7 @@ namespace Chummer
                 lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
                 lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponRC, _objSelectedWeapon.RCToolTip);
+                lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
                 lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
@@ -180,10 +180,7 @@ namespace Chummer
                 AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
                 lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
-
-                string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                _objSelectedWeapon.SetSourceDetail(lblSource);
 
                 // Build a list of included Accessories and Modifications that come with the weapon.
                 StringBuilder strAccessories = new StringBuilder();
@@ -195,8 +192,6 @@ namespace Chummer
                     strAccessories.Length -= Environment.NewLine.Length;
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
-
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -207,7 +202,7 @@ namespace Chummer
                 lblWeaponAP.Text = string.Empty;
                 lblWeaponMode.Text = string.Empty;
                 lblWeaponRC.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblWeaponRC, string.Empty);
+                lblWeaponRC.SetToolTip(string.Empty);
                 lblWeaponAmmo.Text = string.Empty;
                 lblWeaponAccuracy.Text = string.Empty;
                 lblWeaponCost.Text = string.Empty;
@@ -215,7 +210,7 @@ namespace Chummer
                 lblTest.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblIncludedAccessories.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
             _blnSkipUpdate = false;
         }

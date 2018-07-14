@@ -31,7 +31,7 @@ namespace Chummer
     /// A Technomancer Program or Complex Form.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -69,6 +69,7 @@ namespace Chummer
                 objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
 
+            SourceDetail = new SourceString(_strSource, _strPage);
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
@@ -79,6 +80,8 @@ namespace Chummer
                 }
             }*/
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -118,6 +121,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("fv", ref _strFV);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -481,6 +485,11 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.ComplexForm, InternalId);
 
             return characterObject.ComplexForms.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

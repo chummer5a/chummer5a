@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -206,6 +206,7 @@ namespace Chummer.Backend.Equipment
                             Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                         }
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -304,22 +305,19 @@ namespace Chummer.Backend.Equipment
                         }
             }
 
-            if (blnCopy)
+            SourceDetail = new SourceString(_strSource, _strPage);
+            if (!blnCopy) return;
+            if (!string.IsNullOrEmpty(Extra))
+                ImprovementManager.ForcedValue = Extra;
+            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
+            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
             {
-                if (!string.IsNullOrEmpty(Extra))
-                    ImprovementManager.ForcedValue = Extra;
-                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                {
-                    Extra = ImprovementManager.SelectedValue;
-                }
-
-                if (!_blnEquipped)
-                {
-                    _blnEquipped = true;
-                    Equipped = false;
-                }
+                Extra = ImprovementManager.SelectedValue;
             }
+
+            if (_blnEquipped) return;
+            _blnEquipped = true;
+            Equipped = false;
         }
 
         /// <summary>
@@ -546,6 +544,8 @@ namespace Chummer.Backend.Equipment
             get => _strPage;
             set => _strPage = value;
         }
+
+        public SourceString SourceDetail { get; private set; }
 
         public string DisplayPage(string strLanguage)
         {
@@ -1032,6 +1032,15 @@ namespace Chummer.Backend.Equipment
             characterObject.Nuyen += decAmount;
 
             Parent.ArmorMods.Remove(this);
+        }
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

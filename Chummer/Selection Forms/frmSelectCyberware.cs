@@ -281,7 +281,7 @@ namespace Chummer
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                 Grade objForcedGrade = null;
                 if (!string.IsNullOrEmpty(strForceGrade))
@@ -340,7 +340,7 @@ namespace Chummer
                 lblCyberwareNotes.Visible = false;
                 lblCyberwareNotesLabel.Visible = false;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
             _blnLoading = false;
             UpdateCyberwareInfo();

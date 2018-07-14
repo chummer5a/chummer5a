@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -123,9 +123,12 @@ namespace Chummer.Backend.Equipment
 
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
-		/// <summary>
+        public SourceString SourceDetail { get; set; }
+
+        /// <summary>
 		/// Save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
@@ -257,6 +260,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+		    SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -846,6 +850,11 @@ namespace Chummer.Backend.Equipment
             characterObject.Nuyen += decAmount;
 
             Parent.WeaponMounts.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 

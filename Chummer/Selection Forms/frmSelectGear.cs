@@ -517,7 +517,7 @@ namespace Chummer
                 nudRating.Minimum = 0;
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
 
@@ -536,7 +536,7 @@ namespace Chummer
                 nudRating.Minimum = 0;
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
 
@@ -547,7 +547,7 @@ namespace Chummer
             string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.

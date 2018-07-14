@@ -29,7 +29,7 @@ namespace Chummer
     /// A Metamagic or Echo.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove
+    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -96,7 +96,10 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -140,6 +143,7 @@ namespace Chummer
                 SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -358,6 +362,11 @@ namespace Chummer
             characterObject.Metamagics.Remove(this);
             ImprovementManager.RemoveImprovements(characterObject, SourceType, InternalId);
             return true;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

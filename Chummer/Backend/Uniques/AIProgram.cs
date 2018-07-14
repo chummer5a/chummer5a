@@ -28,7 +28,7 @@ namespace Chummer
     /// An AI Program or Advanced Program.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -68,7 +68,10 @@ namespace Chummer
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
                 _boolIsAdvancedProgram = strCategory == "Advanced Programs";
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -313,6 +316,11 @@ namespace Chummer
                 InternalId);
 
             return characterObject.AIPrograms.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

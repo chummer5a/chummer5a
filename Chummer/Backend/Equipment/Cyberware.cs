@@ -660,6 +660,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            SourceDetail = new SourceString(_strSource, _strPage);
+
             if (blnCreateChildren)
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
 
@@ -1048,6 +1050,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
 
+            SourceDetail = new SourceString(_strSource, _strPage);
             if (blnCopy)
             {
                 if (Bonus != null || WirelessBonus != null || PairBonus != null)
@@ -1570,7 +1573,8 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
-
+        
+        public SourceString SourceDetail { get; private set; }
         /// <summary>
         /// ID of the object that added this cyberware (if any).
         /// </summary>
@@ -3539,6 +3543,16 @@ namespace Chummer.Backend.Equipment
                 lstVehicleCollection.Add(objLoopVehicle);
             }
             return true;
+        }
+
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

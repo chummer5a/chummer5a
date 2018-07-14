@@ -28,7 +28,7 @@ namespace Chummer
     /// A Martial Art Maneuver.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -55,7 +55,10 @@ namespace Chummer
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -86,6 +89,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -229,5 +233,10 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

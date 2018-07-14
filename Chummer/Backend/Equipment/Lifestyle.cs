@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName
+    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -155,6 +155,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
+            SourceDetail = new SourceString(_strSource, _strPage);
             using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
             {
                 if (lstGridNodes?.Count > 0)
@@ -178,6 +179,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -1046,6 +1049,11 @@ namespace Chummer.Backend.Equipment
         public bool Remove(Character characterObject)
         {
             return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Chummer
             }
         }
 
-        public ButtonWithToolTip() : this(GlobalOptions.ToolTipProcessor) { }
+        public ButtonWithToolTip() : this(ToolTipFactory.ToolTip) { }
 
         public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
         {
@@ -65,7 +65,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                if (_tt != null && _tt != GlobalOptions.ToolTipProcessor)
+                if (_tt != null && _tt != ToolTipFactory.ToolTip)
                     _tt.Dispose();
             }
             base.Dispose(disposing);

@@ -28,7 +28,7 @@ namespace Chummer
     /// A Martial Arts Technique.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -58,14 +58,15 @@ namespace Chummer
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (xmlTechniqueDataNode["bonus"] != null)
+            SourceDetail = new SourceString(_strSource, _strPage);
+            if (xmlTechniqueDataNode["bonus"] == null) return;
+            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
-                {
-                    _guiID = Guid.Empty;
-                }
+                _guiID = Guid.Empty;
             }
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -103,6 +104,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -250,5 +252,10 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

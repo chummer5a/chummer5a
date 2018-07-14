@@ -28,7 +28,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -63,6 +63,7 @@ namespace Chummer
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            SourceDetail = new SourceString(_strSource, _strPage);
             _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
@@ -87,6 +88,8 @@ namespace Chummer
                 }
             }*/
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -127,6 +130,7 @@ namespace Chummer
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -330,6 +334,11 @@ namespace Chummer
             }
 
             return true;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

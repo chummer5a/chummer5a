@@ -18,12 +18,13 @@
  */
 using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode
+    public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -160,7 +161,10 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -231,6 +235,7 @@ namespace Chummer
                 XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
                 objNewNode?.TryGetField("id", Guid.TryParse, out _sourceID);
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -408,5 +413,10 @@ namespace Chummer
         public string InternalId => _guiID.ToString("D");
 
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

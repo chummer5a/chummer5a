@@ -101,8 +101,8 @@ namespace Chummer
             lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
+            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
+            chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
 
             List<ListItem> lstMethods = new List<ListItem>
             {

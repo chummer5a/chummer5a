@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -38,7 +39,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
-    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private Guid _sourceID = Guid.Empty;
@@ -192,8 +193,11 @@ namespace Chummer
             {
                 Rating = TotalMaximumLevels;
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
             return true;
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -274,6 +278,7 @@ namespace Chummer
                     }
                 }
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -1019,5 +1024,10 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

@@ -173,7 +173,7 @@ namespace Chummer
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 cmdOK.Enabled = true;
             }
             else
@@ -191,7 +191,7 @@ namespace Chummer
                 cboChoice2.DataSource = null;
                 cboChoice2.EndUpdate();
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 cmdOK.Enabled = false;
             }
         }

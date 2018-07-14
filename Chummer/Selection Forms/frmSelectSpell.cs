@@ -49,9 +49,8 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkLimited, LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkExtended, LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
+            chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
+            chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
 
             MoveControls();
             // Load the Spells information.
@@ -485,7 +484,7 @@ namespace Chummer
                 chkFreeBonus.Checked = false;
                 chkFreeBonus.Visible = false;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
 
@@ -804,9 +803,8 @@ namespace Chummer
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             _blnRefresh = false;
         }
         #endregion

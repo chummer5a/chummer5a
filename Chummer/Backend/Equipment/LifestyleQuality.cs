@@ -28,7 +28,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private Guid _SourceGuid;
@@ -92,7 +92,7 @@ namespace Chummer.Backend.Equipment
         }
     #endregion
 
-    #region Constructor, Create, Save, Load, and Print Methods
+        #region Constructor, Create, Save, Load, and Print Methods
     public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
@@ -164,7 +164,10 @@ namespace Chummer.Backend.Equipment
             {
                 Free = true;
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
+
+        public SourceString SourceDetail { get; set; }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -243,6 +246,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
+            SourceDetail = new SourceString(_strSource, _strPage);
             LegacyShim();
         }
 
@@ -335,7 +339,7 @@ namespace Chummer.Backend.Equipment
         }
 #endregion
 
-#region Properties
+        #region Properties
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
@@ -666,5 +670,10 @@ namespace Chummer.Backend.Equipment
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }
