@@ -6016,7 +6016,7 @@ namespace Chummer
                 XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
-                    frmPickArmorMod.AllowedCategories = "," + xmlAddModCategory.InnerText;
+                    frmPickArmorMod.AllowedCategories = xmlAddModCategory.InnerText;
                     frmPickArmorMod.ExcludeGeneralCategory = true;
                 }
                 else
