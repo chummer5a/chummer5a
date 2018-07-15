@@ -717,6 +717,7 @@ namespace Chummer.Backend.Equipment
                     objLocation.Load(objXmlLocation);
                 }
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -3123,7 +3124,7 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            throw new NotImplementedException();
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

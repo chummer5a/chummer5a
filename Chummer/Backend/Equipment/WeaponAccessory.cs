@@ -355,6 +355,7 @@ namespace Chummer.Backend.Equipment
                 _blnEquipped = true;
                 Equipped = false;
             }
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>

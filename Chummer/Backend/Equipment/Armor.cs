@@ -383,7 +383,7 @@ namespace Chummer.Backend.Equipment
                 Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
             }
 
-            SourceDetail = new SourceString(_strSource,_strPage);
+            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
