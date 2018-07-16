@@ -20,6 +20,7 @@ Application Changes:
 - Fixed a typo in the loading behaviour of different knowledge skill specialisation karma costs that prevented it from being saved or loaded properly. Fixes #2858
 - Added support for armor mod selection being limited to a single category via the forcemodcategory node.
 - Minor refactor of tooltip generating code to make them work more reliably on child windows and avoid repeated queries to language manager. Fixes #2868
+- Fixed an issue with the crashhandler looking for incorrect dictionary keys that caused it to not properly output the crash info to desktop.
 
 Data Changes:
 
@@ -29,6 +30,7 @@ Data Changes:
 - Added page references for Extended, Alchemical and Limited spells on the Spell Select window.
 - Added Area Knowledge: Neo-Tokyo knowledge skill. Fixes #2865
 - Added missing Metagenetic flag to the Natural Venom (Exhaled, Deadly) quality. Fixes #2862
+- Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade
 
 Build 201
 
