@@ -13548,10 +13548,10 @@ namespace Chummer
                     lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
                     //lblWeaponAmmoType.Text = "External Source";
 
-                    cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
-                    cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                    cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                    cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoSingleShot.Enabled      = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot",    GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
+                    cmsAmmoShortBurst.Enabled      = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire",     GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoLongBurst.Enabled       = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire",     GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoFullBurst.Enabled       = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
                     cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
