@@ -20,6 +20,7 @@ Application Changes:
 - Fixed a typo in the loading behaviour of different knowledge skill specialisation karma costs that prevented it from being saved or loaded properly. Fixes #2858
 - Added support for armor mod selection being limited to a single category via the forcemodcategory node.
 - Minor refactor of tooltip generating code to make them work more reliably on child windows and avoid repeated queries to language manager. Fixes #2868
+- Fixed a (legacy?) issue that prevented BF weapons from using the Long Burst action. RAW seems hazy on it, but says it's two burst actions, so ehhh?
 
 Data Changes:
 
