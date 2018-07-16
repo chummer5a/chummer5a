@@ -6022,7 +6022,10 @@ namespace Chummer
                 else
                 {
                     xmlAddModCategory = objXmlArmor["addmodcategory"];
-                    frmPickArmorMod.AllowedCategories += "," + xmlAddModCategory.InnerText;
+                    if (xmlAddModCategory != null)
+                    {
+                        frmPickArmorMod.AllowedCategories += "," + xmlAddModCategory.InnerText;
+                    }
                 }
 
                 frmPickArmorMod.ShowDialog(this);
