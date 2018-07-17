@@ -133,13 +133,15 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly Dictionary<string, string> _dicPretendFiles;
+            public readonly Dictionary<string, string> _dicPretendFiles;
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly Dictionary<string, string> _dicAttributes;
-            private readonly int _intProcessId = Process.GetCurrentProcess().Id;
-            private readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
+            public readonly Dictionary<string, string> _dicAttributes;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
             public string SerializeBase64()
             {
@@ -165,8 +167,8 @@ namespace Chummer.Backend
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue("ProcessId", _intProcessId);
-                info.AddValue("ThreadId", _uintThreadId);
+                info.AddValue("procesid", _intProcessId);
+                info.AddValue("threadid", _uintThreadId);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)

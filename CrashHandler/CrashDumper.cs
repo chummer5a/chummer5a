@@ -440,13 +440,11 @@ namespace CrashHandler
             object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
 
 			Dictionary<string, object> parts = obj as Dictionary<string, object>;
-			if (parts?["processid"] is int)
+			if (parts?["_intProcessId"] is int pid)
 			{
-				int pid = (int) parts["processid"];
-
-				filesList = ((object[])parts["capturefiles"]).Select(x => x.ToString()).ToList();
-				attributes = ((Dictionary<string, object>) parts["attributes"]).ToDictionary(x => x.Key, y => y.Value.ToString());
-				pretendFiles = ((Dictionary<string, object>)parts["pretendfiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
+			    filesList = parts["_dicCapturedFiles"] as List<string>;
+				attributes = ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key, y => y.Value.ToString());
+				pretendFiles = ((Dictionary<string, object>)parts["_dicPretendFiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
 
 				processId = (short) pid;
 			    string s = "0";
@@ -457,7 +455,7 @@ namespace CrashHandler
 
 				exceptionPrt = new IntPtr(int.Parse(s));
 
-				threadId = uint.Parse(parts["threadId"]?.ToString() ?? "0");
+				threadId = uint.Parse(parts["_uintThreadId"]?.ToString() ?? "0");
 
 				return true;
 			}
