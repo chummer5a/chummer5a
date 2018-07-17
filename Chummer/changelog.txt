@@ -22,6 +22,7 @@ Application Changes:
 - Minor refactor of tooltip generating code to make them work more reliably on child windows and avoid repeated queries to language manager. Fixes #2868
 - Fixed an issue with the crashhandler looking for incorrect dictionary keys that caused it to not properly output the crash info to desktop.
 - Fixed a (legacy?) issue that prevented BF weapons from using the Long Burst action. RAW seems hazy on it, but says it's two burst actions, so ehhh?
+- Fixed an issue with armor mods not properly assigning Extra values acquired through the Improvement system. Specifically, this fixes an issue with High-Fashion Armor Clothing not stacking. Fixes #2873
 
 Data Changes:
 
@@ -31,7 +32,8 @@ Data Changes:
 - Added page references for Extended, Alchemical and Limited spells on the Spell Select window.
 - Added Area Knowledge: Neo-Tokyo knowledge skill. Fixes #2865
 - Added missing Metagenetic flag to the Natural Venom (Exhaled, Deadly) quality. Fixes #2862
-- Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade
+- Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade from Street Lethal. 
+- Fixed an issue with the College Education quality being incorrectly hidden from the SRM 1.4 Missions ruleset.
 
 Build 201
 

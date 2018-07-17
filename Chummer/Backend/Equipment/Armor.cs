@@ -312,7 +312,10 @@ namespace Chummer.Backend.Equipment
                         ArmorMod objMod = new ArmorMod(_objCharacter);
 
                         objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
-                        objMod.Extra = strForceValue;
+                        if (string.IsNullOrWhiteSpace(objMod.Extra))
+                        {
+                            objMod.Extra = strForceValue;
+                        }
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
                         objMod.Cost = "0";
