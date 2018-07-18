@@ -13333,8 +13333,8 @@ namespace Chummer
 			this.lstCalendar.Location = new System.Drawing.Point(8, 35);
 			this.lstCalendar.MultiSelect = false;
 			this.lstCalendar.Name = "lstCalendar";
-			this.lstCalendar.Size = new System.Drawing.Size(0, 0);
-			this.lstCalendar.TabIndex = 1;
+            this.lstCalendar.Size = new System.Drawing.Size(1080, 631);
+            this.lstCalendar.TabIndex = 1;
 			this.lstCalendar.UseCompatibleStateImageBehavior = false;
 			this.lstCalendar.View = System.Windows.Forms.View.Details;
 			this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
