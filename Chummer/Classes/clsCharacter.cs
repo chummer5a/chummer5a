@@ -8409,6 +8409,7 @@ namespace Chummer
                 int intHighestNoCustomStack = 0;
                 string strHighest = string.Empty;
 
+                if (Armor.Count == 0) return 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 foreach (Armor objArmor in Armor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped))
                 {
