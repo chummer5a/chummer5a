@@ -6996,7 +6996,7 @@ namespace Chummer
             }
             else
             {
-                objQuality.SourceDetail.SetControl(lblQualitySource);
+                objQuality.SetSourceDetail(lblQualitySource);
                 lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
         }
@@ -8278,7 +8278,7 @@ namespace Chummer
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Language);
                 lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
 
-                objSpell.SourceDetail.SetControl(lblSpellSource);
+                objSpell.SetSourceDetail(lblSpellSource);
 
                 // Determine the size of the Spellcasting Dice Pool.
                 lblSpellDicePool.Text = objSpell.DicePool.ToString();
@@ -8687,7 +8687,7 @@ namespace Chummer
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
 
                 string strPage = objComplexForm.Page(GlobalOptions.Language);
-                objComplexForm.SourceDetail.SetControl(lblComplexFormSource);
+                objComplexForm.SetSourceDetail(lblComplexFormSource);
             }
             else
             {
@@ -8735,7 +8735,7 @@ namespace Chummer
             {
                 lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalOptions.Language);
 
-                objProgram.SourceDetail.SetControl(lblAIProgramsSource);
+                objProgram.SetSourceDetail(lblAIProgramsSource);
             }
             else
             {
@@ -8773,35 +8773,35 @@ namespace Chummer
                 {
                     cmdDeleteMetamagic.Text = LanguageManager.GetString(objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objMetamagic.Grade >= 0;
-                    objMetamagic.SourceDetail.SetControl(lblMetamagicSource);
+                    objMetamagic.SetSourceDetail(lblMetamagicSource);
                     break;
                 }
                 case Art objArt:
                 {
                     cmdDeleteMetamagic.Text = LanguageManager.GetString(objArt.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objArt.Grade >= 0;
-                    objArt.SourceDetail.SetControl(lblMetamagicSource);
+                    objArt.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case Spell objSpell:
                 {
                     cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveMetamagic", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objSpell.Grade >= 0;
-                    objSpell.SourceDetail.SetControl(lblMetamagicSource);
+                    objSpell.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case ComplexForm objComplexForm:
                 {
                     cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objComplexForm.Grade >= 0;
-                    objComplexForm.SourceDetail.SetControl(lblMetamagicSource);
+                    objComplexForm.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case Enhancement objEnhancement:
                 {
                     cmdDeleteMetamagic.Text = LanguageManager.GetString(objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objEnhancement.Grade >= 0;
-                    objEnhancement.SourceDetail.SetControl(lblMetamagicSource);
+                    objEnhancement.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 default:
@@ -8828,7 +8828,7 @@ namespace Chummer
                 lblCritterPowerRange.Text = objPower.DisplayRange(GlobalOptions.Language);
                 lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalOptions.Language);
                 chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
-                objPower.SourceDetail.SetControl(lblCritterPowerSource);
+                objPower.SetSourceDetail(lblCritterPowerSource);
 
                 if (objPower.PowerPoints > 0)
                 {
@@ -10171,7 +10171,7 @@ namespace Chummer
                 lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
 
-                objCyberware.SourceDetail.SetControl(lblCyberwareSource);
+                objCyberware.SetSourceDetail(lblCyberwareSource);
                 // Enable and set the Rating values as needed.
                 if (objCyberware.MaxRating == 0)
                 {
@@ -10286,7 +10286,7 @@ namespace Chummer
                 lblCyberwareGradeLabel.Visible = false;
                 cboCyberwareGrade.Visible = false;
 
-                objGear.SourceDetail.SetControl(lblCyberwareSource);
+                objGear.SetSourceDetail(lblCyberwareSource);
 
                 lblCyberDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                 lblCyberAttack.Text = objGear.GetTotalMatrixAttribute("Attack").ToString();
@@ -10352,7 +10352,7 @@ namespace Chummer
 
                 lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                objWeapon.SourceDetail.SetControl(lblWeaponSource);
+                objWeapon.SetSourceDetail(lblWeaponSource);
 
                 chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
                 chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
@@ -10480,7 +10480,7 @@ namespace Chummer
                 }
 
                 lblWeaponSlots.Text = strSlotsText.ToString();
-                objSelectedAccessory.SourceDetail.SetControl(lblWeaponSource);
+                objSelectedAccessory.SetSourceDetail(lblWeaponSource);
                 chkWeaponAccessoryInstalled.Enabled = true;
                 chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
                 chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
@@ -10530,7 +10530,7 @@ namespace Chummer
                 lblWeaponAmmo.Text = string.Empty;
                 lblWeaponSlots.Text = string.Empty;
                 lblWeaponRating.Text = string.Empty;
-                objGear.SourceDetail.SetControl(lblWeaponSource);
+                objGear.SetSourceDetail(lblWeaponSource);
                 chkWeaponAccessoryInstalled.Enabled = true;
                 chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                 chkIncludedInWeapon.Enabled = false;
@@ -10663,7 +10663,7 @@ namespace Chummer
                     nudArmorRating.Enabled = true;
                 }
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objArmor.SourceDetail.SetControl(lblArmorSource);
+                objArmor.SetSourceDetail(lblArmorSource);
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Enabled = false;
@@ -10698,7 +10698,7 @@ namespace Chummer
                                             LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblArmorCost.Text =
                     objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objArmorMod.SourceDetail.SetControl(lblArmorSource);
+                objArmorMod.SetSourceDetail(lblArmorSource);
                 chkArmorEquipped.Checked = objArmorMod.Equipped;
                 chkArmorEquipped.Enabled = true;
                 if (objArmorMod.MaximumRating > 1)
@@ -10733,7 +10733,7 @@ namespace Chummer
                     lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
 
                 lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objSelectedGear.SourceDetail.SetControl(lblArmorSource);
+                objSelectedGear.SetSourceDetail(lblArmorSource);
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
                 if (objSelectedGear.MaxRating > 1)
@@ -10882,7 +10882,7 @@ namespace Chummer
                     lblGearCost.Text = objGear.Cost + "¥";
                 }
                 lblGearCapacity.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                objGear.SourceDetail.SetControl(lblGearSource);
+                objGear.SetSourceDetail(lblGearSource);
 
                 objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
@@ -11564,7 +11564,8 @@ namespace Chummer
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + " × " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            objLifestyle.SourceDetail.SetControl(lblLifestyleSource);
+            objLifestyle.SetSourceDetail(lblLifestyleSource);
+            objLifestyle.SetSourceDetail(lblLifestyleSource);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             string strIncrementString;
@@ -11851,7 +11852,7 @@ namespace Chummer
 
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
                 UpdateSensor(objVehicle);
-                objVehicle.SourceDetail.SetControl(lblVehicleSource);
+                objVehicle.SetSourceDetail(lblVehicleSource);
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
 
@@ -11911,7 +11912,7 @@ namespace Chummer
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString();
-                objWeaponMount.SourceDetail.SetControl(lblVehicleSource);
+                objWeaponMount.SetSourceDetail(lblVehicleSource);
             }
             // Locate the selected VehicleMod.
             if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
@@ -11985,7 +11986,7 @@ namespace Chummer
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
-                objMod.SourceDetail.SetControl(lblVehicleSource);
+                objMod.SetSourceDetail(lblVehicleSource);
             }
             else if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
@@ -12017,7 +12018,7 @@ namespace Chummer
                 lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 DisplayVehicleStats(false);
-                objWeapon.SourceDetail.SetControl(lblVehicleSource);
+                objWeapon.SetSourceDetail(lblVehicleSource);
 
                 // Determine the Dice Pool size.
                 int intPilot = objWeapon.ParentVehicle.Pilot;
@@ -12086,7 +12087,7 @@ namespace Chummer
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = strMount.ToString();
-                objAccessory.SourceDetail.SetControl(lblVehicleSource);
+                objAccessory.SetSourceDetail(lblVehicleSource);
                 chkVehicleWeaponAccessoryInstalled.Enabled = true;
                 chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -12106,7 +12107,7 @@ namespace Chummer
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
                 lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objCyberware.SourceDetail.SetControl(lblVehicleSource);
+                objCyberware.SetSourceDetail(lblVehicleSource);
 
                 lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
                 objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
@@ -12186,7 +12187,7 @@ namespace Chummer
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                objGear.SourceDetail.SetControl(lblVehicleSource);
+                objGear.SetSourceDetail(lblVehicleSource);
 
                 objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
