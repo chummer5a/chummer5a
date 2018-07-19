@@ -11678,7 +11678,7 @@ namespace Chummer
                         break;
                     }
                 }
-                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || x.Target.Contains(strFocusExtra)) && x.Enabled))
                 {
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
                         intExtraKarmaCost += objLoopImprovement.Value;
@@ -12401,6 +12401,17 @@ namespace Chummer
                 frmPickImprovement.ShowDialog(this);
 
                 if (frmPickImprovement.DialogResult == DialogResult.Cancel) return;
+
+                TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
+
+                if (newNode != null)
+                {
+                    newNode.Text = frmPickImprovement.NewImprovement.CustomName;
+                    newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
+                    newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
+                }
+                else { Utils.BreakIfDebug(); }
+
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
