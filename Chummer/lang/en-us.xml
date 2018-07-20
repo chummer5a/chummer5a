@@ -1836,6 +1836,10 @@
       <text>Are you sure you want to delete this Weapon location? All of the Weapons in this location will be moved to the Selected Weapons container.</text>
     </string>
     <string>
+      <key>Message_DeleteWeaponMount</key>
+      <text>Are you sure you want to delete this Weapon Mount?</text>
+    </string>
+    <string>
       <key>Message_DeleteLifestyle</key>
       <text>Are you sure you want to delete this Lifestyle?</text>
     </string>

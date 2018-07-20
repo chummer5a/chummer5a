@@ -71,7 +71,7 @@ namespace Chummer
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                _guiID = new Guid();
+                _guiID = Guid.NewGuid();
                 _strName = objNode.InnerText;
             }
             else

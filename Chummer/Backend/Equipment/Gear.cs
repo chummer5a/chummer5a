@@ -2670,13 +2670,14 @@ namespace Chummer.Backend.Equipment
             if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
                 return false;
 
-            DeleteGear();
             if (Parent is IHasChildren<Gear> objHasChildren)
             {
+                DeleteGear();
                 objHasChildren.Children.Remove(this);
             }
             else
             {
+                DeleteGear();
                 characterObject.Gear.Remove(this);
             }
 

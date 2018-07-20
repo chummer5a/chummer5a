@@ -24,6 +24,9 @@ Application Changes:
 - Fixed a (legacy?) issue that prevented BF weapons from using the Long Burst action. RAW seems hazy on it, but says it's two burst actions, so ehhh?
 - Fixed an issue with armor mods not properly assigning Extra values acquired through the Improvement system. Specifically, this fixes an issue with High-Fashion Armor Clothing not stacking. Fixes #2873
 - Fixed an issue with Artisan's Way focus discounts not working properly in some cases. 
+- Fixed an issue with weapon mount treenodes not being properly removed when they're deleted. Fixes #2886
+- Fixed an occasional crash when removing gear.
+- Fixed a parsing error when loading locations from older characters.
 
 Data Changes:
 
@@ -35,6 +38,10 @@ Data Changes:
 - Added missing Metagenetic flag to the Natural Venom (Exhaled, Deadly) quality. Fixes #2862
 - Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade from Street Lethal. 
 - Fixed an issue with the College Education quality being incorrectly hidden from the SRM 1.4 Missions ruleset.
+
+New Strings:
+
+- Message_DeleteWeaponMount
 
 Build 201
 
