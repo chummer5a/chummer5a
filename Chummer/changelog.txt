@@ -39,6 +39,7 @@ Data Changes:
 - Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade from Street Lethal. 
 - Fixed an issue with the College Education quality being incorrectly hidden from the SRM 1.4 Missions ruleset.
 - Fixed incorrect price on the Beretta Northstar. Fixes #2887
+- Added an amend entry to allow Bone Lacing to apply directly to Body instead of just damage resistance due to ambiguity in RAW. Closes #2884
 
 New Strings:
 
