@@ -38,6 +38,7 @@ Data Changes:
 - Added missing Metagenetic flag to the Natural Venom (Exhaled, Deadly) quality. Fixes #2862
 - Added missing MCT/Winchester-Howe Hornet Direct-Fire Minigrenade from Street Lethal. 
 - Fixed an issue with the College Education quality being incorrectly hidden from the SRM 1.4 Missions ruleset.
+- Fixed incorrect price on the Beretta Northstar. Fixes #2887
 
 New Strings:
 
