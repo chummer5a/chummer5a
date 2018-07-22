@@ -27,6 +27,7 @@ Application Changes:
 - Fixed an issue with weapon mount treenodes not being properly removed when they're deleted. Fixes #2886
 - Fixed an occasional crash when removing gear.
 - Fixed a parsing error when loading locations from older characters.
+- Fixed behaviour of reloading weapons in career mode to work consistently for vehicles and character weapons. Fixes an issue with 'external source' weapons not reloading properly. Fixes #2795
 
 Data Changes:
 

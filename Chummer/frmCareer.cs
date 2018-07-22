@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -10237,6 +10238,16 @@ namespace Chummer
         private void cmdReloadWeapon_Click(object sender, EventArgs e)
         {
             if (!(treWeapons?.SelectedNode?.Tag is Weapon objWeapon)) return;
+            ReloadWeapon(objWeapon, CharacterObject.Gear, treGear);
+            lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        private void ReloadWeapon(Weapon weapon, ObservableCollection<Gear> gears, TreeView gearView)
+        {
             List<Gear> lstAmmo = new List<Gear>();
             List<string> lstCount = new List<string>();
             bool blnExternalSource = false;
@@ -10245,55 +10256,56 @@ namespace Chummer
                 Name = "External Source"
             };
 
-            if (!objWeapon.RequireAmmo)
+            string ammoString = weapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
+            {
+                string strWeaponAmmo = ammoString.ToLower();
+                if (strWeaponAmmo.Contains("external source"))
+                    blnExternalSource = true;
+                // Get rid of external source, special, or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                    .Replace("special", "100")
+                    .FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
+
+                string[] strAmmos = strWeaponAmmo.Split(new[] {" or "}, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string strAmmo in strAmmos)
+                {
+                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
+
+                    int intPos = strThisAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strThisAmmo = strThisAmmo.Substring(0, intPos);
+
+                    lstCount.Add(strThisAmmo);
+                }
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                lstCount.Add(strAmmo);
+            }
+
+            if (!weapon.RequireAmmo)
             {
                 // If the Weapon does not require Ammo, just use External Source.
                 lstAmmo.Add(objExternalSource);
             }
             else
             {
-                string ammoString = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                // Determine which loading methods are available to the Weapon.
-                if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
-                {
-                    string strWeaponAmmo = ammoString.ToLower();
-                    if (strWeaponAmmo.Contains("external source"))
-                        blnExternalSource = true;
-                    // Get rid of external source, special, or belt, and + energy.
-                    strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
-                        .Replace("special", "100")
-                        .FastEscapeOnceFromEnd(" + energy")
-                        .Replace(" or belt", " or 250(belt)");
-
-                    string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (string strAmmo in strAmmos)
-                    {
-                        string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
-
-                        int intPos = strThisAmmo.IndexOf('(');
-                        if (intPos != -1)
-                            strThisAmmo = strThisAmmo.Substring(0, intPos);
-
-                        lstCount.Add(strThisAmmo);
-                    }
-                }
-                else
-                {
-                    // Nothing weird in the ammo string, so just use the number given.
-                    string strAmmo = ammoString;
-                    int intPos = strAmmo.IndexOf('(');
-                    if (intPos != -1)
-                        strAmmo = strAmmo.Substring(0, intPos);
-                    lstCount.Add(strAmmo);
-                }
-
                 // Find all of the Ammo for the current Weapon that the character is carrying.
-                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(objWeapon.AmmoPrefixStrings);
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(weapon.AmmoPrefixStrings);
                 // This is a standard Weapon, so consume traditional Ammunition.
-                lstAmmo.AddRange(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == objWeapon.AmmoCategory ||
-                                                                                                         string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
-                                                                                                         objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == x.Name)));
+                lstAmmo.AddRange(gears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == weapon.AmmoCategory ||
+                                       string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                       weapon.UseSkill == "Throwing Weapons" && weapon.Name == x.Name)));
 
                 // If the Weapon is allowed to use an External Source, put in an External Source item.
                 if (blnExternalSource)
@@ -10304,7 +10316,11 @@ namespace Chummer
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (lstAmmo.Count == 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language).Replace("{0}", objWeapon.DisplayAmmoCategory(GlobalOptions.Language)), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(
+                        LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language)
+                            .Replace("{0}", weapon.DisplayAmmoCategory(GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
                     return;
                 }
             }
@@ -10321,16 +10337,16 @@ namespace Chummer
                 return;
 
             // Return any unspent rounds to the Ammo.
-            if (objWeapon.AmmoRemaining > 0)
+            if (weapon.AmmoRemaining > 0)
             {
-                foreach (Gear objAmmo in CharacterObject.Gear)
+                foreach (Gear objAmmo in gears)
                 {
-                    if (objAmmo.InternalId == objWeapon.AmmoLoaded)
+                    if (objAmmo.InternalId == weapon.AmmoLoaded)
                     {
-                        objAmmo.Quantity += objWeapon.AmmoRemaining;
+                        objAmmo.Quantity += weapon.AmmoRemaining;
 
                         // Refresh the Gear tree.
-                        TreeNode objNode = treGear.FindNode(objAmmo.InternalId);
+                        TreeNode objNode = gearView.FindNode(objAmmo.InternalId);
                         if (objNode != null)
                         {
                             objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -10338,33 +10354,37 @@ namespace Chummer
 
                         break;
                     }
+
                     foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
                     {
-                        if (objChild.InternalId == objWeapon.AmmoLoaded)
+                        if (objChild.InternalId == weapon.AmmoLoaded)
                         {
                             // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-                            if (objChild.Parent is Gear parent && (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
+                            if (objChild.Parent is Gear parent &&
+                                (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
                             {
                                 Gear objNewGear = new Gear(CharacterObject);
                                 objNewGear.Copy(objChild);
-                                objNewGear.Quantity = objWeapon.AmmoRemaining;
-                                CharacterObject.Gear.Add(objNewGear);
+                                objNewGear.Quantity = weapon.AmmoRemaining;
+                                gears.Add(objNewGear);
 
                                 goto EndLoop;
                             }
 
-                            objChild.Quantity += objWeapon.AmmoRemaining;
+                            objChild.Quantity += weapon.AmmoRemaining;
 
                             // Refresh the Gear tree.
-                            TreeNode objNode = treGear.FindNode(objChild.InternalId);
+                            TreeNode objNode = gearView.FindNode(objChild.InternalId);
                             if (objNode != null)
                             {
                                 objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
+
                             break;
                         }
                     }
                 }
+
                 EndLoop:;
             }
 
@@ -10373,16 +10393,17 @@ namespace Chummer
             // If an External Source is not being used, consume ammo.
             if (frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId)
             {
-                objSelectedAmmo = CharacterObject.Gear.DeepFindById(frmReloadWeapon.SelectedAmmo);
+                objSelectedAmmo = gears.DeepFindById(frmReloadWeapon.SelectedAmmo);
 
                 if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
                 {
                     // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
-                    if (objSelectedAmmo.Parent is Gear objParent && (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
+                    if (objSelectedAmmo.Parent is Gear objParent &&
+                        (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
                     {
                         if (objParent.Quantity > 0)
                             objParent.Quantity -= 1;
-                        TreeNode objNode = treGear.FindNode(objParent.InternalId);
+                        TreeNode objNode = gearView.FindNode(objParent.InternalId);
                         objNode.Text = objParent.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                 }
@@ -10399,7 +10420,7 @@ namespace Chummer
                 }
 
                 // Refresh the Gear tree.
-                TreeNode objSelectedNode = treGear.FindNode(objSelectedAmmo.InternalId);
+                TreeNode objSelectedNode = gearView.FindNode(objSelectedAmmo.InternalId);
                 if (objSelectedNode != null)
                     objSelectedNode.Text = objSelectedAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
@@ -10408,13 +10429,8 @@ namespace Chummer
                 objSelectedAmmo = objExternalSource;
             }
 
-            objWeapon.AmmoRemaining = decimal.ToInt32(decQty);
-            objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
-            lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            weapon.AmmoRemaining = decimal.ToInt32(decQty);
+            weapon.AmmoLoaded = objSelectedAmmo.InternalId;
         }
 
         private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
@@ -11199,138 +11215,8 @@ namespace Chummer
 
         private void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
         {
-            List<Gear> lstAmmo = new List<Gear>();
-            List<string> lstCount = new List<string>();
-            bool blnExternalSource = false;
-
-            Gear objExternalSource = new Gear(CharacterObject)
-            {
-                Name = "External Source"
-            };
-
-            // Locate the selected Vehicle Weapon.
-            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
-            // Determine which loading methods are available to the Weapon.
-            string ammoString = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
-            {
-                string strWeaponAmmo = ammoString.ToLower();
-                if (strWeaponAmmo.Contains("external source"))
-                    blnExternalSource = true;
-                // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
-                    .Replace("special", "100")
-                    .FastEscapeOnceFromEnd(" + energy")
-                    .FastEscapeOnceFromEnd(" or belt");
-
-                string[] strSplit = { " or " };
-                string[] strAmmos = strWeaponAmmo.Split(strSplit, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string strAmmo in strAmmos)
-                {
-                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
-
-                    int intPos = strThisAmmo.IndexOf('(');
-                    if (intPos != -1)
-                        strThisAmmo = strThisAmmo.Substring(0, intPos);
-
-                    lstCount.Add(strThisAmmo);
-                }
-            }
-            else
-            {
-                // Nothing weird in the ammo string, so just use the number given.
-                int intPos = ammoString.IndexOf('(');
-                if (intPos != -1)
-                    ammoString = ammoString.Substring(0, intPos);
-                lstCount.Add(ammoString);
-            }
-
-            // Find all of the Ammo for the current Weapon that the character is carrying.
-            HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(objWeapon.AmmoPrefixStrings);
-            foreach (Gear objAmmo in objWeapon.ParentVehicle.Gear)
-            {
-                if (objAmmo.Quantity > 0)
-                {
-                    if (objAmmo.Category == "Ammunition" && objAmmo.Extra == objWeapon.AmmoCategory ||
-                        string.IsNullOrEmpty(objAmmo.Extra) && setAmmoPrefixStringSet.Any(y => objAmmo.Name.StartsWith(y)) ||
-                        objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == objAmmo.Name)
-                        lstAmmo.Add(objAmmo);
-                }
-            }
-
-            // If the Weapon is allowed to use an External Source, put in an External Source item.
-            if (blnExternalSource)
-                lstAmmo.Add(objExternalSource);
-
-            // Make sure the character has some form of Ammunition for this Weapon.
-            if (lstAmmo.Count == 0 && objWeapon.RequireAmmo)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language).Replace("{0}", objWeapon.DisplayAmmoCategory(GlobalOptions.Language)), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            if (!objWeapon.RequireAmmo)
-            {
-                // If the Weapon does not require Ammo, clear the Ammo list and just use External Source.
-                lstAmmo.Clear();
-                lstAmmo.Add(objExternalSource);
-            }
-
-            // Show the Ammunition Selection window.
-            frmReload frmReloadWeapon = new frmReload
-            {
-                Ammo = lstAmmo,
-                Count = lstCount
-            };
-            frmReloadWeapon.ShowDialog(this);
-
-            if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Return any unspent rounds to the Ammo.
-            if (objWeapon.AmmoRemaining > 0)
-            {
-                foreach (Gear objAmmo in objWeapon.ParentVehicle.Gear)
-                {
-                    if (objAmmo.InternalId == objWeapon.AmmoLoaded)
-                    {
-                        objAmmo.Quantity += objWeapon.AmmoRemaining;
-
-                        TreeNode objSelectedNode = treVehicles.FindNode(objAmmo.InternalId);
-                        if (objSelectedNode != null)
-                            objSelectedNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        break;
-                    }
-                }
-            }
-
-            Gear objSelectedAmmo = frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId ? objWeapon.ParentVehicle.Gear.FirstOrDefault(x => x.InternalId == frmReloadWeapon.SelectedAmmo) : null;
-            decimal decQty = frmReloadWeapon.SelectedCount;
-            // If an External Source is not being used, consume ammo.
-            if (objSelectedAmmo != null)
-            {
-                // Deduct the ammo qty from the ammo. If there isn't enough remaining, use whatever is left.
-                if (objSelectedAmmo.Quantity > decQty)
-                    objSelectedAmmo.Quantity -= decQty;
-                else
-                {
-                    decQty = objSelectedAmmo.Quantity;
-                    objSelectedAmmo.Quantity = 0;
-                }
-
-                // Refresh the Vehicle tree.
-                TreeNode objSelectedNode = treVehicles.FindNode(objSelectedAmmo.InternalId);
-                if (objSelectedNode != null)
-                    objSelectedNode.Text = objSelectedAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            }
-            else
-            {
-                objSelectedAmmo = objExternalSource;
-            }
-
-            objWeapon.AmmoRemaining = decimal.ToInt32(decQty);
-            objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
+            if (!(treVehicles?.SelectedNode?.Tag is Weapon objWeapon)) return;
+            ReloadWeapon(objWeapon, objWeapon.ParentVehicle.Gear, treVehicles);
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
             IsCharacterUpdateRequested = true;
