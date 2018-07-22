@@ -306,12 +306,18 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character character)
+        public bool Remove(Character character, bool confirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
-            string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
-            return character.ConfirmDelete(strMessage) && character.Arts.Remove(this);
+            if (confirmDelete)
+            {
+                if (!character.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
+                    return false;
+            }
+
+            ImprovementManager.RemoveImprovements(character, _objImprovementSource, InternalId);
+            return character.Arts.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

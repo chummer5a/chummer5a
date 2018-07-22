@@ -3403,7 +3403,7 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
             {
@@ -3413,18 +3413,22 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (SourceType == Improvement.ImprovementSource.Bioware)
+            if (confirmDelete)
             {
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware",
-                    GlobalOptions.Language)))
-                    return false;
+                if (SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+                else
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware",
+                        GlobalOptions.Language)))
+                        return false;
+                }
             }
-            else
-            {
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware",
-                    GlobalOptions.Language)))
-                    return false;
-            }
+
             if (Parent == null)
             {
                 characterObject.Cyberware.Remove(this);

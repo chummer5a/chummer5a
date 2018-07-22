@@ -1028,8 +1028,14 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
+            if (confirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
+                    GlobalOptions.Language)))
+                    return false;
+            }
             DeleteWeaponAccessory();
             return Parent.WeaponAccessories.Remove(this);
         }

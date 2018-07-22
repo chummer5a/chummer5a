@@ -17,8 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -278,7 +280,7 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             // Stop if this isn't the highest grade
             if (characterObject.MAGEnabled)
@@ -289,9 +291,14 @@ namespace Chummer
                     return false;
                 }
 
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language)))
-                    return false;
-                characterObject.InitiateGrade = Math.Max(characterObject.InitiateGrade-= 1, 0);
+                if (confirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
             }
             else if (characterObject.RESEnabled)
             {
@@ -300,9 +307,15 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language)))
-                    return false;
-                characterObject.SubmersionGrade = Math.Max(characterObject.SubmersionGrade -= 1, 0);
+
+                if (confirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
             }
             else
                 return false;

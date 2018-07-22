@@ -2665,10 +2665,14 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
-            if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
-                return false;
+            if (confirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear",
+                    GlobalOptions.Language)))
+                    return false;
+            }
 
             if (Parent is IHasChildren<Gear> objHasChildren)
             {

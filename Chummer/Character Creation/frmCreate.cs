@@ -3124,7 +3124,7 @@ namespace Chummer
             if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
             // Spells that come from Initiation Grades can't be deleted normally. 
             if (objSpell.Grade != 0) return;
-            if (!objSpell.Remove(CharacterObject)) return;
+            if (!objSpell.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3172,7 +3172,7 @@ namespace Chummer
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
             if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject)) return;
+            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3289,7 +3289,7 @@ namespace Chummer
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject)) return;
+            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3362,7 +3362,7 @@ namespace Chummer
         {
             if (treWeapons.SelectedNode?.Tag is ICanRemove objselectedNode)
             {
-                if (!objselectedNode.Remove(CharacterObject)) return;
+                if (!objselectedNode.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3401,7 +3401,7 @@ namespace Chummer
             // Delete the selected Lifestyle.
             if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                if (!selectedObject.Remove(CharacterObject)) return;
+                if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3426,7 +3426,7 @@ namespace Chummer
         {
             if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear)
             {
-                objSelectedGear.Remove(CharacterObject);
+                objSelectedGear.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
             }
             else
             {
@@ -3554,7 +3554,7 @@ namespace Chummer
             }
             else if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                if (selectedObject.Remove(CharacterObject))
+                if (selectedObject.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3597,7 +3597,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)
             {
-                if (objSelectedNode.Remove(CharacterObject))
+                if (objSelectedNode.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3938,7 +3938,7 @@ namespace Chummer
         {
             // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
-            if (!objCritterPower.Remove(CharacterObject)) return;
+            if (!objCritterPower.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3947,7 +3947,7 @@ namespace Chummer
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
             if (!(treComplexForms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject)) return;
+            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3956,7 +3956,7 @@ namespace Chummer
         {
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject)) return;
+            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

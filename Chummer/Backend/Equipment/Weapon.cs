@@ -4621,9 +4621,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             if (!CanBeRemoved()) return false;
+            if (confirmDelete)
+            {
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+
             DeleteWeapon();
             if (characterObject.Weapons.Any(weapon => weapon == this))
             {

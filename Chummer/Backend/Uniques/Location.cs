@@ -205,14 +205,17 @@ namespace Chummer
             }
         }
 
-        public bool Remove(Character character)
+        public bool Remove(Character character, bool confirmDelete = true)
         {
+            if (confirmDelete)
+            {
+                character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
+            }
             foreach (IHasLocation item in Children)
             {
                 item.Location = null;
             }
-            string strMessage = LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language);
-            return character.ConfirmDelete(strMessage) && Parent.Remove(this);
+            return Parent.Remove(this);
         }
     }
 }

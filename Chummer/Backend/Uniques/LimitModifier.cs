@@ -257,11 +257,17 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
-                return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                           GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
+            {
+                if (confirmDelete)
+                {
+                    return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
+                               GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
+                }
+            }
+
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
             MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -28,6 +28,8 @@ Application Changes:
 - Fixed an occasional crash when removing gear.
 - Fixed a parsing error when loading locations from older characters.
 - Fixed behaviour of reloading weapons in career mode to work consistently for vehicles and character weapons. Fixes an issue with 'external source' weapons not reloading properly. Fixes #2795
+- Fixed missing deletion confirmation prompts for many items.
+- Fixed an issue with initiation grades not properly removing themselves.
 
 Data Changes:
 

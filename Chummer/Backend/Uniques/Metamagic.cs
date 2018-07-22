@@ -345,19 +345,22 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
-            string strMessage;
-            if (characterObject.MAGEnabled)
-                strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
-            else if (characterObject.RESEnabled)
-                strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
-            else
-                return false;
-            if (!characterObject.ConfirmDelete(strMessage))
-                return false;
+            if (confirmDelete)
+            {
+                string strMessage;
+                if (characterObject.MAGEnabled)
+                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+                else if (characterObject.RESEnabled)
+                    strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                else
+                    return false;
+                if (!characterObject.ConfirmDelete(strMessage))
+                    return false;
+            }
 
             characterObject.Metamagics.Remove(this);
             ImprovementManager.RemoveImprovements(characterObject, SourceType, InternalId);

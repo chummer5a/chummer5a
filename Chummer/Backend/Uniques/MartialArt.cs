@@ -361,13 +361,16 @@ namespace Chummer
             return true;
         }
 
-        public bool Remove(Character objCharacter)
+        public bool Remove(Character objCharacter, bool confirmDelete = true)
         {
             // Delete the selected Martial Art.
             if (IsQuality) return false;
-            if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
-                GlobalOptions.Language)))
-                return false;
+            if (confirmDelete)
+            {
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                    GlobalOptions.Language)))
+                    return false;
+            }
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
                 InternalId);

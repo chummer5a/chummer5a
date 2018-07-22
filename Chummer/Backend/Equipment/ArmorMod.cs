@@ -1012,8 +1012,14 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
+            if (confirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor",
+                    GlobalOptions.Language)))
+                    return false;
+            }
             DeleteArmorMod();
             return Parent.ArmorMods.Remove(this);
         }

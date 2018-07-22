@@ -2,6 +2,6 @@ namespace Chummer
 {
     public interface ICanRemove
     {
-        bool Remove(Character characterObject);
+        bool Remove(Character characterObject, bool confirmDelete);
     }
 }

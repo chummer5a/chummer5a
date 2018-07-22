@@ -318,13 +318,16 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool confirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
-            string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
-            if (!characterObject.ConfirmDelete(strMessage))
-                return false;
+            if (confirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement",
+                    GlobalOptions.Language)))
+                    return false;
+            }
 
             characterObject.Enhancements.Remove(this);
             foreach (Power objPower in characterObject.Powers)
@@ -332,6 +335,8 @@ namespace Chummer
                 if (objPower.Enhancements.Contains(this))
                     objPower.Enhancements.Remove(this);
             }
+
+            ImprovementManager.RemoveImprovements(characterObject, _objImprovementSource, InternalId);
 
             return true;
         }
