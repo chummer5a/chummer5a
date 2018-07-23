@@ -8253,6 +8253,7 @@
       <page>184</page>
       <hide />
       <range>Light Pistols</range>
+      <ammocategory>Light Pistols</ammocategory>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
