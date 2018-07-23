@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<metamagics>
+		<metamagic>
+		    <name>Paradigm Shift: Insect Shaman</name>
+			<hide />
+		</metamagic>
+		<metamagic>
+			<name>Paradigm Shift: Toxic</name>
+			<hide />
+		</metamagic>
+		<metamagic>
+			<name>Tarot Summoning</name>
+			<hide />
+		</metamagic>
+		<metamagic>
+			<name>Noble Sacrifice</name>
+			<hide />
+		</metamagic>
+		<metamagic>
+			<name>Harmonious Defense</name>
+			<hide />
+		</metamagic>
+	</metamagics>
+	<arts>
+		<art>
+			<name>Blood Magic</name>
+			<hide />
+		</art>
+	</arts>
+</chummer>

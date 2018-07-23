@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<spells>
+		<spell>
+			<name>Multiply Food</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Manablade</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Powerblade</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Comet</name>
+			<hide />
+		</spell>
+	</spells>
+</chummer>

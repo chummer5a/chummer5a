@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <martialarts>
+    <martialart>
+      <name>Way of Unified Mana (Hapsum-Do)</name>
+      <cost>7</cost>
+    </martialart>
+  </martialarts>
+</chummer>
