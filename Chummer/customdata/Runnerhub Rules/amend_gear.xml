@@ -44,13 +44,14 @@
     <gear>
       <name>Portable Chemical Injector, Thigh</name>
       <capacity>5</capacity>
-      <avail>5</avail>
+
+      <avail>6</avail>
       <addoncategory>Drugs</addoncategory>
     </gear>
     <gear>
       <name>Portable Chemical Injector, Wrist</name>
       <capacity>3</capacity>
-      <avail>3</avail>
+      <avail>4</avail>
       <addoncategory>Drugs</addoncategory>
     </gear>
     <gear>
