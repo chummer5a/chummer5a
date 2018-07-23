@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<traditions>
+		<tradition>
+			<name>Elder God</name>
+			<hide />
+		</tradition>
+		<tradition>
+			<name>Draconic</name>
+			<hide />
+		</tradition>
+		<tradition>
+			<name>Planar Magic</name>
+			<hide />
+		</tradition>
+		<tradition>
+			<name>Romani</name>
+			<hide />
+		</tradition>
+		<tradition>
+			<name>Tarot</name>
+			<hide />
+		</tradition>
+		<tradition>
+			<name>Pariah</name>
+			<hide />
+		</tradition>
+	</traditions>
+</chummer>

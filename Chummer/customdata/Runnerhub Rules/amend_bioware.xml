@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<grades>
+		<grade>
+			<name>Omegaware</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Gammaware</name>
+			<hide />
+		</grade>
+	</grades>
+	<biowares>
+		<bioware>
+			<name>Adapsin</name>
+			<forbidden>
+				<oneof>					
+					<quality>Biocompatability (Cyberware)</quality>
+				</oneof>
+			</forbidden>
+		</bioware>
+	</biowares>
+</chummer>
