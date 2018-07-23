@@ -44,6 +44,7 @@
     <gear>
       <name>Portable Chemical Injector, Thigh</name>
       <capacity>5</capacity>
+
       <avail>6</avail>
       <addoncategory>Drugs</addoncategory>
     </gear>
