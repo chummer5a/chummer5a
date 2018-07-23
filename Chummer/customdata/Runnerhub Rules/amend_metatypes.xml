@@ -57,6 +57,7 @@
 			</bonus>
 		</metatype>
 		
+
 		<metatype xpathfilter="starts-with(name, 'Shapeshifter')">
 			<metavariants>
 				<metavariant>
@@ -66,6 +67,24 @@
 						  <quality select="Metahuman Form Only">Distinctive Style</quality>
 						</negative>
 					</qualities>
+				</metavariant>
+			</metavariants>
+		</metatype>
+		<metatype xpathfilter="starts-with(name, 'Shapeshifter')">
+			<metavariants>
+				<metavariant>
+					<bonus xpathfilter="contains(initiativedice, '1')">
+						<initiativepass precedence="-1">1</initiativepass>
+						<initiativedice>0</initiativedice>						
+					</bonus>
+					<bonus xpathfilter="contains(initiativedice, '2')">
+						<initiativepass precedence="-1">2</initiativepass>
+						<initiativedice>0</initiativedice>						
+					</bonus>
+					<bonus xpathfilter="contains(initiativedice, '3')">
+						<initiativepass precedence="-1">3</initiativepass>
+						<initiativedice>0</initiativedice>						
+					</bonus>			
 				</metavariant>
 			</metavariants>
 		</metatype>
