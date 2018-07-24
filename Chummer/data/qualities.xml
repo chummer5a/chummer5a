@@ -2498,7 +2498,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <metageneticlimit>10</metageneticlimit>
+        <metageneticlimit>30</metageneticlimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -2517,7 +2517,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <metageneticlimit>15</metageneticlimit>
+        <metageneticlimit>30</metageneticlimit>
       </bonus>
       <forbidden>
         <oneof>
