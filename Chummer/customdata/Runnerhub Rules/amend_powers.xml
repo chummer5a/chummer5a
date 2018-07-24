@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<powers>
+		<power>
+			<name>Adept Spell</name>
+			<hide />
+		</power>
+		<power>
+			<name>Cool Resolve</name>
+			<notes> Limited to 2 + Initiate Grade.</notes>
+		</power>
+	</powers>
+</chummer>

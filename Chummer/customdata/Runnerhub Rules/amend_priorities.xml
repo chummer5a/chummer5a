@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <priorities>
+    <priority>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <karma>8</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+      <talents>
+        <talent xpathfilter="starts-with(name, 'Mystic Adept')">
+          <skilltype>specific</skilltype>
+          <skillchoices>
+            <skill>Arcana</skill>
+            <skill>Assensing</skill>
+            <skill>Astral Combat</skill>
+            <skill>Banishing</skill>
+            <skill>Binding</skill>
+            <skill>Counterspelling</skill>
+            <skill>Disenchanting</skill>
+            <skill>Ritual Spellcasting</skill>
+            <skill>Spellcasting</skill>
+            <skill>Summoning</skill>
+          </skillchoices>
+        </talent>
+      </talents>
+    </priority>
+  </priorities>
+</chummer>

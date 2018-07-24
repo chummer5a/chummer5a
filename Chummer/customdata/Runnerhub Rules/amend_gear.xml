@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <categories amendoperation="append">
+    <category blackmarket="Electronics">RCC Programs</category>    
+  </categories>
+  <gears>
+    <gear>
+      <name>Betel</name>
+      <hide />
+    </gear>
+    <gear>
+      <name>Soothsayer</name>
+      <hide />
+    </gear>
+    <gear>
+      <id>6a953f49-8625-4c8a-8919-7ee446b77464</id>
+      <name>Flame Tosser Ammo</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>HT</source>
+      <page>184</page>
+      <avail>12F</avail>
+      <cost>10</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>f2943980-a80e-4a2c-8dd8-a4bba91bbe1e</id>
+      <name>Grenade: Painade</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>CA</source>
+      <page>135</page>
+      <avail>9R</avail>
+      <addweapon>Grenade: Painade</addweapon>
+      <cost>300</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <name>Portable Chemical Injector, Harness</name>      
+      <capacity>10</capacity>
+      <avail>10R</avail>      
+      <addoncategory>Drugs</addoncategory>
+    </gear>
+    <gear>
+      <name>Portable Chemical Injector, Thigh</name>
+      <capacity>5</capacity>
+
+      <avail>6</avail>
+      <addoncategory>Drugs</addoncategory>
+    </gear>
+    <gear>
+      <name>Portable Chemical Injector, Wrist</name>
+      <capacity>3</capacity>
+      <avail>4</avail>
+      <addoncategory>Drugs</addoncategory>
+    </gear>
+    <gear>
+      <name>Shaman Tuxedo</name>
+      <notes>
+        - The conjurer receives one service upon a successful summoning, and the conjurer must continue wearing the outfit in order to command the spirit and to benefit from its services. If the conjurer removes the outfit, the spirit gets upset and will not perform any further services until the conjurer puts the outfit back on and issues a new command. 
+      </notes>
+    </gear>
+    <gear>
+      <id>b50872fc-3c02-4a66-ba92-36c8e747aa51</id>
+      <name>Encryption (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>0</avail>
+      <cost>80</cost>
+    </gear>
+    <gear>
+      <id>dade40a3-2d3e-41d8-a082-c92c8f8dd6ab</id>
+      <name>Signal Scrub (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>0</avail>
+      <cost>80</cost>
+    </gear>
+    <gear>
+      <id>a6a76d41-5e5b-49d9-834d-d72e2cd24cee</id>
+      <name>Toolbox (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>0</avail>
+      <cost>80</cost>
+    </gear>
+    <gear>
+      <id>e7376194-3c1e-4f6b-876e-647a76045ef2</id>
+      <name>Virtual Machine (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>0</avail>
+      <programs>2</programs>
+      <cost>80</cost>
+    </gear>
+    <gear>
+      <id>992d754a-13d7-4558-80b4-a304a5c43822</id>
+      <name>Armor (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>7c249c17-bf49-44cd-95a5-744a66c94f8e</id>
+      <name>Biofeedback Filter (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>cc81127f-5cf7-4bf9-b4e4-baab789050c0</id>
+      <name>Guard (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>abc8299c-e502-490d-a6d2-b650d7f77ad4</id>
+      <name>Shell (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>5bcabeef-3724-4472-8b61-3ecbd5694136</id>
+      <name>Sneak (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>e124163e-8c39-482f-b2b0-fccf77bd14f1</id>
+      <name>Stealth (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>1ca16300-5fbb-4252-a145-7f7fc86ec5e0</id>
+      <name>Wrapper (RCC)</name>
+      <category>RCC Programs</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>245</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear xpathfilter="category = 'RCC Programs'" amendoperation="append">
+      <capacity>[0]</capacity>
+    </gear>
+    <gear xpathfilter="category = 'Drugs'" amendoperation="append">
+      <capacity>[1]</capacity>
+    </gear>
+    <gear xpathfilter="category = 'Electronic Modification'" amendoperation="append">
+      <hide />
+    </gear>
+    <gear xpathfilter="category = 'Rigger Command Consoles'" amendoperation="append">   
+      <addoncategory>RCC Programs</addoncategory>
+    </gear>
+  </gears>
+</chummer>
