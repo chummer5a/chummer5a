@@ -383,11 +383,12 @@ namespace Chummer
                 limit.Add(improvement.ImprovedName);
             }
 
-            // Populate drugs. //TODO: fix
-            foreach (Drug objDrug in _objCharacter.Drugs)
+            /* Populate drugs. //TODO: fix
+            foreach (Drug objDrug in CharacterObj.Drugs)
             {
                 treCustomDrugs.Add(objDrug);
-            }
+            }*/
+
 			// Populate the Magician Custom Spirits lists - Combat.
 			List<ListItem> lstSpirit = new List<ListItem>
             {
@@ -7690,29 +7691,16 @@ namespace Chummer
         {
 
             // Don't attempt to do anything while the data is still being populated.
-            if (_blnLoading)
+            if (_blnLoading || _blnSkipRefresh)
                 return;
 
-            if (_blnSkipRefresh)
-                return;
-
-            // Attempt to locate the selected Drug.
-            try
+            if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
             {
-                if (treCustomDrugs.SelectedNode.Level == 1)
-                {
-                    Drug objSelectedDrug = _objFunctions.FindDrug(treCustomDrugs.SelectedNode.Tag.ToString(), _objCharacter.Drugs);
+                objDrug.Quantity = Convert.ToInt32(nudDrugQty.Value);
+                RefreshSelectedDrug();
 
-                    objSelectedDrug.Quantity = Convert.ToInt32(nudDrugQty.Value);
-                    RefreshSelectedDrug();
-                    UpdateCharacterInfo();
-
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
-            }
-            catch
-            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
         }
 
@@ -8123,7 +8111,7 @@ namespace Chummer
 		private void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			RefreshSelectedDrug();
-			RefreshPasteStatus();
+			RefreshPasteStatus(sender, e);
 		}
 		#endregion
 
@@ -10155,17 +10143,11 @@ namespace Chummer
                 decDeductions += objLifestyle.TotalCost;
 
             // Vehicle cost.
-            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                intDeductions += objVehicle.TotalCost;
+            foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                decDeductions += objVehicle.TotalCost;
 
 			// Drug cost.
-			foreach (Drug objDrug in _objCharacter.Drugs)
-				intDeductions += objDrug.TotalCost;
-
-			_objCharacter.Nuyen = intNuyen - intDeductions;
-            lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
-            tssNuyenRemaining.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
-            lblPBuildNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
+            decDeductions += CharacterObject.Drugs.Sum(drug => drug.TotalCost);
 
             return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
         }
@@ -12291,12 +12273,8 @@ namespace Chummer
             }
 
             // Locate the selected Vehicle.
-            if (treCustomDrugs.SelectedNode.Level == 1)
+            if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
             {
-                Drug objDrug = _objFunctions.FindDrug(treCustomDrugs.SelectedNode.Tag.ToString(), _objCharacter.Drugs);
-                if (objDrug == null)
-                    return;
-
                 _blnSkipRefresh = true;
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.Availability.ToString();
@@ -12315,7 +12293,6 @@ namespace Chummer
                     lblDrugComponents.Text += objComponent.DisplayName + "\n";
                 }
                 _blnSkipRefresh = false;
-                UpdateCharacterInfo();
 
             }
         }
@@ -15795,7 +15772,7 @@ namespace Chummer
         }
         private void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
         {
-            frmCreateCustomDrug form = new frmCreateCustomDrug(_objCharacter);
+            frmCreateCustomDrug form = new frmCreateCustomDrug(CharacterObject);
             form.ShowDialog(this);
 
             if (form.DialogResult == DialogResult.Cancel)
@@ -15803,9 +15780,9 @@ namespace Chummer
 
             Drug objCustomDrug = form.CustomDrug;
             TreeNode node = treCustomDrugs.Nodes[0].Nodes.Add(objCustomDrug.Name);
-            node.Tag = objCustomDrug.InternalId;
+            node.Tag = objCustomDrug;
             node.EnsureVisible();
-            _objCharacter.Drugs.Add(objCustomDrug);
+            CharacterObject.Drugs.Add(objCustomDrug);
         }
 		private void OpenSourceFromLabel(object sender, EventArgs e)
         {

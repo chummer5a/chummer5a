@@ -655,7 +655,7 @@ namespace Chummer
 			this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
 	        this.tabPets = new System.Windows.Forms.TabPage();
 	        this.panPets = new System.Windows.Forms.FlowLayoutPanel();
-	        this.cmdAddPet = new System.Windows.Forms.Button();
+	        this.cmdAddPet = new SplitButton();
 	        this.tabDrugs = new System.Windows.Forms.TabPage();
 	        this.nudDrugQty = new System.Windows.Forms.NumericUpDown();
 	        this.lblDrugQtyLabel = new System.Windows.Forms.Label();
@@ -676,7 +676,7 @@ namespace Chummer
 	        this.lblDrugName = new System.Windows.Forms.Label();
 	        this.lblDrugNameLabel = new System.Windows.Forms.Label();
 	        this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
-	        this.treCustomDrugs = new Chummer.helpers.TreeView();
+	        this.treCustomDrugs = new System.Windows.Forms.TreeView();
 	        this.btnCreateCustomDrug = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
 			this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
@@ -11669,7 +11669,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 	    private System.Windows.Forms.TabPage tabDrugs;
 	    private System.Windows.Forms.Button btnDeleteCustomDrug;
-	    private Chummer.helpers.TreeView treCustomDrugs;
+	    private System.Windows.Forms.TreeView treCustomDrugs;
 	    private System.Windows.Forms.Button btnCreateCustomDrug;
 	    private System.Windows.Forms.Label lblDrugComponents;
 	    private System.Windows.Forms.Label lblDrugCost;

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -15,11 +16,11 @@ namespace Chummer
     public partial class frmCreateCustomDrug : Form
 	{
 		private Dictionary<String, DrugComponent> dictDrugComponents;
-        private List<clsNodeData> lstSelectedDrugComponents;
-		private List<ListItem> _lstGrade = new List<ListItem>();
+        private readonly List<clsNodeData> lstSelectedDrugComponents;
+		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
-	    private Drug objDrug = new Drug();
-		XmlDocument _objXmlDocument = XmlManager.Instance.Load("drugcomponents.xml");
+	    private Drug _objDrug = new Drug();
+	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
 		private double _dblCostMultiplier;
 		private int _intAddictionThreshold;
 
@@ -84,16 +85,12 @@ namespace Chummer
 		/// </summary>
 		private void PopulateGrades()
 		{
-			GradeList objGradeList;
-			objGradeList = GlobalOptions.DrugGrades;
+		    IList<Grade>  objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
 
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
 			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objGrade.Name;
-				objItem.Name = objGrade.DisplayName;
-				_lstGrade.Add(objItem);
+			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
 			}
 			cboGrade.DataSource = null;
 			cboGrade.ValueMember = "Value";
@@ -103,17 +100,17 @@ namespace Chummer
 
 		private void UpdateCustomDrugStats()
         {
-			objDrug = new Drug();
-            objDrug.Name = txtDrugName.Text;
-			objDrug.Category = "Custom Drug";
+			_objDrug = new Drug();
+            _objDrug.Name = txtDrugName.Text;
+			_objDrug.Category = "Custom Drug";
 			DrugEffect objDrugEffect = new DrugEffect();
-			objDrug.Effects.Add(objDrugEffect);
-			objDrug.Grade = cboGrade.SelectedValue.ToString();
+			_objDrug.Effects.Add(objDrugEffect);
+			_objDrug.Grade = cboGrade.SelectedValue.ToString();
 
             foreach (clsNodeData objNodeData in lstSelectedDrugComponents)
             {
                 DrugComponent objDrugComponent = objNodeData.objDrugComponent;
-				objDrug.Components.Add(objDrugComponent);
+				_objDrug.Components.Add(objDrugComponent);
                 objDrugComponent.Level = objNodeData.level;
                 objDrugEffect = objDrugComponent.DrugEffects[objDrugComponent.Level];
 
@@ -148,13 +145,13 @@ namespace Chummer
                 objDrugEffect.duration += objDrugEffect.duration;
                 objDrugEffect.crashDamage += objDrugEffect.crashDamage;
 
-                objDrug.AddictionRating += objDrugComponent.AddictionRating;
-				objDrug.AddictionThreshold += objDrugComponent.AddictionThreshold;
-				objDrug.Availability += objDrugComponent.Availability;
-				objDrug.Cost += objDrugComponent.Cost;
+                _objDrug.AddictionRating += objDrugComponent.AddictionRating;
+				_objDrug.AddictionThreshold += objDrugComponent.AddictionThreshold;
+				_objDrug.Availability += objDrugComponent.Availability;
+				_objDrug.Cost += objDrugComponent.Cost;
             }
-			objDrug.Cost = Convert.ToInt32((Convert.ToDouble(objDrug.Cost, GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier));
-			objDrug.AddictionThreshold += _intAddictionThreshold;
+			_objDrug.Cost = Convert.ToInt32((Convert.ToDouble(_objDrug.Cost, GlobalOptions.CultureInfo) * _dblCostMultiplier));
+			_objDrug.AddictionThreshold += _intAddictionThreshold;
         }
 
         private int FindRootNodeIndexForCategory(string category)
@@ -174,8 +171,8 @@ namespace Chummer
 
 		private void AcceptForm()
 		{
-			objDrug.Name = txtDrugName.Text;
-			objDrug.Quantity = 1;
+			_objDrug.Name = txtDrugName.Text;
+			_objDrug.Quantity = 1;
 		}
 
 		private void AddSelectedComponent()
@@ -257,14 +254,14 @@ namespace Chummer
 
             lstSelectedDrugComponents.Add(objNodeData);
             UpdateCustomDrugStats();
-            lblDrugDescription.Text = objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         public Drug CustomDrug
         {
             get
             {
-                return objDrug;
+                return _objDrug;
             }
         }
 
@@ -313,12 +310,12 @@ namespace Chummer
             lstSelectedDrugComponents.Remove(objNodeData);
 
             UpdateCustomDrugStats();
-            lblDrugDescription.Text = objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)
         {
-            lblDrugDescription.Text = objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -330,7 +327,7 @@ namespace Chummer
 
 		private void btnCancel_Click(object sender, EventArgs e)
         {
-            objDrug = null;
+            _objDrug = null;
             DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -343,10 +340,10 @@ namespace Chummer
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
 			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
+			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.CultureInfo);
 			objXmlGrade.TryGetField("addictionthreshold", out _intAddictionThreshold, 0);
 			UpdateCustomDrugStats();
-			lblDrugDescription.Text = objDrug.GenerateDescription(0);
+			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
 		}
 	}
 
